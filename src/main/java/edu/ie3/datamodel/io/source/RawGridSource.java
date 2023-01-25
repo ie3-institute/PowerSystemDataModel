@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -19,10 +20,13 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities that are hold by a {@link
@@ -34,9 +38,9 @@ import java.util.concurrent.atomic.LongAdder;
  */
 public class RawGridSource implements DataSource {
   //general fields
-  TypeSource typeSource;
+  private TypeSource typeSource;
 
-  FunctionalDataSource dataSource;
+  private FunctionalDataSource dataSource;
 
   //factories
   private final NodeInputFactory nodeInputFactory;
@@ -94,11 +98,25 @@ public class RawGridSource implements DataSource {
     ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
             new ConcurrentHashMap<>();
 
-    /*
+    Set<LineInput> lineInputs = dataSource.buildTypedEntities(LineInput.class, lineInputFactory, nodes, operators, lineTypes, nonBuildEntities);
+    Set<Transformer2WInput> transformer2WInputs = dataSource.buildTypedEntities(
+            Transformer2WInput.class,
+            transformer2WInputFactory,
+            nodes,
+            operators,
+            transformer2WTypeInputs,
+            nonBuildEntities);
+    Set<Transformer3WInput> transformer3WInputs = dataSource.buildTransformer3WEntities(transformer3WInputFactory, nodes, transformer3WTypeInputs, operators);
+    Set<SwitchInput> switches = dataSource.buildUntypedConnectorInputEntities(SwitchInput.class, switchInputFactory, nodes, operators, nonBuildEntities);
+    Set<MeasurementUnitInput> measurementUnits = dataSource.buildNodeAssetEntities(MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators, nonBuildEntities);
 
-     */
+    /* if we found non-build elements return an empty optional and log the problems */
+    if (!nonBuildEntities.isEmpty()) {
+      nonBuildEntities.forEach(dataSource::printInvalidElementInformation);
+      return Optional.empty();
+    }
 
-    /* build the grid
+    //build the grid
     RawGridElements gridElements =
             new RawGridElements(
                     nodes,
@@ -108,15 +126,10 @@ public class RawGridSource implements DataSource {
                     switches,
                     measurementUnits);
 
-
-
-     */
-    /* return the grid if it is not empty
+    //return the grid if it is not empty
     return gridElements.allEntitiesAsList().isEmpty()
             ? Optional.empty()
             : Optional.of(gridElements);
-    */
-    return null;
   }
 
   /**
@@ -361,5 +374,52 @@ public class RawGridSource implements DataSource {
    */
   public Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return dataSource.buildNodeAssetEntities(MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators);
+  }
+
+
+
+  //-------------------------------------
+  protected Stream<Optional<ConnectorInputEntityData>> buildUntypedConnectorInputEntityData(
+          Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
+    return assetInputEntityDataStream
+            .parallel()
+            .map(
+                    assetInputEntityData ->
+                            buildUntypedConnectorInputEntityData(assetInputEntityData, nodes));
+  }
+
+
+  protected Optional<ConnectorInputEntityData> buildUntypedConnectorInputEntityData(
+          AssetInputEntityData assetInputEntityData, Collection<NodeInput> nodes) {
+    return dataSource.buildUntypedConnectorInputEntityData(assetInputEntityData, nodes);
+  }
+
+  protected <T extends AssetTypeInput> TypedConnectorInputEntityData<T> addTypeToEntityData(
+          ConnectorInputEntityData untypedEntityData, T assetType) {
+    return dataSource.addTypeToEntityData(untypedEntityData, assetType);
+  }
+
+  protected <T extends AssetTypeInput> Optional<TypedConnectorInputEntityData<T>> findAndAddType(
+          ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
+    return dataSource.findAndAddType(untypedEntityData, availableTypes);
+  }
+
+  protected <T extends AssetTypeInput>
+  Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntityData(
+          Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
+          Collection<T> availableTypes) {
+    return dataSource.buildTypedConnectorEntityData(noTypeConnectorEntityDataStream, availableTypes);
+  }
+
+  protected Optional<Transformer3WInputEntityData> addThirdNode(
+          TypedConnectorInputEntityData<Transformer3WTypeInput> typeEntityData,
+          Collection<NodeInput> nodes) {
+    return dataSource.addThirdNode(typeEntityData, nodes);
+  }
+
+  protected Stream<Optional<Transformer3WInputEntityData>> buildTransformer3WEntityData(
+          Stream<Optional<TypedConnectorInputEntityData<Transformer3WTypeInput>>> typedConnectorEntityDataStream,
+          Collection<NodeInput> nodes) {
+    return dataSource.buildTransformer3WEntityData(typedConnectorEntityDataStream, nodes);
   }
 }

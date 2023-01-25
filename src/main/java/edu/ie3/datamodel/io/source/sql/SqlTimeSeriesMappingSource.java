@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.sql;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
+import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.util.Map;
@@ -15,9 +16,19 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 //SqlTimeSeriesMappingSource.MappingEntry
-public class SqlTimeSeriesMappingSource
-    extends SqlDataSource
-    implements TimeSeriesMappingSource {
+public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
+
+  public SqlTimeSeriesMappingSource(
+          SqlConnector connector,
+          String schemaName,
+          DatabaseNamingStrategy databaseNamingStrategy
+          //         EntityPersistenceNamingStrategy entityPersistenceNamingStrategy?
+  ) {
+    super(new SqlDataSource(connector, schemaName, databaseNamingStrategy));
+  }
+
+
+  /*
   private static final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
 
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
@@ -54,16 +65,5 @@ public class SqlTimeSeriesMappingSource
    * @deprecated since 3.0. Use {@link
    *     SqlTimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
    */
-  @Override
-  @Deprecated(since = "3.0", forRemoval = true)
-  public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
-      getTimeSeriesMetaInformation(UUID timeSeriesUuid) {
-    return null;
-  }
 
-
-  protected Optional<MappingEntry> createEntity(Map<String, String> fieldToValues) {
-    SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
-    return mappingFactory.get(entityData);
-  }
 }

@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.sql;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
+import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -54,7 +55,7 @@ public class SqlWeatherSource extends SqlDataSource
       String schemaName,
       String weatherTableName,
       TimeBasedWeatherValueFactory weatherFactory) {
-    super(connector,schemaName);
+    super(connector,schemaName,new DatabaseNamingStrategy());
     this.idCoordinateSource = idCoordinateSource;
     this.weatherFactory = weatherFactory;
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();

@@ -1,34 +1,22 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
-import edu.ie3.datamodel.io.source.ExtraDataSource;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
-import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.models.input.MeasurementUnitInput;
-import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
-import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
 
 public class SqlRawGridSource extends RawGridSource {
 
+    public SqlRawGridSource(
+            SqlConnector connector,
+            String schemaName,
+            DatabaseNamingStrategy databaseNamingStrategy,
+            TypeSource typeSource
+    ) {
+        super(typeSource, new SqlDataSource(connector, schemaName, databaseNamingStrategy));
+    }
+
+    /*
     private final SqlDataSource sqlDataSource;
 
 
@@ -115,10 +103,5 @@ public class SqlRawGridSource extends RawGridSource {
             return null;
         }
     }
-
-
-
-
-
-
+    */
 }

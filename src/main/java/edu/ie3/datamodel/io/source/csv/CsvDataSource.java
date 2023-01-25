@@ -7,15 +7,13 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.FunctionalDataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
+import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
@@ -48,7 +46,7 @@ public class CsvDataSource extends FunctionalDataSource {
 
   // general fields
   protected final String csvSep;
-  protected final CsvFileConnector connector;
+  public final CsvFileConnector connector;
 
   // field names
   protected static final String OPERATOR = "operator";
@@ -60,7 +58,7 @@ public class CsvDataSource extends FunctionalDataSource {
 
   /**
    * @deprecated ensures downward compatibility with old csv data format. Can be removed when
-   *     support for old csv format is removed. *
+   * support for old csv format is removed. *
    */
   @Deprecated(since = "1.1.0", forRemoval = true)
   private boolean notYetLoggedWarning = true;
@@ -71,6 +69,13 @@ public class CsvDataSource extends FunctionalDataSource {
   }
 
 
+  @Override
+  public <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector);
+  }
+
+
+  //--------------------------------------------------------------------------------------------------
 
   /**
    * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
@@ -78,16 +83,16 @@ public class CsvDataSource extends FunctionalDataSource {
    * any sanity checks. Order of the headline needs to be the same as the fields in the csv row. If
    * the zipping fails, an empty map is returned and the causing error is logged.
    *
-   * @param csvRow the csv row string that contains the data
+   * @param csvRow   the csv row string that contains the data
    * @param headline the headline fields of the csv file
    * @return a map containing the mapping of (fieldName to fieldValue) or an empty map if an error
-   *     occurred
+   * occurred
    */
   private Map<String, String> buildFieldsToAttributes(
-      final String csvRow, final String[] headline) {
+          final String csvRow, final String[] headline) {
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
-        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+            new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     // todo when replacing deprecated workaround code below add final modifier before parseCsvRow as
     // well as remove
@@ -103,9 +108,9 @@ public class CsvDataSource extends FunctionalDataSource {
       if (fieldVals.length == headline.length && notYetLoggedWarning) {
         notYetLoggedWarning = false;
         log.warn(
-            "You are using an outdated version of the data "
-                + "model with invalid formatted csv rows. This is okay for now, but please updated your files, as the "
-                + "support for the old model will be removed soon.");
+                "You are using an outdated version of the data "
+                        + "model with invalid formatted csv rows. This is okay for now, but please updated your files, as the "
+                        + "support for the old model will be removed soon.");
       }
     }
     // end workaround for deprecated data model processing
@@ -113,32 +118,32 @@ public class CsvDataSource extends FunctionalDataSource {
     try {
       String[] finalFieldVals = fieldVals;
       insensitiveFieldsToAttributes.putAll(
-          IntStream.range(0, fieldVals.length)
-              .boxed()
-              .collect(
-                  Collectors.toMap(
-                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> finalFieldVals[v])));
+              IntStream.range(0, fieldVals.length)
+                      .boxed()
+                      .collect(
+                              Collectors.toMap(
+                                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> finalFieldVals[v])));
 
       if (insensitiveFieldsToAttributes.size() != headline.length) {
         Set<String> fieldsToAttributesKeySet = insensitiveFieldsToAttributes.keySet();
         insensitiveFieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         throw new SourceException(
-            "The size of the headline does not fit to the size of the resulting fields to attributes mapping.\nHeadline: "
-                + String.join(", ", headline)
-                + "\nResultingMap: "
-                + String.join(", ", fieldsToAttributesKeySet)
-                + "\nCsvRow: "
-                + csvRow.trim()
-                + ".\nIs the csv separator in the file matching the separator provided in the constructor ('"
-                + csvSep
-                + "') and does the number of columns match the number of headline fields?");
+                "The size of the headline does not fit to the size of the resulting fields to attributes mapping.\nHeadline: "
+                        + String.join(", ", headline)
+                        + "\nResultingMap: "
+                        + String.join(", ", fieldsToAttributesKeySet)
+                        + "\nCsvRow: "
+                        + csvRow.trim()
+                        + ".\nIs the csv separator in the file matching the separator provided in the constructor ('"
+                        + csvSep
+                        + "') and does the number of columns match the number of headline fields?");
       }
     } catch (Exception e) {
       log.error(
-          "Cannot build fields to attributes map for row '{}' with headline '{}'.\nException: {}",
-          csvRow.trim(),
-          String.join(",", headline),
-          e);
+              "Cannot build fields to attributes map for row '{}' with headline '{}'.\nException: {}",
+              csvRow.trim(),
+              String.join(",", headline),
+              e);
     }
     return insensitiveFieldsToAttributes;
   }
@@ -152,12 +157,12 @@ public class CsvDataSource extends FunctionalDataSource {
    */
   protected String[] parseCsvRow(String csvRow, String csvSep) {
     return Arrays.stream(csvRow.split(csvSep + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1))
-        .map(
-            maybeStartEndQuotedString ->
-                StringUtils.unquoteStartEnd(maybeStartEndQuotedString.trim())
-                    .replaceAll("\"{2}", "\"")
-                    .trim())
-        .toArray(String[]::new);
+            .map(
+                    maybeStartEndQuotedString ->
+                            StringUtils.unquoteStartEnd(maybeStartEndQuotedString.trim())
+                                    .replaceAll("\"{2}", "\"")
+                                    .trim())
+            .toArray(String[]::new);
   }
 
   /**
@@ -189,23 +194,23 @@ public class CsvDataSource extends FunctionalDataSource {
     AtomicInteger charCounter = new AtomicInteger(0);
 
     return Arrays.stream(
-            csvRow
-                .replaceAll(charInputRegex, charReplacement)
-                .replaceAll(geoJsonRegex, geoReplacement)
-                .replaceAll("\"*", "") // remove all quotes from
-                .split(csvSep, -1))
-        .map(
-            fieldVal -> {
-              String returningFieldVal = fieldVal;
-              if (fieldVal.equalsIgnoreCase(geoReplacement)) {
-                returningFieldVal = geoList.get(geoCounter.getAndIncrement());
-              }
-              if (fieldVal.equalsIgnoreCase(charReplacement)) {
-                returningFieldVal = charList.get(charCounter.getAndIncrement());
-              }
-              return returningFieldVal.trim();
-            })
-        .toArray(String[]::new);
+                    csvRow
+                            .replaceAll(charInputRegex, charReplacement)
+                            .replaceAll(geoJsonRegex, geoReplacement)
+                            .replaceAll("\"*", "") // remove all quotes from
+                            .split(csvSep, -1))
+            .map(
+                    fieldVal -> {
+                      String returningFieldVal = fieldVal;
+                      if (fieldVal.equalsIgnoreCase(geoReplacement)) {
+                        returningFieldVal = geoList.get(geoCounter.getAndIncrement());
+                      }
+                      if (fieldVal.equalsIgnoreCase(charReplacement)) {
+                        returningFieldVal = charList.get(charCounter.getAndIncrement());
+                      }
+                      return returningFieldVal.trim();
+                    })
+            .toArray(String[]::new);
   }
 
   /**
@@ -213,9 +218,9 @@ public class CsvDataSource extends FunctionalDataSource {
    * list of strings in the order of their appearance in the csvRow string
    *
    * @param regexString regex string that should be searched for
-   * @param csvRow csv row string that should be searched in for the regex string
+   * @param csvRow      csv row string that should be searched in for the regex string
    * @return a list of strings matching the provided regex in the order of their appearance in the
-   *     provided csv row string
+   * provided csv row string
    */
   private List<String> extractMatchingStrings(String regexString, String csvRow) {
     Pattern pattern = Pattern.compile(regexString);
@@ -232,36 +237,36 @@ public class CsvDataSource extends FunctionalDataSource {
    * Returns either the first instance of a {@link OperatorInput} in the provided collection of or
    * {@link OperatorInput#NO_OPERATOR_ASSIGNED}
    *
-   * @param operators the collections of {@link OperatorInput}s that should be searched in
+   * @param operators    the collections of {@link OperatorInput}s that should be searched in
    * @param operatorUuid the operator uuid that is requested
    * @return either the first found instancen of {@link OperatorInput} or {@link
-   *     OperatorInput#NO_OPERATOR_ASSIGNED}
+   * OperatorInput#NO_OPERATOR_ASSIGNED}
    */
   private OperatorInput getFirstOrDefaultOperator(
-      Collection<OperatorInput> operators,
-      String operatorUuid,
-      String entityClassName,
-      String requestEntityUuid) {
+          Collection<OperatorInput> operators,
+          String operatorUuid,
+          String entityClassName,
+          String requestEntityUuid) {
     if (operatorUuid == null) {
       log.warn(
-          "Input file for class '{}' is missing the 'operator' field. "
-              + "This is okay, but you should consider fixing the file by adding the field. "
-              + "Defaulting to 'NO OPERATOR ASSIGNED'",
-          entityClassName);
+              "Input file for class '{}' is missing the 'operator' field. "
+                      + "This is okay, but you should consider fixing the file by adding the field. "
+                      + "Defaulting to 'NO OPERATOR ASSIGNED'",
+              entityClassName);
       return OperatorInput.NO_OPERATOR_ASSIGNED;
     } else {
       return operatorUuid.trim().isEmpty()
-          ? OperatorInput.NO_OPERATOR_ASSIGNED
-          : findFirstEntityByUuid(operatorUuid, operators)
+              ? OperatorInput.NO_OPERATOR_ASSIGNED
+              : findFirstEntityByUuid(operatorUuid, operators)
               .orElseGet(
-                  () -> {
-                    log.debug(
-                        "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
-                        operatorUuid,
-                        entityClassName,
-                        requestEntityUuid);
-                    return OperatorInput.NO_OPERATOR_ASSIGNED;
-                  });
+                      () -> {
+                        log.debug(
+                                "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
+                                operatorUuid,
+                                entityClassName,
+                                requestEntityUuid);
+                        return OperatorInput.NO_OPERATOR_ASSIGNED;
+                      });
     }
   }
 
@@ -274,15 +279,15 @@ public class CsvDataSource extends FunctionalDataSource {
    * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
    * }</pre>
    *
-   * @param entityClass entity class that should be used as they key in the provided counter map
+   * @param entityClass               entity class that should be used as they key in the provided counter map
    * @param invalidElementsCounterMap a map that counts the number of empty optionals and maps it to
-   *     the provided entity clas
-   * @param <T> the type of the entity
+   *                                  the provided entity clas
+   * @param <T>                       the type of the entity
    * @return a predicate that can be used to filter and count empty optionals
    */
   protected <T extends UniqueEntity> Predicate<Optional<T>> isPresentCollectIfNot(
-      Class<? extends UniqueEntity> entityClass,
-      ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
+          Class<? extends UniqueEntity> entityClass,
+          ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
     return o -> {
       if (o.isPresent()) {
         return true;
@@ -293,56 +298,24 @@ public class CsvDataSource extends FunctionalDataSource {
     };
   }
 
-  protected void printInvalidElementInformation(
-      Class<? extends UniqueEntity> entityClass, LongAdder noOfInvalidElements) {
-
-    log.error(
-        "{} entities of type '{}' are missing required elements!",
-        noOfInvalidElements,
-        entityClass.getSimpleName());
-  }
-
   protected String saveMapGet(Map<String, String> map, String key, String mapName) {
     return Optional.ofNullable(map.get(key))
-        .orElse(
-            "Key '"
-                + key
-                + "' not found"
-                + (mapName.isEmpty() ? "!" : " in map '" + mapName + "'!"));
+            .orElse(
+                    "Key '"
+                            + key
+                            + "' not found"
+                            + (mapName.isEmpty() ? "!" : " in map '" + mapName + "'!"));
   }
 
   protected void logSkippingWarning(
-      String entityDesc, String entityUuid, String entityId, String missingElementsString) {
+          String entityDesc, String entityUuid, String entityId, String missingElementsString) {
 
     log.warn(
-        "Skipping '{}' with uuid '{}' and id '{}'. Not all required entities found or map is missing entity key!\nMissing elements:\n{}",
-        entityDesc,
-        entityUuid,
-        entityId,
-        missingElementsString);
-  }
-
-  @Override
-  public <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector);
-  }
-
-  /**
-   * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
-   * matching the provided UUID or an empty {@code Optional} if no matching entity can be found.
-   *
-   * @param entityUuid uuid of the entity that should be looked for
-   * @param entities collection of entities that should be
-   * @param <T> type of the entity that will be returned, derived from the provided collection
-   * @return either an optional containing the first entity that has the provided uuid or an empty
-   *     optional if no matching entity with the provided uuid can be found
-   */
-  protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
-      String entityUuid, Collection<T> entities) {
-    return entities.stream()
-        .parallel()
-        .filter(uniqueEntity -> uniqueEntity.getUuid().toString().equalsIgnoreCase(entityUuid))
-        .findFirst();
+            "Skipping '{}' with uuid '{}' and id '{}'. Not all required entities found or map is missing entity key!\nMissing elements:\n{}",
+            entityDesc,
+            entityUuid,
+            entityId,
+            missingElementsString);
   }
 
   /**
@@ -350,18 +323,18 @@ public class CsvDataSource extends FunctionalDataSource {
    * over for further processing.
    *
    * @param entityClass the entity class that should be build and that is used to get the
-   *     corresponding reader
-   * @param connector the connector that should be used to get the reader from
+   *                    corresponding reader
+   * @param connector   the connector that should be used to get the reader from
    * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName to fieldValue)
+   * mapping (fieldName to fieldValue)
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+          Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
     try {
       return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
     } catch (FileNotFoundException e) {
       log.warn(
-          "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+              "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
     return Stream.empty();
   }
@@ -371,21 +344,21 @@ public class CsvDataSource extends FunctionalDataSource {
    * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
    * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
-   * @param entityClass the entity class that should be build
+   * @param entityClass    the entity class that should be build
    * @param bufferedReader the reader to use
    * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName to fieldValue)
+   * mapping (fieldName to fieldValue)
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+          Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
       // sanity check for headline
       if (!Arrays.asList(headline).contains("uuid")) {
         throw new SourceException(
-            "The first line does not contain a field named 'uuid'. Is the headline valid?\nProvided headline: "
-                + String.join(", ", headline));
+                "The first line does not contain a field named 'uuid'. Is the headline valid?\nProvided headline: "
+                        + String.join(", ", headline));
       }
 
       // by default try-with-resources closes the reader directly when we leave this method (which
@@ -395,27 +368,27 @@ public class CsvDataSource extends FunctionalDataSource {
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
       return distinctRowsWithLog(
-          allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
-          .parallelStream();
+              allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
+              .parallelStream();
     } catch (IOException e) {
       log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+              "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     } catch (SourceException e) {
       log.error(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+              "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
 
     return Stream.empty();
   }
 
   protected List<Map<String, String>> csvRowFieldValueMapping(
-      BufferedReader reader, String[] headline) {
+          BufferedReader reader, String[] headline) {
     return reader
-        .lines()
-        .parallel()
-        .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-        .filter(map -> !map.isEmpty())
-        .toList();
+            .lines()
+            .parallel()
+            .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+            .filter(map -> !map.isEmpty())
+            .toList();
   }
 
   /**
@@ -427,48 +400,48 @@ public class CsvDataSource extends FunctionalDataSource {
    * and the error is logged. For case a), only the duplicates are filtered out and a set with
    * unique rows is returned.
    *
-   * @param allRows collection of rows of a csv file an entity should be built from
-   * @param keyExtractor Function, that extracts the key from field to value mapping, that is meant
-   *     to be unique
+   * @param allRows          collection of rows of a csv file an entity should be built from
+   * @param keyExtractor     Function, that extracts the key from field to value mapping, that is meant
+   *                         to be unique
    * @param entityDescriptor Colloquial descriptor of the entity, the data is foreseen for (for
-   *     debug String)
-   * @param keyDescriptor Colloquial descriptor of the key, that is meant to be unique (for debug
-   *     String)
+   *                         debug String)
+   * @param keyDescriptor    Colloquial descriptor of the key, that is meant to be unique (for debug
+   *                         String)
    * @return either a set containing only unique rows or an empty set if at least two rows with the
-   *     same UUID but different field values exist
+   * same UUID but different field values exist
    */
   protected Set<Map<String, String>> distinctRowsWithLog(
-      Collection<Map<String, String>> allRows,
-      final Function<Map<String, String>, String> keyExtractor,
-      String entityDescriptor,
-      String keyDescriptor) {
+          Collection<Map<String, String>> allRows,
+          final Function<Map<String, String>, String> keyExtractor,
+          String entityDescriptor,
+          String keyDescriptor) {
     Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
     // case a)
     if (allRows.size() != allRowsSet.size()) {
       log.warn(
-          "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
-          entityDescriptor,
-          (allRows.size() - allRowsSet.size()));
+              "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
+              entityDescriptor,
+              (allRows.size() - allRowsSet.size()));
     }
 
     /* Check for rows with the same key based on the provided key extractor function */
     Set<Map<String, String>> distinctIdSet =
-        allRowsSet.parallelStream()
-            .filter(ValidationUtils.distinctByKey(keyExtractor))
-            .collect(Collectors.toSet());
+            allRowsSet.parallelStream()
+                    .filter(ValidationUtils.distinctByKey(keyExtractor))
+                    .collect(Collectors.toSet());
     if (distinctIdSet.size() != allRowsSet.size()) {
       allRowsSet.removeAll(distinctIdSet);
       String affectedCoordinateIds =
-          allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
+              allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
-          """
-          '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
-          Affected primary keys:
-          {}""",
-          entityDescriptor,
-          keyDescriptor,
-          affectedCoordinateIds);
+              """
+                      '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
+                      Affected primary keys:
+                      {}""",
+              entityDescriptor,
+              keyDescriptor,
+              affectedCoordinateIds);
       // if this happens, we return an empty set to prevent further processing
       return new HashSet<>();
     }
@@ -476,165 +449,36 @@ public class CsvDataSource extends FunctionalDataSource {
     return allRowsSet;
   }
 
-  /**
-   * Checks if the requested type of an asset can be found in the provided collection of types based
-   * on the provided fields to values mapping. The provided fields to values mapping needs to have
-   * one and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can
-   * be found in the provided collection based on the UUID it is returned wrapped in an optional.
-   * Otherwise an empty optional is returned and a warning is logged.
-   *
-   * @param types a collection of types that should be used for searching
-   * @param fieldsToAttributes the field name to value mapping incl. the key {@link #TYPE}
-   * @param skippedClassString debug string of the class that will be skipping
-   * @param <T> the type of the resulting type instance
-   * @return either an optional containing the type or an empty optional if the type cannot be found
-   */
-  protected <T extends AssetTypeInput> Optional<T> getAssetType(
-      Collection<T> types, Map<String, String> fieldsToAttributes, String skippedClassString) {
+  @Override
+  public <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(
+          UUID timeSeriesUuid,
+          String filePath,
+          Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
+  {
+    return null;
+  }
 
-    Optional<T> assetType =
-        Optional.ofNullable(fieldsToAttributes.get(TYPE))
-            .flatMap(typeUuid -> findFirstEntityByUuid(typeUuid, types));
+  /*
+  @Override
+  public <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(
+          UUID timeSeriesUuid,
+          String filePath,
+          Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
+          throws SourceException {
+    try (BufferedReader reader = connector.initReader(filePath)) {
+      Set<TimeBasedValue<V>> timeBasedValues =
+              buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+                      .map(fieldToValueFunction)
+                      .flatMap(Optional::stream)
+                      .collect(Collectors.toSet());
 
-    // if the type is not present we return an empty element and
-    // log a warning
-    if (assetType.isEmpty()) {
-      logSkippingWarning(
-          skippedClassString,
-          saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-          saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-          TYPE + ": " + saveMapGet(fieldsToAttributes, TYPE, FIELDS_TO_VALUES_MAP));
+      return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
+    } catch (FileNotFoundException e) {
+      throw new SourceException("Unable to find a file with path '" + filePath + "'.", e);
+    } catch (IOException e) {
+      throw new SourceException("Error during reading of file'" + filePath + "'.", e);
     }
-    return assetType;
   }
 
-  /**
-   * Returns a stream of optional {@link AssetInputEntityData} that can be used to build instances
-   * of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that
-   * consumes this data.
-   *
-   * @param entityClass the entity class that should be build
-   * @param operators a collection of {@link OperatorInput} entities that should be used to build
-   *     the data
-   * @param <T> type of the entity that should be build
-   * @return stream of optionals of the entity data or empty optionals of the operator required for
-   *     the data cannot be found
    */
-  protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
-      Class<T> entityClass, Collection<OperatorInput> operators) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
-        .map(
-            fieldsToAttributes ->
-                assetInputEntityDataStream(entityClass, fieldsToAttributes, operators));
-  }
-
-  protected <T extends AssetInput> AssetInputEntityData assetInputEntityDataStream(
-      Class<T> entityClass,
-      Map<String, String> fieldsToAttributes,
-      Collection<OperatorInput> operators) {
-
-    // get the operator of the entity
-    String operatorUuid = fieldsToAttributes.get(OPERATOR);
-    OperatorInput operator =
-        getFirstOrDefaultOperator(
-            operators,
-            operatorUuid,
-            entityClass.getSimpleName(),
-            saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
-
-    // remove fields that are passed as objects to constructor
-    fieldsToAttributes
-            .keySet()
-            .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
-
-    return new AssetInputEntityData(fieldsToAttributes, entityClass, operator);
-  }
-
-  /**
-   * Returns a stream of optional {@link NodeAssetInputEntityData} that can be used to build
-   * instances of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory}
-   * that consumes this data. param assetInputEntityDataStream
-   *
-   * @param assetInputEntityDataStream a stream consisting of {@link AssetInputEntityData} that is
-   *     enriched with {@link NodeInput} data
-   * @param nodes a collection of {@link NodeInput} entities that should be used to build the data
-   * @return stream of optionals of the entity data or empty optionals of the node required for the
-   *     data cannot be found
-   */
-  protected Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
-      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
-
-    return assetInputEntityDataStream
-        .parallel()
-        .map(
-            assetInputEntityData -> {
-
-              // get the raw data
-              Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
-
-              // get the node of the entity
-              String nodeUuid = fieldsToAttributes.get(NODE);
-              Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
-
-              // if the node is not present we return an empty element and
-              // log a warning
-              if (node.isEmpty()) {
-                logSkippingWarning(
-                    assetInputEntityData.getTargetClass().getSimpleName(),
-                    fieldsToAttributes.get("uuid"),
-                    fieldsToAttributes.get("id"),
-                    NODE + ": " + nodeUuid);
-                return Optional.empty();
-              }
-
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove(NODE);
-
-              return Optional.of(
-                  new NodeAssetInputEntityData(
-                      fieldsToAttributes,
-                      assetInputEntityData.getTargetClass(),
-                      assetInputEntityData.getOperatorInput(),
-                      node.get()));
-            });
-  }
-
-  /**
-   * Returns a stream of optional entities that can be build by using {@link
-   * NodeAssetInputEntityData} and their corresponding factory.
-   *
-   * @param entityClass the entity class that should be build
-   * @param factory the factory that should be used for the building process
-   * @param nodes a collection of {@link NodeInput} entities that should be used to build the
-   *     entities
-   * @param operators a collection of {@link OperatorInput} entities should be used to build the
-   *     entities
-   * @param <T> Type of the {@link AssetInput} to expect
-   * @return stream of optionals of the entities that has been built by the factor or empty
-   *     optionals if the entity could not have been build
-   */
-  protected <T extends AssetInput> Stream<Optional<T>> nodeAssetEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, NodeAssetInputEntityData> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators) {
-    return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-        .map(dataOpt -> dataOpt.flatMap(factory::get));
-  }
-
-  /**
-   * Returns a stream of {@link SimpleEntityData} for result entity classes, using a
-   * fields-to-attributes map.
-   *
-   * @param entityClass the entity class that should be build
-   * @param <T> Type of the {@link ResultEntity} to expect
-   * @return stream of {@link SimpleEntityData}
-   */
-  protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
-      Class<T> entityClass) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
-        .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
-  }
-
-
 }

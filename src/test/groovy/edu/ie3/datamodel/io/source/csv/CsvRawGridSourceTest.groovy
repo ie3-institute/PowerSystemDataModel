@@ -35,22 +35,22 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     given: "valid input data"
     def fieldsToAttributes = [
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
-      "id"			: "test_switch_AtoB",
+      "id"			    : "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
       "operatesFrom"	: "2020-03-24 15:11:31",
       "operatesUntil"	: "2020-03-24 15:11:31",
       "nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"			: "47d29df0-ba2d-4d23-8e75-c82229c5c758",
-      "closed"		: "true"
+      "closed"		    : "true"
     ]
 
     def expectedFieldsToAttributes = [
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
-      "id"			: "test_switch_AtoB",
+      "id"			    : "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
       "operatesFrom"	: "2020-03-24 15:11:31",
       "operatesUntil"	: "2020-03-24 15:11:31",
-      "closed"		: "true"
+      "closed"		    : "true"
     ]
 
     def validAssetEntityInputData = new AssetInputEntityData(fieldsToAttributes, SwitchInput)

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.io.factory.result.*;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.result.connector.LineResult;
@@ -23,7 +24,41 @@ import java.util.Set;
  * @version 0.1
  * @since 22 June 2021
  */
-public interface ResultEntitySource {
+public class ResultEntitySource implements DataSource {
+
+  FunctionalDataSource dataSource;
+
+  private final SystemParticipantResultFactory systemParticipantResultFactory;
+  private final ThermalResultFactory thermalResultFactory;
+  private final SwitchResultFactory switchResultFactory;
+  private final NodeResultFactory nodeResultFactory;
+  private final ConnectorResultFactory connectorResultFactory;
+  private final FlexOptionsResultFactory flexOptionsResultFactory;
+
+  public ResultEntitySource(FunctionalDataSource dataSource) {
+    this.dataSource = dataSource;
+
+    // init factories
+    this.systemParticipantResultFactory = new SystemParticipantResultFactory();
+    this.thermalResultFactory = new ThermalResultFactory();
+    this.switchResultFactory = new SwitchResultFactory();
+    this.nodeResultFactory = new NodeResultFactory();
+    this.connectorResultFactory = new ConnectorResultFactory();
+    this.flexOptionsResultFactory = new FlexOptionsResultFactory();
+  }
+
+
+  public ResultEntitySource(FunctionalDataSource dataSource, String dtfPattern) {
+    this.dataSource = dataSource;
+
+    // init factories
+    this.systemParticipantResultFactory = new SystemParticipantResultFactory(dtfPattern);
+    this.thermalResultFactory = new ThermalResultFactory();
+    this.switchResultFactory = new SwitchResultFactory();
+    this.nodeResultFactory = new NodeResultFactory();
+    this.connectorResultFactory = new ConnectorResultFactory();
+    this.flexOptionsResultFactory = new FlexOptionsResultFactory();
+  }
 
   /**
    * Returns a unique set of {@link NodeResult} instances.
@@ -34,7 +69,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link NodeResult} entities
    */
-  Set<NodeResult> getNodeResults();
+  public Set<NodeResult> getNodeResults() {
+    return null;
+    //return getResultEntities(NodeResult.class, nodeResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link SwitchResult} instances.
@@ -46,7 +84,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link SwitchResult} entities
    */
-  Set<SwitchResult> getSwitchResults();
+  public Set<SwitchResult> getSwitchResults() {
+    return null;
+    //return getResultEntities(SwitchResult.class, switchResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link LineResult} instances.
@@ -57,7 +98,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link LineResult} entities
    */
-  Set<LineResult> getLineResults();
+  public Set<LineResult> getLineResults() {
+    return null;
+    //return getResultEntities(LineResult.class, connectorResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link Transformer2WResult} instances.
@@ -69,7 +113,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link Transformer2WResult} entities
    */
-  Set<Transformer2WResult> getTransformer2WResultResults();
+  public Set<Transformer2WResult> getTransformer2WResultResults() {
+    return null;
+    //return getResultEntities(Transformer2WResult.class, connectorResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link Transformer3WResult} instances.
@@ -81,7 +128,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link Transformer3WResult} entities
    */
-  Set<Transformer3WResult> getTransformer3WResultResults();
+  public Set<Transformer3WResult> getTransformer3WResultResults() {
+    return null;
+    //return getResultEntities(Transformer3WResult.class, connectorResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link FlexOptionsResult} instances.
@@ -93,7 +143,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link FlexOptionsResult} entities
    */
-  Set<FlexOptionsResult> getFlexOptionsResults();
+  public Set<FlexOptionsResult> getFlexOptionsResults() {
+    return null;
+    //return getResultEntities(FlexOptionsResult.class, flexOptionsResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link LoadResult} instances.
@@ -104,7 +157,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link LoadResult} entities
    */
-  Set<LoadResult> getLoadResults();
+  public Set<LoadResult> getLoadResults() {
+    return null;
+    //return getResultEntities(LoadResult.class, systemParticipantResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link PvResult} instances.
@@ -115,7 +171,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link PvResult} entities
    */
-  Set<PvResult> getPvResults();
+  public Set<PvResult> getPvResults() {
+    return null;
+    //return getResultEntities(PvResult.class, systemParticipantResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link FixedFeedInResult} instances.
@@ -127,7 +186,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link FixedFeedInResult} entities
    */
-  Set<FixedFeedInResult> getFixedFeedInResults();
+  public Set<FixedFeedInResult> getFixedFeedInResults() {
+    return null;
+    //return getResultEntities(FixedFeedInResult.class, systemParticipantResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link BmResult} instances.
@@ -138,7 +200,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link BmResult} entities
    */
-  Set<BmResult> getBmResults();
+  public Set<BmResult> getBmResults() {
+    return null;
+    //return getResultEntities(BmResult.class, systemParticipantResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link ChpResult} instances.
@@ -149,7 +214,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link ChpResult} entities
    */
-  Set<ChpResult> getChpResults();
+  public Set<ChpResult> getChpResults() {
+    return null;
+    //return getResultEntities(ChpResult.class, systemParticipantResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link WecResult} instances.
@@ -160,7 +228,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link WecResult} entities
    */
-  Set<WecResult> getWecResults();
+  public Set<WecResult> getWecResults() {
+    return null;
+    //return getResultEntities(WecResult.class, systemParticipantResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link StorageResult} instances.
@@ -172,7 +243,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link StorageResult} entities
    */
-  Set<StorageResult> getStorageResults();
+  public Set<StorageResult> getStorageResults() {
+    return null;
+    //return getResultEntities(StorageResult.class, systemParticipantResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link EvcsResult} instances.
@@ -183,7 +257,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link EvcsResult} entities
    */
-  Set<EvcsResult> getEvcsResults();
+  public Set<EvcsResult> getEvcsResults() {
+    return null;
+    //return getResultEntities(EvcsResult.class, systemParticipantResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link EvResult} instances.
@@ -194,7 +271,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link EvResult} entities
    */
-  Set<EvResult> getEvResults();
+  public Set<EvResult> getEvResults() {
+    return null;
+    //return getResultEntities(EvResult.class, systemParticipantResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link HpResult} instances.
@@ -205,7 +285,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link HpResult} entities
    */
-  Set<HpResult> getHpResults();
+  public Set<HpResult> getHpResults() {
+    return null;
+    //return getResultEntities(HpResult.class, systemParticipantResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link CylindricalStorageResult} instances.
@@ -217,7 +300,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link CylindricalStorageResult} entities
    */
-  Set<CylindricalStorageResult> getCylindricalStorageResult();
+  public Set<CylindricalStorageResult> getCylindricalStorageResult() {
+    return null;
+    //return getResultEntities(ThermalHouseResult.class, thermalResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link ThermalHouseResult} instances.
@@ -229,7 +315,10 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link ThermalHouseResult} entities
    */
-  Set<ThermalHouseResult> getThermalHouseResults();
+  public Set<ThermalHouseResult> getThermalHouseResults() {
+    return null;
+    //return getResultEntities(CylindricalStorageResult.class, thermalResultFactory);
+  }
 
   /**
    * Returns a unique set of {@link EmResult} instances.
@@ -240,5 +329,8 @@ public interface ResultEntitySource {
    *
    * @return a set of object and uuid unique {@link EmResult} entities
    */
-  Set<EmResult> getEmResults();
+  public Set<EmResult> getEmResults() {
+    return null;
+    //return getResultEntities(EmResult.class, systemParticipantResultFactory);
+  }
 }

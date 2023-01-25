@@ -5,42 +5,43 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
  */
-public interface TimeSeriesSource<V extends Value> extends DataSource {
+public class TimeSeriesSource<V extends Value> implements DataSource {
 
-  /**
-   * Checks whether the given column scheme can be used with time series.
-   *
-   * @param scheme the column scheme to check
-   * @return whether the scheme is accepted or not
-   * @deprecated since 3.0. Use {@link
-   *     TimeSeriesUtils#isSchemeAccepted(edu.ie3.datamodel.io.naming.timeseries.ColumnScheme)}
-   *     instead.
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  static boolean isSchemeAccepted(edu.ie3.datamodel.io.csv.timeseries.ColumnScheme scheme) {
-    return EnumSet.of(
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER,
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.APPARENT_POWER,
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ENERGY_PRICE,
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND,
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND,
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.HEAT_DEMAND)
-        .contains(scheme);
+  public final FunctionalDataSource dataSource;
+  private final IndividualTimeSeries<V> timeSeries;
+
+  public TimeSeriesSource (
+          FunctionalDataSource _dataSource,
+          UUID timeSeriesUuid,
+          Class<V> valueClass,
+          TimeBasedSimpleValueFactory<V> factory
+          ) {
+    this.dataSource = _dataSource;
+
+    String filePath = "";
+
+    this.timeSeries = dataSource.buildIndividualTimeSeries(
+                    timeSeriesUuid,
+                    filePath,
+                    fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory));
   }
 
   /**
@@ -48,7 +49,7 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
    *
    * @return the time series
    */
-  IndividualTimeSeries<V> getTimeSeries();
+  public IndividualTimeSeries<V> getTimeSeries() { return timeSeries; }
 
   /**
    * Get the time series for the given time interval. If the interval is bigger than the time series
@@ -57,7 +58,7 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
    * @param timeInterval Desired time interval to cover
    * @return The parts of interest of the time series
    */
-  IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval);
+  public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) { return TimeSeriesUtils.trimTimeSeriesToInterval(timeSeries, timeInterval); }
 
   /**
    * Get the time series value for a specific time
@@ -65,9 +66,9 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
    * @param time The queried time
    * @return Option on a value for that time
    */
-  Optional<V> getValue(ZonedDateTime time);
+  public Optional<V> getValue(ZonedDateTime time) { return timeSeries.getValue(time); }
 
-  default Optional<TimeBasedValue<V>> buildTimeBasedValue(
+  public Optional<TimeBasedValue<V>> buildTimeBasedValue(
           Map<String, String> fieldToValues,
           Class<V> valueClass,
           TimeBasedSimpleValueFactory<V> factory) {
@@ -75,5 +76,6 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
             new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return factory.get(factoryData);
   }
+
 
 }

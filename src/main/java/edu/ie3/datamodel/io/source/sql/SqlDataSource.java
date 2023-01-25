@@ -7,32 +7,50 @@ package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.FunctionalDataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
+import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SqlDataSource extends FunctionalDataSource {
+public class SqlDataSource extends FunctionalDataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
+  //general fields
   protected final SqlConnector connector;
+  protected final DatabaseNamingStrategy databaseNamingStrategy;
 
   private String schemaName;
 
   protected SqlDataSource(
           SqlConnector connector,
-          String schemaName
+          String schemaName,
+          DatabaseNamingStrategy databaseNamingStrategy
   ) {
     this.connector = connector;
     this.schemaName = schemaName;
+    this.databaseNamingStrategy = databaseNamingStrategy;
+  }
+
+  protected SqlDataSource(
+          String jdbcUrl, String userName, String password, String schemaName, DatabaseNamingStrategy databaseNamingStrategy
+  ) {
+    this.connector = new SqlConnector(jdbcUrl, userName, password);
+    this.schemaName = schemaName;
+    this.databaseNamingStrategy = databaseNamingStrategy;
   }
 
   protected String getSchemaName() { return schemaName; }
@@ -110,6 +128,16 @@ public abstract class SqlDataSource extends FunctionalDataSource {
     return tableNames;
   }
 
+  @Override
+  public <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
+    return null;
+  }
+
+  @Override
+  public <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(UUID timeSeriesUuid, String filePath, Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction) {
+    return null;
+  }
+
   /**
    * Interface for anonymous functions that are used as a parameter for {@link #buildStreamByQuery}.
    *
@@ -171,11 +199,15 @@ public abstract class SqlDataSource extends FunctionalDataSource {
    */
 
   protected<T extends UniqueEntity> List<T> executeQuery(String query, AddParams addParams) {
+    return null;
+    /*
     return queryMapping(query, addParams)
           .stream()
           .map(this::createEntity)
           .flatMap(Optional::stream)
           .toList();
+
+     */
   }
 
   protected List<Map<String, String>> queryMapping(String query, AddParams addParams) {
@@ -196,5 +228,5 @@ public abstract class SqlDataSource extends FunctionalDataSource {
    * @param fieldToValues map of fields to their respective values
    * @return the entity if instantiation succeeds
    */
-  protected abstract Optional createEntity(Map<String, String> fieldToValues);
+  //protected abstract Optional createEntity(Map<String, String> fieldToValues);
 }

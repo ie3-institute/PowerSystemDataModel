@@ -19,38 +19,32 @@ import java.util.stream.Collectors;
  * CSV implementation for retrieving {@link TimeSeriesMetaInformationSource} from input directory
  * structures
  */
-public class CsvTimeSeriesMetaInformationSource extends CsvDataSource
-    implements TimeSeriesMetaInformationSource {
+public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
 
-  private final Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
-      timeSeriesMetaInformation;
+  private final Map<UUID, IndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
 
-  /**
-   * Creates a time series type source
-   *
-   * @param csvSep the CSV separator
-   * @param folderPath path that time series reside in
-   * @param fileNamingStrategy the file naming strategy
-   */
   public CsvTimeSeriesMetaInformationSource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
-    super(csvSep, folderPath, fileNamingStrategy);
-
+          String csvSep,
+          String gridFolderPath,
+          FileNamingStrategy fileNamingStrategy
+  ) {
+    super(new CsvDataSource(csvSep, gridFolderPath, fileNamingStrategy));
     // retrieve only the desired time series
-    timeSeriesMetaInformation =
-        connector.getCsvIndividualTimeSeriesMetaInformation(
-            TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
+    timeSeriesMetaInformation = null;
+    //timeSeriesMetaInformation = dataSource.connector.getIndividualTimeSeriesMetaInformation(TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
   }
 
-  @Override
+  /*
   public Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation() {
     return timeSeriesMetaInformation.entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
-  @Override
+
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
       UUID timeSeriesUuid) {
     return Optional.ofNullable(timeSeriesMetaInformation.get(timeSeriesUuid));
   }
+
+   */
 }

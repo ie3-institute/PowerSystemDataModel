@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
+import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
@@ -27,8 +28,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
-    implements TimeSeriesSource<V> {
+public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private static final String WHERE = " WHERE ";
   private static final String TIME_SERIES = "time_series";
 
@@ -86,6 +86,9 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
         connector, schemaName, namingStrategy, timeSeriesUuid, valClass, valueFactory);
   }
 
+
+
+
   /**
    * Initializes a new SqlTimeSeriesSource
    *
@@ -103,14 +106,16 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
       UUID timeSeriesUuid,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
-    super(connector, schemaName);
+    super(new SqlDataSource(connector, schemaName, namingStrategy), timeSeriesUuid, valueClass, factory);
+
     this.timeSeriesUuid = timeSeriesUuid;
     this.valueClass = valueClass;
     this.valueFactory = factory;
     final ColumnScheme columnScheme = ColumnScheme.parse(valueClass).orElseThrow();
     final String tableName = namingStrategy.getTimeSeriesEntityName(columnScheme);
 
-    String dbTimeColumnName = getDbColumnName(factory.getTimeFieldString(), tableName);
+    String dbTimeColumnName = "";
+    //String dbTimeColumnName = dataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
 
     this.queryFull = createQueryFull(schemaName, tableName);
     this.queryTimeInterval = createQueryForTimeInterval(schemaName, tableName, dbTimeColumnName);
@@ -118,7 +123,9 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
   }
 
   @Override
-  public IndividualTimeSeries<V> getTimeSeries()  {
+  public IndividualTimeSeries<V> getTimeSeries() {
+    return null;
+    /*
     try {
       return buildIndividualTimeSeries(
               timeSeriesUuid,
@@ -129,11 +136,16 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
     } catch (SourceException e) {
       return null;
     }
+
+     */
   }
 
   @Override
   public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
+    return null;
+    /*
     try {
+      /*
       return buildIndividualTimeSeries(
               timeSeriesUuid,
               fieldToValue -> this.buildTimeBasedValueReduced(fieldToValue, valueClass, valueFactory),
@@ -142,17 +154,23 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
                 ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                 ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
               });
+
+
     } catch (SourceException e) {
       return null;
     }
+
+     */
   }
 
   private IndividualTimeSeries<V> buildIndividualTimeSeries(
           UUID timeSeriesUuid,
           Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction,
           String query,
-          AddParams addParams)
-          throws SourceException {
+          SqlDataSource.AddParams addParams)
+           {
+    return null;
+    /*
     try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
       Set<TimeBasedValue<V>> timeBasedValues =
               buildStreamByQuery(TimeBasedValue.class, addParams, ps)
@@ -165,16 +183,22 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
       log.warn("SQL", e);
     }
     return null;
+
+     */
   }
 
   @Override
   public Optional<V> getValue(ZonedDateTime time) {
+    return null;
+    /*
     List<TimeBasedValue<V>> timeBasedValues =
         executeQuery(queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())));
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0).getValue());
+
+     */
   }
 
    protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
@@ -212,12 +236,16 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
    * @return the query string
    */
   private String createQueryFull(String schemaName, String tableName) {
+    return "";
+    /*
     return createBaseQueryString(schemaName, tableName)
         + WHERE
         + TIME_SERIES
         + " = '"
         + timeSeriesUuid.toString()
         + "'";
+
+     */
   }
 
   /**
@@ -232,6 +260,8 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
    */
   private String createQueryForTimeInterval(
       String schemaName, String tableName, String timeColumnName) {
+    return "";
+    /*
     return createBaseQueryString(schemaName, tableName)
         + WHERE
         + TIME_SERIES
@@ -240,6 +270,8 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
         + "' AND "
         + timeColumnName
         + " BETWEEN ? AND ?;";
+
+     */
   }
 
   /**
@@ -253,7 +285,11 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
    * @return the query string
    */
   private String createQueryForTime(String schemaName, String tableName, String timeColumnName) {
+
+    return "";
+    /*
     return createBaseQueryString(schemaName, tableName)
+
         + WHERE
         + TIME_SERIES
         + " = '"
@@ -261,6 +297,8 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
         + "' AND "
         + timeColumnName
         + "=?;";
+
+     */
   }
 
 

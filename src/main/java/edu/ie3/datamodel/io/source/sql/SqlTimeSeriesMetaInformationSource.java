@@ -21,23 +21,18 @@ import java.util.stream.Collectors;
 
 /** SQL implementation for retrieving {@link TimeSeriesMetaInformationSource} from the SQL scheme */
 public class SqlTimeSeriesMetaInformationSource
-    extends SqlDataSource
-    implements TimeSeriesMetaInformationSource {
-  //T = IndividualTimeSeriesMetaInformation
+    extends TimeSeriesMetaInformationSource {
 
-  private static final TimeSeriesMetaInformationFactory mappingFactory =
-      new TimeSeriesMetaInformationFactory();
-
-  private final DatabaseNamingStrategy namingStrategy;
-  private final Map<UUID, IndividualTimeSeriesMetaInformation> mapping; //timeSeriesMetaInformation
-
+  private final Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
   public SqlTimeSeriesMetaInformationSource(
-      SqlConnector connector, String schemaName, DatabaseNamingStrategy namingStrategy) {
-    super(connector, schemaName);
-    this.namingStrategy = namingStrategy;
+          SqlConnector connector,
+          String schemaName,
+          DatabaseNamingStrategy databaseNamingStrategy
+  ) {
+    super(new SqlDataSource(connector, schemaName, databaseNamingStrategy));
+    this.timeSeriesMetaInformation = null;
 
-    String queryComplete = createQueryComplete(schemaName);
-
+    /*
     this.mapping = queryMapping(queryComplete, ps -> {})
             .stream()
             .map(this::createEntity)
@@ -45,16 +40,14 @@ public class SqlTimeSeriesMetaInformationSource
             .toList()
             .stream()
             .collect(
-                Collectors.toMap(
-                    IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
+                    Collectors.toMap(
+                            IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
+
+     */
   }
 
-  /**
-   * Creates a query that retrieves all time series uuid from existing time series tables.
-   *
-   * @param schemaName schema that the time series reside in
-   * @return query String
-   */
+
+  /*
   private String createQueryComplete(String schemaName) {
     Map<String, ColumnScheme> acceptedTableNames =
         TimeSeriesUtils.getAcceptedColumnSchemes().stream()
@@ -81,21 +74,21 @@ public class SqlTimeSeriesMetaInformationSource
     return String.join("\nUNION\n", selectQueries) + ";";
   }
 
-  @Override
+   */
+
+
   public Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation() {
-    return this.mapping;
+    return null;
   }
 
-  @Override
+
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
       UUID timeSeriesUuid) {
-    return Optional.ofNullable(this.mapping.get(timeSeriesUuid));
+    return null;
   }
 
   protected Optional<IndividualTimeSeriesMetaInformation> createEntity(
       Map<String, String> fieldToValues) {
-    SimpleEntityData entityData =
-        new SimpleEntityData(fieldToValues, IndividualTimeSeriesMetaInformation.class);
-    return mappingFactory.get(entityData);
+    return null;
   }
 }
