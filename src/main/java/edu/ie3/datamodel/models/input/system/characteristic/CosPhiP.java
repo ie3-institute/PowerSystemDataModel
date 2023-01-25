@@ -20,11 +20,11 @@ public class CosPhiP extends ReactivePowerCharacteristic {
 
   public CosPhiP(
       SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints) {
-    super(characteristicPoints, PREFIX, 2);
+    super(characteristicPoints, PREFIX);
   }
 
   public CosPhiP(String input) throws ParsingException {
-    super(input, StandardUnits.Q_CHARACTERISTIC, StandardUnits.Q_CHARACTERISTIC, PREFIX, 2);
+    super(input, StandardUnits.Q_CHARACTERISTIC, StandardUnits.Q_CHARACTERISTIC, PREFIX);
   }
 
   @Override

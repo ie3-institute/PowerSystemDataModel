@@ -279,7 +279,7 @@ public abstract class Processor<T> {
           "QV",
           "ReactivePowerCharacteristic",
           "CharacteristicInput" -> resultStringBuilder.append(
-          ((CharacteristicInput<?, ?>) methodReturnObject).deSerialize());
+          ((CharacteristicInput<?, ?>) methodReturnObject).serialize());
       case "UUID[]" -> resultStringBuilder.append(processUUIDArray((UUID[]) methodReturnObject));
       case "ControlStrategy" -> resultStringBuilder.append(
           ((ControlStrategy) methodReturnObject).getKey());
