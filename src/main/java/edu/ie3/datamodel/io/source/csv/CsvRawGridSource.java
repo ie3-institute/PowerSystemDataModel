@@ -5,21 +5,10 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
-import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
-
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * Source that provides the capability to build entities that are hold by a {@link RawGridElements}
@@ -46,22 +35,4 @@ public class CsvRawGridSource extends RawGridSource {
   ) {
     super(typeSource, new CsvDataSource(csvSep, gridFolderPath, fileNamingStrategy));
   }
-
-  /*
-  //--- Inner Methods
-  public <T extends ConnectorInput> Stream<Optional<T>> untypedConnectorInputEntityStream(
-          Class<T> entityClass,
-          EntityFactory<T, ConnectorInputEntityData> factory,
-          Set<NodeInput> nodes,
-          Set<OperatorInput> operators) {
-    return dataSource.untypedConnectorInputEntityStream(entityClass, factory, nodes, operators);
-  }
-
-  public Stream<Optional<ConnectorInputEntityData>> buildUntypedConnectorInputEntityData(
-          Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
-    return dataSource.buildUntypedConnectorInputEntityData(assetInputEntityDataStream, nodes);
-  }
-
-
-   */
 }

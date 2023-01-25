@@ -164,7 +164,7 @@ public class RawGridSource implements DataSource {
    * @return a set of object and uuid unique {@link NodeInput} entities
    */
   public Set<NodeInput> getNodes(Set<OperatorInput> operators) {
-    return dataSource.buildAssetInputEntities(NodeInput.class, nodeInputFactory, operators);
+    return dataSource.buildNodeInputEntities(NodeInput.class, nodeInputFactory, operators);
   }
 
   /**

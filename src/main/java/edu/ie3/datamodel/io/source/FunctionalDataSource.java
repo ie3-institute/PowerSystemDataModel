@@ -32,6 +32,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,17 +74,13 @@ public abstract class FunctionalDataSource {
                 .collect(Collectors.toSet());
     }
 
-    public <T extends InputEntity> Set<T> buildAssetInputEntities(
+    public<T extends AssetInput> Set<T> buildNodeInputEntities(
             Class<T> entityClass,
-            AssetInputEntityFactory<? extends AssetInput, AssetInputEntityData> factory,
+            EntityFactory<T, AssetInputEntityData> factory,
             Collection<OperatorInput> operators
     ) {
-        return getSourceData(entityClass)
-                .map(
-                        fieldsToAttributes -> {
-                            AssetInputEntityData data = new AssetInputEntityData(fieldsToAttributes, entityClass);
-                            return (Optional<T>) factory.get(data);
-                        })
+        return assetInputEntityDataStream(entityClass, operators)
+                .map(factory::get)
                 .flatMap(Optional::stream)
                 .collect(Collectors.toSet());
     }
@@ -205,79 +202,49 @@ public abstract class FunctionalDataSource {
                 .collect(Collectors.toSet());
     }
 
-    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-    private <T extends ConnectorInput, A extends AssetTypeInput>
-    Stream<Optional<T>> typedEntityStream(
-            Class<T> entityClass,
-            EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
-            Collection<NodeInput> nodes,
-            Collection<OperatorInput> operators,
-            Collection<A> types
-    ) {
-        return buildTypedConnectorEntityData(
-                buildUntypedConnectorInputEntityData(
-                        assetInputEntityDataStream(entityClass, operators), nodes),
-                types)
-                .map(dataOpt -> dataOpt.flatMap(factory::get));
-    }
-
+    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     /**
-     * Enriches the third node to the already typed entity data of a three winding transformer. If no
-     * matching node can be found, return an empty Optional.
+     * Returns a stream of optional {@link AssetInputEntityData} that can be used to build instances
+     * of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that
+     * consumes this data.
      *
-     * @param typeEntityData Already typed entity data
-     * @param nodes Yet available nodes
-     * @return An option to the enriched data
+     * @param entityClass the entity class that should be build
+     * @param operators a collection of {@link OperatorInput} entities that should be used to build
+     *     the data
+     * @param <T> type of the entity that should be build
+     * @return stream of optionals of the entity data or empty optionals of the operator required for
+     *     the data cannot be found
      */
-    protected Optional<Transformer3WInputEntityData> addThirdNode(
-            TypedConnectorInputEntityData<Transformer3WTypeInput> typeEntityData,
-            Collection<NodeInput> nodes) {
-
-        // get the raw data
-        Map<String, String> fieldsToAttributes = typeEntityData.getFieldsToValues();
-
-        // get nodeC of the transformer
-        String nodeCUuid = fieldsToAttributes.get("nodeC");
-        Optional<NodeInput> nodeC = findFirstEntityByUuid(nodeCUuid, nodes);
-
-        // if nodeC is not present we return an empty element and
-        // log a warning
-        if (nodeC.isEmpty()) {
-            logSkippingWarning(
-                    typeEntityData.getTargetClass().getSimpleName(),
-                    fieldsToAttributes.get("uuid"),
-                    fieldsToAttributes.get("id"),
-                    "nodeC: " + nodeCUuid);
-            return Optional.empty();
-        }
-
-        // remove fields that are passed as objects to constructor
-        fieldsToAttributes.keySet().remove("nodeC");
-
-        return Optional.of(
-                new Transformer3WInputEntityData(
-                        fieldsToAttributes,
-                        typeEntityData.getTargetClass(),
-                        typeEntityData.getOperatorInput(),
-                        typeEntityData.getNodeA(),
-                        typeEntityData.getNodeB(),
-                        nodeC.get(),
-                        typeEntityData.getType()));
+    protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
+            Class<T> entityClass,
+            Collection<OperatorInput> operators
+    ) {
+        return getSourceData(entityClass)
+                .map(
+                        fieldsToAttributes ->
+                                assetInputEntityDataStream(entityClass, fieldsToAttributes, operators)
+                );
     }
 
+    protected <T extends AssetInput> AssetInputEntityData assetInputEntityDataStream(
+            Class<T> entityClass,
+            Map<String, String> fieldsToAttributes,
+            Collection<OperatorInput> operators) {
 
-    protected <T extends AssetTypeInput>
-    Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntityData(
-            Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
-            Collection<T> availableTypes) {
-        return noTypeConnectorEntityDataStream
-                .parallel()
-                .map(
-                        noTypeEntityDataOpt ->
-                                noTypeEntityDataOpt.flatMap(
-                                        noTypeEntityData -> findAndAddType(noTypeEntityData, availableTypes)));
+        // get the operator of the entity
+        String operatorUuid = fieldsToAttributes.get(OPERATOR);
+        OperatorInput operator =
+                getFirstOrDefaultOperator(
+                        operators,
+                        operatorUuid,
+                        entityClass.getSimpleName(),
+                        saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
+
+        // remove fields that are passed as objects to constructor
+        fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
+
+        return new AssetInputEntityData(fieldsToAttributes, entityClass, operator);
     }
 
     protected Stream<Optional<Transformer3WInputEntityData>> buildTransformer3WEntityData(
@@ -291,15 +258,17 @@ public abstract class FunctionalDataSource {
     }
 
 
-    //----------------------------------------------------------------------------------------
-
-    /*
-    public <T extends AssetTypeInput> Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntities() { return null; }
+    /**
+     * Enriches the given untyped entity data with the equivalent asset type. If this is not possible,
+     * an empty Optional is returned
+     *
+     * @param noTypeConnectorEntityDataStream Stream of untyped entity data
+     * @param availableTypes Yet available asset types
+     * @param <T> Type of the asset type
+     * @return Stream of option to enhanced data
      */
-
-
-    /*
-    public <T extends AssetTypeInput> Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntities(
+    protected <T extends AssetTypeInput>
+    Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntityData(
             Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
             Collection<T> availableTypes) {
         return noTypeConnectorEntityDataStream
@@ -309,29 +278,8 @@ public abstract class FunctionalDataSource {
                                 noTypeEntityDataOpt.flatMap(
                                         noTypeEntityData -> findAndAddType(noTypeEntityData, availableTypes)));
     }
-     */
 
-    //-------------------------------------------------------------------------------------
 
-    public <T extends ConnectorInput> Stream<Optional<T>> untypedConnectorInputEntityStream(
-            Class<T> entityClass,
-            EntityFactory<T, ConnectorInputEntityData> factory,
-            Set<NodeInput> nodes,
-            Set<OperatorInput> operators
-    ) {
-        return buildUntypedConnectorInputEntityData(
-                assetInputEntityDataStream(entityClass, operators), nodes)
-                .map(dataOpt -> dataOpt.flatMap(factory::get));
-    }
-
-    private <T extends ConnectorInput> Stream<Optional<T>> untypedConnectorInputEntityStream(
-            Class<T> entityClass,
-            EntityFactory<T, ConnectorInputEntityData> factory,
-            Collection<NodeInput> nodes,
-            Collection<OperatorInput> operators
-    ) {
-        return untypedConnectorInputEntityStream(entityClass, factory, new HashSet<NodeInput>(nodes), new HashSet<OperatorInput>(operators));
-    }
 
     /**
      * Converts a stream of {@link AssetInputEntityData} in connection with a collection of known
@@ -405,6 +353,183 @@ public abstract class FunctionalDataSource {
     }
 
 
+
+    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+    private <T extends ConnectorInput, A extends AssetTypeInput>
+    Stream<Optional<T>> typedEntityStream(
+            Class<T> entityClass,
+            EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
+            Collection<NodeInput> nodes,
+            Collection<OperatorInput> operators,
+            Collection<A> types
+    ) {
+        return buildTypedConnectorEntityData(
+                buildUntypedConnectorInputEntityData(
+                        assetInputEntityDataStream(entityClass, operators), nodes),
+                types)
+                .map(dataOpt -> dataOpt.flatMap(factory::get));
+    }
+
+    public <T extends ConnectorInput> Stream<Optional<T>> untypedConnectorInputEntityStream(
+            Class<T> entityClass,
+            EntityFactory<T, ConnectorInputEntityData> factory,
+            Set<NodeInput> nodes,
+            Set<OperatorInput> operators
+    ) {
+        return buildUntypedConnectorInputEntityData(
+                assetInputEntityDataStream(entityClass, operators), nodes)
+                .map(dataOpt -> dataOpt.flatMap(factory::get));
+    }
+
+    private <T extends ConnectorInput> Stream<Optional<T>> untypedConnectorInputEntityStream(
+            Class<T> entityClass,
+            EntityFactory<T, ConnectorInputEntityData> factory,
+            Collection<NodeInput> nodes,
+            Collection<OperatorInput> operators
+    ) {
+        return untypedConnectorInputEntityStream(entityClass, factory, new HashSet<NodeInput>(nodes), new HashSet<OperatorInput>(operators));
+    }
+
+    /**
+     * Returns a stream of optional entities that can be build by using {@link
+     * NodeAssetInputEntityData} and their corresponding factory.
+     *
+     * @param entityClass the entity class that should be build
+     * @param factory the factory that should be used for the building process
+     * @param nodes a collection of {@link NodeInput} entities that should be used to build the
+     *     entities
+     * @param operators a collection of {@link OperatorInput} entities should be used to build the
+     *     entities
+     * @param <T> Type of the {@link AssetInput} to expect
+     * @return stream of optionals of the entities that has been built by the factor or empty
+     *     optionals if the entity could not have been build
+     */
+    protected <T extends AssetInput> Stream<Optional<T>> nodeAssetEntityStream(
+            Class<T> entityClass,
+            EntityFactory<T, NodeAssetInputEntityData> factory,
+            Collection<NodeInput> nodes,
+            Collection<OperatorInput> operators) {
+        return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
+                .map(dataOpt -> dataOpt.flatMap(factory::get));
+    }
+
+    /**
+     * Returns a stream of optional {@link NodeAssetInputEntityData} that can be used to build
+     * instances of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory}
+     * that consumes this data. param assetInputEntityDataStream
+     *
+     * @param assetInputEntityDataStream a stream consisting of {@link AssetInputEntityData} that is
+     *     enriched with {@link NodeInput} data
+     * @param nodes a collection of {@link NodeInput} entities that should be used to build the data
+     * @return stream of optionals of the entity data or empty optionals of the node required for the
+     *     data cannot be found
+     */
+    protected Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
+            Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
+
+        return assetInputEntityDataStream
+                .parallel()
+                .map(
+                        assetInputEntityData -> {
+
+                            // get the raw data
+                            Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
+
+                            // get the node of the entity
+                            String nodeUuid = fieldsToAttributes.get(NODE);
+                            Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
+
+                            // if the node is not present we return an empty element and
+                            // log a warning
+                            if (node.isEmpty()) {
+                                logSkippingWarning(
+                                        assetInputEntityData.getTargetClass().getSimpleName(),
+                                        fieldsToAttributes.get("uuid"),
+                                        fieldsToAttributes.get("id"),
+                                        NODE + ": " + nodeUuid);
+                                return Optional.empty();
+                            }
+
+                            // remove fields that are passed as objects to constructor
+                            fieldsToAttributes.keySet().remove(NODE);
+
+                            return Optional.of(
+                                    new NodeAssetInputEntityData(
+                                            fieldsToAttributes,
+                                            assetInputEntityData.getTargetClass(),
+                                            assetInputEntityData.getOperatorInput(),
+                                            node.get()));
+                        });
+    }
+
+    //----------------------------------------------------------------------
+
+
+    /**
+     * Enriches the third node to the already typed entity data of a three winding transformer. If no
+     * matching node can be found, return an empty Optional.
+     *
+     * @param typeEntityData Already typed entity data
+     * @param nodes Yet available nodes
+     * @return An option to the enriched data
+     */
+    protected Optional<Transformer3WInputEntityData> addThirdNode(
+            TypedConnectorInputEntityData<Transformer3WTypeInput> typeEntityData,
+            Collection<NodeInput> nodes) {
+
+        // get the raw data
+        Map<String, String> fieldsToAttributes = typeEntityData.getFieldsToValues();
+
+        // get nodeC of the transformer
+        String nodeCUuid = fieldsToAttributes.get("nodeC");
+        Optional<NodeInput> nodeC = findFirstEntityByUuid(nodeCUuid, nodes);
+
+        // if nodeC is not present we return an empty element and
+        // log a warning
+        if (nodeC.isEmpty()) {
+            logSkippingWarning(
+                    typeEntityData.getTargetClass().getSimpleName(),
+                    fieldsToAttributes.get("uuid"),
+                    fieldsToAttributes.get("id"),
+                    "nodeC: " + nodeCUuid);
+            return Optional.empty();
+        }
+
+        // remove fields that are passed as objects to constructor
+        fieldsToAttributes.keySet().remove("nodeC");
+
+        return Optional.of(
+                new Transformer3WInputEntityData(
+                        fieldsToAttributes,
+                        typeEntityData.getTargetClass(),
+                        typeEntityData.getOperatorInput(),
+                        typeEntityData.getNodeA(),
+                        typeEntityData.getNodeB(),
+                        nodeC.get(),
+                        typeEntityData.getType()));
+    }
+
+    //----------------------------------------------------------------------------------------
+
+    /*
+    public <T extends AssetTypeInput> Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntities() { return null; }
+     */
+
+
+    /*
+    public <T extends AssetTypeInput> Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntities(
+            Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
+            Collection<T> availableTypes) {
+        return noTypeConnectorEntityDataStream
+                .parallel()
+                .map(
+                        noTypeEntityDataOpt ->
+                                noTypeEntityDataOpt.flatMap(
+                                        noTypeEntityData -> findAndAddType(noTypeEntityData, availableTypes)));
+    }
+     */
+
     //--------------------------------------------------------------------------------------
     /**
      * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
@@ -423,48 +548,6 @@ public abstract class FunctionalDataSource {
                 .filter(uniqueEntity -> uniqueEntity.getUuid().toString().equalsIgnoreCase(entityUuid))
                 .findFirst();
     }
-
-    /**
-     * Returns a stream of optional {@link AssetInputEntityData} that can be used to build instances
-     * of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that
-     * consumes this data.
-     *
-     * @param entityClass the entity class that should be build
-     * @param operators a collection of {@link OperatorInput} entities that should be used to build
-     *     the data
-     * @param <T> type of the entity that should be build
-     * @return stream of optionals of the entity data or empty optionals of the operator required for
-     *     the data cannot be found
-     */
-    protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
-            Class<T> entityClass, Collection<OperatorInput> operators
-    ) {
-        return getSourceData(entityClass)
-                .map(
-                        fieldsToAttributes ->
-                                assetInputEntityDataStream(entityClass, fieldsToAttributes, operators));
-    }
-
-    protected <T extends AssetInput> AssetInputEntityData assetInputEntityDataStream(
-            Class<T> entityClass,
-            Map<String, String> fieldsToAttributes,
-            Collection<OperatorInput> operators) {
-
-        // get the operator of the entity
-        String operatorUuid = fieldsToAttributes.get(OPERATOR);
-        OperatorInput operator =
-                getFirstOrDefaultOperator(
-                        operators,
-                        operatorUuid,
-                        entityClass.getSimpleName(),
-                        saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
-
-        // remove fields that are passed as objects to constructor
-        fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
-
-        return new AssetInputEntityData(fieldsToAttributes, entityClass, operator);
-    }
-
 
     // ------------------------------------------------------------------------------------------------
 
@@ -632,79 +715,6 @@ public abstract class FunctionalDataSource {
                 return false;
             }
         };
-    }
-
-
-    /**
-     * Returns a stream of optional entities that can be build by using {@link
-     * NodeAssetInputEntityData} and their corresponding factory.
-     *
-     * @param entityClass the entity class that should be build
-     * @param factory the factory that should be used for the building process
-     * @param nodes a collection of {@link NodeInput} entities that should be used to build the
-     *     entities
-     * @param operators a collection of {@link OperatorInput} entities should be used to build the
-     *     entities
-     * @param <T> Type of the {@link AssetInput} to expect
-     * @return stream of optionals of the entities that has been built by the factor or empty
-     *     optionals if the entity could not have been build
-     */
-    protected <T extends AssetInput> Stream<Optional<T>> nodeAssetEntityStream(
-            Class<T> entityClass,
-            EntityFactory<T, NodeAssetInputEntityData> factory,
-            Collection<NodeInput> nodes,
-            Collection<OperatorInput> operators) {
-        return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-                .map(dataOpt -> dataOpt.flatMap(factory::get));
-    }
-
-    /**
-     * Returns a stream of optional {@link NodeAssetInputEntityData} that can be used to build
-     * instances of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory}
-     * that consumes this data. param assetInputEntityDataStream
-     *
-     * @param assetInputEntityDataStream a stream consisting of {@link AssetInputEntityData} that is
-     *     enriched with {@link NodeInput} data
-     * @param nodes a collection of {@link NodeInput} entities that should be used to build the data
-     * @return stream of optionals of the entity data or empty optionals of the node required for the
-     *     data cannot be found
-     */
-    protected Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
-            Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
-
-        return assetInputEntityDataStream
-                .parallel()
-                .map(
-                        assetInputEntityData -> {
-
-                            // get the raw data
-                            Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
-
-                            // get the node of the entity
-                            String nodeUuid = fieldsToAttributes.get(NODE);
-                            Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
-
-                            // if the node is not present we return an empty element and
-                            // log a warning
-                            if (node.isEmpty()) {
-                                logSkippingWarning(
-                                        assetInputEntityData.getTargetClass().getSimpleName(),
-                                        fieldsToAttributes.get("uuid"),
-                                        fieldsToAttributes.get("id"),
-                                        NODE + ": " + nodeUuid);
-                                return Optional.empty();
-                            }
-
-                            // remove fields that are passed as objects to constructor
-                            fieldsToAttributes.keySet().remove(NODE);
-
-                            return Optional.of(
-                                    new NodeAssetInputEntityData(
-                                            fieldsToAttributes,
-                                            assetInputEntityData.getTargetClass(),
-                                            assetInputEntityData.getOperatorInput(),
-                                            node.get()));
-                        });
     }
 
     protected void printInvalidElementInformation(
