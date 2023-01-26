@@ -53,7 +53,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<BmInput, FactoryException> input = inputFactory.get(
-        new SystemParticipantTypedEntityData<BmTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass,operatorInput, nodeInput, typeInput))
+        new SystemParticipantTypedEntityData<BmTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput, typeInput))
 
     then:
     input.success

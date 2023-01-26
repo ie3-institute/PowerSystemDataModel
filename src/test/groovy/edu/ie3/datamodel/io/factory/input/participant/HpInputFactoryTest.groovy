@@ -51,7 +51,7 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<HpInput, FactoryException> input = inputFactory.get(
-        new HpInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter),operatorInput, nodeInput, typeInput, thermalBusInput))
+        new HpInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), operatorInput, nodeInput, typeInput, thermalBusInput))
 
     then:
     input.success
