@@ -19,11 +19,11 @@ public class QV extends ReactivePowerCharacteristic {
   public static final String STARTING_REGEX = buildStartingRegex(PREFIX);
 
   public QV(SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints) {
-    super(characteristicPoints, PREFIX, 2);
+    super(characteristicPoints, PREFIX);
   }
 
   public QV(String input) throws ParsingException {
-    super(input, StandardUnits.VOLTAGE_MAGNITUDE, StandardUnits.Q_CHARACTERISTIC, PREFIX, 2);
+    super(input, StandardUnits.VOLTAGE_MAGNITUDE, StandardUnits.Q_CHARACTERISTIC, PREFIX);
   }
 
   @Override

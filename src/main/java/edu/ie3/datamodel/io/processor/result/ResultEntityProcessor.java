@@ -23,8 +23,8 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 
 /**
- * 'De-serializer' for {@link ResultEntity}s into a fieldName to value representation to allow for
- * an easy processing into a database or file sink e.g. .csv It is important that the units used in
+ * 'Serializer' for {@link ResultEntity}s into a fieldName to value representation to allow for an
+ * easy processing into a database or file sink e.g. .csv It is important that the units used in
  * this class are equal to the units used {@link SystemParticipantResultFactory} to prevent invalid
  * interpretation of unit prefixes!
  *

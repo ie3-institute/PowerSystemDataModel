@@ -26,11 +26,11 @@ public class CosPhiFixed extends ReactivePowerCharacteristic {
 
   public CosPhiFixed(
       SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints) {
-    super(characteristicPoints, PREFIX, 2);
+    super(characteristicPoints, PREFIX);
   }
 
   public CosPhiFixed(String input) throws ParsingException {
-    super(input, StandardUnits.Q_CHARACTERISTIC, StandardUnits.Q_CHARACTERISTIC, PREFIX, 2);
+    super(input, StandardUnits.Q_CHARACTERISTIC, StandardUnits.Q_CHARACTERISTIC, PREFIX);
   }
 
   private static CosPhiFixed buildConstantCharacteristic() {
