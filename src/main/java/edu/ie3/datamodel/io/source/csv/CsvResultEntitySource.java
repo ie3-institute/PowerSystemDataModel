@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
   private final FlexOptionsResultFactory flexOptionsResultFactory;
 
   public CsvResultEntitySource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+      String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     super(csvSep, folderPath, fileNamingStrategy);
 
     // init factories
@@ -57,7 +58,7 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
   }
 
   public CsvResultEntitySource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy, String dtfPattern) {
+      String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy, String dtfPattern) {
     super(csvSep, folderPath, fileNamingStrategy);
 
     // init factories

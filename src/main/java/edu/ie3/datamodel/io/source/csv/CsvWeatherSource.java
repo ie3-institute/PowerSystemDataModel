@@ -24,6 +24,7 @@ import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -52,7 +53,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    */
   public CsvWeatherSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       TimeBasedWeatherValueFactory weatherFactory,
       IdCoordinateFactory coordinateFactory) {
@@ -77,7 +78,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    */
   public CsvWeatherSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       IdCoordinateSource coordinateSource,
       TimeBasedWeatherValueFactory weatherFactory) {

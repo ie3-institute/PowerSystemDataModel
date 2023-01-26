@@ -21,6 +21,7 @@ import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
@@ -67,7 +68,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   public CsvSystemParticipantSource(
       String csvSep,
-      String participantsFolderPath,
+      Path participantsFolderPath,
       FileNamingStrategy fileNamingStrategy,
       TypeSource typeSource,
       ThermalSource thermalSource,

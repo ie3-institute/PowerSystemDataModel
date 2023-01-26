@@ -5,17 +5,17 @@
 */
 package edu.ie3.datamodel.io.csv;
 
-import edu.ie3.datamodel.io.IoUtil;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public record CsvFileDefinition(
-    String fileName, String directoryPath, String[] headLineElements, String csvSep) {
+    String fileName, Path directoryPath, String[] headLineElements, String csvSep) {
   private static final Logger logger = LoggerFactory.getLogger(CsvFileDefinition.class);
 
   private static final Pattern FILE_NAME_PATTERN =
@@ -25,15 +25,9 @@ public record CsvFileDefinition(
   private static final String FILE_EXTENSION = "csv";
 
   public CsvFileDefinition(
-      String fileName, String directoryPath, String[] headLineElements, String csvSep) {
+      String fileName, Path directoryPath, String[] headLineElements, String csvSep) {
     /* Remove all file separators at the beginning and end of a directory path and ensure harmonized file separator */
-    this.directoryPath =
-        Objects.nonNull(directoryPath)
-            ? IoUtil.harmonizeFileSeparator(
-                directoryPath
-                    .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
-                    .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""))
-            : "";
+    this.directoryPath = Objects.nonNull(directoryPath) ? directoryPath : Path.of("");
 
     /* Check the given information of the file name */
     Matcher matcher = FILE_NAME_PATTERN.matcher(fileName);
@@ -58,7 +52,7 @@ public record CsvFileDefinition(
 
   /** @deprecated since 3.0. Use {@link #directoryPath()} instead */
   @Deprecated(since = "3.0")
-  public String getDirectoryPath() {
+  public Path getDirectoryPath() {
     return directoryPath;
   }
 
@@ -75,8 +69,8 @@ public record CsvFileDefinition(
    * @return The path to the file relative to a not explicitly defined base directory, including the
    *     file extension
    */
-  public String getFilePath() {
-    return !directoryPath.isEmpty() ? FilenameUtils.concat(directoryPath, fileName) : fileName;
+  public Path getFilePath() {
+    return Files.exists(directoryPath) ? directoryPath.resolve(fileName) : Path.of(fileName);
   }
 
   /** @deprecated since 3.0. Use {@link #headLineElements()} instead */

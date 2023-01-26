@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,7 +46,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
 
   public CsvThermalSource(
       String csvSep,
-      String thermalUnitsFolderPath,
+      Path thermalUnitsFolderPath,
       FileNamingStrategy fileNamingStrategy,
       TypeSource typeSource) {
     super(csvSep, thermalUnitsFolderPath, fileNamingStrategy);

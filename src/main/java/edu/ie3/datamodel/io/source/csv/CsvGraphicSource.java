@@ -21,6 +21,7 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -48,7 +49,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
   public CsvGraphicSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       TypeSource typeSource,
       RawGridSource rawGridSource) {

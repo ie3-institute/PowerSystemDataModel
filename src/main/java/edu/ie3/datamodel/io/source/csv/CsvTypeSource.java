@@ -20,6 +20,7 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,8 +41,7 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
   private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
 
-  public CsvTypeSource(
-      String csvSep, String typeFolderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvTypeSource(String csvSep, Path typeFolderPath, FileNamingStrategy fileNamingStrategy) {
     super(csvSep, typeFolderPath, fileNamingStrategy);
 
     // init factories

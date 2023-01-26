@@ -23,6 +23,7 @@ import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -67,7 +68,7 @@ public abstract class CsvDataSource {
   @Deprecated(since = "1.1.0", forRemoval = true)
   private boolean notYetLoggedWarning = true;
 
-  protected CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+  protected CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }

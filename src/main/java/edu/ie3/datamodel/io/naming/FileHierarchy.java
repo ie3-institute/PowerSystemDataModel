@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -22,7 +23,7 @@ public interface FileHierarchy {
    * @param fileSeparator The file separator to use
    * @return An Option to the regarding sub directory as a string
    */
-  Optional<String> getSubDirectory(Class<? extends UniqueEntity> cls, String fileSeparator);
+  Optional<Path> getSubDirectory(Class<? extends UniqueEntity> cls, String fileSeparator);
 
   /**
    * Determines the correct subdirectory (w.r.t. an arbitrary base directory) for a certain given
@@ -31,7 +32,7 @@ public interface FileHierarchy {
    * @param cls Class to define the sub directory for
    * @return An Option to the regarding sub directory as a string
    */
-  default Optional<String> getSubDirectory(Class<? extends UniqueEntity> cls) {
+  default Optional<Path> getSubDirectory(Class<? extends UniqueEntity> cls) {
     return getSubDirectory(cls, File.separator);
   }
 
@@ -40,5 +41,5 @@ public interface FileHierarchy {
    *
    * @return An option to the base directory
    */
-  Optional<String> getBaseDirectory();
+  Optional<Path> getBaseDirectory();
 }

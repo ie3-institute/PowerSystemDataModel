@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
@@ -53,7 +54,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   public CsvRawGridSource(
       String csvSep,
-      String gridFolderPath,
+      Path gridFolderPath,
       FileNamingStrategy fileNamingStrategy,
       TypeSource typeSource) {
     super(csvSep, gridFolderPath, fileNamingStrategy);

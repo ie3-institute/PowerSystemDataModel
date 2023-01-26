@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
@@ -15,10 +14,10 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,11 +71,12 @@ public class FileNamingStrategy {
    * @param cls Targeted class of the given file
    * @return An optional sub path to the actual file
    */
-  public Optional<String> getFilePath(Class<? extends UniqueEntity> cls) {
+  public Optional<Path> getFilePath(Class<? extends UniqueEntity> cls) {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        getEntityName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> ""));
+        Path.of(getEntityName(cls).orElse("")),
+        getDirectoryPath(cls).orElseGet(() -> Path.of("")));
   }
 
   /**
@@ -90,12 +90,12 @@ public class FileNamingStrategy {
    * @return An optional sub path to the actual file
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      Optional<String> getFilePath(T timeSeries) {
+      Optional<Path> getFilePath(T timeSeries) {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        entityPersistenceNamingStrategy.getEntityName(timeSeries).orElseGet(() -> ""),
-        getDirectoryPath(timeSeries).orElseGet(() -> ""));
+        Path.of(entityPersistenceNamingStrategy.getEntityName(timeSeries).orElse("")),
+        getDirectoryPath(timeSeries).orElseGet(() -> Path.of("")));
   }
 
   /**
@@ -106,10 +106,9 @@ public class FileNamingStrategy {
    * @param subDirectories Sub directory path
    * @return Concatenation of sub directory structure and file name
    */
-  private Optional<String> getFilePath(String fileName, String subDirectories) {
-    if (fileName.isEmpty()) return Optional.empty();
-    if (!subDirectories.isEmpty())
-      return Optional.of(FilenameUtils.concat(subDirectories, fileName));
+  private Optional<Path> getFilePath(Path fileName, Path subDirectories) {
+    if (!Files.exists(fileName)) return Optional.empty();
+    if (Files.exists(subDirectories)) return Optional.of(subDirectories.resolve(fileName));
     else return Optional.of(fileName);
   }
 
@@ -120,19 +119,14 @@ public class FileNamingStrategy {
    * @param cls Targeted class of the given file
    * @return An optional sub directory path
    */
-  public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
-    Optional<String> maybeDirectoryName = fileHierarchy.getSubDirectory(cls);
+  public Optional<Path> getDirectoryPath(Class<? extends UniqueEntity> cls) {
+    Optional<Path> maybeDirectoryName = fileHierarchy.getSubDirectory(cls);
     if (maybeDirectoryName.isEmpty()) {
       logger.debug("Cannot determine directory name for class '{}'.", cls);
       return Optional.empty();
     } else {
       /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
-      return Optional.of(
-          IoUtil.harmonizeFileSeparator(
-              maybeDirectoryName
-                  .get()
-                  .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
-                  .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", "")));
+      return maybeDirectoryName;
     }
   }
 
@@ -147,19 +141,14 @@ public class FileNamingStrategy {
    * @return An optional sub directory path
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      Optional<String> getDirectoryPath(T timeSeries) {
-    Optional<String> maybeDirectoryName = fileHierarchy.getSubDirectory(timeSeries.getClass());
+      Optional<Path> getDirectoryPath(T timeSeries) {
+    Optional<Path> maybeDirectoryName = fileHierarchy.getSubDirectory(timeSeries.getClass());
     if (maybeDirectoryName.isEmpty()) {
       logger.debug("Cannot determine directory name for time series '{}'.", timeSeries);
       return Optional.empty();
     } else {
       /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
-      return Optional.of(
-          IoUtil.harmonizeFileSeparator(
-              maybeDirectoryName
-                  .get()
-                  .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
-                  .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", "")));
+      return maybeDirectoryName;
     }
   }
 
@@ -170,22 +159,19 @@ public class FileNamingStrategy {
    * @return An individual time series pattern
    */
   public Pattern getIndividualTimeSeriesPattern() {
-    String subDirectory =
-        fileHierarchy.getSubDirectory(IndividualTimeSeries.class).orElseGet(() -> "");
+    Path subDirectory =
+        fileHierarchy.getSubDirectory(IndividualTimeSeries.class).orElseGet(() -> Path.of(""));
 
-    if (subDirectory.isEmpty()) {
+    if (!Files.exists(subDirectory)) {
       return entityPersistenceNamingStrategy.getIndividualTimeSeriesPattern();
     } else {
       /* Build the pattern by joining the subdirectory with the file name pattern, harmonizing file separators and
        * finally escaping them */
-      String joined =
-          FilenameUtils.concat(
-              subDirectory,
+      Path joined =
+          subDirectory.resolve(
               entityPersistenceNamingStrategy.getIndividualTimeSeriesPattern().pattern());
-      String harmonized = IoUtil.harmonizeFileSeparator(joined);
-      String escaped = harmonized.replace("\\", "\\\\");
 
-      return Pattern.compile(escaped);
+      return Pattern.compile(joined.toString());
     }
   }
 
@@ -196,21 +182,19 @@ public class FileNamingStrategy {
    * @return A load profile time series pattern
    */
   public Pattern getLoadProfileTimeSeriesPattern() {
-    String subDirectory = fileHierarchy.getSubDirectory(LoadProfileInput.class).orElseGet(() -> "");
+    Path subDirectory =
+        fileHierarchy.getSubDirectory(LoadProfileInput.class).orElseGet(() -> Path.of(""));
 
-    if (subDirectory.isEmpty()) {
+    if (!Files.exists(subDirectory)) {
       return entityPersistenceNamingStrategy.getLoadProfileTimeSeriesPattern();
     } else {
       /* Build the pattern by joining the sub directory with the file name pattern, harmonizing file separators and
        * finally escaping them */
-      String joined =
-          FilenameUtils.concat(
-              subDirectory,
+      Path joined =
+          subDirectory.resolve(
               entityPersistenceNamingStrategy.getLoadProfileTimeSeriesPattern().pattern());
-      String harmonized = IoUtil.harmonizeFileSeparator(joined);
-      String escaped = harmonized.replace("\\", "\\\\");
 
-      return Pattern.compile(escaped);
+      return Pattern.compile(joined.toString());
     }
   }
 
@@ -310,11 +294,12 @@ public class FileNamingStrategy {
    *
    * @return An optional sub path to the id coordinate file
    */
-  public Optional<String> getIdCoordinateFilePath() {
+  public Optional<Path> getIdCoordinateFilePath() {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        getIdCoordinateEntityName(), fileHierarchy.getBaseDirectory().orElseGet(() -> ""));
+        Path.of(getIdCoordinateEntityName()),
+        fileHierarchy.getBaseDirectory().orElseGet(() -> Path.of("")));
   }
 
   /**
@@ -339,6 +324,7 @@ public class FileNamingStrategy {
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getEntityName(T timeSeries) {
-    return entityPersistenceNamingStrategy.getEntityName(timeSeries);
+    return Optional.ofNullable(
+        entityPersistenceNamingStrategy.getEntityName(timeSeries).toString());
   }
 }

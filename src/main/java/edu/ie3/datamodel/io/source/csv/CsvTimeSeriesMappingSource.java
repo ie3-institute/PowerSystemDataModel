@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +22,7 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
   private final Map<UUID, UUID> mapping;
 
   public CsvTimeSeriesMappingSource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+      String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     super(csvSep, folderPath, fileNamingStrategy);
 
     /* Build the map */

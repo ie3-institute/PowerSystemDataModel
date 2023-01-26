@@ -11,6 +11,7 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
 
   public CsvIdCoordinateSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       IdCoordinateFactory factory) {
     super(csvSep, folderPath, fileNamingStrategy);

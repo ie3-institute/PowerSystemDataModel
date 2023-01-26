@@ -10,6 +10,7 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMetaInformationSource;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,7 +34,7 @@ public class CsvTimeSeriesMetaInformationSource extends CsvDataSource
    * @param fileNamingStrategy the file naming strategy
    */
   public CsvTimeSeriesMetaInformationSource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+      String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     super(csvSep, folderPath, fileNamingStrategy);
 
     // retrieve only the desired time series

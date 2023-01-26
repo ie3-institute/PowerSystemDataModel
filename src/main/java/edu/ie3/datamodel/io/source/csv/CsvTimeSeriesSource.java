@@ -18,6 +18,7 @@ import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -44,7 +45,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
   @Deprecated(since = "3.0", forRemoval = true)
   public static CsvTimeSeriesSource<? extends Value> getSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation
           metaInformation)
@@ -62,7 +63,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
   @Deprecated(since = "3.0", forRemoval = true)
   private static <T extends Value> CsvTimeSeriesSource<T> create(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation
           metaInformation,
@@ -90,7 +91,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    */
   public static CsvTimeSeriesSource<? extends Value> getSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
@@ -105,7 +106,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
 
   private static <T extends Value> CsvTimeSeriesSource<T> create(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation,
       Class<T> valClass) {
@@ -133,10 +134,10 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    */
   public CsvTimeSeriesSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       UUID timeSeriesUuid,
-      String filePath,
+      Path filePath,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
     super(csvSep, folderPath, fileNamingStrategy);
@@ -185,7 +186,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    */
   private IndividualTimeSeries<V> buildIndividualTimeSeries(
       UUID timeSeriesUuid,
-      String filePath,
+      Path filePath,
       Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
       throws SourceException {
     try (BufferedReader reader = connector.initReader(filePath)) {

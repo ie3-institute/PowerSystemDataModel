@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 
+import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
@@ -14,25 +15,25 @@ import java.nio.file.Paths
  */
 trait CsvTestDataMeta {
 
-  static String timeSeriesFolderPath = getResourceAbs("_timeseries")
-  static String graphicsFolderPath = getResourceAbs("_graphics")
-  static String typeFolderPath = getResourceAbs("_types")
-  static String participantsFolderPath =  getResourceAbs("_participants")
-  static String resultEntitiesFolderPath = getResourceAbs("_results")
-  static String thermalFolderPath = getResourceAbs("_thermal")
-  static String coordinatesIconFolderPath = getResourceAbs("_coordinates/icon")
-  static String coordinatesCosmoFolderPath = getResourceAbs("_coordinates/cosmo")
-  static String weatherCosmoFolderPath = getResourceAbs("_weather/cosmo")
-  static String weatherIconFolderPath = getResourceAbs("_weather/icon")
+  static Path timeSeriesFolderPath = getResourceAbs("_timeseries")
+  static Path graphicsFolderPath = getResourceAbs("_graphics")
+  static Path typeFolderPath = getResourceAbs("_types")
+  static Path participantsFolderPath =  getResourceAbs("_participants")
+  static Path resultEntitiesFolderPath = getResourceAbs("_results")
+  static Path thermalFolderPath = getResourceAbs("_thermal")
+  static Path coordinatesIconFolderPath = getResourceAbs("_coordinates/icon")
+  static Path coordinatesCosmoFolderPath = getResourceAbs("_coordinates/cosmo")
+  static Path weatherCosmoFolderPath = getResourceAbs("_weather/cosmo")
+  static Path weatherIconFolderPath = getResourceAbs("_weather/icon")
 
-  static String gridDefaultFolderPath = getResourceAbs("_grid/default")
-  static String gridMalformedFolderPath = getResourceAbs("_grid/malformed")
-  static String gridEmptyFolderPath = getResourceAbs("_grid/empty")
+  static Path gridDefaultFolderPath = getResourceAbs("_grid/default")
+  static Path gridMalformedFolderPath = getResourceAbs("_grid/malformed")
+  static Path gridEmptyFolderPath = getResourceAbs("_grid/empty")
 
   static String csvSep = ","
   static FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 
-  static String getResourceAbs(String directory) {
-    return Paths.get(CsvTestDataMeta.getResource(directory).toURI()).toString()
+  static Path getResourceAbs(String directory) {
+    return Paths.get(CsvTestDataMeta.getResource(directory).toURI())
   }
 }
