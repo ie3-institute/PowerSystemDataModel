@@ -333,7 +333,7 @@ public class CsvFileConnector implements DataConnector {
   /**
    * Builds a new file definition consisting of file name and head line elements
    *
-   * @param clz Class that is meant to be de-serialized into this file
+   * @param clz Class that is meant to be serialized into this file
    * @param headLineElements Array of head line elements
    * @param csvSep Separator for csv columns
    * @return A suitable file definition
