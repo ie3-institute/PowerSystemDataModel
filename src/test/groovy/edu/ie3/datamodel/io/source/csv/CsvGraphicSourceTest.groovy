@@ -53,7 +53,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, typeSource, rawGridSource)
 
     when:
-    def graphicElements = csvGraphicSource.getGraphicElements()
+    def graphicElements = csvGraphicSource.graphicElements
 
     then:
     graphicElements.nodeGraphics.empty
