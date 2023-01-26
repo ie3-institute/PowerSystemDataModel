@@ -5,19 +5,17 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.io.factory.input.CylindricalStorageInputFactory;
-import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory;
-import edu.ie3.datamodel.io.factory.input.ThermalHouseInputFactory;
+import edu.ie3.datamodel.io.factory.input.*;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build thermal {@link
@@ -27,10 +25,9 @@ import java.util.stream.Collectors;
  * @version 0.1
  * @since 08.04.20
  */
-public class ThermalSource implements DataSource {
+public class ThermalSource extends EntitySource implements DataSource {
   // general fields
   TypeSource typeSource;
-  FunctionalDataSource dataSource;
 
   // factories
   private final ThermalBusInputFactory thermalBusInputFactory;
@@ -57,14 +54,7 @@ public class ThermalSource implements DataSource {
    * @return a set of object and uuid unique {@link ThermalBusInput} entities
    */
   public Set<ThermalBusInput> getThermalBuses() {
-    return null;
-    /*
-      return assetInputEntityDataStream(ThermalBusInput.class, typeSource.getOperators())
-              .map(thermalBusInputFactory::get)
-              .flatMap(Optional::stream)
-              .collect(Collectors.toSet());
-
-     */
+    return getThermalBuses(typeSource.getOperators());
   }
 
   /**
@@ -86,14 +76,7 @@ public class ThermalSource implements DataSource {
    * @return a set of object and uuid unique {@link ThermalBusInput} entities
    */
   public Set<ThermalBusInput> getThermalBuses(Set<OperatorInput> operators) {
-    return null;
-    /*
-    return assetInputEntityDataStream(ThermalBusInput.class, operators)
-        .map(thermalBusInputFactory::get)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-
-     */
+    return buildAssetInputEntities(ThermalBusInput.class, thermalBusInputFactory, operators);
   }
 
   /**
@@ -108,8 +91,7 @@ public class ThermalSource implements DataSource {
    * @return a set of object and uuid unique {@link ThermalStorageInput} entities
    */
   public Set<ThermalStorageInput> getThermalStorages() {
-    return null;
-    //return new HashSet<>(getCylindricStorages());
+    return new HashSet<>(getCylindricStorages());
   }
 
   /**
@@ -134,8 +116,7 @@ public class ThermalSource implements DataSource {
    * @return a set of object and uuid unique {@link ThermalStorageInput} entities
    */
   public Set<ThermalStorageInput> getThermalStorages(Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) {
-    return null;
-    //    return new HashSet<>(getCylindricStorages(operators, thermalBuses));
+    return new HashSet<>(getCylindricStorages(operators, thermalBuses));
   }
 
   /**
@@ -149,16 +130,7 @@ public class ThermalSource implements DataSource {
    * @return a set of object and uuid unique {@link ThermalHouseInput} entities
    */
   public Set<ThermalHouseInput> getThermalHouses() {
-    return null;
-    /*
-    assetInputEntityDataStream(ThermalHouseInput.class, typeSource.getOperators())
-        .flatMap(
-            assetInputEntityData ->
-                buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
-                    .map(dataOpt -> dataOpt.flatMap(thermalHouseInputFactory::get))
-                    .flatMap(Optional::stream))
-        .collect(Collectors.toSet());
-     */
+    return buildThermalHouseInputEntities(thermalHouseInputFactory);
   }
 
   /**
@@ -183,16 +155,7 @@ public class ThermalSource implements DataSource {
    */
   public Set<ThermalHouseInput> getThermalHouses(
       Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) {
-    return null;
-    /*
-    assetInputEntityDataStream(ThermalHouseInput.class, operators)
-        .map(
-            assetInputEntityData ->
-                buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
-                    .map(dataOpt -> dataOpt.flatMap(thermalHouseInputFactory::get)))
-        .flatMap(elements -> elements.flatMap(Optional::stream))
-        .collect(Collectors.toSet());
-     */
+    return buildThermalHouseInputEntities(thermalHouseInputFactory, operators, thermalBuses);
   }
 
   /**
@@ -206,16 +169,7 @@ public class ThermalSource implements DataSource {
    * @return a set of object and uuid unique {@link CylindricalStorageInput} entities
    */
   public Set<CylindricalStorageInput> getCylindricStorages() {
-    return null;
-    /* return assetInputEntityDataStream(CylindricalStorageInput.class, typeSource.getOperators())
-            .map(
-                    assetInputEntityData ->
-                            buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
-                                    .map(dataOpt -> dataOpt.flatMap(cylindricalStorageInputFactory::get)))
-            .flatMap(elements -> elements.flatMap(Optional::stream))
-            .collect(Collectors.toSet());
-
-     */
+    return buildCylindricalStorageInputEntities(cylindricalStorageInputFactory);
   }
 
   /**
@@ -241,15 +195,100 @@ public class ThermalSource implements DataSource {
    */
   public Set<CylindricalStorageInput> getCylindricStorages(
       Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) {
-    return null;
-    /*    return assetInputEntityDataStream(CylindricalStorageInput.class, operators)
-        .map(
-            assetInputEntityData ->
-                buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
-                    .map(dataOpt -> dataOpt.flatMap(cylindricalStorageInputFactory::get)))
-        .flatMap(elements -> elements.flatMap(Optional::stream))
-        .collect(Collectors.toSet());
-
-     */
+    return buildCylindricalStorageInputEntities(cylindricalStorageInputFactory, operators, thermalBuses);
   }
+
+  // -=-=-
+
+  protected Stream<Optional<ThermalUnitInputEntityData>> buildThermalUnitInputEntityData(
+          AssetInputEntityData assetInputEntityData, Collection<ThermalBusInput> thermalBuses) {
+
+    // get the raw data
+    Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
+
+    // get the thermal bus input for this chp unit
+    String thermalBusUuid = fieldsToAttributes.get("thermalbus");
+    Optional<ThermalBusInput> thermalBus =
+            thermalBuses.stream()
+                    .filter(storage -> storage.getUuid().toString().equalsIgnoreCase(thermalBusUuid))
+                    .findFirst();
+
+    // remove fields that are passed as objects to constructor
+    fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList("thermalbus")));
+
+    // if the type is not present we return an empty element and
+    // log a warning
+    if (thermalBus.isEmpty()) {
+      logSkippingWarning(
+              assetInputEntityData.getTargetClass().getSimpleName(),
+              fieldsToAttributes.get("uuid"),
+              fieldsToAttributes.get("id"),
+              "thermalBus: " + thermalBusUuid);
+      return Stream.of(Optional.empty());
+    }
+
+    return Stream.of(
+            Optional.of(
+                    new ThermalUnitInputEntityData(
+                            assetInputEntityData.getFieldsToValues(),
+                            assetInputEntityData.getTargetClass(),
+                            assetInputEntityData.getOperatorInput(),
+                            thermalBus.get())));
+  }
+
+  public<T extends AssetInput> Set<ThermalHouseInput> buildThermalHouseInputEntities(
+          ThermalHouseInputFactory factory
+  ) {
+    return assetInputEntityDataStream(ThermalHouseInput.class, typeSource.getOperators())
+            .flatMap(
+                    assetInputEntityData ->
+                            buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
+                                    .map(dataOpt -> dataOpt.flatMap(factory::get))
+                                    .flatMap(Optional::stream))
+            .collect(Collectors.toSet());
+  }
+
+  public Set<ThermalHouseInput> buildThermalHouseInputEntities(
+          ThermalHouseInputFactory factory,
+          Collection<OperatorInput> operators,
+          Collection<ThermalBusInput> thermalBuses
+  ) {
+    return assetInputEntityDataStream(ThermalHouseInput.class, operators)
+            .map(
+                    assetInputEntityData ->
+                            buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
+                                    .map(dataOpt -> dataOpt.flatMap(factory::get)))
+            .flatMap(elements -> elements.flatMap(Optional::stream))
+            .collect(Collectors.toSet());
+  }
+
+
+  public<T extends AssetInput> Set<CylindricalStorageInput> buildCylindricalStorageInputEntities(
+          CylindricalStorageInputFactory factory
+  ) {
+    return assetInputEntityDataStream(CylindricalStorageInput.class, typeSource.getOperators())
+            .flatMap(
+                    assetInputEntityData ->
+                            buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
+                                    .map(dataOpt -> dataOpt.flatMap(factory::get))
+                                    .flatMap(Optional::stream))
+            .collect(Collectors.toSet());
+  }
+
+  public Set<CylindricalStorageInput> buildCylindricalStorageInputEntities(
+          CylindricalStorageInputFactory factory,
+          Collection<OperatorInput> operators,
+          Collection<ThermalBusInput> thermalBuses
+  ) {
+    return assetInputEntityDataStream(CylindricalStorageInput.class, operators)
+            .map(
+                    assetInputEntityData ->
+                            buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
+                                    .map(dataOpt -> dataOpt.flatMap(factory::get)))
+            .flatMap(elements -> elements.flatMap(Optional::stream))
+            .collect(Collectors.toSet());
+  }
+
+
+
 }

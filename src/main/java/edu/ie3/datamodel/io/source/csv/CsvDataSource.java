@@ -70,7 +70,7 @@ public class CsvDataSource extends FunctionalDataSource {
 
 
   @Override
-  public <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
+  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }
 
@@ -231,43 +231,6 @@ public class CsvDataSource extends FunctionalDataSource {
       matchingList.add(matcher.group());
     }
     return matchingList;
-  }
-
-  /**
-   * Returns either the first instance of a {@link OperatorInput} in the provided collection of or
-   * {@link OperatorInput#NO_OPERATOR_ASSIGNED}
-   *
-   * @param operators    the collections of {@link OperatorInput}s that should be searched in
-   * @param operatorUuid the operator uuid that is requested
-   * @return either the first found instancen of {@link OperatorInput} or {@link
-   * OperatorInput#NO_OPERATOR_ASSIGNED}
-   */
-  private OperatorInput getFirstOrDefaultOperator(
-          Collection<OperatorInput> operators,
-          String operatorUuid,
-          String entityClassName,
-          String requestEntityUuid) {
-    if (operatorUuid == null) {
-      log.warn(
-              "Input file for class '{}' is missing the 'operator' field. "
-                      + "This is okay, but you should consider fixing the file by adding the field. "
-                      + "Defaulting to 'NO OPERATOR ASSIGNED'",
-              entityClassName);
-      return OperatorInput.NO_OPERATOR_ASSIGNED;
-    } else {
-      return operatorUuid.trim().isEmpty()
-              ? OperatorInput.NO_OPERATOR_ASSIGNED
-              : findFirstEntityByUuid(operatorUuid, operators)
-              .orElseGet(
-                      () -> {
-                        log.debug(
-                                "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
-                                operatorUuid,
-                                entityClassName,
-                                requestEntityUuid);
-                        return OperatorInput.NO_OPERATOR_ASSIGNED;
-                      });
-    }
   }
 
   /**

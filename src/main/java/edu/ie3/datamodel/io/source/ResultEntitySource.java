@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
@@ -16,7 +17,8 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import java.util.Set;
-
+import java.util.stream.Collectors;
+import java.util.Optional;
 /**
  * Interface that provides the capability to build entities of type {@link ResultEntity} container
  * from .csv files.
@@ -24,9 +26,7 @@ import java.util.Set;
  * @version 0.1
  * @since 22 June 2021
  */
-public class ResultEntitySource implements DataSource {
-
-  FunctionalDataSource dataSource;
+public class ResultEntitySource extends EntitySource implements DataSource {
 
   private final SystemParticipantResultFactory systemParticipantResultFactory;
   private final ThermalResultFactory thermalResultFactory;
@@ -70,8 +70,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link NodeResult} entities
    */
   public Set<NodeResult> getNodeResults() {
-    return null;
-    //return getResultEntities(NodeResult.class, nodeResultFactory);
+    return getResultEntities(NodeResult.class, nodeResultFactory);
   }
 
   /**
@@ -85,8 +84,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link SwitchResult} entities
    */
   public Set<SwitchResult> getSwitchResults() {
-    return null;
-    //return getResultEntities(SwitchResult.class, switchResultFactory);
+    return getResultEntities(SwitchResult.class, switchResultFactory);
   }
 
   /**
@@ -99,8 +97,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link LineResult} entities
    */
   public Set<LineResult> getLineResults() {
-    return null;
-    //return getResultEntities(LineResult.class, connectorResultFactory);
+    return getResultEntities(LineResult.class, connectorResultFactory);
   }
 
   /**
@@ -114,8 +111,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link Transformer2WResult} entities
    */
   public Set<Transformer2WResult> getTransformer2WResultResults() {
-    return null;
-    //return getResultEntities(Transformer2WResult.class, connectorResultFactory);
+    return getResultEntities(Transformer2WResult.class, connectorResultFactory);
   }
 
   /**
@@ -129,8 +125,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link Transformer3WResult} entities
    */
   public Set<Transformer3WResult> getTransformer3WResultResults() {
-    return null;
-    //return getResultEntities(Transformer3WResult.class, connectorResultFactory);
+    return getResultEntities(Transformer3WResult.class, connectorResultFactory);
   }
 
   /**
@@ -144,8 +139,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link FlexOptionsResult} entities
    */
   public Set<FlexOptionsResult> getFlexOptionsResults() {
-    return null;
-    //return getResultEntities(FlexOptionsResult.class, flexOptionsResultFactory);
+    return getResultEntities(FlexOptionsResult.class, flexOptionsResultFactory);
   }
 
   /**
@@ -158,8 +152,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link LoadResult} entities
    */
   public Set<LoadResult> getLoadResults() {
-    return null;
-    //return getResultEntities(LoadResult.class, systemParticipantResultFactory);
+    return getResultEntities(LoadResult.class, systemParticipantResultFactory);
   }
 
   /**
@@ -172,8 +165,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link PvResult} entities
    */
   public Set<PvResult> getPvResults() {
-    return null;
-    //return getResultEntities(PvResult.class, systemParticipantResultFactory);
+    return getResultEntities(PvResult.class, systemParticipantResultFactory);
   }
 
   /**
@@ -187,8 +179,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link FixedFeedInResult} entities
    */
   public Set<FixedFeedInResult> getFixedFeedInResults() {
-    return null;
-    //return getResultEntities(FixedFeedInResult.class, systemParticipantResultFactory);
+    return getResultEntities(FixedFeedInResult.class, systemParticipantResultFactory);
   }
 
   /**
@@ -201,8 +192,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link BmResult} entities
    */
   public Set<BmResult> getBmResults() {
-    return null;
-    //return getResultEntities(BmResult.class, systemParticipantResultFactory);
+    return getResultEntities(BmResult.class, systemParticipantResultFactory);
   }
 
   /**
@@ -215,8 +205,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link ChpResult} entities
    */
   public Set<ChpResult> getChpResults() {
-    return null;
-    //return getResultEntities(ChpResult.class, systemParticipantResultFactory);
+    return getResultEntities(ChpResult.class, systemParticipantResultFactory);
   }
 
   /**
@@ -229,8 +218,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link WecResult} entities
    */
   public Set<WecResult> getWecResults() {
-    return null;
-    //return getResultEntities(WecResult.class, systemParticipantResultFactory);
+    return getResultEntities(WecResult.class, systemParticipantResultFactory);
   }
 
   /**
@@ -244,8 +232,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link StorageResult} entities
    */
   public Set<StorageResult> getStorageResults() {
-    return null;
-    //return getResultEntities(StorageResult.class, systemParticipantResultFactory);
+    return getResultEntities(StorageResult.class, systemParticipantResultFactory);
   }
 
   /**
@@ -258,8 +245,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link EvcsResult} entities
    */
   public Set<EvcsResult> getEvcsResults() {
-    return null;
-    //return getResultEntities(EvcsResult.class, systemParticipantResultFactory);
+    return getResultEntities(EvcsResult.class, systemParticipantResultFactory);
   }
 
   /**
@@ -272,8 +258,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link EvResult} entities
    */
   public Set<EvResult> getEvResults() {
-    return null;
-    //return getResultEntities(EvResult.class, systemParticipantResultFactory);
+    return getResultEntities(EvResult.class, systemParticipantResultFactory);
   }
 
   /**
@@ -286,8 +271,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link HpResult} entities
    */
   public Set<HpResult> getHpResults() {
-    return null;
-    //return getResultEntities(HpResult.class, systemParticipantResultFactory);
+    return getResultEntities(HpResult.class, systemParticipantResultFactory);
   }
 
   /**
@@ -301,8 +285,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link CylindricalStorageResult} entities
    */
   public Set<CylindricalStorageResult> getCylindricalStorageResult() {
-    return null;
-    //return getResultEntities(ThermalHouseResult.class, thermalResultFactory);
+    return getResultEntities(CylindricalStorageResult.class, thermalResultFactory);
   }
 
   /**
@@ -316,8 +299,7 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link ThermalHouseResult} entities
    */
   public Set<ThermalHouseResult> getThermalHouseResults() {
-    return null;
-    //return getResultEntities(CylindricalStorageResult.class, thermalResultFactory);
+    return getResultEntities(ThermalHouseResult.class, thermalResultFactory);
   }
 
   /**
@@ -330,7 +312,28 @@ public class ResultEntitySource implements DataSource {
    * @return a set of object and uuid unique {@link EmResult} entities
    */
   public Set<EmResult> getEmResults() {
-    return null;
-    //return getResultEntities(EmResult.class, systemParticipantResultFactory);
+    return getResultEntities(EmResult.class, systemParticipantResultFactory);
+  }
+
+
+  private <T extends ResultEntity> Set<T> getResultEntities(
+          Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
+    return simpleEntityDataStream(entityClass)
+            .map(
+                    entityData ->
+                            factory.get(entityData).flatMap(loadResult -> cast(entityClass, loadResult)))
+            .flatMap(Optional::stream)
+            .collect(Collectors.toSet());
+  }
+
+  private <T extends ResultEntity> Optional<T> cast(
+          Class<T> entityClass, ResultEntity resultEntity) {
+    if (resultEntity.getClass().equals(entityClass)) {
+      // safe here as a) type is checked and b) csv data stream already filters non-fitting input
+      // data
+      return Optional.of(entityClass.cast(resultEntity));
+    } else {
+      return Optional.empty();
+    }
   }
 }

@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 08.04.20
  */
-public class SystemParticipantSource implements DataSource {
+public class SystemParticipantSource extends EntitySource implements DataSource {
 
   private static final String THERMAL_STORAGE = "thermalstorage";
   private static final String THERMAL_BUS = "thermalbus";
@@ -39,9 +39,6 @@ public class SystemParticipantSource implements DataSource {
   TypeSource typeSource;
   RawGridSource rawGridSource;
   ThermalSource thermalSource;
-  FunctionalDataSource dataSource;
-
-  DataSourceFactory sourceFactory;
 
   // factories
   private final BmInputFactory bmInputFactory;
@@ -130,23 +127,17 @@ public class SystemParticipantSource implements DataSource {
     ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
         new ConcurrentHashMap<>();
 
-    Stream<Map<String, String>> a = dataSource.getSourceData(PvInput.class);
-
-    Set<FixedFeedInInput> fixedFeedInInputs = dataSource.buildNodeAssetEntities(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators, nonBuildEntities);
-    Set<PvInput> pvInputs = dataSource.buildNodeAssetEntities(PvInput.class, pvInputFactory, nodes, operators, nonBuildEntities);
-    Set<LoadInput> loads = dataSource.buildNodeAssetEntities(LoadInput.class, loadInputFactory, nodes, operators, nonBuildEntities);
-    Set<BmInput> bmInputs = dataSource.buildSystemParticipantEntities(BmInput.class, bmInputFactory, nodes, operators, bmTypes, nonBuildEntities);
-    Set<StorageInput> storages = dataSource.buildSystemParticipantEntities(StorageInput.class, storageInputFactory, nodes, operators, storageTypes, nonBuildEntities);
-    Set<WecInput> wecInputs = dataSource.buildSystemParticipantEntities(WecInput.class, wecInputFactory, nodes, operators, wecTypes, nonBuildEntities);
-    Set<EvInput> evs = dataSource.buildSystemParticipantEntities(EvInput.class, evInputFactory, nodes, operators, evTypes, nonBuildEntities);
-    Set<EvcsInput> evcs = dataSource.buildNodeAssetEntities(EvcsInput.class, evcsInputFactory, nodes, operators, nonBuildEntities);
-    Set<ChpInput> chpInputs = dataSource.buildChpInputEntities(chpInputFactory, nodes, operators, chpTypes, thermalBuses, thermalStorages, nonBuildEntities);
-    Set<HpInput> hpInputs =
-        hpInputStream(nodes, operators, hpTypes, thermalBuses)
-            .filter(isPresentCollectIfNot(HpInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-    Set<EmInput> emInputs = dataSource.buildNodeAssetEntities(EmInput.class, emInputFactory, nodes, , nonBuildEntities);
+    Set<FixedFeedInInput> fixedFeedInInputs = buildNodeAssetEntities(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators, nonBuildEntities);
+    Set<PvInput> pvInputs = buildNodeAssetEntities(PvInput.class, pvInputFactory, nodes, operators, nonBuildEntities);
+    Set<LoadInput> loads = buildNodeAssetEntities(LoadInput.class, loadInputFactory, nodes, operators, nonBuildEntities);
+    Set<BmInput> bmInputs = buildSystemParticipantEntities(BmInput.class, bmInputFactory, nodes, operators, bmTypes, nonBuildEntities);
+    Set<StorageInput> storages = buildSystemParticipantEntities(StorageInput.class, storageInputFactory, nodes, operators, storageTypes, nonBuildEntities);
+    Set<WecInput> wecInputs = buildSystemParticipantEntities(WecInput.class, wecInputFactory, nodes, operators, wecTypes, nonBuildEntities);
+    Set<EvInput> evs = buildSystemParticipantEntities(EvInput.class, evInputFactory, nodes, operators, evTypes, nonBuildEntities);
+    Set<EvcsInput> evcs = buildNodeAssetEntities(EvcsInput.class, evcsInputFactory, nodes, operators, nonBuildEntities);
+    Set<ChpInput> chpInputs = buildChpInputEntities(chpInputFactory, nodes, operators, chpTypes, thermalBuses, thermalStorages, nonBuildEntities);
+    Set<HpInput> hpInputs = buildHpInputEntities(hpInputFactory, nodes, operators, hpTypes, thermalBuses, nonBuildEntities);
+    Set<EmInput> emInputs = buildNodeAssetEntities(EmInput.class, emInputFactory, nodes, operators, nonBuildEntities);
 
     // if we found invalid elements return an empty optional and log the problems
     if (!nonBuildEntities.isEmpty()) {
@@ -181,11 +172,8 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link FixedFeedInInput} entities
    */
   public Set<FixedFeedInInput> getFixedFeedIns() {
-    return null;
-    /*
     Set<OperatorInput> operators = typeSource.getOperators();
     return getFixedFeedIns(rawGridSource.getNodes(operators), operators);
-     */
   }
 
   /**
@@ -208,13 +196,7 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link FixedFeedInInput} entities
    */
   public Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return null;
-    /*
-    return nodeAssetEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-
-     */
+    return buildNodeAssetEntities(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators) ;
   }
 
   /**
@@ -227,11 +209,8 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link PvInput} entities
    */
   public Set<PvInput> getPvPlants() {
-    return null;
-    /*
     Set<OperatorInput> operators = typeSource.getOperators();
     return getPvPlants(rawGridSource.getNodes(operators), operators);
-     */
   }
 
   /**
@@ -254,12 +233,7 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link PvInput} entities
    */
   public Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return null;
-    /*
-    return nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-     */
+    return buildNodeAssetEntities(PvInput.class, pvInputFactory, nodes, operators);
   }
 
   /**
@@ -272,11 +246,8 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link LoadInput} entities
    */
   public Set<LoadInput> getLoads() {
-    return null;
-    /*
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLoads(rawGridSource.getNodes(operators), operators);
-     */
   }
 
   /**
@@ -299,12 +270,7 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link LoadInput} entities
    */
   public Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return null;
-    /*
-    return nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-     */
+    return buildNodeAssetEntities(LoadInput.class, loadInputFactory, nodes, operators);
   }
 
   /**
@@ -317,11 +283,8 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link EvcsInput} entities
    */
   public Set<EvcsInput> getEvCS() {
-    return null;
-    /*
     Set<OperatorInput> operators = typeSource.getOperators();
     return getEvCS(rawGridSource.getNodes(operators), operators);
-     */
   }
 
   /**
@@ -344,13 +307,7 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link EvcsInput} entities
    */
   public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return null;
-    /*
-    return nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-
-     */
+    return buildNodeAssetEntities(EvcsInput.class, evcsInputFactory, nodes, operators);
   }
 
   /**
@@ -363,12 +320,8 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link BmInput} entities
    */
   public Set<BmInput> getBmPlants() {
-    return null;
-    /*
     Set<OperatorInput> operators = typeSource.getOperators();
     return getBmPlants(rawGridSource.getNodes(operators), operators, typeSource.getBmTypes());
-
-     */
   }
 
   /**
@@ -393,13 +346,7 @@ public class SystemParticipantSource implements DataSource {
    */
   public Set<BmInput> getBmPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types) {
-    return null;
-    /*
-    return typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, types)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-
-     */
+    return buildTypedSystemParticipantEntities(BmInput.class, bmInputFactory, nodes, operators, types);
   }
 
   /**
@@ -413,12 +360,8 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link StorageInput} entities
    */
   public Set<StorageInput> getStorages() {
-    return null;
-    /*
     Set<OperatorInput> operators = typeSource.getOperators();
     return getStorages(rawGridSource.getNodes(operators), operators, typeSource.getStorageTypes());
-
-     */
   }
 
   /**
@@ -443,12 +386,7 @@ public class SystemParticipantSource implements DataSource {
    */
   public Set<StorageInput> getStorages(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types) {
-    return null;
-    /*
-        return typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, types)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-     */
+        return buildTypedSystemParticipantEntities(StorageInput.class, storageInputFactory, nodes, operators, types);
   }
 
   /**
@@ -461,12 +399,8 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link WecInput} entities
    */
   public Set<WecInput> getWecPlants() {
-    return null;
-    /*
     Set<OperatorInput> operators = typeSource.getOperators();
     return getWecPlants(rawGridSource.getNodes(operators), operators, typeSource.getWecTypes());
-
-     */
   }
 
   /**
@@ -491,13 +425,7 @@ public class SystemParticipantSource implements DataSource {
    */
   public Set<WecInput> getWecPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types) {
-    return null;
-    /*
-    return typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, types)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-
-     */
+    return buildTypedSystemParticipantEntities(WecInput.class, wecInputFactory, nodes, operators, types);
   }
 
   /**
@@ -510,12 +438,8 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link EvInput} entities
    */
   public Set<EvInput> getEvs() {
-    return null;
-    /*
     Set<OperatorInput> operators = typeSource.getOperators();
     return getEvs(rawGridSource.getNodes(operators), operators, typeSource.getEvTypes());
-
-     */
   }
 
   /**
@@ -539,131 +463,7 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link EvInput} entities
    */
   public Set<EvInput> getEvs(Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types) {
-    return null;
-    /*
-    return typedEntityStream(EvInput.class, evInputFactory, nodes, operators, types)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-
-     */
-  }
-
-  /**
-   * Returns a unique set of {@link ChpInput} instances.
-   *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link ChpInput} which has to be checked manually,
-   * as {@link ChpInput#equals(Object)} is NOT restricted on the uuid of {@link ChpInput}.
-   *
-   * @return a set of object and uuid unique {@link ChpInput} entities
-   */
-  public Set<ChpInput> getChpPlants() {
-    return null;
-    /*
-    return getChpPlants(
-        rawGridSource.getNodes(operators),
-        operators,
-        typeSource.getChpTypes(),
-        thermalBuses,
-        thermalSource.getThermalStorages(operators, thermalBuses));
-
-     */
-  }
-
-  /**
-   * Returns a set of {@link ChpInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * ChpInput} which has to be checked manually, as {@link ChpInput#equals(Object)} is NOT
-   * restricted on the uuid of {@link ChpInput}.
-   *
-   * <p>In contrast to {@link #getChpPlants()} this interface provides the ability to pass in an
-   * already existing set of {@link NodeInput}, {@link ChpTypeInput}, {@link ThermalBusInput},
-   * {@link ThermalStorageInput} and {@link OperatorInput} entities, the {@link ChpInput} instances
-   * depend on. Doing so, already loaded nodes can be recycled to improve performance and prevent
-   * unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
-   *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @param types a set of object and uuid unique {@link ChpTypeInput} entities
-   * @param thermalBuses a set of object and uuid unique {@link ThermalBusInput} entities
-   * @param thermalStorages a set of object and uuid unique {@link ThermalStorageInput} entities
-   * @return a set of object and uuid unique {@link ChpInput} entities
-   */
-  public Set<ChpInput> getChpPlants(
-      Set<NodeInput> nodes,
-      Set<OperatorInput> operators,
-      Set<ChpTypeInput> types,
-      Set<ThermalBusInput> thermalBuses,
-      Set<ThermalStorageInput> thermalStorages) {
-    return null;
-/*
-    return chpInputStream(nodes, operators, types, thermalBuses, thermalStorages)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
-
- */
-  }
-
-  /**
-   * Returns a unique set of {@link HpInput} instances.
-   *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link HpInput} which has to be checked manually, as
-   * {@link HpInput#equals(Object)} is NOT restricted on the uuid of {@link HpInput}.
-   *
-   * @return a set of object and uuid unique {@link HpInput} entities
-   */
-  public Set<HpInput> getHeatPumps() {
-    return null;
-    /*
-    return getHeatPumps(
-        rawGridSource.getNodes(operators),
-        operators,
-        typeSource.getHpTypes(),
-        thermalSource.getThermalBuses());
-
-     */
-
-  }
-
-  /**
-   * Returns a set of {@link HpInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * HpInput} which has to be checked manually, as {@link HpInput#equals(Object)} is NOT restricted
-   * on the uuid of {@link HpInput}.
-   *
-   * <p>In contrast to {@link #getHeatPumps()} this interface provides the ability to pass in an
-   * already existing set of {@link NodeInput}, {@link HpTypeInput}, {@link ThermalBusInput}, {@link
-   * ThermalStorageInput} and {@link OperatorInput} entities, the {@link HpInput} instances depend
-   * on. Doing so, already loaded nodes can be recycled to improve performance and prevent
-   * unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
-   *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @param types a set of object and uuid unique {@link HpTypeInput} entities
-   * @param thermalBuses a set of object and uuid unique {@link ThermalBusInput} entities
-   * @return a set of object and uuid unique {@link HpInput} entities
-   */
-  public Set<HpInput> getHeatPumps(
-      Set<NodeInput> nodes,
-      Set<OperatorInput> operators,
-      Set<HpTypeInput> types,
-      Set<ThermalBusInput> thermalBuses) {
-    return null;
-    /*
-    return hpInputStream(nodes, operators, types, thermalBuses)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-
-     */
+    return buildTypedSystemParticipantEntities(EvInput.class, evInputFactory, nodes, operators, types);
   }
 
   /**
@@ -676,9 +476,8 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link EmInput} entities
    */
   public Set<EmInput> getEmSystems() {
-    return null;
-
-    //return getEmSystems(rawGridSource.getNodes(operators), operators);
+    Set<OperatorInput> operators = typeSource.getOperators();
+    return getEmSystems(rawGridSource.getNodes(operators), operators);
   }
 
   /**
@@ -700,46 +499,10 @@ public class SystemParticipantSource implements DataSource {
    * @return a set of object and uuid unique {@link EmInput} entities
    */
   public Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return null;
-    /*
-    return nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-
-     */
+    return buildNodeAssetEntities(EmInput.class, emInputFactory, nodes, operators);
   }
 
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-
-  /**
-   * Constructs a stream of {@link SystemParticipantInput} entities wrapped in {@link Optional}s.
-   *
-   * @param entityClass the class of the entities that should be built
-   * @param factory the corresponding factory that is capable of building this entities
-   * @param nodes the nodes that should be considered for these entities
-   * @param operators the operators that should be considered for these entities
-   * @param types the types that should be considered for these entities
-   * @param <T> the type of the resulting entity
-   * @param <A> the type of the type model of the resulting entity
-   * @return a stream of optionals being either empty or holding an instance of a {@link
-   *     SystemParticipantInput} of the requested entity class
-   */
-  private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
-  Stream<Optional<T>> typedEntityStream(
-          Class<T> entityClass,
-          EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
-          Set<NodeInput> nodes,
-          Set<OperatorInput> operators,
-          Set<A> types) {
-    return buildTypedEntityData(
-            nodeAssetInputEntityDataStream(
-                    assetInputEntityDataStream(entityClass, operators), nodes),
-            types)
-            .map(dataOpt -> dataOpt.flatMap(factory::get));
-  }
-  /** {@inheritDoc} */
-  @Override
   public Set<ChpInput> getChpPlants() {
     Set<OperatorInput> operators = typeSource.getOperators();
     Set<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
@@ -764,7 +527,7 @@ public class SystemParticipantSource implements DataSource {
    * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
    */
-  @Override
+
   public Set<ChpInput> getChpPlants(
           Set<NodeInput> nodes,
           Set<OperatorInput> operators,
@@ -772,35 +535,16 @@ public class SystemParticipantSource implements DataSource {
           Set<ThermalBusInput> thermalBuses,
           Set<ThermalStorageInput> thermalStorages) {
 
-    return chpInputStream(nodes, operators, types, thermalBuses, thermalStorages)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
+    return buildChpInputEntities(chpInputFactory, nodes, operators, types, thermalBuses, thermalStorages);
   }
 
-  private Stream<Optional<ChpInput>> chpInputStream(
-          Set<NodeInput> nodes,
-          Set<OperatorInput> operators,
-          Set<ChpTypeInput> types,
-          Set<ThermalBusInput> thermalBuses,
-          Set<ThermalStorageInput> thermalStorages) {
-    return buildChpEntityData(
-            buildTypedEntityData(
-                    nodeAssetInputEntityDataStream(
-                            assetInputEntityDataStream(ChpInput.class, operators), nodes),
-                    types),
-            thermalStorages,
-            thermalBuses)
-            .map(dataOpt -> dataOpt.flatMap(chpInputFactory::get));
-  }
-  /** {@inheritDoc} */
-  @Override
+
   public Set<HpInput> getHeatPumps() {
     Set<OperatorInput> operators = typeSource.getOperators();
-    return getHeatPumps(
-            rawGridSource.getNodes(operators),
-            operators,
-            typeSource.getHpTypes(),
-            thermalSource.getThermalBuses());
+    return getHeatPumps(rawGridSource.getNodes(operators),
+              operators,
+              typeSource.getHpTypes(),
+              thermalSource.getThermalBuses());
   }
 
   /**
@@ -816,29 +560,213 @@ public class SystemParticipantSource implements DataSource {
    * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
    */
-  @Override
+
   public Set<HpInput> getHeatPumps(
           Set<NodeInput> nodes,
           Set<OperatorInput> operators,
           Set<HpTypeInput> types,
           Set<ThermalBusInput> thermalBuses) {
-    return hpInputStream(nodes, operators, types, thermalBuses)
+    return buildHpInputEntities(hpInputFactory, nodes, operators, types, thermalBuses);
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  public <T extends SystemParticipantInput, A extends SystemParticipantTypeInput> Set<T> buildSystemParticipantEntities(
+          Class<T> entityClass,
+          EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<A> types,
+          ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities
+  ) {
+    return typedSystemParticipantEntityStream(entityClass, factory, nodes, operators, types)
+            .filter(isPresentCollectIfNot(entityClass, nonBuildEntities))
             .flatMap(Optional::stream)
             .collect(Collectors.toSet());
   }
 
+  public<T extends SystemParticipantInput, A extends SystemParticipantTypeInput> Set<T> buildTypedSystemParticipantEntities(
+          Class<T> entityClass,
+          EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<A> types
+  ) {
+    return typedSystemParticipantEntityStream(entityClass, factory, nodes, operators, types)
+            .flatMap(Optional::stream)
+            .collect(Collectors.toSet());
+  }
+
+
+  public Set<ChpInput> buildChpInputEntities(
+          ChpInputFactory factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<ChpTypeInput> chpTypes,
+          Collection<ThermalBusInput> thermalBuses,
+          Collection<ThermalStorageInput> thermalStorages
+  ) {
+    return chpInputStream(factory, nodes, operators, chpTypes, thermalBuses, thermalStorages)
+            .flatMap(Optional::stream)
+            .collect(Collectors.toSet());
+  }
+
+  public Set<ChpInput> buildChpInputEntities(
+          ChpInputFactory factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<ChpTypeInput> chpTypes,
+          Collection<ThermalBusInput> thermalBuses,
+          Collection<ThermalStorageInput> thermalStorages,
+          ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities
+  ) {
+    return chpInputStream(factory, nodes, operators, chpTypes, thermalBuses, thermalStorages)
+            .filter(isPresentCollectIfNot(ChpInput.class, nonBuildEntities))
+            .flatMap(Optional::stream)
+            .collect(Collectors.toSet());
+  }
+
+
+  public Set<HpInput> buildHpInputEntities(
+          HpInputFactory factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<HpTypeInput> types,
+          Collection<ThermalBusInput> thermalBuses
+  ) {
+    return hpInputStream(factory, nodes, operators, types, thermalBuses)
+            .flatMap(Optional::stream)
+            .collect(Collectors.toSet());
+  }
+
+  public Set<HpInput> buildHpInputEntities(
+          HpInputFactory factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<HpTypeInput> types,
+          Collection<ThermalBusInput> thermalBuses,
+          ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities
+  ) {
+    return hpInputStream(factory, nodes, operators, types, thermalBuses)
+            .filter(isPresentCollectIfNot(ChpInput.class, nonBuildEntities))
+            .flatMap(Optional::stream)
+            .collect(Collectors.toSet());
+  }
+
+
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  /**
+   * Constructs a stream of {@link SystemParticipantInput} entities wrapped in {@link Optional}s.
+   *
+   * @param entityClass the class of the entities that should be built
+   * @param factory the corresponding factory that is capable of building this entities
+   * @param nodes the nodes that should be considered for these entities
+   * @param operators the operators that should be considered for these entities
+   * @param types the types that should be considered for these entities
+   * @param <T> the type of the resulting entity
+   * @param <A> the type of the type model of the resulting entity
+   * @return a stream of optionals being either empty or holding an instance of a {@link
+   *     SystemParticipantInput} of the requested entity class
+   */
+  private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
+  Stream<Optional<T>> typedSystemParticipantEntityStream(
+          Class<T> entityClass,
+          EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<A> types) {
+    return buildTypedSystemParticipantEntityData(
+            nodeAssetInputEntityDataStream(
+                    assetInputEntityDataStream(entityClass, operators), nodes),
+            types)
+            .map(dataOpt -> dataOpt.flatMap(factory::get));
+  }
+
+  private Stream<Optional<ChpInput>> chpInputStream(
+          ChpInputFactory factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<ChpTypeInput> types,
+          Collection<ThermalBusInput> thermalBuses,
+          Collection<ThermalStorageInput> thermalStorages) {
+    return buildChpEntityData(
+            buildTypedEntityData(
+                    nodeAssetInputEntityDataStream(
+                            assetInputEntityDataStream(ChpInput.class, operators), nodes),
+                    types),
+            thermalStorages,
+            thermalBuses)
+            .map(dataOpt -> dataOpt.flatMap(factory::get));
+  }
+  /** {@inheritDoc} */
+
   private Stream<Optional<HpInput>> hpInputStream(
-          Set<NodeInput> nodes,
-          Set<OperatorInput> operators,
-          Set<HpTypeInput> types,
-          Set<ThermalBusInput> thermalBuses) {
+          HpInputFactory factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<HpTypeInput> types,
+          Collection<ThermalBusInput> thermalBuses) {
     return buildHpEntityData(
             buildTypedEntityData(
                     nodeAssetInputEntityDataStream(
                             assetInputEntityDataStream(HpInput.class, operators), nodes),
                     types),
             thermalBuses)
-            .map(dataOpt -> dataOpt.flatMap(hpInputFactory::get));
+            .map(dataOpt -> dataOpt.flatMap(factory::get));
+  }
+
+
+  /**
+   * Enriches a given stream of {@link NodeAssetInputEntityData} optionals with a type of {@link
+   * SystemParticipantTypeInput} based on the provided collection of types and the fields to values
+   * mapping that inside the already provided {@link NodeAssetInputEntityData} instance.
+   *
+   * @param nodeAssetEntityDataStream the data stream of {@link NodeAssetInputEntityData} optionals
+   * @param types the types that should be used for enrichment and to build {@link
+   *     SystemParticipantTypedEntityData} from
+   * @param <T> the type of the provided entity types as well as the type parameter of the resulting
+   *     {@link SystemParticipantTypedEntityData}
+   * @return a stream of optional {@link SystemParticipantTypedEntityData} instances or empty
+   *     optionals if the type couldn't be found
+   */
+  private <T extends SystemParticipantTypeInput>
+  Stream<Optional<SystemParticipantTypedEntityData<T>>> buildTypedSystemParticipantEntityData(
+          Stream<Optional<NodeAssetInputEntityData>> nodeAssetEntityDataStream,
+          Collection<T> types) {
+    return nodeAssetEntityDataStream
+            .parallel()
+            .map(
+                    nodeAssetInputEntityDataOpt ->
+                            nodeAssetInputEntityDataOpt.flatMap(
+                                    nodeAssetInputEntityData ->
+                                            buildTypedSystemParticipantEntityData(nodeAssetInputEntityData, types)));
+  }
+
+  protected <T extends SystemParticipantTypeInput>
+  Optional<SystemParticipantTypedEntityData<T>> buildTypedSystemParticipantEntityData(
+          NodeAssetInputEntityData nodeAssetInputEntityData, Collection<T> types) {
+    return getAssetType(
+            types,
+            nodeAssetInputEntityData.getFieldsToValues(),
+            nodeAssetInputEntityData.getClass().getSimpleName())
+            .map(
+                    // if the optional is present, transform and return to the data,
+                    // otherwise return an empty optional
+                    assetType -> {
+                      Map<String, String> fieldsToAttributes = nodeAssetInputEntityData.getFieldsToValues();
+
+                      // remove fields that are passed as objects to constructor
+                      fieldsToAttributes.keySet().remove(TYPE);
+
+                      return new SystemParticipantTypedEntityData<>(
+                              fieldsToAttributes,
+                              nodeAssetInputEntityData.getTargetClass(),
+                              nodeAssetInputEntityData.getOperatorInput(),
+                              nodeAssetInputEntityData.getNode(),
+                              assetType);
+                    });
   }
 
   /**
@@ -867,7 +795,7 @@ public class SystemParticipantSource implements DataSource {
                                             buildTypedEntityData(nodeAssetInputEntityData, types)));
   }
 
-  private <T extends SystemParticipantTypeInput>
+  protected <T extends SystemParticipantTypeInput>
   Optional<SystemParticipantTypedEntityData<T>> buildTypedEntityData(
           NodeAssetInputEntityData nodeAssetInputEntityData, Collection<T> types) {
     return getAssetType(
@@ -916,7 +844,7 @@ public class SystemParticipantSource implements DataSource {
                                     typedEntityData -> buildHpEntityData(typedEntityData, thermalBuses)));
   }
 
-  private Optional<HpInputEntityData> buildHpEntityData(
+  protected Optional<HpInputEntityData> buildHpEntityData(
           SystemParticipantTypedEntityData<HpTypeInput> typedEntityData,
           Collection<ThermalBusInput> thermalBuses) {
     // get the raw data
@@ -959,21 +887,7 @@ public class SystemParticipantSource implements DataSource {
     return hpInputEntityDataOpt;
   }
 
-  /**
-   * Enriches a given stream of {@link SystemParticipantTypedEntityData} optionals with a type of
-   * {@link ThermalBusInput} and {@link ThermalStorageInput} based on the provided collection of
-   * buses, storages and the fields to values mapping inside the already provided {@link
-   * SystemParticipantTypedEntityData} instance.
-   *
-   * @param typedEntityDataStream the data stream of {@link SystemParticipantTypedEntityData}
-   *     optionals
-   * @param thermalStorages the thermal storages that should be used for enrichment and to build
-   *     {@link ChpInputEntityData}
-   * @param thermalBuses the thermal buses that should be used for enrichment and to build {@link
-   *     ChpInputEntityData}
-   * @return stream of optional {@link ChpInputEntityData}instances or empty optionals if they
-   *     thermal bus couldn't be found
-   */
+
   private Stream<Optional<ChpInputEntityData>> buildChpEntityData(
           Stream<Optional<SystemParticipantTypedEntityData<ChpTypeInput>>> typedEntityDataStream,
           Collection<ThermalStorageInput> thermalStorages,
@@ -988,7 +902,8 @@ public class SystemParticipantSource implements DataSource {
                                             buildChpEntityData(typedEntityData, thermalStorages, thermalBuses)));
   }
 
-  private Optional<ChpInputEntityData> buildChpEntityData(
+
+  protected Optional<ChpInputEntityData> buildChpEntityData(
           SystemParticipantTypedEntityData<ChpTypeInput> typedEntityData,
           Collection<ThermalStorageInput> thermalStorages,
           Collection<ThermalBusInput> thermalBuses) {
@@ -1043,15 +958,6 @@ public class SystemParticipantSource implements DataSource {
                     thermalBus.get(),
                     thermalStorage.get()));
   }
-
-
-
-
-
-
-
-
-
 
 
 }

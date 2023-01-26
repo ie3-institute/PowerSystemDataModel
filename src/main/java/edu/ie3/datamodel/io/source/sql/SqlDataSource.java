@@ -129,7 +129,7 @@ public class SqlDataSource extends FunctionalDataSource {
   }
 
   @Override
-  public <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
+  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
     return null;
   }
 

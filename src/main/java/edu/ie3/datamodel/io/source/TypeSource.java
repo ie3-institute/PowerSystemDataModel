@@ -27,10 +27,10 @@ import java.util.Set;
  * @version 0.1
  * @since 08.04.20
  */
-public class TypeSource implements DataSource {
+public class TypeSource extends EntitySource implements DataSource {
 
     //general fields
-    FunctionalDataSource dataSource;
+    //FunctionalDataSource dataSource;
 
     //factories
     private final OperatorInputFactory operatorInputFactory;
@@ -59,7 +59,7 @@ public class TypeSource implements DataSource {
    * @return a set of object and uuid unique {@link Transformer2WTypeInput} entities
    */
   public Set<Transformer2WTypeInput> getTransformer2WTypes() {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
+    return buildEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
   }
 
   /**
@@ -71,7 +71,7 @@ public class TypeSource implements DataSource {
    * @return a set of object and uuid unique {@link OperatorInput} entities
    */
   public Set<OperatorInput> getOperators() {
-    return dataSource.buildEntities(OperatorInput.class, operatorInputFactory);
+    return buildEntities(OperatorInput.class, operatorInputFactory);
   }
 
   /**
@@ -83,7 +83,7 @@ public class TypeSource implements DataSource {
    * @return a set of object and uuid unique {@link LineTypeInput} entities
    */
   public Set<LineTypeInput> getLineTypes() {
-    return dataSource.buildEntities(LineTypeInput.class, lineTypeInputFactory);
+    return buildEntities(LineTypeInput.class, lineTypeInputFactory);
   }
 
   /**
@@ -96,7 +96,7 @@ public class TypeSource implements DataSource {
    * @return a set of object and uuid unique {@link Transformer3WTypeInput} entities
    */
   public Set<Transformer3WTypeInput> getTransformer3WTypes() {
-    return dataSource.buildEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
+    return buildEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
   }
 
   /**
@@ -108,7 +108,7 @@ public class TypeSource implements DataSource {
    * @return a set of object and uuid unique {@link BmTypeInput} entities
    */
   public Set<BmTypeInput> getBmTypes() {
-    return dataSource.buildEntities(BmTypeInput.class, systemParticipantTypeInputFactory);
+    return buildEntities(BmTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -120,7 +120,7 @@ public class TypeSource implements DataSource {
    * @return a set of object and uuid unique {@link ChpTypeInput} entities
    */
   public Set<ChpTypeInput> getChpTypes() {
-    return dataSource.buildEntities(ChpTypeInput.class, systemParticipantTypeInputFactory);
+    return buildEntities(ChpTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -132,7 +132,7 @@ public class TypeSource implements DataSource {
    * @return a set of object and uuid unique {@link HpTypeInput} entities
    */
   public Set<HpTypeInput> getHpTypes() {
-    return dataSource.buildEntities(HpTypeInput.class, systemParticipantTypeInputFactory);
+    return buildEntities(HpTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -144,7 +144,7 @@ public class TypeSource implements DataSource {
    * @return a set of object and uuid unique {@link StorageTypeInput} entities
    */
   public Set<StorageTypeInput> getStorageTypes() {
-    return dataSource.buildEntities(StorageTypeInput.class, systemParticipantTypeInputFactory);
+    return buildEntities(StorageTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -156,7 +156,7 @@ public class TypeSource implements DataSource {
    * @return a set of object and uuid unique {@link WecTypeInput} entities
    */
   public Set<WecTypeInput> getWecTypes() {
-    return dataSource.buildEntities(WecTypeInput.class, systemParticipantTypeInputFactory);
+    return buildEntities(WecTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -168,6 +168,6 @@ public class TypeSource implements DataSource {
    * @return a set of object and uuid unique {@link EvTypeInput} entities
    */
   public Set<EvTypeInput> getEvTypes() {
-    return dataSource.buildEntities(EvTypeInput.class, systemParticipantTypeInputFactory);
+    return buildEntities(EvTypeInput.class, systemParticipantTypeInputFactory);
   }
 }
