@@ -9,6 +9,8 @@ import org.apache.commons.io.FilenameUtils
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Path
+
 class CsvFileDefinitionTest extends Specification {
   @Shared
   String[] headLineElements
@@ -20,13 +22,13 @@ class CsvFileDefinitionTest extends Specification {
   String fileName
 
   @Shared
-  String directory
+  Path directory
 
   def setupSpec() {
     headLineElements = ["a", "b", "c"] as String[]
     csvSep = ","
     fileName = "node_input.csv"
-    directory = FilenameUtils.concat("test", "grid")
+    directory = Path.of("test").resolve("grid")
   }
 
   def "A csv file definition is set up correctly, if the directory path has corrupt file separator"() {
@@ -43,9 +45,9 @@ class CsvFileDefinitionTest extends Specification {
 
     where:
     manipulatedDirectory                                                       || expected
-    "/" + this.directory                                                       || this.directory
-    this.directory + "/"                                                       || this.directory
-    this.directory.replaceAll("[\\\\/]", File.separator == "/" ? "\\\\" : "/") || this.directory
+    Path.of("/").resolve(this.directory)                                       || this.directory
+    this.directory.resolve("/")                                                || this.directory
+    Path.of(this.directory.toString().replaceAll("[\\\\/]", File.separator == "/" ? "\\\\" : "/")) || this.directory
   }
 
   def "A csv file definition is set up correctly, if the directory path is null"() {
@@ -55,7 +57,7 @@ class CsvFileDefinitionTest extends Specification {
     then:
     actual.with {
       assert it.fileName() == this.fileName
-      assert it.directoryPath() == ""
+      assert it.directoryPath() == Path.of("")
       assert it.headLineElements() == this.headLineElements
       assert it.csvSep() == this.csvSep
     }
@@ -117,7 +119,7 @@ class CsvFileDefinitionTest extends Specification {
 
     where:
     manipulatedDirectory                 || expected
-    ""                                   || this.fileName
-    FilenameUtils.concat("test", "grid") || FilenameUtils.concat(FilenameUtils.concat("test", "grid"), this.fileName)
+    Path.of("")                          || this.fileName
+    Path.of("test", "grid") || Path.of(FilenameUtils.concat("test", "grid"), this.fileName)
   }
 }

@@ -66,7 +66,8 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
 
   public DefaultDirectoryHierarchy(Path baseDirectory, String gridName) {
     /* Prepare the base path */
-    Path baseDirectoryNormalized = Path.of(FilenameUtils.normalizeNoEndSeparator(baseDirectory.toString(), true));
+    Path baseDirectoryNormalized =
+        Path.of(FilenameUtils.normalizeNoEndSeparator(String.valueOf(baseDirectory), true));
     this.baseDirectory = baseDirectoryNormalized.toAbsolutePath();
     this.projectDirectory =
         Paths.get(
@@ -214,8 +215,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
       return Optional.empty();
     } else {
       /* Build the full path and then refer it to the base directory */
-      Path fullPath =
-          Paths.get(this.projectDirectory.toString()).resolve(maybeSubDirectory.get().getRelPath());
+      Path fullPath = this.projectDirectory.resolve(maybeSubDirectory.get().getRelPath());
       Path relPath = this.baseDirectory.relativize(fullPath);
 
       return Optional.of(relPath);

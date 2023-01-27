@@ -19,6 +19,7 @@ import edu.ie3.test.common.GridTestData as rgtd
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
@@ -27,8 +28,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
   CsvRawGridSource source
 
   def setupSpec() {
-    CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-    source = new CsvRawGridSource(csvSep, gridDefaultFolderPath, fileNamingStrategy, typeSource)
+    CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath as Path, fileNamingStrategy)
+    source = new CsvRawGridSource(csvSep, gridDefaultFolderPath as Path, fileNamingStrategy, typeSource)
   }
 
   def "The CsvRawGridSource is able to convert single valid AssetInputEntityData to ConnectorInputEntityData"() {

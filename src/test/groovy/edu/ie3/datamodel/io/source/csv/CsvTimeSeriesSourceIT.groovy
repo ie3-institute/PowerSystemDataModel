@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import java.nio.file.Path
+
 import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 
 import edu.ie3.datamodel.exceptions.SourceException
@@ -25,12 +27,12 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
   def setup() {
     factory = new TimeBasedSimpleValueFactory<>(HeatAndPValue)
-    source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7"), "its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7", HeatAndPValue, factory)
+    source = new CsvTimeSeriesSource(";", timeSeriesFolderPath as Path, new FileNamingStrategy(), UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7"), Path.of("its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7"), HeatAndPValue, factory)
   }
 
   def "A csv time series source throw an Exception, if the file cannot be found"() {
     given:
-    def filePath = "file/not/found.csv"
+    def filePath = Path.of("file/not/found.csv")
 
     when:
     source.buildIndividualTimeSeries(UUID.fromString("fbc59b5b-9307-4fb4-a406-c1f08f26fee5"), filePath, { null })
@@ -43,7 +45,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
   def "A csv time series source is able to read in a proper file correctly"() {
     given:
-    def filePath = "its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7"
+    def filePath = Path.of("its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7")
     def tsUuid = UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7")
 
     when:
@@ -56,7 +58,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
   def "Construction a csv time series source with malicious parameters, leads to IllegalArgumentException"() {
     when:
-    new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("fbc59b5b-9307-4fb4-a406-c1f08f26fee5"), "file/not/found", HeatAndPValue, factory)
+    new CsvTimeSeriesSource(";", timeSeriesFolderPath as Path, new FileNamingStrategy(), UUID.fromString("fbc59b5b-9307-4fb4-a406-c1f08f26fee5"), Path.of("file/not/found"), HeatAndPValue, factory)
 
     then:
     def e = thrown(IllegalArgumentException)

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.naming;
 
+import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
@@ -75,8 +76,7 @@ public class FileNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        Path.of(getEntityName(cls).orElse("")),
-        getDirectoryPath(cls).orElseGet(() -> Path.of("")));
+        Path.of(getEntityName(cls).orElse("")), getDirectoryPath(cls).orElseGet(() -> Path.of("")));
   }
 
   /**
@@ -126,7 +126,14 @@ public class FileNamingStrategy {
       return Optional.empty();
     } else {
       /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
-      return maybeDirectoryName;
+      return Optional.of(
+          Path.of(
+              IoUtil.harmonizeFileSeparator(
+                  maybeDirectoryName
+                      .get()
+                      .toString()
+                      .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
+                      .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""))));
     }
   }
 

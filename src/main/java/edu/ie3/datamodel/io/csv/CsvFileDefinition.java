@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.csv;
 
+import edu.ie3.datamodel.io.IoUtil;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -27,7 +28,15 @@ public record CsvFileDefinition(
   public CsvFileDefinition(
       String fileName, Path directoryPath, String[] headLineElements, String csvSep) {
     /* Remove all file separators at the beginning and end of a directory path and ensure harmonized file separator */
-    this.directoryPath = Objects.nonNull(directoryPath) ? directoryPath : Path.of("");
+    this.directoryPath =
+        Path.of(
+            Objects.nonNull(directoryPath)
+                ? IoUtil.harmonizeFileSeparator(
+                    directoryPath
+                        .toString()
+                        .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
+                        .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""))
+                : "");
 
     /* Check the given information of the file name */
     Matcher matcher = FILE_NAME_PATTERN.matcher(fileName);

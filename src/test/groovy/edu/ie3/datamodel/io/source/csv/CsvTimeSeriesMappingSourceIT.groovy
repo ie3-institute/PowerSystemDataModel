@@ -10,12 +10,14 @@ import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Path
+
 class CsvTimeSeriesMappingSourceIT extends Specification implements CsvTestDataMeta {
   @Shared
   TimeSeriesMappingSource source
 
   def setupSpec() {
-    source = new CsvTimeSeriesMappingSource(";", timeSeriesFolderPath, new FileNamingStrategy())
+    source = new CsvTimeSeriesMappingSource(";", timeSeriesFolderPath as Path, new FileNamingStrategy())
   }
 
   def "The csv time series mapping source is able to provide a valid time series mapping from files"() {
