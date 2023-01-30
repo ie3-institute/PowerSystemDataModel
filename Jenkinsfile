@@ -27,7 +27,7 @@ String sshCredentialsId = '19f16959-8a0d-4a60-bd1f-5adb4572b702' // id that matc
 String sonarqubeProjectKey = 'edu.ie3:PowerSystemDataModel' // sonarqube project key, case-sensitive
 
 /* maven central configuration */
-String mavenCentralCredentialsId = '87bfb2d4-7613-4816-9fe1-70dfd7e6dec2' // id that matches the maven central credentials set as jenkins property
+String mavenCentralCredentialsId = '197ffae7-08b2-4641-aa15-a2351d8011cd' // id that matches the maven central credentials set as jenkins property
 String mavenCentralSignKeyFileId = 'dc96216c-d20a-48ff-98c0-1c7ba096d08d' // id that matches the maven central sign key file set as jenkins property
 String mavenCentralSignKeyId = 'a1357827-1516-4fa2-ab8e-72cdea07a692' // id that matches the maven central sign key id set as jenkins property
 
