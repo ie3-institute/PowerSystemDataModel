@@ -16,21 +16,8 @@ import java.util.Set;
  * @param <E> type of the exception
  */
 public abstract class Try<R, E extends Exception> {
-  /** Private fields. */
-  private final R data;
-
-  private final E exception;
-
-  /**
-   * Constructor of a try object. One input can be null.
-   *
-   * @param data given data
-   * @param exception given exception
-   */
-  Try(R data, E exception) {
-    this.data = data;
-    this.exception = exception;
-  }
+  /** Constructor of a try object. One input can be null. */
+  Try() {}
 
   /** Returns true if the object is a {@link Success}. */
   public abstract boolean isSuccess();
@@ -47,22 +34,18 @@ public abstract class Try<R, E extends Exception> {
    * @throws E exception
    */
   public R get() throws E {
-    if (isSuccess()) {
-      return data;
+    if (this instanceof Success<R, E> success) {
+      return success.getData();
     } else {
-      throw exception;
+      throw this.getException();
     }
   }
 
   /** Returns the data. */
-  public R getData() {
-    return data;
-  }
+  public abstract R getData();
 
   /** Returns the exception. */
-  public E getException() {
-    return exception;
-  }
+  public abstract E getException();
 
   /**
    * Method to scan for exceptions in a set of try objects.

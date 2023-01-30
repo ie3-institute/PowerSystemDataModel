@@ -6,8 +6,12 @@
 package edu.ie3.datamodel.utils.options;
 
 public class Failure<R, E extends Exception> extends Try<R, E> {
+  /** Private fields. */
+  private final E exception;
+
   public Failure(E exception) {
-    super(null, exception);
+    super();
+    this.exception = exception;
   }
 
   @Override
@@ -18,5 +22,16 @@ public class Failure<R, E extends Exception> extends Try<R, E> {
   @Override
   public boolean isFailure() {
     return true;
+  }
+
+  /** Returns the data. */
+  @Override
+  public R getData() {
+    return null;
+  }
+
+  @Override
+  public E getException() {
+    return exception;
   }
 }
