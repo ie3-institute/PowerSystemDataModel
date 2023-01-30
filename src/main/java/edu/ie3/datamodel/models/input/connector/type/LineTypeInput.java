@@ -50,10 +50,10 @@ public class LineTypeInput extends AssetTypeInput {
       ComparableQuantity<ElectricCurrent> iMax,
       ComparableQuantity<ElectricPotential> vRated) {
     super(uuid, id);
-    this.r = r.to(StandardUnits.IMPEDANCE_PER_LENGTH);
-    this.x = x.to(StandardUnits.IMPEDANCE_PER_LENGTH);
-    this.b = b.to(StandardUnits.ADMITTANCE_PER_LENGTH);
-    this.g = g.to(StandardUnits.ADMITTANCE_PER_LENGTH);
+    this.r = r.to(StandardUnits.RESISTANCE_PER_LENGTH);
+    this.x = x.to(StandardUnits.REACTANCE_PER_LENGTH);
+    this.b = b.to(StandardUnits.SUSCEPTANCE_PER_LENGTH);
+    this.g = g.to(StandardUnits.CONDUCTANCE_PER_LENGTH);
     this.iMax = iMax.to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
@@ -85,9 +85,8 @@ public class LineTypeInput extends AssetTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof LineTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    LineTypeInput that = (LineTypeInput) o;
     return b.equals(that.b)
         && g.equals(that.g)
         && r.equals(that.r)

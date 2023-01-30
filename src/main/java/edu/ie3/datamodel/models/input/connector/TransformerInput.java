@@ -32,7 +32,7 @@ public abstract class TransformerInput extends ConnectorInput {
    * @param tapPos Tap Position of this transformer
    * @param autoTap True, if the tap position of the transformer is adapted automatically
    */
-  public TransformerInput(
+  protected TransformerInput(
       UUID uuid,
       OperationTime operationTime,
       OperatorInput operator,
@@ -59,7 +59,7 @@ public abstract class TransformerInput extends ConnectorInput {
    * @param tapPos Tap Position of this transformer
    * @param autoTap True, if the tap position of the transformer is adapted automatically
    */
-  public TransformerInput(
+  protected TransformerInput(
       UUID uuid,
       String id,
       NodeInput nodeA,
@@ -86,9 +86,8 @@ public abstract class TransformerInput extends ConnectorInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof TransformerInput that)) return false;
     if (!super.equals(o)) return false;
-    TransformerInput that = (TransformerInput) o;
     return tapPos == that.tapPos && autoTap == that.autoTap;
   }
 

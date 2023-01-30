@@ -26,7 +26,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
 
   private final List<Class<? extends C>> supportedClasses;
 
-  public Factory(Class<? extends C>... supportedClasses) {
+  protected Factory(Class<? extends C>... supportedClasses) {
     this.supportedClasses = Arrays.asList(supportedClasses);
   }
 
@@ -47,7 +47,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
     // magic: case-insensitive get/set calls on set strings
     final List<Set<String>> allFields = getFields(data);
 
-    validateParameters(data, allFields.stream().toArray((IntFunction<Set<String>[]>) Set[]::new));
+    validateParameters(data, allFields.toArray((IntFunction<Set<String>[]>) Set[]::new));
 
     try {
       // build the model
@@ -116,9 +116,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
 
     // get all sets that match the fields to attributes
     List<Set<String>> validFieldSets =
-        Arrays.stream(fieldSets)
-            .filter(x -> x.equals(fieldsToValues.keySet()))
-            .collect(Collectors.toList());
+        Arrays.stream(fieldSets).filter(x -> x.equals(fieldsToValues.keySet())).toList();
 
     if (validFieldSets.size() == 1) {
       // if we can identify a unique parameter set for a constructor, we take it and return the

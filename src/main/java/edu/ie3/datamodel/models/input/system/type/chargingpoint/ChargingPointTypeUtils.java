@@ -142,7 +142,8 @@ public class ChargingPointTypeUtils {
                       Stream.concat(
                           Stream.of(type.getId().toLowerCase()),
                           type.getSynonymousIds().stream().map(String::toLowerCase))
-                          .collect(Collectors.toMap(Function.identity(), v -> type)).entrySet()
+                          .collect(Collectors.toMap(Function.identity(), v -> type))
+                          .entrySet()
                           .stream())
               .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
@@ -167,7 +168,8 @@ public class ChargingPointTypeUtils {
     ChargingPointType res;
 
     // valid regex for either custom or pre-defined types
-    String validCustomRegex = "(\\w+\\d*)\\s*\\(\\s*(\\d+\\.?\\d+)\\s*\\|\\s*(AC|DC)\\s*\\)";
+    String validCustomRegex =
+        "([\\w \\-]+)\\s*\\(\\s*(\\d+\\.?\\d+(?:E-?\\d+)?)\\s*\\|\\s*(AC|DC)\\s*\\)";
 
     // does it match the valid regex?
     Pattern pattern = Pattern.compile(validCustomRegex);

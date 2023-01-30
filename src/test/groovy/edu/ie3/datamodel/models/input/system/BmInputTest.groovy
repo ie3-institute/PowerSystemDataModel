@@ -13,26 +13,26 @@ import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 
 class BmInputTest extends Specification {
 
-	def "A BmInput copy method should work as expected"() {
-		given:
-		def bmInput = SystemParticipantTestData.bmInput
+  def "A BmInput copy method should work as expected"() {
+    given:
+    def bmInput = SystemParticipantTestData.bmInput
 
-		when:
-		def alteredUnit = bmInput.copy().type(SystemParticipantTestData.bmTypeInput)
-				.marketReaction(true)
-				.costControlled(true).feedInTariff(Quantities.getQuantity(15, EURO_PER_MEGAWATTHOUR)).build()
+    when:
+    def alteredUnit = bmInput.copy().type(SystemParticipantTestData.bmTypeInput)
+        .marketReaction(true)
+        .costControlled(true).feedInTariff(Quantities.getQuantity(15, EURO_PER_MEGAWATTHOUR)).build()
 
-		then:
-		alteredUnit.with {
-			assert uuid == bmInput.uuid
-			assert operationTime == bmInput.operationTime
-			assert operator == bmInput.operator
-			assert id == bmInput.id
-			assert marketReaction
-			assert costControlled
-			assert qCharacteristics == bmInput.qCharacteristics
-			assert feedInTariff == Quantities.getQuantity(15, EURO_PER_MEGAWATTHOUR)
-			assert type == SystemParticipantTestData.bmTypeInput
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == bmInput.uuid
+      assert operationTime == bmInput.operationTime
+      assert operator == bmInput.operator
+      assert id == bmInput.id
+      assert marketReaction
+      assert costControlled
+      assert qCharacteristics == bmInput.qCharacteristics
+      assert feedInTariff == Quantities.getQuantity(15, EURO_PER_MEGAWATTHOUR)
+      assert type == SystemParticipantTestData.bmTypeInput
+    }
+  }
 }

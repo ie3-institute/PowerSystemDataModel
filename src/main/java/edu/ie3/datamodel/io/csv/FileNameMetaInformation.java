@@ -8,11 +8,16 @@ package edu.ie3.datamodel.io.csv;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Meta information, that can be derived from a certain file name */
+/**
+ * Meta information, that can be derived from a certain file name
+ *
+ * @deprecated since 3.0. Use {@link edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation} instead
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public abstract class FileNameMetaInformation {
   private final UUID uuid;
 
-  public FileNameMetaInformation(UUID uuid) {
+  protected FileNameMetaInformation(UUID uuid) {
     this.uuid = uuid;
   }
 
@@ -23,8 +28,7 @@ public abstract class FileNameMetaInformation {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof FileNameMetaInformation)) return false;
-    FileNameMetaInformation that = (FileNameMetaInformation) o;
+    if (!(o instanceof FileNameMetaInformation that)) return false;
     return uuid.equals(that.uuid);
   }
 

@@ -97,7 +97,7 @@ public abstract class EntityData extends FactoryData {
   public Optional<LineString> getLineString(String field) {
     Optional<Geometry> geom = getGeometry(field);
     if (geom.isPresent()) {
-      if (geom.get() instanceof LineString) return Optional.of((LineString) geom.get());
+      if (geom.get() instanceof LineString lineString) return Optional.of(lineString);
       else
         throw new FactoryException(
             "Geometry is of type "
@@ -116,7 +116,7 @@ public abstract class EntityData extends FactoryData {
   public Optional<Point> getPoint(String field) {
     Optional<Geometry> geom = getGeometry(field);
     if (geom.isPresent()) {
-      if (geom.get() instanceof Point) return Optional.of((Point) geom.get());
+      if (geom.get() instanceof Point point) return Optional.of(point);
       else
         throw new FactoryException(
             "Geometry is of type "

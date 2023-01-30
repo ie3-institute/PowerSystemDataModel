@@ -3,57 +3,57 @@
 
 // general configuration
 jacoco {
-	toolVersion = "0.8.4"
-	reportsDir = file("$buildDir/reports/jacoco")
+  toolVersion = "0.8.7"
+  reportsDir = file("$buildDir/reports/jacoco")
 }
 
 jacocoTestReport {
-	reports {
-		xml.enabled true
-		csv.enabled false
-		html.enabled true
-		html.destination file("${buildDir}/reports/jacoco")
-	}
+  reports {
+    xml.enabled true
+    csv.enabled false
+    html.enabled true
+    html.destination file("${buildDir}/reports/jacoco")
+  }
 
-	// what to exclude from coverage report (files that should not be analyzed!)
-	// UI, "noise", generated classes, platform classes, etc.
-	def excludes = [
-		'scala/**/*.*',
-		// exclude scala source files
-		'groovy/**/*.*',
-		// exclude groovy source files
-		'**/**Test**.**',
-		// exclude unit tests files
-		'**/**IT**.**' // exclude integration tests files
-	]
+  // what to exclude from coverage report (files that should not be analyzed!)
+  // UI, "noise", generated classes, platform classes, etc.
+  def excludes = [
+    'scala/**/*.*',
+    // exclude scala source files
+    'groovy/**/*.*',
+    // exclude groovy source files
+    '**/**Test**.**',
+    // exclude unit tests files
+    '**/**IT**.**' // exclude integration tests files
+  ]
 
-	getClassDirectories().setFrom(fileTree(
-			dir: "$buildDir/classes/",
-			excludes: excludes
-			))
+  getClassDirectories().setFrom(fileTree(
+      dir: "$buildDir/classes/",
+      excludes: excludes
+      ))
 
-	//	sourceSets sourceSets.main
-	executionData check // include integration tests in jacoco reports
+  //	sourceSets sourceSets.main
+  executionData check // include integration tests in jacoco reports
 }
 
 jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			limit {
-				minimum = 0.68
-			}
-		}
+  violationRules {
+    rule {
+      limit {
+        minimum = 0.68
+      }
+    }
 
-		rule {
-			enabled = false
-			element = 'CLASS'
-			includes = ['org.gradle.*']
+    rule {
+      enabled = false
+      element = 'CLASS'
+      includes = ['org.gradle.*']
 
-			limit {
-				counter = 'LINE'
-				value = 'TOTALCOUNT'
-				maximum = 0.3
-			}
-		}
-	}
+      limit {
+        counter = 'LINE'
+        value = 'TOTALCOUNT'
+        maximum = 0.3
+      }
+    }
+  }
 }

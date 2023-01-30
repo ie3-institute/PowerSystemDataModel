@@ -1,3 +1,5 @@
 # The following file will be copied to a unix Docker image and imported to InfluxDB data base. Therefore, the line
 # ending plays a crucial role. This prevents the endings from being adjusted with 'core.autocrlf=true'
-src/test/resources/testContainerFiles/influxDb/weather.txt eol=lf
+src/test/resources/edu/ie3/datamodel/io/source/influxdb/_weather/cosmo/weather.txt eol=lf
+src/test/resources/edu/ie3/datamodel/io/source/influxdb/_weather/icon/weather.txt eol=lf
+

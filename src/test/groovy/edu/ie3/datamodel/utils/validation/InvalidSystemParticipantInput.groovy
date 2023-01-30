@@ -12,17 +12,17 @@ import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import java.time.ZonedDateTime
 
 class InvalidSystemParticipantInput extends SystemParticipantInput {
-	InvalidSystemParticipantInput(NodeInput node) {
-		super(UUID.randomUUID(), "invalid_system_participant", node, CosPhiFixed.CONSTANT_CHARACTERISTIC)
-	}
+  InvalidSystemParticipantInput(NodeInput node) {
+    super(UUID.randomUUID(), "invalid_system_participant", node, CosPhiFixed.CONSTANT_CHARACTERISTIC)
+  }
 
-	@Override
-	boolean inOperationOn(ZonedDateTime date) {
-		throw new UnsupportedOperationException("This is a dummy class")
-	}
+  @Override
+  boolean inOperationOn(ZonedDateTime date) {
+    throw new UnsupportedOperationException("This is a dummy class")
+  }
 
-	@Override
-	SystemParticipantInputCopyBuilder<?> copy() {
-		throw new UnsupportedOperationException("This is a dummy class")
-	}
+  @Override
+  SystemParticipantInputCopyBuilder<?> copy() {
+    throw new UnsupportedOperationException("This is a dummy class")
+  }
 }

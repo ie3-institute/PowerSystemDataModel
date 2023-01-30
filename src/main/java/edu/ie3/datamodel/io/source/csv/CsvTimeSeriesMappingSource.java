@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSeriesMappingSource {
   /* Available factories */
-  private final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
+  private static final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
 
   private final Map<UUID, UUID> mapping;
 
@@ -27,14 +26,14 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
 
     /* Build the map */
     mapping =
-        filterEmptyOptionals(
-                buildStreamWithFieldsToAttributesMap(MappingEntry.class, connector)
-                    .map(
-                        fieldToValues -> {
-                          SimpleEntityData entityData =
-                              new SimpleEntityData(fieldToValues, MappingEntry.class);
-                          return mappingFactory.get(entityData);
-                        }))
+        buildStreamWithFieldsToAttributesMap(MappingEntry.class, connector)
+            .map(
+                fieldToValues -> {
+                  SimpleEntityData entityData =
+                      new SimpleEntityData(fieldToValues, MappingEntry.class);
+                  return mappingFactory.get(entityData);
+                })
+            .flatMap(Optional::stream)
             .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 
@@ -43,9 +42,14 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
     return mapping;
   }
 
+  /**
+   * @deprecated since 3.0. Use {@link
+   *     CsvTimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
+   */
   @Override
-  public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
-      UUID timeSeriesUuid) {
+  @Deprecated(since = "3.0", forRemoval = true)
+  public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
+      getTimeSeriesMetaInformation(UUID timeSeriesUuid) {
     return connector.getIndividualTimeSeriesMetaInformation(timeSeriesUuid);
   }
 }

@@ -33,7 +33,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @param parallelDevices overall amount of parallel devices to automatically construct (e.g.
    *     parallelDevices = 2 will build a total of two entities using the specified parameters)
    */
-  public ConnectorInput(
+  protected ConnectorInput(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -57,7 +57,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @param parallelDevices overall amount of parallel devices to automatically construct (e.g.
    *     parallelDevices = 2 will build a total of two entities using the specified parameters)
    */
-  public ConnectorInput(
+  protected ConnectorInput(
       UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, int parallelDevices) {
     super(uuid, id);
     this.nodeA = nodeA;
@@ -78,7 +78,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
 
   @Override
   public List<NodeInput> allNodes() {
-    return Collections.unmodifiableList(Arrays.asList(getNodeA(), getNodeB()));
+    return List.of(getNodeA(), getNodeB());
   }
 
   public int getParallelDevices() {
@@ -88,9 +88,8 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof ConnectorInput that)) return false;
     if (!super.equals(o)) return false;
-    ConnectorInput that = (ConnectorInput) o;
     return parallelDevices == that.parallelDevices
         && nodeA.equals(that.nodeA)
         && nodeB.equals(that.nodeB);

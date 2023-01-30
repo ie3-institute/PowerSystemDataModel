@@ -1,25 +1,25 @@
 plugins {
-	id 'java' //java support
-	id 'groovy' // groovy support
-	id 'maven-publish'
-	id 'signing'
-	id 'pmd' // code check, working on source code
-	id 'com.diffplug.spotless' version '6.1.0'//code format
-	id 'com.github.spotbugs' version '5.0.3' // code check, working on byte code
-	id 'de.undercouch.download' version '4.1.2'
-	id 'kr.motd.sphinx' version '2.10.1' // documentation generation
-	id 'jacoco' // java code coverage plugin
-	id "org.sonarqube" version "3.3" // sonarqube
-	id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
+  id 'java' //java support
+  id 'groovy' // groovy support
+  id 'maven-publish'
+  id 'signing'
+  id 'pmd' // code check, working on source code
+  id 'com.diffplug.spotless' version '6.14.0'//code format
+  id 'com.github.spotbugs' version '5.0.13' // code check, working on byte code
+  id 'de.undercouch.download' version '5.3.0'
+  id 'kr.motd.sphinx' version '2.10.1' // documentation generation
+  id 'jacoco' // java code coverage plugin
+  id "org.sonarqube" version "3.5.0.2730" // sonarqube
+  id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
 ext {
-	//version (changing these should be considered thoroughly!)
-	javaVersion = JavaVersion.VERSION_1_8
-	tscfgVersion = '0.9.9'
-	testcontainersVersion = '1.16.2'
+  //version (changing these should be considered thoroughly!)
+  javaVersion = JavaVersion.VERSION_17
+  tscfgVersion = '0.9.9'
+  testcontainersVersion = '1.17.6'
 
-	scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
+  scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
 
 group = 'com.github.ie3-institute'
@@ -40,76 +40,79 @@ apply from: scriptsLocation + 'vcs.gradle'
 apply from: scriptsLocation + 'semVer.gradle'
 
 repositories {
-	mavenCentral() //searches in bintray's repository 'jCenter', which contains Maven Central
-	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
+  mavenCentral() // searches in Sonatype's repository 'Maven Central'
+  maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
 
-	// sonatype snapshot repo
-	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+  // sonatype snapshot repo
+  maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 
 }
 
 dependencies {
-	constraints {
-		implementation( 'junit:junit:4.13.2+'){
-			because "CVE-2020-15250 - Temporary folder vulnerability - https://github.com/advisories/GHSA-269g-pwp5-87pp"
-		}
-	}
+  constraints {
+    implementation( 'junit:junit:4.13.2+'){
+      because "CVE-2020-15250 - Temporary folder vulnerability - https://github.com/advisories/GHSA-269g-pwp5-87pp"
+    }
+  }
 
-	//	 ie³ power system utils
-	implementation 'com.github.ie3-institute:PowerSystemUtils:1.6'
+  //	 ie³ power system utils
+  implementation 'com.github.ie3-institute:PowerSystemUtils:2.0'
 
-	implementation 'tech.units:indriya:2.1.2'
+  implementation 'tech.units:indriya:2.1.4'
 
-	implementation 'com.github.johanneshiry:OSMonaut:v1.1.1' // tmp pbf parse
+  implementation 'com.github.johanneshiry:OSMonaut:v1.1.1' // tmp pbf parse
 
-	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
-	implementation ('org.locationtech.jts:jts-core:1.18.2'){
-		exclude group: 'junit', module: 'junit'
-	}
+  // JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
+  implementation ('org.locationtech.jts:jts-core:1.19.0'){
+    exclude group: 'junit', module: 'junit'
+  }
 
-	implementation 'org.locationtech.jts.io:jts-io-common:1.18.2'
+  implementation 'org.locationtech.jts.io:jts-io-common:1.19.0'
 
-	// Graphs
-	implementation 'org.jgrapht:jgrapht-core:1.4.0'
+  // Graphs
+  implementation 'org.jgrapht:jgrapht-core:1.5.1'
 
-	// testing
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-	testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
-	testImplementation 'org.objenesis:objenesis:3.2' // Mock creation with constructor parameters
+  // testing
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+  testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
+  testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
+  testImplementation 'net.bytebuddy:byte-buddy:1.12.22' // Mocks of classes
 
-	// testcontainers (docker framework for testing)
-	testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
-	testImplementation "org.testcontainers:spock:$testcontainersVersion"
-	testImplementation "org.testcontainers:influxdb:$testcontainersVersion"
-	testImplementation "org.testcontainers:postgresql:$testcontainersVersion"
-	testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
+  // testcontainers (docker framework for testing)
+  testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
+  testImplementation "org.testcontainers:spock:$testcontainersVersion"
+  testImplementation "org.testcontainers:influxdb:$testcontainersVersion"
+  testImplementation "org.testcontainers:postgresql:$testcontainersVersion"
+  testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
 
-	// logging
-	implementation 'org.apache.logging.log4j:log4j-api:2.17.1' // log4j
-	implementation 'org.apache.logging.log4j:log4j-core:2.17.1' // log4j
-	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.1' // log4j -> slf4j
+  // logging
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.19.0')
+  implementation 'org.apache.logging.log4j:log4j-api' // log4j
+  implementation 'org.apache.logging.log4j:log4j-core' // log4j
+  implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
-	// Databases
-	implementation 'org.influxdb:influxdb-java:2.22'
-	implementation 'com.couchbase.client:java-client:3.2.4'
-	runtimeOnly 'org.postgresql:postgresql:42.3.1' // postgresql jdbc driver required during runtime
+  // Databases
+  implementation 'org.influxdb:influxdb-java:2.23'
+  implementation 'com.couchbase.client:java-client:3.4.2'
+  runtimeOnly 'org.postgresql:postgresql:42.5.1' // postgresql jdbc driver required during runtime
 
-	implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
-	implementation 'org.apache.commons:commons-compress:1.21' // I/O functionalities
-	implementation 'org.apache.commons:commons-lang3:3.12.0'
+  implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
+  implementation 'org.apache.commons:commons-compress:1.22' // I/O functionalities
+  implementation 'org.apache.commons:commons-lang3:3.12.0'
 
 }
 
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+  options.encoding = 'UTF-8'
 }
 
 tasks.withType(Javadoc){
-	options.encoding = 'UTF-8'
+  options.encoding = 'UTF-8'
+  failOnError = false // TODO: Temp until JavaDoc issues are resolved
 }
 
 task printVersion {
-	doLast {
-		println project.version
-	}
+  doLast {
+    println project.version
+  }
 }

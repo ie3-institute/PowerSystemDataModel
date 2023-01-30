@@ -29,8 +29,6 @@ import tech.units.indriya.unit.Units;
  */
 public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
   /* Redefine the column names to meet the icon specifications */
-  private static final String COORDINATE = "coordinateid";
-  private static final String TIME = "datum";
   private static final String DIFFUSE_IRRADIANCE = "aswdifdS";
   private static final String DIRECT_IRRADIANCE = "aswdirS";
   private static final String TEMPERATURE = "t2m";
@@ -50,18 +48,13 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   }
 
   @Override
-  public String getCoordinateIdFieldString() {
-    return COORDINATE;
-  }
-
-  @Override
   public String getTimeFieldString() {
     return TIME;
   }
 
   @Override
   protected List<Set<String>> getFields(TimeBasedWeatherValueData data) {
-    Set<String> constructorParamsMin =
+    Set<String> minParameters =
         newSet(
             TIME,
             DIFFUSE_IRRADIANCE,
@@ -71,21 +64,16 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             WIND_VELOCITY_V);
     Set<String> allParameters =
         expandSet(
-            constructorParamsMin,
+            minParameters,
             "albrad",
             "asobs",
-            DIFFUSE_IRRADIANCE,
             "aswdifus",
-            DIRECT_IRRADIANCE,
-            TEMPERATURE,
             "tG",
             "u10m",
-            WIND_VELOCITY_U,
             "u20m",
             "u216m",
             "u65m",
             "v10m",
-            WIND_VELOCITY_V,
             "v20m",
             "v216m",
             "v65m",
@@ -99,9 +87,12 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "p65m",
             "sobsrad",
             "t131m");
+
+    Set<String> minParametersWithUuid = expandSet(minParameters, UUID);
     Set<String> allParametersWithUuid = expandSet(allParameters, UUID);
 
-    return Arrays.asList(constructorParamsMin, allParameters, allParametersWithUuid);
+    return Arrays.asList(
+        minParameters, allParameters, minParametersWithUuid, allParametersWithUuid);
   }
 
   @Override

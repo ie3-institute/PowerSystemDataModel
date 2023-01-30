@@ -239,9 +239,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof Transformer3WInput that)) return false;
     if (!super.equals(o)) return false;
-    Transformer3WInput that = (Transformer3WInput) o;
     return Objects.equals(type, that.type) && Objects.equals(nodeC, that.nodeC);
   }
 
@@ -276,7 +275,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
 
   @Override
   public List<NodeInput> allNodes() {
-    return Collections.unmodifiableList(Arrays.asList(getNodeA(), getNodeB(), nodeC));
+    return List.of(getNodeA(), getNodeB(), nodeC);
   }
 
   /**

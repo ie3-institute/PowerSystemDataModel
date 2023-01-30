@@ -22,82 +22,82 @@ import java.time.ZonedDateTime
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHelper {
-	def "A FixedFeedInInputFactory should contain exactly the expected class for parsing"() {
-		given:
-		def inputFactory = new FixedFeedInInputFactory()
-		def expectedClasses = [FixedFeedInInput]
+  def "A FixedFeedInInputFactory should contain exactly the expected class for parsing"() {
+    given:
+    def inputFactory = new FixedFeedInInputFactory()
+    def expectedClasses = [FixedFeedInInput]
 
-		expect:
-		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
-	}
+    expect:
+    inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
+  }
 
-	def "A FixedFeedInInputFactory should parse a valid FixedFeedInInput correctly"() {
-		given: "a system participant input type factory and model data"
-		def inputFactory = new FixedFeedInInputFactory()
-		Map<String, String> parameter = [
-			"uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-			"operatesuntil"   : "",
-			"id"              : "TestID",
-			"qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
-			"srated"          : "3",
-			"cosphirated"     : "4"
-		]
-		def inputClass = FixedFeedInInput
-		def nodeInput = Mock(NodeInput)
-		def operatorInput = Mock(OperatorInput)
+  def "A FixedFeedInInputFactory should parse a valid FixedFeedInInput correctly"() {
+    given: "a system participant input type factory and model data"
+    def inputFactory = new FixedFeedInInputFactory()
+    Map<String, String> parameter = [
+      "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil"   : "",
+      "id"              : "TestID",
+      "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
+      "srated"          : "3",
+      "cosphirated"     : "4"
+    ]
+    def inputClass = FixedFeedInInput
+    def nodeInput = Mock(NodeInput)
+    def operatorInput = Mock(OperatorInput)
 
-		when:
-		Optional<FixedFeedInInput> input = inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
+    when:
+    Optional<FixedFeedInInput> input = inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
-		then:
-		input.present
-		input.get().getClass() == inputClass
-		((FixedFeedInInput) input.get()).with {
-			assert uuid == UUID.fromString(parameter["uuid"])
-			assert operationTime.startDate.present
-			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-			assert !operationTime.endDate.present
-			assert operator == operatorInput
-			assert id == parameter["id"]
-			assert node == nodeInput
-			assert qCharacteristics.with {
-				assert uuid != null
-				assert points == Collections.unmodifiableSortedSet([
-					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
-				] as TreeSet)
-			}
-			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
-		}
-	}
+    then:
+    input.present
+    input.get().getClass() == inputClass
+    ((FixedFeedInInput) input.get()).with {
+      assert uuid == UUID.fromString(parameter["uuid"])
+      assert operationTime.startDate.present
+      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      assert !operationTime.endDate.present
+      assert operator == operatorInput
+      assert id == parameter["id"]
+      assert node == nodeInput
+      assert qCharacteristics.with {
+        assert uuid != null
+        assert points == Collections.unmodifiableSortedSet([
+          new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
+        ] as TreeSet)
+      }
+      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
+    }
+  }
 
-	def "A FixedFeedInInputFactory should throw an exception on invalid or incomplete data (parameter missing)"() {
-		given: "a system participant input type factory and model data"
-		def inputFactory = new FixedFeedInInputFactory()
-		Map<String, String> parameter = [
-			"uuid"       : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"id"         : "TestID",
-			"srated"     : "3",
-			"cosphirated": "4"
-		]
-		def inputClass = FixedFeedInInput
-		def nodeInput = Mock(NodeInput)
+  def "A FixedFeedInInputFactory should throw an exception on invalid or incomplete data (parameter missing)"() {
+    given: "a system participant input type factory and model data"
+    def inputFactory = new FixedFeedInInputFactory()
+    Map<String, String> parameter = [
+      "uuid"       : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id"         : "TestID",
+      "srated"     : "3",
+      "cosphirated": "4"
+    ]
+    def inputClass = FixedFeedInInput
+    def nodeInput = Mock(NodeInput)
 
-		when:
-		inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
+    when:
+    inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
 
-		then:
-		FactoryException ex = thrown()
-		ex.message == "The provided fields [cosphirated, id, srated, uuid] with data \n" +
-				"{cosphirated -> 4,\n" +
-				"id -> TestID,\n" +
-				"srated -> 3,\n" +
-				"uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of FixedFeedInInput. \n" +
-				"The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'FixedFeedInInput' are possible (NOT case-sensitive!):\n" +
-				"0: [cosphirated, id, qcharacteristics, srated, uuid]\n" +
-				"1: [cosphirated, id, operatesfrom, qcharacteristics, srated, uuid]\n" +
-				"2: [cosphirated, id, operatesuntil, qcharacteristics, srated, uuid]\n" +
-				"3: [cosphirated, id, operatesfrom, operatesuntil, qcharacteristics, srated, uuid]\n"
-	}
+    then:
+    FactoryException ex = thrown()
+    ex.message == "The provided fields [cosphirated, id, srated, uuid] with data \n" +
+        "{cosphirated -> 4,\n" +
+        "id -> TestID,\n" +
+        "srated -> 3,\n" +
+        "uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of FixedFeedInInput. \n" +
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'FixedFeedInInput' are possible (NOT case-sensitive!):\n" +
+        "0: [cosphirated, id, qcharacteristics, srated, uuid]\n" +
+        "1: [cosphirated, id, operatesfrom, qcharacteristics, srated, uuid]\n" +
+        "2: [cosphirated, id, operatesuntil, qcharacteristics, srated, uuid]\n" +
+        "3: [cosphirated, id, operatesfrom, operatesuntil, qcharacteristics, srated, uuid]\n"
+  }
 }

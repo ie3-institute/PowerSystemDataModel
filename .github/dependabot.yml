@@ -8,11 +8,11 @@ updates:
   open-pull-requests-limit: 10
   target-branch: dev
   reviewers:
-  - ckittl
-  - johanneshiry
   - t-ober
   - sensarmad
+  - sebastian-peter
+  - danielfeismann
   ignore:
-  - dependency-name: org.jgrapht:jgrapht-core
+  - dependency-name: org.spockframework:spock-core
     versions:
-    - ">= 1.5.a, < 1.6"
+        - 2.3-groovy-4.0

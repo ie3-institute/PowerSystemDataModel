@@ -66,8 +66,7 @@ public class ChargingPointType implements Serializable {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    ChargingPointType that = (ChargingPointType) o;
+    if (!(o instanceof ChargingPointType that)) return false;
     return id.equals(that.id)
         && sRated.equals(that.sRated)
         && electricCurrentType == that.electricCurrentType

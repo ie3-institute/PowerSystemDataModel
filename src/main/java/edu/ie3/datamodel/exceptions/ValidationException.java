@@ -6,11 +6,11 @@
 package edu.ie3.datamodel.exceptions;
 
 public abstract class ValidationException extends RuntimeException {
-  public ValidationException(String s) {
+  protected ValidationException(String s) {
     super(s);
   }
 
-  public ValidationException(String s, Throwable throwable) {
+  protected ValidationException(String s, Throwable throwable) {
     super(s, throwable);
   }
 }

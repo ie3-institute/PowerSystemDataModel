@@ -11,14 +11,14 @@ import spock.lang.Specification
 
 class RawGridElementsTest extends Specification {
 
-	def "A valid collection of asset entities can be used to build a valid instance of RawGridElements"() {
-		given:
-		def rawGrid = ComplexTopology.grid.rawGrid
+  def "A valid collection of asset entities can be used to build a valid instance of RawGridElements"() {
+    given:
+    def rawGrid = ComplexTopology.grid.rawGrid
 
-		when:
-		def newlyCreatedRawGrid = new RawGridElements(rawGrid.allEntitiesAsList())
+    when:
+    def newlyCreatedRawGrid = new RawGridElements(rawGrid.allEntitiesAsList())
 
-		then:
-		newlyCreatedRawGrid == rawGrid
-	}
+    then:
+    newlyCreatedRawGrid == rawGrid
+  }
 }

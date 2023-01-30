@@ -6,14 +6,14 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.io.connectors.CsvFileConnector;
+import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
-import edu.ie3.datamodel.utils.TimeSeriesUtil;
+import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -37,84 +37,87 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    * @param metaInformation The given meta information
    * @throws SourceException If the given meta information are not supported
    * @return The source
+   * @deprecated since 3.0. Use {@link CsvTimeSeriesSource#getSource(java.lang.String,
+   *     java.lang.String, edu.ie3.datamodel.io.naming.FileNamingStrategy,
+   *     edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation)} instead.
+   */
+  @Deprecated(since = "3.0", forRemoval = true)
+  public static CsvTimeSeriesSource<? extends Value> getSource(
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation
+          metaInformation)
+      throws SourceException {
+    if (!TimeSeriesSource.isSchemeAccepted(metaInformation.getColumnScheme()))
+      throw new SourceException(
+          "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
+
+    Class<? extends Value> valClass = metaInformation.getColumnScheme().getValueClass();
+
+    return create(csvSep, folderPath, fileNamingStrategy, metaInformation, valClass);
+  }
+
+  /** @deprecated since 3.0 */
+  @Deprecated(since = "3.0", forRemoval = true)
+  private static <T extends Value> CsvTimeSeriesSource<T> create(
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation
+          metaInformation,
+      Class<T> valClass) {
+    TimeBasedSimpleValueFactory<T> valueFactory = new TimeBasedSimpleValueFactory<>(valClass);
+    return new CsvTimeSeriesSource<>(
+        csvSep,
+        folderPath,
+        fileNamingStrategy,
+        metaInformation.getUuid(),
+        metaInformation.getFullFilePath(),
+        valClass,
+        valueFactory);
+  }
+
+  /**
+   * Factory method to build a source from given meta information
+   *
+   * @param csvSep the separator string for csv columns
+   * @param folderPath path to the folder holding the time series files
+   * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
+   * @param metaInformation The given meta information
+   * @throws SourceException If the given meta information are not supported
+   * @return The source
    */
   public static CsvTimeSeriesSource<? extends Value> getSource(
       String csvSep,
       String folderPath,
       FileNamingStrategy fileNamingStrategy,
-      CsvFileConnector.CsvIndividualTimeSeriesMetaInformation metaInformation)
+      CsvIndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
-    switch (metaInformation.getColumnScheme()) {
-      case ACTIVE_POWER:
-        TimeBasedSimpleValueFactory<PValue> pValueFactory =
-            new TimeBasedSimpleValueFactory<>(PValue.class);
-        return new CsvTimeSeriesSource<>(
-            csvSep,
-            folderPath,
-            fileNamingStrategy,
-            metaInformation.getUuid(),
-            metaInformation.getFullFilePath(),
-            PValue.class,
-            pValueFactory);
-      case APPARENT_POWER:
-        TimeBasedSimpleValueFactory<SValue> sValueFactory =
-            new TimeBasedSimpleValueFactory<>(SValue.class);
-        return new CsvTimeSeriesSource<>(
-            csvSep,
-            folderPath,
-            fileNamingStrategy,
-            metaInformation.getUuid(),
-            metaInformation.getFullFilePath(),
-            SValue.class,
-            sValueFactory);
-      case ENERGY_PRICE:
-        TimeBasedSimpleValueFactory<EnergyPriceValue> energyPriceFactory =
-            new TimeBasedSimpleValueFactory<>(EnergyPriceValue.class);
-        return new CsvTimeSeriesSource<>(
-            csvSep,
-            folderPath,
-            fileNamingStrategy,
-            metaInformation.getUuid(),
-            metaInformation.getFullFilePath(),
-            EnergyPriceValue.class,
-            energyPriceFactory);
-      case APPARENT_POWER_AND_HEAT_DEMAND:
-        TimeBasedSimpleValueFactory<HeatAndSValue> heatAndSValueFactory =
-            new TimeBasedSimpleValueFactory<>(HeatAndSValue.class);
-        return new CsvTimeSeriesSource<>(
-            csvSep,
-            folderPath,
-            fileNamingStrategy,
-            metaInformation.getUuid(),
-            metaInformation.getFullFilePath(),
-            HeatAndSValue.class,
-            heatAndSValueFactory);
-      case ACTIVE_POWER_AND_HEAT_DEMAND:
-        TimeBasedSimpleValueFactory<HeatAndPValue> heatAndPValueFactory =
-            new TimeBasedSimpleValueFactory<>(HeatAndPValue.class);
-        return new CsvTimeSeriesSource<>(
-            csvSep,
-            folderPath,
-            fileNamingStrategy,
-            metaInformation.getUuid(),
-            metaInformation.getFullFilePath(),
-            HeatAndPValue.class,
-            heatAndPValueFactory);
-      case HEAT_DEMAND:
-        TimeBasedSimpleValueFactory<HeatDemandValue> heatDemandValueFactory =
-            new TimeBasedSimpleValueFactory<>(HeatDemandValue.class);
-        return new CsvTimeSeriesSource<>(
-            csvSep,
-            folderPath,
-            fileNamingStrategy,
-            metaInformation.getUuid(),
-            metaInformation.getFullFilePath(),
-            HeatDemandValue.class,
-            heatDemandValueFactory);
-      default:
-        throw new SourceException(
-            "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
-    }
+    if (!TimeSeriesUtils.isSchemeAccepted(metaInformation.getColumnScheme()))
+      throw new SourceException(
+          "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
+
+    Class<? extends Value> valClass = metaInformation.getColumnScheme().getValueClass();
+
+    return create(csvSep, folderPath, fileNamingStrategy, metaInformation, valClass);
+  }
+
+  private static <T extends Value> CsvTimeSeriesSource<T> create(
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      CsvIndividualTimeSeriesMetaInformation metaInformation,
+      Class<T> valClass) {
+    TimeBasedSimpleValueFactory<T> valueFactory = new TimeBasedSimpleValueFactory<>(valClass);
+    return new CsvTimeSeriesSource<>(
+        csvSep,
+        folderPath,
+        fileNamingStrategy,
+        metaInformation.getUuid(),
+        metaInformation.getFullFilePath(),
+        valClass,
+        valueFactory);
   }
 
   /**
@@ -161,7 +164,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
 
   @Override
   public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
-    return TimeSeriesUtil.trimTimeSeriesToInterval(timeSeries, timeInterval);
+    return TimeSeriesUtils.trimTimeSeriesToInterval(timeSeries, timeInterval);
   }
 
   @Override
@@ -187,9 +190,9 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
       throws SourceException {
     try (BufferedReader reader = connector.initReader(filePath)) {
       Set<TimeBasedValue<V>> timeBasedValues =
-          filterEmptyOptionals(
-                  buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-                      .map(fieldToValueFunction))
+          buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+              .map(fieldToValueFunction)
+              .flatMap(Optional::stream)
               .collect(Collectors.toSet());
 
       return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);

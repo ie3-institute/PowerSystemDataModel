@@ -8,7 +8,6 @@ package edu.ie3.datamodel.models;
 import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
 import edu.ie3.util.quantities.interfaces.*;
-import javax.measure.MetricPrefix;
 import javax.measure.Unit;
 import javax.measure.quantity.*;
 
@@ -31,7 +30,7 @@ public class StandardUnits {
   /** Energy for input purposes in kWh */
   public static final Unit<Energy> ENERGY_IN = KILOWATTHOUR;
   /** Energy for result purposes in MWh */
-  public static final Unit<Energy> ENERGY_RESULT = MetricPrefix.MEGA(WATTHOUR);
+  public static final Unit<Energy> ENERGY_RESULT = MEGAWATTHOUR;
   /** Rated voltage magnitude (mainly for input purposes) in kV */
   public static final Unit<ElectricPotential> RATED_VOLTAGE_MAGNITUDE = KILOVOLT;
   /** Magnitude of an electric current in A */
@@ -40,12 +39,30 @@ public class StandardUnits {
   public static final Unit<Angle> ELECTRIC_CURRENT_ANGLE = DEGREE_GEOM;
   /** Impedance in Ω */
   public static final Unit<ElectricResistance> IMPEDANCE = OHM;
+  /** Resistance in Ω */
+  public static final Unit<ElectricResistance> RESISTANCE = OHM;
+  /** Reactance in Ω */
+  public static final Unit<ElectricResistance> REACTANCE = OHM;
   /** Impedance per length (mainly for lines) in Ω/km */
   public static final Unit<SpecificResistance> IMPEDANCE_PER_LENGTH = OHM_PER_KILOMETRE;
+  /** Resistance per length (mainly for lines) in Ω/km */
+  public static final Unit<SpecificResistance> RESISTANCE_PER_LENGTH = OHM_PER_KILOMETRE;
+  /** Reactance per length (mainly for lines) in Ω/km */
+  public static final Unit<SpecificResistance> REACTANCE_PER_LENGTH = OHM_PER_KILOMETRE;
   /** Admittance in nS */
-  public static final Unit<ElectricConductance> ADMITTANCE = MetricPrefix.NANO(SIEMENS);
+  public static final Unit<ElectricConductance> CONDUCTANCE = NANOSIEMENS;
+  /** Conductance in nS */
+  public static final Unit<ElectricConductance> SUSCEPTANCE = NANOSIEMENS;
+  /** Susceptance in nS */
+  public static final Unit<ElectricConductance> ADMITTANCE = NANOSIEMENS;
   /** Admittance per length (mainly for lines) in µS/km */
   public static final Unit<SpecificConductance> ADMITTANCE_PER_LENGTH = MICRO_SIEMENS_PER_KILOMETRE;
+  /** Conductance per length (mainly for lines) in µS/km */
+  public static final Unit<SpecificConductance> CONDUCTANCE_PER_LENGTH =
+      MICRO_SIEMENS_PER_KILOMETRE;
+  /** Susceptance per length (mainly for lines) in µS/km */
+  public static final Unit<SpecificConductance> SUSCEPTANCE_PER_LENGTH =
+      MICRO_SIEMENS_PER_KILOMETRE;
   /** Target voltage magnitude in p.U. */
   public static final Unit<Dimensionless> TARGET_VOLTAGE_MAGNITUDE = PU;
   /** Voltage magnitude (mainly for result purposes) in p.U. */
@@ -99,7 +116,7 @@ public class StandardUnits {
   /** Orientation of a pv panel with regard to the north-south line in degree_geom */
   public static final Unit<Angle> AZIMUTH = DEGREE_GEOM;
   /** Elevation of a pv panel with regard to the plane in degree_geom */
-  public static final Unit<Angle> SOLAR_HEIGHT = DEGREE_GEOM;
+  public static final Unit<Angle> SOLAR_ELEVATION_ANGLE = DEGREE_GEOM;
   /** Direction of the wind in degree geom */
   public static final Unit<Angle> WIND_DIRECTION = DEGREE_GEOM;
   /** Velocity of the wind in metre per second */

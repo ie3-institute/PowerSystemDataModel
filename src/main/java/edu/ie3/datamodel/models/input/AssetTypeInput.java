@@ -17,7 +17,7 @@ public abstract class AssetTypeInput extends InputEntity {
    * @param uuid of the input entity
    * @param id of the asset
    */
-  public AssetTypeInput(UUID uuid, String id) {
+  protected AssetTypeInput(UUID uuid, String id) {
     super(uuid);
     this.id = id;
   }
@@ -29,9 +29,8 @@ public abstract class AssetTypeInput extends InputEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof AssetTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    AssetTypeInput that = (AssetTypeInput) o;
     return Objects.equals(id, that.id);
   }
 

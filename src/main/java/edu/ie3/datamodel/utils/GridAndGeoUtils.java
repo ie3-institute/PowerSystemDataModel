@@ -16,7 +16,7 @@ public class GridAndGeoUtils extends GeoUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */
   private GridAndGeoUtils() {
-    throw new IllegalStateException("Utility classes cannot be instantiated");
+    throw new IllegalStateException("Utility classes cannot be instantiated.");
   }
 
   /**
@@ -27,7 +27,7 @@ public class GridAndGeoUtils extends GeoUtils {
    * @return The equivalent straight line string
    * @deprecated Use {@link #buildSafeLineStringBetweenNodes(NodeInput, NodeInput)} instead
    */
-  @Deprecated
+  @Deprecated(since = "1.1.0", forRemoval = true)
   public static LineString buildLineStringBetweenNodes(NodeInput a, NodeInput b) {
     return buildSafeLineStringBetweenPoints(a.getGeoPosition(), b.getGeoPosition());
   }

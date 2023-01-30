@@ -110,7 +110,7 @@ public class InfluxDbSink implements OutputDataSink {
   private Optional<Point> transformToPoint(ResultEntity entity) {
     Optional<String> measurementName =
         entityPersistenceNamingStrategy.getResultEntityName(entity.getClass());
-    if (!measurementName.isPresent())
+    if (measurementName.isEmpty())
       log.warn(
           "I could not get a measurement name for class {}. I am using its simple name instead.",
           entity.getClass().getSimpleName());
@@ -169,7 +169,7 @@ public class InfluxDbSink implements OutputDataSink {
       TimeSeries<E, V> timeSeries) {
     if (timeSeries.getEntries().isEmpty()) return Collections.emptySet();
     Optional<String> measurementName = entityPersistenceNamingStrategy.getEntityName(timeSeries);
-    if (!measurementName.isPresent()) {
+    if (measurementName.isEmpty()) {
       String valueClassName =
           timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName();
       log.warn(
@@ -236,10 +236,10 @@ public class InfluxDbSink implements OutputDataSink {
   private <C extends UniqueEntity> Set<Point> extractPoints(C entity) {
     Set<Point> points = new HashSet<>();
     /* Distinguish between result models and time series */
-    if (entity instanceof ResultEntity) {
+    if (entity instanceof ResultEntity resultEntity) {
       try {
         points.add(
-            transformToPoint((ResultEntity) entity)
+            transformToPoint(resultEntity)
                 .orElseThrow(() -> new SinkException("Could not transform entity")));
       } catch (SinkException e) {
         log.error(
@@ -247,8 +247,7 @@ public class InfluxDbSink implements OutputDataSink {
             entity.getClass().getSimpleName(),
             e);
       }
-    } else if (entity instanceof TimeSeries) {
-      TimeSeries<?, ?> timeSeries = (TimeSeries<?, ?>) entity;
+    } else if (entity instanceof TimeSeries<?, ?> timeSeries) {
       points.addAll(transformToPoints(timeSeries));
     } else {
       log.error(

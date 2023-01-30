@@ -11,24 +11,36 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-/** Yet supported column schemes in individual time series */
+/**
+ * Yet supported column schemes in individual time series
+ *
+ * @deprecated since 3.0. Use {@link edu.ie3.datamodel.io.naming.timeseries.ColumnScheme} instead
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public enum ColumnScheme {
-  ENERGY_PRICE("c"),
-  ACTIVE_POWER("p"),
-  APPARENT_POWER("pq"),
-  HEAT_DEMAND("h"),
-  ACTIVE_POWER_AND_HEAT_DEMAND("ph"),
-  APPARENT_POWER_AND_HEAT_DEMAND("pqh"),
-  WEATHER("weather");
+  ENERGY_PRICE("c", EnergyPriceValue.class),
+  ACTIVE_POWER("p", PValue.class),
+  APPARENT_POWER("pq", SValue.class),
+  HEAT_DEMAND("h", HeatDemandValue.class),
+  ACTIVE_POWER_AND_HEAT_DEMAND("ph", HeatAndPValue.class),
+  APPARENT_POWER_AND_HEAT_DEMAND("pqh", HeatAndSValue.class),
+  WEATHER("weather", WeatherValue.class);
 
   private final String scheme;
+  private final Class<? extends Value> valueClass;
 
-  ColumnScheme(String scheme) {
+  @Deprecated
+  ColumnScheme(String scheme, Class<? extends Value> valueClass) {
     this.scheme = scheme;
+    this.valueClass = valueClass;
   }
 
   public String getScheme() {
     return scheme;
+  }
+
+  public Class<? extends Value> getValueClass() {
+    return valueClass;
   }
 
   public static Optional<ColumnScheme> parse(String key) {

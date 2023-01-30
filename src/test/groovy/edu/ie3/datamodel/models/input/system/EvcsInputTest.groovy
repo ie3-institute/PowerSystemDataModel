@@ -12,28 +12,30 @@ import spock.lang.Specification
 
 class EvcsInputTest extends Specification {
 
-	def "A EvCsInput copy method should work as expected"() {
-		given:
-		def evcsInput = SystemParticipantTestData.evcsInput
+  def "A EvCsInput copy method should work as expected"() {
+    given:
+    def evcsInput = SystemParticipantTestData.evcsInput
 
-		when:
-		def alteredEntity = evcsInput.copy()
-				.type(ChargingPointTypeUtils.TeslaSuperChargerV3)
-				.cosPhiRated(0.7d).chargingPoints(1)
-				.locationType(EvcsLocationType.CHARGING_HUB_HIGHWAY)
-				.build()
+    when:
+    def alteredEntity = evcsInput.copy()
+        .type(ChargingPointTypeUtils.TeslaSuperChargerV3)
+        .cosPhiRated(0.7d).chargingPoints(1)
+        .locationType(EvcsLocationType.CHARGING_HUB_HIGHWAY)
+        .v2gSupport(true)
+        .build()
 
-		then:
-		alteredEntity.with {
-			assert uuid == evcsInput.uuid
-			assert operationTime == evcsInput.operationTime
-			assert operator == evcsInput.operator
-			assert id == evcsInput.id
-			assert qCharacteristics == evcsInput.qCharacteristics
-			assert type == ChargingPointTypeUtils.TeslaSuperChargerV3
-			assert cosPhiRated == 0.7d
-			assert chargingPoints == 1
-			assert locationType == EvcsLocationType.CHARGING_HUB_HIGHWAY
-		}
-	}
+    then:
+    alteredEntity.with {
+      assert uuid == evcsInput.uuid
+      assert operationTime == evcsInput.operationTime
+      assert operator == evcsInput.operator
+      assert id == evcsInput.id
+      assert qCharacteristics == evcsInput.qCharacteristics
+      assert type == ChargingPointTypeUtils.TeslaSuperChargerV3
+      assert cosPhiRated == 0.7d
+      assert chargingPoints == 1
+      assert locationType == EvcsLocationType.CHARGING_HUB_HIGHWAY
+      assert v2gSupport
+    }
+  }
 }
