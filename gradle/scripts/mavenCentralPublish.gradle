@@ -40,7 +40,7 @@ if (project.hasProperty('user') && project.hasProperty('password') && project.ha
           url = 'https:github.com/ie3-institute/PowerSystemDatamodel'
           organization {
             name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
-            url = 'http:www.ie3.tu-dortmund.de/'
+            url = 'https:www.ie3.tu-dortmund.de/'
           }
           issueManagement {
             system = 'GitHub'
@@ -51,30 +51,17 @@ if (project.hasProperty('user') && project.hasProperty('password') && project.ha
               name = 'BSD 3-Clause License'
               url = 'https:github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
             }
-            scm {
-              connection = 'scm:git:git:github.com/ie3-institute/PowerSystemDataModel.git'
-              developerConnection = 'scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git'
-              url = 'https:github.com/ie3-institute/PowerSystemDataModel'
+          }
+          developers {
+            developer {
+              organization = "Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University"
+              organizationUrl = "https:ie3.etit.tu-dortmund.de"
             }
-            developers {
-              [
-                developer {
-                  id = 'johanneshiry'
-                  name = 'Johannes Hiry'
-                  email = 'johannes.hiry@tu-dortmund.de'
-                },
-                developer {
-                  id = 'ckittl'
-                  name = 'Chris Kittl'
-                  email = 'chris.kittl@tu-dortmund.de'
-                },
-                developer {
-                  id = 'sensarmad'
-                  name = 'Debopama Sen Sarma'
-                  email = 'debopama-sen.sarma@tu-dortmund.de'
-                }
-              ]
-            }
+          }
+          scm {
+            connection = 'scm:git:git:github.com/ie3-institute/PowerSystemDataModel.git'
+            developerConnection = 'scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git'
+            url = 'https:github.com/ie3-institute/PowerSystemDataModel'
           }
         }
 
