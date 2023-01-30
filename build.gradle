@@ -16,7 +16,6 @@ plugins {
 ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_17
-  tscfgVersion = '0.9.9'
   testcontainersVersion = '1.17.6'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
@@ -41,26 +40,18 @@ apply from: scriptsLocation + 'semVer.gradle'
 
 repositories {
   mavenCentral() // searches in Sonatype's repository 'Maven Central'
-  maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
 
   // sonatype snapshot repo
-  maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+  maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
 
 }
 
 dependencies {
-  constraints {
-    implementation( 'junit:junit:4.13.2+'){
-      because "CVE-2020-15250 - Temporary folder vulnerability - https://github.com/advisories/GHSA-269g-pwp5-87pp"
-    }
-  }
 
   //	 ie³ power system utils
   implementation 'com.github.ie3-institute:PowerSystemUtils:2.0'
 
   implementation 'tech.units:indriya:2.1.4'
-
-  implementation 'com.github.johanneshiry:OSMonaut:v1.1.1' // tmp pbf parse
 
   // JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
   implementation ('org.locationtech.jts:jts-core:1.19.0'){
