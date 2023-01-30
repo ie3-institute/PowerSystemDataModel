@@ -145,9 +145,9 @@ node {
 
           // get the sonatype credentials stored in the jenkins secure keychain
           withCredentials([
-            usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
-            file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
-            usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')
+            usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'MAVENCENTRAL_USER', passwordVariable: 'MAVENCENTRAL_PASS'),
+            file(credentialsId: mavenCentralSignKeyFileId, variable: 'MAVENCENTRAL_KEYFILE'),
+            usernamePassword(credentialsId: mavenCentralSignKeyId, usernameVariable: 'MAVENCENTRAL_SIGNINGKEYID', passwordVariable: 'MAVENCENTRAL_SIGNINGPASS')
           ]) {
 
             /*
@@ -159,17 +159,15 @@ node {
                 returnStdout: true
                 )
 
-            String deployGradleTasks = "--refresh-dependencies test " +
-                "publish -Puser=${env.mavencentral_username} " +
-                "-Ppassword=${env.mavencentral_password} " +
-                "-Psigning.keyId=${env.signingKeyId} " +
-                "-Psigning.password=${env.signingPassword} " +
-                "-Psigning.secretKeyRingFile=${env.mavenCentralKeyFile} " +
+            String deployGradleTasks = '--refresh-dependencies test ' +
+                'publish -Puser=${MAVENCENTRAL_USER} ' +
+                '-Ppassword=${MAVENCENTRAL_PASS} ' +
+                '-Psigning.keyId=${MAVENCENTRAL_SIGNINGKEYID} ' +
+                '-Psigning.password=${MAVENCENTRAL_SIGNINGPASS} ' +
+                '-Psigning.secretKeyRingFile=${MAVENCENTRAL_KEYFILE} ' +
                 "-PdeployVersion='$projectVersion'"
 
-            // see https://docs.gradle.org/6.0.1/release-notes.html "Publication of SHA256 and SHA512 checksums"
-            def preventSHACheckSums = "-Dorg.gradle.internal.publish.checksums.insecure=true"
-            gradle("${deployGradleTasks} $preventSHACheckSums", projectName)
+            gradle(deployGradleTasks, projectName)
           }
 
           if (env.BRANCH_NAME == "main") {
@@ -376,7 +374,7 @@ def gradle(String command, String relativeProjectDir) {
   env.JENKINS_NODE_COOKIE = 'dontKillMe' // this is necessary for the Gradle daemon to be kept alive
 
   // switch directory to be able to use gradle wrapper
-  sh(script: """set +x && cd $relativeProjectDir""" + ''' set +x; ./gradlew ''' + """$command""", returnStdout: true)
+  sh(script: """set +x && cd $relativeProjectDir""" + ''' set +x; ./gradlew ''' + command, returnStdout: true)
 }
 
 def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String currentBranchName, String targetBranchName, String orgName, String projectName, String relativeGitDir) {
