@@ -8,7 +8,6 @@ import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +33,6 @@ public abstract class EntitySource {
     protected FunctionalDataSource dataSource;
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-
-
-
 
     /**
      * Returns a predicate that can be used to filter optionals of {@link UniqueEntity}s and keep
@@ -70,7 +65,6 @@ public abstract class EntitySource {
 
     protected void printInvalidElementInformation(
             Class<? extends UniqueEntity> entityClass, LongAdder noOfInvalidElements) {
-
         log.error(
                 "{} entities of type '{}' are missing required elements!",
                 noOfInvalidElements,

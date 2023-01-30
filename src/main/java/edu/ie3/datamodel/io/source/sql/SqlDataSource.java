@@ -6,7 +6,11 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.FunctionalDataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -132,11 +136,24 @@ public class SqlDataSource extends FunctionalDataSource {
   public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
     return null;
   }
-
   @Override
-  public <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(UUID timeSeriesUuid, String filePath, Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction) {
+  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass, String specialPlace) {
     return null;
   }
+
+  @Override
+  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(String specialPlace) throws SourceException {
+    return null;
+  }
+  @Override
+  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData() {
+    return null;
+  }
+  @Override
+  public Stream<Map<String, String>> getSourceData(IdCoordinateFactory factory) {
+    return null;
+  }
+
 
   /**
    * Interface for anonymous functions that are used as a parameter for {@link #buildStreamByQuery}.
@@ -221,12 +238,4 @@ public class SqlDataSource extends FunctionalDataSource {
     }
     return Collections.emptyList();
   }
-
-  /**
-   * Instantiates an entity produced by this source given the required field value map.
-   *
-   * @param fieldToValues map of fields to their respective values
-   * @return the entity if instantiation succeeds
-   */
-  //protected abstract Optional createEntity(Map<String, String> fieldToValues);
 }

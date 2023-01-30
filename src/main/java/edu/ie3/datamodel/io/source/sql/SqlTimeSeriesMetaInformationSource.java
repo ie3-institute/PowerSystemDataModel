@@ -23,14 +23,19 @@ import java.util.stream.Collectors;
 public class SqlTimeSeriesMetaInformationSource
     extends TimeSeriesMetaInformationSource {
 
-  private final Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
+  private static final TimeSeriesMetaInformationFactory mappingFactory =
+          new TimeSeriesMetaInformationFactory();
+
+  private final DatabaseNamingStrategy namingStrategy;
+  private final Map<UUID, IndividualTimeSeriesMetaInformation> mapping;
+
   public SqlTimeSeriesMetaInformationSource(
           SqlConnector connector,
           String schemaName,
           DatabaseNamingStrategy databaseNamingStrategy
   ) {
-    super(new SqlDataSource(connector, schemaName, databaseNamingStrategy));
-    this.timeSeriesMetaInformation = null;
+    this.namingStrategy = databaseNamingStrategy;
+    this.mapping = null;
 
     /*
     this.mapping = queryMapping(queryComplete, ps -> {})

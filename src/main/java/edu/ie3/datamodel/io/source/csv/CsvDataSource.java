@@ -7,13 +7,14 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
+import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.Factory;
+import edu.ie3.datamodel.io.factory.SimpleFactoryData;
+import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.FunctionalDataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
-import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
@@ -30,6 +31,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,8 +74,62 @@ public class CsvDataSource extends FunctionalDataSource {
 
 
   @Override
+  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData() {
+    return null;
+  }
+
+  @Override
   public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
+  }
+
+  @Override
+  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass, String specialPlace) throws SourceException {
+    try {
+      return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(specialPlace));
+    } catch (FileNotFoundException e) {
+      log.warn(
+              "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+      throw new SourceException("Unable to find a file with path '" + specialPlace + "'.", e);
+    } catch (IOException e) {
+      throw new SourceException("Error during reading of file'" + specialPlace + "'.", e);
+    }
+  }
+
+
+  @Override
+  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(String specialPlace) throws SourceException {
+    return null;
+  }
+
+  @Override
+  public Stream<Map<String, String>> getSourceData(IdCoordinateFactory factory) {
+    try (BufferedReader reader = connector.initIdCoordinateReader()) {
+      final String[] headline = parseCsvRow(reader.readLine(), csvSep);
+
+      // by default try-with-resources closes the reader directly when we leave this method (which
+      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
+      // As we still want to consume the data at other places, we start a new stream instead of
+      // returning the original one
+      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
+
+      Function<Map<String, String>, String> idExtractor =
+              fieldToValues -> fieldToValues.get(factory.getIdField());
+      Set<Map<String, String>> withDistinctCoordinateId =
+              distinctRowsWithLog(allRows, idExtractor, "coordinate id mapping", "coordinate id");
+      Function<Map<String, String>, String> coordinateExtractor =
+              fieldToValues ->
+                      fieldToValues
+                              .get(factory.getLatField())
+                              .concat(fieldToValues.get(factory.getLonField()));
+      return distinctRowsWithLog(
+              withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
+              .parallelStream();
+    } catch (IOException e) {
+      log.error("Cannot read the file for coordinate id to coordinate mapping.", e);
+    }
+
+    return Stream.empty();
   }
 
 
@@ -412,36 +470,4 @@ public class CsvDataSource extends FunctionalDataSource {
     return allRowsSet;
   }
 
-  @Override
-  public <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(
-          UUID timeSeriesUuid,
-          String filePath,
-          Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
-  {
-    return null;
-  }
-
-  /*
-  @Override
-  public <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(
-          UUID timeSeriesUuid,
-          String filePath,
-          Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
-          throws SourceException {
-    try (BufferedReader reader = connector.initReader(filePath)) {
-      Set<TimeBasedValue<V>> timeBasedValues =
-              buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-                      .map(fieldToValueFunction)
-                      .flatMap(Optional::stream)
-                      .collect(Collectors.toSet());
-
-      return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
-    } catch (FileNotFoundException e) {
-      throw new SourceException("Unable to find a file with path '" + filePath + "'.", e);
-    } catch (IOException e) {
-      throw new SourceException("Error during reading of file'" + filePath + "'.", e);
-    }
-  }
-
-   */
 }

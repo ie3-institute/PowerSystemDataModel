@@ -16,6 +16,8 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+
+import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -235,6 +237,13 @@ public class CsvFileConnector implements DataConnector {
 
     return Optional.ofNullable(individualTimeSeriesMetaInformation.get(timeSeriesUuid))
         .map(edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation::new);
+  }
+
+
+  public Map<Point, IndividualTimeSeriesMetaInformation> getIndividualTimeSeriesMetaInformation(
+          ColumnScheme columnScheme
+  ) {
+    return null;
   }
 
   /**

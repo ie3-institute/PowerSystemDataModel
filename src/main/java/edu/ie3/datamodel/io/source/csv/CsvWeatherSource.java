@@ -32,12 +32,9 @@ import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
-public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
+public class CsvWeatherSource extends WeatherSource {
 
-  private final TimeBasedWeatherValueFactory weatherFactory;
-
-  private final Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries;
-  private final IdCoordinateSource coordinateSource;
+  private CsvDataSource dataSource;
 
   /**
    * Initializes a CsvWeatherSource with a {@link CsvIdCoordinateSource} instance and immediately
@@ -64,43 +61,28 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
         weatherFactory);
   }
 
-  /**
-   * Initializes a CsvWeatherSource and immediately imports weather data, which will be kept for the
-   * lifetime of this source
-   *
-   * @param csvSep the separator string for csv columns
-   * @param folderPath path to the folder holding the time series files
-   * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
-   * @param coordinateSource a coordinate source to map ids to points
-   * @param weatherFactory factory to transfer field to value mapping into actual java object
-   *     instances
-   */
   public CsvWeatherSource(
       String csvSep,
       String folderPath,
       FileNamingStrategy fileNamingStrategy,
-      IdCoordinateSource coordinateSource,
+      IdCoordinateSource idCoordinateSource,
       TimeBasedWeatherValueFactory weatherFactory) {
-    super(csvSep, folderPath, fileNamingStrategy);
-    this.coordinateSource = coordinateSource;
-    this.weatherFactory = weatherFactory;
-
+    super(idCoordinateSource, weatherFactory);
+    this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     coordinateToTimeSeries = getWeatherTimeSeries();
   }
 
-  /**
-   * Creates reader for all available weather time series files and then continues to parse them
-   *
-   * @return a map of coordinates to their time series
-   */
-  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
+  //-----------------------------------------------------------------------------------------------
+
+  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
     /* Get only weather time series meta information */
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
-        connector.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
+            dataSource.connector.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
 
-    return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), connector);
+    return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
   }
 
+  /*
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
@@ -116,31 +98,12 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     return trimMapToInterval(filteredMap, timeInterval);
   }
-
+   */
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
     if (timeSeries == null) return Optional.empty();
     return timeSeries.getTimeBasedValue(date);
-  }
-
-  /**
-   * Trims all time series in a map to the given time interval
-   *
-   * @param map the map to trim the time series value of
-   * @param timeInterval the interval to trim the data to
-   * @return a map with trimmed time series
-   */
-  private Map<Point, IndividualTimeSeries<WeatherValue>> trimMapToInterval(
-      Map<Point, IndividualTimeSeries<WeatherValue>> map,
-      ClosedInterval<ZonedDateTime> timeInterval) {
-    // decided against parallel mode here as it likely wouldn't pay off as the expected coordinate
-    // count is too low
-    return map.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> TimeSeriesUtils.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
   }
 
   /**
@@ -187,6 +150,34 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
     return weatherTimeSeries;
   }
 
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+          Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+    try (BufferedReader reader = bufferedReader) {
+      final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
+
+      // by default try-with-resources closes the reader directly when we leave this method (which
+      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
+      // As we still want to consume the data at other places, we start a new stream instead of
+      // returning the original one
+      Collection<Map<String, String>> allRows = dataSource.csvRowFieldValueMapping(reader, headline);
+
+      Function<Map<String, String>, String> timeCoordinateIdExtractor =
+              fieldToValues ->
+                      fieldToValues
+                              .get(weatherFactory.getTimeFieldString())
+                              .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
+      return dataSource.distinctRowsWithLog(
+              allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
+              .parallelStream();
+
+    } catch (IOException e) {
+      log.warn(
+              "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+    }
+
+    return Stream.empty();
+  }
+
   /**
    * Builds a {@link TimeBasedValue} of type {@link WeatherValue} from given "flat " input
    * information. If the single model cannot be built, an empty optional is handed back.
@@ -231,34 +222,8 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @return a parallel stream of maps, where each map represents one row of the csv file with the
    *     mapping (fieldName to fieldValue)
    */
-  @Override
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
-    try (BufferedReader reader = bufferedReader) {
-      final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
-      // by default try-with-resources closes the reader directly when we leave this method (which
-      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
-      // As we still want to consume the data at other places, we start a new stream instead of
-      // returning the original one
-      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
-      Function<Map<String, String>, String> timeCoordinateIdExtractor =
-          fieldToValues ->
-              fieldToValues
-                  .get(weatherFactory.getTimeFieldString())
-                  .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
-      return distinctRowsWithLog(
-          allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
-          .parallelStream();
-
-    } catch (IOException e) {
-      log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-    }
-
-    return Stream.empty();
-  }
 
   /**
    * Extract the coordinate identifier from the field to value mapping and obtain the actual
@@ -277,7 +242,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
       return Optional.empty();
     }
     int coordinateId = Integer.parseInt(coordinateString);
-    return coordinateSource.getCoordinate(coordinateId);
+    return idCoordinateSource.getCoordinate(coordinateId);
   }
 
   /**

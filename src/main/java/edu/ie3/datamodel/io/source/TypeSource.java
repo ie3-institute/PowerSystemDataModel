@@ -28,10 +28,6 @@ import java.util.Set;
  * @since 08.04.20
  */
 public class TypeSource extends EntitySource implements DataSource {
-
-    //general fields
-    //FunctionalDataSource dataSource;
-
     //factories
     private final OperatorInputFactory operatorInputFactory;
     private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;

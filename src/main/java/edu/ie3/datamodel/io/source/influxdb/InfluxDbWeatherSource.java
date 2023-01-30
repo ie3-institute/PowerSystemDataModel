@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.influxdb;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
+import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -25,7 +26,7 @@ import org.influxdb.dto.QueryResult;
 import org.locationtech.jts.geom.Point;
 
 /** InfluxDB Source for weather data */
-public class InfluxDbWeatherSource implements WeatherSource {
+public class InfluxDbWeatherSource implements DataSource {
   private static final String BASIC_QUERY_STRING = "Select * from weather";
   private static final String WHERE = " where ";
   private static final String AND = " and ";
@@ -54,7 +55,6 @@ public class InfluxDbWeatherSource implements WeatherSource {
     this.weatherValueFactory = weatherValueFactory;
   }
 
-  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     try (InfluxDB session = connector.getSession()) {
@@ -77,7 +77,6 @@ public class InfluxDbWeatherSource implements WeatherSource {
     }
   }
 
-  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     if (coordinates == null) return getWeather(timeInterval);
@@ -128,7 +127,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     }
   }
 
-  @Override
+
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {

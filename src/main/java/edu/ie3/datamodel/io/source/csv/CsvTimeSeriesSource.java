@@ -22,11 +22,11 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
           String folderPath,
           FileNamingStrategy fileNamingStrategy,
           UUID timeSeriesUuid,
-          String filePath,
+          String filePath,              //Unterklasse
           Class<V> valueClass,
           TimeBasedSimpleValueFactory<V> factory
   ) {
-    super(new CsvDataSource(csvSep, folderPath, fileNamingStrategy), timeSeriesUuid, valueClass, factory);
+    super(new CsvDataSource(csvSep, folderPath, fileNamingStrategy), timeSeriesUuid, filePath, valueClass, factory);
   }
 
 

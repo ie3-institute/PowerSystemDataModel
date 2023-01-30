@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -13,35 +14,45 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.ZonedDateTime;
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
  */
-public class TimeSeriesSource<V extends Value> implements DataSource {
+public class TimeSeriesSource<V extends Value> extends TimeSeriesRelatedSource<V> implements DataSource {
 
-  public final FunctionalDataSource dataSource;
-  private final IndividualTimeSeries<V> timeSeries;
+  protected FunctionalDataSource dataSource;
+  protected IndividualTimeSeries<V> timeSeries;
 
   public TimeSeriesSource (
           FunctionalDataSource _dataSource,
           UUID timeSeriesUuid,
+          String specialPlace,
           Class<V> valueClass,
           TimeBasedSimpleValueFactory<V> factory
           ) {
     this.dataSource = _dataSource;
 
-    String filePath = "";
-
-    this.timeSeries = dataSource.buildIndividualTimeSeries(
+    try {
+        this.timeSeries = buildIndividualTimeSeries(
                     timeSeriesUuid,
-                    filePath,
+                    specialPlace,
                     fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory));
+      } catch (SourceException e) {
+          throw new IllegalArgumentException(
+                  "Unable to obtain time series with UUID '"
+                          + timeSeriesUuid
+                          + "'. Please check arguments!",
+                  e);
+      }
   }
 
   /**
@@ -68,13 +79,28 @@ public class TimeSeriesSource<V extends Value> implements DataSource {
    */
   public Optional<V> getValue(ZonedDateTime time) { return timeSeries.getValue(time); }
 
-  public Optional<TimeBasedValue<V>> buildTimeBasedValue(
-          Map<String, String> fieldToValues,
-          Class<V> valueClass,
-          TimeBasedSimpleValueFactory<V> factory) {
-    SimpleTimeBasedValueData<V> factoryData =
-            new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return factory.get(factoryData);
+  /**
+   * Attempts to read a time series with given unique identifier and file path. Single entries are
+   * obtained entries with the help of {@code fieldToValueFunction}.
+   *
+   * @param timeSeriesUuid unique identifier of the time series
+   * @param fieldToValueFunction function, that is able to transfer a mapping (from field to value)
+   *     onto a specific instance of the targeted entry class
+   * @throws SourceException If the file cannot be read properly
+   * @return An option onto an individual time series
+   */
+  @Override
+  public<V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(
+          UUID timeSeriesUuid,
+          String specialPlace,
+          Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
+          throws SourceException {
+              Set<TimeBasedValue<V>> timeBasedValues =
+                      dataSource.getSourceData(TimeBasedValue.class, specialPlace)
+                              .map(fieldToValueFunction)
+                              .flatMap(Optional::stream)
+                              .collect(Collectors.toSet());
+              return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
   }
 
 

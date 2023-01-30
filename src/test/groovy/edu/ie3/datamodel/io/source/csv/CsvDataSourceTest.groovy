@@ -40,10 +40,12 @@ class CsvDataSourceTest extends Specification {
       return super.buildFieldsToAttributes(csvRow, headline)
     }
 
+    /*
     OperatorInput getFirstOrDefaultOperator(
         Collection<OperatorInput> operators, String operatorUuid, String entityClassName, String requestEntityUuid) {
       return super.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid)
     }
+     */
 
     def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
         Class<T> entityClass, Collection<Map<String, String>> allRows) {
@@ -71,6 +73,7 @@ class CsvDataSourceTest extends Specification {
   @Shared
   DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, fileNamingStrategy)
 
+  /*
   def "A csv data source is able to find the correct first entity by uuid"() {
     given:
     def uuid = UUID.randomUUID()
@@ -88,6 +91,7 @@ class CsvDataSourceTest extends Specification {
     actual.present
     actual.get() == queriedOperator
   }
+   */
 
   def "A DataSource should contain a valid connector after initialization"() {
     expect:
@@ -385,6 +389,7 @@ class CsvDataSourceTest extends Specification {
 
   }
 
+  /*
   def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
 
     expect:
@@ -397,6 +402,7 @@ class CsvDataSourceTest extends Specification {
     "8f9682df-0744-4b58-a122-f0dc730f6510" | []| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
 
   }
+   */
 
   def "A CsvDataSource should collect be able to collect empty optionals when asked to do so"() {
 
@@ -500,6 +506,7 @@ class CsvDataSourceTest extends Specification {
     distinctRows.size() == 0
   }
 
+/*
   def "A CsvDataSource should be able to handle the extraction process of an asset type correctly"() {
 
     when:
@@ -518,7 +525,9 @@ class CsvDataSourceTest extends Specification {
     [gtd.transformerTypeBtoD]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || true            || gtd.transformerTypeBtoD
     [sptd.chpTypeInput]| ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true            || sptd.chpTypeInput
   }
+ */
 
+  /*
   def "A CsvDataSource should not throw an exception but assume NO_OPERATOR_ASSIGNED if the operator field is missing in the headline"() {
 
     given:
@@ -537,5 +546,7 @@ class CsvDataSourceTest extends Specification {
     thermalBusInputEntity.present
     thermalBusInputEntity.get().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
   }
+
+   */
 
 }

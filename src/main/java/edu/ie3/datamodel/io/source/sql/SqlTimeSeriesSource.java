@@ -83,7 +83,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     TimeBasedSimpleValueFactory<T> valueFactory =
         new TimeBasedSimpleValueFactory<>(valClass, timePattern);
     return new SqlTimeSeriesSource<>(
-        connector, schemaName, namingStrategy, timeSeriesUuid, valClass, valueFactory);
+        connector, schemaName, namingStrategy, timeSeriesUuid, "", valClass, valueFactory);
   }
 
 
@@ -104,9 +104,10 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       String schemaName,
       DatabaseNamingStrategy namingStrategy,
       UUID timeSeriesUuid,
+      String specialPlace,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
-    super(new SqlDataSource(connector, schemaName, namingStrategy), timeSeriesUuid, valueClass, factory);
+    super(new SqlDataSource(connector, schemaName, namingStrategy), timeSeriesUuid, specialPlace, valueClass, factory);
 
     this.timeSeriesUuid = timeSeriesUuid;
     this.valueClass = valueClass;

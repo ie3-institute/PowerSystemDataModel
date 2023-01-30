@@ -21,30 +21,35 @@ import java.util.stream.Collectors;
  */
 public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
 
-  private final Map<UUID, IndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
+  protected final CsvDataSource dataSource;
 
+  private final Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
+
+  /**
+   * Creates a time series type source
+   *
+   * @param csvSep the CSV separator
+   * @param folderPath path that time series reside in
+   * @param fileNamingStrategy the file naming strategy
+   */
   public CsvTimeSeriesMetaInformationSource(
           String csvSep,
-          String gridFolderPath,
+          String folderPath,
           FileNamingStrategy fileNamingStrategy
   ) {
-    super(new CsvDataSource(csvSep, gridFolderPath, fileNamingStrategy));
+    this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     // retrieve only the desired time series
-    timeSeriesMetaInformation = null;
-    //timeSeriesMetaInformation = dataSource.connector.getIndividualTimeSeriesMetaInformation(TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
+    this.timeSeriesMetaInformation = dataSource.connector.getCsvIndividualTimeSeriesMetaInformation(TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
   }
 
-  /*
   public Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation() {
     return timeSeriesMetaInformation.entrySet().stream()
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
-
 
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
-      UUID timeSeriesUuid) {
+          UUID timeSeriesUuid
+  ) {
     return Optional.ofNullable(timeSeriesMetaInformation.get(timeSeriesUuid));
   }
-
-   */
 }

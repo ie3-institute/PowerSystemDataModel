@@ -15,12 +15,10 @@ import java.util.UUID;
 /** Source for all available time series with their {@link UUID} and {@link ColumnScheme} */
 public class TimeSeriesMetaInformationSource implements DataSource {
 
-    protected final FunctionalDataSource dataSource;
+    //protected final FunctionalDataSource dataSource;
 
-    public TimeSeriesMetaInformationSource(
-            FunctionalDataSource _dataSource
-    ) {
-        this.dataSource = _dataSource;
+    public TimeSeriesMetaInformationSource() {
+        
     }
 
 
@@ -34,9 +32,12 @@ public class TimeSeriesMetaInformationSource implements DataSource {
         return null;
    }
 
+   /*
    Map<UUID, CsvIndividualTimeSeriesMetaInformation> getCsvIndividualTimeSeriesMetaInformation() {
        return null;
    }
+
+    */
 
   /**
    * Get an option on the given time series meta information

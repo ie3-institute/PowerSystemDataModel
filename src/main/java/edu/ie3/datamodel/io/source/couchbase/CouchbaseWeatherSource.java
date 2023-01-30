@@ -13,6 +13,7 @@ import com.couchbase.client.java.query.QueryResult;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
+import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -29,8 +30,9 @@ import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /** Couchbase Source for weather data */
-public class CouchbaseWeatherSource implements WeatherSource {
+public class CouchbaseWeatherSource implements DataSource {
   private static final Logger logger = LoggerFactory.getLogger(CouchbaseWeatherSource.class);
   private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
   /** The start of the document key, comparable to a table name in relational databases */
@@ -158,7 +160,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
     this.timeStampPattern = timeStampPattern;
   }
 
-  @Override
+
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     logger.warn(
@@ -167,7 +169,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
     return getWeather(timeInterval, coordinateSource.getAllCoordinates());
   }
 
-  @Override
+
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
@@ -198,7 +200,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
     return coordinateToTimeSeries;
   }
 
-  @Override
+
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
