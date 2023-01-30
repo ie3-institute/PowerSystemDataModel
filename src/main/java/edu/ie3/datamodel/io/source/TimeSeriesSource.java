@@ -6,18 +6,15 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
+import edu.ie3.datamodel.io.source.csv.CsvDataSource;
+import edu.ie3.datamodel.io.source.sql.SqlDataSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -32,7 +29,9 @@ public class TimeSeriesSource<V extends Value> extends TimeSeriesRelatedSource<V
   protected FunctionalDataSource dataSource;
   protected IndividualTimeSeries<V> timeSeries;
 
-  public TimeSeriesSource (
+  protected UUID timeSeriesUuid;
+
+  public TimeSeriesSource(
           FunctionalDataSource _dataSource,
           UUID timeSeriesUuid,
           String specialPlace,
@@ -40,6 +39,7 @@ public class TimeSeriesSource<V extends Value> extends TimeSeriesRelatedSource<V
           TimeBasedSimpleValueFactory<V> factory
           ) {
     this.dataSource = _dataSource;
+    this.timeSeriesUuid = timeSeriesUuid;
 
     try {
         this.timeSeries = buildIndividualTimeSeries(
@@ -89,7 +89,7 @@ public class TimeSeriesSource<V extends Value> extends TimeSeriesRelatedSource<V
    * @throws SourceException If the file cannot be read properly
    * @return An option onto an individual time series
    */
-  @Override
+
   public<V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(
           UUID timeSeriesUuid,
           String specialPlace,

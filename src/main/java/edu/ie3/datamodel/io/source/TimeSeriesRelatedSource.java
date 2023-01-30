@@ -15,12 +15,15 @@ import java.util.function.Function;
 public abstract class TimeSeriesRelatedSource<V extends Value> {
 
 
+    /*
     public abstract <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries (
             UUID timeSeriesUuid,
             String specialPlace,
             Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction
     ) throws SourceException;
 
+
+     */
     public Optional<TimeBasedValue<V>> buildTimeBasedValue(
             Map<String, String> fieldToValues,
             Class<V> valueClass,

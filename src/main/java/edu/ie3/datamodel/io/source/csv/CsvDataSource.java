@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @version 0.1
  * @since 05.04.20
  */
-public class CsvDataSource extends FunctionalDataSource {
+public class CsvDataSource implements FunctionalDataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvDataSource.class);
 

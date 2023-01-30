@@ -29,7 +29,9 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SqlDataSource extends FunctionalDataSource {
+import javax.xml.crypto.Data;
+
+public class SqlDataSource implements FunctionalDataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
@@ -58,6 +60,8 @@ public class SqlDataSource extends FunctionalDataSource {
   }
 
   protected String getSchemaName() { return schemaName; }
+
+  protected DatabaseNamingStrategy getDatabaseNamingStrategy() { return databaseNamingStrategy; }
 
   /**
    * Creates a base query string without closing semicolon of the following pattern: <br>
@@ -134,8 +138,10 @@ public class SqlDataSource extends FunctionalDataSource {
 
   @Override
   public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
-    return null;
+    String query = createBaseQueryString(schemaName,"");
+    return buildStreamByQuery(entityClass, connector, query);
   }
+
   @Override
   public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass, String specialPlace) {
     return null;
@@ -145,10 +151,12 @@ public class SqlDataSource extends FunctionalDataSource {
   public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(String specialPlace) throws SourceException {
     return null;
   }
+
   @Override
   public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData() {
     return null;
   }
+
   @Override
   public Stream<Map<String, String>> getSourceData(IdCoordinateFactory factory) {
     return null;

@@ -20,8 +20,9 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Stream;
 
-public abstract class FunctionalDataSource {
+public interface FunctionalDataSource {
 
+    /*
     protected static final Logger log = LoggerFactory.getLogger(FunctionalDataSource.class);
 
     // field names
@@ -34,6 +35,8 @@ public abstract class FunctionalDataSource {
 
     protected static final FileNamingStrategy namingStrategy = new FileNamingStrategy();
 
+     */
+
 
     public abstract <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass);
 
@@ -43,9 +46,4 @@ public abstract class FunctionalDataSource {
     public abstract <T extends UniqueEntity> Stream<Map<String, String>> getSourceData();
 
     public abstract Stream<Map<String, String>> getSourceData(IdCoordinateFactory factory);
-
-    public FileNamingStrategy getNamingStrategy() {
-        return namingStrategy;
-    }
-
 }

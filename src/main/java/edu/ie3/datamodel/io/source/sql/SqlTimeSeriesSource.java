@@ -29,19 +29,61 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
+
+  // General fields
   private static final String WHERE = " WHERE ";
   private static final String TIME_SERIES = "time_series";
 
-  private final UUID timeSeriesUuid;
-  private final Class<V> valueClass;
-  private final TimeBasedSimpleValueFactory<V> valueFactory;
+  private String baseQuery;
+
+  public SqlTimeSeriesSource(
+          SqlDataSource sqlDataSource,
+          UUID timeSeriesUuid,
+          String specialPlace,
+          Class<V> valueClass,
+          TimeBasedSimpleValueFactory<V> factory
+  ) {
+    super(sqlDataSource, timeSeriesUuid, specialPlace, valueClass, factory);
+
+    final ColumnScheme columnScheme = ColumnScheme.parse(valueClass).orElseThrow();
+    final String tableName = sqlDataSource.getDatabaseNamingStrategy().getTimeSeriesEntityName(columnScheme);
+    this.baseQuery = sqlDataSource.createBaseQueryString(sqlDataSource.getSchemaName(), tableName);
+
+    String dbTimeColumnName = sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
+
+    this.queryFull = createQueryFull(sqlDataSource.getSchemaName(), tableName);
+    this.queryTimeInterval = createQueryForTimeInterval(sqlDataSource.getSchemaName(), tableName, dbTimeColumnName);
+    this.queryTime = createQueryForTime(sqlDataSource.getSchemaName(), tableName, dbTimeColumnName);
+  }
+
+
+  /**
+   * Initializes a new SqlTimeSeriesSource
+   *
+   * @param connector the connector needed for database connection
+   * @param schemaName the database schema to use
+   * @param namingStrategy the naming strategy for database entities
+   * @param timeSeriesUuid the uuid of the time series
+   * @param valueClass the class of returned time series values
+   * @param factory a factory that parses the input data
+   */
+  public SqlTimeSeriesSource(
+          SqlConnector connector,
+          String schemaName,
+          DatabaseNamingStrategy namingStrategy,
+          UUID timeSeriesUuid,
+          String specialPlace,
+          Class<V> valueClass,
+          TimeBasedSimpleValueFactory<V> factory) {
+    this(new SqlDataSource(connector, schemaName, namingStrategy), timeSeriesUuid, specialPlace, valueClass, factory);
+  }
+
 
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
    * avoid creating a new string each time, bc they're always the same.
    */
   private final String queryFull;
-
   private final String queryTimeInterval;
   private final String queryTime;
 
@@ -86,129 +128,14 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         connector, schemaName, namingStrategy, timeSeriesUuid, "", valClass, valueFactory);
   }
 
-
-
-
-  /**
-   * Initializes a new SqlTimeSeriesSource
-   *
-   * @param connector the connector needed for database connection
-   * @param schemaName the database schema to use
-   * @param namingStrategy the naming strategy for database entities
-   * @param timeSeriesUuid the uuid of the time series
-   * @param valueClass the class of returned time series values
-   * @param factory a factory that parses the input data
-   */
-  public SqlTimeSeriesSource(
-      SqlConnector connector,
-      String schemaName,
-      DatabaseNamingStrategy namingStrategy,
-      UUID timeSeriesUuid,
-      String specialPlace,
-      Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
-    super(new SqlDataSource(connector, schemaName, namingStrategy), timeSeriesUuid, specialPlace, valueClass, factory);
-
-    this.timeSeriesUuid = timeSeriesUuid;
-    this.valueClass = valueClass;
-    this.valueFactory = factory;
-    final ColumnScheme columnScheme = ColumnScheme.parse(valueClass).orElseThrow();
-    final String tableName = namingStrategy.getTimeSeriesEntityName(columnScheme);
-
-    String dbTimeColumnName = "";
-    //String dbTimeColumnName = dataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
-
-    this.queryFull = createQueryFull(schemaName, tableName);
-    this.queryTimeInterval = createQueryForTimeInterval(schemaName, tableName, dbTimeColumnName);
-    this.queryTime = createQueryForTime(schemaName, tableName, dbTimeColumnName);
-  }
-
-  @Override
-  public IndividualTimeSeries<V> getTimeSeries() {
-    return null;
-    /*
-    try {
-      return buildIndividualTimeSeries(
-              timeSeriesUuid,
-              fieldToValue -> this.buildTimeBasedValueReduced(fieldToValue, valueClass, valueFactory),
-              queryFull,
-              ps -> {}
-              );
-    } catch (SourceException e) {
-      return null;
-    }
-
-     */
-  }
-
-  @Override
-  public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
-    return null;
-    /*
-    try {
-      /*
-      return buildIndividualTimeSeries(
-              timeSeriesUuid,
-              fieldToValue -> this.buildTimeBasedValueReduced(fieldToValue, valueClass, valueFactory),
-              queryTimeInterval,
-              ps -> {
-                ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
-                ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
-              });
-
-
-    } catch (SourceException e) {
-      return null;
-    }
-
-     */
-  }
-
-  private IndividualTimeSeries<V> buildIndividualTimeSeries(
-          UUID timeSeriesUuid,
-          Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction,
-          String query,
-          SqlDataSource.AddParams addParams)
-           {
-    return null;
-    /*
-    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
-      Set<TimeBasedValue<V>> timeBasedValues =
-              buildStreamByQuery(TimeBasedValue.class, addParams, ps)
-                      .map(fieldToValueFunction)
-                      .flatMap(Optional::stream)
-                      .collect(Collectors.toSet());
-
-      return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
-    } catch (SQLException e) {
-      log.warn("SQL", e);
-    }
-    return null;
-
-     */
-  }
-
-  @Override
-  public Optional<V> getValue(ZonedDateTime time) {
-    return null;
-    /*
-    List<TimeBasedValue<V>> timeBasedValues =
-        executeQuery(queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())));
-    if (timeBasedValues.isEmpty()) return Optional.empty();
-    if (timeBasedValues.size() > 1)
-      log.warn("Retrieved more than one result value, using the first");
-    return Optional.of(timeBasedValues.get(0).getValue());
-
-     */
-  }
-
+  /*
    protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return valueFactory.get(factoryData);
   }
-
+  */
 
   /**
    * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
@@ -237,16 +164,12 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @return the query string
    */
   private String createQueryFull(String schemaName, String tableName) {
-    return "";
-    /*
-    return createBaseQueryString(schemaName, tableName)
+    return baseQuery
         + WHERE
         + TIME_SERIES
         + " = '"
         + timeSeriesUuid.toString()
         + "'";
-
-     */
   }
 
   /**
@@ -261,9 +184,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    */
   private String createQueryForTimeInterval(
       String schemaName, String tableName, String timeColumnName) {
-    return "";
-    /*
-    return createBaseQueryString(schemaName, tableName)
+    return baseQuery
         + WHERE
         + TIME_SERIES
         + " = '"
@@ -271,8 +192,6 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         + "' AND "
         + timeColumnName
         + " BETWEEN ? AND ?;";
-
-     */
   }
 
   /**
@@ -286,11 +205,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @return the query string
    */
   private String createQueryForTime(String schemaName, String tableName, String timeColumnName) {
-
-    return "";
-    /*
-    return createBaseQueryString(schemaName, tableName)
-
+    return baseQuery
         + WHERE
         + TIME_SERIES
         + " = '"
@@ -298,8 +213,6 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         + "' AND "
         + timeColumnName
         + "=?;";
-
-     */
   }
 
 
