@@ -96,6 +96,6 @@ class LineInputTest extends Specification {
         ", type=3bed3eb3-9790-4874-89b5-a5434d408088" +
         ", length=0.003 km" +
         ", geoPosition=LINESTRING (7.411111 51.492528, 7.414116 51.484136)" +
-        ", olmCharacteristic=OlmCharacteristicInput{points=[CharacteristicCoordinate{x=0 m/s, y=1 p.u.}]}}"
+        ", olmCharacteristic=OlmCharacteristicInput{points=[CharacteristicCoordinate{x=0.0 m/s, y=1 p.u.}]}}"
   }
 }
