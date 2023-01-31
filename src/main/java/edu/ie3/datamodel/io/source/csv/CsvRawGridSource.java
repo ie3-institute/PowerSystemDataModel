@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.RawGridException;
+import edu.ie3.datamodel.exceptions.RawInputDataException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.input.*;
@@ -18,8 +20,11 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.utils.options.Failure;
+import edu.ie3.datamodel.utils.options.Success;
 import edu.ie3.datamodel.utils.options.Try;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -80,17 +85,64 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
     /* assets */
     Set<NodeInput> nodes = getNodes(operators);
-    Set<LineInput> lineInputs = getLines(nodes, lineTypes, operators);
-    Set<Transformer2WInput> transformer2WInputs =
-        get2WTransformers(nodes, transformer2WTypeInputs, operators);
-    Set<Transformer3WInput> transformer3WInputs =
-        get3WTransformers(nodes, transformer3WTypeInputs, operators);
-    Set<SwitchInput> switches = getSwitches(nodes, operators);
-    Set<MeasurementUnitInput> measurementUnits = getMeasurementUnits(nodes, operators);
 
-    /* build and return the grid if it is not empty */
-    return new RawGridElements(
-        nodes, lineInputs, transformer2WInputs, transformer3WInputs, switches, measurementUnits);
+    Try<Set<LineInput>, RawInputDataException> lineInputs =
+        checkData(() -> getLines(nodes, lineTypes, operators));
+    Try<Set<Transformer2WInput>, RawInputDataException> transformer2WInputs =
+        checkData(() -> get2WTransformers(nodes, transformer2WTypeInputs, operators));
+    Try<Set<Transformer3WInput>, RawInputDataException> transformer3WInputs =
+        checkData(() -> get3WTransformers(nodes, transformer3WTypeInputs, operators));
+    Try<Set<SwitchInput>, RawInputDataException> switches =
+        checkData(() -> getSwitches(nodes, operators));
+    Try<Set<MeasurementUnitInput>, RawInputDataException> measurementUnits =
+        checkData(() -> getMeasurementUnits(nodes, operators));
+
+    List<RawInputDataException> exceptions = new ArrayList<>();
+    if (lineInputs.isFailure()) {
+      exceptions.add(lineInputs.getException());
+    }
+    if (transformer2WInputs.isFailure()) {
+      exceptions.add(transformer2WInputs.getException());
+    }
+    if (transformer3WInputs.isFailure()) {
+      exceptions.add(transformer3WInputs.getException());
+    }
+    if (switches.isFailure()) {
+      exceptions.add(switches.getException());
+    }
+    if (measurementUnits.isFailure()) {
+      exceptions.add(measurementUnits.getException());
+    }
+
+    if (exceptions.size() > 0) {
+      throw new RawGridException(
+          exceptions.size() + " error(s) occurred while initializing the grid.", exceptions);
+    } else {
+      /* build and return the grid if it is not empty */
+      return new RawGridElements(
+          nodes,
+          lineInputs.getData(),
+          transformer2WInputs.getData(),
+          transformer3WInputs.getData(),
+          switches.getData(),
+          measurementUnits.getData());
+    }
+  }
+
+  /**
+   * Method to check if a method succeeded or if an error is thrown.
+   *
+   * @param method method to be tested
+   * @return a try object
+   * @param <D> type of the data
+   */
+  private <D> Try<Set<D>, RawInputDataException> checkData(Callable<Set<D>> method) {
+    try {
+      Set<D> set = method.call();
+      return new Success<>(set);
+    } catch (Exception e) {
+      return new Failure<>(new RawInputDataException(e));
+    }
   }
 
   /** {@inheritDoc} */

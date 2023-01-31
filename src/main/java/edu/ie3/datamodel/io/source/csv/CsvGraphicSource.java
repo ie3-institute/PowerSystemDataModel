@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.RawInputDataException;
 import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
@@ -23,6 +24,8 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.utils.options.Try;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -72,28 +75,39 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
     Set<NodeInput> nodes = rawGridSource.getNodes(operators);
     Set<LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
 
-    Set<NodeGraphicInput> nodeGraphics =
+    Try<Set<NodeGraphicInput>, RawInputDataException> nodeGraphics =
         Try.scanForExceptions(
-                buildNodeGraphicEntityData(nodes)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .map(nodeGraphicInputFactory::get)
-                    .collect(Collectors.toSet()),
-                NodeGraphicInput.class)
-            .get();
+            buildNodeGraphicEntityData(nodes)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(nodeGraphicInputFactory::get)
+                .collect(Collectors.toSet()),
+            NodeGraphicInput.class);
 
-    Set<LineGraphicInput> lineGraphics =
+    Try<Set<LineGraphicInput>, RawInputDataException> lineGraphics =
         Try.scanForExceptions(
-                buildLineGraphicEntityData(lines)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .map(lineGraphicInputFactory::get)
-                    .collect(Collectors.toSet()),
-                LineGraphicInput.class)
-            .get();
+            buildLineGraphicEntityData(lines)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(lineGraphicInputFactory::get)
+                .collect(Collectors.toSet()),
+            LineGraphicInput.class);
 
-    // if everything is fine, return a GraphicElements instance
-    return new GraphicElements(nodeGraphics, lineGraphics);
+    List<RawInputDataException> exceptions = new ArrayList<>();
+
+    if (nodeGraphics.isFailure()) {
+      exceptions.add(nodeGraphics.getException());
+    }
+    if (lineGraphics.isFailure()) {
+      exceptions.add(lineGraphics.getException());
+    }
+
+    if (exceptions.size() > 0) {
+      throw new GraphicSourceException(exceptions.size() + "error(s) occurred.", exceptions);
+    } else {
+      // if everything is fine, return a GraphicElements instance
+      return new GraphicElements(nodeGraphics.getData(), lineGraphics.getData());
+    }
   }
   /** {@inheritDoc} */
   @Override

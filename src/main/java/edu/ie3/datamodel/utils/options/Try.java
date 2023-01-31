@@ -78,7 +78,7 @@ public abstract class Try<R, E extends Exception> {
       return new Failure<>(
           new RawInputDataException(
               countExceptions
-                  + " errors occurred within \""
+                  + " error(s) occurred within \""
                   + typeOfData.getSimpleName()
                   + "\" data, one "
                   + firstException.getMessage().toLowerCase(),
