@@ -5,9 +5,20 @@ methods to get coordinates, ids of coordinates or the distance between a given c
 coordinates.
 
 
-## Known implementations:
-- CsvIdCoordinateSource
-- SqlIdCoordinateSource
+### Information
+
+| Attribute    | Remarks                                                      |
+|:-------------|:-------------------------------------------------------------|
+| `Id`         | An integer value for identifying the coordinate.             |
+| `Coordiante` | Geographical information each as `Lat/long` of as a `Point`. |
+
+
+
+### Known implementations:
+The following implementations are currently known:
+
+- [Csv Id Coordinate Source](/io/csvfiles)
+- [Sql Id Coordinate Source](/io/sql)
 
 
 ## Method for coordinates:
