@@ -31,7 +31,6 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,9 +45,6 @@ import org.slf4j.LoggerFactory;
 /** Default directory hierarchy for input models */
 public class DefaultDirectoryHierarchy implements FileHierarchy {
   private static final Logger logger = LoggerFactory.getLogger(DefaultDirectoryHierarchy.class);
-
-  /** Use the unix file separator here. */
-  protected static final String FILE_SEPARATOR = File.separator;
 
   /** Base directory for this specific grid model. The base path should be a directory. */
   private final Path baseDirectory;
@@ -69,12 +65,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
     Path baseDirectoryNormalized =
         Path.of(FilenameUtils.normalizeNoEndSeparator(String.valueOf(baseDirectory), true));
     this.baseDirectory = baseDirectoryNormalized.toAbsolutePath();
-    this.projectDirectory =
-        Paths.get(
-                baseDirectoryNormalized
-                    + FilenameUtils.normalizeNoEndSeparator(gridName, true)
-                    + FILE_SEPARATOR)
-            .toAbsolutePath();
+    this.projectDirectory = baseDirectoryNormalized.resolve(gridName).toAbsolutePath();
 
     /* Prepare the sub directories by appending the relative path to base path and mapping to information about being mandatory */
     this.subDirectories =

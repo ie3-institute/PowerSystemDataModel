@@ -28,8 +28,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.ZonedDateTime
-import java.util.stream.Collectors
-import java.util.stream.Stream
 
 class CsvFileConnectorTest extends Specification {
   @Shared
@@ -80,11 +78,11 @@ class CsvFileConnectorTest extends Specification {
   def "The csv file connector is able to build correct uuid to meta information mapping"() {
     given:
     def expected = [
-      (UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf"), ColumnScheme.APPARENT_POWER, "its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf" as Path),
-      (UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, "its_p_fcf0b851-a836-4bde-8090-f44c382ed226" as Path),
-      (UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND, "its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b" as Path),
-      (UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, "its_c_b88dee50-5484-4136-901d-050d8c1c97d1" as Path),
-      (UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b" as Path)
+      (UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf"), ColumnScheme.APPARENT_POWER, Path.of("its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf")),
+      (UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, Path.of("its_p_fcf0b851-a836-4bde-8090-f44c382ed226")),
+      (UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND, Path.of("its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b")),
+      (UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_b88dee50-5484-4136-901d-050d8c1c97d1")),
+      (UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"))
     ]
 
     when:
@@ -97,9 +95,9 @@ class CsvFileConnectorTest extends Specification {
   def "The csv file connector is able to build correct uuid to meta information mapping when restricting column schemes"() {
     given:
     def expected = [
-      (UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, "its_c_b88dee50-5484-4136-901d-050d8c1c97d1" as Path),
-      (UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b" as Path),
-      (UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, "its_p_fcf0b851-a836-4bde-8090-f44c382ed226" as Path)
+      (UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_b88dee50-5484-4136-901d-050d8c1c97d1")),
+      (UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")),
+      (UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, Path.of("its_p_fcf0b851-a836-4bde-8090-f44c382ed226"))
     ]
 
     when:
@@ -139,7 +137,7 @@ class CsvFileConnectorTest extends Specification {
     def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
 
     and: "expected results"
-    def nodeFile = new File(Stream.of(baseDirectory, "test", "input", "grid", "node_input.csv").collect(Collectors.joining(File.separator)))
+    def nodeFile = baseDirectory.resolve(Path.of("test", "input", "grid", "node_input.csv")).toFile()
 
     when:
     /* The head line is of no interest here */
@@ -189,7 +187,7 @@ class CsvFileConnectorTest extends Specification {
     def baseDirectory = tmpDirectory
     def fileNamingStrategy = new FileNamingStrategy()
     def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
-    def expected = new CsvFileDefinition("node_input.csv", ""  as Path, ["a", "b", "c"] as String[], ",")
+    def expected = new CsvFileDefinition("node_input.csv", Path.of(""), ["a", "b", "c"] as String[], ",")
 
     when:
     def actual = connector.buildFileDefinition(NodeInput, ["a", "b", "c"] as String[], ",")
@@ -201,7 +199,7 @@ class CsvFileConnectorTest extends Specification {
   def "The csv file connector is able to build correct csv file definition from class upon request, utilizing directory hierarchy"() {
     given:
     def baseDirectory = tmpDirectory
-    def fileNamingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(tmpDirectory.toString(), "test"))
+    def fileNamingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(tmpDirectory, "test"))
     def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
     def expected = new CsvFileDefinition("node_input.csv", Path.of("test").resolve("input").resolve("grid"), ["a", "b", "c"] as String[], ",")
 
@@ -234,7 +232,7 @@ class CsvFileConnectorTest extends Specification {
     def baseDirectory = tmpDirectory
     def fileNamingStrategy = new FileNamingStrategy()
     def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
-    def expected = new CsvFileDefinition("its_c_0c03ce9f-ab0e-4715-bc13-f9d903f26dbf.csv", ""  as Path, ["a", "b", "c"] as String[], ",")
+    def expected = new CsvFileDefinition("its_c_0c03ce9f-ab0e-4715-bc13-f9d903f26dbf.csv", Path.of(""), ["a", "b", "c"] as String[], ",")
 
     and: "credible input"
     def entries = [
@@ -278,7 +276,7 @@ class CsvFileConnectorTest extends Specification {
     def baseFolder = tmpDirectory.resolve("helloWorld.txt")
     def baseFolderFile = baseFolder.toFile()
     baseFolderFile.createNewFile()
-    def fileDefinition = new CsvFileDefinition("test.csv", "" as Path, [] as String[], ",")
+    def fileDefinition = new CsvFileDefinition("test.csv", Path.of(""), [] as String[], ",")
 
     when:
     cfc.initWriter(baseFolder, fileDefinition)

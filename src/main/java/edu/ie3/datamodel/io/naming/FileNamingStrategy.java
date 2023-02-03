@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +77,7 @@ public class FileNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        Path.of(getEntityName(cls).orElse("")), getDirectoryPath(cls).orElseGet(() -> Path.of("")));
+        getEntityName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> Path.of("")));
   }
 
   /**
@@ -94,7 +95,7 @@ public class FileNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        Path.of(entityPersistenceNamingStrategy.getEntityName(timeSeries).orElse("")),
+        entityPersistenceNamingStrategy.getEntityName(timeSeries).orElseGet(() -> ""),
         getDirectoryPath(timeSeries).orElseGet(() -> Path.of("")));
   }
 
@@ -106,10 +107,10 @@ public class FileNamingStrategy {
    * @param subDirectories Sub directory path
    * @return Concatenation of sub directory structure and file name
    */
-  private Optional<Path> getFilePath(Path fileName, Path subDirectories) {
-    if (!Files.exists(fileName)) return Optional.empty();
-    if (Files.exists(subDirectories)) return Optional.of(subDirectories.resolve(fileName));
-    else return Optional.of(fileName);
+  private Optional<Path> getFilePath(String fileName, Path subDirectories) {
+    if (fileName.isEmpty()) return Optional.empty();
+    if (!subDirectories.toString().isEmpty()) return Optional.of(subDirectories.resolve(fileName));
+    else return Optional.of(Path.of(fileName));
   }
 
   /**
@@ -132,8 +133,7 @@ public class FileNamingStrategy {
                   maybeDirectoryName
                       .get()
                       .toString()
-                      .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
-                      .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""))));
+                      .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, ""))));
     }
   }
 
@@ -169,16 +169,19 @@ public class FileNamingStrategy {
     Path subDirectory =
         fileHierarchy.getSubDirectory(IndividualTimeSeries.class).orElseGet(() -> Path.of(""));
 
-    if (!Files.exists(subDirectory)) {
+    if (subDirectory.toString().isEmpty()) {
       return entityPersistenceNamingStrategy.getIndividualTimeSeriesPattern();
     } else {
       /* Build the pattern by joining the subdirectory with the file name pattern, harmonizing file separators and
        * finally escaping them */
-      Path joined =
-          subDirectory.resolve(
+      String joined =
+          FilenameUtils.concat(
+              subDirectory.toString(),
               entityPersistenceNamingStrategy.getIndividualTimeSeriesPattern().pattern());
+      String harmonized = IoUtil.harmonizeFileSeparator(joined);
+      String escaped = harmonized.replace("\\", "\\\\");
 
-      return Pattern.compile(joined.toString());
+      return Pattern.compile(escaped);
     }
   }
 
@@ -197,11 +200,14 @@ public class FileNamingStrategy {
     } else {
       /* Build the pattern by joining the sub directory with the file name pattern, harmonizing file separators and
        * finally escaping them */
-      Path joined =
-          subDirectory.resolve(
+      String joined =
+          FilenameUtils.concat(
+              subDirectory.toString(),
               entityPersistenceNamingStrategy.getLoadProfileTimeSeriesPattern().pattern());
+      String harmonized = IoUtil.harmonizeFileSeparator(joined);
+      String escaped = harmonized.replace("\\", "\\\\");
 
-      return Pattern.compile(joined.toString());
+      return Pattern.compile(escaped);
     }
   }
 
@@ -305,8 +311,7 @@ public class FileNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        Path.of(getIdCoordinateEntityName()),
-        fileHierarchy.getBaseDirectory().orElseGet(() -> Path.of("")));
+        getIdCoordinateEntityName(), fileHierarchy.getBaseDirectory().orElseGet(() -> Path.of("")));
   }
 
   /**

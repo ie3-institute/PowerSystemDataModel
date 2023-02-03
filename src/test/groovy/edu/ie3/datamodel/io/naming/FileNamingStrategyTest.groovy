@@ -445,7 +445,7 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     clazz            | uuid                                                    | type                       || expectedFileName
-    LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || Paths.get("test_grid", "input", "participants", "global", "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304")
+    LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || Paths.get("test_grid", "input", "global", "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory path for time series mapping"() {
@@ -642,7 +642,7 @@ class FileNamingStrategyTest extends Specification {
     res.get() == expectedPath
 
     where:
-    modelClass               || expectedString
+    modelClass               || expectedPath
     LoadResult               || Path.of("load_res")
     FixedFeedInResult        || Path.of("fixed_feed_in_res")
     BmResult                 || Path.of("bm_res")
