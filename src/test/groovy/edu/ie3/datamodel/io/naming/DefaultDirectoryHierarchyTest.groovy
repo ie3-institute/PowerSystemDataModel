@@ -47,15 +47,15 @@ class DefaultDirectoryHierarchyTest extends Specification {
     try {
       dfh.baseDirectory.get() == basePath
       dfh.subDirectories.size() == 9
-      dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "grid").collect(Collectors.joining(File.separator)))) == true
-      dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "participants").collect(Collectors.joining(File.separator)))) == true
-      dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "participants", "time_series").collect(Collectors.joining(File.separator)))) == false
-      dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "global").collect(Collectors.joining(File.separator)))) == true
-      dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "thermal").collect(Collectors.joining(File.separator)))) == false
-      dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "graphics").collect(Collectors.joining(File.separator)))) == false
-      dfh.subDirectories.get(Paths.get(Stream.of(basePath, "results", "grid").collect(Collectors.joining(File.separator)))) == false
-      dfh.subDirectories.get(Paths.get(Stream.of(basePath, "results", "participants").collect(Collectors.joining(File.separator)))) == false
-      dfh.subDirectories.get(Paths.get(Stream.of(basePath, "results", "thermal").collect(Collectors.joining(File.separator)))) == false
+      dfh.subDirectories.get(basePath.resolve(Path.of("input", "grid"))) == true
+      dfh.subDirectories.get(basePath.resolve(Path.of("input", "participants"))) == true
+      dfh.subDirectories.get(basePath.resolve(Path.of("input", "participants", "time_series"))) == false
+      dfh.subDirectories.get(basePath.resolve(Path.of("input", "global"))) == true
+      dfh.subDirectories.get(basePath.resolve(Path.of("input", "thermal"))) == false
+      dfh.subDirectories.get(basePath.resolve(Path.of("input", "graphics"))) == false
+      dfh.subDirectories.get(basePath.resolve(Path.of("results", "grid"))) == false
+      dfh.subDirectories.get(basePath.resolve(Path.of("results", "participants"))) == false
+      dfh.subDirectories.get(basePath.resolve(Path.of("results", "thermal"))) == false
     } catch (TestFailedException e) {
       FileIOUtils.deleteRecursively(tmpDirectory)
       throw e

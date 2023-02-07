@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -195,7 +194,7 @@ public class FileNamingStrategy {
     Path subDirectory =
         fileHierarchy.getSubDirectory(LoadProfileInput.class).orElseGet(() -> Path.of(""));
 
-    if (!Files.exists(subDirectory)) {
+    if (subDirectory.toFile().exists()) {
       return entityPersistenceNamingStrategy.getLoadProfileTimeSeriesPattern();
     } else {
       /* Build the pattern by joining the sub directory with the file name pattern, harmonizing file separators and
@@ -336,7 +335,6 @@ public class FileNamingStrategy {
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getEntityName(T timeSeries) {
-    return Optional.ofNullable(
-        entityPersistenceNamingStrategy.getEntityName(timeSeries).toString());
+    return entityPersistenceNamingStrategy.getEntityName(timeSeries);
   }
 }

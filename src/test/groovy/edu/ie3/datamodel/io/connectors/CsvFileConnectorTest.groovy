@@ -37,26 +37,26 @@ class CsvFileConnectorTest extends Specification {
   CsvFileConnector cfc
 
   @Shared
-  Set<String> timeSeriesPaths
+  Set<Path> timeSeriesPaths
 
   @Shared
-  Set<String> pathsToIgnore
+  Set<Path> pathsToIgnore
 
   def setupSpec() {
     tmpDirectory = Files.createTempDirectory("psdm_csv_file_connector_")
     cfc = new CsvFileConnector(tmpDirectory, new FileNamingStrategy())
-    def gridPaths = ["node_input.csv"]
+    def gridPaths = [Path.of("node_input.csv")]
     timeSeriesPaths = [
-      "its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf.csv",
-      "its_p_fcf0b851-a836-4bde-8090-f44c382ed226.csv",
-      "its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b.csv",
-      "its_c_b88dee50-5484-4136-901d-050d8c1c97d1.csv",
-      "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b.csv"
+      Path.of("its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf.csv"),
+      Path.of("its_p_fcf0b851-a836-4bde-8090-f44c382ed226.csv"),
+      Path.of("its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b.csv"),
+      Path.of("its_c_b88dee50-5484-4136-901d-050d8c1c97d1.csv"),
+      Path.of("its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b.csv")
     ]
     pathsToIgnore = [
-      "file_to_be_ignored.txt"
+      Path.of("file_to_be_ignored.txt")
     ]
-    (gridPaths + pathsToIgnore + timeSeriesPaths).forEach { it -> Files.createFile(Paths.get(FilenameUtils.concat(tmpDirectory.toString(), it))) }
+    (gridPaths + pathsToIgnore + timeSeriesPaths).forEach { it -> Files.createFile(tmpDirectory.resolve(it)) }
   }
 
   def cleanupSpec() {

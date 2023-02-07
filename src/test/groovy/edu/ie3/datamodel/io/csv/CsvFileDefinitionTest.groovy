@@ -10,6 +10,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Path
+import java.nio.file.Paths
 
 class CsvFileDefinitionTest extends Specification {
   @Shared
@@ -46,7 +47,7 @@ class CsvFileDefinitionTest extends Specification {
     where:
     manipulatedDirectory                                                       || expected
     Path.of("/").resolve(this.directory)                                       || this.directory
-    this.directory.resolve("/")                                                || this.directory
+    Path.of(this.directory.toString(), "/")                                    || this.directory
     Path.of(this.directory.toString().replaceAll("[\\\\/]", File.separator == "/" ? "\\\\" : "/")) || this.directory
   }
 
@@ -118,8 +119,8 @@ class CsvFileDefinitionTest extends Specification {
     actual == expected
 
     where:
-    manipulatedDirectory                 || expected
-    Path.of("")                          || this.fileName
-    Path.of("test", "grid") || Path.of(FilenameUtils.concat("test", "grid"), this.fileName)
+    manipulatedDirectory    || expected
+    Path.of("")             || Path.of(this.fileName)
+    Path.of("test", "grid") || Paths.get("test", "grid", this.fileName)
   }
 }

@@ -208,7 +208,7 @@ public class CsvFileConnector implements DataConnector {
    * @throws FileNotFoundException if no file with the provided file name can be found
    */
   public BufferedReader initReader(Path filePath) throws FileNotFoundException {
-    File fullPath = baseDirectoryName.resolve(filePath).resolve(FILE_ENDING).toFile();
+    File fullPath = baseDirectoryName.resolve(filePath.toString() + FILE_ENDING).toFile();
     return new BufferedReader(
         new InputStreamReader(new FileInputStream(fullPath), StandardCharsets.UTF_8), 16384);
   }
