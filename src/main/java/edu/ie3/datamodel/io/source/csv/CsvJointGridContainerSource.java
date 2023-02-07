@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 
+/** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
   private CsvJointGridContainerSource() {}
 
