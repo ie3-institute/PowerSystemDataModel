@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.csv;
 
 import edu.ie3.datamodel.io.IoUtil;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
@@ -79,7 +78,9 @@ public record CsvFileDefinition(
    *     file extension
    */
   public Path getFilePath() {
-    return Files.exists(directoryPath) ? directoryPath.resolve(fileName) : Path.of(fileName);
+    return !directoryPath.toString().isEmpty()
+        ? directoryPath.resolve(fileName)
+        : Path.of(fileName);
   }
 
   /** @deprecated since 3.0. Use {@link #headLineElements()} instead */
