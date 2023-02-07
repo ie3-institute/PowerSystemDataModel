@@ -58,5 +58,4 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     FileIOUtils.deleteRecursively(tempDirectory)
     sink.shutdown()
   }
-
 }
