@@ -35,15 +35,8 @@ master_doc = 'index'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'recommonmark',
-    'myst_parser',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.autosectionlabel',
-    'sphinx.ext.autodoc',
-    'sphinxcontrib.plantuml',
-    'sphinx.ext.intersphinx',
-    'hoverxref.extension',
-    'sphinxcontrib.bibtex'
+'sphinx.ext.autosectionlabel',
+'myst_parser'
 ]
 
 myst_enable_extensions = ["dollarmath", "amsmath"]
@@ -58,7 +51,7 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'venv']
-source_suffix = ['.rst']
+
 source_encoding = 'utf-8-sig'
 
 # -- Options for HTML output -------------------------------------------------
@@ -76,8 +69,6 @@ html_show_sourcelink = False
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-# PlantUML options
-plantuml = 'plantuml'
 
 def setup(app):
     app.add_css_file("css/theme_override.css")
