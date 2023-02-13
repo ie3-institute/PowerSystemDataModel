@@ -15,6 +15,9 @@ import spock.lang.Specification
 import java.nio.file.Files
 import java.nio.file.Path
 
+/**
+ * Testing whether PSDM CSV source and sink are stable when used sequentially, i.e. whether serialized and deserialized data is equal.
+ */
 class GridIoIT extends Specification implements CsvTestDataMeta {
 
   @Shared
