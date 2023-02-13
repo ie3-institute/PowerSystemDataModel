@@ -23,7 +23,7 @@ If you feel, something this missing, wrong or misleading, please contact one of 
    * `@danielfeismann <https://github.com/danielfeismann>`_
    * `@sebastian-peter <https://github.com/sebastian-peter>`_
    * `@jo-bao <https://github.com/jo-bao>`_
-@julianhohmann <https://github.com/julianhohmann>`_
+* `@julianhohmann <https://github.com/julianhohmann>`_
 Hat tip to all other contributors!
 
 Indices and tables
