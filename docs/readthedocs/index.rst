@@ -19,8 +19,11 @@ Contact the (Main) Maintainers
 If you feel, something this missing, wrong or misleading, please contact one of our main contributors:
 
    * `@sensarmad <https://github.com/sensarmad>`_
-   * `@johanneshiry <https://github.com/johanneshiry>`_
-   * `@ckittl <https://github.com/ckittl>`_
+   * `@t-ober <https://github.com/t-ober>`_
+   * `@danielfeismann <https://github.com/danielfeismann>`_
+   * `@sebastian-peter <https://github.com/sebastian-peter>`_
+   * `@jo-bao <https://github.com/jo-bao>`_
+   * `@julianhohmann <https://github.com/julianhohmann>`_
 
 Hat tip to all other contributors!
 
