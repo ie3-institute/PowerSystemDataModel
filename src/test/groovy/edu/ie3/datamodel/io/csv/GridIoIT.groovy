@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.io
+package edu.ie3.datamodel.io.csv
 
 import edu.ie3.datamodel.io.sink.CsvFileSink
 import edu.ie3.datamodel.io.source.csv.CsvJointGridContainerSource
