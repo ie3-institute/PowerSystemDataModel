@@ -5,7 +5,7 @@ methods to get coordinates, ids of coordinates or the distance between a given c
 coordinates.
 
 
-### Information
+## Information
 
 | Attribute    | Remarks                                                      |
 |:-------------|:-------------------------------------------------------------|
@@ -14,7 +14,7 @@ coordinates.
 
 
 
-### Known implementations:
+## Known implementations:
 The following implementations are currently known:
 
 - [Csv Id Coordinate Source](/io/csvfiles)

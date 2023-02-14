@@ -36,6 +36,7 @@ master_doc = 'index'
 # ones.
 extensions = [
 'sphinx.ext.autosectionlabel',
+'sphinx.ext.autodoc',
 'myst_parser'
 ]
 
@@ -51,7 +52,7 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'venv']
-
+source_suffix = ['.rst', '.md']
 source_encoding = 'utf-8-sig'
 
 # -- Options for HTML output -------------------------------------------------
