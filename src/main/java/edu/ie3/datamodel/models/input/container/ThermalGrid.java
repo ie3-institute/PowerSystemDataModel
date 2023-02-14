@@ -36,6 +36,11 @@ public record ThermalGrid(
   }
 
   @Override
+  public ThermalGridCopyBuilder copy() {
+    return new ThermalGridCopyBuilder(this);
+  }
+
+  @Override
   public String toString() {
     return "ThermalGrid{"
         + "bus="
@@ -45,5 +50,44 @@ public record ThermalGrid(
         + ", #storages="
         + storages.size()
         + '}';
+  }
+
+  public static class ThermalGridCopyBuilder
+      extends InputContainerCopyBuilder<ThermalInput, ThermalGrid> {
+    private ThermalBusInput bus;
+    private Set<ThermalHouseInput> houses;
+    private Set<ThermalStorageInput> storages;
+
+    protected ThermalGridCopyBuilder(ThermalGrid container) {
+      super(container);
+      this.bus = container.bus();
+      this.houses = container.houses();
+      this.storages = container.storages();
+    }
+
+    public ThermalGridCopyBuilder bus(ThermalBusInput bus) {
+      this.bus = bus;
+      return childInstance();
+    }
+
+    public ThermalGridCopyBuilder houses(Set<ThermalHouseInput> houses) {
+      this.houses = houses;
+      return childInstance();
+    }
+
+    public ThermalGridCopyBuilder storages(Set<ThermalStorageInput> storages) {
+      this.storages = storages;
+      return childInstance();
+    }
+
+    @Override
+    protected ThermalGridCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    ThermalGrid build() {
+      return new ThermalGrid(bus, houses, storages);
+    }
   }
 }

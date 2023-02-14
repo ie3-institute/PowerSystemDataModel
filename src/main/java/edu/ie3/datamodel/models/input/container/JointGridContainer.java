@@ -76,4 +76,40 @@ public class JointGridContainer extends GridContainer {
   public String toString() {
     return "JointGridContainer{" + "gridName='" + gridName + '\'' + '}';
   }
+
+  @Override
+  public JointGridContainerCopyBuilder copy() {
+    return new JointGridContainerCopyBuilder(this);
+  }
+
+  public static class JointGridContainerCopyBuilder
+      extends GridContainerCopyBuilder<JointGridContainerCopyBuilder> {
+    private SubGridTopologyGraph subGridTopologyGraph;
+
+    protected JointGridContainerCopyBuilder(JointGridContainer container) {
+      super(container);
+      this.subGridTopologyGraph = container.getSubGridTopologyGraph();
+    }
+
+    public JointGridContainerCopyBuilder subGridTopologyGraph(
+        SubGridTopologyGraph subGridTopologyGraph) {
+      this.subGridTopologyGraph = subGridTopologyGraph;
+      return childInstance();
+    }
+
+    @Override
+    protected JointGridContainerCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    JointGridContainer build() {
+      return new JointGridContainer(
+          getGridName(),
+          getRawGrid(),
+          getSystemParticipants(),
+          getGraphics(),
+          subGridTopologyGraph);
+    }
+  }
 }

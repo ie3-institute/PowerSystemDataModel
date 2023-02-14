@@ -186,6 +186,10 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return Collections.unmodifiableList(allEntities);
   }
 
+  public SystemParticipantsCopyBuilder copy() {
+    return new SystemParticipantsCopyBuilder(this);
+  }
+
   /** @return unmodifiable Set of all biomass plants in this grid */
   public Set<BmInput> getBmPlants() {
     return Collections.unmodifiableSet(bmPlants);
@@ -269,5 +273,110 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
         pvPlants,
         storages,
         wecPlants);
+  }
+
+  public static class SystemParticipantsCopyBuilder
+      extends InputContainerCopyBuilder<SystemParticipantInput, SystemParticipants> {
+    private Set<BmInput> bmPlants;
+    private Set<ChpInput> chpPlants;
+    private Set<EvcsInput> evCS;
+    private Set<EvInput> evs;
+    private Set<FixedFeedInInput> fixedFeedIns;
+    private Set<HpInput> heatPumps;
+    private Set<LoadInput> loads;
+    private Set<PvInput> pvPlants;
+    private Set<StorageInput> storages;
+    private Set<WecInput> wecPlants;
+    private Set<EmInput> emSystems;
+
+    protected SystemParticipantsCopyBuilder(SystemParticipants container) {
+      super(container);
+      this.bmPlants = container.bmPlants;
+      this.chpPlants = container.chpPlants;
+      this.evCS = container.evCS;
+      this.evs = container.evs;
+      this.fixedFeedIns = container.fixedFeedIns;
+      this.heatPumps = container.heatPumps;
+      this.loads = container.loads;
+      this.pvPlants = container.pvPlants;
+      this.storages = container.storages;
+      this.wecPlants = container.wecPlants;
+      this.emSystems = container.emSystems;
+    }
+
+    public SystemParticipantsCopyBuilder bmPlants(Set<BmInput> bmPlants) {
+      this.bmPlants = bmPlants;
+      return childInstance();
+    }
+
+    public SystemParticipantsCopyBuilder chpPlants(Set<ChpInput> chpPlants) {
+      this.chpPlants = chpPlants;
+      return childInstance();
+    }
+
+    public SystemParticipantsCopyBuilder evCS(Set<EvcsInput> evCS) {
+      this.evCS = evCS;
+      return childInstance();
+    }
+
+    public SystemParticipantsCopyBuilder evs(Set<EvInput> evs) {
+      this.evs = evs;
+      return childInstance();
+    }
+
+    public SystemParticipantsCopyBuilder fixedFeedIn(Set<FixedFeedInInput> fixedFeedIns) {
+      this.fixedFeedIns = fixedFeedIns;
+      return childInstance();
+    }
+
+    public SystemParticipantsCopyBuilder heatPumps(Set<HpInput> heatPumps) {
+      this.heatPumps = heatPumps;
+      return childInstance();
+    }
+
+    public SystemParticipantsCopyBuilder loads(Set<LoadInput> loads) {
+      this.loads = loads;
+      return childInstance();
+    }
+
+    public SystemParticipantsCopyBuilder pvPlants(Set<PvInput> pvPlants) {
+      this.pvPlants = pvPlants;
+      return childInstance();
+    }
+
+    public SystemParticipantsCopyBuilder storages(Set<StorageInput> storages) {
+      this.storages = storages;
+      return childInstance();
+    }
+
+    public SystemParticipantsCopyBuilder wecPlants(Set<WecInput> wecPlants) {
+      this.wecPlants = wecPlants;
+      return childInstance();
+    }
+
+    public SystemParticipantsCopyBuilder emSystems(Set<EmInput> emSystems) {
+      this.emSystems = emSystems;
+      return childInstance();
+    }
+
+    public SystemParticipants build() {
+      return new SystemParticipants(
+          bmPlants,
+          chpPlants,
+          evCS,
+          evs,
+          fixedFeedIns,
+          heatPumps,
+          loads,
+          pvPlants,
+          storages,
+          wecPlants,
+          emSystems);
+    }
+
+    @Override
+    protected SystemParticipantsCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

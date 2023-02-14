@@ -78,4 +78,62 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
   public String toString() {
     return "GridContainer{" + "gridName='" + gridName + '\'' + '}';
   }
+
+  protected abstract static class GridContainerCopyBuilder<T extends GridContainerCopyBuilder<T>>
+      extends InputContainerCopyBuilder<InputEntity, GridContainer> {
+    private String gridName;
+    private RawGridElements rawGrid;
+    private SystemParticipants systemParticipants;
+    private GraphicElements graphics;
+
+    protected GridContainerCopyBuilder(GridContainer container) {
+      super(container);
+      this.gridName = container.getGridName();
+      this.rawGrid = container.getRawGrid();
+      this.systemParticipants = container.getSystemParticipants();
+      this.graphics = container.getGraphics();
+    }
+
+    protected String getGridName() {
+      return gridName;
+    }
+
+    protected RawGridElements getRawGrid() {
+      return rawGrid;
+    }
+
+    protected SystemParticipants getSystemParticipants() {
+      return systemParticipants;
+    }
+
+    protected GraphicElements getGraphics() {
+      return graphics;
+    }
+
+    public T gridName(String gridName) {
+      this.gridName = gridName;
+      return childInstance();
+    }
+
+    public T rawGrid(RawGridElements rawGrid) {
+      this.rawGrid = rawGrid;
+      return childInstance();
+    }
+
+    public T systemParticipants(SystemParticipants systemParticipants) {
+      this.systemParticipants = systemParticipants;
+      return childInstance();
+    }
+
+    public T graphics(GraphicElements graphics) {
+      this.graphics = graphics;
+      return childInstance();
+    }
+
+    @Override
+    protected abstract T childInstance();
+
+    @Override
+    abstract GridContainer build();
+  }
 }

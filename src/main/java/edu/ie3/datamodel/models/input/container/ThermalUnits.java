@@ -32,7 +32,44 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
   }
 
   @Override
+  public ThermalUnitsCopyBuilder copy() {
+    return new ThermalUnitsCopyBuilder(this);
+  }
+
+  @Override
   public String toString() {
     return "ThermalUnits{" + "#houses=" + houses.size() + ", #storages=" + storages.size() + '}';
+  }
+
+  public static class ThermalUnitsCopyBuilder
+      extends InputContainerCopyBuilder<ThermalUnitInput, ThermalUnits> {
+    private Set<ThermalHouseInput> houses;
+    private Set<ThermalStorageInput> storages;
+
+    protected ThermalUnitsCopyBuilder(ThermalUnits container) {
+      super(container);
+      this.houses = container.houses();
+      this.storages = container.storages();
+    }
+
+    public ThermalUnitsCopyBuilder houses(Set<ThermalHouseInput> houses) {
+      this.houses = houses;
+      return childInstance();
+    }
+
+    public ThermalUnitsCopyBuilder storages(Set<ThermalStorageInput> storages) {
+      this.storages = storages;
+      return childInstance();
+    }
+
+    @Override
+    protected ThermalUnitsCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    ThermalUnits build() {
+      return new ThermalUnits(houses, storages);
+    }
   }
 }

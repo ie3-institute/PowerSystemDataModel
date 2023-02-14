@@ -28,4 +28,24 @@ class ThermalUnitsTest extends Specification {
     actualAllEntities.containsAll(thermalHouses)
     actualAllEntities.containsAll(thermalStorages)
   }
+
+  def "A ThermalUnits' copy method should work as expected"() {
+    given:
+    def thermalHouses = []
+    def thermalStorages = []
+    def thermalUnits = new ThermalUnits(thermalHouses, thermalStorages)
+
+    def modifiedHouses = [Mock(ThermalHouseInput)]
+    def modifiedStorages = [Mock(CylindricalStorageInput)]
+
+    when:
+    def modifiedThermalUnits = thermalUnits.copy()
+        .houses(modifiedHouses as Set)
+        .storages(modifiedStorages as Set)
+        .build()
+
+    then:
+    modifiedThermalUnits.houses().first() == modifiedHouses.get(0)
+    modifiedThermalUnits.storages().first() == modifiedStorages.get(0)
+  }
 }

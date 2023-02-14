@@ -67,6 +67,11 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     return Collections.unmodifiableList(allEntities);
   }
 
+  @Override
+  public GraphicElementsCopyBuilder copy() {
+    return new GraphicElementsCopyBuilder(this);
+  }
+
   /** @return unmodifiable Set of all node graphic data for this grid */
   public Set<NodeGraphicInput> getNodeGraphics() {
     return Collections.unmodifiableSet(nodeGraphics);
@@ -87,5 +92,37 @@ public class GraphicElements implements InputContainer<GraphicInput> {
   @Override
   public int hashCode() {
     return Objects.hash(nodeGraphics, lineGraphics);
+  }
+
+  public static class GraphicElementsCopyBuilder
+      extends InputContainerCopyBuilder<GraphicInput, GraphicElements> {
+    private Set<NodeGraphicInput> nodeGraphics;
+    private Set<LineGraphicInput> lineGraphics;
+
+    protected GraphicElementsCopyBuilder(GraphicElements container) {
+      super(container);
+      this.nodeGraphics = container.getNodeGraphics();
+      this.lineGraphics = container.getLineGraphics();
+    }
+
+    public GraphicElementsCopyBuilder nodeGraphics(Set<NodeGraphicInput> nodeGraphics) {
+      this.nodeGraphics = nodeGraphics;
+      return childInstance();
+    }
+
+    public GraphicElementsCopyBuilder lineGraphics(Set<LineGraphicInput> lineGraphics) {
+      this.lineGraphics = lineGraphics;
+      return childInstance();
+    }
+
+    @Override
+    protected GraphicElementsCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    GraphicElements build() {
+      return new GraphicElements(nodeGraphics, lineGraphics);
+    }
   }
 }

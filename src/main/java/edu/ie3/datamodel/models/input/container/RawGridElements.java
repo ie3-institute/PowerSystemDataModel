@@ -127,6 +127,11 @@ public class RawGridElements implements InputContainer<AssetInput> {
     return Collections.unmodifiableList(allEntities);
   }
 
+  @Override
+  public RawGridElementsCopyBuilder copy() {
+    return new RawGridElementsCopyBuilder(this);
+  }
+
   /** @return unmodifiable ; of all three winding transformers in this grid */
   public Set<NodeInput> getNodes() {
     return Collections.unmodifiableSet(nodes);
@@ -172,5 +177,66 @@ public class RawGridElements implements InputContainer<AssetInput> {
   @Override
   public int hashCode() {
     return Objects.hash(nodes, lines, transformer2Ws, transformer3Ws, switches, measurementUnits);
+  }
+
+  public static class RawGridElementsCopyBuilder
+      extends InputContainerCopyBuilder<AssetInput, RawGridElements> {
+    private Set<NodeInput> nodes;
+    private Set<LineInput> lines;
+    private Set<Transformer2WInput> transformer2Ws;
+    private Set<Transformer3WInput> transformer3Ws;
+    private Set<SwitchInput> switches;
+    private Set<MeasurementUnitInput> measurementUnits;
+
+    protected RawGridElementsCopyBuilder(RawGridElements container) {
+      super(container);
+      this.nodes = container.getNodes();
+      this.lines = container.getLines();
+      this.transformer2Ws = container.getTransformer2Ws();
+      this.transformer3Ws = container.getTransformer3Ws();
+      this.switches = container.getSwitches();
+      this.measurementUnits = container.getMeasurementUnits();
+    }
+
+    public RawGridElementsCopyBuilder nodes(Set<NodeInput> nodes) {
+      this.nodes = nodes;
+      return childInstance();
+    }
+
+    public RawGridElementsCopyBuilder lines(Set<LineInput> lines) {
+      this.lines = lines;
+      return childInstance();
+    }
+
+    public RawGridElementsCopyBuilder transformers2Ws(Set<Transformer2WInput> transformer2Ws) {
+      this.transformer2Ws = transformer2Ws;
+      return childInstance();
+    }
+
+    public RawGridElementsCopyBuilder transformer3Ws(Set<Transformer3WInput> transformer3Ws) {
+      this.transformer3Ws = transformer3Ws;
+      return childInstance();
+    }
+
+    public RawGridElementsCopyBuilder switches(Set<SwitchInput> switches) {
+      this.switches = switches;
+      return childInstance();
+    }
+
+    public RawGridElementsCopyBuilder measurementUnits(Set<MeasurementUnitInput> measurementUnits) {
+      this.measurementUnits = measurementUnits;
+      return childInstance();
+    }
+
+    @Override
+    protected RawGridElementsCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    RawGridElements build() {
+      return new RawGridElements(
+          nodes, lines, transformer2Ws, transformer3Ws, switches, measurementUnits);
+    }
   }
 }

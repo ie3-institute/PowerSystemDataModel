@@ -63,4 +63,35 @@ public class SubGridContainer extends GridContainer {
         + predominantVoltageLevel
         + '}';
   }
+
+  @Override
+  public SubGridContainerCopyBuilder copy() {
+    return new SubGridContainerCopyBuilder(this);
+  }
+
+  public static class SubGridContainerCopyBuilder
+      extends GridContainerCopyBuilder<SubGridContainerCopyBuilder> {
+    private int subnet;
+
+    protected SubGridContainerCopyBuilder(SubGridContainer container) {
+      super(container);
+      this.subnet = container.getSubnet();
+    }
+
+    public SubGridContainerCopyBuilder subnet(int subnet) {
+      this.subnet = subnet;
+      return childInstance();
+    }
+
+    @Override
+    protected SubGridContainerCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    SubGridContainer build() {
+      return new SubGridContainer(
+          getGridName(), subnet, getRawGrid(), getSystemParticipants(), getGraphics());
+    }
+  }
 }
