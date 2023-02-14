@@ -15,6 +15,9 @@ import spock.lang.Specification
 import java.nio.file.Files
 import java.nio.file.Path
 
+/**
+ * Testing whether PSDM CSV source and sink are stable when used sequentially, i.e. whether serialized and deserialized data is equal.
+ */
 class GridIoIT extends Specification implements CsvTestDataMeta {
 
   @Shared
@@ -28,34 +31,29 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     sink = new CsvFileSink(tempDirectory.toAbsolutePath().toString())
   }
 
+  def cleanupSpec() {
+    sink.shutdown()
+    FileIOUtils.deleteRecursively(tempDirectory)
+  }
+
   def "Input JointGridContainer equals Output JointGridContainer."() {
 
     given:
     // create joint grid container
-    def gridname = "vn_simona"
-    def seperator = ","
-    def firstGridContainer = CsvJointGridContainerSource.read(gridname, seperator, jointGridFolderPath)
-
-    // output: prepare output folder
-    //def outDirectoryPath = tempDirectory.toAbsolutePath().toString()
-    //def sink = new CsvFileSink(outDirectoryPath)
+    def gridName = "vn_simona"
+    def separator = ","
+    def firstGridContainer = CsvJointGridContainerSource.read(gridName, separator, jointGridFolderPath)
 
     when:
     // write files from joint grid container in output directory
     sink.persistJointGrid(firstGridContainer)
 
     // create second grid container from output folder
-    def secondGridContainer = CsvJointGridContainerSource.read(gridname, seperator, tempDirectory.toAbsolutePath().toString())
+    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString())
 
     then:
-    //compare input and output joint grid container
-
+    // compare input and output joint grid container
     firstGridContainer == secondGridContainer
 
-  }
-
-  def cleanupSpec() {
-    FileIOUtils.deleteRecursively(tempDirectory)
-    sink.shutdown()
   }
 }
