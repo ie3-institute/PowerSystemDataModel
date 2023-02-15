@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ThermalGrid` as a container for a completely connected thermal grid
 - `EmResult` and `FlexOptionsResult` for Energy Management Systems [#651](https://github.com/ie3-institute/PowerSystemDataModel/issues/651)
 - `EvcsInput` now has a parameter for enabling and disabling vehicle to grid support [#681](https://github.com/ie3-institute/PowerSystemDataModel/issues/681)
+- Added Dependabot updates to sphinx/readthedocs dependencies [#735](https://github.com/ie3-institute/PowerSystemDataModel/issues/735)
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
