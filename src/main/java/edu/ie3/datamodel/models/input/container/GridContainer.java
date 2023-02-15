@@ -79,6 +79,13 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     return "GridContainer{" + "gridName='" + gridName + '\'' + '}';
   }
 
+  /**
+   * Abstract class for all builder that build child containers of abstract class {@link
+   * GridContainer}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
   protected abstract static class GridContainerCopyBuilder<T extends GridContainerCopyBuilder<T>>
       extends InputContainerCopyBuilder<InputEntity, GridContainer> {
     private String gridName;
@@ -86,45 +93,78 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     private SystemParticipants systemParticipants;
     private GraphicElements graphics;
 
-    protected GridContainerCopyBuilder(GridContainer container) {
-      super(container);
-      this.gridName = container.getGridName();
-      this.rawGrid = container.getRawGrid();
-      this.systemParticipants = container.getSystemParticipants();
-      this.graphics = container.getGraphics();
+    /**
+     * Constructor for {@link GridContainerCopyBuilder}.
+     *
+     * @param gridContainer instance of {@link GridContainerCopyBuilder}
+     */
+    protected GridContainerCopyBuilder(GridContainer gridContainer) {
+      super(gridContainer);
+      this.gridName = gridContainer.getGridName();
+      this.rawGrid = gridContainer.getRawGrid();
+      this.systemParticipants = gridContainer.getSystemParticipants();
+      this.graphics = gridContainer.getGraphics();
     }
 
+    /** Returns grid name */
     protected String getGridName() {
       return gridName;
     }
 
+    /** Returns {@link RawGridElements}. */
     protected RawGridElements getRawGrid() {
       return rawGrid;
     }
 
+    /** Returns {@link SystemParticipants} */
     protected SystemParticipants getSystemParticipants() {
       return systemParticipants;
     }
 
+    /** Returns {@link GraphicElements} */
     protected GraphicElements getGraphics() {
       return graphics;
     }
 
+    /**
+     * Method to alter the grid name.
+     *
+     * @param gridName altered grid name
+     * @return child instance of {@link GridContainerCopyBuilder}
+     */
     public T gridName(String gridName) {
       this.gridName = gridName;
       return childInstance();
     }
 
+    /**
+     * Method to alter the {@link RawGridElements}
+     *
+     * @param rawGrid altered raw grid
+     * @return child instance of {@link GridContainerCopyBuilder}
+     */
     public T rawGrid(RawGridElements rawGrid) {
       this.rawGrid = rawGrid;
       return childInstance();
     }
 
+    /**
+     * Method to alter the {@link SystemParticipants}.
+     *
+     * @param systemParticipants altered systemParticipants
+     * @return child instance of {@link GridContainerCopyBuilder}
+     */
     public T systemParticipants(SystemParticipants systemParticipants) {
       this.systemParticipants = systemParticipants;
       return childInstance();
     }
 
+    /**
+     * Method to alter the {@link GraphicElements}.
+     *
+     * @param graphics altered graphics
+     * @return child instance of {@link GridContainerCopyBuilder}
+     */
     public T graphics(GraphicElements graphics) {
       this.graphics = graphics;
       return childInstance();

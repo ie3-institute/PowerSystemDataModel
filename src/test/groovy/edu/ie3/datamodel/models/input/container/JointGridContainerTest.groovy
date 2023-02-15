@@ -5,7 +5,11 @@
  */
 package edu.ie3.datamodel.models.input.container
 
+import edu.ie3.datamodel.graph.SubGridGate
+import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.test.common.SystemParticipantTestData
+import org.jgrapht.Graph
+import org.jgrapht.graph.DirectedMultigraph
 
 import static edu.ie3.test.common.SystemParticipantTestData.emptySystemParticipants
 import edu.ie3.test.common.GridTestData

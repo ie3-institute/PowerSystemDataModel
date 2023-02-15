@@ -52,29 +52,59 @@ public record ThermalGrid(
         + '}';
   }
 
+  /**
+   * A builder pattern based approach to create copies of {@link ThermalGrid} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link ThermalGrid}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
   public static class ThermalGridCopyBuilder
       extends InputContainerCopyBuilder<ThermalInput, ThermalGrid> {
     private ThermalBusInput bus;
     private Set<ThermalHouseInput> houses;
     private Set<ThermalStorageInput> storages;
 
-    protected ThermalGridCopyBuilder(ThermalGrid container) {
-      super(container);
-      this.bus = container.bus();
-      this.houses = container.houses();
-      this.storages = container.storages();
+    /**
+     * Constructor for {@link ThermalGridCopyBuilder}
+     *
+     * @param thermalGrid instance of {@link ThermalGrid}
+     */
+    protected ThermalGridCopyBuilder(ThermalGrid thermalGrid) {
+      super(thermalGrid);
+      this.bus = thermalGrid.bus();
+      this.houses = thermalGrid.houses();
+      this.storages = thermalGrid.storages();
     }
 
+    /**
+     * Method to alter {@link ThermalBusInput}
+     *
+     * @param bus altered thermal bus
+     * @return child instance of {@link ThermalGridCopyBuilder}
+     */
     public ThermalGridCopyBuilder bus(ThermalBusInput bus) {
       this.bus = bus;
       return childInstance();
     }
 
+    /**
+     * Method to alter {@link ThermalHouseInput}
+     *
+     * @param houses altered thermal houses
+     * @return child instance of {@link ThermalGridCopyBuilder}
+     */
     public ThermalGridCopyBuilder houses(Set<ThermalHouseInput> houses) {
       this.houses = houses;
       return childInstance();
     }
 
+    /**
+     * Method to alter {@link ThermalStorageInput}
+     *
+     * @param storages altered thermal storages
+     * @return child instance of {@link ThermalGridCopyBuilder}
+     */
     public ThermalGridCopyBuilder storages(Set<ThermalStorageInput> storages) {
       this.storages = storages;
       return childInstance();

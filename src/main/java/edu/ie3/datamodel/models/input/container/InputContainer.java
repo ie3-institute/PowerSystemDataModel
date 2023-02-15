@@ -7,9 +7,7 @@ package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /** Represents an aggregation of different entities */
 public interface InputContainer<T extends InputEntity> extends Serializable {
@@ -17,25 +15,43 @@ public interface InputContainer<T extends InputEntity> extends Serializable {
   /** @return unmodifiable List of all entities */
   List<T> allEntitiesAsList();
 
+  /** @return an input container copy buillder */
   InputContainerCopyBuilder<T, ? extends InputContainer<T>> copy();
 
+  /**
+   * Abstract class for all builder that build child containers of interface {@link
+   * edu.ie3.datamodel.models.input.container.InputContainer}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
   abstract class InputContainerCopyBuilder<R extends InputEntity, E extends InputContainer<R>> {
     protected List<R> entities;
 
+    /**
+     * Constructor for {@link InputContainerCopyBuilder}.
+     *
+     * @param container that should be copied
+     */
     protected InputContainerCopyBuilder(E container) {
       this.entities = container.allEntitiesAsList();
     }
 
-    protected InputContainerCopyBuilder<R, E> entities(Set<R> oldValue, Set<R> newValue) {
-      List<R> entityList =
-          new ArrayList<>(entities.stream().filter(value -> !oldValue.contains(value)).toList());
-      entities.addAll(newValue.stream().toList());
-      this.entities = List.copyOf(entityList);
+    /**
+     * Method to alter the list of entities directly.
+     *
+     * @param entities altered list of {@link InputEntity}'s
+     * @return child instance of {@link InputContainerCopyBuilder}
+     */
+    public InputContainerCopyBuilder<R, E> entities(List<R> entities) {
+      this.entities = entities;
       return childInstance();
     }
 
+    /** @return child instance of {@link InputContainerCopyBuilder} */
     protected abstract InputContainerCopyBuilder<R, E> childInstance();
 
+    /** @return the altered {@link InputContainer} */
     abstract InputContainer<R> build();
   }
 }

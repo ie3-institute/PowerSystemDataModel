@@ -82,15 +82,34 @@ public class JointGridContainer extends GridContainer {
     return new JointGridContainerCopyBuilder(this);
   }
 
+  /**
+   * A builder pattern based approach to create copies of {@link JointGridContainer} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * JointGridContainer}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
   public static class JointGridContainerCopyBuilder
       extends GridContainerCopyBuilder<JointGridContainerCopyBuilder> {
     private SubGridTopologyGraph subGridTopologyGraph;
 
-    protected JointGridContainerCopyBuilder(JointGridContainer container) {
-      super(container);
-      this.subGridTopologyGraph = container.getSubGridTopologyGraph();
+    /**
+     * Constructor for {@link JointGridContainerCopyBuilder}
+     *
+     * @param jointGridContainer instance of {@link JointGridContainer}
+     */
+    protected JointGridContainerCopyBuilder(JointGridContainer jointGridContainer) {
+      super(jointGridContainer);
+      this.subGridTopologyGraph = jointGridContainer.getSubGridTopologyGraph();
     }
 
+    /**
+     * Method to alter the {@link SubGridTopologyGraph}
+     *
+     * @param subGridTopologyGraph altered subGridTopologyGraph
+     * @return child instance of {@link JointGridContainerCopyBuilder}
+     */
     public JointGridContainerCopyBuilder subGridTopologyGraph(
         SubGridTopologyGraph subGridTopologyGraph) {
       this.subGridTopologyGraph = subGridTopologyGraph;

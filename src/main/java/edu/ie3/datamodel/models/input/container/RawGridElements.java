@@ -179,6 +179,14 @@ public class RawGridElements implements InputContainer<AssetInput> {
     return Objects.hash(nodes, lines, transformer2Ws, transformer3Ws, switches, measurementUnits);
   }
 
+  /**
+   * A builder pattern based approach to create copies of {@link RawGridElements} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * RawGridElements}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
   public static class RawGridElementsCopyBuilder
       extends InputContainerCopyBuilder<AssetInput, RawGridElements> {
     private Set<NodeInput> nodes;
@@ -188,41 +196,82 @@ public class RawGridElements implements InputContainer<AssetInput> {
     private Set<SwitchInput> switches;
     private Set<MeasurementUnitInput> measurementUnits;
 
-    protected RawGridElementsCopyBuilder(RawGridElements container) {
-      super(container);
-      this.nodes = container.getNodes();
-      this.lines = container.getLines();
-      this.transformer2Ws = container.getTransformer2Ws();
-      this.transformer3Ws = container.getTransformer3Ws();
-      this.switches = container.getSwitches();
-      this.measurementUnits = container.getMeasurementUnits();
+    /**
+     * Constructor for {@link RawGridElementsCopyBuilder}
+     *
+     * @param rawGridElements instance of {@link RawGridElementsCopyBuilder}
+     */
+    protected RawGridElementsCopyBuilder(RawGridElements rawGridElements) {
+      super(rawGridElements);
+      this.nodes = rawGridElements.getNodes();
+      this.lines = rawGridElements.getLines();
+      this.transformer2Ws = rawGridElements.getTransformer2Ws();
+      this.transformer3Ws = rawGridElements.getTransformer3Ws();
+      this.switches = rawGridElements.getSwitches();
+      this.measurementUnits = rawGridElements.getMeasurementUnits();
     }
 
+    /**
+     * Method to alter {@link NodeInput}
+     *
+     * @param nodes set of altered nodes
+     * @return child instance of {@link RawGridElementsCopyBuilder}
+     */
     public RawGridElementsCopyBuilder nodes(Set<NodeInput> nodes) {
       this.nodes = nodes;
       return childInstance();
     }
 
+    /**
+     * Method to alter {@link LineInput}
+     *
+     * @param lines set of altered lines
+     * @return child instance of {@link RawGridElementsCopyBuilder}
+     */
     public RawGridElementsCopyBuilder lines(Set<LineInput> lines) {
       this.lines = lines;
       return childInstance();
     }
 
+    /**
+     * Method to alter {@link Transformer2WInput}
+     *
+     * @param transformer2Ws set of altered two winding transformers
+     * @return child instance of {@link RawGridElementsCopyBuilder}
+     */
     public RawGridElementsCopyBuilder transformers2Ws(Set<Transformer2WInput> transformer2Ws) {
       this.transformer2Ws = transformer2Ws;
       return childInstance();
     }
 
+    /**
+     * Method to alter {@link Transformer3WInput}
+     *
+     * @param transformer3Ws set of altered three winding trnasformers
+     * @return child instance of {@link RawGridElementsCopyBuilder}
+     */
     public RawGridElementsCopyBuilder transformer3Ws(Set<Transformer3WInput> transformer3Ws) {
       this.transformer3Ws = transformer3Ws;
       return childInstance();
     }
 
+    /**
+     * Method to alter {@link SwitchInput}
+     *
+     * @param switches set of altered switches
+     * @return child instance of {@link RawGridElementsCopyBuilder}
+     */
     public RawGridElementsCopyBuilder switches(Set<SwitchInput> switches) {
       this.switches = switches;
       return childInstance();
     }
 
+    /**
+     * Method to alter {@link MeasurementUnitInput}
+     *
+     * @param measurementUnits set of altered measurement units
+     * @return child instance of {@link RawGridElementsCopyBuilder}
+     */
     public RawGridElementsCopyBuilder measurementUnits(Set<MeasurementUnitInput> measurementUnits) {
       this.measurementUnits = measurementUnits;
       return childInstance();

@@ -94,22 +94,47 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     return Objects.hash(nodeGraphics, lineGraphics);
   }
 
+  /**
+   * A builder pattern based approach to create copies of {@link GraphicElements} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * GraphicElements}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
   public static class GraphicElementsCopyBuilder
       extends InputContainerCopyBuilder<GraphicInput, GraphicElements> {
     private Set<NodeGraphicInput> nodeGraphics;
     private Set<LineGraphicInput> lineGraphics;
 
-    protected GraphicElementsCopyBuilder(GraphicElements container) {
-      super(container);
-      this.nodeGraphics = container.getNodeGraphics();
-      this.lineGraphics = container.getLineGraphics();
+    /**
+     * Constructor for {@link GraphicElementsCopyBuilder}
+     *
+     * @param graphicElements instance of {@link GraphicElements}
+     */
+    protected GraphicElementsCopyBuilder(GraphicElements graphicElements) {
+      super(graphicElements);
+      this.nodeGraphics = graphicElements.getNodeGraphics();
+      this.lineGraphics = graphicElements.getLineGraphics();
     }
 
+    /**
+     * Method to alter the {@link NodeGraphicInput}.
+     *
+     * @param nodeGraphics set of altered {@link NodeGraphicInput}'s
+     * @return child instance of {@link GraphicElementsCopyBuilder}
+     */
     public GraphicElementsCopyBuilder nodeGraphics(Set<NodeGraphicInput> nodeGraphics) {
       this.nodeGraphics = nodeGraphics;
       return childInstance();
     }
 
+    /**
+     * Method to alter the {@link LineGraphicInput}.
+     *
+     * @param lineGraphics set of altered {@link LineGraphicInput}'s
+     * @return child instance of {@link GraphicElementsCopyBuilder}
+     */
     public GraphicElementsCopyBuilder lineGraphics(Set<LineGraphicInput> lineGraphics) {
       this.lineGraphics = lineGraphics;
       return childInstance();
