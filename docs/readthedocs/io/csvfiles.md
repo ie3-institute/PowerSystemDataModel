@@ -8,9 +8,9 @@ Currently we offer two different, pre-defined naming strategies, which you might
 
 1. **EntityPersistenceNamingStrategy**:
    A basic naming strategy that is able to add prefix and suffix to the names of the entities. A flat folder structure
-   is considered. For more details see `Default naming strategy`_.
+   is considered. For more details see [Default naming strategy](#default-naming-strategy).
 2. **HierarchicFileNamingStrategy**:
-   An extended version of the EntityPersistenceNamingStrategy. Additionally, the `Default directory hierarchy`_ is taken
+   An extended version of the EntityPersistenceNamingStrategy. Additionally, the [Default directory hierarchy](#default-directory-hierarchy) is taken
    into account. Please note, that this directory hierarchy is only meant to be used in conjunction with input models.
 
 However, you can control the behaviour of serialization and de-serialization of models by injecting the desired naming
@@ -111,7 +111,6 @@ easier.
 Default directory hierarchy for input classes
 
 ![Default directory hierarchy for result classes](../_static/figures/uml/DefaultResultDirectoryHierarchy.png)
-
 Default directory hierarchy for result classes
 
 The italic parts are optional and the others are mandatory.
@@ -122,7 +121,7 @@ The class `DefaultInputHierarchy` offers some helpful methods to validate and cr
 hierarchy.
 
 ## De-serialization (loading models)
-Having an instance of :ref:`Grid Container<grid_container_model>` is most of the time the target whenever you load your
+Having an instance of [Grid Container](/models/input/grid/gridcontainer) is most of the time the target whenever you load your
 grid. It consists of the three main blocks:
 
 1. [Raw grid elements](/models/input/grid/gridcontainer)
