@@ -16,7 +16,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 /**
- * Testing whether PSDM CSV source and sink are stable when used sequentially, i.e. whether serialized and deserialized data is equal.
+ * Testing whether PSDM CSV grids are equal when serialized and deserialized sequentially.
+ * Grid data should <strong>not</strong> change when written out or parsed.
  */
 class GridIoIT extends Specification implements CsvTestDataMeta {
 
