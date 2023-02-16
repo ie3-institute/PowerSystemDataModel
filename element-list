@@ -13,6 +13,7 @@ edu.ie3.datamodel.io.factory.result
 edu.ie3.datamodel.io.factory.timeseries
 edu.ie3.datamodel.io.factory.typeinput
 edu.ie3.datamodel.io.naming
+edu.ie3.datamodel.io.naming.timeseries
 edu.ie3.datamodel.io.processor
 edu.ie3.datamodel.io.processor.input
 edu.ie3.datamodel.io.processor.result
@@ -35,6 +36,7 @@ edu.ie3.datamodel.models.input.system.type
 edu.ie3.datamodel.models.input.system.type.chargingpoint
 edu.ie3.datamodel.models.input.system.type.evcslocation
 edu.ie3.datamodel.models.input.thermal
+edu.ie3.datamodel.models.profile
 edu.ie3.datamodel.models.result
 edu.ie3.datamodel.models.result.connector
 edu.ie3.datamodel.models.result.system
