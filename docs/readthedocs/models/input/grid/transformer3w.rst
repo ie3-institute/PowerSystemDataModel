@@ -34,11 +34,11 @@ All impedances and admittances are given with respect to the higher voltage side
 +-----------+------+---------------------------------------------------------+
 | rScC      | Ω    | Short circuit resistance in branch C                    |
 +-----------+------+---------------------------------------------------------+
-| xScA      | Ω    | Short circuit impedance in branch A                     |
+| xScA      | Ω    | Short circuit reactance in branch A                     |
 +-----------+------+---------------------------------------------------------+
-| xScB      | Ω    | Short circuit impedance in branch B                     |
+| xScB      | Ω    | Short circuit reactance in branch B                     |
 +-----------+------+---------------------------------------------------------+
-| xScC      | Ω    | Short circuit impedance in branch C                     |
+| xScC      | Ω    | Short circuit reactance in branch C                     |
 +-----------+------+---------------------------------------------------------+
 | gM        | nS   | No load conductance                                     |
 +-----------+------+---------------------------------------------------------+
@@ -88,8 +88,8 @@ Entity Model
 | nodeC           | --   | Lowest voltage node                                        |
 +-----------------+------+------------------------------------------------------------+
 | parallelDevices | --   | | overall amount of parallel transformers to automatically |
-|                 | --   | | construct (e.g. parallelDevices = 2 will build a         |
-|                 | --   | | total of two transformers using the specified parameters)|
+|                 |      | | construct (e.g. parallelDevices = 2 will build a         |
+|                 |      | | total of two transformers using the specified parameters)|
 +-----------------+------+------------------------------------------------------------+
 | type            | --   |                                                            |
 +-----------------+------+------------------------------------------------------------+

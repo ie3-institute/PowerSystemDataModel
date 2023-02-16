@@ -88,7 +88,7 @@ public class OperationTime implements Serializable {
    */
   public boolean includes(ZonedDateTime date) {
     Optional<ClosedInterval<ZonedDateTime>> optOperationTime = getOperationLimit();
-    return !optOperationTime.isPresent() || optOperationTime.get().includes(date);
+    return optOperationTime.isEmpty() || optOperationTime.get().includes(date);
   }
 
   @Override

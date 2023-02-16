@@ -105,14 +105,13 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof MeasurementUnitInput that)) return false;
     if (!super.equals(o)) return false;
-    MeasurementUnitInput that = (MeasurementUnitInput) o;
     return Objects.equals(node, that.node)
-        && Objects.equals(vMag, that.vMag)
-        && Objects.equals(vAng, that.vAng)
-        && Objects.equals(p, that.p)
-        && Objects.equals(q, that.q);
+        && vMag == that.vMag
+        && vAng == that.vAng
+        && p == that.p
+        && q == that.q;
   }
 
   @Override

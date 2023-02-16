@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
-import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
 
 /**
@@ -58,26 +57,24 @@ public interface IdCoordinateSource extends DataSource {
    * @return the n nearest coordinates to the given point
    */
   default List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
-    return getNearestCoordinates(coordinate, n, Collections.emptySet());
+    return getNearestCoordinates(coordinate, n, getAllCoordinates());
   }
 
   /**
    * Returns the nearest n coordinate points to the given coordinate from a given collection of
-   * points
+   * points. If the set is empty or null we look through all coordinates.
    *
    * @param coordinate the coordinate to look up the nearest neighbours for
    * @param n how many neighbours to look up
-   * @param allCoordinates the collection of points, ideally containing all available coordinates
+   * @param coordinates the collection of points
    * @return the n nearest coordinates to the given point
    */
   default List<CoordinateDistance> getNearestCoordinates(
-      Point coordinate, int n, Collection<Point> allCoordinates) {
+      Point coordinate, int n, Collection<Point> coordinates) {
     SortedSet<CoordinateDistance> sortedDistances =
-        GeoUtils.getCoordinateDistances(
+        GeoUtils.calcOrderedCoordinateDistances(
             coordinate,
-            (allCoordinates == null || allCoordinates.isEmpty())
-                ? getAllCoordinates()
-                : allCoordinates);
-    return sortedDistances.stream().limit(n).collect(Collectors.toList());
+            (coordinates != null && !coordinates.isEmpty()) ? coordinates : getAllCoordinates());
+    return sortedDistances.stream().limit(n).toList();
   }
 }

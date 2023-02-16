@@ -16,45 +16,45 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
 import static tech.units.indriya.unit.Units.VOLT
 
 class CommonVoltageLevelTest extends Specification {
-	@Shared
-	CommonVoltageLevel dut = new CommonVoltageLevel(
-	"Niederspannung",
-	Quantities.getQuantity(0.4, KILOVOLT),
-	new HashSet<>(Arrays.asList("lv", "ns")),
-	new RightOpenInterval<>(
-	Quantities.getQuantity(0d, KILOVOLT), Quantities.getQuantity(10d, KILOVOLT)))
+  @Shared
+  CommonVoltageLevel dut = new CommonVoltageLevel(
+  "Niederspannung",
+  Quantities.getQuantity(0.4, KILOVOLT),
+  new HashSet<>(Arrays.asList("lv", "ns")),
+  new RightOpenInterval<>(
+  Quantities.getQuantity(0d, KILOVOLT), Quantities.getQuantity(10d, KILOVOLT)))
 
-	def "A common voltage level should correctly check, if a valid rated voltage is covered"() {
-		expect:
-		dut.covers(Quantities.getQuantity(500d, VOLT))   // May be true
-	}
+  def "A common voltage level should correctly check, if a valid rated voltage is covered"() {
+    expect:
+    dut.covers(Quantities.getQuantity(500d, VOLT))   // May be true
+  }
 
-	def "A common voltage level should correctly check, if a outlying rated voltage is covered"() {
-		expect:
-		!dut.covers(Quantities.getQuantity(10d, KILOVOLT)) // May be false
-	}
+  def "A common voltage level should correctly check, if a outlying rated voltage is covered"() {
+    expect:
+    !dut.covers(Quantities.getQuantity(10d, KILOVOLT)) // May be false
+  }
 
-	def "A common voltage level should correctly check, if the upper boundary of rated voltages is covered"() {
-		expect:
-		!dut.covers(Quantities.getQuantity(10d, KILOVOLT)) // May be false, because the interval is right open
-	}
+  def "A common voltage level should correctly check, if the upper boundary of rated voltages is covered"() {
+    expect:
+    !dut.covers(Quantities.getQuantity(10d, KILOVOLT)) // May be false, because the interval is right open
+  }
 
-	def "A common voltage level should correctly check, if a valid id / rated voltage combination is covered"() {
-		expect:
-		dut.covers("Niederspannung", Quantities.getQuantity(500d, VOLT))   // May be true
-	}
+  def "A common voltage level should correctly check, if a valid id / rated voltage combination is covered"() {
+    expect:
+    dut.covers("Niederspannung", Quantities.getQuantity(500d, VOLT))   // May be true
+  }
 
-	def "A common voltage level should correctly check, if an invalid id / rated voltage combination is covered"() {
-		expect:
-		!dut.covers("HS", Quantities.getQuantity(110d, KILOVOLT))   // May be false
-	}
+  def "A common voltage level should correctly check, if an invalid id / rated voltage combination is covered"() {
+    expect:
+    !dut.covers("HS", Quantities.getQuantity(110d, KILOVOLT))   // May be false
+  }
 
-	def "A common voltage level should thrown an exception, if an inconsistent id / rated voltage combination is checked"() {
-		when:
-		dut.covers("HS", Quantities.getQuantity(500d, VOLT))   // May be true
+  def "A common voltage level should thrown an exception, if an inconsistent id / rated voltage combination is checked"() {
+    when:
+    dut.covers("HS", Quantities.getQuantity(500d, VOLT))   // May be true
 
-		then:
-		VoltageLevelException ex = thrown()
-		ex.message == "The provided id \"HS\" and rated voltage \"500 V\" could possibly meet the voltage level \"Niederspannung\" (Interval [0 kV, 10 kV)), but are inconsistent."
-	}
+    then:
+    VoltageLevelException ex = thrown()
+    ex.message == "The provided id \"HS\" and rated voltage \"500 V\" could possibly meet the voltage level \"Niederspannung\" (Interval [0.0 kV, 10 kV)), but are inconsistent."
+  }
 }

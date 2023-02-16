@@ -8,7 +8,7 @@ If you feel, something is missing, please contact us!
 ************
 Requirements
 ************
-Java > v 1.8
+Java > v 17
 
 ************
 Where to get
@@ -25,18 +25,18 @@ On `Maven central <https://search.maven.org/artifact/com.github.ie3-institute/Po
    <dependency>
      <groupId>com.github.ie3-institute</groupId>
      <artifactId>PowerSystemDataModel</artifactId>
-     <version>2.0.0</version>
+     <version>2.1.0</version>
    </dependency>
 
 Snapshot releases
 =================
-Available on `OSS Sonatype <https://oss.sonatype.org/>`_.
+Available on `OSS Sonatype <https://s01.oss.sonatype.org/>`_.
 Add the correct repository:
 
 .. code-block:: xml
 
    <repositories>
-     <repository>http://oss.sonatype.org/content/repositories/snapshots</repository>
+     <repository>https://s01.oss.sonatype.org/content/repositories/snapshots</repository>
    </repositories>
 
 and add the dependency:
@@ -46,5 +46,5 @@ and add the dependency:
    <dependency>
      <groupId>com.github.ie3-institute</groupId>
      <artifactId>PowerSystemDataModel</artifactId>
-     <version>2.0-SNAPSHOT</version>
+     <version>3.0-SNAPSHOT</version>
    </dependency>

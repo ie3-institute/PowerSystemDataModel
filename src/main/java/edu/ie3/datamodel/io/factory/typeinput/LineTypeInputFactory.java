@@ -42,13 +42,13 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
     ComparableQuantity<SpecificConductance> b =
-        data.getQuantity(B, StandardUnits.ADMITTANCE_PER_LENGTH);
+        data.getQuantity(B, StandardUnits.SUSCEPTANCE_PER_LENGTH);
     ComparableQuantity<SpecificConductance> g =
-        data.getQuantity(G, StandardUnits.ADMITTANCE_PER_LENGTH);
+        data.getQuantity(G, StandardUnits.CONDUCTANCE_PER_LENGTH);
     ComparableQuantity<SpecificResistance> r =
-        data.getQuantity(R, StandardUnits.IMPEDANCE_PER_LENGTH);
+        data.getQuantity(R, StandardUnits.RESISTANCE_PER_LENGTH);
     ComparableQuantity<SpecificResistance> x =
-        data.getQuantity(X, StandardUnits.IMPEDANCE_PER_LENGTH);
+        data.getQuantity(X, StandardUnits.REACTANCE_PER_LENGTH);
     ComparableQuantity<ElectricCurrent> iMax =
         data.getQuantity(I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     ComparableQuantity<ElectricPotential> vRated =

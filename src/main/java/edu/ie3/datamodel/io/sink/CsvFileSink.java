@@ -92,7 +92,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * ProcessorProvider} by calling {@link ProcessorProvider#ProcessorProvider()}
    *
    * @param baseFolderPath the base folder path where the files should be put into
-   * @param processorProvider the processor provided that should be used for entity de-serialization
+   * @param processorProvider the processor provided that should be used for entity serialization
    * @param fileNamingStrategy the data sink file naming strategy that should be used
    * @param initFiles true if the files should be created during initialization (might create files,
    *     that only consist of a headline, because no data will be written into them), false
@@ -122,12 +122,11 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   @Override
   public <T extends UniqueEntity> void persist(T entity) {
     /* Distinguish between "regular" input / result models and time series */
-    if (entity instanceof InputEntity) {
-      persistIncludeNested((InputEntity) entity);
+    if (entity instanceof InputEntity inputEntity) {
+      persistIncludeNested(inputEntity);
     } else if (entity instanceof ResultEntity) {
       write(entity);
-    } else if (entity instanceof TimeSeries) {
-      TimeSeries<?, ?> timeSeries = (TimeSeries<?, ?>) entity;
+    } else if (entity instanceof TimeSeries<?, ?> timeSeries) {
       persistTimeSeries(timeSeries);
     } else {
       log.error(
@@ -147,10 +146,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   @Override
   public <C extends InputEntity> void persistIncludeNested(C entity) {
-    if (entity instanceof NestedEntity) {
+    if (entity instanceof NestedEntity nestedEntity) {
       try {
         write(entity);
-        for (InputEntity ent : Extractor.extractElements((NestedEntity) entity)) {
+        for (InputEntity ent : Extractor.extractElements(nestedEntity)) {
           write(ent);
         }
       } catch (ExtractorException e) {
@@ -193,6 +192,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     Set<PvInput> pvPlants = systemParticipants.getPvPlants();
     Set<StorageInput> storages = systemParticipants.getStorages();
     Set<WecInput> wecPlants = systemParticipants.getWecPlants();
+    Set<EmInput> emSystems = systemParticipants.getEmSystems();
 
     // get graphic elements (just for better readability, we could also just get them directly
     // below)
@@ -211,13 +211,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 storages,
                 wecPlants)
             .flatMap(Collection::stream)
-            .map(
-                entityWithType ->
-                    Extractor.extractType(
-                        entityWithType)) // DON'T TOUCH THIS! NO, not even, if your editor suggests
-            // to replace lambda with method reference!
-            // This will break the sink! Due to a bug in java 8 this *CANNOT* be replaced with
-            // method reference!
+            .map(Extractor::extractType)
             .collect(Collectors.toSet());
 
     // extract operators
@@ -238,11 +232,11 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 loads,
                 pvPlants,
                 storages,
-                wecPlants)
+                wecPlants,
+                emSystems)
             .flatMap(Collection::stream)
             .map(Extractor::extractOperator)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
+            .flatMap(Optional::stream)
             .collect(Collectors.toSet());
 
     // persist all entities
@@ -327,6 +321,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
       entityFieldData =
           processorProvider
               .handleEntity(entity)
+              .map(this::csvEntityFieldData)
               .orElseThrow(
                   () ->
                       new SinkException(

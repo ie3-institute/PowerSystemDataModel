@@ -8,9 +8,10 @@ package edu.ie3.datamodel.io.connectors;
 import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.*;
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.io.FilenameUtils;
@@ -41,7 +43,10 @@ public class CsvFileConnector implements DataConnector {
       new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
   // ATTENTION: Do not finalize. It's meant for lazy evaluation.
-  private Map<UUID, CsvIndividualTimeSeriesMetaInformation> individualTimeSeriesMetaInformation;
+  @Deprecated(since = "3.0", forRemoval = true)
+  private Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
+      individualTimeSeriesMetaInformation;
+
   private final FileNamingStrategy fileNamingStrategy;
   private final String baseDirectoryName;
 
@@ -106,7 +111,7 @@ public class CsvFileConnector implements DataConnector {
     /* Join the full DIRECTORY path (excluding file name) */
     String baseDirectoryHarmonized = IoUtil.harmonizeFileSeparator(baseDirectory);
     String fullDirectoryPath =
-        FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getDirectoryPath());
+        FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.directoryPath());
     String fullPath = FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getFilePath());
 
     /* Create missing directories */
@@ -120,13 +125,13 @@ public class CsvFileConnector implements DataConnector {
     boolean append = pathFile.exists();
     BufferedCsvWriter writer =
         new BufferedCsvWriter(
-            fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), append);
+            fullPath, fileDefinition.headLineElements(), fileDefinition.csvSep(), append);
     if (!append) {
       writer.writeFileHeader();
     } else {
       log.warn(
           "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
-          fileDefinition.getFileName(),
+          fileDefinition.fileName(),
           pathFile.getAbsolutePath());
     }
     return writer;
@@ -156,7 +161,7 @@ public class CsvFileConnector implements DataConnector {
    * @param <C> Type of class
    * @throws IOException If closing of writer fails.
    */
-  public synchronized <C extends Class<? extends UniqueEntity>> void closeEntityWriter(C clz)
+  public synchronized <C extends UniqueEntity> void closeEntityWriter(Class<C> clz)
       throws IOException {
     Optional<BufferedCsvWriter> maybeWriter = Optional.ofNullable(entityWriters.get(clz));
     if (maybeWriter.isPresent()) {
@@ -219,69 +224,45 @@ public class CsvFileConnector implements DataConnector {
    *
    * @param timeSeriesUuid The time series in question
    * @return An option on the queried information
+   * @deprecated since 3.0. Use {@link #getCsvIndividualTimeSeriesMetaInformation(ColumnScheme...)}
+   *     instead
    */
-  public Optional<IndividualTimeSeriesMetaInformation> getIndividualTimeSeriesMetaInformation(
-      UUID timeSeriesUuid) {
+  @Deprecated(since = "3.0", forRemoval = true)
+  public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
+      getIndividualTimeSeriesMetaInformation(UUID timeSeriesUuid) {
     if (Objects.isNull(individualTimeSeriesMetaInformation))
-      individualTimeSeriesMetaInformation = buildIndividualTimeSeriesMetaInformation();
+      individualTimeSeriesMetaInformation = getCsvIndividualTimeSeriesMetaInformation();
 
-    return Optional.ofNullable(individualTimeSeriesMetaInformation.get(timeSeriesUuid));
+    return Optional.ofNullable(individualTimeSeriesMetaInformation.get(timeSeriesUuid))
+        .map(edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation::new);
   }
 
   /**
-   * This method creates a map from time series uuid to it's meta information.
-   *
-   * @return Mapping from time series uuid to it's meta information.
-   */
-  private Map<UUID, CsvIndividualTimeSeriesMetaInformation>
-      buildIndividualTimeSeriesMetaInformation() {
-    return getIndividualTimeSeriesFilePaths()
-        .parallelStream()
-        .map(
-            filePath -> {
-              /* Extract meta information from file path and enhance it with the file path itself */
-              String filePathWithoutEnding = removeFileEnding(filePath);
-              IndividualTimeSeriesMetaInformation metaInformation =
-                  (IndividualTimeSeriesMetaInformation)
-                      fileNamingStrategy.extractTimeSeriesMetaInformation(filePathWithoutEnding);
-              return new CsvIndividualTimeSeriesMetaInformation(
-                  metaInformation, filePathWithoutEnding);
-            })
-        .collect(Collectors.toMap(FileNameMetaInformation::getUuid, v -> v));
-  }
-
-  /**
-   * Receive the information for specific time series. They are given back grouped by the column
+   * Receive the information for specific time series. They are given back filtered by the column
    * scheme in order to allow for accounting the different content types.
    *
    * @param columnSchemes the column schemes to initialize readers for. If no scheme is given, all
    *     possible readers will be initialized.
    * @return A mapping from column scheme to the individual time series meta information
    */
-  public Map<ColumnScheme, Set<CsvIndividualTimeSeriesMetaInformation>>
-      getCsvIndividualTimeSeriesMetaInformation(ColumnScheme... columnSchemes) {
-    return getIndividualTimeSeriesFilePaths()
-        .parallelStream()
+  public Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
+      getCsvIndividualTimeSeriesMetaInformation(final ColumnScheme... columnSchemes) {
+    return getIndividualTimeSeriesFilePaths().parallelStream()
         .map(
-            pathString -> {
-              String filePathWithoutEnding = removeFileEnding(pathString);
-              return buildCsvTimeSeriesMetaInformation(filePathWithoutEnding, columnSchemes);
+            filePath -> {
+              /* Extract meta information from file path and enhance it with the file path itself */
+              IndividualTimeSeriesMetaInformation metaInformation =
+                  fileNamingStrategy.individualTimeSeriesMetaInformation(filePath);
+              return new edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation(
+                  metaInformation, FileNamingStrategy.removeFileNameEnding(filePath));
             })
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(
-            Collectors.groupingBy(
-                CsvIndividualTimeSeriesMetaInformation::getColumnScheme, Collectors.toSet()));
-  }
-
-  /**
-   * Removes the file ending from input string
-   *
-   * @param input String to manipulate
-   * @return input without possible ending
-   */
-  private String removeFileEnding(String input) {
-    return input.replaceAll(FILE_ENDING + "$", "");
+        .filter(
+            metaInformation ->
+                columnSchemes == null
+                    || columnSchemes.length == 0
+                    || Stream.of(columnSchemes)
+                        .anyMatch(scheme -> scheme.equals(metaInformation.getColumnScheme())))
+        .collect(Collectors.toMap(TimeSeriesMetaInformation::getUuid, Function.identity()));
   }
 
   /**
@@ -300,7 +281,7 @@ public class CsvFileConnector implements DataConnector {
           .map(baseDirectoryPath::relativize)
           .filter(
               path -> {
-                String withoutEnding = removeFileEnding(path.toString());
+                String withoutEnding = FileNamingStrategy.removeFileNameEnding(path.toString());
                 return fileNamingStrategy
                     .getIndividualTimeSeriesPattern()
                     .matcher(withoutEnding)
@@ -311,55 +292,6 @@ public class CsvFileConnector implements DataConnector {
     } catch (IOException e) {
       log.error("Unable to determine time series files readers for time series.", e);
       return Collections.emptySet();
-    }
-  }
-
-  /**
-   * Compose the needed information for reading in a single time series. If the file points to a
-   * non-individual time series or a time series of a column scheme other than the specified ones,
-   * or the initialisation of the reader does not work, an empty {@link Optional} is given back
-   *
-   * @param filePathString String describing the path to the time series file
-   * @param columnSchemes the allowed column schemes. If no scheme is specified, all schemes are
-   *     allowed.
-   * @return An {@link Optional} to {@link IndividualTimeSeriesMetaInformation}
-   */
-  private Optional<CsvIndividualTimeSeriesMetaInformation> buildCsvTimeSeriesMetaInformation(
-      String filePathString, ColumnScheme... columnSchemes) {
-    try {
-      FileNameMetaInformation metaInformation =
-          fileNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
-      if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
-        log.error(
-            "The time series file '{}' does not represent an individual time series.",
-            filePathString);
-        return Optional.empty();
-      }
-
-      IndividualTimeSeriesMetaInformation individualMetaInformation =
-          (IndividualTimeSeriesMetaInformation) metaInformation;
-
-      // If no column schemes are specified, we will include all. If there a specified schemes, we
-      // check if the file's column scheme matches any of them
-      if (columnSchemes != null
-          && columnSchemes.length > 0
-          && Stream.of(columnSchemes)
-              .noneMatch(scheme -> scheme.equals(individualMetaInformation.getColumnScheme()))) {
-        log.warn(
-            "The column scheme of the time series file {} does not match any of the specified column schemes ({}), so it will not be processed.",
-            filePathString,
-            columnSchemes);
-        return Optional.empty();
-      }
-      return Optional.of(
-          new CsvIndividualTimeSeriesMetaInformation(
-              individualMetaInformation.getUuid(),
-              individualMetaInformation.getColumnScheme(),
-              filePathString));
-    } catch (IllegalArgumentException e) {
-      log.error(
-          "Error during extraction of meta information from file name '{}'.", filePathString, e);
-      return Optional.empty();
     }
   }
 
@@ -401,7 +333,7 @@ public class CsvFileConnector implements DataConnector {
   /**
    * Builds a new file definition consisting of file name and head line elements
    *
-   * @param clz Class that is meant to be de-serialized into this file
+   * @param clz Class that is meant to be serialized into this file
    * @param headLineElements Array of head line elements
    * @param csvSep Separator for csv columns
    * @return A suitable file definition
@@ -435,19 +367,28 @@ public class CsvFileConnector implements DataConnector {
             });
   }
 
-  /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
+  /**
+   * Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file
+   *
+   * @deprecated since 3.0. Use {@link
+   *     edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation} instead
+   */
+  @Deprecated(since = "3.0", forRemoval = true)
   public static class CsvIndividualTimeSeriesMetaInformation
-      extends IndividualTimeSeriesMetaInformation {
+      extends edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation {
     private final String fullFilePath;
 
     public CsvIndividualTimeSeriesMetaInformation(
-        UUID uuid, ColumnScheme columnScheme, String fullFilePath) {
+        UUID uuid,
+        edu.ie3.datamodel.io.csv.timeseries.ColumnScheme columnScheme,
+        String fullFilePath) {
       super(uuid, columnScheme);
       this.fullFilePath = fullFilePath;
     }
 
     public CsvIndividualTimeSeriesMetaInformation(
-        IndividualTimeSeriesMetaInformation metaInformation, String fullFilePath) {
+        edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation metaInformation,
+        String fullFilePath) {
       this(metaInformation.getUuid(), metaInformation.getColumnScheme(), fullFilePath);
     }
 
@@ -458,9 +399,8 @@ public class CsvFileConnector implements DataConnector {
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (!(o instanceof CsvIndividualTimeSeriesMetaInformation)) return false;
+      if (!(o instanceof CsvIndividualTimeSeriesMetaInformation that)) return false;
       if (!super.equals(o)) return false;
-      CsvIndividualTimeSeriesMetaInformation that = (CsvIndividualTimeSeriesMetaInformation) o;
       return fullFilePath.equals(that.fullFilePath);
     }
 

@@ -40,7 +40,8 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
         StorageResult.class,
         EvcsResult.class,
         EvResult.class,
-        HpResult.class);
+        HpResult.class,
+        EmResult.class);
   }
 
   /**
@@ -61,7 +62,8 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
         StorageResult.class,
         EvcsResult.class,
         EvResult.class,
-        HpResult.class);
+        HpResult.class,
+        EmResult.class);
   }
 
   @Override
@@ -116,6 +118,10 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
       return uuidOpt
           .map(uuid -> new EvcsResult(uuid, zdtTime, inputModelUuid, p, q))
           .orElseGet(() -> new EvcsResult(zdtTime, inputModelUuid, p, q));
+    } else if (entityClass.equals(EmResult.class)) {
+      return uuidOpt
+          .map(uuid -> new EmResult(uuid, zdtTime, inputModelUuid, p, q))
+          .orElseGet(() -> new EmResult(zdtTime, inputModelUuid, p, q));
     } else if (SystemParticipantWithHeatResult.class.isAssignableFrom(entityClass)) {
       /* The following classes all have a heat component as well */
       ComparableQuantity<Power> qDot = data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT);

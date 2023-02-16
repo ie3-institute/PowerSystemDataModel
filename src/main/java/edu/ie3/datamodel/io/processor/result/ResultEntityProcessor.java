@@ -23,8 +23,8 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 
 /**
- * 'De-serializer' for {@link ResultEntity}s into a fieldName to value representation to allow for
- * an easy processing into a database or file sink e.g. .csv It is important that the units used in
+ * 'Serializer' for {@link ResultEntity}s into a fieldName to value representation to allow for an
+ * easy processing into a database or file sink e.g. .csv It is important that the units used in
  * this class are equal to the units used {@link SystemParticipantResultFactory} to prevent invalid
  * interpretation of unit prefixes!
  *
@@ -35,25 +35,26 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
 
   /** The entities that can be used within this processor */
   public static final List<Class<? extends ResultEntity>> eligibleEntityClasses =
-      Collections.unmodifiableList(
-          Arrays.asList(
-              LoadResult.class,
-              FixedFeedInResult.class,
-              BmResult.class,
-              PvResult.class,
-              ChpResult.class,
-              WecResult.class,
-              StorageResult.class,
-              EvcsResult.class,
-              EvResult.class,
-              HpResult.class,
-              Transformer2WResult.class,
-              Transformer3WResult.class,
-              LineResult.class,
-              SwitchResult.class,
-              NodeResult.class,
-              ThermalHouseResult.class,
-              CylindricalStorageResult.class));
+      List.of(
+          LoadResult.class,
+          FixedFeedInResult.class,
+          BmResult.class,
+          PvResult.class,
+          ChpResult.class,
+          WecResult.class,
+          StorageResult.class,
+          EvcsResult.class,
+          EvResult.class,
+          HpResult.class,
+          Transformer2WResult.class,
+          Transformer3WResult.class,
+          LineResult.class,
+          SwitchResult.class,
+          NodeResult.class,
+          ThermalHouseResult.class,
+          CylindricalStorageResult.class,
+          EmResult.class,
+          FlexOptionsResult.class);
 
   public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass) {
     super(registeredClass);
@@ -62,36 +63,23 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
   @Override
   protected Optional<String> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
-    Optional<String> normalizedQuantityValue = Optional.empty();
-    switch (fieldName) {
-      case "energy":
-      case "eConsAnnual":
-      case "eStorage":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
-        break;
+    return switch (fieldName) {
+      case "energy", "eConsAnnual", "eStorage":
+        yield quantityValToOptionalString(
+            quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
       case "q":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
-        break;
-      case "p":
-      case "pMax":
-      case "pOwn":
-      case "pThermal":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
-        break;
+        yield quantityValToOptionalString(
+            quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
+      case "p", "pMax", "pOwn", "pThermal", "pRef", "pMin":
+        yield quantityValToOptionalString(
+            quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
       default:
         log.error(
             "Cannot process quantity with value '{}' for field with name {} in result entity processing!",
             quantity,
             fieldName);
-        break;
-    }
-    return normalizedQuantityValue;
+        yield Optional.empty();
+    };
   }
 
   @Override

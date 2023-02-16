@@ -41,8 +41,8 @@ public class ContainerNodeUpdateUtil {
    */
   public static GridContainer updateGridWithNodes(
       GridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) {
-    if (grid instanceof JointGridContainer) {
-      return updateGridWithNodes((JointGridContainer) grid, oldToNewNodes);
+    if (grid instanceof JointGridContainer jointGridContainer) {
+      return updateGridWithNodes(jointGridContainer, oldToNewNodes);
     } else {
       return updateGridWithNodes((SubGridContainer) grid, oldToNewNodes);
     }
@@ -73,9 +73,9 @@ public class ContainerNodeUpdateUtil {
 
     return new JointGridContainer(
         grid.getGridName(),
-        updatedEntities.rawGridElements,
-        updatedEntities.systemParticipants,
-        updatedEntities.graphicElements);
+        updatedEntities.rawGridElements(),
+        updatedEntities.systemParticipants(),
+        updatedEntities.graphicElements());
   }
 
   /**
@@ -108,9 +108,9 @@ public class ContainerNodeUpdateUtil {
     return new SubGridContainer(
         grid.getGridName(),
         grid.getSubnet(),
-        updatedEntities.rawGridElements,
-        updatedEntities.systemParticipants,
-        updatedEntities.graphicElements);
+        updatedEntities.rawGridElements(),
+        updatedEntities.systemParticipants(),
+        updatedEntities.graphicElements());
   }
 
   /**
@@ -131,9 +131,9 @@ public class ContainerNodeUpdateUtil {
     /* RawGridElements */
     RawGridElementsNodeUpdateResult rawGridUpdateResult =
         updateRawGridElementsWithNodes(rawGridElements, oldToNewNodes);
-    RawGridElements updatedRawGridElements = rawGridUpdateResult.rawGridElements;
+    RawGridElements updatedRawGridElements = rawGridUpdateResult.rawGridElements();
 
-    Map<NodeInput, NodeInput> updatedOldToNewNodes = rawGridUpdateResult.updatedOldToNewNodes;
+    Map<NodeInput, NodeInput> updatedOldToNewNodes = rawGridUpdateResult.updatedOldToNewNodes();
 
     /* SystemParticipants */
     SystemParticipants updatedSystemParticipants =
@@ -207,9 +207,7 @@ public class ContainerNodeUpdateUtil {
       SystemParticipants systemParticipants, Map<NodeInput, NodeInput> oldToNewNodes) {
 
     List<SystemParticipantInput> sysParts =
-        systemParticipants
-            .allEntitiesAsList()
-            .parallelStream()
+        systemParticipants.allEntitiesAsList().parallelStream()
             .map(
                 sysPart -> {
                   if (oldToNewNodes.containsKey(sysPart.getNode())) {
@@ -218,7 +216,7 @@ public class ContainerNodeUpdateUtil {
                     return sysPart;
                   }
                 })
-            .collect(Collectors.toList());
+            .toList();
     return new SystemParticipants(sysParts);
   }
 
@@ -244,12 +242,12 @@ public class ContainerNodeUpdateUtil {
             oldToNewNodes);
 
     Set<Transformer3WInput> updatedTrafo3wInputs =
-        transformerNodeUpdateResult.updatedTransformer3WInputs;
+        transformerNodeUpdateResult.updatedTransformer3WInputs();
     Set<Transformer2WInput> updatedTrafo2wInputs =
-        transformerNodeUpdateResult.updatedTransformer2WInputs;
+        transformerNodeUpdateResult.updatedTransformer2WInputs();
 
     Map<NodeInput, NodeInput> updatedOldToNewNodes =
-        transformerNodeUpdateResult.updatedOldToNewNodes;
+        transformerNodeUpdateResult.updatedOldToNewNodes();
 
     /* update nodes */
     Set<NodeInput> updatedNodeSet =
@@ -605,21 +603,10 @@ public class ContainerNodeUpdateUtil {
    * updates when updating the transformers. Hence, for further processing it is advised to use the
    * updatedOldToNewNodes instead of the original ones.
    */
-  private static class TransformerNodeUpdateResult {
-    private final Set<Transformer2WInput> updatedTransformer2WInputs;
-    private final Set<Transformer3WInput> updatedTransformer3WInputs;
-
-    private final Map<NodeInput, NodeInput> updatedOldToNewNodes;
-
-    public TransformerNodeUpdateResult(
-        Set<Transformer2WInput> updatedTransformer2WInputs,
-        Set<Transformer3WInput> updatedTransformer3WInputs,
-        Map<NodeInput, NodeInput> updatedOldToNewNodes) {
-      this.updatedTransformer2WInputs = updatedTransformer2WInputs;
-      this.updatedTransformer3WInputs = updatedTransformer3WInputs;
-      this.updatedOldToNewNodes = updatedOldToNewNodes;
-    }
-  }
+  private record TransformerNodeUpdateResult(
+      Set<Transformer2WInput> updatedTransformer2WInputs,
+      Set<Transformer3WInput> updatedTransformer3WInputs,
+      Map<NodeInput, NodeInput> updatedOldToNewNodes) {}
 
   /**
    * Class that is used to provide data after calling {@link
@@ -628,30 +615,12 @@ public class ContainerNodeUpdateUtil {
    * Hence, for further processing it is advised to use the updatedOldToNewNodes instead of the
    * original ones
    */
-  private static class RawGridElementsNodeUpdateResult {
-    private final RawGridElements rawGridElements;
-    private final Map<NodeInput, NodeInput> updatedOldToNewNodes;
-
-    public RawGridElementsNodeUpdateResult(
-        RawGridElements rawGridElements, Map<NodeInput, NodeInput> updatedOldToNewNodes) {
-      this.rawGridElements = rawGridElements;
-      this.updatedOldToNewNodes = updatedOldToNewNodes;
-    }
-  }
+  private record RawGridElementsNodeUpdateResult(
+      RawGridElements rawGridElements, Map<NodeInput, NodeInput> updatedOldToNewNodes) {}
 
   /** Wrapper class for updated entities hold by an instance of {@link GridContainer} */
-  private static class UpdatedEntities {
-    private final RawGridElements rawGridElements;
-    private final SystemParticipants systemParticipants;
-    private final GraphicElements graphicElements;
-
-    public UpdatedEntities(
-        RawGridElements rawGridElements,
-        SystemParticipants systemParticipants,
-        GraphicElements graphicElements) {
-      this.rawGridElements = rawGridElements;
-      this.systemParticipants = systemParticipants;
-      this.graphicElements = graphicElements;
-    }
-  }
+  private record UpdatedEntities(
+      RawGridElements rawGridElements,
+      SystemParticipants systemParticipants,
+      GraphicElements graphicElements) {}
 }

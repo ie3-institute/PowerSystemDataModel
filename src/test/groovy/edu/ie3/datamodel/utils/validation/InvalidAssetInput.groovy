@@ -11,17 +11,17 @@ import java.time.ZonedDateTime
 
 class InvalidAssetInput  extends AssetInput {
 
-	InvalidAssetInput() {
-		super(UUID.randomUUID(), "invalid_asset")
-	}
+  InvalidAssetInput() {
+    super(UUID.randomUUID(), "invalid_asset")
+  }
 
-	@Override
-	boolean inOperationOn(ZonedDateTime date) {
-		throw new UnsupportedOperationException("This is a dummy class")
-	}
+  @Override
+  boolean inOperationOn(ZonedDateTime date) {
+    throw new UnsupportedOperationException("This is a dummy class")
+  }
 
-	@Override
-	UniqueEntityBuilder copy() {
-		throw new UnsupportedOperationException("This is a dummy class")
-	}
+  @Override
+  UniqueEntityBuilder copy() {
+    throw new UnsupportedOperationException("This is a dummy class")
+  }
 }

@@ -6,17 +6,92 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+## [3.0.0] - 2023-02-16
+
+### Added
+- SQL time series sources (`SqlTimeSeriesSource` and `SqlTimeSeriesMappingSource`) [#467](https://github.com/ie3-institute/PowerSystemDataModel/issues/467)
+- SQL time series have a different structure than CSV counterparts [#545](https://github.com/ie3-institute/PowerSystemDataModel/issues/545)
+- Graph with impedance weighted edges including facilities to create it [#440](https://github.com/ie3-institute/PowerSystemDataModel/issues/440)
+- `TimeSeriesMetaInformationSource` providing a source for the mapping of time series uuids to column schemes (previously provided by `TimeSeriesMappingSource`) [#515](https://github.com/ie3-institute/PowerSystemDataModel/issues/515)
+- `TemperatureDependantLoadProfile`s for depiction of profile behavior of night storage heating and heat pumps [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
+- `ThermalUnits` as a container to hold all thermal units [#134](https://github.com/ie3-institute/PowerSystemDataModel/issues/134)
+- `ThermalInput` as a distinct abstract class for all thermal models
+- `ThermalGrid` as a container for a completely connected thermal grid
+- `EmResult` and `FlexOptionsResult` for Energy Management Systems [#651](https://github.com/ie3-institute/PowerSystemDataModel/issues/651)
+- `EvcsInput` now has a parameter for enabling and disabling vehicle to grid support [#681](https://github.com/ie3-institute/PowerSystemDataModel/issues/681)
+- Added Dependabot updates to sphinx/readthedocs dependencies [#735](https://github.com/ie3-institute/PowerSystemDataModel/issues/735)
+- Created convenience function for JointGridContainer from CSV [#502](https://github.com/ie3-institute/PowerSystemDataModel/issues/502)
+- Added CSV grid IO integration test [#586](https://github.com/ie3-institute/PowerSystemDataModel/issues/586)
+
+### Fixed
+- Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
+    - Protected constructors for abstract classes
+    - Use pattern matching
+    - Remove unused imports
+    - Use enhanced switch statements
+    - Replace lambdas with method references
+    - Use `Stream#toList`
+    - Adapt visibility for JUnit 5
+- More code smell fixing [#633](https://github.com/ie3-institute/PowerSystemDataModel/issues/633)
+    - Use `List#of`
+    - Use direct assignment with switch/case structures
+    - Turn some classes into records
+    - Making abstract classes' constructor protected
+    - Improving some RegExs
+    - Replacing `filter(Optional::isPresent).map(Optional::get)` on streams with `flatMap(Optional::stream)`
+    - instanceof variable declarations
+    - Removing unnecessary parentheses
+    - Miscellaneous code smells
+- Fix JavaDoc creation
+    - Create JavaDoc with java 17 instead of java 8
+    - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
+- `BufferedCsvWriter` writes columns in the order, that the headline elements are defined [#434](https://github.com/ie3-institute/PowerSystemDataModel/issues/393)
+- Cleaned up `IndividualTimeSeriesMetaInformation`-related methods in `CsvFileConnector` [#544](https://github.com/ie3-institute/PowerSystemDataModel/issues/544)
+- Fixed spotlessApply handling for `.groovy` files [#637](https://github.com/ie3-institute/PowerSystemDataModel/issues/637)
+- Re-using SQL connection per default [#653](https://github.com/ie3-institute/PowerSystemDataModel/issues/653)
+- Persisting EmInputs [#665](https://github.com/ie3-institute/PowerSystemDataModel/issues/665)
+- Charging point type parsing now works with more id definitions [#686](https://github.com/ie3-institute/PowerSystemDataModel/issues/685)
+- Fix `EvResult.toString` [#690](https://github.com/ie3-institute/PowerSystemDataModel/issues/690)
+
+### Changed
+- BREAKING: PvInput Model parameter name height changed to elevationAngle [#393](https://github.com/ie3-institute/PowerSystemDataModel/issues/393) :warning:
+- BREAKING: Transformer's no load susceptance needs to be zero or negative to pass model validation [#378](https://github.com/ie3-institute/PowerSystemDataModel/issues/378)
+  - All input data sets for version < 3.0.0 need to be altered!
+- Deprecating (as part of [#513](https://github.com/ie3-institute/PowerSystemDataModel/issues/513)): 
+  - `edu.ie3.datamodel.io.csv.timeseries.ColumnScheme`
+  - `edu.ie3.datamodel.io.csv.FileNameMetaInformation`
+  - `edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation`
+  - `edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation`
+  - `edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation`
+  - and related methods
+- BREAKING: Comprehensive harmonization around weather sources [#267](https://github.com/ie3-institute/PowerSystemDataModel/issues/267)
+    - Adapted the expected column scheme
+      - General weather model
+        - `coordinate` to `coordinateid`
+      - DWD COSMO model
+        - `diffuseirradiation` to `diffuseirradiance`
+        - `directirradiation` to `directirradiance`
+      - ICON model:
+        - `"datum"` to `"time"`
+    - Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
+- BREAKING: Updating PowerSystemUtils dependency to 2.0-SNAPSHOT [#595](https://github.com/ie3-institute/PowerSystemDataModel/issues/595)
+- BREAKING: Generified the `LoadInput` attribute `standardLoadProfile` to `loadProfile` as it should also address the newly added `TemperatureDependantLoadProfile`s [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
+- Adapted to new double converters in PSU [#705](https://github.com/ie3-institute/PowerSystemDataModel/issues/705)
+
 ## [2.1.0] - 2022-01-05
 
 ### Added
 - added `EvcsLocationType` support in `EvcsInput` and `EvcsInputFactory` [#406](https://github.com/ie3-institute/PowerSystemDataModel/issues/406)
 - Opportunity to close writer in `CsvFileSink`
+- Generified SQL data sources for future extensions
 
 ### Fixed
 - adapted `LineInput` constructor to convert line length to `StandardUnits.LINE_LENGTH` [#412](https://github.com/ie3-institute/PowerSystemDataModel/issues/412)
 
 ### Changed
 - Writers used to write time series are closed right away
+- Changed class name in FlexOptionsResult.toString [#693](https://github.com/ie3-institute/PowerSystemDataModel/issues/693)
+- Deleted parameter decimalPlaces and changed naming of serialization method [#710](https://github.com/ie3-institute/PowerSystemDataModel/issues/710)
 
 ## [2.0.1] - 2021-07-08
 
@@ -114,12 +189,14 @@ coordinates or multiple exactly equal coordinates possible
 - ``CsvDataSource`` now parses valid RFC 4180 rows correctly (invalid, old syntax is still supported but deprecated!)
 -   Consolidate test tasks. `gradle allTests` is now replaced by `gradle test`. Only unit tests can be run with `gradle unitTest`.
 - Changed projects toString() methods for readability/completeness
+- Adapted to changes in PowerSystemUnits in PowerSystemUtils [#631](https://github.com/ie3-institute/PowerSystemDataModel/issues/631)
 
 ### Fixed
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...3.0.0
 [2.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.1...2.1.0
 [2.0.1]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/1.1.0...2.0.0

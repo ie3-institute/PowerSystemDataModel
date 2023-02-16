@@ -24,7 +24,7 @@ Immutability
 Copyable
   With the general design principle of immutability, entity modifications (e.g. updates of field values) can become
   hard and annoying. To avoid generating methods to update each field value, we provide an adapted version of the
-  `builder pattern <https://en.wikipedia.org/wiki/Builder_pattern/>`_ to make entity modifications as easy as possible.
+  `builder pattern <https://en.wikipedia.org/wiki/Builder_pattern/>`__ to make entity modifications as easy as possible.
   Each entity holds it's own copy builder class, which follows the same inheritance as the entity class itself. With a
   call of `.copy()` on an entity instance a builder instance is returned, that allows for modification of fields and
   can be terminated with `.build()` which will return an instance of the entity with modified field values as required.
@@ -50,35 +50,36 @@ Harmonized Units System
 
 Equality Checks
   To represent quantities in the models within an acceptable accuracy, the JSR 385 reference implementation
-  `Indriya <https://github.com/unitsofmeasurement/indriya>`_ is used. Comparing quantity objects or objects holding quantity
+  `Indriya <https://github.com/unitsofmeasurement/indriya>`__ is used. Comparing quantity objects or objects holding quantity
   instances is not as trivial as it might seem, because there might be different understandings about the equality of
   quantities (e.g. there is a big difference between two instances being equal or equivalent). After long discussions how to
   treat quantities in the entity :code:`equals()` method, we agreed on the following rules to be applied:
-    - equality check is done by calling :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` or
-      :code:`<QuantityInstanceA>.equals(<QuantityInstanceB>)`.
-      Using :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` is necessary especially for time series data.
-      As in contrast to all other places, quantity time series from real world data sometimes are not complete and
-      hence contain missing values. To represent missing values this is the only place where the usage of :code:`null`
-      is a valid choice and hence needs to be treated accordingly. Please remember that his is only allowed in very few
-      places and you should try to avoid using :code:`null` for quantities or any other constructor parameter whenever possible!
-    - equality is given if, and only if, the quantities value object and unit are exactly equal. Value objects can become
-      e.g. :code:`BigDecimal` or :code:`Double` instances. It is important, that the object type is also the same, otherwise
-      the entities :code:`equals()` method returns false. This behavior is in sync with the equals implementation
-      of the indriya library. Hence, you should ensure that your code always pass in the same kind of a quantity instance
-      with the same underlying number format and type. For this purpose you should especially be aware of the unit conversion
-      method :code:`AbstractQuantity.to(Quantity)` which may return seemingly unexpected types, e.g. if called on a quantity
-      with a :code:`double` typed value, it may return a quantity with a value of either :code:`Double` type or :code:`BigDecimal` type.
-    - for now, there is no default way to compare entities in a 'number equality' way provided. E.g. a line with a length
-      of 1km compared to a line with a length of 1000m is actually of the same length, but calling :code:`LineA.equals(LineB)`
-      would return :code:`false` as the equality check does NOT convert units. If you want to compare two entity instances
-      based on their equivalence you have (for now) check for each quantity manually using their :code:`isEquivalentTo()`
-      method. If you think you would benefit from a standard method that allows entity equivalence check, please consider
-      handing in an issue `here <https://github.com/ie3-institute/PowerSystemDataModel/issues>`_.
-      Furthermore, the current existing implementation of :code:`isEquivalentTo()` in indriya does not allow the provision of
-      a tolerance threshold that might be necessary when comparing values from floating point operations. We consider
-      providing such a method in our `PowerSystemUtils <https://github.com/ie3-institute/PowerSystemUtils>`_ library.
-      If you think you would benefit from such a method, please consider handing in an issue
-      `here <https://github.com/ie3-institute/PowerSystemUtils/issues>`_.
+
+  - equality check is done by calling :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` or
+    :code:`<QuantityInstanceA>.equals(<QuantityInstanceB>)`.
+    Using :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` is necessary especially for time series data.
+    As in contrast to all other places, quantity time series from real world data sometimes are not complete and
+    hence contain missing values. To represent missing values this is the only place where the usage of :code:`null`
+    is a valid choice and hence needs to be treated accordingly. Please remember that this is only allowed in very few
+    places and you should try to avoid using :code:`null` for quantities or any other constructor parameter whenever possible!
+  - equality is given if, and only if, the quantities value object and unit are exactly equal. Value objects can become
+    e.g. :code:`BigDecimal` or :code:`Double` instances. It is important, that the object type is also the same, otherwise
+    the entities :code:`equals()` method returns false. This behavior is in sync with the equals implementation
+    of the indriya library. Hence, you should ensure that your code always pass in the same kind of a quantity instance
+    with the same underlying number format and type. For this purpose you should especially be aware of the unit conversion
+    method :code:`AbstractQuantity.to(Quantity)` which may return seemingly unexpected types, e.g. if called on a quantity
+    with a :code:`double` typed value, it may return a quantity with a value of either :code:`Double` type or :code:`BigDecimal` type.
+  - for now, there is no default way to compare entities in a 'number equality' way provided. E.g. a line with a length
+    of 1km compared to a line with a length of 1000m is actually of the same length, but calling :code:`LineA.equals(LineB)`
+    would return :code:`false` as the equality check does NOT convert units. If you want to compare two entity instances
+    based on their equivalence you have (for now) check for each quantity manually using their :code:`isEquivalentTo()`
+    method. If you think you would benefit from a standard method that allows entity equivalence check, please consider
+    handing in an issue `here <https://github.com/ie3-institute/PowerSystemDataModel/issues>`__.
+    Furthermore, the current existing implementation of :code:`isEquivalentTo()` in indriya does not allow the provision of
+    a tolerance threshold that might be necessary when comparing values from floating point operations. We consider
+    providing such a method in our `PowerSystemUtils <https://github.com/ie3-institute/PowerSystemUtils>`__ library.
+    If you think you would benefit from such a method, please consider handing in an issue
+    `here <https://github.com/ie3-institute/PowerSystemUtils/issues>`__.
 
 Conditional Parameters
   Some of the models have conditional parameters. When reading model data from a data source, their respective factories for building these 
@@ -96,8 +97,8 @@ Model classes you can use to describe a data set as input to power system simula
 
    input/operator
 
-Grid Related Models
-===================
+Grid Related Input Models
+=========================
 .. toctree::
    :maxdepth: 1
 
@@ -111,8 +112,8 @@ Grid Related Models
    input/grid/measurementunit
    input/grid/gridcontainer
 
-Participant Related Models
-==========================
+Participant Related Input Models
+================================
 .. toctree::
    :maxdepth: 1
 
@@ -136,8 +137,8 @@ Result
 ******
 Model classes you can use to describe the outcome of a power system simulation.
 
-Grid Related Models
-===================
+Grid Related Result Models
+==========================
 .. toctree::
    :maxdepth: 1
 
@@ -149,8 +150,8 @@ Grid Related Models
    result/grid/transformer2w
    result/grid/transformer3w
 
-Participant Related Models
-==========================
+Participant Related Result Models
+=================================
 .. toctree::
    :maxdepth: 1
 

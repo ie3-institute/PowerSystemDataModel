@@ -96,22 +96,19 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
   }
 
   /**
-   * De-serializes the given point to a string
+   * Serializes the given point to a string
    *
-   * @param decimalPlaces Desired amount of decimal places
-   * @return The de-serialized point
+   * @return The serialized point
    */
-  public String deSerialize(int decimalPlaces) {
-    String formattingString = String.format("(%%.%sf,%%.%sf)", decimalPlaces, decimalPlaces);
+  public String serialize() {
     return String.format(
-        Locale.ENGLISH, formattingString, x.getValue().doubleValue(), y.getValue().doubleValue());
+        Locale.ENGLISH, "(%s,%s)", x.getValue().doubleValue(), y.getValue().doubleValue());
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    CharacteristicPoint<?, ?> that = (CharacteristicPoint<?, ?>) o;
+    if (!(o instanceof CharacteristicPoint<?, ?> that)) return false;
     return Objects.equals(x, that.x) && Objects.equals(y, that.y);
   }
 

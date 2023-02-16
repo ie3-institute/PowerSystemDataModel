@@ -62,15 +62,15 @@ public class Transformer2WTypeInputFactory
   protected Transformer2WTypeInput buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
-    ComparableQuantity<ElectricResistance> rSc = data.getQuantity(R_SC, StandardUnits.IMPEDANCE);
-    ComparableQuantity<ElectricResistance> xSc = data.getQuantity(X_SC, StandardUnits.IMPEDANCE);
+    ComparableQuantity<ElectricResistance> rSc = data.getQuantity(R_SC, StandardUnits.RESISTANCE);
+    ComparableQuantity<ElectricResistance> xSc = data.getQuantity(X_SC, StandardUnits.REACTANCE);
     ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     ComparableQuantity<ElectricPotential> vRatedA =
         data.getQuantity(V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     ComparableQuantity<ElectricPotential> vRatedB =
         data.getQuantity(V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    ComparableQuantity<ElectricConductance> gM = data.getQuantity(G_M, StandardUnits.ADMITTANCE);
-    ComparableQuantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.ADMITTANCE);
+    ComparableQuantity<ElectricConductance> gM = data.getQuantity(G_M, StandardUnits.CONDUCTANCE);
+    ComparableQuantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.SUSCEPTANCE);
     ComparableQuantity<Dimensionless> dV = data.getQuantity(D_V, StandardUnits.DV_TAP);
     ComparableQuantity<Angle> dPhi = data.getQuantity(D_PHI, StandardUnits.DPHI_TAP);
     boolean tapSide = data.getBoolean(TAP_SIDE);

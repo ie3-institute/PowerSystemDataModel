@@ -52,8 +52,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
     return buildStreamWithFieldsToAttributesMap()
         .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
         .map(factory::get)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
+        .flatMap(Optional::stream)
         .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
   }
 
@@ -80,7 +79,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
   public Collection<Point> getCoordinates(int... ids) {
     return Arrays.stream(ids)
         .mapToObj(this::getCoordinate)
-        .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -123,7 +122,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
                   .get(factory.getLatField())
                   .concat(fieldToValues.get(factory.getLonField()));
       return distinctRowsWithLog(
-              withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
+          withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
           .parallelStream();
     } catch (IOException e) {
       log.error("Cannot read the file for coordinate id to coordinate mapping.", e);

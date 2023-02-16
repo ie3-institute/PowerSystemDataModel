@@ -64,9 +64,10 @@ public abstract class CsvDataSource {
    * @deprecated ensures downward compatibility with old csv data format. Can be removed when
    *     support for old csv format is removed. *
    */
-  @Deprecated private boolean notYetLoggedWarning = true;
+  @Deprecated(since = "1.1.0", forRemoval = true)
+  private boolean notYetLoggedWarning = true;
 
-  public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+  protected CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
@@ -169,20 +170,20 @@ public abstract class CsvDataSource {
    * @return an array with one entry per column of the provided csv row string
    * @deprecated only left for downward compatibility. Will be removed in a major release
    */
-  @Deprecated
+  @Deprecated(since = "1.1.0", forRemoval = true)
   private String[] oldFieldVals(String csvSep, String csvRow) {
 
     /*geo json support*/
-    final String geoJsonRegex = "[\\{].+?\\}\\}\\}";
+    final String geoJsonRegex = "\\{.+?}}}";
     final String geoReplacement = "geoJSON";
 
     /*characteristic input support */
-    final String charInputRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\}";
+    final String charInputRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{[^}]++}";
     final String charReplacement = "charRepl";
 
     /*removes double double quotes*/
-    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow.replaceAll("\"\"", "\""));
-    List<String> charList = extractMatchingStrings(charInputRegex, csvRow.replaceAll("\"\"", "\""));
+    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow.replace("\"\"", "\""));
+    List<String> charList = extractMatchingStrings(charInputRegex, csvRow.replace("\"\"", "\""));
 
     AtomicInteger geoCounter = new AtomicInteger(0);
     AtomicInteger charCounter = new AtomicInteger(0);
@@ -321,10 +322,6 @@ public abstract class CsvDataSource {
         missingElementsString);
   }
 
-  protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(Stream<Optional<T>> elements) {
-    return elements.filter(Optional::isPresent).map(Optional::get);
-  }
-
   /**
    * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
    * matching the provided UUID or an empty {@code Optional} if no matching entity can be found.
@@ -393,10 +390,7 @@ public abstract class CsvDataSource {
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
       return distinctRowsWithLog(
-              allRows,
-              fieldToValues -> fieldToValues.get("uuid"),
-              entityClass.getSimpleName(),
-              "UUID")
+          allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
           .parallelStream();
     } catch (IOException e) {
       log.warn(
@@ -416,7 +410,7 @@ public abstract class CsvDataSource {
         .parallel()
         .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
         .filter(map -> !map.isEmpty())
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**
@@ -455,8 +449,7 @@ public abstract class CsvDataSource {
 
     /* Check for rows with the same key based on the provided key extractor function */
     Set<Map<String, String>> distinctIdSet =
-        allRowsSet
-            .parallelStream()
+        allRowsSet.parallelStream()
             .filter(ValidationUtils.distinctByKey(keyExtractor))
             .collect(Collectors.toSet());
     if (distinctIdSet.size() != allRowsSet.size()) {
@@ -464,8 +457,10 @@ public abstract class CsvDataSource {
       String affectedCoordinateIds =
           allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
-          "'{}' entities with duplicated {} key, but different field values found! Please review the "
-              + "corresponding input file!\nAffected primary keys:\n{}",
+          """
+          '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
+          Affected primary keys:
+          {}""",
           entityDescriptor,
           keyDescriptor,
           affectedCoordinateIds);
@@ -498,7 +493,7 @@ public abstract class CsvDataSource {
 
     // if the type is not present we return an empty element and
     // log a warning
-    if (!assetType.isPresent()) {
+    if (assetType.isEmpty()) {
       logSkippingWarning(
           skippedClassString,
           saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
@@ -576,7 +571,7 @@ public abstract class CsvDataSource {
 
               // if the node is not present we return an empty element and
               // log a warning
-              if (!node.isPresent()) {
+              if (node.isEmpty()) {
                 logSkippingWarning(
                     assetInputEntityData.getTargetClass().getSimpleName(),
                     fieldsToAttributes.get("uuid"),

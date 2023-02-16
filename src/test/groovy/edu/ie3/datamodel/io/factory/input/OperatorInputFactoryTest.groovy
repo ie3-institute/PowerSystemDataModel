@@ -11,34 +11,34 @@ import spock.lang.Specification
 
 class OperatorInputFactoryTest extends Specification {
 
-	def "An OperatorInputFactory should contain exactly the expected class for parsing"() {
-		given:
-		def inputFactory = new OperatorInputFactory()
-		def expectedClasses = [OperatorInput]
+  def "An OperatorInputFactory should contain exactly the expected class for parsing"() {
+    given:
+    def inputFactory = new OperatorInputFactory()
+    def expectedClasses = [OperatorInput]
 
-		expect:
-		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
-	}
+    expect:
+    inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
+  }
 
-	def "An OperatorInputFactory should parse a valid OperatorInput correctly"() {
-		given: "a operator input factory and model data"
-		def inputFactory = new OperatorInputFactory()
-		Map<String, String> parameter = [
-			"uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"id"  : "TestOperatorId",
-		]
+  def "An OperatorInputFactory should parse a valid OperatorInput correctly"() {
+    given: "a operator input factory and model data"
+    def inputFactory = new OperatorInputFactory()
+    Map<String, String> parameter = [
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id"  : "TestOperatorId",
+    ]
 
-		def inputClass = OperatorInput
+    def inputClass = OperatorInput
 
-		when:
-		Optional<OperatorInput> input = inputFactory.get(new SimpleEntityData(parameter, inputClass))
+    when:
+    Optional<OperatorInput> input = inputFactory.get(new SimpleEntityData(parameter, inputClass))
 
-		then:
-		input.present
-		input.get().getClass() == inputClass
-		((OperatorInput) input.get()).with {
-			assert uuid == UUID.fromString(parameter["uuid"])
-			assert id == parameter["id"]
-		}
-	}
+    then:
+    input.present
+    input.get().getClass() == inputClass
+    ((OperatorInput) input.get()).with {
+      assert uuid == UUID.fromString(parameter["uuid"])
+      assert id == parameter["id"]
+    }
+  }
 }

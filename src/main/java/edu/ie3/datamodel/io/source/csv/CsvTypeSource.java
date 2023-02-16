@@ -125,8 +125,7 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
               SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
               return (Optional<T>) factory.get(data);
             })
-        .filter(Optional::isPresent)
-        .map(Optional::get)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 }

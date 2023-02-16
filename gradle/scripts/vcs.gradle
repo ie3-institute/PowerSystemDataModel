@@ -1,8 +1,8 @@
 /* This file holds functions for version control system handling */
 
 task finalizePR() {
-	description 'Finalizes a pull request by formatting the code, testing it and writing the documentation'
-	group 'VCS'
+  description 'Finalizes a pull request by formatting the code, testing it and writing the documentation'
+  group 'VCS'
 }
 finalizePR.dependsOn("puml2png")
 finalizePR.dependsOn("spotlessApply")

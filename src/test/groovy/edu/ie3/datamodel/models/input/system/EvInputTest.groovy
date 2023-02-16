@@ -11,21 +11,21 @@ import spock.lang.Specification
 
 class EvInputTest extends Specification {
 
-	def "An EvInput copy method should work as expected"() {
-		given:
-		def ev = SystemParticipantTestData.evInput
+  def "An EvInput copy method should work as expected"() {
+    given:
+    def ev = SystemParticipantTestData.evInput
 
-		when:
-		def alteredUnit = ev.copy().type(SystemParticipantTestData.evTypeInput).build()
+    when:
+    def alteredUnit = ev.copy().type(SystemParticipantTestData.evTypeInput).build()
 
-		then:
-		alteredUnit.with {
-			assert uuid == ev.uuid
-			assert operationTime == ev.operationTime
-			assert operator == ev.operator
-			assert id == ev.id
-			assert qCharacteristics == ev.qCharacteristics
-			assert type == SystemParticipantTestData.evTypeInput
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == ev.uuid
+      assert operationTime == ev.operationTime
+      assert operator == ev.operator
+      assert id == ev.id
+      assert qCharacteristics == ev.qCharacteristics
+      assert type == SystemParticipantTestData.evTypeInput
+    }
+  }
 }

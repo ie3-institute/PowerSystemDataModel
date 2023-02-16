@@ -22,7 +22,7 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
 +-----------+------+---------------------------------------------------------+
 | rSc       | Ω    | Short circuit resistance                                |
 +-----------+------+---------------------------------------------------------+
-| xSc       | Ω    | Short circuit impedance                                 |
+| xSc       | Ω    | Short circuit reactance                                 |
 +-----------+------+---------------------------------------------------------+
 | gM        | nS   | No load conductance                                     |
 +-----------+------+---------------------------------------------------------+
@@ -66,8 +66,8 @@ Entity Model
 | nodeB           | --   | Lower voltage node                                         |
 +-----------------+------+------------------------------------------------------------+
 | parallelDevices | --   | | overall amount of parallel transformers to automatically |
-|                 | --   | | construct (e.g. parallelDevices = 2 will build a         |
-|                 | --   | | total of two transformers using the specified parameters)|
+|                 |      | | construct (e.g. parallelDevices = 2 will build a         |
+|                 |      | | total of two transformers using the specified parameters)|
 +-----------------+------+------------------------------------------------------------+
 | type            | --   |                                                            |
 +-----------------+------+------------------------------------------------------------+

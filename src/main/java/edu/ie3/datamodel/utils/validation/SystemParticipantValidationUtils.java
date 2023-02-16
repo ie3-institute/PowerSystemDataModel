@@ -227,7 +227,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param loadInput LoadInput to validate
    */
   private static void checkLoad(LoadInput loadInput) {
-    if (loadInput.getStandardLoadProfile() == null)
+    if (loadInput.getLoadProfile() == null)
       throw new InvalidEntityException("No standard load profile defined for load", loadInput);
     detectNegativeQuantities(
         new Quantity<?>[] {loadInput.getsRated(), loadInput.geteConsAnnual()}, loadInput);
@@ -238,9 +238,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a PvInput if: <br>
    * - its rated apparent power is not negative <br>
    * - its albedo value of the plant's surrounding is between 0 and 1 <br>
-   * - its inclination in a compass direction (azimuth) is is between -90° and 90° <br>
-   * - its efficiency of the asset's inverter (etaConv) is is between 0% and 100% <br>
-   * - its tilted inclination from horizontal (height) is is between 0° and 90° <br>
+   * - its inclination in a compass direction (azimuth) is between -90° and 90° <br>
+   * - its efficiency of the asset's inverter (etaConv) is between 0% and 100% <br>
+   * - its tilted inclination from horizontal (elevation angle) is between 0° and 90° <br>
    * - its rated power factor is between 0 and 1
    *
    * @param pvInput PvInput to validate
@@ -250,7 +250,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     checkAlbedo(pvInput);
     checkAzimuth(pvInput);
     isBetweenZeroAndHundredPercent(pvInput, pvInput.getEtaConv(), "Efficiency of the converter");
-    checkHeight(pvInput);
+    checkElevationAngle(pvInput);
     checkRatedPowerFactor(pvInput, pvInput.getCosPhiRated());
   }
 
@@ -288,9 +288,11 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param pvInput PvInput to validate
    */
-  private static void checkHeight(PvInput pvInput) {
-    if (pvInput.getHeight().isLessThan(Quantities.getQuantity(0d, SOLAR_HEIGHT))
-        || pvInput.getHeight().isGreaterThan(Quantities.getQuantity(90d, SOLAR_HEIGHT)))
+  private static void checkElevationAngle(PvInput pvInput) {
+    if (pvInput.getElevationAngle().isLessThan(Quantities.getQuantity(0d, SOLAR_ELEVATION_ANGLE))
+        || pvInput
+            .getElevationAngle()
+            .isGreaterThan(Quantities.getQuantity(90d, SOLAR_ELEVATION_ANGLE)))
       throw new InvalidEntityException(
           "Tilted inclination from horizontal of "
               + pvInput.getClass().getSimpleName()

@@ -23,7 +23,7 @@ public abstract class GraphicInput extends InputEntity {
    * @param graphicLayer Description of the graphic layer, this graphic is located on
    * @param path A graphic representation as path
    */
-  public GraphicInput(UUID uuid, String graphicLayer, LineString path) {
+  protected GraphicInput(UUID uuid, String graphicLayer, LineString path) {
     super(uuid);
     this.graphicLayer = graphicLayer;
     this.path =
@@ -43,9 +43,8 @@ public abstract class GraphicInput extends InputEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof GraphicInput that)) return false;
     if (!super.equals(o)) return false;
-    GraphicInput that = (GraphicInput) o;
     return graphicLayer.equals(that.graphicLayer) && Objects.equals(path, that.path);
   }
 

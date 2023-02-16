@@ -116,9 +116,8 @@ public class BmInput extends SystemParticipantInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof BmInput bmInput)) return false;
     if (!super.equals(o)) return false;
-    BmInput bmInput = (BmInput) o;
     return marketReaction == bmInput.marketReaction
         && costControlled == bmInput.costControlled
         && type.equals(bmInput.type)
