@@ -50,9 +50,7 @@ public class CsvJointGridContainerSource {
         graphicsSource
             .getGraphicElements()
             .orElseThrow(() -> new SourceException("Error during reading of graphic elements."));
-    JointGridContainer fullGrid =
-        new JointGridContainer(gridName, rawGridElements, systemParticipants, graphicElements);
 
-    return fullGrid;
+    return new JointGridContainer(gridName, rawGridElements, systemParticipants, graphicElements);
   }
 }
