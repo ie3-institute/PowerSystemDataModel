@@ -30,13 +30,13 @@ On `Maven central <https://search.maven.org/artifact/com.github.ie3-institute/Po
 
 Snapshot releases
 =================
-Available on `OSS Sonatype <https://oss.sonatype.org/>`_.
+Available on `OSS Sonatype <https://s01.oss.sonatype.org/>`_.
 Add the correct repository:
 
 .. code-block:: xml
 
    <repositories>
-     <repository>http://oss.sonatype.org/content/repositories/snapshots</repository>
+     <repository>https://s01.oss.sonatype.org/content/repositories/snapshots</repository>
    </repositories>
 
 and add the dependency:
