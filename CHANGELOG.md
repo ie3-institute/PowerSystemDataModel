@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+Adding SQL id coordinate sources (``IdCoordinateSource``) [#689](https://github.com/ie3-institute/PowerSystemDataModel/issues/689)
+
+### Fixed
+
+### Changed
+
+
+## [3.0.0] - 2023-02-16
+
+### Added
 - SQL time series sources (`SqlTimeSeriesSource` and `SqlTimeSeriesMappingSource`) [#467](https://github.com/ie3-institute/PowerSystemDataModel/issues/467)
 - SQL time series have a different structure than CSV counterparts [#545](https://github.com/ie3-institute/PowerSystemDataModel/issues/545)
 - Graph with impedance weighted edges including facilities to create it [#440](https://github.com/ie3-institute/PowerSystemDataModel/issues/440)
@@ -18,7 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `EmResult` and `FlexOptionsResult` for Energy Management Systems [#651](https://github.com/ie3-institute/PowerSystemDataModel/issues/651)
 - `EvcsInput` now has a parameter for enabling and disabling vehicle to grid support [#681](https://github.com/ie3-institute/PowerSystemDataModel/issues/681)
 - Added Dependabot updates to sphinx/readthedocs dependencies [#735](https://github.com/ie3-institute/PowerSystemDataModel/issues/735)
-- Adding SQL id coordinate sources (``IdCoordinateSource``) [#689](https://github.com/ie3-institute/PowerSystemDataModel/issues/689)
+- Created convenience function for JointGridContainer from CSV [#502](https://github.com/ie3-institute/PowerSystemDataModel/issues/502)
+- Added CSV grid IO integration test [#586](https://github.com/ie3-institute/PowerSystemDataModel/issues/586)
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
@@ -192,7 +203,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...3.0.0
 [2.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.1...2.1.0
 [2.0.1]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/1.1.0...2.0.0
