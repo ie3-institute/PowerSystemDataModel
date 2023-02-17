@@ -91,36 +91,51 @@ Information regarding validation of models can be found [here](/models/Validatio
 ## Input
 Model classes you can use to describe a data set as input to power system simulations.
 
-- [Operator](/models/input/operator)
+```{toctree}
+---
+maxdepth: 1
+---
+input/operator
+```
 
 ### Grid Related Models
 
-- [Node](/models/input/grid/node)
-- [Schematic Node Graphic](/models/input/grid/nodegraphic)
-- [Line](/models/input/grid/line)
-- [Schematic Line Graphic](/models/input/grid/linegraphic)
-- [Switch](/models/input/grid/switch)
-- [Two Winding Transformer](/models/input/grid/transformer2w)
-- [Three Winding Transformer](/models/input/grid/transformer3w)
-- [Measurement Unit](/models/input/grid/measurementunit)
-- [Grid Container](/models/input/grid/gridcontainer)
+```{toctree}
+---
+maxdepth: 1
+---
+input/grid/node
+input/grid/nodegraphic
+input/grid/line
+input/grid/linegraphic
+input/grid/switch
+input/grid/transformer2w
+input/grid/transformer3w
+input/grid/measurementunit
+input/grid/gridcontainer
+```
 
 ### Participant Related Models
 
-- [General Remarks on Participant Models](/models/input/participant/general)
-- [Biomass plant](/models/input/participant/bm)
-- [Combined Heat and Power Plant](/models/input/participant/chp)
-- [Electric Vehicle](/models/input/participant/ev)
-- [Electric Vehicle Charging Station](/models/input/participant/evcs)
-- [Fixed Feed In Facility](/models/input/participant/fixedfeedin)
-- [Heat Pump](/models/input/participant/hp)
-- [Load](/models/input/participant/load)
-- [Photovoltaic Power Plant](/models/input/participant/pv)
-- [Electrical Energy Storage](/models/input/participant/storage)
-- [Wind Energy Converter](/models/input/participant/wec)
-- [Thermal Bus](/models/input/participant/thermalbus)
-- [Thermal House Model](/models/input/participant/thermalhouse)
-- [Cylindrical Thermal Storage](/models/input/participant/cylindricalstorage)
+```{toctree}
+---
+maxdepth: 1
+---
+input/participant/general
+input/participant/bm
+input/participant/chp
+input/participant/ev
+input/participant/evcs
+input/participant/fixedfeedin
+input/participant/hp
+input/participant/load
+input/participant/pv
+input/participant/storage
+input/participant/wec
+input/participant/thermalbus
+input/participant/thermalhouse
+input/participant/cylindricalstorage
+```
 
 ### Additional Data
 Some models can use additional data for their calculations.
@@ -133,30 +148,39 @@ Model classes you can use to describe the outcome of a power system simulation.
 
 ### Grid Related Models
 
-- [Node](/models/result/grid/node)
-- [Connector](/models/result/grid/connector)
-- [Line](/models/result/grid/line)
-- [Switch](/models/result/grid/switch)
-- [Transformer](/models/result/grid/transformer)
-- [Two Winding Transformer](/models/result/grid/transformer2w)
-- [Three Winding Transformer](/models/result/grid/transformer3w)
+```{toctree}
+---
+maxdepth: 1
+---
+result/grid/node
+result/grid/connector
+result/grid/line
+result/grid/switch
+result/grid/transformer
+result/grid/transformer2w
+result/grid/transformer3w
+```
 
 ### Participant Related Models
 
-- [Biomass plant](/models/result/participant/bm)
-- [Combined Heat and Power Plant](/models/result/participant/chp)
-- [Electric Vehicle](/models/result/participant/ev)
-- [Electric Vehicle Charging Station](/models/result/participant/evcs)
-- [Fixed Feed In Facility](/models/result/participant/fixedfeedin)
-- [Load](/models/result/participant/hp)
-- [Load](/models/result/participant/load)
-- [Photovoltaic Power Plant](/models/result/participant/pv)
-- [Electrical Energy Storage](/models/result/participant/storage)
-- [Wind Energy Converter](/models/result/participant/wec)
-- [Thermal Sink](/models/result/participant/thermalsink)
-- [Thermal Storage](/models/result/participant/thermalstorage)
-- [Thermal Unit](/models/result/participant/thermalunit)
-- [Thermal House](/models/result/participant/thermalhouse)
-- [Cylindrical Thermal Storage](/models/result/participant/cylindricalstorage)
-- [System Participant](/models/result/participant/systemparticipant)
-
+```{toctree}
+---
+maxdepth: 1
+---
+result/participant/bm
+result/participant/chp
+result/participant/ev
+result/participant/evcs
+result/participant/fixedfeedin
+result/participant/hp
+result/participant/load
+result/participant/pv
+result/participant/storage
+result/participant/wec
+result/participant/thermalsink
+result/participant/thermalstorage
+result/participant/thermalunit
+result/participant/thermalhouse
+result/participant/cylindricalstorage
+result/participant/systemparticipant
+```
