@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+
+
+### Fixed
+
+
+### Changed
+- Data source will throw an exceptions instead of returning an empty optionals [#707](https://github.com/ie3-institute/PowerSystemDataModel/issues/707)
+
+
 ## [3.0.0] - 2023-02-16
 
 ### Added
@@ -77,7 +87,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BREAKING: Updating PowerSystemUtils dependency to 2.0-SNAPSHOT [#595](https://github.com/ie3-institute/PowerSystemDataModel/issues/595)
 - BREAKING: Generified the `LoadInput` attribute `standardLoadProfile` to `loadProfile` as it should also address the newly added `TemperatureDependantLoadProfile`s [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
 - Adapted to new double converters in PSU [#705](https://github.com/ie3-institute/PowerSystemDataModel/issues/705)
-- Data source will throw an exceptions instead of returning an empty optionals [#707](https://github.com/ie3-institute/PowerSystemDataModel/issues/707)
 
 ## [2.1.0] - 2022-01-05
 
