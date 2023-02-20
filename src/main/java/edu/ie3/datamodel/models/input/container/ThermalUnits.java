@@ -60,7 +60,7 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
      * @param thermalUnits instance of {@link ThermalUnits}
      */
     protected ThermalUnitsCopyBuilder(ThermalUnits thermalUnits) {
-      super(thermalUnits);
+      super();
       this.houses = thermalUnits.houses();
       this.storages = thermalUnits.storages();
     }

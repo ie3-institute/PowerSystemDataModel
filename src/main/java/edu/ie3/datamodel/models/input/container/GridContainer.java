@@ -99,7 +99,7 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
      * @param gridContainer instance of {@link GridContainerCopyBuilder}
      */
     protected GridContainerCopyBuilder(GridContainer gridContainer) {
-      super(gridContainer);
+      super();
       this.gridName = gridContainer.getGridName();
       this.rawGrid = gridContainer.getRawGrid();
       this.systemParticipants = gridContainer.getSystemParticipants();

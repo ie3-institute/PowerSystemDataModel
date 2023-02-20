@@ -202,7 +202,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      * @param rawGridElements instance of {@link RawGridElementsCopyBuilder}
      */
     protected RawGridElementsCopyBuilder(RawGridElements rawGridElements) {
-      super(rawGridElements);
+      super();
       this.nodes = rawGridElements.getNodes();
       this.lines = rawGridElements.getLines();
       this.transformer2Ws = rawGridElements.getTransformer2Ws();

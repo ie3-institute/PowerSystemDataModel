@@ -92,7 +92,7 @@ public class JointGridContainer extends GridContainer {
    */
   public static class JointGridContainerCopyBuilder
       extends GridContainerCopyBuilder<JointGridContainerCopyBuilder> {
-    private SubGridTopologyGraph subGridTopologyGraph;
+    private final SubGridTopologyGraph subGridTopologyGraph;
 
     /**
      * Constructor for {@link JointGridContainerCopyBuilder}
@@ -102,18 +102,6 @@ public class JointGridContainer extends GridContainer {
     protected JointGridContainerCopyBuilder(JointGridContainer jointGridContainer) {
       super(jointGridContainer);
       this.subGridTopologyGraph = jointGridContainer.getSubGridTopologyGraph();
-    }
-
-    /**
-     * Method to alter the {@link SubGridTopologyGraph}
-     *
-     * @param subGridTopologyGraph altered subGridTopologyGraph
-     * @return child instance of {@link JointGridContainerCopyBuilder}
-     */
-    public JointGridContainerCopyBuilder subGridTopologyGraph(
-        SubGridTopologyGraph subGridTopologyGraph) {
-      this.subGridTopologyGraph = subGridTopologyGraph;
-      return childInstance();
     }
 
     @Override

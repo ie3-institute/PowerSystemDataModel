@@ -113,7 +113,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
      * @param graphicElements instance of {@link GraphicElements}
      */
     protected GraphicElementsCopyBuilder(GraphicElements graphicElements) {
-      super(graphicElements);
+      super();
       this.nodeGraphics = graphicElements.getNodeGraphics();
       this.lineGraphics = graphicElements.getLineGraphics();
     }

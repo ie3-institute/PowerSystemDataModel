@@ -25,33 +25,15 @@ public interface InputContainer<T extends InputEntity> extends Serializable {
    * @version 3.1
    * @since 14.02.23
    */
-  abstract class InputContainerCopyBuilder<R extends InputEntity, E extends InputContainer<R>> {
-    protected List<R> entities;
+  abstract class InputContainerCopyBuilder<T extends InputEntity, E extends InputContainer<T>> {
 
-    /**
-     * Constructor for {@link InputContainerCopyBuilder}.
-     *
-     * @param container that should be copied
-     */
-    protected InputContainerCopyBuilder(E container) {
-      this.entities = container.allEntitiesAsList();
-    }
-
-    /**
-     * Method to alter the list of entities directly.
-     *
-     * @param entities altered list of {@link InputEntity}'s
-     * @return child instance of {@link InputContainerCopyBuilder}
-     */
-    public InputContainerCopyBuilder<R, E> entities(List<R> entities) {
-      this.entities = entities;
-      return childInstance();
-    }
+    /** Constructor for {@link InputContainerCopyBuilder}. */
+    protected InputContainerCopyBuilder() {}
 
     /** @return child instance of {@link InputContainerCopyBuilder} */
-    protected abstract InputContainerCopyBuilder<R, E> childInstance();
+    protected abstract InputContainerCopyBuilder<T, E> childInstance();
 
     /** @return the altered {@link InputContainer} */
-    abstract InputContainer<R> build();
+    abstract InputContainer<T> build();
   }
 }

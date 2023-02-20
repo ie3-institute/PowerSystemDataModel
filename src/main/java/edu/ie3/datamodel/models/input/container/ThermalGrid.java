@@ -71,7 +71,7 @@ public record ThermalGrid(
      * @param thermalGrid instance of {@link ThermalGrid}
      */
     protected ThermalGridCopyBuilder(ThermalGrid thermalGrid) {
-      super(thermalGrid);
+      super();
       this.bus = thermalGrid.bus();
       this.houses = thermalGrid.houses();
       this.storages = thermalGrid.storages();

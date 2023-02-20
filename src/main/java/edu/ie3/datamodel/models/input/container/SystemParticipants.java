@@ -303,7 +303,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * @param systemParticipants instance of {@link SystemParticipants}
      */
     protected SystemParticipantsCopyBuilder(SystemParticipants systemParticipants) {
-      super(systemParticipants);
+      super();
       this.bmPlants = systemParticipants.bmPlants;
       this.chpPlants = systemParticipants.chpPlants;
       this.evCS = systemParticipants.evCS;
