@@ -58,7 +58,7 @@ public class SqlCoordinateFactory extends IdCoordinateFactory {
     return null;
   }
 
-  /** @return the field id for the coordinates */
+  /** Returns the field id for the coordinates */
   public String getCoordinateField() {
     return COORDINATE;
   }
