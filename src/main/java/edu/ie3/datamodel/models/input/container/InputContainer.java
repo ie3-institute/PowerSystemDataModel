@@ -30,7 +30,7 @@ public interface InputContainer<T extends InputEntity> extends Serializable {
     /** Constructor for {@link InputContainerCopyBuilder}. */
     protected InputContainerCopyBuilder() {}
 
-    /** @return child instance of {@link InputContainerCopyBuilder} */
+    /** Returns a child instance of {@link InputContainerCopyBuilder} */
     protected abstract InputContainerCopyBuilder<T, E> childInstance();
 
     /** Returns the altered {@link InputContainer} */
