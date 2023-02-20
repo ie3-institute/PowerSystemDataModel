@@ -29,7 +29,7 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
 
   def setupSpec() {
     tempDirectory = Files.createTempDirectory("GridIoIT")
-    sink = new CsvFileSink(tempDirectory.toAbsolutePath().toString())
+    sink = new CsvFileSink(tempDirectory.toAbsolutePath())
   }
 
   def cleanupSpec() {
@@ -50,7 +50,7 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     sink.persistJointGrid(firstGridContainer)
 
     // create second grid container from output folder
-    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString())
+    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath())
 
     then:
     // compare input and output joint grid container
