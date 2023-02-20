@@ -25,6 +25,7 @@ trait CsvTestDataMeta {
   static Path coordinatesCosmoFolderPath = getResourceAbs("_coordinates/cosmo")
   static Path weatherCosmoFolderPath = getResourceAbs("_weather/cosmo")
   static Path weatherIconFolderPath = getResourceAbs("_weather/icon")
+  static Path jointGridFolderPath = getResourceAbs("_joint_grid")
 
   static Path gridDefaultFolderPath = getResourceAbs("_grid/default")
   static Path gridMalformedFolderPath = getResourceAbs("_grid/malformed")

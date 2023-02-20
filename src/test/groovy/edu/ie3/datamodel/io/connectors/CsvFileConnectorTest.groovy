@@ -60,8 +60,8 @@ class CsvFileConnectorTest extends Specification {
   }
 
   def cleanupSpec() {
-    FileIOUtils.deleteRecursively(tmpDirectory)
     cfc.shutdown()
+    FileIOUtils.deleteRecursively(tmpDirectory)
   }
 
   def "The csv file connector is able to provide correct paths to time series files"() {
