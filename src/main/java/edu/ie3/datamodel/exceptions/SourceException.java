@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.exceptions;
 
+import java.util.List;
+
 /**
  * Exception that should be used whenever an error occurs in a instance of a {@link
  * edu.ie3.datamodel.io.source.DataSource}
@@ -26,5 +28,16 @@ public class SourceException extends Exception {
 
   public SourceException(final String message) {
     super(message);
+  }
+
+  public SourceException(String message, List<? extends Exception> exceptions) {
+    super(message + " " + addMessages(exceptions), exceptions.get(0));
+  }
+
+  private static String addMessages(List<? extends Exception> exceptions) {
+    Exception firstInList = exceptions.remove(0);
+    return exceptions.stream()
+        .map(Throwable::getMessage)
+        .reduce(firstInList.getMessage(), (a, b) -> a + ", " + b);
   }
 }

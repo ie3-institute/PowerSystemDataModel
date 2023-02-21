@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.RawGridException;
 import edu.ie3.datamodel.exceptions.RawInputDataException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.input.*;
@@ -20,11 +21,8 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.utils.options.Failure;
-import edu.ie3.datamodel.utils.options.Success;
 import edu.ie3.datamodel.utils.options.Try;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -75,7 +73,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   /** {@inheritDoc} */
   @Override
-  public RawGridElements getGridData() {
+  public RawGridElements getGridData() throws SourceException {
 
     /* read all needed entities start with the types and operators */
     Set<OperatorInput> operators = typeSource.getOperators();
@@ -87,36 +85,29 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     Set<NodeInput> nodes = getNodes(operators);
 
     Try<Set<LineInput>, RawInputDataException> lineInputs =
-        checkData(() -> getLines(nodes, lineTypes, operators));
+        Try.apply(() -> getLines(nodes, lineTypes, operators), RawInputDataException.class);
     Try<Set<Transformer2WInput>, RawInputDataException> transformer2WInputs =
-        checkData(() -> get2WTransformers(nodes, transformer2WTypeInputs, operators));
+        Try.apply(
+            () -> get2WTransformers(nodes, transformer2WTypeInputs, operators),
+            RawInputDataException.class);
     Try<Set<Transformer3WInput>, RawInputDataException> transformer3WInputs =
-        checkData(() -> get3WTransformers(nodes, transformer3WTypeInputs, operators));
+        Try.apply(
+            () -> get3WTransformers(nodes, transformer3WTypeInputs, operators),
+            RawInputDataException.class);
     Try<Set<SwitchInput>, RawInputDataException> switches =
-        checkData(() -> getSwitches(nodes, operators));
+        Try.apply(() -> getSwitches(nodes, operators), RawInputDataException.class);
     Try<Set<MeasurementUnitInput>, RawInputDataException> measurementUnits =
-        checkData(() -> getMeasurementUnits(nodes, operators));
+        Try.apply(() -> getMeasurementUnits(nodes, operators), RawInputDataException.class);
 
-    List<RawInputDataException> exceptions = new ArrayList<>();
-    if (lineInputs.isFailure()) {
-      exceptions.add(lineInputs.getException());
-    }
-    if (transformer2WInputs.isFailure()) {
-      exceptions.add(transformer2WInputs.getException());
-    }
-    if (transformer3WInputs.isFailure()) {
-      exceptions.add(transformer3WInputs.getException());
-    }
-    if (switches.isFailure()) {
-      exceptions.add(switches.getException());
-    }
-    if (measurementUnits.isFailure()) {
-      exceptions.add(measurementUnits.getException());
-    }
+    List<RawInputDataException> exceptions =
+        Stream.of(lineInputs, transformer2WInputs, transformer3WInputs, switches, measurementUnits)
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList();
 
     if (exceptions.size() > 0) {
       throw new RawGridException(
-          exceptions.size() + " error(s) occurred while initializing the grid.", exceptions);
+          exceptions.size() + " error(s) occurred while initializing raw grid. ", exceptions);
     } else {
       /* build and return the grid if it is not empty */
       return new RawGridElements(
@@ -129,25 +120,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     }
   }
 
-  /**
-   * Method to check if a method succeeded or if an error is thrown.
-   *
-   * @param method method to be tested
-   * @return a try object
-   * @param <D> type of the data
-   */
-  private <D> Try<Set<D>, RawInputDataException> checkData(Callable<Set<D>> method) {
-    try {
-      Set<D> set = method.call();
-      return new Success<>(set);
-    } catch (Exception e) {
-      return new Failure<>(new RawInputDataException(e));
-    }
-  }
-
   /** {@inheritDoc} */
   @Override
-  public Set<NodeInput> getNodes() {
+  public Set<NodeInput> getNodes() throws SourceException {
     return getNodes(typeSource.getOperators());
   }
 
@@ -158,7 +133,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
    */
   @Override
-  public Set<NodeInput> getNodes(Set<OperatorInput> operators) {
+  public Set<NodeInput> getNodes(Set<OperatorInput> operators) throws SourceException {
     return Try.scanForExceptions(
             assetInputEntityDataStream(NodeInput.class, operators)
                 .map(nodeInputFactory::get)
@@ -169,7 +144,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   /** {@inheritDoc} */
   @Override
-  public Set<LineInput> getLines() {
+  public Set<LineInput> getLines() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLines(getNodes(operators), typeSource.getLineTypes(), operators);
   }
@@ -189,7 +164,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    */
   @Override
   public Set<LineInput> getLines(
-      Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators) {
+      Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators)
+      throws SourceException {
     return Try.scanForExceptions(
             typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs)
                 .collect(Collectors.toSet()),
@@ -199,7 +175,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   /** {@inheritDoc} */
   @Override
-  public Set<Transformer2WInput> get2WTransformers() {
+  public Set<Transformer2WInput> get2WTransformers() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return get2WTransformers(getNodes(operators), typeSource.getTransformer2WTypes(), operators);
   }
@@ -221,7 +197,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   public Set<Transformer2WInput> get2WTransformers(
       Set<NodeInput> nodes,
       Set<Transformer2WTypeInput> transformer2WTypes,
-      Set<OperatorInput> operators) {
+      Set<OperatorInput> operators)
+      throws SourceException {
     return Try.scanForExceptions(
             typedEntityStream(
                     Transformer2WInput.class,
@@ -236,7 +213,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   /** {@inheritDoc} */
   @Override
-  public Set<Transformer3WInput> get3WTransformers() {
+  public Set<Transformer3WInput> get3WTransformers() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return get3WTransformers(getNodes(operators), typeSource.getTransformer3WTypes(), operators);
   }
@@ -258,7 +235,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   public Set<Transformer3WInput> get3WTransformers(
       Set<NodeInput> nodes,
       Set<Transformer3WTypeInput> transformer3WTypeInputs,
-      Set<OperatorInput> operators) {
+      Set<OperatorInput> operators)
+      throws SourceException {
     return Try.scanForExceptions(
             transformer3WEntityStream(nodes, transformer3WTypeInputs, operators)
                 .collect(Collectors.toSet()),
@@ -284,7 +262,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   /** {@inheritDoc} */
   @Override
-  public Set<SwitchInput> getSwitches() {
+  public Set<SwitchInput> getSwitches() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getSwitches(getNodes(operators), operators);
   }
@@ -302,7 +280,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
    */
   @Override
-  public Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators) {
+  public Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException {
     return Try.scanForExceptions(
             untypedConnectorInputEntityStream(
                     SwitchInput.class, switchInputFactory, nodes, operators)
@@ -327,7 +306,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   /** {@inheritDoc} */
   @Override
-  public Set<MeasurementUnitInput> getMeasurementUnits() {
+  public Set<MeasurementUnitInput> getMeasurementUnits() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getMeasurementUnits(getNodes(operators), operators);
   }
@@ -346,7 +325,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    */
   @Override
   public Set<MeasurementUnitInput> getMeasurementUnits(
-      Set<NodeInput> nodes, Set<OperatorInput> operators) {
+      Set<NodeInput> nodes, Set<OperatorInput> operators) throws SourceException {
     return Try.scanForExceptions(
             nodeAssetEntityStream(
                     MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators)

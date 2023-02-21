@@ -5,9 +5,10 @@
 */
 package edu.ie3.datamodel.utils.options;
 
-import edu.ie3.datamodel.exceptions.RawInputDataException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * Try object
@@ -18,6 +19,22 @@ import java.util.Set;
 public abstract class Try<R, E extends Exception> {
   /** Constructor of a try object. One input can be null. */
   Try() {}
+
+  /**
+   * Method to apply a callable to Try class. This method will return either a {@link Success} or a
+   * {@link Failure}
+   *
+   * @param method applied method
+   * @return a try object
+   */
+  public static <R, E extends Exception> Try<R, E> apply(Callable<R> method, Class<E> eClass) {
+    try {
+      R result = method.call();
+      return new Success<>(result);
+    } catch (Exception e) {
+      return new Failure<>(eClass.cast(e));
+    }
+  }
 
   /** Returns true if the object is a {@link Success}. */
   public abstract boolean isSuccess();
@@ -56,7 +73,7 @@ public abstract class Try<R, E extends Exception> {
    * @param <T> type of the data
    * @param <E> type of the exception
    */
-  public static <T, E extends Exception> Try<Set<T>, RawInputDataException> scanForExceptions(
+  public static <T, E extends Exception> Try<Set<T>, SourceException> scanForExceptions(
       Set<Try<T, E>> set, Class<T> typeOfData) {
     Exception firstException = null;
     int countExceptions = 0;
@@ -76,7 +93,7 @@ public abstract class Try<R, E extends Exception> {
 
     if (countExceptions > 0) {
       return new Failure<>(
-          new RawInputDataException(
+          new SourceException(
               countExceptions
                   + " error(s) occurred within \""
                   + typeOfData.getSimpleName()

@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.exceptions.RawInputDataException
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData
@@ -751,7 +752,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "the optional is empty"
     actual == null
-    RawInputDataException ex = thrown()
+    SourceException ex = thrown()
     ex.message == "1 error(s) occurred within \"NodeInput\" data, one error occurred in row 3."
   }
 

@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.RawInputDataException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
@@ -45,7 +45,7 @@ public interface SystemParticipantSource extends DataSource {
    * @return either a valid, complete {@link SystemParticipants} or throws a {@link
    *     edu.ie3.datamodel.exceptions.RawInputDataException}
    */
-  SystemParticipants getSystemParticipants() throws RawInputDataException;
+  SystemParticipants getSystemParticipants() throws SourceException;
 
   /**
    * Returns a unique set of {@link FixedFeedInInput} instances.
@@ -57,7 +57,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link FixedFeedInInput} entities
    */
-  Set<FixedFeedInInput> getFixedFeedIns();
+  Set<FixedFeedInInput> getFixedFeedIns() throws SourceException;
 
   /**
    * Returns a set of {@link FixedFeedInInput} instances. This set has to be unique in the sense of
@@ -78,7 +78,8 @@ public interface SystemParticipantSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link FixedFeedInInput} entities
    */
-  Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators);
+  Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException;
 
   /**
    * Returns a unique set of {@link PvInput} instances.
@@ -89,7 +90,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link PvInput} entities
    */
-  Set<PvInput> getPvPlants();
+  Set<PvInput> getPvPlants() throws SourceException;
 
   /**
    * Returns a set of {@link PvInput} instances. This set has to be unique in the sense of object
@@ -110,7 +111,8 @@ public interface SystemParticipantSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link PvInput} entities
    */
-  Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators);
+  Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException;
 
   /**
    * Returns a unique set of {@link LoadInput} instances.
@@ -121,7 +123,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link LoadInput} entities
    */
-  Set<LoadInput> getLoads();
+  Set<LoadInput> getLoads() throws SourceException;
 
   /**
    * Returns a set of {@link LoadInput} instances. This set has to be unique in the sense of object
@@ -142,7 +144,8 @@ public interface SystemParticipantSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link LoadInput} entities
    */
-  Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators);
+  Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException;
 
   /**
    * Returns a unique set of {@link EvcsInput} instances.
@@ -153,7 +156,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link EvcsInput} entities
    */
-  Set<EvcsInput> getEvCS();
+  Set<EvcsInput> getEvCS() throws SourceException;
 
   /**
    * Returns a set of {@link EvcsInput} instances. This set has to be unique in the sense of object
@@ -174,7 +177,7 @@ public interface SystemParticipantSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link EvcsInput} entities
    */
-  Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators);
+  Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) throws SourceException;
 
   /**
    * Returns a unique set of {@link BmInput} instances.
@@ -185,7 +188,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link BmInput} entities
    */
-  Set<BmInput> getBmPlants();
+  Set<BmInput> getBmPlants() throws SourceException;
 
   /**
    * Returns a set of {@link BmInput} instances. This set has to be unique in the sense of object
@@ -208,7 +211,8 @@ public interface SystemParticipantSource extends DataSource {
    * @return a set of object and uuid unique {@link BmInput} entities
    */
   Set<BmInput> getBmPlants(
-      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types);
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types)
+      throws SourceException;
 
   /**
    * Returns a unique set of {@link StorageInput} instances.
@@ -220,7 +224,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link StorageInput} entities
    */
-  Set<StorageInput> getStorages();
+  Set<StorageInput> getStorages() throws SourceException;
 
   /**
    * Returns a set of {@link StorageInput} instances. This set has to be unique in the sense of
@@ -243,7 +247,8 @@ public interface SystemParticipantSource extends DataSource {
    * @return a set of object and uuid unique {@link StorageInput} entities
    */
   Set<StorageInput> getStorages(
-      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types);
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types)
+      throws SourceException;
 
   /**
    * Returns a unique set of {@link WecInput} instances.
@@ -254,7 +259,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link WecInput} entities
    */
-  Set<WecInput> getWecPlants();
+  Set<WecInput> getWecPlants() throws SourceException;
 
   /**
    * Returns a set of {@link WecInput} instances. This set has to be unique in the sense of object
@@ -277,7 +282,8 @@ public interface SystemParticipantSource extends DataSource {
    * @return a set of object and uuid unique {@link WecInput} entities
    */
   Set<WecInput> getWecPlants(
-      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types);
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types)
+      throws SourceException;
 
   /**
    * Returns a unique set of {@link EvInput} instances.
@@ -288,7 +294,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link EvInput} entities
    */
-  Set<EvInput> getEvs();
+  Set<EvInput> getEvs() throws SourceException;
 
   /**
    * Returns a set of {@link EvInput} instances. This set has to be unique in the sense of object
@@ -310,7 +316,8 @@ public interface SystemParticipantSource extends DataSource {
    * @param types a set of object and uuid unique {@link EvTypeInput} entities
    * @return a set of object and uuid unique {@link EvInput} entities
    */
-  Set<EvInput> getEvs(Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types);
+  Set<EvInput> getEvs(Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types)
+      throws SourceException;
 
   /**
    * Returns a unique set of {@link ChpInput} instances.
@@ -321,7 +328,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link ChpInput} entities
    */
-  Set<ChpInput> getChpPlants();
+  Set<ChpInput> getChpPlants() throws SourceException;
 
   /**
    * Returns a set of {@link ChpInput} instances. This set has to be unique in the sense of object
@@ -351,7 +358,8 @@ public interface SystemParticipantSource extends DataSource {
       Set<OperatorInput> operators,
       Set<ChpTypeInput> types,
       Set<ThermalBusInput> thermalBuses,
-      Set<ThermalStorageInput> thermalStorages);
+      Set<ThermalStorageInput> thermalStorages)
+      throws SourceException;
 
   /**
    * Returns a unique set of {@link HpInput} instances.
@@ -362,7 +370,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link HpInput} entities
    */
-  Set<HpInput> getHeatPumps();
+  Set<HpInput> getHeatPumps() throws SourceException;
 
   /**
    * Returns a set of {@link HpInput} instances. This set has to be unique in the sense of object
@@ -390,7 +398,8 @@ public interface SystemParticipantSource extends DataSource {
       Set<NodeInput> nodes,
       Set<OperatorInput> operators,
       Set<HpTypeInput> types,
-      Set<ThermalBusInput> thermalBuses);
+      Set<ThermalBusInput> thermalBuses)
+      throws SourceException;
 
   /**
    * Returns a unique set of {@link EmInput} instances.
@@ -401,7 +410,7 @@ public interface SystemParticipantSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link EmInput} entities
    */
-  Set<EmInput> getEmSystems();
+  Set<EmInput> getEmSystems() throws SourceException;
 
   /**
    * This set has to be unique in the sense of object uniqueness but also in the sense of {@link
@@ -421,5 +430,6 @@ public interface SystemParticipantSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link EmInput} entities
    */
-  Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators);
+  Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException;
 }

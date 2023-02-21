@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.RawInputDataException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
@@ -24,7 +25,6 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.utils.options.Try;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -65,7 +65,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
   /** {@inheritDoc} */
   @Override
-  public GraphicElements getGraphicElements() throws RawInputDataException {
+  public GraphicElements getGraphicElements() throws SourceException {
 
     // read all needed entities
     /// start with types and operators
@@ -76,34 +76,20 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
     Set<LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
 
     Try<Set<NodeGraphicInput>, RawInputDataException> nodeGraphics =
-        Try.scanForExceptions(
-            buildNodeGraphicEntityData(nodes)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(nodeGraphicInputFactory::get)
-                .collect(Collectors.toSet()),
-            NodeGraphicInput.class);
-
+        Try.apply(() -> getNodeGraphicInput(nodes), RawInputDataException.class);
     Try<Set<LineGraphicInput>, RawInputDataException> lineGraphics =
-        Try.scanForExceptions(
-            buildLineGraphicEntityData(lines)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(lineGraphicInputFactory::get)
-                .collect(Collectors.toSet()),
-            LineGraphicInput.class);
+        Try.apply(() -> getLineGraphicInput(lines), RawInputDataException.class);
 
-    List<RawInputDataException> exceptions = new ArrayList<>();
-
-    if (nodeGraphics.isFailure()) {
-      exceptions.add(nodeGraphics.getException());
-    }
-    if (lineGraphics.isFailure()) {
-      exceptions.add(lineGraphics.getException());
-    }
+    List<RawInputDataException> exceptions =
+        Stream.of(nodeGraphics, lineGraphics)
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList();
 
     if (exceptions.size() > 0) {
-      throw new GraphicSourceException(exceptions.size() + "error(s) occurred.", exceptions);
+      throw new GraphicSourceException(
+          exceptions.size() + "error(s) occurred while initializing graphic elements. ",
+          exceptions);
     } else {
       // if everything is fine, return a GraphicElements instance
       return new GraphicElements(nodeGraphics.getData(), lineGraphics.getData());
@@ -111,7 +97,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
   }
   /** {@inheritDoc} */
   @Override
-  public Set<NodeGraphicInput> getNodeGraphicInput() throws RawInputDataException {
+  public Set<NodeGraphicInput> getNodeGraphicInput() throws SourceException {
     return getNodeGraphicInput(rawGridSource.getNodes(typeSource.getOperators()));
   }
 
@@ -123,8 +109,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
    * has been able to be built are returned and the not-built ones are ignored (= filtered out).
    */
   @Override
-  public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes)
-      throws RawInputDataException {
+  public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) throws SourceException {
     return Try.scanForExceptions(
             buildNodeGraphicEntityData(nodes)
                 .filter(Optional::isPresent)
@@ -137,7 +122,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
   /** {@inheritDoc} */
   @Override
-  public Set<LineGraphicInput> getLineGraphicInput() throws RawInputDataException {
+  public Set<LineGraphicInput> getLineGraphicInput() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLineGraphicInput(
         rawGridSource.getLines(
@@ -152,8 +137,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
    * has been able to be built are returned and the not-built ones are ignored (= filtered out).
    */
   @Override
-  public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines)
-      throws RawInputDataException {
+  public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) throws SourceException {
     return Try.scanForExceptions(
             buildLineGraphicEntityData(lines)
                 .filter(Optional::isPresent)
