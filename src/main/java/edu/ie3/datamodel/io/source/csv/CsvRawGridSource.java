@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.RawGridException;
-import edu.ie3.datamodel.exceptions.RawInputDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.FactoryData;
@@ -84,22 +83,18 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     /* assets */
     Set<NodeInput> nodes = getNodes(operators);
 
-    Try<Set<LineInput>, RawInputDataException> lineInputs =
-        Try.apply(() -> getLines(nodes, lineTypes, operators), RawInputDataException.class);
-    Try<Set<Transformer2WInput>, RawInputDataException> transformer2WInputs =
-        Try.apply(
-            () -> get2WTransformers(nodes, transformer2WTypeInputs, operators),
-            RawInputDataException.class);
-    Try<Set<Transformer3WInput>, RawInputDataException> transformer3WInputs =
-        Try.apply(
-            () -> get3WTransformers(nodes, transformer3WTypeInputs, operators),
-            RawInputDataException.class);
-    Try<Set<SwitchInput>, RawInputDataException> switches =
-        Try.apply(() -> getSwitches(nodes, operators), RawInputDataException.class);
-    Try<Set<MeasurementUnitInput>, RawInputDataException> measurementUnits =
-        Try.apply(() -> getMeasurementUnits(nodes, operators), RawInputDataException.class);
+    Try<Set<LineInput>, SourceException> lineInputs =
+        Try.apply(() -> getLines(nodes, lineTypes, operators));
+    Try<Set<Transformer2WInput>, SourceException> transformer2WInputs =
+        Try.apply(() -> get2WTransformers(nodes, transformer2WTypeInputs, operators));
+    Try<Set<Transformer3WInput>, SourceException> transformer3WInputs =
+        Try.apply(() -> get3WTransformers(nodes, transformer3WTypeInputs, operators));
+    Try<Set<SwitchInput>, SourceException> switches =
+        Try.apply(() -> getSwitches(nodes, operators));
+    Try<Set<MeasurementUnitInput>, SourceException> measurementUnits =
+        Try.apply(() -> getMeasurementUnits(nodes, operators));
 
-    List<RawInputDataException> exceptions =
+    List<SourceException> exceptions =
         Stream.of(lineInputs, transformer2WInputs, transformer3WInputs, switches, measurementUnits)
             .filter(Try::isFailure)
             .map(Try::getException)

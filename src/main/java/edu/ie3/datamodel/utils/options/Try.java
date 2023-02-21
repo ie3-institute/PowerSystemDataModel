@@ -27,12 +27,12 @@ public abstract class Try<R, E extends Exception> {
    * @param method applied method
    * @return a try object
    */
-  public static <R, E extends Exception> Try<R, E> apply(Callable<R> method, Class<E> eClass) {
+  public static <R, E extends Exception> Try<R, E> apply(Callable<R> method) {
     try {
       R result = method.call();
       return new Success<>(result);
     } catch (Exception e) {
-      return new Failure<>(eClass.cast(e));
+      return new Failure<>((E) e);
     }
   }
 

@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.exceptions.RawInputDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.SystemParticipantsException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
@@ -116,34 +115,25 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     /// go on with the nodes
     Set<NodeInput> nodes = rawGridSource.getNodes(operators);
 
-    Try<Set<FixedFeedInInput>, RawInputDataException> fixedFeedInInputs =
-        Try.apply(() -> getFixedFeedIns(nodes, operators), RawInputDataException.class);
-    Try<Set<PvInput>, RawInputDataException> pvInputs =
-        Try.apply(() -> getPvPlants(nodes, operators), RawInputDataException.class);
-    Try<Set<LoadInput>, RawInputDataException> loads =
-        Try.apply(() -> getLoads(nodes, operators), RawInputDataException.class);
-    Try<Set<BmInput>, RawInputDataException> bmInputs =
-        Try.apply(() -> getBmPlants(nodes, operators, bmTypes), RawInputDataException.class);
-    Try<Set<StorageInput>, RawInputDataException> storages =
-        Try.apply(() -> getStorages(nodes, operators, storageTypes), RawInputDataException.class);
-    Try<Set<WecInput>, RawInputDataException> wecInputs =
-        Try.apply(() -> getWecPlants(nodes, operators, wecTypes), RawInputDataException.class);
-    Try<Set<EvInput>, RawInputDataException> evs =
-        Try.apply(() -> getEvs(nodes, operators, evTypes), RawInputDataException.class);
-    Try<Set<EvcsInput>, RawInputDataException> evcs =
-        Try.apply(() -> getEvCS(nodes, operators), RawInputDataException.class);
-    Try<Set<ChpInput>, RawInputDataException> chpInputs =
-        Try.apply(
-            () -> getChpPlants(nodes, operators, chpTypes, thermalBuses, thermalStorages),
-            RawInputDataException.class);
-    Try<Set<HpInput>, RawInputDataException> hpInputs =
-        Try.apply(
-            () -> getHeatPumps(nodes, operators, hpTypes, thermalBuses),
-            RawInputDataException.class);
-    Try<Set<EmInput>, RawInputDataException> emInputs =
-        Try.apply(() -> getEmSystems(nodes, operators), RawInputDataException.class);
+    Try<Set<FixedFeedInInput>, SourceException> fixedFeedInInputs =
+        Try.apply(() -> getFixedFeedIns(nodes, operators));
+    Try<Set<PvInput>, SourceException> pvInputs = Try.apply(() -> getPvPlants(nodes, operators));
+    Try<Set<LoadInput>, SourceException> loads = Try.apply(() -> getLoads(nodes, operators));
+    Try<Set<BmInput>, SourceException> bmInputs =
+        Try.apply(() -> getBmPlants(nodes, operators, bmTypes));
+    Try<Set<StorageInput>, SourceException> storages =
+        Try.apply(() -> getStorages(nodes, operators, storageTypes));
+    Try<Set<WecInput>, SourceException> wecInputs =
+        Try.apply(() -> getWecPlants(nodes, operators, wecTypes));
+    Try<Set<EvInput>, SourceException> evs = Try.apply(() -> getEvs(nodes, operators, evTypes));
+    Try<Set<EvcsInput>, SourceException> evcs = Try.apply(() -> getEvCS(nodes, operators));
+    Try<Set<ChpInput>, SourceException> chpInputs =
+        Try.apply(() -> getChpPlants(nodes, operators, chpTypes, thermalBuses, thermalStorages));
+    Try<Set<HpInput>, SourceException> hpInputs =
+        Try.apply(() -> getHeatPumps(nodes, operators, hpTypes, thermalBuses));
+    Try<Set<EmInput>, SourceException> emInputs = Try.apply(() -> getEmSystems(nodes, operators));
 
-    List<RawInputDataException> exceptions =
+    List<SourceException> exceptions =
         Stream.of(
                 fixedFeedInInputs,
                 pvInputs,

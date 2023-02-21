@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
-import edu.ie3.datamodel.exceptions.RawInputDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
@@ -75,12 +74,12 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
     Set<NodeInput> nodes = rawGridSource.getNodes(operators);
     Set<LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
 
-    Try<Set<NodeGraphicInput>, RawInputDataException> nodeGraphics =
-        Try.apply(() -> getNodeGraphicInput(nodes), RawInputDataException.class);
-    Try<Set<LineGraphicInput>, RawInputDataException> lineGraphics =
-        Try.apply(() -> getLineGraphicInput(lines), RawInputDataException.class);
+    Try<Set<NodeGraphicInput>, SourceException> nodeGraphics =
+        Try.apply(() -> getNodeGraphicInput(nodes));
+    Try<Set<LineGraphicInput>, SourceException> lineGraphics =
+        Try.apply(() -> getLineGraphicInput(lines));
 
-    List<RawInputDataException> exceptions =
+    List<SourceException> exceptions =
         Stream.of(nodeGraphics, lineGraphics)
             .filter(Try::isFailure)
             .map(Try::getException)
