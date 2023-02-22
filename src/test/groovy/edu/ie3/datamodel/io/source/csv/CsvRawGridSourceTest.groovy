@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.exceptions.RawInputDataException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
