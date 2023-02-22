@@ -67,6 +67,11 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     return Collections.unmodifiableList(allEntities);
   }
 
+  @Override
+  public GraphicElementsCopyBuilder copy() {
+    return new GraphicElementsCopyBuilder(this);
+  }
+
   /** @return unmodifiable Set of all node graphic data for this grid */
   public Set<NodeGraphicInput> getNodeGraphics() {
     return Collections.unmodifiableSet(nodeGraphics);
@@ -87,5 +92,62 @@ public class GraphicElements implements InputContainer<GraphicInput> {
   @Override
   public int hashCode() {
     return Objects.hash(nodeGraphics, lineGraphics);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link GraphicElements} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * GraphicElements}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
+  public static class GraphicElementsCopyBuilder
+      extends InputContainerCopyBuilder<GraphicInput, GraphicElements> {
+    private Set<NodeGraphicInput> nodeGraphics;
+    private Set<LineGraphicInput> lineGraphics;
+
+    /**
+     * Constructor for {@link GraphicElementsCopyBuilder}
+     *
+     * @param graphicElements instance of {@link GraphicElements}
+     */
+    protected GraphicElementsCopyBuilder(GraphicElements graphicElements) {
+      super();
+      this.nodeGraphics = graphicElements.getNodeGraphics();
+      this.lineGraphics = graphicElements.getLineGraphics();
+    }
+
+    /**
+     * Method to alter the {@link NodeGraphicInput}.
+     *
+     * @param nodeGraphics set of altered {@link NodeGraphicInput}'s
+     * @return child instance of {@link GraphicElementsCopyBuilder}
+     */
+    public GraphicElementsCopyBuilder nodeGraphics(Set<NodeGraphicInput> nodeGraphics) {
+      this.nodeGraphics = nodeGraphics;
+      return childInstance();
+    }
+
+    /**
+     * Method to alter the {@link LineGraphicInput}.
+     *
+     * @param lineGraphics set of altered {@link LineGraphicInput}'s
+     * @return child instance of {@link GraphicElementsCopyBuilder}
+     */
+    public GraphicElementsCopyBuilder lineGraphics(Set<LineGraphicInput> lineGraphics) {
+      this.lineGraphics = lineGraphics;
+      return childInstance();
+    }
+
+    @Override
+    protected GraphicElementsCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    GraphicElements build() {
+      return new GraphicElements(nodeGraphics, lineGraphics);
+    }
   }
 }

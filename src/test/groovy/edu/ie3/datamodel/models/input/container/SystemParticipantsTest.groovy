@@ -32,4 +32,61 @@ class SystemParticipantsTest extends Specification {
     then:
     newlyCreatedSystemParticipants == systemParticipants
   }
+
+  def "A SystemParticipants' copy method should work as expected"() {
+    given:
+    def systemParticipants = new SystemParticipants(
+        Collections.singleton(SystemParticipantTestData.bmInput),
+        Collections.singleton(SystemParticipantTestData.chpInput),
+        Collections.singleton(SystemParticipantTestData.evcsInput),
+        Collections.singleton(SystemParticipantTestData.evInput),
+        Collections.singleton(SystemParticipantTestData.fixedFeedInInput),
+        Collections.singleton(SystemParticipantTestData.hpInput),
+        Collections.singleton(SystemParticipantTestData.loadInput),
+        Collections.singleton(SystemParticipantTestData.pvInput),
+        Collections.singleton(SystemParticipantTestData.storageInput),
+        Collections.singleton(SystemParticipantTestData.wecInput),
+        Collections.singleton(SystemParticipantTestData.emInput)
+        )
+
+    def modifiedBmInput = SystemParticipantTestData.bmInput.copy().id("modified").build()
+    def modifiedChpInput = SystemParticipantTestData.chpInput.copy().id("modified").build()
+    def modifiedEvCSInput = SystemParticipantTestData.evcsInput.copy().id("modified").build()
+    def modifiedEvInput = SystemParticipantTestData.evInput.copy().id("modified").build()
+    def modifiedFixedFeedInInput = SystemParticipantTestData.fixedFeedInInput.copy().id("modified").build()
+    def modifiedHpInput = SystemParticipantTestData.hpInput.copy().id("modified").build()
+    def modifiedLoadInput = SystemParticipantTestData.loadInput.copy().id("modified").build()
+    def modifiedPvInput = SystemParticipantTestData.pvInput.copy().id("modified").build()
+    def modifiedStorageInput = SystemParticipantTestData.storageInput.copy().id("modified").build()
+    def modifiedWecInput = SystemParticipantTestData.wecInput.copy().id("modified").build()
+    def modifiedEmInput = SystemParticipantTestData.emInput.copy().id("modified").build()
+
+    when:
+    def modifiedSystemParticipants = systemParticipants.copy()
+        .bmPlants(Set.of(modifiedBmInput))
+        .chpPlants(Set.of(modifiedChpInput))
+        .evCS(Set.of(modifiedEvCSInput))
+        .evs(Set.of(modifiedEvInput))
+        .fixedFeedIn(Set.of(modifiedFixedFeedInInput))
+        .heatPumps(Set.of(modifiedHpInput))
+        .loads(Set.of(modifiedLoadInput))
+        .pvPlants(Set.of(modifiedPvInput))
+        .storages(Set.of(modifiedStorageInput))
+        .wecPlants(Set.of(modifiedWecInput))
+        .emSystems(Set.of(modifiedEmInput))
+        .build()
+
+    then:
+    modifiedSystemParticipants.bmPlants.first() == modifiedBmInput
+    modifiedSystemParticipants.chpPlants.first() == modifiedChpInput
+    modifiedSystemParticipants.evCS.first() == modifiedEvCSInput
+    modifiedSystemParticipants.evs.first() == modifiedEvInput
+    modifiedSystemParticipants.fixedFeedIns.first() == modifiedFixedFeedInInput
+    modifiedSystemParticipants.heatPumps.first() == modifiedHpInput
+    modifiedSystemParticipants.loads.first() == modifiedLoadInput
+    modifiedSystemParticipants.pvPlants.first() == modifiedPvInput
+    modifiedSystemParticipants.storages.first() == modifiedStorageInput
+    modifiedSystemParticipants.wecPlants.first() == modifiedWecInput
+    modifiedSystemParticipants.emSystems.first() == modifiedEmInput
+  }
 }

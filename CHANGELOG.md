@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+- Copy methods for container classes [#726](https://github.com/ie3-institute/PowerSystemDataModel/issues/726)
+
+### Fixed
+
+
+### Changed
+
+
 ## [3.0.0] - 2023-02-16
 
 ### Added

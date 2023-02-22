@@ -63,4 +63,54 @@ public class SubGridContainer extends GridContainer {
         + predominantVoltageLevel
         + '}';
   }
+
+  @Override
+  public SubGridContainerCopyBuilder copy() {
+    return new SubGridContainerCopyBuilder(this);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link SubGridContainer} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * SubGridContainer}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
+  public static class SubGridContainerCopyBuilder
+      extends GridContainerCopyBuilder<SubGridContainerCopyBuilder> {
+    private int subnet;
+
+    /**
+     * Constructor for {@link SubGridContainerCopyBuilder}
+     *
+     * @param subGridContainer instance of {@link SubGridContainer}
+     */
+    protected SubGridContainerCopyBuilder(SubGridContainer subGridContainer) {
+      super(subGridContainer);
+      this.subnet = subGridContainer.getSubnet();
+    }
+
+    /**
+     * Method to alter the subnet number.
+     *
+     * @param subnet altered subnet number.
+     * @return child instance of {@link SubGridContainerCopyBuilder}
+     */
+    public SubGridContainerCopyBuilder subnet(int subnet) {
+      this.subnet = subnet;
+      return childInstance();
+    }
+
+    @Override
+    protected SubGridContainerCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    SubGridContainer build() {
+      return new SubGridContainer(
+          getGridName(), subnet, getRawGrid(), getSystemParticipants(), getGraphics());
+    }
+  }
 }
