@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.util.geo.CoordinateDistance;
@@ -128,9 +127,6 @@ public class IdCoordinateSource implements DataSource {
     for (Map.Entry<K, V> entry : map.entrySet()) inv.put(entry.getValue(), entry.getKey());
     return inv;
   }
-
-
-
 
   /**
    * Returns the nearest n coordinate points to the given coordinate from a given collection of

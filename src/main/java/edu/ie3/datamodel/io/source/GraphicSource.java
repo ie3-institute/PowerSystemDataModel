@@ -57,7 +57,9 @@ public class GraphicSource extends EntitySource implements DataSource {
     this.nodeGraphicInputFactory = new NodeGraphicInputFactory();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns the graphic elements of the grid as a option
+   */
   public Optional<GraphicElements> getGraphicElements() {
 
     // read all needed entities
@@ -97,18 +99,16 @@ public class GraphicSource extends EntitySource implements DataSource {
     return Optional.of(new GraphicElements(nodeGraphics, lineGraphics));
   }
 
-  /** {@inheritDoc} */
+
+  /**
+   * <p>If the set of {@link NodeInput} entities is not exhaustive for all available {@link
+   *    NodeGraphicInput} entities or if an error during the building process occurs, all entities that
+   *    has been able to be built are returned and the not-built ones are ignored (= filtered out).
+   */
   public Set<NodeGraphicInput> getNodeGraphicInput() {
     return getNodeGraphicInput(rawGridSource.getNodes(typeSource.getOperators()));
   }
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>If the set of {@link NodeInput} entities is not exhaustive for all available {@link
-   * NodeGraphicInput} entities or if an error during the building process occurs, all entities that
-   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
-   */
   public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
     return buildNodeGraphicEntityData(nodes)
             .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get))
@@ -116,7 +116,11 @@ public class GraphicSource extends EntitySource implements DataSource {
             .collect(Collectors.toSet());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * <p>If the set of {@link LineInput} entities is not exhaustive for all available {@link
+   * LineGraphicInput} entities or if an error during the building process occurs, all entities that
+   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
+   */
   public Set<LineGraphicInput> getLineGraphicInput() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLineGraphicInput(
@@ -124,13 +128,6 @@ public class GraphicSource extends EntitySource implements DataSource {
                     rawGridSource.getNodes(operators), typeSource.getLineTypes(), operators));
   }
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>If the set of {@link LineInput} entities is not exhaustive for all available {@link
-   * LineGraphicInput} entities or if an error during the building process occurs, all entities that
-   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
-   */
   public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) {
     return buildLineGraphicEntityData(lines)
             .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get))
@@ -138,7 +135,8 @@ public class GraphicSource extends EntitySource implements DataSource {
             .collect(Collectors.toSet());
   }
 
-  // -=-=-=-=-=-
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  // build EntityData
 
   /**
    * Builds a stream of {@link NodeGraphicInputEntityData} instances that can be consumed by a
@@ -229,7 +227,4 @@ public class GraphicSource extends EntitySource implements DataSource {
 
     return Optional.of(new LineGraphicInputEntityData(fieldsToAttributes, line.get()));
   }
-
-
-
 }

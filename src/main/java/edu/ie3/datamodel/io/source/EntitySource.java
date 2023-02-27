@@ -19,6 +19,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Class that provides all functionalities to build entities
+ */
 public abstract class EntitySource {
     protected static final Logger log = LoggerFactory.getLogger(EntitySource.class);
 
@@ -110,7 +113,6 @@ public abstract class EntitySource {
                 .filter(uniqueEntity -> uniqueEntity.getUuid().toString().equalsIgnoreCase(entityUuid))
                 .findFirst();
     }
-
 
 
     /**

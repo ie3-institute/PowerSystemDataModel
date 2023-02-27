@@ -42,11 +42,13 @@ public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
     this.timeSeriesMetaInformation = dataSource.connector.getCsvIndividualTimeSeriesMetaInformation(TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
   }
 
+  @Override
   public Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation() {
     return timeSeriesMetaInformation.entrySet().stream()
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
+  @Override
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
           UUID timeSeriesUuid
   ) {

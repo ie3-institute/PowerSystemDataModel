@@ -47,7 +47,6 @@ public class ResultEntitySource extends EntitySource implements DataSource {
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
-
   public ResultEntitySource(FunctionalDataSource dataSource, String dtfPattern) {
     this.dataSource = dataSource;
 
@@ -315,7 +314,7 @@ public class ResultEntitySource extends EntitySource implements DataSource {
     return getResultEntities(EmResult.class, systemParticipantResultFactory);
   }
 
-
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   private <T extends ResultEntity> Set<T> getResultEntities(
           Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
     return simpleEntityDataStream(entityClass)

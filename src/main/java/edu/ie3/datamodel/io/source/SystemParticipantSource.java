@@ -101,7 +101,6 @@ public class SystemParticipantSource extends EntitySource implements DataSource 
    */
   public Optional<SystemParticipants> getSystemParticipants() {
 
-
     // read all needed entities
     /// start with types and operators
     Set<OperatorInput> operators = typeSource.getOperators();

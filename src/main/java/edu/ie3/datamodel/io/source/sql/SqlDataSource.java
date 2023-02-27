@@ -6,24 +6,17 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.FunctionalDataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
-import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -38,8 +31,19 @@ public class SqlDataSource implements FunctionalDataSource {
   //general fields
   protected final SqlConnector connector;
   protected final DatabaseNamingStrategy databaseNamingStrategy;
+  protected String schemaName;
 
-  private String schemaName;
+  protected SqlDataSource(
+          String jdbcUrl,
+          String userName,
+          String password,
+          String schemaName,
+          DatabaseNamingStrategy databaseNamingStrategy
+  ) {
+    this.connector = new SqlConnector(jdbcUrl, userName, password);
+    this.schemaName = schemaName;
+    this.databaseNamingStrategy = databaseNamingStrategy;
+  }
 
   protected SqlDataSource(
           SqlConnector connector,
@@ -50,18 +54,6 @@ public class SqlDataSource implements FunctionalDataSource {
     this.schemaName = schemaName;
     this.databaseNamingStrategy = databaseNamingStrategy;
   }
-
-  protected SqlDataSource(
-          String jdbcUrl, String userName, String password, String schemaName, DatabaseNamingStrategy databaseNamingStrategy
-  ) {
-    this.connector = new SqlConnector(jdbcUrl, userName, password);
-    this.schemaName = schemaName;
-    this.databaseNamingStrategy = databaseNamingStrategy;
-  }
-
-  protected String getSchemaName() { return schemaName; }
-
-  protected DatabaseNamingStrategy getDatabaseNamingStrategy() { return databaseNamingStrategy; }
 
   /**
    * Creates a base query string without closing semicolon of the following pattern: <br>
@@ -137,31 +129,20 @@ public class SqlDataSource implements FunctionalDataSource {
   }
 
   @Override
-  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
-    String query = createBaseQueryString(schemaName,"");
+  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
+    return getSourceData(entityClass, "");
+  }
+
+  @Override
+  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass, String explicitPlace) {
+    String query = createBaseQueryString(schemaName, explicitPlace);
     return buildStreamByQuery(entityClass, connector, query);
-  }
-
-  @Override
-  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass, String specialPlace) {
-    return null;
-  }
-
-  @Override
-  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(String specialPlace) throws SourceException {
-    return null;
-  }
-
-  @Override
-  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData() {
-    return null;
   }
 
   @Override
   public Stream<Map<String, String>> getSourceData(IdCoordinateFactory factory) {
     return null;
   }
-
 
   /**
    * Interface for anonymous functions that are used as a parameter for {@link #buildStreamByQuery}.
@@ -211,28 +192,6 @@ public class SqlDataSource implements FunctionalDataSource {
       log.error("Error during execution of query {}", query, e);
     }
     return Stream.empty();
-  }
-
-  /**
-   * Executes the prepared statement after possibly adding parameters to the query using the given
-   * function. Finally, processes the results and creates a list of time based values via field map
-   * extraction.
-   *
-   * @param query the query to use
-   * @param addParams function that possibly adds parameters to query
-   * @return a list of resulting entities
-   */
-
-  protected<T extends UniqueEntity> List<T> executeQuery(String query, AddParams addParams) {
-    return null;
-    /*
-    return queryMapping(query, addParams)
-          .stream()
-          .map(this::createEntity)
-          .flatMap(Optional::stream)
-          .toList();
-
-     */
   }
 
   protected List<Map<String, String>> queryMapping(String query, AddParams addParams) {

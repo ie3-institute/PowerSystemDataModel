@@ -35,8 +35,8 @@ public class TypeSource extends EntitySource implements DataSource {
     private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
     private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
 
-  public TypeSource(FunctionalDataSource _dataSource) {
-    this.dataSource = _dataSource;
+  public TypeSource(FunctionalDataSource dataSource) {
+    this.dataSource = dataSource;
 
     this.operatorInputFactory = new OperatorInputFactory();
     this.transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();

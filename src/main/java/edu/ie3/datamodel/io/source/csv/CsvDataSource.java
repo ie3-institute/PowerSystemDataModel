@@ -7,16 +7,13 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.factory.Factory;
-import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.FunctionalDataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,8 +29,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,34 +67,22 @@ public class CsvDataSource implements FunctionalDataSource {
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
 
-
   @Override
-  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData() {
-    return null;
-  }
-
-  @Override
-  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
+  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }
 
   @Override
-  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass, String specialPlace) throws SourceException {
+  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass, String explicitPath) throws SourceException {
     try {
-      return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(specialPlace));
+      return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(explicitPath));
     } catch (FileNotFoundException e) {
       log.warn(
               "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-      throw new SourceException("Unable to find a file with path '" + specialPlace + "'.", e);
+      throw new SourceException("Unable to find a file with path '" + explicitPath + "'.", e);
     } catch (IOException e) {
-      throw new SourceException("Error during reading of file'" + specialPlace + "'.", e);
+      throw new SourceException("Error during reading of file'" + explicitPath + "'.", e);
     }
-  }
-
-
-  @Override
-  public <T extends UniqueEntity> Stream<Map<String, String>> getSourceData(String specialPlace) throws SourceException {
-    return null;
   }
 
   @Override
@@ -133,7 +116,7 @@ public class CsvDataSource implements FunctionalDataSource {
   }
 
 
-  //--------------------------------------------------------------------------------------------------
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
@@ -339,6 +322,16 @@ public class CsvDataSource implements FunctionalDataSource {
             missingElementsString);
   }
 
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(CsvFileConnector connector, String explicitPath) {
+    try {
+      return buildStreamWithFieldsToAttributesMap(null, connector.initReader(explicitPath));
+    } catch (FileNotFoundException e) {
+      log.warn(
+              "Unable to find file for entity '{}': {}", "", e.getMessage());
+    }
+    return Stream.empty();
+  }
+
   /**
    * Tries to open a file reader from the connector based on the provided entity class and hands it
    * over for further processing.
@@ -389,7 +382,10 @@ public class CsvDataSource implements FunctionalDataSource {
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
       return distinctRowsWithLog(
-              allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
+              allRows,
+              fieldToValues -> fieldToValues.get("uuid"),
+              entityClass.getSimpleName(),
+              "UUID")
               .parallelStream();
     } catch (IOException e) {
       log.warn(

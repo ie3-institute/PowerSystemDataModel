@@ -26,7 +26,6 @@ import edu.ie3.datamodel.models.input.container.RawGridElements;
  * @since 03.04.20
  */
 public class CsvRawGridSource extends RawGridSource {
-
   public CsvRawGridSource(
           String csvSep,
           String gridFolderPath,

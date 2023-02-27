@@ -198,7 +198,7 @@ public class ThermalSource extends EntitySource implements DataSource {
     return buildCylindricalStorageInputEntities(cylindricalStorageInputFactory, operators, thermalBuses);
   }
 
-  // -=-=-
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   protected Stream<Optional<ThermalUnitInputEntityData>> buildThermalUnitInputEntityData(
           AssetInputEntityData assetInputEntityData, Collection<ThermalBusInput> thermalBuses) {
@@ -288,7 +288,4 @@ public class ThermalSource extends EntitySource implements DataSource {
             .flatMap(elements -> elements.flatMap(Optional::stream))
             .collect(Collectors.toSet());
   }
-
-
-
 }

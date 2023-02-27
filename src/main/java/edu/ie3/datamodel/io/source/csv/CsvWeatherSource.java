@@ -17,14 +17,11 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.datamodel.utils.TimeSeriesUtils;
-import edu.ie3.util.interval.ClosedInterval;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -34,7 +31,7 @@ import org.locationtech.jts.geom.Point;
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
 public class CsvWeatherSource extends WeatherSource {
 
-  private CsvDataSource dataSource;
+  protected CsvDataSource dataSource;
 
   /**
    * Initializes a CsvWeatherSource with a {@link CsvIdCoordinateSource} instance and immediately
@@ -72,38 +69,13 @@ public class CsvWeatherSource extends WeatherSource {
     coordinateToTimeSeries = getWeatherTimeSeries();
   }
 
-  //-----------------------------------------------------------------------------------------------
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
     /* Get only weather time series meta information */
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
             dataSource.connector.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
-
     return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
-  }
-
-  /*
-  @Override
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
-    return trimMapToInterval(coordinateToTimeSeries, timeInterval);
-  }
-
-  @Override
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
-    Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
-        coordinateToTimeSeries.entrySet().stream()
-            .filter(entry -> coordinates.contains(entry.getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    return trimMapToInterval(filteredMap, timeInterval);
-  }
-   */
-  @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
-    IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
-    if (timeSeries == null) return Optional.empty();
-    return timeSeries.getTimeBasedValue(date);
   }
 
   /**
@@ -207,23 +179,6 @@ public class CsvWeatherSource extends WeatherSource {
             });
   }
 
-  /**
-   * Reads the first line (considered to be the headline with headline fields) and returns a stream
-   * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
-   * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
-   *
-   * <p>This method overrides {@link CsvDataSource#buildStreamWithFieldsToAttributesMap(Class,
-   * BufferedReader)} to not do sanity check for available UUID. This is because the weather source
-   * might make use of ICON weather data, which don't have a UUID. For weather it is indeed not
-   * necessary, to have one unique UUID.
-   *
-   * @param entityClass the entity class that should be build
-   * @param bufferedReader the reader to use
-   * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName to fieldValue)
-   */
-
-
 
   /**
    * Extract the coordinate identifier from the field to value mapping and obtain the actual
@@ -243,19 +198,5 @@ public class CsvWeatherSource extends WeatherSource {
     }
     int coordinateId = Integer.parseInt(coordinateString);
     return idCoordinateSource.getCoordinate(coordinateId);
-  }
-
-  /**
-   * Merge two individual time series into a new time series with the UUID of the first parameter
-   *
-   * @param a the first time series to merge
-   * @param b the second time series to merge
-   * @return merged time series with a's UUID
-   */
-  private <V extends Value> IndividualTimeSeries<V> mergeTimeSeries(
-      IndividualTimeSeries<V> a, IndividualTimeSeries<V> b) {
-    SortedSet<TimeBasedValue<V>> entries = a.getEntries();
-    entries.addAll(b.getEntries());
-    return new IndividualTimeSeries<>(a.getUuid(), entries);
   }
 }

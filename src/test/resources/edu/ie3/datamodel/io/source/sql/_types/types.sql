@@ -1,4 +1,4 @@
-CREATE TABLE types.line_type_input
+CREATE TABLE public.line_type_input
 (
     uuid uuid NOT NULL,
     id varchar NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE types.line_type_input
     PRIMARY KEY (uuid)
 );
 
-CREATE TABLE types.transformer_2_w_type_input
+CREATE TABLE public.transformer_2_w_type_input
 (
     uuid uuid NOT NULL,
     id varchar NOT NULL,
@@ -32,11 +32,11 @@ CREATE TABLE types.transformer_2_w_type_input
 );
 
 INSERT INTO
-    types.line_type_input (uuid, id, v_rated, i_max, r, x, b, g)
+    public.line_type_input (uuid, id, v_rated, i_max, r, x, b, g)
 VALUES
     ('3bed3eb3-9790-4874-89b5-a5434d408088', 'lineType_AtoB', 0.00322, 0.0, 0.437, 0.437, 300.0, 20.0);
 
 INSERT INTO
-    types.transformer_2_w_type_input (uuid, id, s_rated, r_sc, x_sc, b_m, g_m, d_phi, d_v, tap_max, tap_min, tap_neutr, tap_side, v_rated_a, v_rated_b)
+    public.transformer_2_w_type_input (uuid,b_m,d_phi,d_v,g_m,id,r_sc,s_rated,tap_max,tap_min,tap_neutr,tap_side,v_rated_a,v_rated_b,x_sc)
 VALUES
-    ('202069a7-bcf8-422c-837c-273575220c8a', 'HS-MS_1', 45.375, 102.759, 20000.0, 110.0, 20.0, 0.0, 0.0, 1.5, 0.0);
+    ('202069a7-bcf8-422c-837c-273575220c8a',0.0,0.0,1.5,0.0,'HS-MS_1',45.375,20000.0,10,-10,0,false,110.0,20.0,102.759);

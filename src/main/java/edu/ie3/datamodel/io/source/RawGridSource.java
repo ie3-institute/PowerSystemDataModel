@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.*;
-import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantTypedEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
@@ -15,8 +14,6 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
-import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,7 +41,7 @@ public class RawGridSource extends EntitySource implements DataSource {
 
 
   //general fields
-  private TypeSource typeSource;
+  TypeSource typeSource;
 
   //factories
   private final NodeInputFactory nodeInputFactory;
@@ -54,9 +51,9 @@ public class RawGridSource extends EntitySource implements DataSource {
   private final SwitchInputFactory switchInputFactory;
   private final MeasurementUnitInputFactory measurementUnitInputFactory;
 
-  public RawGridSource(TypeSource _typeSource, FunctionalDataSource _dataSource) {
-    this.typeSource = _typeSource;
-    this.dataSource = _dataSource;
+  public RawGridSource(TypeSource typeSource, FunctionalDataSource dataSource) {
+    this.typeSource = typeSource;
+    this.dataSource = dataSource;
 
     // init factories
     this.nodeInputFactory = new NodeInputFactory();
@@ -392,7 +389,6 @@ public class RawGridSource extends EntitySource implements DataSource {
             .collect(Collectors.toSet());
   }
 
-
   public <T extends ConnectorInput, A extends AssetTypeInput> Set<T> buildUntypedConnectorInputEntities(
           Class<T> entityClass,
           EntityFactory<T, ConnectorInputEntityData> factory,
@@ -416,8 +412,6 @@ public class RawGridSource extends EntitySource implements DataSource {
             .map(Optional::get)
             .collect(Collectors.toSet());
   }
-
-
 
   public Set<Transformer3WInput> buildTransformer3WEntities(
           Transformer3WInputFactory transformer3WInputFactory,
@@ -561,49 +555,6 @@ public class RawGridSource extends EntitySource implements DataSource {
             untypedEntityData.getNodeB(),
             assetType);
   }
-
-
-  /*
-  public <T extends AssetInput> Set<T> buildNodeAssetEntities(
-          Class<T> entityClass,
-          EntityFactory<T, NodeAssetInputEntityData> factory,
-          Collection<NodeInput> nodes,
-          Collection<OperatorInput> operators,
-          ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities
-  ) {
-    return nodeAssetEntityStream(entityClass, factory, nodes, operators)
-            .filter(isPresentCollectIfNot(entityClass, nonBuildEntities))
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
-  }
-
-  public <T extends AssetInput> Set<T> buildNodeAssetEntities(
-          Class<T> entityClass,
-          EntityFactory<T, NodeAssetInputEntityData> factory,
-          Collection<NodeInput> nodes,
-          Collection<OperatorInput> operators
-  ) {
-    return nodeAssetEntityStream(entityClass, factory, nodes, operators)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
-  }
-
-   */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   /**
    * Converts a single given {@link AssetInputEntityData} in connection with a collection of known

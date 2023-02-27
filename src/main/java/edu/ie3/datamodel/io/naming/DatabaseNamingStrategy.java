@@ -46,11 +46,4 @@ public class DatabaseNamingStrategy {
   public Optional<String> getEntityName(Class<? extends UniqueEntity> cls) {
     return entityPersistenceNamingStrategy.getEntityName(cls);
   }
-
-
-
-
-
-
-
 }
