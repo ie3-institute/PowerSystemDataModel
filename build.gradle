@@ -4,19 +4,18 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '6.13.0'//code format
+  id 'com.diffplug.spotless' version '6.15.0'//code format
   id 'com.github.spotbugs' version '5.0.13' // code check, working on byte code
-  id 'de.undercouch.download' version '5.3.0'
+  id 'de.undercouch.download' version '5.3.1'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "3.5.0.2730" // sonarqube
+  id "org.sonarqube" version "4.0.0.2929" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
 ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_17
-  tscfgVersion = '0.9.9'
   testcontainersVersion = '1.17.6'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
@@ -41,26 +40,18 @@ apply from: scriptsLocation + 'semVer.gradle'
 
 repositories {
   mavenCentral() // searches in Sonatype's repository 'Maven Central'
-  maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
 
   // sonatype snapshot repo
-  maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+  maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
 
 }
 
 dependencies {
-  constraints {
-    implementation( 'junit:junit:4.13.2+'){
-      because "CVE-2020-15250 - Temporary folder vulnerability - https://github.com/advisories/GHSA-269g-pwp5-87pp"
-    }
-  }
 
   //	 ie³ power system utils
-  implementation 'com.github.ie3-institute:PowerSystemUtils:2.0-SNAPSHOT'
+  implementation 'com.github.ie3-institute:PowerSystemUtils:2.0'
 
-  implementation 'tech.units:indriya:2.1.3'
-
-  implementation 'com.github.johanneshiry:OSMonaut:v1.1.1' // tmp pbf parse
+  implementation 'tech.units:indriya:2.1.4'
 
   // JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
   implementation ('org.locationtech.jts:jts-core:1.19.0'){
@@ -76,7 +67,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
   testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
   testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.12.22' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.14.0' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
@@ -86,15 +77,15 @@ dependencies {
   testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
 
   // logging
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.19.0')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.20.0')
   implementation 'org.apache.logging.log4j:log4j-api' // log4j
   implementation 'org.apache.logging.log4j:log4j-core' // log4j
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.23'
-  implementation 'com.couchbase.client:java-client:3.4.2'
-  runtimeOnly 'org.postgresql:postgresql:42.5.1' // postgresql jdbc driver required during runtime
+  implementation 'com.couchbase.client:java-client:3.4.3'
+  runtimeOnly 'org.postgresql:postgresql:42.5.4' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
   implementation 'org.apache.commons:commons-compress:1.22' // I/O functionalities
