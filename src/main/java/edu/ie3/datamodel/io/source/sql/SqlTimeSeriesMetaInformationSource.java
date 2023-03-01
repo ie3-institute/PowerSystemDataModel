@@ -39,7 +39,7 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
 
     String queryComplete = createQueryComplete(schemaName);
 
-    this.mapping = dataSource.queryMapping(queryComplete, ps -> {})
+    this.mapping = dataSource.queryToListOfMaps(queryComplete, ps -> {})
             .stream()
             .map(this::createEntity)
             .flatMap(Optional::stream)

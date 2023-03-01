@@ -86,7 +86,7 @@ public class CsvDataSource implements FunctionalDataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(IdCoordinateFactory factory) {
+  public Stream<Map<String, String>> getIdCoordinateSourceData(IdCoordinateFactory factory) {
     try (BufferedReader reader = connector.initIdCoordinateReader()) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 

@@ -65,9 +65,9 @@ public abstract class EntitySource {
         };
     }
 
-
     protected void printInvalidElementInformation(
-            Class<? extends UniqueEntity> entityClass, LongAdder noOfInvalidElements) {
+            Class<? extends UniqueEntity> entityClass,
+            LongAdder noOfInvalidElements) {
         log.error(
                 "{} entities of type '{}' are missing required elements!",
                 noOfInvalidElements,
@@ -77,7 +77,6 @@ public abstract class EntitySource {
 
     protected void logSkippingWarning(
             String entityDesc, String entityUuid, String entityId, String missingElementsString) {
-
         log.warn(
                 "Skipping '{}' with uuid '{}' and id '{}'. Not all required entities found or map is missing entity key!\nMissing elements:\n{}",
                 entityDesc,
@@ -244,40 +243,35 @@ public abstract class EntitySource {
      */
     protected Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
             Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
-
         return assetInputEntityDataStream
                 .parallel()
-                .map(
-                        assetInputEntityData -> {
+                .map(assetInputEntityData -> {
+                    // get the raw data
+                    Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
+                    // get the node of the entity
+                    String nodeUuid = fieldsToAttributes.get(NODE);
+                    Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
 
-                            // get the raw data
-                            Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
+                    // if the node is not present we return an empty element and
+                    // log a warning
+                    if (node.isEmpty()) {
+                        logSkippingWarning(
+                        assetInputEntityData.getTargetClass().getSimpleName(),
+                        fieldsToAttributes.get("uuid"),
+                        fieldsToAttributes.get("id"),
+                        NODE + ": " + nodeUuid);
+                        return Optional.empty();
+                    }
 
-                            // get the node of the entity
-                            String nodeUuid = fieldsToAttributes.get(NODE);
-                            Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
+                    // remove fields that are passed as objects to constructor
+                    fieldsToAttributes.keySet().remove(NODE);
 
-                            // if the node is not present we return an empty element and
-                            // log a warning
-                            if (node.isEmpty()) {
-                                logSkippingWarning(
-                                        assetInputEntityData.getTargetClass().getSimpleName(),
-                                        fieldsToAttributes.get("uuid"),
-                                        fieldsToAttributes.get("id"),
-                                        NODE + ": " + nodeUuid);
-                                return Optional.empty();
-                            }
-
-                            // remove fields that are passed as objects to constructor
-                            fieldsToAttributes.keySet().remove(NODE);
-
-                            return Optional.of(
-                                    new NodeAssetInputEntityData(
-                                            fieldsToAttributes,
-                                            assetInputEntityData.getTargetClass(),
-                                            assetInputEntityData.getOperatorInput(),
-                                            node.get()));
-                        });
+                    return Optional.of(
+                        new NodeAssetInputEntityData(
+                        fieldsToAttributes,
+                        assetInputEntityData.getTargetClass(),
+                        assetInputEntityData.getOperatorInput(),
+                        node.get()));});
     }
 
 
@@ -337,7 +331,9 @@ public abstract class EntitySource {
      */
     protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
             Class<T> entityClass) {
-        return dataSource.getSourceData(entityClass).map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
+        return dataSource
+                .getSourceData(entityClass)
+                .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
     }
 
     protected <T extends AssetInput> Stream<Optional<T>> assetInputEntityStream(
@@ -409,7 +405,8 @@ public abstract class EntitySource {
             Class<T> entityClass,
             EntityFactory<? extends InputEntity, SimpleEntityData> factory
     ) {
-        return dataSource.getSourceData(entityClass)
+        return dataSource
+                .getSourceData(entityClass)
                 .map(
                         fieldsToAttributes -> {
                             SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
@@ -418,5 +415,4 @@ public abstract class EntitySource {
                 .flatMap(Optional::stream)
                 .collect(Collectors.toSet());
     }
-
 }

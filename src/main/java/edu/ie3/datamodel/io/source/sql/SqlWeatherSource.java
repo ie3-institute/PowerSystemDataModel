@@ -81,7 +81,7 @@ public class SqlWeatherSource extends WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval
   ) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
-            dataSource.queryMapping(queryTimeInterval,
+            dataSource.queryToListOfMaps(queryTimeInterval,
               ps -> {
                     ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                     ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
@@ -106,7 +106,7 @@ public class SqlWeatherSource extends WeatherSource {
       return Collections.emptyMap();
     }
 
-    List<TimeBasedValue<WeatherValue>> timeBasedValues = dataSource.queryMapping(
+    List<TimeBasedValue<WeatherValue>> timeBasedValues = dataSource.queryToListOfMaps(
             queryTimeIntervalAndCoordinates,
             ps -> {
               Array coordinateIdArr =
@@ -131,7 +131,7 @@ public class SqlWeatherSource extends WeatherSource {
       return Optional.empty();
     }
 
-    List<TimeBasedValue<WeatherValue>> timeBasedValues = dataSource.queryMapping(
+    List<TimeBasedValue<WeatherValue>> timeBasedValues = dataSource.queryToListOfMaps(
             queryTimeAndCoordinate,
             ps -> {
               ps.setInt(1, coordinateId.get());

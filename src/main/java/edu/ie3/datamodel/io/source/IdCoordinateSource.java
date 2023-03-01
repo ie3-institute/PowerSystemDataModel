@@ -29,7 +29,7 @@ public class IdCoordinateSource implements DataSource {
 
   public final Map<Point, Integer> coordinateToId;
 
-  public FunctionalDataSource dataSource;
+  FunctionalDataSource dataSource;
 
   public IdCoordinateSource(IdCoordinateFactory factory, FunctionalDataSource dataSource) {
     this.factory = factory;
@@ -40,8 +40,11 @@ public class IdCoordinateSource implements DataSource {
     coordinateToId = invert(idToCoordinate);
   }
 
+  /**
+   * For source testing
+   */
   public Stream<Map<String, String>> extractSourceData() {
-    return dataSource.getSourceData(factory);
+    return dataSource.getIdCoordinateSourceData(factory);
   }
 
 
@@ -107,7 +110,7 @@ public class IdCoordinateSource implements DataSource {
    */
   private Map<Integer, Point> setupIdToCoordinateMap() {
     //String specialPlace = dataSource.getNamingStrategy().getIdCoordinateEntityName();
-    return dataSource.getSourceData(factory)
+    return dataSource.getIdCoordinateSourceData(factory)
             .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
             .map(factory::get)
             .flatMap(Optional::stream)

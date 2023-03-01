@@ -7,7 +7,6 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.*;
 import java.util.stream.Stream;
 
-
 /**
  * Interface that include functionalities for data sources
  */
@@ -26,6 +25,5 @@ public interface FunctionalDataSource {
     /**
      * Creates a stream of maps that represent the rows in the database for IdCoordinates
      */
-    Stream<Map<String, String>> getSourceData(IdCoordinateFactory factory);
-
+    Stream<Map<String, String>> getIdCoordinateSourceData(IdCoordinateFactory factory);
 }
