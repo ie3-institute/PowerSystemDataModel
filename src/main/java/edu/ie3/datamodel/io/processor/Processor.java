@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.util.TimeUtil;
 import java.beans.Introspector;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -396,7 +397,7 @@ public abstract class Processor<T> {
    * @return string representation of the ZonedDateTime
    */
   protected String processZonedDateTime(ZonedDateTime zonedDateTime) {
-    return zonedDateTime.toString();
+    return TimeUtil.withDefaults.toString(zonedDateTime);
   }
 
   /**

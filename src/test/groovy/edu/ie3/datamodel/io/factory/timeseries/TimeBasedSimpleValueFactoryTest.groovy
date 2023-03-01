@@ -29,7 +29,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
   TimeUtil defaultTimeUtil
 
   def setupSpec() {
-    defaultTimeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
+    defaultTimeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
   }
 
   def "The simple time based value factory provides correct fields"() {

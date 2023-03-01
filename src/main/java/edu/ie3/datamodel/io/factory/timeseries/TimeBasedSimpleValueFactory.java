@@ -30,7 +30,7 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private final TimeUtil timeUtil;
 
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
-    this(valueClasses, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
+    this(valueClasses, TimeUtil.withDefaults.getDtfPattern());
   }
 
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses, String timePattern) {
