@@ -17,12 +17,36 @@ import edu.ie3.datamodel.models.input.container.SystemParticipants;
 public class CsvJointGridContainerSource {
   private CsvJointGridContainerSource() {}
 
+  /**
+   * Reads CSV files into a {@link JointGridContainer}. Assumes a {@link
+   * edu.ie3.datamodel.io.naming.FlatDirectoryHierarchy}
+   *
+   * @param gridName The grid name
+   * @param csvSep The csv separator
+   * @param directoryPath The base directory path
+   * @return The JointGridContainer
+   * @throws SourceException in case something went wrong
+   */
   public static JointGridContainer read(String gridName, String csvSep, String directoryPath)
       throws SourceException {
 
-    /* Parameterization */
+    FileNamingStrategy fileNamingStrategy = new FileNamingStrategy();
+    return read(gridName, csvSep, directoryPath, fileNamingStrategy);
+  }
 
-    FileNamingStrategy namingStrategy = new FileNamingStrategy(); // Default naming strategy
+  /**
+   * Reads CSV files into a JointGridContainer.
+   *
+   * @param gridName The grid name
+   * @param csvSep The csv separator
+   * @param directoryPath The base directory path
+   * @param namingStrategy The naming strategy
+   * @return The JointGridContainer
+   * @throws SourceException in case something went wrong
+   */
+  public static JointGridContainer read(
+      String gridName, String csvSep, String directoryPath, FileNamingStrategy namingStrategy)
+      throws SourceException {
 
     /* Instantiating sources */
     TypeSource typeSource = new CsvTypeSource(csvSep, directoryPath, namingStrategy);
