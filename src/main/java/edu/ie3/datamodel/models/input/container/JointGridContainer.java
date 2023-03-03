@@ -76,4 +76,47 @@ public class JointGridContainer extends GridContainer {
   public String toString() {
     return "JointGridContainer{" + "gridName='" + gridName + '\'' + '}';
   }
+
+  @Override
+  public JointGridContainerCopyBuilder copy() {
+    return new JointGridContainerCopyBuilder(this);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link JointGridContainer} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * JointGridContainer}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
+  public static class JointGridContainerCopyBuilder
+      extends GridContainerCopyBuilder<JointGridContainerCopyBuilder> {
+    private final SubGridTopologyGraph subGridTopologyGraph;
+
+    /**
+     * Constructor for {@link JointGridContainerCopyBuilder}
+     *
+     * @param jointGridContainer instance of {@link JointGridContainer}
+     */
+    protected JointGridContainerCopyBuilder(JointGridContainer jointGridContainer) {
+      super(jointGridContainer);
+      this.subGridTopologyGraph = jointGridContainer.getSubGridTopologyGraph();
+    }
+
+    @Override
+    protected JointGridContainerCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    JointGridContainer build() {
+      return new JointGridContainer(
+          getGridName(),
+          getRawGrid(),
+          getSystemParticipants(),
+          getGraphics(),
+          subGridTopologyGraph);
+    }
+  }
 }
