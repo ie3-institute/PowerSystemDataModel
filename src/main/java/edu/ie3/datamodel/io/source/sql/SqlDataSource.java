@@ -130,7 +130,8 @@ public class SqlDataSource implements FunctionalDataSource {
 
   @Override
   public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
-    return getSourceData(entityClass, "");
+    String explicitPath = databaseNamingStrategy.getEntityName(entityClass).get();
+    return getSourceData(entityClass, explicitPath);
   }
 
   @Override

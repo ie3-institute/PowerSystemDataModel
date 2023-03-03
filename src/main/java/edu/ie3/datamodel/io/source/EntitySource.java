@@ -23,6 +23,7 @@ import java.util.stream.Stream;
  * Class that provides all functionalities to build entities
  */
 public abstract class EntitySource {
+
     protected static final Logger log = LoggerFactory.getLogger(EntitySource.class);
 
     // field names
@@ -33,7 +34,7 @@ public abstract class EntitySource {
     protected static final String TYPE = "type";
     protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
-    protected FunctionalDataSource dataSource;
+    FunctionalDataSource dataSource;
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 

@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
-public class WeatherSource implements DataSource {
+public abstract class WeatherSource implements DataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(WeatherSource.class);
 
@@ -43,6 +43,7 @@ public class WeatherSource implements DataSource {
     this.weatherFactory = weatherFactory;
   }
 
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
           ClosedInterval<ZonedDateTime> timeInterval) {

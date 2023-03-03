@@ -957,6 +957,4 @@ public class SystemParticipantSource extends EntitySource implements DataSource 
                     thermalBus.get(),
                     thermalStorage.get()));
   }
-
-
 }
