@@ -10,7 +10,7 @@ public class Failure<R, E extends Exception> extends Try<R, E> {
   private final E exception;
 
   public Failure(E exception) {
-    super();
+    super(false);
     this.exception = exception;
   }
 

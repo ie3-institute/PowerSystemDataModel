@@ -10,8 +10,17 @@ public class Success<R, E extends Exception> extends Try<R, E> {
   private final R data;
 
   public Success(R data) {
-    super();
+    super(data == null);
     this.data = data;
+  }
+
+  /**
+   * Method to create an empty success.
+   *
+   * @return empty {@link Success}
+   */
+  public static <E extends Exception> Success<Void, E> empty() {
+    return new Success<>(null);
   }
 
   @Override

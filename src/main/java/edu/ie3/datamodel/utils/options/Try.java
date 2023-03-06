@@ -17,20 +17,39 @@ import java.util.concurrent.Callable;
  * @param <E> type of the exception
  */
 public abstract class Try<R, E extends Exception> {
+  private final boolean isEmpty;
+
   /** Constructor of a try object. One input can be null. */
-  Try() {}
+  Try(boolean isEmpty) {
+    this.isEmpty = isEmpty;
+  }
 
   /**
    * Method to apply a callable to Try class. This method will return either a {@link Success} or a
-   * {@link Failure}
+   * {@link Failure}.
    *
    * @param method applied method
    * @return a try object
    */
   public static <R, E extends Exception> Try<R, E> apply(Callable<R> method) {
     try {
-      R result = method.call();
-      return new Success<>(result);
+      return new Success<>(method.call());
+    } catch (Exception e) {
+      return new Failure<>((E) e);
+    }
+  }
+
+  /**
+   * Method to apply a runnable to Try class. This method will return either an empty {@link
+   * Success} if no exception occurred or a {@link Failure}.
+   *
+   * @param method applied method
+   * @return a try object
+   */
+  public static <E extends Exception> Try<Void, E> apply(Runnable method) {
+    try {
+      method.run();
+      return Success.empty();
     } catch (Exception e) {
       return new Failure<>((E) e);
     }
@@ -41,6 +60,11 @@ public abstract class Try<R, E extends Exception> {
 
   /** Returns true if the object is a {@link Failure}. */
   public abstract boolean isFailure();
+
+  /** Returns true if the data of this object is empty. */
+  public boolean isEmpty() {
+    return isEmpty;
+  }
 
   /**
    * This method is used to retrieve data from this object. If this objects is an instant {@link
