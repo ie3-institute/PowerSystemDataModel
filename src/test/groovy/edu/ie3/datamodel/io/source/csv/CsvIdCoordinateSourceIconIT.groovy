@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.factory.timeseries.IconIdCoordinateFactory
+import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import spock.lang.Shared
@@ -17,10 +18,10 @@ import java.util.stream.Stream
 class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMeta {
 
   @Shared
-  CsvIdCoordinateSource source
+  IdCoordinateSource source
 
   def setupSpec() {
-    source = new CsvIdCoordinateSource(csvSep, coordinatesIconFolderPath, fileNamingStrategy, new IconIdCoordinateFactory())
+    source = new IdCoordinateSource(new IconIdCoordinateFactory(), new CsvDataSource(csvSep, coordinatesIconFolderPath, fileNamingStrategy))
   }
 
   def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {

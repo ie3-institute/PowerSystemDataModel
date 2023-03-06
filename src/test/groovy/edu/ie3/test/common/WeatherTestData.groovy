@@ -6,13 +6,13 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.io.factory.timeseries.CosmoIdCoordinateFactory
-import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
-import edu.ie3.datamodel.io.source.csv.CsvIdCoordinateSource
+
 import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
 import edu.ie3.datamodel.models.UniqueEntity
+import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
 
@@ -36,12 +36,10 @@ abstract class WeatherTestData {
       return super.buildFieldsToAttributes(csvRow, headline)
     }
 
-    /*
     OperatorInput getFirstOrDefaultOperator(
-        Collection<OperatorInput> operators, String operatorUuid, String entityClassName, String requestEntityUuid) {
+            Collection<OperatorInput> operators, String operatorUuid, String entityClassName, String requestEntityUuid) {
       return super.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid)
     }
-     */
 
     def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
             Class<T> entityClass, Collection<Map<String, String>> allRows) {

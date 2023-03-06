@@ -34,7 +34,7 @@ public class CsvWeatherSource extends WeatherSource {
   protected CsvDataSource dataSource;
 
   /**
-   * Initializes a CsvWeatherSource with a {@link CsvIdCoordinateSource} instance and immediately
+   * Initializes a CsvWeatherSource with a {@link IdCoordinateSource} instance and immediately
    * imports weather data, which will be kept for the lifetime of this source
    *
    * @param csvSep the separator string for csv columns
@@ -54,7 +54,7 @@ public class CsvWeatherSource extends WeatherSource {
         csvSep,
         folderPath,
         fileNamingStrategy,
-        new CsvIdCoordinateSource(csvSep, folderPath, fileNamingStrategy, coordinateFactory),
+        new IdCoordinateSource(coordinateFactory, new CsvDataSource(csvSep, folderPath, fileNamingStrategy)),
         weatherFactory);
   }
 

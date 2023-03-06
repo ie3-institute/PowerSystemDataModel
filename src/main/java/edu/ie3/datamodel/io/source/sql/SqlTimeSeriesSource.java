@@ -53,7 +53,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
           Class<V> valueClass,
           TimeBasedSimpleValueFactory<V> factory
   ) {
-    super(timeSeriesUuid);
+    super();
     this.dataSource = sqlDataSource;
 
     this.valueClass = valueClass;
@@ -140,6 +140,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+  @Override
   public IndividualTimeSeries<V> getTimeSeries() {
     List<TimeBasedValue<V>> timeBasedValues = dataSource.queryToListOfMaps(queryFull, ps -> {})
             .stream()
@@ -149,6 +150,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     return new IndividualTimeSeries<>(timeSeriesUuid, new HashSet<>(timeBasedValues));
   }
 
+  @Override
   public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
     List<TimeBasedValue<V>> timeBasedValues =
             dataSource.queryToListOfMaps(

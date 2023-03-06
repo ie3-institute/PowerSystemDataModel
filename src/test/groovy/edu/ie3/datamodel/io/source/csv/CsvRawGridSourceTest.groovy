@@ -9,13 +9,15 @@ import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData
 import edu.ie3.datamodel.io.factory.input.Transformer3WInputEntityData
 import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData
+import edu.ie3.datamodel.io.source.RawGridSource
+import edu.ie3.datamodel.io.source.TypeSource
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.GridTestData as rgtd
-
+import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.Csv
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -24,11 +26,11 @@ import java.util.stream.Stream
 
 class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
   @Shared
-  CsvRawGridSource source
+  RawGridSource source
 
   def setupSpec() {
-    CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-    source = new CsvRawGridSource(csvSep, gridDefaultFolderPath, fileNamingStrategy, typeSource)
+    TypeSource typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    source = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy))
   }
 
   def "The CsvRawGridSource is able to convert single valid AssetInputEntityData to ConnectorInputEntityData"() {
@@ -741,8 +743,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The CsvRawGridSource returns an empty Optional, if one mandatory element for the RawGridElements is missing"() {
     given: "a source pointing to malformed grid data"
-    CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-    source = new CsvRawGridSource(csvSep, gridMalformedFolderPath, fileNamingStrategy, typeSource)
+    TypeSource typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    source = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridMalformedFolderPath, fileNamingStrategy))
 
     when: "loading a total grid structure from file"
     def actual = source.getGridData()
@@ -753,8 +755,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The CsvRawGridSource returns an empty Optional, if the RawGridElements contain no single element"() {
     given: "a source pointing to malformed grid data"
-    CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-    source = new CsvRawGridSource(csvSep, gridEmptyFolderPath, fileNamingStrategy, typeSource)
+    TypeSource typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    source = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridEmptyFolderPath, fileNamingStrategy))
 
     when: "loading a total grid structure from file"
     def actual = source.getGridData()

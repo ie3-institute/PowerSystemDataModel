@@ -22,7 +22,7 @@ import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
+/** Abstract class for WeatherSource by Csv and Sql Data */
 public abstract class WeatherSource implements DataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(WeatherSource.class);

@@ -5,19 +5,27 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.util.interval.ClosedInterval;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
  */
-public class TimeSeriesSource<V extends Value> implements DataSource {
+public abstract class TimeSeriesSource<V extends Value> implements DataSource {
   protected UUID timeSeriesUuid;
-  public TimeSeriesSource(UUID timeSeriesUuid) { this.timeSeriesUuid = timeSeriesUuid; }
+  //public TimeSeriesSource(UUID timeSeriesUuid) { this.timeSeriesUuid = timeSeriesUuid; }
+
+  public TimeSeriesSource() {}
 
   /**
    * Checks whether the given column scheme can be used with time series.
@@ -38,4 +46,30 @@ public class TimeSeriesSource<V extends Value> implements DataSource {
                     edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.HEAT_DEMAND)
             .contains(scheme);
   }
+
+  /**
+   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
+   * need any additional information.
+   *
+   * @param fieldToValues Mapping from field id to values
+   * @param valueClass Class of the desired underlying value
+   * @param factory Factory to process the "flat" information
+   * @return Optional simple time based value
+   */
+  public Optional<TimeBasedValue<V>> buildTimeBasedValue(
+          Map<String, String> fieldToValues,
+          Class<V> valueClass,
+          TimeBasedSimpleValueFactory<V> factory) {
+    SimpleTimeBasedValueData<V> factoryData =
+            new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+    return factory.get(factoryData);
+  }
+
+  public abstract IndividualTimeSeries<V> getTimeSeries();
+
+  public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval);
+
+  public abstract Optional<V> getValue(ZonedDateTime time);
+
+
 }

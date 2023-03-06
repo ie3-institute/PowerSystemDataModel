@@ -39,7 +39,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
           Class<V> valueClass,
           TimeBasedSimpleValueFactory<V> factory
   ) {
-    super(timeSeriesUuid);
+    super();
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
 
     /* Read in the full time series */
@@ -153,16 +153,19 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
 
+  @Override
   public IndividualTimeSeries<V> getTimeSeries() {
     return timeSeries;
   }
 
 
+  @Override
   public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
     return TimeSeriesUtils.trimTimeSeriesToInterval(timeSeries, timeInterval);
   }
 
 
+  @Override
   public Optional<V> getValue(ZonedDateTime time) {
     return timeSeries.getValue(time);
   }
@@ -196,23 +199,5 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     } catch (IOException e) {
       throw new SourceException("Error during reading of file'" + filePath + "'.", e);
     }
-  }
-
-  /**
-   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
-   * need any additional information.
-   *
-   * @param fieldToValues Mapping from field id to values
-   * @param valueClass Class of the desired underlying value
-   * @param factory Factory to process the "flat" information
-   * @return Optional simple time based value
-   */
-  private Optional<TimeBasedValue<V>> buildTimeBasedValue(
-          Map<String, String> fieldToValues,
-          Class<V> valueClass,
-          TimeBasedSimpleValueFactory<V> factory) {
-    SimpleTimeBasedValueData<V> factoryData =
-            new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return factory.get(factoryData);
   }
 }
