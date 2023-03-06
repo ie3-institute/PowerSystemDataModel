@@ -22,4 +22,24 @@ class GraphicElementsTest extends Specification {
     then:
     newlyCreatedGraphicElements == graphicElements
   }
+
+  def "A GraphicElements' copy method should work as expected"() {
+    given:
+    def graphicElements = new GraphicElements(
+        Collections.singleton(GridTestData.nodeGraphicC),
+        Collections.singleton(GridTestData.lineGraphicCtoD)
+        )
+
+    def modifiedLineGraphic = GridTestData.lineGraphicCtoD.copy().uuid(UUID.randomUUID()).build()
+
+    when:
+    def modifiedGraphicElements = graphicElements.copy()
+        .nodeGraphics(Set.of(GridTestData.nodeGraphicD))
+        .lineGraphics(Set.of(modifiedLineGraphic))
+        .build()
+
+    then:
+    modifiedGraphicElements.nodeGraphics.first() == GridTestData.nodeGraphicD
+    modifiedGraphicElements.lineGraphics.first() == modifiedLineGraphic
+  }
 }
