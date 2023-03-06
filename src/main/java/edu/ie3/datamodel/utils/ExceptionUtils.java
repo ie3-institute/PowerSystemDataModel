@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExceptionUtils {
@@ -19,5 +20,18 @@ public class ExceptionUtils {
     return exceptions.stream()
         .map(Throwable::getMessage)
         .reduce(firstInList.getMessage(), (a, b) -> a + ", " + b);
+  }
+
+  /**
+   * Creates a new {@link Exception} for multiple given exceptions. The new exception contains all
+   * messages of the given exceptions.
+   *
+   * @param exceptions list of exceptions
+   * @return new exceptions
+   */
+  public static Exception getExceptions(List<? extends Exception> exceptions) {
+    ArrayList<? extends Exception> list = new ArrayList<>(exceptions);
+    String messages = getMessages(list);
+    return new Exception(messages);
   }
 }

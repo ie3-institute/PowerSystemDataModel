@@ -6,7 +6,11 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.UnsafeEntityException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
+import edu.ie3.datamodel.utils.options.Failure;
+import edu.ie3.datamodel.utils.options.Success;
+import edu.ie3.datamodel.utils.options.Try;
 
 public class MeasurementUnitValidationUtils extends ValidationUtils {
 
@@ -22,13 +26,22 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
    *
    * @param measurementUnit Measurement unit to validate
    */
-  protected static void check(MeasurementUnitInput measurementUnit) {
-    checkNonNull(measurementUnit, "a measurement unit");
+  protected static Try<Void, ValidationException> check(MeasurementUnitInput measurementUnit) {
+    try {
+      checkNonNull(measurementUnit, "a measurement unit");
+    } catch (ValidationException e) {
+      return new Failure<>(e);
+    }
+
     if (!measurementUnit.getP()
         && !measurementUnit.getQ()
         && !measurementUnit.getVAng()
-        && !measurementUnit.getVMag())
-      throw new UnsafeEntityException(
-          "Measurement Unit does not measure any values", measurementUnit);
+        && !measurementUnit.getVMag()) {
+      return new Failure<>(
+          new UnsafeEntityException(
+              "Measurement Unit does not measure any values", measurementUnit));
+    } else {
+      return Success.empty();
+    }
   }
 }

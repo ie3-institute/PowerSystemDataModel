@@ -6,9 +6,11 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
+import edu.ie3.datamodel.utils.options.Try;
 
 public class GraphicValidationUtils extends ValidationUtils {
 
@@ -28,7 +30,7 @@ public class GraphicValidationUtils extends ValidationUtils {
    * @param graphicInput GraphicInput to validate
    * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
-  protected static void check(GraphicInput graphicInput) {
+  protected static Try<Void, ValidationException> check(GraphicInput graphicInput) {
     checkNonNull(graphicInput, "a graphic input");
     if (graphicInput.getGraphicLayer() == null)
       throw new InvalidEntityException(

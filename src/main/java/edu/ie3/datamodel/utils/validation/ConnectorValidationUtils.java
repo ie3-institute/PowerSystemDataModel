@@ -6,13 +6,21 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.utils.ExceptionUtils;
+import edu.ie3.datamodel.utils.options.Failure;
+import edu.ie3.datamodel.utils.options.Success;
+import edu.ie3.datamodel.utils.options.Try;
 import edu.ie3.util.geo.GeoUtils;
 import edu.ie3.util.quantities.QuantityUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import javax.measure.Quantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
@@ -22,7 +30,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   // allowed deviation of coordinates in degree for line position check
   private static final double ALLOWED_COORDINATE_ERROR = 0.000001d;
   // allowed deviation of length in meters for line length
-  private static final double ALLOWED_LENGTH_ERROR = 1d;
+  private static final double ALLOWED_LENGTH_ERROR = 50d;
   // allowed deviation of voltage in kV for transformer checks
   private static final double ALLOWED_VOLTAGE_ERROR = 1d;
 
@@ -40,19 +48,46 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param connector Connector to validate
    * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
-  protected static void check(ConnectorInput connector) {
-    checkNonNull(connector, "a connector");
-    connectsDifferentNodes(connector);
+  protected static Try<Void, ValidationException> check(ConnectorInput connector) {
+    try {
+      checkNonNull(connector, "a connector");
+    } catch (Exception e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {" + connector + "} was null", e));
+    }
+
+    Try<Void, InvalidEntityException> diffNodes =
+        Try.apply(() -> connectsDifferentNodes(connector));
+    Try<Void, InvalidEntityException> con;
 
     // Further checks for subclasses
-    if (LineInput.class.isAssignableFrom(connector.getClass())) checkLine((LineInput) connector);
-    else if (Transformer2WInput.class.isAssignableFrom(connector.getClass()))
-      checkTransformer2W((Transformer2WInput) connector);
-    else if (Transformer3WInput.class.isAssignableFrom(connector.getClass()))
-      checkTransformer3W((Transformer3WInput) connector);
-    else if (SwitchInput.class.isAssignableFrom(connector.getClass()))
-      checkSwitch((SwitchInput) connector);
-    else throw checkNotImplementedException(connector);
+    if (LineInput.class.isAssignableFrom(connector.getClass())) {
+      con = checkLine((LineInput) connector);
+    } else if (Transformer2WInput.class.isAssignableFrom(connector.getClass())) {
+      con = checkTransformer2W((Transformer2WInput) connector);
+    } else if (Transformer3WInput.class.isAssignableFrom(connector.getClass())) {
+      con = checkTransformer3W((Transformer3WInput) connector);
+    } else if (SwitchInput.class.isAssignableFrom(connector.getClass())) {
+      con = checkSwitch((SwitchInput) connector);
+    } else {
+      con =
+          new Failure<>(
+              new InvalidEntityException(
+                  "Validation failed due to: ", checkNotImplementedException(connector)));
+    }
+
+    List<InvalidEntityException> exceptions =
+        Stream.of(diffNodes, con).filter(Try::isFailure).map(Try::getException).toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -68,13 +103,29 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param line Line to validate
    */
-  private static void checkLine(LineInput line) {
-    checkLineType(line.getType());
-    connectsNodesInDifferentSubnets(line, false);
-    connectsNodesWithDifferentVoltageLevels(line, false);
-    detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line);
-    coordinatesOfLineEqualCoordinatesOfNodes(line);
-    lineLengthMatchesDistancesBetweenPointsOfLineString(line);
+  private static Try<Void, InvalidEntityException> checkLine(LineInput line) {
+    List<Exception> exceptions =
+        Stream.of(
+                Try.apply(() -> checkLineType(line.getType())),
+                Try.apply(() -> connectsNodesInDifferentSubnets(line, false)),
+                Try.apply(() -> connectsNodesWithDifferentVoltageLevels(line, false)),
+                Try.apply(
+                    () ->
+                        detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line)),
+                Try.apply(() -> coordinatesOfLineEqualCoordinatesOfNodes(line)),
+                Try.apply(() -> lineLengthMatchesDistancesBetweenPointsOfLineString(line)))
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -89,14 +140,43 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param lineType Line type to validate
    */
-  protected static void checkLineType(LineTypeInput lineType) {
-    checkNonNull(lineType, "a line type");
-    detectNegativeQuantities(new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType);
-    detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {
-          lineType.getvRated(), lineType.getiMax(), lineType.getX(), lineType.getR()
-        },
-        lineType);
+  protected static Try<Void, InvalidEntityException> checkLineType(LineTypeInput lineType) {
+    try {
+      checkNonNull(lineType, "a line type");
+    } catch (Exception e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {" + lineType + "} was null", e));
+    }
+
+    List<Exception> exceptions =
+        Stream.of(
+                Try.apply(
+                    () ->
+                        detectNegativeQuantities(
+                            new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType)),
+                Try.apply(
+                    () ->
+                        detectZeroOrNegativeQuantities(
+                            new Quantity<?>[] {
+                              lineType.getvRated(),
+                              lineType.getiMax(),
+                              lineType.getX(),
+                              lineType.getR()
+                            },
+                            lineType)))
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -110,12 +190,27 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer2W Transformer2W to validate
    */
-  private static void checkTransformer2W(Transformer2WInput transformer2W) {
-    checkTransformer2WType(transformer2W.getType());
-    checkIfTapPositionIsWithinBounds(transformer2W);
-    connectsNodesWithDifferentVoltageLevels(transformer2W, true);
-    connectsNodesInDifferentSubnets(transformer2W, true);
-    ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(transformer2W);
+  private static Try<Void, InvalidEntityException> checkTransformer2W(
+      Transformer2WInput transformer2W) {
+    List<Exception> exceptions =
+        Stream.of(
+                Try.apply(() -> checkTransformer2WType(transformer2W.getType())),
+                Try.apply(() -> checkIfTapPositionIsWithinBounds(transformer2W)),
+                Try.apply(() -> connectsNodesWithDifferentVoltageLevels(transformer2W, true)),
+                Try.apply(() -> connectsNodesInDifferentSubnets(transformer2W, true)),
+                Try.apply(() -> ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(transformer2W)))
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -135,25 +230,62 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer2WType Transformer2W type to validate
    */
-  protected static void checkTransformer2WType(Transformer2WTypeInput transformer2WType) {
-    checkNonNull(transformer2WType, "a two winding transformer type");
-    detectNegativeQuantities(
-        new Quantity<?>[] {
-          transformer2WType.getgM(), transformer2WType.getdPhi(), transformer2WType.getrSc()
-        },
-        transformer2WType);
-    detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {
-          transformer2WType.getsRated(),
-          transformer2WType.getvRatedA(),
-          transformer2WType.getvRatedB(),
-          transformer2WType.getxSc()
-        },
-        transformer2WType);
-    detectPositiveQuantities(new Quantity<?>[] {transformer2WType.getbM()}, transformer2WType);
-    checkVoltageMagnitudeChangePerTapPosition(transformer2WType);
-    checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer2WType);
-    checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer2WType);
+  protected static Try<Void, InvalidEntityException> checkTransformer2WType(
+      Transformer2WTypeInput transformer2WType) {
+    try {
+      checkNonNull(transformer2WType, "a two winding transformer type");
+    } catch (Exception e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {"
+                  + transformer2WType
+                  + "} was null",
+              e));
+    }
+
+    List<Exception> exceptions =
+        Stream.of(
+                Try.apply(
+                    () ->
+                        detectNegativeQuantities(
+                            new Quantity<?>[] {
+                              transformer2WType.getgM(),
+                              transformer2WType.getdPhi(),
+                              transformer2WType.getrSc()
+                            },
+                            transformer2WType)),
+                Try.apply(
+                    () ->
+                        detectZeroOrNegativeQuantities(
+                            new Quantity<?>[] {
+                              transformer2WType.getsRated(),
+                              transformer2WType.getvRatedA(),
+                              transformer2WType.getvRatedB(),
+                              transformer2WType.getxSc()
+                            },
+                            transformer2WType)),
+                Try.apply(
+                    () ->
+                        detectPositiveQuantities(
+                            new Quantity<?>[] {transformer2WType.getbM()}, transformer2WType)),
+                Try.apply(() -> checkVoltageMagnitudeChangePerTapPosition(transformer2WType)),
+                Try.apply(
+                    () -> checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer2WType)),
+                Try.apply(
+                    () ->
+                        checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer2WType)))
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -167,22 +299,48 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer3W Transformer3W to validate
    */
-  private static void checkTransformer3W(Transformer3WInput transformer3W) {
-    checkTransformer3WType(transformer3W.getType());
-    checkIfTapPositionIsWithinBounds(transformer3W);
+  private static Try<Void, InvalidEntityException> checkTransformer3W(
+      Transformer3WInput transformer3W) {
+    List<Exception> exceptions =
+        new ArrayList<>(
+            Stream.of(
+                    Try.apply(() -> checkTransformer3WType(transformer3W.getType())),
+                    Try.apply(() -> checkIfTapPositionIsWithinBounds(transformer3W)))
+                .filter(Try::isFailure)
+                .map(Try::getException)
+                .toList());
+
     // Check if transformer connects different voltage levels
     if (transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeB().getVoltLvl()
         || transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeC().getVoltLvl()
-        || transformer3W.getNodeB().getVoltLvl() == transformer3W.getNodeC().getVoltLvl())
-      throw new InvalidEntityException(
-          "Transformer connects nodes of the same voltage level", transformer3W);
+        || transformer3W.getNodeB().getVoltLvl() == transformer3W.getNodeC().getVoltLvl()) {
+      exceptions.add(
+          new InvalidEntityException(
+              "Transformer connects nodes of the same voltage level", transformer3W));
+    }
     // Check if transformer connects different subnets
     if (transformer3W.getNodeA().getSubnet() == transformer3W.getNodeB().getSubnet()
         || transformer3W.getNodeA().getSubnet() == transformer3W.getNodeC().getSubnet()
-        || transformer3W.getNodeB().getSubnet() == transformer3W.getNodeC().getSubnet())
-      throw new InvalidEntityException(
-          "Transformer connects nodes in the same subnet", transformer3W);
-    ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(transformer3W);
+        || transformer3W.getNodeB().getSubnet() == transformer3W.getNodeC().getSubnet()) {
+      exceptions.add(
+          new InvalidEntityException(
+              "Transformer connects nodes in the same subnet", transformer3W));
+    }
+
+    Try<Void, InvalidEntityException> ratedVoltage =
+        Try.apply(() -> ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(transformer3W));
+    if (ratedVoltage.isFailure()) {
+      exceptions.add(ratedVoltage.getException());
+    }
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -201,25 +359,68 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer3WType Transformer type to validate
    */
-  protected static void checkTransformer3WType(Transformer3WTypeInput transformer3WType) {
-    checkNonNull(transformer3WType, "a three winding transformer type");
-    detectNegativeQuantities(
-        new Quantity<?>[] {transformer3WType.getgM(), transformer3WType.getdPhi()},
-        transformer3WType);
-    detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {
-          transformer3WType.getsRatedA(), transformer3WType.getsRatedB(),
-              transformer3WType.getsRatedC(),
-          transformer3WType.getvRatedA(), transformer3WType.getvRatedB(),
-              transformer3WType.getvRatedC(),
-          transformer3WType.getrScA(), transformer3WType.getrScB(), transformer3WType.getrScC(),
-          transformer3WType.getxScA(), transformer3WType.getxScB(), transformer3WType.getxScC()
-        },
-        transformer3WType);
-    detectPositiveQuantities(new Quantity<?>[] {transformer3WType.getbM()}, transformer3WType);
-    checkVoltageMagnitudeChangePerTapPosition(transformer3WType);
-    checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer3WType);
-    checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer3WType);
+  protected static Try<Void, InvalidEntityException> checkTransformer3WType(
+      Transformer3WTypeInput transformer3WType) {
+    try {
+      checkNonNull(transformer3WType, "a three winding transformer type");
+    } catch (Exception e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {"
+                  + transformer3WType
+                  + "} was null",
+              e));
+    }
+
+    List<Exception> exceptions =
+        Stream.of(
+                Try.apply(
+                    () ->
+                        detectNegativeQuantities(
+                            new Quantity<?>[] {
+                              transformer3WType.getgM(), transformer3WType.getdPhi()
+                            },
+                            transformer3WType)),
+                Try.apply(
+                    () ->
+                        detectZeroOrNegativeQuantities(
+                            new Quantity<?>[] {
+                              transformer3WType.getsRatedA(),
+                              transformer3WType.getsRatedB(),
+                              transformer3WType.getsRatedC(),
+                              transformer3WType.getvRatedA(),
+                              transformer3WType.getvRatedB(),
+                              transformer3WType.getvRatedC(),
+                              transformer3WType.getrScA(),
+                              transformer3WType.getrScB(),
+                              transformer3WType.getrScC(),
+                              transformer3WType.getxScA(),
+                              transformer3WType.getxScB(),
+                              transformer3WType.getxScC()
+                            },
+                            transformer3WType)),
+                Try.apply(
+                    () ->
+                        detectPositiveQuantities(
+                            new Quantity<?>[] {transformer3WType.getbM()}, transformer3WType)),
+                Try.apply(() -> checkVoltageMagnitudeChangePerTapPosition(transformer3WType)),
+                Try.apply(
+                    () -> checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer3WType)),
+                Try.apply(
+                    () ->
+                        checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer3WType)))
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -228,9 +429,13 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param switchInput Switch to validate
    */
-  private static void checkSwitch(SwitchInput switchInput) {
-    if (!switchInput.getNodeA().getVoltLvl().equals(switchInput.getNodeB().getVoltLvl()))
-      throw new InvalidEntityException("Switch connects two different voltage levels", switchInput);
+  private static Try<Void, InvalidEntityException> checkSwitch(SwitchInput switchInput) {
+    if (!switchInput.getNodeA().getVoltLvl().equals(switchInput.getNodeB().getVoltLvl())) {
+      return new Failure<>(
+          new InvalidEntityException("Switch connects two different voltage levels", switchInput));
+    } else {
+      return Success.empty();
+    }
     /* Remark: Connecting two different "subnets" is fine, because as of our definition regarding a switchgear in
      * "upstream" direction of a transformer, all the nodes, that hare within the switch chain, belong to the lower
      * grid, whilst the "real" upper node is within the upper grid */
@@ -311,16 +516,18 @@ public class ConnectorValidationUtils extends ValidationUtils {
         || line.getGeoPosition()
             .getEndPoint()
             .isWithinDistance(line.getNodeA().getGeoPosition(), ALLOWED_COORDINATE_ERROR)))
-      throw new InvalidEntityException(
-          "Coordinates of start and end point do not match coordinates of connected nodes", line);
+      logger.debug(
+          "Coordinates of start and end point do not match coordinates of connected nodes: "
+              + line);
     if (!(line.getGeoPosition()
             .getStartPoint()
             .isWithinDistance(line.getNodeB().getGeoPosition(), ALLOWED_COORDINATE_ERROR)
         || line.getGeoPosition()
             .getEndPoint()
             .isWithinDistance(line.getNodeB().getGeoPosition(), ALLOWED_COORDINATE_ERROR)))
-      throw new InvalidEntityException(
-          "Coordinates of start and end point do not match coordinates of connected nodes", line);
+      logger.debug(
+          "Coordinates of start and end point do not match coordinates of connected nodes: "
+              + line);
   }
 
   /**
@@ -332,10 +539,15 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // only if not geo positions of both nodes are dummy values
     if ((line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
             || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION)
-        && !QuantityUtil.isEquivalentAbs(
-            line.getLength(), GeoUtils.calcHaversine(line.getGeoPosition()), ALLOWED_LENGTH_ERROR))
-      throw new InvalidEntityException(
-          "Line length does not equal calculated distances between points building the line", line);
+        && line.getLength()
+            .isGreaterThan(
+                GeoUtils.calcHaversine(line.getGeoPosition()).multiply(ALLOWED_LENGTH_ERROR))) {
+      logger.debug(
+          "Line length is more than "
+              + ALLOWED_LENGTH_ERROR
+              + "% greater than the calculated distances between points building the line: "
+              + line);
+    }
   }
 
   /**

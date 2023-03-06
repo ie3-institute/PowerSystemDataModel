@@ -9,9 +9,11 @@ import static edu.ie3.datamodel.models.StandardUnits.*;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.NotImplementedException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.utils.options.Try;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
@@ -36,7 +38,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param systemParticipant systemParticipant to validate
    * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
-  protected static void check(SystemParticipantInput systemParticipant) {
+  protected static Try<Void, ValidationException> check(SystemParticipantInput systemParticipant) {
     checkNonNull(systemParticipant, "a system participant");
     if (systemParticipant.getqCharacteristics() == null)
       throw new InvalidEntityException(

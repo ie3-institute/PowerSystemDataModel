@@ -26,9 +26,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Basic Sanity validation tools for entities */
 public class ValidationUtils {
+  protected static final Logger logger = LoggerFactory.getLogger(ValidationUtils.class);
 
   /** Private Constructor as this class is not meant to be instantiated */
   protected ValidationUtils() {
