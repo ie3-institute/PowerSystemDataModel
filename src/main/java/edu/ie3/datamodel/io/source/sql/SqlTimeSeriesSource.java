@@ -31,6 +31,8 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   protected static final Logger log = LoggerFactory.getLogger(SqlTimeSeriesSource.class);
   private final SqlDataSource dataSource;
 
+  private final UUID timeSeriesUuid;
+
   // General fields
   private static final String WHERE = " WHERE ";
   private static final String TIME_SERIES = "time_series";
@@ -55,6 +57,8 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   ) {
     super();
     this.dataSource = sqlDataSource;
+
+    this.timeSeriesUuid = timeSeriesUuid;
 
     this.valueClass = valueClass;
     this.valueFactory = factory;
