@@ -236,8 +236,7 @@ public class ThermalSource extends EntitySource implements DataSource {
                 thermalBus.get())));
   }
 
-  public Set<ThermalHouseInput> buildThermalHouseInputEntities(
-      ThermalHouseInputFactory factory) {
+  public Set<ThermalHouseInput> buildThermalHouseInputEntities(ThermalHouseInputFactory factory) {
     return assetInputEntityDataStream(ThermalHouseInput.class, typeSource.getOperators())
         .flatMap(
             assetInputEntityData ->

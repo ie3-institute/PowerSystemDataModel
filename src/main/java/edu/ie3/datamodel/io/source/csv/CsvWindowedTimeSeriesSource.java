@@ -180,10 +180,8 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
    * @param oldestEntry The oldest entry meant to remain within the buffer
    */
   private void shrinkBuffer(ZonedDateTime oldestEntry) {
-    List<ZonedDateTime> timesToRemove = buffer.keySet()
-                .stream()
-                .filter(bufferTime -> bufferTime.isBefore(oldestEntry))
-                .toList();
+    List<ZonedDateTime> timesToRemove =
+        buffer.keySet().stream().filter(bufferTime -> bufferTime.isBefore(oldestEntry)).toList();
     timesToRemove.forEach(buffer::remove);
     updateOldestTime(oldestEntry);
   }
@@ -240,7 +238,7 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
                   Optional.ofNullable(fieldToValue.get(timeField)).map(timeUtil::toZonedDateTime))
           .filter(Optional::isPresent)
           .map(Optional::get)
-              .toList();
+          .toList();
     } catch (IOException e) {
       logger.warn(
           "Opening a reader for time series file '"
