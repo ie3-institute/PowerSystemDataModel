@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
@@ -63,10 +62,12 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
     this.filePath = filePath;
     try {
       this.reader = dataSource.connector.initReader(filePath);
-      this.inputStream = dataSource
+      this.inputStream =
+          dataSource
               .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-              .map(
-                      fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory)).filter(Optional::isPresent).map(Optional::get);
+              .map(fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory))
+              .filter(Optional::isPresent)
+              .map(Optional::get);
     } catch (FileNotFoundException e) {
       throw new RuntimeException(
           "Opening the reader for time series file '" + filePath + "' failed.", e);
