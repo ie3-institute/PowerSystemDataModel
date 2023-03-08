@@ -22,7 +22,8 @@ import java.util.stream.Collectors;
 /** SQL implementation for retrieving {@link TimeSeriesMetaInformationSource} from the SQL scheme */
 public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
 
-  private static final TimeSeriesMetaInformationFactory mappingFactory = new TimeSeriesMetaInformationFactory();
+  private static final TimeSeriesMetaInformationFactory mappingFactory =
+      new TimeSeriesMetaInformationFactory();
 
   private final DatabaseNamingStrategy namingStrategy;
   private final Map<UUID, IndividualTimeSeriesMetaInformation> mapping;
@@ -30,25 +31,20 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
   protected SqlDataSource dataSource;
 
   public SqlTimeSeriesMetaInformationSource(
-          SqlConnector connector,
-          String schemaName,
-          DatabaseNamingStrategy databaseNamingStrategy
-  ) {
+      SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy) {
     this.dataSource = new SqlDataSource(connector, schemaName, databaseNamingStrategy);
     this.namingStrategy = databaseNamingStrategy;
 
     String queryComplete = createQueryComplete(schemaName);
 
-    this.mapping = dataSource.queryToListOfMaps(queryComplete, ps -> {})
-            .stream()
+    this.mapping =
+        dataSource.queryToListOfMaps(queryComplete, ps -> {}).stream()
             .map(this::createEntity)
             .flatMap(Optional::stream)
             .collect(
-                    Collectors.toMap(
-                            IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
+                Collectors.toMap(
+                    IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
   }
-
-
 
   private String createQueryComplete(String schemaName) {
     Map<String, ColumnScheme> acceptedTableNames =
@@ -58,7 +54,7 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
                     namingStrategy::getTimeSeriesEntityName, columnScheme -> columnScheme));
 
     Iterable<String> selectQueries =
-            dataSource.getDbTables(schemaName, namingStrategy.getTimeSeriesPrefix() + "%").stream()
+        dataSource.getDbTables(schemaName, namingStrategy.getTimeSeriesPrefix() + "%").stream()
             .map(
                 tableName ->
                     Optional.ofNullable(acceptedTableNames.get(tableName))
@@ -94,7 +90,7 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
   protected Optional<IndividualTimeSeriesMetaInformation> createEntity(
       Map<String, String> fieldToValues) {
     SimpleEntityData entityData =
-            new SimpleEntityData(fieldToValues, IndividualTimeSeriesMetaInformation.class);
+        new SimpleEntityData(fieldToValues, IndividualTimeSeriesMetaInformation.class);
     return mappingFactory.get(entityData);
   }
 }

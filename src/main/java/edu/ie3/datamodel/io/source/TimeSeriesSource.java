@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
-
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -30,19 +29,18 @@ public abstract class TimeSeriesSource<V extends Value> implements DataSource {
    *
    * @param scheme the column scheme to check
    * @return whether the scheme is accepted or not
-   * @deprecated since 3.0. Use {@link TimeSeriesUtils#isSchemeAccepted(ColumnScheme)}
-   *     instead.
+   * @deprecated since 3.0. Use {@link TimeSeriesUtils#isSchemeAccepted(ColumnScheme)} instead.
    */
   @Deprecated(since = "3.0", forRemoval = true)
   public static boolean isSchemeAccepted(edu.ie3.datamodel.io.csv.timeseries.ColumnScheme scheme) {
     return EnumSet.of(
-                    edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER,
-                    edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.APPARENT_POWER,
-                    edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ENERGY_PRICE,
-                    edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND,
-                    edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND,
-                    edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.HEAT_DEMAND)
-            .contains(scheme);
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER,
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.APPARENT_POWER,
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ENERGY_PRICE,
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND,
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND,
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.HEAT_DEMAND)
+        .contains(scheme);
   }
 
   /**
@@ -55,11 +53,11 @@ public abstract class TimeSeriesSource<V extends Value> implements DataSource {
    * @return Optional simple time based value
    */
   public Optional<TimeBasedValue<V>> buildTimeBasedValue(
-          Map<String, String> fieldToValues,
-          Class<V> valueClass,
-          TimeBasedSimpleValueFactory<V> factory) {
+      Map<String, String> fieldToValues,
+      Class<V> valueClass,
+      TimeBasedSimpleValueFactory<V> factory) {
     SimpleTimeBasedValueData<V> factoryData =
-            new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return factory.get(factoryData);
   }
 
@@ -68,6 +66,4 @@ public abstract class TimeSeriesSource<V extends Value> implements DataSource {
   public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval);
 
   public abstract Optional<V> getValue(ZonedDateTime time);
-
-
 }

@@ -15,7 +15,6 @@ import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
-import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /** Couchbase Source for weather data */
 public class CouchbaseWeatherSource implements DataSource {
@@ -160,7 +158,6 @@ public class CouchbaseWeatherSource implements DataSource {
     this.timeStampPattern = timeStampPattern;
   }
 
-
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     logger.warn(
@@ -168,7 +165,6 @@ public class CouchbaseWeatherSource implements DataSource {
             + " This is not very performant. Please consider providing specific coordinates instead.");
     return getWeather(timeInterval, coordinateSource.getAllCoordinates());
   }
-
 
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
@@ -199,7 +195,6 @@ public class CouchbaseWeatherSource implements DataSource {
     }
     return coordinateToTimeSeries;
   }
-
 
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     Optional<Integer> coordinateId = coordinateSource.getId(coordinate);

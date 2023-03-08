@@ -13,7 +13,6 @@ import edu.ie3.datamodel.io.source.FunctionalDataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +20,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,22 +32,18 @@ public class SqlDataSource implements FunctionalDataSource {
   protected String schemaName;
 
   protected SqlDataSource(
-          String jdbcUrl,
-          String userName,
-          String password,
-          String schemaName,
-          DatabaseNamingStrategy databaseNamingStrategy
-  ) {
+      String jdbcUrl,
+      String userName,
+      String password,
+      String schemaName,
+      DatabaseNamingStrategy databaseNamingStrategy) {
     this.connector = new SqlConnector(jdbcUrl, userName, password);
     this.schemaName = schemaName;
     this.databaseNamingStrategy = databaseNamingStrategy;
   }
 
   protected SqlDataSource(
-          SqlConnector connector,
-          String schemaName,
-          DatabaseNamingStrategy databaseNamingStrategy
-  ) {
+      SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy) {
     this.connector = connector;
     this.schemaName = schemaName;
     this.databaseNamingStrategy = databaseNamingStrategy;
@@ -135,7 +129,8 @@ public class SqlDataSource implements FunctionalDataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass, String explicitPath) {
+  public Stream<Map<String, String>> getSourceData(
+      Class<? extends UniqueEntity> entityClass, String explicitPath) {
     String query = createBaseQueryString(schemaName, explicitPath);
     return buildStreamByQuery(entityClass, connector, query);
   }
@@ -148,22 +143,22 @@ public class SqlDataSource implements FunctionalDataSource {
     try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
 
       Function<Map<String, String>, String> idExtractor =
-              fieldToValues -> fieldToValues.get(factory.getIdField());
+          fieldToValues -> fieldToValues.get(factory.getIdField());
 
       Collection<Map<String, String>> allRows = queryToListOfMaps(query);
 
       Set<Map<String, String>> withDistinctCoordinateId =
-              distinctRowsWithLog(allRows, idExtractor, "coordinate id mapping", "coordinate id");
+          distinctRowsWithLog(allRows, idExtractor, "coordinate id mapping", "coordinate id");
 
       Function<Map<String, String>, String> coordinateExtractor =
-              fieldToValues ->
-                      fieldToValues
-                              .get(factory.getLatField())
-                              .concat(fieldToValues.get(factory.getLonField()));
+          fieldToValues ->
+              fieldToValues
+                  .get(factory.getLatField())
+                  .concat(fieldToValues.get(factory.getLonField()));
 
       return distinctRowsWithLog(
-              withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
-              .parallelStream();
+          withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
+          .parallelStream();
     } catch (SQLException e) {
       log.error("Cannot read the file for coordinate id to coordinate mapping.", e);
     }
@@ -189,12 +184,10 @@ public class SqlDataSource implements FunctionalDataSource {
   }
 
   protected Stream<Map<String, String>> buildStreamByQuery(
-          Class<? extends UniqueEntity> entityClass,
-          SqlConnector sqlConnector,
-          String query
-  ) {
+      Class<? extends UniqueEntity> entityClass, SqlConnector sqlConnector, String query) {
     try {
-      return buildStreamByQuery(entityClass, ps-> {}, sqlConnector.getConnection().prepareStatement(query));
+      return buildStreamByQuery(
+          entityClass, ps -> {}, sqlConnector.getConnection().prepareStatement(query));
     } catch (SQLException e) {
       log.error("Error during execution of query {}", query, e);
     }
@@ -202,10 +195,9 @@ public class SqlDataSource implements FunctionalDataSource {
   }
 
   protected Stream<Map<String, String>> buildStreamByQuery(
-          Class<? extends UniqueEntity> entityClass,
-          AddParams addParams,
-          PreparedStatement preparedStatement
-  ) {
+      Class<? extends UniqueEntity> entityClass,
+      AddParams addParams,
+      PreparedStatement preparedStatement) {
     String query = createBaseQueryString(schemaName, entityClass.getSimpleName());
     try (PreparedStatement ps = preparedStatement) {
       addParams.addParams(ps);
@@ -219,7 +211,6 @@ public class SqlDataSource implements FunctionalDataSource {
     }
     return Stream.empty();
   }
-
 
   protected Stream<Map<String, String>> buildStreamByQuery(String tableName) {
     String query = createBaseQueryString(schemaName, tableName);
@@ -252,7 +243,6 @@ public class SqlDataSource implements FunctionalDataSource {
     return queryToListOfMaps(query, ps -> {});
   }
 
-
   /**
    * Returns a collection of maps each representing a row in csv file that can be used to built one
    * entity. The uniqueness of each row is doubled checked by a) that no duplicated rows are
@@ -262,48 +252,48 @@ public class SqlDataSource implements FunctionalDataSource {
    * and the error is logged. For case a), only the duplicates are filtered out and a set with
    * unique rows is returned.
    *
-   * @param allRows          collection of rows of a csv file an entity should be built from
-   * @param keyExtractor     Function, that extracts the key from field to value mapping, that is meant
-   *                         to be unique
+   * @param allRows collection of rows of a csv file an entity should be built from
+   * @param keyExtractor Function, that extracts the key from field to value mapping, that is meant
+   *     to be unique
    * @param entityDescriptor Colloquial descriptor of the entity, the data is foreseen for (for
-   *                         debug String)
-   * @param keyDescriptor    Colloquial descriptor of the key, that is meant to be unique (for debug
-   *                         String)
+   *     debug String)
+   * @param keyDescriptor Colloquial descriptor of the key, that is meant to be unique (for debug
+   *     String)
    * @return either a set containing only unique rows or an empty set if at least two rows with the
-   * same UUID but different field values exist
+   *     same UUID but different field values exist
    */
   protected Set<Map<String, String>> distinctRowsWithLog(
-          Collection<Map<String, String>> allRows,
-          final Function<Map<String, String>, String> keyExtractor,
-          String entityDescriptor,
-          String keyDescriptor) {
+      Collection<Map<String, String>> allRows,
+      final Function<Map<String, String>, String> keyExtractor,
+      String entityDescriptor,
+      String keyDescriptor) {
     Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
     // case a)
     if (allRows.size() != allRowsSet.size()) {
       log.warn(
-              "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
-              entityDescriptor,
-              (allRows.size() - allRowsSet.size()));
+          "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
+          entityDescriptor,
+          (allRows.size() - allRowsSet.size()));
     }
 
     /* Check for rows with the same key based on the provided key extractor function */
     Set<Map<String, String>> distinctIdSet =
-            allRowsSet.parallelStream()
-                    .filter(ValidationUtils.distinctByKey(keyExtractor))
-                    .collect(Collectors.toSet());
+        allRowsSet.parallelStream()
+            .filter(ValidationUtils.distinctByKey(keyExtractor))
+            .collect(Collectors.toSet());
     if (distinctIdSet.size() != allRowsSet.size()) {
       allRowsSet.removeAll(distinctIdSet);
       String affectedCoordinateIds =
-              allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
+          allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
-              """
+          """
                       '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
                       Affected primary keys:
                       {}""",
-              entityDescriptor,
-              keyDescriptor,
-              affectedCoordinateIds);
+          entityDescriptor,
+          keyDescriptor,
+          affectedCoordinateIds);
       // if this happens, we return an empty set to prevent further processing
       return new HashSet<>();
     }

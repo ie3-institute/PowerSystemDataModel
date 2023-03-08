@@ -34,25 +34,23 @@ public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
    * @param fileNamingStrategy the file naming strategy
    */
   public CsvTimeSeriesMetaInformationSource(
-          String csvSep,
-          String folderPath,
-          FileNamingStrategy fileNamingStrategy
-  ) {
+      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     // retrieve only the desired time series
-    this.timeSeriesMetaInformation = dataSource.connector.getCsvIndividualTimeSeriesMetaInformation(TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
+    this.timeSeriesMetaInformation =
+        dataSource.connector.getCsvIndividualTimeSeriesMetaInformation(
+            TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
   }
 
   @Override
   public Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation() {
     return timeSeriesMetaInformation.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @Override
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
-          UUID timeSeriesUuid
-  ) {
+      UUID timeSeriesUuid) {
     return Optional.ofNullable(timeSeriesMetaInformation.get(timeSeriesUuid));
   }
 }

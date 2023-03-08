@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,30 +30,29 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final CsvDataSource dataSource;
 
   public CsvTimeSeriesSource(
-          String csvSep,
-          String folderPath,
-          FileNamingStrategy fileNamingStrategy,
-          UUID timeSeriesUuid,
-          String filePath,
-          Class<V> valueClass,
-          TimeBasedSimpleValueFactory<V> factory
-  ) {
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      UUID timeSeriesUuid,
+      String filePath,
+      Class<V> valueClass,
+      TimeBasedSimpleValueFactory<V> factory) {
     super();
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
 
     /* Read in the full time series */
     try {
       this.timeSeries =
-              buildIndividualTimeSeries(
-                      timeSeriesUuid,
-                      filePath,
-                      fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory));
+          buildIndividualTimeSeries(
+              timeSeriesUuid,
+              filePath,
+              fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory));
     } catch (SourceException e) {
       throw new IllegalArgumentException(
-              "Unable to obtain time series with UUID '"
-                      + timeSeriesUuid
-                      + "'. Please check arguments!",
-              e);
+          "Unable to obtain time series with UUID '"
+              + timeSeriesUuid
+              + "'. Please check arguments!",
+          e);
     }
   }
 
@@ -73,16 +71,16 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    */
   @Deprecated(since = "3.0", forRemoval = true)
   public static CsvTimeSeriesSource<? extends Value> getSource(
-          String csvSep,
-          String folderPath,
-          FileNamingStrategy fileNamingStrategy,
-          edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation
-                  metaInformation)
-          throws SourceException {
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation
+          metaInformation)
+      throws SourceException {
 
     if (!TimeSeriesSource.isSchemeAccepted(metaInformation.getColumnScheme()))
       throw new SourceException(
-              "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
+          "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
 
     Class<? extends Value> valClass = metaInformation.getColumnScheme().getValueClass();
 
@@ -92,23 +90,22 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   /** @deprecated since 3.0 */
   @Deprecated(since = "3.0", forRemoval = true)
   private static <T extends Value> CsvTimeSeriesSource<T> create(
-          String csvSep,
-          String folderPath,
-          FileNamingStrategy fileNamingStrategy,
-          edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation
-                  metaInformation,
-          Class<T> valClass) {
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation
+          metaInformation,
+      Class<T> valClass) {
     TimeBasedSimpleValueFactory<T> valueFactory = new TimeBasedSimpleValueFactory<>(valClass);
     return new CsvTimeSeriesSource<>(
-            csvSep,
-            folderPath,
-            fileNamingStrategy,
-            metaInformation.getUuid(),
-            metaInformation.getFullFilePath(),
-            valClass,
-            valueFactory);
+        csvSep,
+        folderPath,
+        fileNamingStrategy,
+        metaInformation.getUuid(),
+        metaInformation.getFullFilePath(),
+        valClass,
+        valueFactory);
   }
-
 
   /**
    * Factory method to build a source from given meta information
@@ -152,18 +149,15 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         valueFactory);
   }
 
-
   @Override
   public IndividualTimeSeries<V> getTimeSeries() {
     return timeSeries;
   }
 
-
   @Override
   public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
     return TimeSeriesUtils.trimTimeSeriesToInterval(timeSeries, timeInterval);
   }
-
 
   @Override
   public Optional<V> getValue(ZonedDateTime time) {
@@ -182,16 +176,17 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @return An option onto an individual time series
    */
   private IndividualTimeSeries<V> buildIndividualTimeSeries(
-          UUID timeSeriesUuid,
-          String filePath,
-          Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
-          throws SourceException {
+      UUID timeSeriesUuid,
+      String filePath,
+      Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
+      throws SourceException {
     try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
       Set<TimeBasedValue<V>> timeBasedValues =
-              dataSource.buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-                      .map(fieldToValueFunction)
-                      .flatMap(Optional::stream)
-                      .collect(Collectors.toSet());
+          dataSource
+              .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+              .map(fieldToValueFunction)
+              .flatMap(Optional::stream)
+              .collect(Collectors.toSet());
 
       return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
     } catch (FileNotFoundException e) {

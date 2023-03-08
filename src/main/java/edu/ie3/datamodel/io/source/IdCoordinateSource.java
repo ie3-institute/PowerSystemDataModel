@@ -12,7 +12,6 @@ import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 
@@ -40,13 +39,10 @@ public class IdCoordinateSource implements DataSource {
     coordinateToId = invert(idToCoordinate);
   }
 
-  /**
-   * For source testing
-   */
+  /** For source testing */
   public Stream<Map<String, String>> extractSourceData() {
     return dataSource.getIdCoordinateSourceData(factory);
   }
-
 
   /**
    * Get the matching coordinate for the given ID
@@ -66,9 +62,9 @@ public class IdCoordinateSource implements DataSource {
    */
   public Collection<Point> getCoordinates(int... ids) {
     return Arrays.stream(ids)
-            .mapToObj(this::getCoordinate)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
+        .mapToObj(this::getCoordinate)
+        .flatMap(Optional::stream)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -77,7 +73,7 @@ public class IdCoordinateSource implements DataSource {
    * @param coordinate the coordinate to look up
    * @return the matching ID
    */
-  public Optional<Integer> getId(Point coordinate)  {
+  public Optional<Integer> getId(Point coordinate) {
     return Optional.ofNullable(coordinateToId.get(coordinate));
   }
 
@@ -86,7 +82,7 @@ public class IdCoordinateSource implements DataSource {
    *
    * @return all available coordinates
    */
-  public Collection<Point> getAllCoordinates()  {
+  public Collection<Point> getAllCoordinates() {
     return coordinateToId.keySet();
   }
 
@@ -102,19 +98,19 @@ public class IdCoordinateSource implements DataSource {
     return getNearestCoordinates(coordinate, n, getAllCoordinates());
   }
 
-
   /**
    * Read in and process the mapping
    *
    * @return Mapping from coordinate id to coordinate
    */
   private Map<Integer, Point> setupIdToCoordinateMap() {
-    //String specialPlace = dataSource.getNamingStrategy().getIdCoordinateEntityName();
-    return dataSource.getIdCoordinateSourceData(factory)
-            .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
-            .map(factory::get)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+    // String specialPlace = dataSource.getNamingStrategy().getIdCoordinateEntityName();
+    return dataSource
+        .getIdCoordinateSourceData(factory)
+        .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
+        .map(factory::get)
+        .flatMap(Optional::stream)
+        .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
   }
 
   /**
@@ -148,7 +144,6 @@ public class IdCoordinateSource implements DataSource {
             (coordinates != null && !coordinates.isEmpty()) ? coordinates : getAllCoordinates());
     return sortedDistances.stream().limit(n).toList();
   }
-
 
   public int getCoordinateCount() {
     return idToCoordinate.keySet().size();

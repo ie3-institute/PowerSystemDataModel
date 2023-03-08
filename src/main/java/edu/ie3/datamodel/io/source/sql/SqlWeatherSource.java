@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source.sql;
 
+import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
+
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -20,8 +22,6 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
-
-import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
 /** SQL source for weather data */
 public class SqlWeatherSource extends WeatherSource {
@@ -60,8 +60,9 @@ public class SqlWeatherSource extends WeatherSource {
     this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy());
 
     String dbTimeColumnName =
-            dataSource.getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
-    String dbCoordinateIdColumnName = dataSource.getDbColumnName(factoryCoordinateFieldName, weatherTableName);
+        dataSource.getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
+    String dbCoordinateIdColumnName =
+        dataSource.getDbColumnName(factoryCoordinateFieldName, weatherTableName);
 
     // setup queries
     this.queryTimeInterval =
@@ -72,20 +73,19 @@ public class SqlWeatherSource extends WeatherSource {
     this.queryTimeIntervalAndCoordinates =
         createQueryStringForTimeIntervalAndCoordinates(
             schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
-
   }
-
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval
-  ) {
+      ClosedInterval<ZonedDateTime> timeInterval) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
-            dataSource.queryToListOfMaps(queryTimeInterval,
-              ps -> {
-                    ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
-                    ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
-            })
+        dataSource
+            .queryToListOfMaps(
+                queryTimeInterval,
+                ps -> {
+                  ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
+                  ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
+                })
             .stream()
             .map(this::createEntity)
             .flatMap(Optional::stream)
@@ -106,15 +106,17 @@ public class SqlWeatherSource extends WeatherSource {
       return Collections.emptyMap();
     }
 
-    List<TimeBasedValue<WeatherValue>> timeBasedValues = dataSource.queryToListOfMaps(
-            queryTimeIntervalAndCoordinates,
-            ps -> {
-              Array coordinateIdArr =
-                  ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
-              ps.setArray(1, coordinateIdArr);
-              ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
-              ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
-            })
+    List<TimeBasedValue<WeatherValue>> timeBasedValues =
+        dataSource
+            .queryToListOfMaps(
+                queryTimeIntervalAndCoordinates,
+                ps -> {
+                  Array coordinateIdArr =
+                      ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
+                  ps.setArray(1, coordinateIdArr);
+                  ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
+                  ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
+                })
             .stream()
             .map(this::createEntity)
             .flatMap(Optional::stream)
@@ -131,16 +133,18 @@ public class SqlWeatherSource extends WeatherSource {
       return Optional.empty();
     }
 
-    List<TimeBasedValue<WeatherValue>> timeBasedValues = dataSource.queryToListOfMaps(
-            queryTimeAndCoordinate,
-            ps -> {
-              ps.setInt(1, coordinateId.get());
-              ps.setTimestamp(2, Timestamp.from(date.toInstant()));
-            })
-                .stream()
-                .map(this::createEntity)
-                .flatMap(Optional::stream)
-                .toList();
+    List<TimeBasedValue<WeatherValue>> timeBasedValues =
+        dataSource
+            .queryToListOfMaps(
+                queryTimeAndCoordinate,
+                ps -> {
+                  ps.setInt(1, coordinateId.get());
+                  ps.setTimestamp(2, Timestamp.from(date.toInstant()));
+                })
+            .stream()
+            .map(this::createEntity)
+            .flatMap(Optional::stream)
+            .toList();
 
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
@@ -220,12 +224,10 @@ public class SqlWeatherSource extends WeatherSource {
    * @param fieldMap the field to value map for one TimeBasedValue
    * @return an Optional of that TimeBasedValue
    */
-
   protected Optional<TimeBasedValue<WeatherValue>> createEntity(Map<String, String> fieldMap) {
     fieldMap.remove("tid");
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
     if (data.isEmpty()) return Optional.empty();
     return weatherFactory.get(data.get());
   }
-
 }

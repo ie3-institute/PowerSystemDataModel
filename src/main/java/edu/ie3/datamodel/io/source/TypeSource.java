@@ -10,13 +10,11 @@ import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
-
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
-
 import java.util.Set;
 
 /**
@@ -28,12 +26,12 @@ import java.util.Set;
  * @since 08.04.20
  */
 public class TypeSource extends EntitySource implements DataSource {
-    //factories
-    private final OperatorInputFactory operatorInputFactory;
-    private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
-    private final LineTypeInputFactory lineTypeInputFactory;
-    private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
-    private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
+  // factories
+  private final OperatorInputFactory operatorInputFactory;
+  private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
+  private final LineTypeInputFactory lineTypeInputFactory;
+  private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
+  private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
 
   public TypeSource(FunctionalDataSource dataSource) {
     this.dataSource = dataSource;

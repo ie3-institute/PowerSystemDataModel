@@ -16,9 +16,10 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.Optional;
+
 /**
  * Interface that provides the capability to build entities of type {@link ResultEntity} container
  * from .csv files.
@@ -316,17 +317,17 @@ public class ResultEntitySource extends EntitySource implements DataSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   private <T extends ResultEntity> Set<T> getResultEntities(
-          Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
+      Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
     return simpleEntityDataStream(entityClass)
-            .map(
-                    entityData ->
-                            factory.get(entityData).flatMap(loadResult -> cast(entityClass, loadResult)))
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
+        .map(
+            entityData ->
+                factory.get(entityData).flatMap(loadResult -> cast(entityClass, loadResult)))
+        .flatMap(Optional::stream)
+        .collect(Collectors.toSet());
   }
 
   private <T extends ResultEntity> Optional<T> cast(
-          Class<T> entityClass, ResultEntity resultEntity) {
+      Class<T> entityClass, ResultEntity resultEntity) {
     if (resultEntity.getClass().equals(entityClass)) {
       // safe here as a) type is checked and b) csv data stream already filters non-fitting input
       // data

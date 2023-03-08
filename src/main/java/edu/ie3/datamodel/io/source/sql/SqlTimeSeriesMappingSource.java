@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source.sql;
 
+import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
+
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
@@ -15,8 +17,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
-
 public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final String queryFull;
@@ -24,34 +24,28 @@ public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
   private final SqlDataSource dataSource;
 
   public SqlTimeSeriesMappingSource(
-          SqlConnector connector,
-          String schemaName,
-          EntityPersistenceNamingStrategy entityPersistenceNamingStrategy
-  ) {
-    this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy(entityPersistenceNamingStrategy));
+      SqlConnector connector,
+      String schemaName,
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+    this.dataSource =
+        new SqlDataSource(
+            connector, schemaName, new DatabaseNamingStrategy(entityPersistenceNamingStrategy));
     this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
 
     final String tableName =
-            entityPersistenceNamingStrategy.getEntityName(MappingEntry.class).orElseThrow();
+        entityPersistenceNamingStrategy.getEntityName(MappingEntry.class).orElseThrow();
     this.queryFull = createBaseQueryString(schemaName, tableName);
   }
 
   public Map<UUID, UUID> getMapping() {
-    return dataSource.queryToListOfMaps(queryFull, ps -> {})
-            .stream()
-            .map(this::createEntity)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
+    return dataSource.queryToListOfMaps(queryFull, ps -> {}).stream()
+        .map(this::createEntity)
+        .flatMap(Optional::stream)
+        .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 
   protected Optional<MappingEntry> createEntity(Map<String, String> fieldToValues) {
     SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
     return mappingFactory.get(entityData);
   }
-
-
-
-
-
-
 }

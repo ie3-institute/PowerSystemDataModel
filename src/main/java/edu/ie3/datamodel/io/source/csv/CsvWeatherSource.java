@@ -18,7 +18,6 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -54,7 +53,8 @@ public class CsvWeatherSource extends WeatherSource {
         csvSep,
         folderPath,
         fileNamingStrategy,
-        new IdCoordinateSource(coordinateFactory, new CsvDataSource(csvSep, folderPath, fileNamingStrategy)),
+        new IdCoordinateSource(
+            coordinateFactory, new CsvDataSource(csvSep, folderPath, fileNamingStrategy)),
         weatherFactory);
   }
 
@@ -74,7 +74,10 @@ public class CsvWeatherSource extends WeatherSource {
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
     /* Get only weather time series meta information */
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
-            dataSource.connector.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
+        dataSource
+            .connector
+            .getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER)
+            .values();
     return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
   }
 
@@ -123,7 +126,7 @@ public class CsvWeatherSource extends WeatherSource {
   }
 
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-          Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
@@ -131,20 +134,22 @@ public class CsvWeatherSource extends WeatherSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows = dataSource.csvRowFieldValueMapping(reader, headline);
+      Collection<Map<String, String>> allRows =
+          dataSource.csvRowFieldValueMapping(reader, headline);
 
       Function<Map<String, String>, String> timeCoordinateIdExtractor =
-              fieldToValues ->
-                      fieldToValues
-                              .get(weatherFactory.getTimeFieldString())
-                              .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
-      return dataSource.distinctRowsWithLog(
+          fieldToValues ->
+              fieldToValues
+                  .get(weatherFactory.getTimeFieldString())
+                  .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
+      return dataSource
+          .distinctRowsWithLog(
               allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
-              .parallelStream();
+          .parallelStream();
 
     } catch (IOException e) {
       log.warn(
-              "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
 
     return Stream.empty();
@@ -178,7 +183,6 @@ public class CsvWeatherSource extends WeatherSource {
               return Optional.empty();
             });
   }
-
 
   /**
    * Extract the coordinate identifier from the field to value mapping and obtain the actual

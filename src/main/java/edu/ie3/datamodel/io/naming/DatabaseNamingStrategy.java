@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.models.UniqueEntity;
-
 import java.util.Optional;
 
 /** A naming strategy for database entities */

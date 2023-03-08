@@ -18,13 +18,11 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
@@ -42,19 +40,18 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * avoid creating a new string each time, bc they're always the same.
    */
   private final String queryFull;
+
   private final String queryTimeInterval;
   private final String queryTime;
-
 
   private final Class<V> valueClass;
   private final TimeBasedSimpleValueFactory<V> valueFactory;
 
   public SqlTimeSeriesSource(
-          SqlDataSource sqlDataSource,
-          UUID timeSeriesUuid,
-          Class<V> valueClass,
-          TimeBasedSimpleValueFactory<V> factory
-  ) {
+      SqlDataSource sqlDataSource,
+      UUID timeSeriesUuid,
+      Class<V> valueClass,
+      TimeBasedSimpleValueFactory<V> factory) {
     super();
     this.dataSource = sqlDataSource;
 
@@ -64,15 +61,17 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     this.valueFactory = factory;
 
     final ColumnScheme columnScheme = ColumnScheme.parse(valueClass).orElseThrow();
-    final String tableName = sqlDataSource.databaseNamingStrategy.getTimeSeriesEntityName(columnScheme);
+    final String tableName =
+        sqlDataSource.databaseNamingStrategy.getTimeSeriesEntityName(columnScheme);
 
-    String dbTimeColumnName = sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
+    String dbTimeColumnName =
+        sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
 
     this.queryFull = createQueryFull(sqlDataSource.schemaName, tableName);
-    this.queryTimeInterval = createQueryForTimeInterval(sqlDataSource.schemaName, tableName, dbTimeColumnName);
+    this.queryTimeInterval =
+        createQueryForTimeInterval(sqlDataSource.schemaName, tableName, dbTimeColumnName);
     this.queryTime = createQueryForTime(sqlDataSource.schemaName, tableName, dbTimeColumnName);
   }
-
 
   /**
    * Initializes a new SqlTimeSeriesSource
@@ -85,16 +84,17 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @param factory a factory that parses the input data
    */
   public SqlTimeSeriesSource(
-          SqlConnector connector,
-          String schemaName,
-          DatabaseNamingStrategy namingStrategy,
-          UUID timeSeriesUuid,
-          Class<V> valueClass,
-          TimeBasedSimpleValueFactory<V> factory) {
-    this(new SqlDataSource(connector, schemaName, namingStrategy),
-            timeSeriesUuid,
-            valueClass,
-            factory);
+      SqlConnector connector,
+      String schemaName,
+      DatabaseNamingStrategy namingStrategy,
+      UUID timeSeriesUuid,
+      Class<V> valueClass,
+      TimeBasedSimpleValueFactory<V> factory) {
+    this(
+        new SqlDataSource(connector, schemaName, namingStrategy),
+        timeSeriesUuid,
+        valueClass,
+        factory);
   }
 
   /**
@@ -134,20 +134,16 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       String timePattern) {
     TimeBasedSimpleValueFactory<T> valueFactory =
         new TimeBasedSimpleValueFactory<>(valClass, timePattern);
-    return new SqlTimeSeriesSource<>(connector,
-            schemaName,
-            namingStrategy,
-            timeSeriesUuid,
-            valClass,
-            valueFactory);
+    return new SqlTimeSeriesSource<>(
+        connector, schemaName, namingStrategy, timeSeriesUuid, valClass, valueFactory);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   @Override
   public IndividualTimeSeries<V> getTimeSeries() {
-    List<TimeBasedValue<V>> timeBasedValues = dataSource.queryToListOfMaps(queryFull, ps -> {})
-            .stream()
+    List<TimeBasedValue<V>> timeBasedValues =
+        dataSource.queryToListOfMaps(queryFull, ps -> {}).stream()
             .map(this::createEntity)
             .flatMap(Optional::stream)
             .toList();
@@ -157,24 +153,29 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   @Override
   public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
     List<TimeBasedValue<V>> timeBasedValues =
-            dataSource.queryToListOfMaps(
-                    queryTimeInterval,
-                    ps -> {
-                      ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
-                      ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
-                    }).stream()
-                    .map(this::createEntity)
-                    .flatMap(Optional::stream)
-                    .toList();
+        dataSource
+            .queryToListOfMaps(
+                queryTimeInterval,
+                ps -> {
+                  ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
+                  ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
+                })
+            .stream()
+            .map(this::createEntity)
+            .flatMap(Optional::stream)
+            .toList();
     return new IndividualTimeSeries<>(timeSeriesUuid, new HashSet<>(timeBasedValues));
   }
 
   public Optional<V> getValue(ZonedDateTime time) {
     List<TimeBasedValue<V>> timeBasedValues =
-            dataSource.queryToListOfMaps(queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant()))).stream()
-                    .map(this::createEntity)
-                    .flatMap(Optional::stream)
-                    .toList();
+        dataSource
+            .queryToListOfMaps(
+                queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
+            .stream()
+            .map(this::createEntity)
+            .flatMap(Optional::stream)
+            .toList();
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
@@ -183,11 +184,11 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   public Optional<TimeBasedValue<V>> buildTimeBasedValue(
-          Map<String, String> fieldToValues,
-          Class<V> valueClass,
-          TimeBasedSimpleValueFactory<V> factory) {
+      Map<String, String> fieldToValues,
+      Class<V> valueClass,
+      TimeBasedSimpleValueFactory<V> factory) {
     SimpleTimeBasedValueData<V> factoryData =
-            new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return factory.get(factoryData);
   }
 
@@ -201,7 +202,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
     SimpleTimeBasedValueData<V> factoryData =
-            new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return valueFactory.get(factoryData);
   }
 
@@ -214,11 +215,10 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @param factory Factory to process the "flat" information
    * @return Optional simple time based value
    */
-
   public Optional<TimeBasedValue<V>> buildTimeBasedValueReduced(
-          Map<String, String> fieldToValues,
-          Class<V> valueClass,
-          TimeBasedSimpleValueFactory<V> factory) {
+      Map<String, String> fieldToValues,
+      Class<V> valueClass,
+      TimeBasedSimpleValueFactory<V> factory) {
     fieldToValues.remove("timeSeries");
     return buildTimeBasedValue(fieldToValues, valueClass, factory);
   }

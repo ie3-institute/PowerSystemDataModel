@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
-import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -126,7 +125,6 @@ public class InfluxDbWeatherSource implements DataSource {
           null, filterEmptyOptionals(optValues).collect(Collectors.toSet()));
     }
   }
-
 
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     Optional<Integer> coordinateId = coordinateSource.getId(coordinate);

@@ -14,19 +14,20 @@ import java.util.UUID;
 /** Source for all available time series with their {@link UUID} and {@link ColumnScheme} */
 public abstract class TimeSeriesMetaInformationSource implements DataSource {
 
-    /**
-     * Get a mapping from time series {@link UUID} to its meta information {@link
-     * IndividualTimeSeriesMetaInformation}
-     *
-     * @return that mapping
-     */
-    public abstract Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation();
+  /**
+   * Get a mapping from time series {@link UUID} to its meta information {@link
+   * IndividualTimeSeriesMetaInformation}
+   *
+   * @return that mapping
+   */
+  public abstract Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation();
 
-    /**
-     * Get an option on the given time series meta information
-     *
-     * @param timeSeriesUuid Unique identifier of the time series in question
-     * @return An Option on the meta information
-     */
-    public abstract Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(UUID timeSeriesUuid);
+  /**
+   * Get an option on the given time series meta information
+   *
+   * @param timeSeriesUuid Unique identifier of the time series in question
+   * @return An Option on the meta information
+   */
+  public abstract Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
+      UUID timeSeriesUuid);
 }

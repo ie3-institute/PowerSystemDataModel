@@ -162,7 +162,6 @@ public class SqlConnector implements DataConnector {
     return insensitiveFieldsToAttributes;
   }
 
-
   /**
    * Determine the corresponding database column name based on the provided factory field parameter
    * name. Needed to support camel as well as snake case database column names.
@@ -179,21 +178,21 @@ public class SqlConnector implements DataConnector {
       while (rs.next()) {
         String databaseColumnName = rs.getString("COLUMN_NAME");
         if (StringUtils.snakeCaseToCamelCase(databaseColumnName)
-                .equalsIgnoreCase(factoryColumnName)) {
+            .equalsIgnoreCase(factoryColumnName)) {
           return databaseColumnName;
         }
       }
     } catch (SQLException ex) {
       log.error(
-              "Cannot connect to database to retrieve db column name for factory column name '{}' in table '{}'",
-              factoryColumnName,
-              tableName,
-              ex);
+          "Cannot connect to database to retrieve db column name for factory column name '{}' in table '{}'",
+          factoryColumnName,
+          tableName,
+          ex);
     }
     throw new InvalidColumnNameException(
-            "Cannot find column for '"
-                    + factoryColumnName
-                    + "' in provided times series data configuration."
-                    + "Please ensure that the database connection is working and the column names are correct!");
+        "Cannot find column for '"
+            + factoryColumnName
+            + "' in provided times series data configuration."
+            + "Please ensure that the database connection is working and the column names are correct!");
   }
 }

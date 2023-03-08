@@ -76,13 +76,13 @@ public abstract class TimeSeriesMappingSource implements DataSource {
     @Override
     public String toString() {
       return "MappingEntry{"
-              + "uuid="
-              + getUuid()
-              + ", participant="
-              + participant
-              + ", timeSeries="
-              + timeSeries
-              + '}';
+          + "uuid="
+          + getUuid()
+          + ", participant="
+          + participant
+          + ", timeSeries="
+          + timeSeries
+          + '}';
     }
   }
 }
