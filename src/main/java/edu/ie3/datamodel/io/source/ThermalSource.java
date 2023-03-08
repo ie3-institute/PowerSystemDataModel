@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.io.factory.input.*;
-import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -237,7 +236,7 @@ public class ThermalSource extends EntitySource implements DataSource {
                 thermalBus.get())));
   }
 
-  public <T extends AssetInput> Set<ThermalHouseInput> buildThermalHouseInputEntities(
+  public Set<ThermalHouseInput> buildThermalHouseInputEntities(
       ThermalHouseInputFactory factory) {
     return assetInputEntityDataStream(ThermalHouseInput.class, typeSource.getOperators())
         .flatMap(
@@ -261,7 +260,7 @@ public class ThermalSource extends EntitySource implements DataSource {
         .collect(Collectors.toSet());
   }
 
-  public <T extends AssetInput> Set<CylindricalStorageInput> buildCylindricalStorageInputEntities(
+  public Set<CylindricalStorageInput> buildCylindricalStorageInputEntities(
       CylindricalStorageInputFactory factory) {
     return assetInputEntityDataStream(CylindricalStorageInput.class, typeSource.getOperators())
         .flatMap(

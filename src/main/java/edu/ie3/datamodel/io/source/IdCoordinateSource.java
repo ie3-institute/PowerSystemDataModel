@@ -104,7 +104,6 @@ public class IdCoordinateSource implements DataSource {
    * @return Mapping from coordinate id to coordinate
    */
   private Map<Integer, Point> setupIdToCoordinateMap() {
-    // String specialPlace = dataSource.getNamingStrategy().getIdCoordinateEntityName();
     return dataSource
         .getIdCoordinateSourceData(factory)
         .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))

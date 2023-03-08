@@ -182,6 +182,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  @Override
   public Optional<TimeBasedValue<V>> buildTimeBasedValue(
       Map<String, String> fieldToValues,
       Class<V> valueClass,

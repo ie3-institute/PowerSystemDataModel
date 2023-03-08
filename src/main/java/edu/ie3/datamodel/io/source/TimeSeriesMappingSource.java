@@ -20,7 +20,7 @@ public abstract class TimeSeriesMappingSource implements DataSource {
 
   protected final TimeSeriesMappingFactory mappingFactory;
 
-  public TimeSeriesMappingSource() {
+  protected TimeSeriesMappingSource() {
     this.mappingFactory = new TimeSeriesMappingFactory();
   }
 

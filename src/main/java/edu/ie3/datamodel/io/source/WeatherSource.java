@@ -33,7 +33,7 @@ public abstract class WeatherSource implements DataSource {
 
   protected static final String COORDINATE_ID = "coordinateid";
 
-  public WeatherSource(
+  protected WeatherSource(
       IdCoordinateSource idCoordinateSource, TimeBasedWeatherValueFactory weatherFactory) {
     this.idCoordinateSource = idCoordinateSource;
     this.weatherFactory = weatherFactory;
@@ -130,14 +130,14 @@ public abstract class WeatherSource implements DataSource {
                 Collectors.groupingBy(
                     timeBasedWeatherValue -> timeBasedWeatherValue.getValue().getCoordinate(),
                     Collectors.toSet()));
-    Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
+    Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeriesMap = new HashMap<>();
     for (Map.Entry<Point, Set<TimeBasedValue<WeatherValue>>> entry :
         coordinateToValues.entrySet()) {
       Set<TimeBasedValue<WeatherValue>> values = entry.getValue();
       IndividualTimeSeries<WeatherValue> timeSeries = new IndividualTimeSeries<>(null, values);
-      coordinateToTimeSeries.put(entry.getKey(), timeSeries);
+      coordinateToTimeSeriesMap.put(entry.getKey(), timeSeries);
     }
-    return coordinateToTimeSeries;
+    return coordinateToTimeSeriesMap;
   }
 
   /**
