@@ -63,12 +63,10 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
     this.filePath = filePath;
     try {
       this.reader = dataSource.connector.initReader(filePath);
-      this.inputStream =
-          filterEmptyOptionals(
-              dataSource
-                  .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-                  .map(
-                      fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory)));
+      this.inputStream = dataSource
+              .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+              .map(
+                      fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory)).filter(Optional::isPresent).map(Optional::get);
     } catch (FileNotFoundException e) {
       throw new RuntimeException(
           "Opening the reader for time series file '" + filePath + "' failed.", e);
@@ -253,9 +251,5 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
   public void close() throws Exception {
     inputStream.close();
     reader.close();
-  }
-
-  protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(Stream<Optional<T>> elements) {
-    return elements.filter(Optional::isPresent).map(Optional::get);
   }
 }
