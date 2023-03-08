@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
+import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
@@ -25,12 +26,16 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
    * - any values are measured
    *
    * @param measurementUnit Measurement unit to validate
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
   protected static Try<Void, ValidationException> check(MeasurementUnitInput measurementUnit) {
     try {
       checkNonNull(measurementUnit, "a measurement unit");
-    } catch (ValidationException e) {
-      return new Failure<>(e);
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {" + measurementUnit + "} was null",
+              e));
     }
 
     if (!measurementUnit.getP()

@@ -20,6 +20,10 @@ import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
+import edu.ie3.datamodel.utils.ExceptionUtils;
+import edu.ie3.datamodel.utils.options.Failure;
+import edu.ie3.datamodel.utils.options.Success;
+import edu.ie3.datamodel.utils.options.Try;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -57,18 +61,40 @@ public class ValidationUtils {
    * fulfill the checking task, based on the class of the given object.
    *
    * @param obj Object to check
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a try object either containing a {@link ValidationException} or an empty Success
    */
-  public static void check(Object obj) {
-    checkNonNull(obj, "an object");
-    if (AssetInput.class.isAssignableFrom(obj.getClass())) checkAsset((AssetInput) obj);
-    else if (GridContainer.class.isAssignableFrom(obj.getClass()))
-      GridContainerValidationUtils.check((GridContainer) obj);
-    else if (GraphicInput.class.isAssignableFrom(obj.getClass()))
-      GraphicValidationUtils.check((GraphicInput) obj);
-    else if (AssetTypeInput.class.isAssignableFrom(obj.getClass()))
-      checkAssetType((AssetTypeInput) obj);
-    else throw checkNotImplementedException(obj);
+  public static Try<Void, ValidationException> check(Object obj) {
+    try {
+      checkNonNull(obj, "an object");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {" + obj + "} was null", e));
+    }
+
+    Try<Void, ? extends ValidationException> check;
+
+    if (AssetInput.class.isAssignableFrom(obj.getClass())) {
+      check = checkAsset((AssetInput) obj);
+    } else if (GridContainer.class.isAssignableFrom(obj.getClass())) {
+      check = GridContainerValidationUtils.check((GridContainer) obj);
+    } else if (GraphicInput.class.isAssignableFrom(obj.getClass())) {
+      check = GraphicValidationUtils.check((GraphicInput) obj);
+    } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
+      check = checkAssetType((AssetTypeInput) obj);
+    } else {
+      check =
+          new Failure<>(
+              new InvalidEntityException(
+                  "Validation failed due to: ", checkNotImplementedException(obj)));
+    }
+
+    if (check.isFailure()) {
+      return new Failure<>(
+          new FailedValidationException("Validation failed due to: ", check.getException()));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -81,13 +107,26 @@ public class ValidationUtils {
    * the checking task, based on the class of the given object.
    *
    * @param assetInput AssetInput to check
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a try object either containing a {@link ValidationException} or an empty Success
    */
-  private static void checkAsset(AssetInput assetInput) {
-    checkNonNull(assetInput, "an asset");
-    if (assetInput.getId() == null) throw new InvalidEntityException("No ID assigned", assetInput);
-    if (assetInput.getOperationTime() == null)
-      throw new InvalidEntityException("Operation time of the asset is not defined", assetInput);
+  private static Try<Void, ValidationException> checkAsset(AssetInput assetInput) {
+    try {
+      checkNonNull(assetInput, "an asset");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {" + assetInput + "} was null", e));
+    }
+
+    List<ValidationException> exceptions = new ArrayList<>();
+
+    if (assetInput.getId() == null) {
+      exceptions.add(new InvalidEntityException("No ID assigned", assetInput));
+    }
+    if (assetInput.getOperationTime() == null) {
+      exceptions.add(
+          new InvalidEntityException("Operation time of the asset is not defined", assetInput));
+    }
     // Check if start time and end time are not null and start time is before end time
     if (assetInput.getOperationTime().isLimited()) {
       assetInput
@@ -101,24 +140,45 @@ public class ValidationUtils {
                       .ifPresent(
                           startDate -> {
                             if (endDate.isBefore(startDate))
-                              throw new InvalidEntityException(
-                                  "Operation start time of the asset has to be before end time",
-                                  assetInput);
+                              exceptions.add(
+                                  new InvalidEntityException(
+                                      "Operation start time of the asset has to be before end time",
+                                      assetInput));
                           }));
     }
 
+    Try<Void, ? extends ValidationException> check;
+
     // Further checks for subclasses
     if (NodeInput.class.isAssignableFrom(assetInput.getClass()))
-      NodeValidationUtils.check((NodeInput) assetInput);
+      check = NodeValidationUtils.check((NodeInput) assetInput);
     else if (ConnectorInput.class.isAssignableFrom(assetInput.getClass()))
-      ConnectorValidationUtils.check((ConnectorInput) assetInput);
+      check = ConnectorValidationUtils.check((ConnectorInput) assetInput);
     else if (MeasurementUnitInput.class.isAssignableFrom(assetInput.getClass()))
-      MeasurementUnitValidationUtils.check((MeasurementUnitInput) assetInput);
+      check = MeasurementUnitValidationUtils.check((MeasurementUnitInput) assetInput);
     else if (SystemParticipantInput.class.isAssignableFrom(assetInput.getClass()))
-      SystemParticipantValidationUtils.check((SystemParticipantInput) assetInput);
+      check = SystemParticipantValidationUtils.check((SystemParticipantInput) assetInput);
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
-      ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput);
-    else throw checkNotImplementedException(assetInput);
+      check = ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput);
+    else {
+      check =
+          new Failure<>(
+              new InvalidEntityException(
+                  "Validation failed due to: ", checkNotImplementedException(assetInput)));
+    }
+
+    if (check.isFailure()) {
+      exceptions.add(check.getException());
+    }
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new FailedValidationException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -128,26 +188,57 @@ public class ValidationUtils {
    * the checking task, based on the class of the given object.
    *
    * @param assetTypeInput AssetTypeInput to check
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a try object either containing a {@link InvalidEntityException} or an empty Success
    */
-  private static void checkAssetType(AssetTypeInput assetTypeInput) {
-    checkNonNull(assetTypeInput, "an asset type");
+  private static Try<Void, InvalidEntityException> checkAssetType(AssetTypeInput assetTypeInput) {
+    try {
+      checkNonNull(assetTypeInput, "an asset type");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {" + assetTypeInput + "} was null",
+              e));
+    }
+
+    List<InvalidEntityException> exceptions = new ArrayList<>();
+
     if (assetTypeInput.getUuid() == null)
-      throw new InvalidEntityException("No UUID assigned", assetTypeInput);
+      exceptions.add(new InvalidEntityException("No UUID assigned", assetTypeInput));
     if (assetTypeInput.getId() == null)
-      throw new InvalidEntityException("No ID assigned", assetTypeInput);
+      exceptions.add(new InvalidEntityException("No ID assigned", assetTypeInput));
+
+    Try<Void, InvalidEntityException> check;
 
     // Further checks for subclasses
     if (LineTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-      ConnectorValidationUtils.checkLineType((LineTypeInput) assetTypeInput);
+      check = ConnectorValidationUtils.checkLineType((LineTypeInput) assetTypeInput);
     else if (Transformer2WTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-      ConnectorValidationUtils.checkTransformer2WType((Transformer2WTypeInput) assetTypeInput);
+      check =
+          ConnectorValidationUtils.checkTransformer2WType((Transformer2WTypeInput) assetTypeInput);
     else if (Transformer3WTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-      ConnectorValidationUtils.checkTransformer3WType((Transformer3WTypeInput) assetTypeInput);
+      check =
+          ConnectorValidationUtils.checkTransformer3WType((Transformer3WTypeInput) assetTypeInput);
     else if (SystemParticipantTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-      SystemParticipantValidationUtils.checkType((SystemParticipantTypeInput) assetTypeInput);
+      check =
+          SystemParticipantValidationUtils.checkType((SystemParticipantTypeInput) assetTypeInput);
     else {
-      throw checkNotImplementedException(assetTypeInput);
+      check =
+          new Failure<>(
+              new InvalidEntityException(
+                  "Validation failed due to: ", checkNotImplementedException(assetTypeInput)));
+    }
+
+    if (check.isFailure()) {
+      exceptions.add(check.getException());
+    }
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
     }
   }
 

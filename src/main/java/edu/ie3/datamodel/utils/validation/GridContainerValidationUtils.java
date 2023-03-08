@@ -44,29 +44,55 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * Checks a complete grid data container
    *
    * @param gridContainer Grid model to check
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  protected static void check(GridContainer gridContainer) {
-    checkNonNull(gridContainer, "grid container");
+  protected static Try<Void, ValidationException> check(GridContainer gridContainer) {
+    try {
+      checkNonNull(gridContainer, "grid container");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {" + gridContainer + "} was null",
+              e));
+    }
+
+    List<ValidationException> exceptions = new ArrayList<>();
 
     /* sanity check to ensure distinct UUIDs */
     Optional<String> exceptionString =
         checkForDuplicateUuids(new HashSet<>(gridContainer.allEntitiesAsList()));
     if (exceptionString.isPresent()) {
-      throw new InvalidGridException(
-          duplicateUuidsString(gridContainer.getClass().getSimpleName(), exceptionString));
+      exceptions.add(
+          new InvalidGridException(
+              duplicateUuidsString(gridContainer.getClass().getSimpleName(), exceptionString)));
     }
 
-    Try<Void, FailedValidationException> rawGridElements =
+    Try<Void, ValidationException> rawGridElements =
         checkRawGridElements(gridContainer.getRawGrid());
 
-    Try<Void, FailedValidationException> systemParticipants =
+    Try<Void, ValidationException> systemParticipants =
         checkSystemParticipants(
             gridContainer.getSystemParticipants(), gridContainer.getRawGrid().getNodes());
-    Try<Void, FailedValidationException> graphicElements =
+    Try<Void, ValidationException> graphicElements =
         checkGraphicElements(
             gridContainer.getGraphics(),
             gridContainer.getRawGrid().getNodes(),
             gridContainer.getRawGrid().getLines());
+
+    exceptions.addAll(
+        Stream.of(rawGridElements, systemParticipants, graphicElements)
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList());
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new FailedValidationException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -74,15 +100,15 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * as the fact, that none of the assets is connected to a node, that is not in the set of nodes.
    *
    * @param rawGridElements Raw grid elements
-   * @throws InvalidGridException If something is wrong
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  protected static Try<Void, FailedValidationException> checkRawGridElements(
+  protected static Try<Void, ValidationException> checkRawGridElements(
       RawGridElements rawGridElements) {
     try {
       checkNonNull(rawGridElements, "raw grid elements");
-    } catch (ValidationException e) {
+    } catch (InvalidEntityException e) {
       return new Failure<>(
-          new FailedValidationException(
+          new InvalidEntityException(
               "Validation not possible because received object {" + rawGridElements + "} was null",
               e));
     }
@@ -212,10 +238,20 @@ public class GridContainerValidationUtils extends ValidationUtils {
    *
    * @param systemParticipants The system participants
    * @param nodes Set of already known nodes
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  protected static Try<Void, FailedValidationException> checkSystemParticipants(
+  protected static Try<Void, ValidationException> checkSystemParticipants(
       SystemParticipants systemParticipants, Set<NodeInput> nodes) {
-    checkNonNull(systemParticipants, "system participants");
+    try {
+      checkNonNull(systemParticipants, "system participants");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {"
+                  + systemParticipants
+                  + "} was null",
+              e));
+    }
 
     List<ValidationException> exceptions = new ArrayList<>();
 
@@ -369,10 +405,18 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @param graphicElements Elements to check
    * @param nodes Already known and checked nodes
    * @param lines Already known and checked lines
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  protected static Try<Void, FailedValidationException> checkGraphicElements(
+  protected static Try<Void, ValidationException> checkGraphicElements(
       GraphicElements graphicElements, Set<NodeInput> nodes, Set<LineInput> lines) {
-    checkNonNull(graphicElements, "graphic elements");
+    try {
+      checkNonNull(graphicElements, "graphic elements");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {" + graphicElements + "} was null",
+              e));
+    }
 
     List<ValidationException> exceptions = new ArrayList<>();
 
@@ -392,7 +436,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
                     graphic -> {
                       try {
                         GraphicValidationUtils.check(graphic);
-                      } catch (ValidationException e) {
+                      } catch (InvalidEntityException e) {
                         return new Failure<>(e);
                       }
                       if (!nodes.contains(graphic.getNode())) {
@@ -404,9 +448,8 @@ public class GridContainerValidationUtils extends ValidationUtils {
                                     + graphic.getNode().getUuid()
                                     + "', that is not among the provided ones.",
                                 graphic));
-                      } else {
-                        return Success.empty();
                       }
+                      return Success.empty();
                     })
                 .filter(Try::isFailure)
                 .map(Try::getException)
@@ -419,7 +462,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
                     graphic -> {
                       try {
                         GraphicValidationUtils.check(graphic);
-                      } catch (ValidationException e) {
+                      } catch (InvalidEntityException e) {
                         return new Failure<>(e);
                       }
                       if (!lines.contains(graphic.getLine())) {
@@ -431,9 +474,8 @@ public class GridContainerValidationUtils extends ValidationUtils {
                                     + graphic.getLine().getUuid()
                                     + "', that is not among the provided ones.",
                                 graphic));
-                      } else {
-                        return Success.empty();
                       }
+                      return Success.empty();
                     })
                 .filter(Try::isFailure)
                 .map(Try::getException)

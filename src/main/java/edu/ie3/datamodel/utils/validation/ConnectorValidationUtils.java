@@ -46,12 +46,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * the checking task, based on the class of the given object.
    *
    * @param connector Connector to validate
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a try object either containing a {@link ValidationException} or an empty Success
    */
   protected static Try<Void, ValidationException> check(ConnectorInput connector) {
     try {
       checkNonNull(connector, "a connector");
-    } catch (Exception e) {
+    } catch (InvalidEntityException e) {
       return new Failure<>(
           new InvalidEntityException(
               "Validation not possible because received object {" + connector + "} was null", e));
@@ -102,6 +102,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - its coordinates of start and end point equal coordinates of nodes
    *
    * @param line Line to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
   private static Try<Void, InvalidEntityException> checkLine(LineInput line) {
     List<Exception> exceptions =
@@ -139,11 +140,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - vRated is greater 0 (Rated voltage)
    *
    * @param lineType Line type to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
   protected static Try<Void, InvalidEntityException> checkLineType(LineTypeInput lineType) {
     try {
       checkNonNull(lineType, "a line type");
-    } catch (Exception e) {
+    } catch (InvalidEntityException e) {
       return new Failure<>(
           new InvalidEntityException(
               "Validation not possible because received object {" + lineType + "} was null", e));
@@ -189,6 +191,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - its rated voltages match the voltages at the nodes
    *
    * @param transformer2W Transformer2W to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
   private static Try<Void, InvalidEntityException> checkTransformer2W(
       Transformer2WInput transformer2W) {
@@ -229,12 +232,13 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - minimum tap position is smaller than maximum tap position
    *
    * @param transformer2WType Transformer2W type to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
   protected static Try<Void, InvalidEntityException> checkTransformer2WType(
       Transformer2WTypeInput transformer2WType) {
     try {
       checkNonNull(transformer2WType, "a two winding transformer type");
-    } catch (Exception e) {
+    } catch (InvalidEntityException e) {
       return new Failure<>(
           new InvalidEntityException(
               "Validation not possible because received object {"
@@ -298,6 +302,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - its rated voltages match the voltages at the nodes
    *
    * @param transformer3W Transformer3W to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
   private static Try<Void, InvalidEntityException> checkTransformer3W(
       Transformer3WInput transformer3W) {
@@ -358,12 +363,13 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - minimum tap position is smaller than maximum tap position <br>
    *
    * @param transformer3WType Transformer type to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
   protected static Try<Void, InvalidEntityException> checkTransformer3WType(
       Transformer3WTypeInput transformer3WType) {
     try {
       checkNonNull(transformer3WType, "a three winding transformer type");
-    } catch (Exception e) {
+    } catch (InvalidEntityException e) {
       return new Failure<>(
           new InvalidEntityException(
               "Validation not possible because received object {"
@@ -428,6 +434,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - its connected nodes are in the same voltage level
    *
    * @param switchInput Switch to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
   private static Try<Void, InvalidEntityException> checkSwitch(SwitchInput switchInput) {
     if (!switchInput.getNodeA().getVoltLvl().equals(switchInput.getNodeB().getVoltLvl())) {

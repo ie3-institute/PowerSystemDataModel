@@ -6,7 +6,15 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.thermal.*;
+import edu.ie3.datamodel.utils.ExceptionUtils;
+import edu.ie3.datamodel.utils.options.Failure;
+import edu.ie3.datamodel.utils.options.Success;
+import edu.ie3.datamodel.utils.options.Try;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import javax.measure.Quantity;
 
 public class ThermalUnitValidationUtils extends ValidationUtils {
@@ -23,17 +31,33 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * the checking task, based on the class of the given object.
    *
    * @param thermalUnitInput ThermalUnitInput to validate
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  protected static void check(ThermalUnitInput thermalUnitInput) {
-    checkNonNull(thermalUnitInput, "a thermal unit");
+  protected static Try<Void, InvalidEntityException> check(ThermalUnitInput thermalUnitInput) {
+    try {
+      checkNonNull(thermalUnitInput, "a thermal unit");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {" + thermalUnitInput + "} was null",
+              e));
+    }
+
+    Try<Void, InvalidEntityException> thermal;
 
     // Further checks for subclasses
-    if (ThermalSinkInput.class.isAssignableFrom(thermalUnitInput.getClass()))
-      checkThermalSink((ThermalSinkInput) thermalUnitInput);
-    else if (ThermalStorageInput.class.isAssignableFrom(thermalUnitInput.getClass()))
-      checkThermalStorage((ThermalStorageInput) thermalUnitInput);
-    else throw checkNotImplementedException(thermalUnitInput);
+    if (ThermalSinkInput.class.isAssignableFrom(thermalUnitInput.getClass())) {
+      thermal = checkThermalSink((ThermalSinkInput) thermalUnitInput);
+    } else if (ThermalStorageInput.class.isAssignableFrom(thermalUnitInput.getClass())) {
+      thermal = checkThermalStorage((ThermalStorageInput) thermalUnitInput);
+    } else {
+      thermal =
+          new Failure<>(
+              new InvalidEntityException(
+                  "Validation failed due to: ", checkNotImplementedException(thermalUnitInput)));
+    }
+
+    return thermal;
   }
 
   /**
@@ -43,15 +67,32 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * the checking task, based on the class of the given object.
    *
    * @param thermalSinkInput ThermalSinkInput to validate
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  private static void checkThermalSink(ThermalSinkInput thermalSinkInput) {
-    checkNonNull(thermalSinkInput, "a thermal sink");
+  private static Try<Void, InvalidEntityException> checkThermalSink(
+      ThermalSinkInput thermalSinkInput) {
+    try {
+      checkNonNull(thermalSinkInput, "a thermal sink");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {" + thermalSinkInput + "} was null",
+              e));
+    }
+
+    Try<Void, InvalidEntityException> thermal;
 
     // Further checks for subclasses
-    if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass()))
-      checkThermalHouse((ThermalHouseInput) thermalSinkInput);
-    else throw checkNotImplementedException(thermalSinkInput);
+    if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass())) {
+      thermal = checkThermalHouse((ThermalHouseInput) thermalSinkInput);
+    } else {
+      thermal =
+          new Failure<>(
+              new InvalidEntityException(
+                  "Validation failed due to: ", checkNotImplementedException(thermalSinkInput)));
+    }
+
+    return thermal;
   }
 
   /**
@@ -61,15 +102,34 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * the checking task, based on the class of the given object.
    *
    * @param thermalStorageInput ThermalStorageInput to validate
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  private static void checkThermalStorage(ThermalStorageInput thermalStorageInput) {
-    checkNonNull(thermalStorageInput, "a thermal storage");
+  private static Try<Void, InvalidEntityException> checkThermalStorage(
+      ThermalStorageInput thermalStorageInput) {
+    try {
+      checkNonNull(thermalStorageInput, "a thermal storage");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {"
+                  + thermalStorageInput
+                  + "} was null",
+              e));
+    }
+
+    Try<Void, InvalidEntityException> thermal;
 
     // Further checks for subclasses
-    if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass()))
-      checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput);
-    else throw checkNotImplementedException(thermalStorageInput);
+    if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass())) {
+      thermal = checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput);
+    } else {
+      thermal =
+          new Failure<>(
+              new InvalidEntityException(
+                  "Validation failed due to: ", checkNotImplementedException(thermalStorageInput)));
+    }
+
+    return thermal;
   }
 
   /**
@@ -81,22 +141,58 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * - its target temperature lies between the upper und lower limit temperatures
    *
    * @param thermalHouseInput ThermalHouseInput to validate
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  private static void checkThermalHouse(ThermalHouseInput thermalHouseInput) {
-    checkNonNull(thermalHouseInput, "a thermal house");
-    detectNegativeQuantities(
-        new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput);
-    detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput);
+  private static Try<Void, InvalidEntityException> checkThermalHouse(
+      ThermalHouseInput thermalHouseInput) {
+    try {
+      checkNonNull(thermalHouseInput, "a thermal house");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {"
+                  + thermalHouseInput
+                  + "} was null",
+              e));
+    }
+
+    List<InvalidEntityException> exceptions = new ArrayList<>();
+
+    Try<Void, InvalidEntityException> negative =
+        Try.apply(
+            () ->
+                detectNegativeQuantities(
+                    new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput));
+
+    Try<Void, InvalidEntityException> zeroOrNegative =
+        Try.apply(
+            () ->
+                detectZeroOrNegativeQuantities(
+                    new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput));
+
     if (thermalHouseInput
             .getLowerTemperatureLimit()
             .isGreaterThan(thermalHouseInput.getTargetTemperature())
         || thermalHouseInput
             .getUpperTemperatureLimit()
-            .isLessThan(thermalHouseInput.getTargetTemperature()))
-      throw new InvalidEntityException(
-          "Target temperature must be higher than lower temperature limit and lower than upper temperature limit",
-          thermalHouseInput);
+            .isLessThan(thermalHouseInput.getTargetTemperature())) {
+      exceptions.add(
+          new InvalidEntityException(
+              "Target temperature must be higher than lower temperature limit and lower than upper temperature limit",
+              thermalHouseInput));
+    }
+
+    exceptions.addAll(
+        Stream.of(negative, zeroOrNegative).filter(Try::isFailure).map(Try::getException).toList());
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -109,27 +205,59 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * - its specific heat capacity is positive
    *
    * @param cylindricalStorageInput CylindricalStorageInput to validate
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  private static void checkCylindricalStorage(CylindricalStorageInput cylindricalStorageInput) {
-    checkNonNull(cylindricalStorageInput, "a cylindrical storage");
+  private static Try<Void, InvalidEntityException> checkCylindricalStorage(
+      CylindricalStorageInput cylindricalStorageInput) {
+    try {
+      checkNonNull(cylindricalStorageInput, "a cylindrical storage");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {"
+                  + cylindricalStorageInput
+                  + "} was null",
+              e));
+    }
+
+    List<InvalidEntityException> exceptions = new ArrayList<>();
+
     // Check if inlet temperature is higher/equal to outlet temperature
     if (cylindricalStorageInput.getInletTemp().isLessThan(cylindricalStorageInput.getReturnTemp()))
-      throw new InvalidEntityException(
-          "Inlet temperature of the cylindrical storage cannot be lower than outlet temperature",
-          cylindricalStorageInput);
+      exceptions.add(
+          new InvalidEntityException(
+              "Inlet temperature of the cylindrical storage cannot be lower than outlet temperature",
+              cylindricalStorageInput));
     // Check if minimum permissible storage volume is lower than overall available storage volume
     if (cylindricalStorageInput
         .getStorageVolumeLvlMin()
         .isGreaterThan(cylindricalStorageInput.getStorageVolumeLvl()))
-      throw new InvalidEntityException(
-          "Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume",
-          cylindricalStorageInput);
-    detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {
-          cylindricalStorageInput.getStorageVolumeLvl(),
-          cylindricalStorageInput.getStorageVolumeLvlMin(),
-          cylindricalStorageInput.getC()
-        },
-        cylindricalStorageInput);
+      exceptions.add(
+          new InvalidEntityException(
+              "Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume",
+              cylindricalStorageInput));
+
+    Try<Void, InvalidEntityException> zeroOrNegative =
+        Try.apply(
+            () ->
+                detectZeroOrNegativeQuantities(
+                    new Quantity<?>[] {
+                      cylindricalStorageInput.getStorageVolumeLvl(),
+                      cylindricalStorageInput.getStorageVolumeLvlMin(),
+                      cylindricalStorageInput.getC()
+                    },
+                    cylindricalStorageInput));
+
+    exceptions.addAll(
+        Stream.of(zeroOrNegative).filter(Try::isFailure).map(Try::getException).toList());
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 }

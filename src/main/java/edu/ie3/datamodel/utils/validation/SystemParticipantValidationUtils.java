@@ -13,7 +13,13 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.utils.ExceptionUtils;
+import edu.ie3.datamodel.utils.options.Failure;
+import edu.ie3.datamodel.utils.options.Success;
 import edu.ie3.datamodel.utils.options.Try;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
@@ -36,35 +42,76 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * fulfill the checking task, based on the class of the given object.
    *
    * @param systemParticipant systemParticipant to validate
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
   protected static Try<Void, ValidationException> check(SystemParticipantInput systemParticipant) {
-    checkNonNull(systemParticipant, "a system participant");
-    if (systemParticipant.getqCharacteristics() == null)
-      throw new InvalidEntityException(
-          "Reactive power characteristics of system participant is not defined", systemParticipant);
+    try {
+      checkNonNull(systemParticipant, "a system participant");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {"
+                  + systemParticipant
+                  + "} was null",
+              e));
+    }
+
+    Try<Void, InvalidEntityException> qCharacteristic;
+
+    if (systemParticipant.getqCharacteristics() == null) {
+      qCharacteristic =
+          new Failure<>(
+              new InvalidEntityException(
+                  "Reactive power characteristics of system participant is not defined",
+                  systemParticipant));
+    } else {
+      qCharacteristic = Success.empty();
+    }
+
+    Try<Void, InvalidEntityException> participant;
 
     // Further checks for subclasses
-    if (BmInput.class.isAssignableFrom(systemParticipant.getClass()))
-      checkBm((BmInput) systemParticipant);
-    else if (ChpInput.class.isAssignableFrom(systemParticipant.getClass()))
-      checkChp((ChpInput) systemParticipant);
-    else if (EvInput.class.isAssignableFrom(systemParticipant.getClass()))
-      checkEv((EvInput) systemParticipant);
-    else if (FixedFeedInInput.class.isAssignableFrom(systemParticipant.getClass()))
-      checkFixedFeedIn((FixedFeedInInput) systemParticipant);
-    else if (HpInput.class.isAssignableFrom(systemParticipant.getClass()))
-      checkHp((HpInput) systemParticipant);
-    else if (LoadInput.class.isAssignableFrom(systemParticipant.getClass()))
-      checkLoad((LoadInput) systemParticipant);
-    else if (PvInput.class.isAssignableFrom(systemParticipant.getClass()))
-      checkPv((PvInput) systemParticipant);
-    else if (StorageInput.class.isAssignableFrom(systemParticipant.getClass()))
-      checkStorage((StorageInput) systemParticipant);
-    else if (WecInput.class.isAssignableFrom(systemParticipant.getClass()))
-      checkWec((WecInput) systemParticipant);
-    else if (EvcsInput.class.isAssignableFrom(systemParticipant.getClass())) checkEvcs();
-    else throw checkNotImplementedException(systemParticipant);
+    if (BmInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      participant = Try.apply(() -> checkBm((BmInput) systemParticipant));
+    } else if (ChpInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      participant = Try.apply(() -> checkChp((ChpInput) systemParticipant));
+    } else if (EvInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      participant = Try.apply(() -> checkEv((EvInput) systemParticipant));
+    } else if (FixedFeedInInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      participant = checkFixedFeedIn((FixedFeedInInput) systemParticipant);
+    } else if (HpInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      participant = Try.apply(() -> checkHp((HpInput) systemParticipant));
+    } else if (LoadInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      participant = checkLoad((LoadInput) systemParticipant);
+    } else if (PvInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      participant = checkPv((PvInput) systemParticipant);
+    } else if (StorageInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      participant = Try.apply(() -> checkStorage((StorageInput) systemParticipant));
+    } else if (WecInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      participant = Try.apply(() -> checkWec((WecInput) systemParticipant));
+    } else if (EvcsInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      participant = Try.apply(SystemParticipantValidationUtils::checkEvcs);
+    } else {
+      participant =
+          new Failure<>(
+              new InvalidEntityException(
+                  "Validation failed due to: ", checkNotImplementedException(systemParticipant)));
+    }
+
+    List<InvalidEntityException> exceptions =
+        Stream.of(qCharacteristic, participant)
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -79,37 +126,80 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * fulfill the checking task, based on the class of the given object.
    *
    * @param systemParticipantTypeInput systemParticipant Type to validate
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  protected static void checkType(SystemParticipantTypeInput systemParticipantTypeInput) {
-    checkNonNull(systemParticipantTypeInput, "a system participant type");
+  protected static Try<Void, InvalidEntityException> checkType(
+      SystemParticipantTypeInput systemParticipantTypeInput) {
+    try {
+      checkNonNull(systemParticipantTypeInput, "a system participant type");
+    } catch (InvalidEntityException e) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation not possible because received object {"
+                  + systemParticipantTypeInput
+                  + "} was null",
+              e));
+    }
+
+    List<InvalidEntityException> exceptions = new ArrayList<>();
+
     if ((systemParticipantTypeInput.getCapex() == null)
         || (systemParticipantTypeInput.getOpex() == null)
-        || (systemParticipantTypeInput.getsRated() == null))
-      throw new InvalidEntityException(
-          "At least one of capex, opex, or sRated is null", systemParticipantTypeInput);
-    detectNegativeQuantities(
-        new Quantity<?>[] {
-          systemParticipantTypeInput.getCapex(),
-          systemParticipantTypeInput.getOpex(),
-          systemParticipantTypeInput.getsRated()
-        },
-        systemParticipantTypeInput);
-    checkRatedPowerFactor(systemParticipantTypeInput, systemParticipantTypeInput.getCosPhiRated());
+        || (systemParticipantTypeInput.getsRated() == null)) {
+      exceptions.add(
+          new InvalidEntityException(
+              "At least one of capex, opex, or sRated is null", systemParticipantTypeInput));
+    }
 
-    if (BmTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
-      checkBmType((BmTypeInput) systemParticipantTypeInput);
-    else if (ChpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
-      checkChpType((ChpTypeInput) systemParticipantTypeInput);
-    else if (EvTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
-      checkEvType((EvTypeInput) systemParticipantTypeInput);
-    else if (HpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
-      checkHpType((HpTypeInput) systemParticipantTypeInput);
-    else if (StorageTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
-      checkStorageType((StorageTypeInput) systemParticipantTypeInput);
-    else if (WecTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
-      checkWecType((WecTypeInput) systemParticipantTypeInput);
-    else throw checkNotImplementedException(systemParticipantTypeInput);
+    Try<Void, InvalidEntityException> negative =
+        Try.apply(
+            () ->
+                detectNegativeQuantities(
+                    new Quantity<?>[] {
+                      systemParticipantTypeInput.getCapex(),
+                      systemParticipantTypeInput.getOpex(),
+                      systemParticipantTypeInput.getsRated()
+                    },
+                    systemParticipantTypeInput));
+
+    Try<Void, InvalidEntityException> ratedPF =
+        Try.apply(
+            () ->
+                checkRatedPowerFactor(
+                    systemParticipantTypeInput, systemParticipantTypeInput.getCosPhiRated()));
+    Try<Void, InvalidEntityException> type;
+
+    if (BmTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
+      type = checkBmType((BmTypeInput) systemParticipantTypeInput);
+    } else if (ChpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
+      type = checkChpType((ChpTypeInput) systemParticipantTypeInput);
+    } else if (EvTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
+      type = checkEvType((EvTypeInput) systemParticipantTypeInput);
+    } else if (HpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
+      type = checkHpType((HpTypeInput) systemParticipantTypeInput);
+    } else if (StorageTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
+      type = checkStorageType((StorageTypeInput) systemParticipantTypeInput);
+    } else if (WecTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
+      type = checkWecType((WecTypeInput) systemParticipantTypeInput);
+    } else {
+      type =
+          new Failure<>(
+              new InvalidEntityException(
+                  "Validation failed due to: ",
+                  checkNotImplementedException(systemParticipantTypeInput)));
+    }
+
+    exceptions.addAll(
+        Stream.of(negative, ratedPF, type).filter(Try::isFailure).map(Try::getException).toList());
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -129,10 +219,31 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its efficiency of assets inverter is between 0% and 100%
    *
    * @param bmTypeInput BmTypeInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static void checkBmType(BmTypeInput bmTypeInput) {
-    detectNegativeQuantities(new Quantity<?>[] {bmTypeInput.getActivePowerGradient()}, bmTypeInput);
-    isBetweenZeroAndHundredPercent(bmTypeInput, bmTypeInput.getEtaConv(), "Efficiency of inverter");
+  private static Try<Void, InvalidEntityException> checkBmType(BmTypeInput bmTypeInput) {
+    Try<Void, InvalidEntityException> negative =
+        Try.apply(
+            () ->
+                detectNegativeQuantities(
+                    new Quantity<?>[] {bmTypeInput.getActivePowerGradient()}, bmTypeInput));
+    Try<Void, InvalidEntityException> betweenZero =
+        Try.apply(
+            () ->
+                isBetweenZeroAndHundredPercent(
+                    bmTypeInput, bmTypeInput.getEtaConv(), "Efficiency of inverter"));
+
+    List<InvalidEntityException> exceptions =
+        Stream.of(negative, betweenZero).filter(Try::isFailure).map(Try::getException).toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -154,13 +265,43 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its needed self-consumption is not negative
    *
    * @param chpTypeInput ChpTypeInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static void checkChpType(ChpTypeInput chpTypeInput) {
-    detectNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpOwn()}, chpTypeInput);
-    detectZeroOrNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpThermal()}, chpTypeInput);
-    isBetweenZeroAndHundredPercent(chpTypeInput, chpTypeInput.getEtaEl(), "Electrical efficiency");
-    isBetweenZeroAndHundredPercent(
-        chpTypeInput, chpTypeInput.getEtaThermal(), "Thermal efficiency");
+  private static Try<Void, InvalidEntityException> checkChpType(ChpTypeInput chpTypeInput) {
+    Try<Void, InvalidEntityException> negative =
+        Try.apply(
+            () ->
+                detectNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpOwn()}, chpTypeInput));
+    Try<Void, InvalidEntityException> zeroOrNegative =
+        Try.apply(
+            () ->
+                detectZeroOrNegativeQuantities(
+                    new Quantity<?>[] {chpTypeInput.getpThermal()}, chpTypeInput));
+    Try<Void, InvalidEntityException> betweenZero =
+        Try.apply(
+            () ->
+                isBetweenZeroAndHundredPercent(
+                    chpTypeInput, chpTypeInput.getEtaEl(), "Electrical efficiency"));
+    Try<Void, InvalidEntityException> betweenZero2 =
+        Try.apply(
+            () ->
+                isBetweenZeroAndHundredPercent(
+                    chpTypeInput, chpTypeInput.getEtaThermal(), "Thermal efficiency"));
+
+    List<InvalidEntityException> exceptions =
+        Stream.of(negative, zeroOrNegative, betweenZero, betweenZero2)
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -180,10 +321,14 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its energy consumption per driven kilometre is positive
    *
    * @param evTypeInput EvTypeInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static void checkEvType(EvTypeInput evTypeInput) {
-    detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {evTypeInput.geteStorage(), evTypeInput.geteCons()}, evTypeInput);
+  private static Try<Void, InvalidEntityException> checkEvType(EvTypeInput evTypeInput) {
+    return Try.apply(
+        () ->
+            detectZeroOrNegativeQuantities(
+                new Quantity<?>[] {evTypeInput.geteStorage(), evTypeInput.geteCons()},
+                evTypeInput));
   }
 
   /**
@@ -192,10 +337,29 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its rated power factor is between 0 and 1
    *
    * @param fixedFeedInInput FixedFeedInInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static void checkFixedFeedIn(FixedFeedInInput fixedFeedInInput) {
-    detectNegativeQuantities(new Quantity<?>[] {fixedFeedInInput.getsRated()}, fixedFeedInInput);
-    checkRatedPowerFactor(fixedFeedInInput, fixedFeedInInput.getCosPhiRated());
+  private static Try<Void, InvalidEntityException> checkFixedFeedIn(
+      FixedFeedInInput fixedFeedInInput) {
+    Try<Void, InvalidEntityException> negative =
+        Try.apply(
+            () ->
+                detectNegativeQuantities(
+                    new Quantity<?>[] {fixedFeedInInput.getsRated()}, fixedFeedInInput));
+    Try<Void, InvalidEntityException> ratedPF =
+        Try.apply(() -> checkRatedPowerFactor(fixedFeedInInput, fixedFeedInInput.getCosPhiRated()));
+
+    List<InvalidEntityException> exceptions =
+        Stream.of(negative, ratedPF).filter(Try::isFailure).map(Try::getException).toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -214,9 +378,13 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its rated thermal power is positive
    *
    * @param hpTypeInput HpTypeInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static void checkHpType(HpTypeInput hpTypeInput) {
-    detectZeroOrNegativeQuantities(new Quantity<?>[] {hpTypeInput.getpThermal()}, hpTypeInput);
+  private static Try<Void, InvalidEntityException> checkHpType(HpTypeInput hpTypeInput) {
+    return Try.apply(
+        () ->
+            detectZeroOrNegativeQuantities(
+                new Quantity<?>[] {hpTypeInput.getpThermal()}, hpTypeInput));
   }
 
   /**
@@ -227,13 +395,36 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its rated power factor is between 0 and 1
    *
    * @param loadInput LoadInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static void checkLoad(LoadInput loadInput) {
-    if (loadInput.getLoadProfile() == null)
-      throw new InvalidEntityException("No standard load profile defined for load", loadInput);
-    detectNegativeQuantities(
-        new Quantity<?>[] {loadInput.getsRated(), loadInput.geteConsAnnual()}, loadInput);
-    checkRatedPowerFactor(loadInput, loadInput.getCosPhiRated());
+  private static Try<Void, InvalidEntityException> checkLoad(LoadInput loadInput) {
+    List<InvalidEntityException> exceptions = new ArrayList<>();
+
+    if (loadInput.getLoadProfile() == null) {
+      exceptions.add(
+          new InvalidEntityException("No standard load profile defined for load", loadInput));
+    }
+
+    Try<Void, InvalidEntityException> negative =
+        Try.apply(
+            () ->
+                detectNegativeQuantities(
+                    new Quantity<?>[] {loadInput.getsRated(), loadInput.geteConsAnnual()},
+                    loadInput));
+    Try<Void, InvalidEntityException> ratedPF =
+        Try.apply(() -> checkRatedPowerFactor(loadInput, loadInput.getCosPhiRated()));
+
+    exceptions.addAll(
+        Stream.of(negative, ratedPF).filter(Try::isFailure).map(Try::getException).toList());
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -246,14 +437,37 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its rated power factor is between 0 and 1
    *
    * @param pvInput PvInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static void checkPv(PvInput pvInput) {
-    detectNegativeQuantities(new Quantity<?>[] {pvInput.getsRated()}, pvInput);
-    checkAlbedo(pvInput);
-    checkAzimuth(pvInput);
-    isBetweenZeroAndHundredPercent(pvInput, pvInput.getEtaConv(), "Efficiency of the converter");
-    checkElevationAngle(pvInput);
-    checkRatedPowerFactor(pvInput, pvInput.getCosPhiRated());
+  private static Try<Void, InvalidEntityException> checkPv(PvInput pvInput) {
+    Try<Void, InvalidEntityException> negative =
+        Try.apply(() -> detectNegativeQuantities(new Quantity<?>[] {pvInput.getsRated()}, pvInput));
+    Try<Void, InvalidEntityException> albedo = Try.apply(() -> checkAlbedo(pvInput));
+    Try<Void, InvalidEntityException> azimuth = Try.apply(() -> checkAzimuth(pvInput));
+    Try<Void, InvalidEntityException> betweenZero =
+        Try.apply(
+            () ->
+                isBetweenZeroAndHundredPercent(
+                    pvInput, pvInput.getEtaConv(), "Efficiency of the converter"));
+    Try<Void, InvalidEntityException> elevationAngle =
+        Try.apply(() -> checkElevationAngle(pvInput));
+    Try<Void, InvalidEntityException> ratedPF =
+        Try.apply(() -> checkRatedPowerFactor(pvInput, pvInput.getCosPhiRated()));
+
+    List<InvalidEntityException> exceptions =
+        Stream.of(negative, albedo, azimuth, betweenZero, elevationAngle, ratedPF)
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -324,25 +538,63 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its permissible hours of full use is not negative
    *
    * @param storageTypeInput StorageTypeInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static void checkStorageType(StorageTypeInput storageTypeInput) {
-    if (storageTypeInput.getLifeCycle() < 0)
-      throw new InvalidEntityException(
-          "Permissible amount of life cycles of the storage type must be zero or positive",
-          storageTypeInput);
-    isBetweenZeroAndHundredPercent(
-        storageTypeInput, storageTypeInput.getEta(), "Efficiency of the electrical converter");
-    isBetweenZeroAndHundredPercent(
-        storageTypeInput, storageTypeInput.getDod(), "Maximum permissible depth of discharge");
-    detectNegativeQuantities(
-        new Quantity<?>[] {
-          storageTypeInput.getpMax(),
-          storageTypeInput.getActivePowerGradient(),
-          storageTypeInput.getLifeTime()
-        },
-        storageTypeInput);
-    detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {storageTypeInput.geteStorage()}, storageTypeInput);
+  private static Try<Void, InvalidEntityException> checkStorageType(
+      StorageTypeInput storageTypeInput) {
+    List<InvalidEntityException> exceptions = new ArrayList<>();
+
+    if (storageTypeInput.getLifeCycle() < 0) {
+      exceptions.add(
+          new InvalidEntityException(
+              "Permissible amount of life cycles of the storage type must be zero or positive",
+              storageTypeInput));
+    }
+
+    Try<Void, InvalidEntityException> betweenZero =
+        Try.apply(
+            () ->
+                isBetweenZeroAndHundredPercent(
+                    storageTypeInput,
+                    storageTypeInput.getEta(),
+                    "Efficiency of the electrical converter"));
+    Try<Void, InvalidEntityException> betweenZero2 =
+        Try.apply(
+            () ->
+                isBetweenZeroAndHundredPercent(
+                    storageTypeInput,
+                    storageTypeInput.getDod(),
+                    "Maximum permissible depth of discharge"));
+    Try<Void, InvalidEntityException> betweenZero3 =
+        Try.apply(
+            () ->
+                detectNegativeQuantities(
+                    new Quantity<?>[] {
+                      storageTypeInput.getpMax(),
+                      storageTypeInput.getActivePowerGradient(),
+                      storageTypeInput.getLifeTime()
+                    },
+                    storageTypeInput));
+    Try<Void, InvalidEntityException> betweenZero4 =
+        Try.apply(
+            () ->
+                detectZeroOrNegativeQuantities(
+                    new Quantity<?>[] {storageTypeInput.geteStorage()}, storageTypeInput));
+
+    exceptions.addAll(
+        Stream.of(betweenZero, betweenZero2, betweenZero3, betweenZero4)
+            .filter(Try::isFailure)
+            .map(Try::getException)
+            .toList());
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -363,12 +615,32 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its height of the rotor hub is not negative
    *
    * @param wecTypeInput WecTypeInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static void checkWecType(WecTypeInput wecTypeInput) {
-    isBetweenZeroAndHundredPercent(
-        wecTypeInput, wecTypeInput.getEtaConv(), "Efficiency of the converter");
-    detectNegativeQuantities(
-        new Quantity<?>[] {wecTypeInput.getRotorArea(), wecTypeInput.getHubHeight()}, wecTypeInput);
+  private static Try<Void, InvalidEntityException> checkWecType(WecTypeInput wecTypeInput) {
+    Try<Void, InvalidEntityException> betweenZero =
+        Try.apply(
+            () ->
+                isBetweenZeroAndHundredPercent(
+                    wecTypeInput, wecTypeInput.getEtaConv(), "Efficiency of the converter"));
+    Try<Void, InvalidEntityException> betweenZero2 =
+        Try.apply(
+            () ->
+                detectNegativeQuantities(
+                    new Quantity<?>[] {wecTypeInput.getRotorArea(), wecTypeInput.getHubHeight()},
+                    wecTypeInput));
+
+    List<InvalidEntityException> exceptions =
+        Stream.of(betweenZero, betweenZero2).filter(Try::isFailure).map(Try::getException).toList();
+
+    if (exceptions.size() > 0) {
+      return new Failure<>(
+          new InvalidEntityException(
+              "Validation failed due to the following exception(s): ",
+              new Throwable(ExceptionUtils.getMessages(exceptions))));
+    } else {
+      return Success.empty();
+    }
   }
 
   /** Validates a EvcsInput */
