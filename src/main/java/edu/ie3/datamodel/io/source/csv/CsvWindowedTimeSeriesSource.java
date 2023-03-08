@@ -58,7 +58,6 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
       Duration maximumForeSight,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
-    super();
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     this.maximumForeSight = maximumForeSight;
     this.filePath = filePath;

@@ -52,7 +52,6 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       UUID timeSeriesUuid,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
-    super();
     this.dataSource = sqlDataSource;
 
     this.timeSeriesUuid = timeSeriesUuid;

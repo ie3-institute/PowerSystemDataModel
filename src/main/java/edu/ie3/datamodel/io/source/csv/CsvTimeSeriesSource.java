@@ -37,7 +37,6 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       String filePath,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
-    super();
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
 
     /* Read in the full time series */

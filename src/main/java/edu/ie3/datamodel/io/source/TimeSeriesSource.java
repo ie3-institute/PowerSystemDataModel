@@ -22,8 +22,6 @@ import java.util.*;
  */
 public abstract class TimeSeriesSource<V extends Value> implements DataSource {
 
-  public TimeSeriesSource() {}
-
   /**
    * Checks whether the given column scheme can be used with time series.
    *
