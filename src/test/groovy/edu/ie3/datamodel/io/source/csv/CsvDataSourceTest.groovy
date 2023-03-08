@@ -38,10 +38,10 @@ class CsvDataSourceTest extends Specification {
     }
 
     /*
-    OperatorInput getFirstOrDefaultOperator(
-        Collection<OperatorInput> operators, String operatorUuid, String entityClassName, String requestEntityUuid) {
-      return super.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid)
-    }
+     OperatorInput getFirstOrDefaultOperator(
+     Collection<OperatorInput> operators, String operatorUuid, String entityClassName, String requestEntityUuid) {
+     return super.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid)
+     }
      */
 
     def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(

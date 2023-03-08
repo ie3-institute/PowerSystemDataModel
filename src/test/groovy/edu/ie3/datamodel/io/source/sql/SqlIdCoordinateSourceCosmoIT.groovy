@@ -59,10 +59,10 @@ class SqlIdCoordinateSourceCosmoIT extends Specification implements TestContaine
 
   def "The SqlCoordinateSource is able to create a valid stream from a coordinate file"() {
     def expectedStream = Stream.of(
-            ["id": "106580", "latgeo": "39.602772", "latrot": "-10", "longgeo": "1.279336", "longrot": "-6.8125", "tid": "1"],
-            ["id": "106581", "latgeo": "39.610001", "latrot": "-10", "longgeo": "1.358673", "longrot": "-6.75", "tid": "2"],
-            ["id": "106582", "latgeo": "39.617161", "latrot": "-10", "longgeo": "1.438028", "longrot": "-6.6875", "tid": "3"],
-            ["id": "106583", "latgeo": "39.624249", "latrot": "-10", "longgeo": "1.5174021", "longrot": "-6.625", "tid": "4"])
+        ["id": "106580", "latgeo": "39.602772", "latrot": "-10", "longgeo": "1.279336", "longrot": "-6.8125", "tid": "1"],
+        ["id": "106581", "latgeo": "39.610001", "latrot": "-10", "longgeo": "1.358673", "longrot": "-6.75", "tid": "2"],
+        ["id": "106582", "latgeo": "39.617161", "latrot": "-10", "longgeo": "1.438028", "longrot": "-6.6875", "tid": "3"],
+        ["id": "106583", "latgeo": "39.624249", "latrot": "-10", "longgeo": "1.5174021", "longrot": "-6.625", "tid": "4"])
 
     when:
     def actualStream = source.extractSourceData()
@@ -93,9 +93,9 @@ class SqlIdCoordinateSourceCosmoIT extends Specification implements TestContaine
   def "The SqlCoordinateSource is able to look up specified points" () {
     int[] ids = 106580..106582
     def expectedCoordinates = [
-            GeoUtils.buildPoint(39.602772, 1.279336),
-            GeoUtils.buildPoint(39.610001, 1.358673),
-            GeoUtils.buildPoint(39.617161, 1.438028)
+      GeoUtils.buildPoint(39.602772, 1.279336),
+      GeoUtils.buildPoint(39.610001, 1.358673),
+      GeoUtils.buildPoint(39.617161, 1.438028)
     ].toSet()
 
     when:
@@ -137,10 +137,10 @@ class SqlIdCoordinateSourceCosmoIT extends Specification implements TestContaine
   def "The SqlCoordinateSource is able to return all available coordinates" () {
     given:
     def expectedCoordinates = [
-            GeoUtils.buildPoint(39.602772, 1.279336),
-            GeoUtils.buildPoint(39.610001, 1.358673),
-            GeoUtils.buildPoint(39.617161, 1.438028),
-            GeoUtils.buildPoint(39.624249, 1.5174021)
+      GeoUtils.buildPoint(39.602772, 1.279336),
+      GeoUtils.buildPoint(39.610001, 1.358673),
+      GeoUtils.buildPoint(39.617161, 1.438028),
+      GeoUtils.buildPoint(39.624249, 1.5174021)
     ].toSet()
 
     when:
@@ -153,16 +153,16 @@ class SqlIdCoordinateSourceCosmoIT extends Specification implements TestContaine
   def "The SqlCoordinateSource is able to return the nearest n coordinates in a collection" () {
     given:
     def allCoordinates = [
-            GeoUtils.buildPoint(39d, 1d),
-            GeoUtils.buildPoint(40d, 2d),
-            GeoUtils.buildPoint(40d, 1d),
-            GeoUtils.buildPoint(39d, 2d)
+      GeoUtils.buildPoint(39d, 1d),
+      GeoUtils.buildPoint(40d, 2d),
+      GeoUtils.buildPoint(40d, 1d),
+      GeoUtils.buildPoint(39d, 2d)
     ]
 
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
     def expectedDistances = [
-            new CoordinateDistance(basePoint, allCoordinates[2]),
-            new CoordinateDistance(basePoint, allCoordinates[1])
+      new CoordinateDistance(basePoint, allCoordinates[2]),
+      new CoordinateDistance(basePoint, allCoordinates[1])
     ].sort()
 
     when:

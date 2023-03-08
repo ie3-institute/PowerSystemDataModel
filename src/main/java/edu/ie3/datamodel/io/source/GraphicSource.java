@@ -38,7 +38,6 @@ public class GraphicSource extends EntitySource implements DataSource {
   // general fields
   TypeSource typeSource;
   RawGridSource rawGridSource;
-  FunctionalDataSource dataSource;
 
   // factories
   private final LineGraphicInputFactory lineGraphicInputFactory;

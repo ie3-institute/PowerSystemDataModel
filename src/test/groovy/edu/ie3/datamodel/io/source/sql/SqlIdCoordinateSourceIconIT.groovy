@@ -50,11 +50,11 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
 
   def "The SqlIdCoordinateSource is able to create a valid stream from a coordinate file"() {
     def expectedStream = Stream.of(
-            ["id": "67775", "latitude": "51.5", "longitude": "7.438", "coordinatetype": "ICON"],
-            ["id": "531137", "latitude": "51.5", "longitude": "7.375", "coordinatetype": "ICON"],
-            ["id": "551525", "latitude": "51.438", "longitude": "7.438", "coordinatetype": "ICON"],
-            ["id": "278150", "latitude": "51.438", "longitude": "7.375", "coordinatetype": "ICON"]
-    )
+        ["id": "67775", "latitude": "51.5", "longitude": "7.438", "coordinatetype": "ICON"],
+        ["id": "531137", "latitude": "51.5", "longitude": "7.375", "coordinatetype": "ICON"],
+        ["id": "551525", "latitude": "51.438", "longitude": "7.438", "coordinatetype": "ICON"],
+        ["id": "278150", "latitude": "51.438", "longitude": "7.375", "coordinatetype": "ICON"]
+        )
 
     when:
     def actualStream = source.extractSourceData()
@@ -85,9 +85,9 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
   def "The SqlIdCoordinateSource is able to look up specified points" () {
     int[] ids = [67775, 551525, 278150]
     def expectedCoordinates = [
-            GeoUtils.buildPoint(51.5, 7.438),
-            GeoUtils.buildPoint(51.438, 7.438),
-            GeoUtils.buildPoint(51.438, 7.375)
+      GeoUtils.buildPoint(51.5, 7.438),
+      GeoUtils.buildPoint(51.438, 7.438),
+      GeoUtils.buildPoint(51.438, 7.375)
     ].toSet()
 
     when:
@@ -129,10 +129,10 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
   def "The SqlIdCoordinateSource is able to return all available coordinates" () {
     given:
     def expectedCoordinates = [
-            GeoUtils.buildPoint(51.5, 7.438),
-            GeoUtils.buildPoint(51.5, 7.375),
-            GeoUtils.buildPoint(51.438, 7.438),
-            GeoUtils.buildPoint(51.438, 7.375)
+      GeoUtils.buildPoint(51.5, 7.438),
+      GeoUtils.buildPoint(51.5, 7.375),
+      GeoUtils.buildPoint(51.438, 7.438),
+      GeoUtils.buildPoint(51.438, 7.375)
     ].toSet()
 
     when:
@@ -145,16 +145,16 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
   def "The SqlIdCoordinateSource is able to return the nearest n coordinates in a collection" () {
     given:
     def allCoordinates = [
-            GeoUtils.buildPoint(39d, 1d),
-            GeoUtils.buildPoint(40d, 2d),
-            GeoUtils.buildPoint(40d, 1d),
-            GeoUtils.buildPoint(39d, 2d)
+      GeoUtils.buildPoint(39d, 1d),
+      GeoUtils.buildPoint(40d, 2d),
+      GeoUtils.buildPoint(40d, 1d),
+      GeoUtils.buildPoint(39d, 2d)
     ]
 
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
     def expectedDistances = [
-            new CoordinateDistance(basePoint, allCoordinates[2]),
-            new CoordinateDistance(basePoint, allCoordinates[1])
+      new CoordinateDistance(basePoint, allCoordinates[2]),
+      new CoordinateDistance(basePoint, allCoordinates[1])
     ].sort()
 
     when:

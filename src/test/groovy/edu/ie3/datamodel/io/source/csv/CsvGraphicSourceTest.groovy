@@ -69,9 +69,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A CsvGraphicSource should read and handle a valid node graphics file as expected"() {
     given:
     def csvGraphicSource = new GraphicSource(
-            Mock(TypeSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     def expectedNodeGraphicD = new NodeGraphicInput(
         gtd.nodeGraphicD.uuid,
         gtd.nodeGraphicD.graphicLayer,
@@ -101,9 +101,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A CsvGraphicSource should read and handle a valid line graphics file as expected"() {
     given:
     def csvGraphicSource = new GraphicSource(
-            Mock(TypeSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
     when:
     def lineGraphics = csvGraphicSource.getLineGraphicInput([gtd.lineCtoD] as Set)
@@ -116,9 +116,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A CsvGraphicSource should build node graphic entity data from valid and invalid input data correctly"() {
     given:
     def csvGraphicSource = new GraphicSource(
-            Mock(TypeSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     def fieldsToAttributesMap = [
       "uuid"         : "09aec636-791b-45aa-b981-b14edf171c4c",
       "graphic_layer": "main",
@@ -153,9 +153,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A CsvGraphicSource should build line graphic entity data from valid and invalid input data correctly"() {
     given:
     def csvGraphicSource = new GraphicSource(
-            Mock(TypeSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     def fieldsToAttributesMap = [
       "uuid"         : "ece86139-3238-4a35-9361-457ecb4258b0",
       "graphic_layer": "main",

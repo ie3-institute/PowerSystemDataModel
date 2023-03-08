@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ### Changed
+- Refactor CSV data sources [#716](https://github.com/ie3-institute/PowerSystemDataModel/issues/716)
 
 
 ## [3.0.0] - 2023-02-16

@@ -38,10 +38,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def thermalSource = new ThermalSource(typeSource, new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
     def rawGridSource = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy))
     def csvSystemParticipantSource = new SystemParticipantSource(
-            typeSource,
-            thermalSource,
-            rawGridSource,
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        typeSource,
+        thermalSource,
+        rawGridSource,
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     when:
     def systemParticipantsOpt = csvSystemParticipantSource.getSystemParticipants()
@@ -69,8 +69,8 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
     def thermalSource = new ThermalSource(typeSource, new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
     def rawGridSource = Spy(RawGridSource, constructorArgs: [
-            typeSource,
-            new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)
+      typeSource,
+      new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)
     ]) {
       // partly fake the return method of the csv raw grid source to always return empty node sets
       // -> elements to build NodeGraphicInputs are missing
@@ -78,10 +78,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
       getNodes(_) >> new HashSet<NodeInput>()
     } as RawGridSource
     def csvSystemParticipantSource = new SystemParticipantSource(
-            typeSource,
-            thermalSource,
-            rawGridSource,
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        typeSource,
+        thermalSource,
+        rawGridSource,
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     when:
     def systemParticipantsOpt = csvSystemParticipantSource.getSystemParticipants()
@@ -93,10 +93,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should build typed entity from valid and invalid input data as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     def nodeAssetInputEntityData = new NodeAssetInputEntityData(fieldsToAttributes, clazz, operator, node)
 
@@ -121,10 +121,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should build hp input entity from valid and invalid input data as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     def sysPartTypedEntityData = new SystemParticipantTypedEntityData<>(fieldsToAttributes, HpInput, sptd.hpInput.operator, sptd.hpInput.node, sptd.hpTypeInput)
 
@@ -149,10 +149,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should build chp input entity from valid and invalid input data as expected"(List<ThermalStorageInput> thermalStorages, List<ThermalBusInput> thermalBuses, Map<String, String> fieldsToAttributes, boolean resultIsPresent, ChpInputEntityData resultData) {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     def sysPartTypedEntityData = new SystemParticipantTypedEntityData<>(fieldsToAttributes, ChpInput, sptd.chpInput.operator, sptd.chpInput.node, sptd.chpTypeInput)
 
@@ -182,10 +182,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from a valid heat pump input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def heatPumps = csvSystemParticipantSource.getHeatPumps(nodes as Set, operators as Set, types as Set, thermalBuses as Set)
@@ -207,10 +207,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from a valid chp input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def chpUnits = csvSystemParticipantSource.getChpPlants(nodes as Set, operators as Set, types as Set, thermalBuses as Set, thermalStorages as Set)
@@ -236,10 +236,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid ev input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def sysParts = csvSystemParticipantSource.getEvs(nodes as Set, operators as Set, types as Set)
@@ -260,10 +260,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid wec input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def sysParts = csvSystemParticipantSource.getWecPlants(nodes as Set, operators as Set, types as Set)
@@ -284,10 +284,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid storage input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def sysParts = csvSystemParticipantSource.getStorages(nodes as Set, operators as Set, types as Set)
@@ -308,10 +308,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid bm input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def sysParts = csvSystemParticipantSource.getBmPlants(nodes as Set, operators as Set, types as Set)
@@ -332,10 +332,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid ev charging station input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def sysParts = csvSystemParticipantSource.getEvCS(nodes as Set, operators as Set)
@@ -355,10 +355,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid load input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def sysParts = csvSystemParticipantSource.getLoads(nodes as Set, operators as Set)
@@ -378,10 +378,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid pv input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def sysParts = csvSystemParticipantSource.getPvPlants(nodes as Set, operators as Set)
@@ -401,10 +401,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid fixedFeedIn input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def sysParts = csvSystemParticipantSource.getFixedFeedIns(nodes as Set, operators as Set)
@@ -428,10 +428,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid em input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-            Mock(TypeSource),
-            Mock(ThermalSource),
-            Mock(RawGridSource),
-            new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(ThermalSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
     def sysParts = csvSystemParticipantSource.getEmSystems(nodes as Set, operators as Set)

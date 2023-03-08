@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
@@ -23,7 +24,7 @@ public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
 
   protected final CsvDataSource dataSource;
 
-  private final Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
+  private final Map<UUID, CsvIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
 
   /**
    * Creates a time series type source

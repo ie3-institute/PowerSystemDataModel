@@ -18,137 +18,137 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class CsvWindowedTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
-    def "The windowed time series source is able to query an instance in time"() {
-        given:
-        def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-        def source = new CsvWindowedTimeSeriesSource(
-                ";",
-                timeSeriesFolderPath,
-                "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
-                new FileNamingStrategy(),
-                Duration.ofHours(2L),
-                EnergyPriceValue,
-                factory)
-        def expected = new EnergyPriceValue(Quantities.getQuantity(125.0, StandardUnits.ENERGY_PRICE))
+  def "The windowed time series source is able to query an instance in time"() {
+    given:
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def source = new CsvWindowedTimeSeriesSource(
+        ";",
+        timeSeriesFolderPath,
+        "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
+        new FileNamingStrategy(),
+        Duration.ofHours(2L),
+        EnergyPriceValue,
+        factory)
+    def expected = new EnergyPriceValue(Quantities.getQuantity(125.0, StandardUnits.ENERGY_PRICE))
 
-        when:
-        def actual = source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
+    when:
+    def actual = source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
 
-        then:
-        actual.isPresent()
-        actual.get() == expected
+    then:
+    actual.isPresent()
+    actual.get() == expected
 
-        source.close()
-    }
+    source.close()
+  }
 
-    def "The windowed time series source is able to query multiple instances in time"() {
-        given:
-        def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-        def source = new CsvWindowedTimeSeriesSource(
-                ";",
-                timeSeriesFolderPath,
-                "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
-                new FileNamingStrategy(),
-                Duration.ofHours(2L),
-                EnergyPriceValue,
-                factory)
+  def "The windowed time series source is able to query multiple instances in time"() {
+    given:
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def source = new CsvWindowedTimeSeriesSource(
+        ";",
+        timeSeriesFolderPath,
+        "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
+        new FileNamingStrategy(),
+        Duration.ofHours(2L),
+        EnergyPriceValue,
+        factory)
 
-        when:
-        source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
-        source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
+    when:
+    source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
+    source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
 
-        then:
-        noExceptionThrown()
+    then:
+    noExceptionThrown()
 
-        source.close()
-    }
+    source.close()
+  }
 
-    def "The windowed time series source throws an exception, if the queried time is before the currently covered interval"() {
-        given:
-        def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-        def source = new CsvWindowedTimeSeriesSource(
-                ";",
-                timeSeriesFolderPath,
-                "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
-                new FileNamingStrategy(),
-                Duration.ofHours(2L),
-                EnergyPriceValue,
-                factory)
+  def "The windowed time series source throws an exception, if the queried time is before the currently covered interval"() {
+    given:
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def source = new CsvWindowedTimeSeriesSource(
+        ";",
+        timeSeriesFolderPath,
+        "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
+        new FileNamingStrategy(),
+        Duration.ofHours(2L),
+        EnergyPriceValue,
+        factory)
 
-        when:
-        source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
-        source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
+    when:
+    source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
+    source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
 
-        then:
-        def thrown = thrown(RuntimeException)
-        thrown.message == "The buffer window already passed your desired time instance '2020-01-01T00:00Z[UTC]'."
+    then:
+    def thrown = thrown(RuntimeException)
+    thrown.message == "The buffer window already passed your desired time instance '2020-01-01T00:00Z[UTC]'."
 
-        source.close()
-    }
+    source.close()
+  }
 
-    def "The windowed time series source throws an exception, if the queried time frame starts before the currently covered interval"() {
-        given:
-        def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-        def source = new CsvWindowedTimeSeriesSource(
-                ";",
-                timeSeriesFolderPath,
-                "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
-                new FileNamingStrategy(),
-                Duration.ofHours(2L),
-                EnergyPriceValue,
-                factory)
-        def start = ZonedDateTime.of(2020, 1, 1, 0, 00, 0, 0, ZoneId.of("UTC"))
+  def "The windowed time series source throws an exception, if the queried time frame starts before the currently covered interval"() {
+    given:
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def source = new CsvWindowedTimeSeriesSource(
+        ";",
+        timeSeriesFolderPath,
+        "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
+        new FileNamingStrategy(),
+        Duration.ofHours(2L),
+        EnergyPriceValue,
+        factory)
+    def start = ZonedDateTime.of(2020, 1, 1, 0, 00, 0, 0, ZoneId.of("UTC"))
 
-        when:
-        source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 0, 15, 0, ZoneId.of("UTC")))
-        source.getTimeSeries(new ClosedInterval<ZonedDateTime>(start, start.plusHours(2L)))
+    when:
+    source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 0, 15, 0, ZoneId.of("UTC")))
+    source.getTimeSeries(new ClosedInterval<ZonedDateTime>(start, start.plusHours(2L)))
 
-        then:
-        def thrown = thrown(RuntimeException)
-        thrown.message == "The buffer window already passed the start  '2020-01-01T00:00Z[UTC]' of your desired time frame."
+    then:
+    def thrown = thrown(RuntimeException)
+    thrown.message == "The buffer window already passed the start  '2020-01-01T00:00Z[UTC]' of your desired time frame."
 
-        source.close()
-    }
+    source.close()
+  }
 
-    def "The windowed time series source is able to load a time series for a given interval"() {
-        given:
-        def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-        def source = new CsvWindowedTimeSeriesSource(
-                ";",
-                timeSeriesFolderPath,
-                "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
-                new FileNamingStrategy(),
-                Duration.ofHours(2L),
-                EnergyPriceValue,
-                factory)
-        def start = ZonedDateTime.of(2020, 1, 1, 0, 00, 0, 0, ZoneId.of("UTC"))
-        def end = ZonedDateTime.of(2020, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC"))
+  def "The windowed time series source is able to load a time series for a given interval"() {
+    given:
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def source = new CsvWindowedTimeSeriesSource(
+        ";",
+        timeSeriesFolderPath,
+        "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
+        new FileNamingStrategy(),
+        Duration.ofHours(2L),
+        EnergyPriceValue,
+        factory)
+    def start = ZonedDateTime.of(2020, 1, 1, 0, 00, 0, 0, ZoneId.of("UTC"))
+    def end = ZonedDateTime.of(2020, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC"))
 
-        when:
-        def actual = source.getTimeSeries(new ClosedInterval<ZonedDateTime>(start, end))
+    when:
+    def actual = source.getTimeSeries(new ClosedInterval<ZonedDateTime>(start, end))
 
-        then:
-        actual.entries.size() == 2
+    then:
+    actual.entries.size() == 2
 
-        source.close()
-    }
+    source.close()
+  }
 
-    def "The windowed time series source is able to determine all available time steps"() {
-        given:
-        def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-        def source = new CsvWindowedTimeSeriesSource(
-                ";",
-                timeSeriesFolderPath,
-                "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
-                new FileNamingStrategy(),
-                Duration.ofHours(2L),
-                EnergyPriceValue,
-                factory)
+  def "The windowed time series source is able to determine all available time steps"() {
+    given:
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def source = new CsvWindowedTimeSeriesSource(
+        ";",
+        timeSeriesFolderPath,
+        "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
+        new FileNamingStrategy(),
+        Duration.ofHours(2L),
+        EnergyPriceValue,
+        factory)
 
-        when:
-        def actual = source.availableTimeSteps
+    when:
+    def actual = source.availableTimeSteps
 
-        then:
-        actual.size() == 2
-    }
+    then:
+    actual.size() == 2
+  }
 }

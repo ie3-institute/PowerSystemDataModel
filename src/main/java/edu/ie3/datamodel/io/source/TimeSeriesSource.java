@@ -22,8 +22,6 @@ import java.util.*;
  * model
  */
 public abstract class TimeSeriesSource<V extends Value> implements DataSource {
-  protected UUID timeSeriesUuid;
-  //public TimeSeriesSource(UUID timeSeriesUuid) { this.timeSeriesUuid = timeSeriesUuid; }
 
   public TimeSeriesSource() {}
 
