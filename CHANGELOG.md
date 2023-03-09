@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
-Adding SQL id coordinate sources (``IdCoordinateSource``) [#689](https://github.com/ie3-institute/PowerSystemDataModel/issues/689)
+- Copy methods for container classes [#726](https://github.com/ie3-institute/PowerSystemDataModel/issues/726)
+- Adding SQL id coordinate sources (``IdCoordinateSource``) [#689](https://github.com/ie3-institute/PowerSystemDataModel/issues/689)
 
 ### Fixed
+
 
 ### Changed
 
@@ -100,6 +102,7 @@ Adding SQL id coordinate sources (``IdCoordinateSource``) [#689](https://github.
 - Writers used to write time series are closed right away
 - Changed class name in FlexOptionsResult.toString [#693](https://github.com/ie3-institute/PowerSystemDataModel/issues/693)
 - Deleted parameter decimalPlaces and changed naming of serialization method [#710](https://github.com/ie3-institute/PowerSystemDataModel/issues/710)
+- Changed switch result documentation according to the implementation [#757](https://github.com/ie3-institute/PowerSystemDataModel/issues/757)
 
 ## [2.0.1] - 2021-07-08
 
