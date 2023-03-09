@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Data source will throw an exceptions instead of returning an empty optionals [#707](https://github.com/ie3-institute/PowerSystemDataModel/issues/707)
+- Improving `ValidationUtils` [#758](https://github.com/ie3-institute/PowerSystemDataModel/issues/758)
 
 
 ## [3.0.0] - 2023-02-16
