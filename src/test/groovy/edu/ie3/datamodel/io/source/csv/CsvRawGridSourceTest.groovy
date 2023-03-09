@@ -752,7 +752,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     then: "the optional is empty"
     actual == null
     SourceException ex = thrown()
-    ex.message == "1 error(s) occurred within \"NodeInput\" data, one error occurred in row 3."
+    ex.message == "1 exception(s) occurred within \"NodeInput\" data, one is: error occurred in row 3."
   }
 
   def "The CsvRawGridSource returns an empty grid, if the RawGridElements contain no single element"() {

@@ -119,9 +119,9 @@ public abstract class Try<R, E extends Exception> {
       return new Failure<>(
           new SourceException(
               countExceptions
-                  + " error(s) occurred within \""
+                  + " exception(s) occurred within \""
                   + typeOfData.getSimpleName()
-                  + "\" data, one "
+                  + "\" data, one is: "
                   + firstException.getMessage().toLowerCase(),
               firstException.getCause()));
     } else {
