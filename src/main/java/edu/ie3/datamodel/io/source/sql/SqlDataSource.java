@@ -27,6 +27,8 @@ public class SqlDataSource implements FunctionalDataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
+  private final String errorSQL = "Error during execution of query {}";
+
   protected final SqlConnector connector;
   protected final DatabaseNamingStrategy databaseNamingStrategy;
   protected String schemaName;
@@ -124,13 +126,8 @@ public class SqlDataSource implements FunctionalDataSource {
 
   @Override
   public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
-    try {
-      String explicitPath = databaseNamingStrategy.getEntityName(entityClass).get();
-      return getSourceData(entityClass, explicitPath);
-    } catch (NoSuchElementException e) {
-      log.error("...", e);
-      return Stream.empty();
-    }
+    String explicitPath = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
+    return getSourceData(entityClass, explicitPath);
   }
 
   @Override
@@ -194,7 +191,7 @@ public class SqlDataSource implements FunctionalDataSource {
       return buildStreamByQuery(
           entityClass, ps -> {}, sqlConnector.getConnection().prepareStatement(query));
     } catch (SQLException e) {
-      log.error("Error during execution of query {}", query, e);
+      log.error(errorSQL, query, e);
     }
     return Stream.empty();
   }
@@ -212,7 +209,7 @@ public class SqlDataSource implements FunctionalDataSource {
 
       return fieldMaps.stream();
     } catch (SQLException e) {
-      log.error("Error during execution of query {}", query, e);
+      log.error(errorSQL, query, e);
     }
     return Stream.empty();
   }
@@ -225,7 +222,7 @@ public class SqlDataSource implements FunctionalDataSource {
 
       return fieldMaps.stream();
     } catch (SQLException e) {
-      log.error("Error during execution of query {}", query, e);
+      log.error(errorSQL, query, e);
     }
     return Stream.empty();
   }

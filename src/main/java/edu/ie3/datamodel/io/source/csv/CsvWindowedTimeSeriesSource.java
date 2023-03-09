@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
@@ -56,7 +57,8 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
       FileNamingStrategy fileNamingStrategy,
       Duration maximumForeSight,
       Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
+      TimeBasedSimpleValueFactory<V> factory)
+      throws SourceException {
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     this.maximumForeSight = maximumForeSight;
     this.filePath = filePath;
@@ -69,7 +71,7 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
               .filter(Optional::isPresent)
               .map(Optional::get);
     } catch (FileNotFoundException e) {
-      throw new RuntimeException(
+      throw new SourceException(
           "Opening the reader for time series file '" + filePath + "' failed.", e);
     }
   }
