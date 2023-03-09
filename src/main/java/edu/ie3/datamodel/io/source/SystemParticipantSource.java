@@ -548,14 +548,12 @@ public class SystemParticipantSource extends EntitySource implements DataSource 
   }
 
   /**
-   * {@inheritDoc}
-   *
-   * <p>If one of the sets of {@link NodeInput}, {@link ThermalBusInput}, {@link
-   * ThermalStorageInput} or {@link ChpTypeInput} entities is not exhaustive for all available
-   * {@link ChpInput} entities (e.g. a {@link NodeInput} or {@link ChpTypeInput} entity is missing)
-   * or if an error during the building process occurs, the entity that misses something will be
-   * skipped (which can be seen as a filtering functionality) but all entities that are able to be
-   * built will be returned anyway and the elements that couldn't have been built are logged.
+   * If one of the sets of {@link NodeInput}, {@link ThermalBusInput}, {@link ThermalStorageInput}
+   * or {@link ChpTypeInput} entities is not exhaustive for all available {@link ChpInput} entities
+   * (e.g. a {@link NodeInput} or {@link ChpTypeInput} entity is missing) or if an error during the
+   * building process occurs, the entity that misses something will be skipped (which can be seen as
+   * a filtering functionality) but all entities that are able to be built will be returned anyway
+   * and the elements that couldn't have been built are logged.
    *
    * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
@@ -581,9 +579,7 @@ public class SystemParticipantSource extends EntitySource implements DataSource 
   }
 
   /**
-   * {@inheritDoc}
-   *
-   * <p>If one of the sets of {@link NodeInput}, {@link ThermalBusInput} or {@link HpTypeInput}
+   * If one of the sets of {@link NodeInput}, {@link ThermalBusInput} or {@link HpTypeInput}
    * entities is not exhaustive for all available {@link HpInput} entities (e.g. a {@link NodeInput}
    * or {@link HpTypeInput} entity is missing) or if an error during the building process occurs,
    * the entity that misses something will be skipped (which can be seen as a filtering
@@ -724,7 +720,7 @@ public class SystemParticipantSource extends EntitySource implements DataSource 
             thermalBuses)
         .map(dataOpt -> dataOpt.flatMap(factory::get));
   }
-  /** {@inheritDoc} */
+
   private Stream<Optional<HpInput>> hpInputStream(
       HpInputFactory factory,
       Collection<NodeInput> nodes,

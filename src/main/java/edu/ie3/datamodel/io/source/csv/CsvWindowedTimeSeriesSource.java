@@ -159,8 +159,9 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
   }
 
   /**
-   * Fills up the buffer. This is done by adding the {@link this#maximumForeSight} to the time of
-   * interest. This marks the newest possible instance in the buffer to appear.
+   * Fills up the buffer. This is done by adding the {@link
+   * CsvWindowedTimeSeriesSource#maximumForeSight} to the time of interest. This marks the newest
+   * possible instance in the buffer to appear.
    *
    * @param timeOfInterest The time of interest
    */

@@ -187,9 +187,8 @@ public class SqlDataSource implements FunctionalDataSource {
 
   protected Stream<Map<String, String>> buildStreamByQuery(
       Class<? extends UniqueEntity> entityClass, SqlConnector sqlConnector, String query) {
-    try {
-      return buildStreamByQuery(
-          entityClass, ps -> {}, sqlConnector.getConnection().prepareStatement(query));
+    try (PreparedStatement ps = sqlConnector.getConnection().prepareStatement(query)) {
+      return buildStreamByQuery(entityClass, a -> {}, ps);
     } catch (SQLException e) {
       log.error(errorSQL, query, e);
     }
