@@ -127,14 +127,14 @@ public class SqlDataSource implements FunctionalDataSource {
   @Override
   public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
     String explicitPath = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
-    return getSourceData(entityClass, explicitPath);
+    return buildStreamByTableName(explicitPath);
   }
 
   @Override
   public Stream<Map<String, String>> getSourceData(
       Class<? extends UniqueEntity> entityClass, String explicitPath) {
     String query = createBaseQueryString(schemaName, explicitPath);
-    return buildStreamByQuery(entityClass, connector, query);
+    return buildStreamByQuery(query);
   }
 
   @Override
@@ -185,27 +185,14 @@ public class SqlDataSource implements FunctionalDataSource {
     void addParams(PreparedStatement ps) throws SQLException;
   }
 
-  protected Stream<Map<String, String>> buildStreamByQuery(
-      Class<? extends UniqueEntity> entityClass, SqlConnector sqlConnector, String query) {
-    try (PreparedStatement ps = sqlConnector.getConnection().prepareStatement(query)) {
-      return buildStreamByQuery(entityClass, a -> {}, ps);
-    } catch (SQLException e) {
-      log.error(errorSQL, query, e);
-    }
-    return Stream.empty();
-  }
-
-  protected Stream<Map<String, String>> buildStreamByQuery(
-      Class<? extends UniqueEntity> entityClass,
-      AddParams addParams,
-      PreparedStatement preparedStatement) {
-    String query = createBaseQueryString(schemaName, entityClass.getSimpleName());
-    try (PreparedStatement ps = preparedStatement) {
-      addParams.addParams(ps);
-
+  /**
+   * Creates a stream with maps representing a data point in the SQL data source using an explicit
+   * query.
+   */
+  protected Stream<Map<String, String>> buildStreamByQuery(String query) {
+    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
       ResultSet resultSet = ps.executeQuery();
       List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
-
       return fieldMaps.stream();
     } catch (SQLException e) {
       log.error(errorSQL, query, e);
@@ -213,7 +200,29 @@ public class SqlDataSource implements FunctionalDataSource {
     return Stream.empty();
   }
 
-  protected Stream<Map<String, String>> buildStreamByQuery(String tableName) {
+  /**
+   * Creates a stream with maps representing a data point in the SQL data source using an entity
+   * class.
+   */
+  protected Stream<Map<String, String>> buildStreamByEntityClass(
+      Class<? extends UniqueEntity> entityClass, AddParams addParams) {
+    String query = createBaseQueryString(schemaName, entityClass.getSimpleName());
+    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
+      addParams.addParams(ps);
+      ResultSet resultSet = ps.executeQuery();
+      List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
+      return fieldMaps.stream();
+    } catch (SQLException e) {
+      log.error(errorSQL, query, e);
+    }
+    return Stream.empty();
+  }
+
+  /**
+   * Creates a stream with maps representing a data point in the SQL data source using an explicit
+   * table name.
+   */
+  protected Stream<Map<String, String>> buildStreamByTableName(String tableName) {
     String query = createBaseQueryString(schemaName, tableName);
     try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
       ResultSet resultSet = ps.executeQuery();
