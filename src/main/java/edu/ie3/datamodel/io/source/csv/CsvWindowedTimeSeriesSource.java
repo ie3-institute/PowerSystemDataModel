@@ -83,10 +83,11 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
   }
 
   @Override
-  public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
+  public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
+      throws SourceException {
     if (!Objects.isNull(coveredInterval)
         && timeInterval.getLower().isBefore(coveredInterval.getLower()))
-      throw new RuntimeException(
+      throw new SourceException(
           "The buffer window already passed the start  '"
               + timeInterval.getLower()
               + "' of your desired time frame.");
@@ -109,9 +110,9 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends TimeSeriesSour
   }
 
   @Override
-  public Optional<V> getValue(ZonedDateTime time) {
+  public Optional<V> getValue(ZonedDateTime time) throws SourceException {
     if (!Objects.isNull(coveredInterval) && time.isBefore(coveredInterval.getLower()))
-      throw new RuntimeException(
+      throw new SourceException(
           "The buffer window already passed your desired time instance '" + time + "'.");
 
     if (Objects.isNull(coveredInterval) || time.isAfter(coveredInterval.getUpper())) {

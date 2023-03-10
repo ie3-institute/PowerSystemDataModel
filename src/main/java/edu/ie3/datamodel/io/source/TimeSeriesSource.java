@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
@@ -61,7 +62,8 @@ public abstract class TimeSeriesSource<V extends Value> implements DataSource {
 
   public abstract IndividualTimeSeries<V> getTimeSeries();
 
-  public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval);
+  public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
+      throws SourceException;
 
-  public abstract Optional<V> getValue(ZonedDateTime time);
+  public abstract Optional<V> getValue(ZonedDateTime time) throws SourceException;
 }
