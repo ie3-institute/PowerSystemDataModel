@@ -10,8 +10,9 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.options.Failure;
-import edu.ie3.datamodel.utils.options.Success;
 import edu.ie3.datamodel.utils.options.Try;
+import java.util.ArrayList;
+import java.util.List;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -31,41 +32,50 @@ public class NodeValidationUtils extends ValidationUtils {
    * - geoPosition is not null
    *
    * @param node Node to validate
-   * @return a try object either containing an {@link ValidationException} or an empty Success
+   * @return a list of try objects either containing an {@link ValidationException} or an empty
+   *     Success
    */
-  protected static Try<Void, ValidationException> check(NodeInput node) {
+  protected static List<Try<Void, ValidationException>> check(NodeInput node) {
     try {
       checkNonNull(node, "a node");
     } catch (InvalidEntityException e) {
-      return new Failure<>(
-          new InvalidEntityException(
-              "Validation not possible because received object {" + node + "} was null", e));
+      return List.of(
+          new Failure<>(
+              new InvalidEntityException(
+                  "Validation not possible because received object {" + node + "} was null", e)));
     }
+
+    List<Try<Void, ValidationException>> exceptions = new ArrayList<>();
 
     try {
       checkVoltageLevel(node.getVoltLvl());
     } catch (VoltageLevelException e) {
-      return new Failure<>(new InvalidEntityException("Node has invalid voltage level", node));
+      exceptions.add(
+          new Failure<>(new InvalidEntityException("Node has invalid voltage level", node)));
     } catch (InvalidEntityException invalidEntityException) {
-      return new Failure<>(invalidEntityException);
+      exceptions.add(new Failure<>(invalidEntityException));
     }
 
     if (node.getvTarget()
         .isLessThanOrEqualTo(Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE_MAGNITUDE))) {
-      return new Failure<>(
-          new InvalidEntityException("Target voltage (p.u.) is not a positive value", node));
+      exceptions.add(
+          new Failure<>(
+              new InvalidEntityException("Target voltage (p.u.) is not a positive value", node)));
     } else if (node.getvTarget()
         .isGreaterThan(Quantities.getQuantity(2, StandardUnits.TARGET_VOLTAGE_MAGNITUDE))) {
-      return new Failure<>(
-          new UnsafeEntityException("Target voltage (p.u.) might be too high", node));
+      exceptions.add(
+          new Failure<>(
+              new UnsafeEntityException("Target voltage (p.u.) might be too high", node)));
     }
     if (node.getSubnet() <= 0)
-      return new Failure<>(new InvalidEntityException("Subnet can't be zero or negative", node));
+      exceptions.add(
+          new Failure<>(new InvalidEntityException("Subnet can't be zero or negative", node)));
     if (node.getGeoPosition() == null) {
-      return new Failure<>(new InvalidEntityException("GeoPosition of node is null", node));
+      exceptions.add(
+          new Failure<>(new InvalidEntityException("GeoPosition of node is null", node)));
     }
 
-    return Success.empty();
+    return exceptions;
   }
 
   /**

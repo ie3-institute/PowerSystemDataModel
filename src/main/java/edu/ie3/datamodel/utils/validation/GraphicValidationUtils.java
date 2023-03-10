@@ -9,12 +9,10 @@ import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
-import edu.ie3.datamodel.utils.ExceptionUtils;
 import edu.ie3.datamodel.utils.options.Failure;
-import edu.ie3.datamodel.utils.options.Success;
 import edu.ie3.datamodel.utils.options.Try;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class GraphicValidationUtils extends ValidationUtils {
 
@@ -32,51 +30,37 @@ public class GraphicValidationUtils extends ValidationUtils {
    * fulfill the checking task, based on the class of the given object.
    *
    * @param graphicInput GraphicInput to validate
-   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
+   * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
+   *     Success
    */
-  protected static Try<Void, InvalidEntityException> check(GraphicInput graphicInput) {
+  protected static List<Try<Void, InvalidEntityException>> check(GraphicInput graphicInput) {
     try {
       checkNonNull(graphicInput, "a graphic input");
     } catch (InvalidEntityException e) {
-      return new Failure<>(
-          new InvalidEntityException(
-              "Validation not possible because received object {" + graphicInput + "} was null",
-              e));
-    }
-
-    Try<Void, InvalidEntityException> layer;
-
-    if (graphicInput.getGraphicLayer() == null) {
-      layer =
+      return List.of(
           new Failure<>(
               new InvalidEntityException(
-                  "Graphic Layer of graphic element is not defined", graphicInput));
-    } else {
-      layer = Success.empty();
+                  "Validation not possible because received object {" + graphicInput + "} was null",
+                  e)));
     }
 
-    Try<Void, InvalidEntityException> graphic;
+    List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
+
+    if (graphicInput.getGraphicLayer() == null) {
+      exceptions.add(
+          new Failure<>(
+              new InvalidEntityException(
+                  "Graphic Layer of graphic element is not defined", graphicInput)));
+    }
 
     // Further checks for subclasses
     if (LineGraphicInput.class.isAssignableFrom(graphicInput.getClass())) {
-      graphic = Try.apply(() -> checkLineGraphicInput((LineGraphicInput) graphicInput));
+      exceptions.add(Try.apply(() -> checkLineGraphicInput((LineGraphicInput) graphicInput)));
     } else if (NodeGraphicInput.class.isAssignableFrom(graphicInput.getClass())) {
-      graphic = Try.apply(() -> checkNodeGraphicInput((NodeGraphicInput) graphicInput));
-    } else {
-      graphic = Success.empty();
+      exceptions.add(Try.apply(() -> checkNodeGraphicInput((NodeGraphicInput) graphicInput)));
     }
 
-    List<InvalidEntityException> exceptions =
-        Stream.of(layer, graphic).filter(Try::isFailure).map(Try::getException).toList();
-
-    if (exceptions.size() > 0) {
-      return new Failure<>(
-          new InvalidEntityException(
-              "Validation failed due to the following exception(s): ",
-              new Throwable(ExceptionUtils.getMessages(exceptions))));
-    } else {
-      return Success.empty();
-    }
+    return exceptions;
   }
 
   /**
