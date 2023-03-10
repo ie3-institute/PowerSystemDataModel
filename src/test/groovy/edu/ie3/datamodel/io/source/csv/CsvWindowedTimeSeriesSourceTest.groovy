@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.models.StandardUnits
@@ -80,7 +81,7 @@ class CsvWindowedTimeSeriesSourceTest extends Specification implements CsvTestDa
     source.getValue(ZonedDateTime.of(2020, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
 
     then:
-    def thrown = thrown(RuntimeException)
+    def thrown = thrown(SourceException)
     thrown.message == "The buffer window already passed your desired time instance '2020-01-01T00:00Z[UTC]'."
 
     source.close()
@@ -104,7 +105,7 @@ class CsvWindowedTimeSeriesSourceTest extends Specification implements CsvTestDa
     source.getTimeSeries(new ClosedInterval<ZonedDateTime>(start, start.plusHours(2L)))
 
     then:
-    def thrown = thrown(RuntimeException)
+    def thrown = thrown(SourceException)
     thrown.message == "The buffer window already passed the start  '2020-01-01T00:00Z[UTC]' of your desired time frame."
 
     source.close()
