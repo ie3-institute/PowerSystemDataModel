@@ -8,20 +8,22 @@ package edu.ie3.datamodel.utils.options
 import edu.ie3.datamodel.exceptions.SourceException
 import spock.lang.Specification
 
-class TryTest extends Specification implements TryTestData {
+import java.util.concurrent.Callable
+
+class TryTest extends Specification {
 
   def "A method can be applied to a try object"() {
     when:
-    Try<String, Exception> actual = Try.apply(callable())
+    Try<String, Exception> actual = Try.apply(TryTestData.success as Callable<String>)
 
     then:
     actual.success
-    actual.data == "test"
+    actual.data == "success"
   }
 
   def "A void method can be applied to a try object"() {
     when:
-    Try<Void, Exception> actual = Try.apply(runnable())
+    Try<Void, Exception> actual = Try.apply(TryTestData.throwsException)
 
     then:
     actual.failure
@@ -78,5 +80,11 @@ class TryTest extends Specification implements TryTestData {
     then:
     scan.failure
     scan.exception.message == "1 exception(s) occurred within \"String\" data, one is: exception"
+  }
+
+  private class TryTestData {
+    static Callable<String> success =  {return "success"}
+
+    static Runnable throwsException = {throw new RuntimeException("Exception thrown.")}
   }
 }
