@@ -21,6 +21,7 @@ import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.utils.options.Failure;
+import edu.ie3.datamodel.utils.options.Success;
 import edu.ie3.datamodel.utils.options.Try;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,14 +63,11 @@ public class ValidationUtils {
    * @return a list of try objects either containing a {@link ValidationException} or an empty
    *     Success
    */
-  public static List<Try<Void, ? extends ValidationException>> check(Object obj) {
+  public static Try<Void, ValidationException> check(Object obj) {
     try {
       checkNonNull(obj, "an object");
     } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {" + obj + "} was null", e)));
+      return new Failure<>(e);
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
@@ -85,11 +83,17 @@ public class ValidationUtils {
     } else {
       exceptions.add(
           new Failure<>(
-              new FailedValidationException(
-                  "Validation failed due to: ", checkNotImplementedException(obj))));
+              new FailedValidationException(checkNotImplementedException(obj).getMessage())));
     }
 
-    return exceptions;
+    List<? extends ValidationException> list =
+        exceptions.stream().filter(Try::isFailure).map(Try::getException).toList();
+
+    if (list.size() > 0) {
+      return new Failure<>(new FailedValidationException(list));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
@@ -122,7 +126,7 @@ public class ValidationUtils {
       exceptions.add(new Failure<>(new InvalidEntityException("No ID assigned", assetInput)));
     }
     if (assetInput.getOperationTime() == null) {
-      exceptions.add(
+      return List.of(
           new Failure<>(
               new InvalidEntityException(
                   "Operation time of the asset is not defined", assetInput)));
@@ -164,7 +168,7 @@ public class ValidationUtils {
       exceptions.add(
           new Failure<>(
               new FailedValidationException(
-                  "Validation failed due to: ", checkNotImplementedException(assetInput))));
+                  checkNotImplementedException(assetInput).getMessage())));
     }
 
     return exceptions;
@@ -217,7 +221,7 @@ public class ValidationUtils {
       exceptions.add(
           new Failure<>(
               new FailedValidationException(
-                  "Validation failed due to: ", checkNotImplementedException(assetTypeInput))));
+                  checkNotImplementedException(assetTypeInput).getMessage())));
     }
 
     return exceptions;

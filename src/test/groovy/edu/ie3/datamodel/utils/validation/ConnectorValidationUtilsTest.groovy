@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.utils.options.Try
 
 import static edu.ie3.datamodel.models.StandardUnits.*
@@ -160,19 +161,17 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer2WType recognizes all potential errors for a transformer2W type"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions =  ConnectorValidationUtils.check(invalidTransformer2WType).stream().filter {it -> it.failure}.toList()
+    Try<Void, ValidationException> exceptions =  ConnectorValidationUtils.check(invalidTransformer2WType)
 
     then:
-    exceptions.size() == excpectedSize
-    Exception ex = exceptions.get(0).exception
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Exception ex = exceptions.exception
+    ex.message.contains(expectedException.message)
 
     where:
-    invalidTransformer2WType || excpectedSize || expectedException
-    new Transformer2WTypeInput(uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, Quantities.getQuantity(-1d, DV_TAP), dPhi, tapSide, tapNeutr, tapMin, tapMax) || 1 || new InvalidEntityException("Voltage magnitude increase per tap position must be between 0% and 100%", invalidTransformer2WType)
-    new Transformer2WTypeInput(uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, 100, tapMax) || 2 || new InvalidEntityException("Minimum tap position must be lower than maximum tap position", invalidTransformer2WType)
-    new Transformer2WTypeInput(uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, 100, tapMin, tapMax) || 1 || new InvalidEntityException("Neutral tap position must be between minimum and maximum tap position", invalidTransformer2WType)
+    invalidTransformer2WType || expectedException
+    new Transformer2WTypeInput(uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, Quantities.getQuantity(-1d, DV_TAP), dPhi, tapSide, tapNeutr, tapMin, tapMax) || new InvalidEntityException("Voltage magnitude increase per tap position must be between 0% and 100%", invalidTransformer2WType)
+    new Transformer2WTypeInput(uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, 100, tapMax) || new InvalidEntityException("Minimum tap position must be lower than maximum tap position", invalidTransformer2WType)
+    new Transformer2WTypeInput(uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, 100, tapMin, tapMax) || new InvalidEntityException("Neutral tap position must be between minimum and maximum tap position", invalidTransformer2WType)
   }
 
   def "Smoke Test: Correct transformer3W throws no exception"() {
@@ -229,19 +228,17 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer3WType recognizes all potential errors for a transformer3W type"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidTransformer3WType).stream().filter {it -> it.failure}.toList()
+    Try<Void, ValidationException> exceptions = ConnectorValidationUtils.check(invalidTransformer3WType)
 
     then:
-    exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Exception ex = exceptions.exception
+    ex.message.contains(expectedException.message)
 
     where:
-    invalidTransformer3WType || expectedSize || expectedException
-    new Transformer3WTypeInput(uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, Quantities.getQuantity(-1d, DV_TAP), dPhi, tapNeutr, tapMin, tapMax) || 1  || new InvalidEntityException("Voltage magnitude increase per tap position must be between 0% and 100%", invalidTransformer3WType)
-    new Transformer3WTypeInput(uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, 100, tapMax) || 2  || new InvalidEntityException("Minimum tap position must be lower than maximum tap position", invalidTransformer3WType)
-    new Transformer3WTypeInput(uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, 100, tapMin, tapMax) || 1  || new InvalidEntityException("Neutral tap position must be between minimum and maximum tap position", invalidTransformer3WType)
+    invalidTransformer3WType || expectedException
+    new Transformer3WTypeInput(uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, Quantities.getQuantity(-1d, DV_TAP), dPhi, tapNeutr, tapMin, tapMax) || new InvalidEntityException("Voltage magnitude increase per tap position must be between 0% and 100%", invalidTransformer3WType)
+    new Transformer3WTypeInput(uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, 100, tapMax) || new InvalidEntityException("Minimum tap position must be lower than maximum tap position", invalidTransformer3WType)
+    new Transformer3WTypeInput(uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, 100, tapMin, tapMax) || new InvalidEntityException("Neutral tap position must be between minimum and maximum tap position", invalidTransformer3WType)
   }
 
   def "Smoke Test: Correct switch throws no exception"() {

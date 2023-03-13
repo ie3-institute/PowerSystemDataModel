@@ -169,8 +169,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       exceptions.add(
           new Failure<>(
               new InvalidEntityException(
-                  "Validation failed due to: ",
-                  checkNotImplementedException(systemParticipantTypeInput))));
+                  checkNotImplementedException(systemParticipantTypeInput).getMessage(),
+                  systemParticipantTypeInput)));
     }
 
     return exceptions;

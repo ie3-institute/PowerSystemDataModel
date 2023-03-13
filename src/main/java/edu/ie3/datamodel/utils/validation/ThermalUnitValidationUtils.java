@@ -57,7 +57,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       exceptions.add(
           new Failure<>(
               new FailedValidationException(
-                  "Validation failed due to: ", checkNotImplementedException(thermalUnitInput))));
+                  checkNotImplementedException(thermalUnitInput).getMessage())));
     }
 
     return exceptions;
@@ -96,7 +96,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       exceptions.add(
           new Failure<>(
               new FailedValidationException(
-                  "Validation failed due to: ", checkNotImplementedException(thermalSinkInput))));
+                  checkNotImplementedException(thermalSinkInput).getMessage())));
     }
 
     return exceptions;
@@ -135,8 +135,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       exceptions.add(
           new Failure<>(
               new FailedValidationException(
-                  "Validation failed due to: ",
-                  checkNotImplementedException(thermalStorageInput))));
+                  checkNotImplementedException(thermalStorageInput).getMessage())));
     }
 
     return exceptions;

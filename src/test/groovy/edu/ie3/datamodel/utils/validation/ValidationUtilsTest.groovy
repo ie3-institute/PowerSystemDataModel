@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.utils.options.Try
+
 import static edu.ie3.datamodel.models.StandardUnits.CONDUCTANCE_PER_LENGTH
 import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
 import static edu.ie3.datamodel.models.StandardUnits.RATED_VOLTAGE_MAGNITUDE
@@ -106,12 +109,12 @@ class ValidationUtilsTest extends Specification {
 
   def "If an object can't be identified, a ValidationException is thrown as expected"() {
     when:
-    ValidationUtils.check(invalidObject)
+    Try<Void, ValidationException> actual = ValidationUtils.check(invalidObject)
 
     then:
-    Exception ex = thrown()
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    actual.failure
+    Throwable ex = actual.exception
+    ex.message.contains(expectedException.message)
 
     where:
     invalidObject          || expectedException
@@ -120,12 +123,12 @@ class ValidationUtilsTest extends Specification {
 
   def "The validation check method recognizes all potential errors for an asset"() {
     when:
-    ValidationUtils.check(invalidAsset)
+    Try<Void, ValidationException> actual = ValidationUtils.check(invalidAsset)
 
     then:
-    Exception ex = thrown()
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    actual.failure
+    Exception ex = actual.exception
+    ex.message.contains(expectedException.message)
 
     where:
     invalidAsset                                                            	    || expectedException
@@ -216,11 +219,12 @@ class ValidationUtilsTest extends Specification {
     def invalidAsset = new InvalidAssetInput()
 
     when:
-    ValidationUtils.checkAsset(invalidAsset)
+    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAsset(invalidAsset).stream().filter {it -> it.failure}.toList()
 
     then:
-    def e = thrown(NotImplementedException)
-    e.message == "Cannot validate object of class 'InvalidAssetInput', as no routine is implemented."
+    exceptions.size() == 1
+    def e = exceptions.get(0).exception
+    e.message.contains("Cannot validate object of class 'InvalidAssetInput', as no routine is implemented.")
   }
 
   def "Checking an unsupported asset type leads to an exception"() {
@@ -228,11 +232,12 @@ class ValidationUtilsTest extends Specification {
     def invalidAssetType = new InvalidAssetTypeInput()
 
     when:
-    ValidationUtils.checkAssetType(invalidAssetType)
+    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter {it -> it.failure}.toList()
 
     then:
-    def e = thrown(NotImplementedException)
-    e.message == "Cannot validate object of class 'InvalidAssetTypeInput', as no routine is implemented."
+    exceptions.size() == 1
+    def e = exceptions.get(0).exception
+    e.message.contains("Cannot validate object of class 'InvalidAssetTypeInput', as no routine is implemented.")
   }
 
   def "Checking an asset type input without an id leads to an exception"() {
@@ -240,10 +245,11 @@ class ValidationUtilsTest extends Specification {
     def invalidAssetType = new InvalidAssetTypeInput(UUID.randomUUID(), null)
 
     when:
-    ValidationUtils.checkAssetType(invalidAssetType)
+    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter {it -> it.failure}.toList()
 
     then:
-    def e = thrown(InvalidEntityException)
+    exceptions.size() == 2
+    def e = exceptions.get(0).exception
     e.message.startsWith("Entity is invalid because of: No ID assigned [AssetTypeInput")
   }
 }

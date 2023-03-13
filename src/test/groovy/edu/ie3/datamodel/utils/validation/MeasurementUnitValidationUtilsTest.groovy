@@ -5,7 +5,10 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.UnsafeEntityException
+import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.utils.options.Try
 import edu.ie3.test.common.GridTestData
 import spock.lang.Specification
 
@@ -24,10 +27,11 @@ class MeasurementUnitValidationUtilsTest extends Specification {
 
   def "MeasurementUnitValidationUtils.check() recognizes all potential errors for a measurement unit"() {
     when:
-    MeasurementUnitValidationUtils.check(invalidMeasurementUnit)
+    Try<Void, ValidationException> exception = MeasurementUnitValidationUtils.check(invalidMeasurementUnit)
 
     then:
-    Exception ex = thrown()
+    exception.failure
+    Exception ex = exception.exception
     ex.class == expectedException.class
     ex.message == expectedException.message
 
