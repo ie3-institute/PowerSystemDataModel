@@ -58,7 +58,7 @@ public class CsvFileConnector implements DataConnector {
   }
 
   public synchronized BufferedCsvWriter getOrInitWriter(
-      Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep)
+      Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep, boolean override)
       throws ConnectorException {
     /* Try to the the right writer */
     BufferedCsvWriter predefinedWriter = entityWriters.get(clz);
@@ -67,7 +67,7 @@ public class CsvFileConnector implements DataConnector {
     /* If it is not available, build and register one */
     try {
       CsvFileDefinition fileDefinition = buildFileDefinition(clz, headerElements, csvSep);
-      BufferedCsvWriter newWriter = initWriter(baseDirectoryName, fileDefinition);
+      BufferedCsvWriter newWriter = initWriter(baseDirectoryName, fileDefinition, override);
 
       entityWriters.put(clz, newWriter);
       return newWriter;
@@ -78,7 +78,8 @@ public class CsvFileConnector implements DataConnector {
   }
 
   public synchronized <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      BufferedCsvWriter getOrInitWriter(T timeSeries, String[] headerElements, String csvSep)
+      BufferedCsvWriter getOrInitWriter(
+          T timeSeries, String[] headerElements, String csvSep, boolean override)
           throws ConnectorException {
     /* Try to the the right writer */
     BufferedCsvWriter predefinedWriter = timeSeriesWriters.get(timeSeries.getUuid());
@@ -87,7 +88,7 @@ public class CsvFileConnector implements DataConnector {
     /* If it is not available, build and register one */
     try {
       CsvFileDefinition fileDefinition = buildFileDefinition(timeSeries, headerElements, csvSep);
-      BufferedCsvWriter newWriter = initWriter(baseDirectoryName, fileDefinition);
+      BufferedCsvWriter newWriter = initWriter(baseDirectoryName, fileDefinition, override);
 
       timeSeriesWriters.put(timeSeries.getUuid(), newWriter);
       return newWriter;
@@ -102,11 +103,13 @@ public class CsvFileConnector implements DataConnector {
    *
    * @param baseDirectory Base directory, where the file hierarchy should start
    * @param fileDefinition Definition of the files shape
+   * @param override true if the input should be appended to a new file
    * @return an initialized buffered writer
    * @throws ConnectorException If the base folder is a file
    * @throws IOException If the writer cannot be initialized correctly
    */
-  private BufferedCsvWriter initWriter(String baseDirectory, CsvFileDefinition fileDefinition)
+  private BufferedCsvWriter initWriter(
+      String baseDirectory, CsvFileDefinition fileDefinition, boolean override)
       throws ConnectorException, IOException {
     /* Join the full DIRECTORY path (excluding file name) */
     String baseDirectoryHarmonized = IoUtil.harmonizeFileSeparator(baseDirectory);
@@ -123,6 +126,9 @@ public class CsvFileConnector implements DataConnector {
 
     File pathFile = new File(fullPath);
     boolean append = pathFile.exists();
+    if (override == true) {
+      append = false;
+    }
     BufferedCsvWriter writer =
         new BufferedCsvWriter(
             fullPath, fileDefinition.headLineElements(), fileDefinition.csvSep(), append);
