@@ -43,7 +43,6 @@ repositories {
 
   // sonatype snapshot repo
   maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
-
 }
 
 dependencies {
@@ -90,7 +89,6 @@ dependencies {
   implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
   implementation 'org.apache.commons:commons-compress:1.22' // I/O functionalities
   implementation 'org.apache.commons:commons-lang3:3.12.0'
-
 }
 
 tasks.withType(JavaCompile) {
