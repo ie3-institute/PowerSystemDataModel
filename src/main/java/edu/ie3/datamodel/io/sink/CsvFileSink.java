@@ -266,7 +266,9 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     try {
       TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
       String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
-      BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, overwrite, csvSep);
+      Boolean overwrite = true;
+      BufferedCsvWriter writer =
+          connector.getOrInitWriter(timeSeries, headerElements, csvSep, overwrite);
       persistTimeSeries(timeSeries, writer);
       connector.closeTimeSeriesWriter(timeSeries.getUuid());
     } catch (ProcessorProviderException e) {
@@ -318,7 +320,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    *
    * @param entity the entity to write
    * @param <C> bounded to be all unique entities
-   * @param overwrite true if the input should be appended to a new file
    */
   private <C extends UniqueEntity> void write(C entity) {
     LinkedHashMap<String, String> entityFieldData;
@@ -339,8 +340,9 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                               + "]"));
 
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
+      boolean overwrite = true;
       BufferedCsvWriter writer =
-          connector.getOrInitWriter(entity.getClass(), headerElements, overwrite, csvSep);
+          connector.getOrInitWriter(entity.getClass(), headerElements, csvSep, overwrite);
       writer.write(entityFieldData);
     } catch (ProcessorProviderException e) {
       log.error(
