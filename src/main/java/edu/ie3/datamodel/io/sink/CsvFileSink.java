@@ -72,16 +72,16 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param initFiles true if the files should be created during initialization (might create files,
    *     that only consist of a headline, because no data will be written into them), false
    *     otherwise
-   * @param override true if the input should be appended to a new file
+   * @param overwrite true if the input should be appended to a new file
    * @param csvSep the csv file separator that should be use
    */
   public CsvFileSink(
       String baseFolderPath,
       FileNamingStrategy fileNamingStrategy,
       boolean initFiles,
-      boolean override,
+      boolean overwrite,
       String csvSep) {
-    this(baseFolderPath, new ProcessorProvider(), fileNamingStrategy, initFiles, override, csvSep);
+    this(baseFolderPath, new ProcessorProvider(), fileNamingStrategy, initFiles, overwrite, csvSep);
   }
 
   /**
@@ -99,7 +99,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param initFiles true if the files should be created during initialization (might create files,
    *     that only consist of a headline, because no data will be written into them), false
    *     otherwise
-   * @param override true if the input should be appended to a new file
+   * @param overwrite true if the input should be appended to a new file
    * @param csvSep the csv file separator that should be use
    */
   public CsvFileSink(
@@ -107,13 +107,13 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
       ProcessorProvider processorProvider,
       FileNamingStrategy fileNamingStrategy,
       boolean initFiles,
-      boolean override,
+      boolean overwrite,
       String csvSep) {
     this.csvSep = csvSep;
     this.processorProvider = processorProvider;
     this.connector = new CsvFileConnector(baseFolderPath, fileNamingStrategy);
 
-    if (initFiles) initFiles(processorProvider, connector, override);
+    if (initFiles) initFiles(processorProvider, connector, overwrite);
   }
 
   @Override
@@ -266,7 +266,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     try {
       TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
       String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
-      BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
+      BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, overwrite, csvSep);
       persistTimeSeries(timeSeries, writer);
       connector.closeTimeSeriesWriter(timeSeries.getUuid());
     } catch (ProcessorProviderException e) {
@@ -313,12 +313,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   }
 
   /**
-   * Writes a entity into the corresponding CSV file. Does <b>not</b> include any nested entities.
+   * Writes an entity into the corresponding CSV file. Does <b>not</b> include any nested entities.
    * The header names for the fields will be determined by the given {@link ProcessorProvider}.
    *
    * @param entity the entity to write
    * @param <C> bounded to be all unique entities
-   * @param override true if the input should be appended to a new file
+   * @param overwrite true if the input should be appended to a new file
    */
   private <C extends UniqueEntity> void write(C entity) {
     LinkedHashMap<String, String> entityFieldData;
@@ -340,7 +340,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
-          connector.getOrInitWriter(entity.getClass(), headerElements, csvSep, override);
+          connector.getOrInitWriter(entity.getClass(), headerElements, overwrite, csvSep);
       writer.write(entityFieldData);
     } catch (ProcessorProviderException e) {
       log.error(
@@ -365,12 +365,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param processorProvider the processor provider all files that will be processed is derived
    *     from
    * @param connector the connector to the files
-   * @param override true if the input should be appended to a new file
+   * @param overwrite true if the input should be appended to a new file
    */
   private void initFiles(
       final ProcessorProvider processorProvider,
       final CsvFileConnector connector,
-      final boolean override) {
+      final boolean overwrite) {
     processorProvider
         .getRegisteredClasses()
         .forEach(
@@ -379,7 +379,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 String[] headerElements =
                     csvHeaderElements(processorProvider.getHeaderElements(clz));
 
-                connector.getOrInitWriter(clz, headerElements, csvSep, override);
+                connector.getOrInitWriter(clz, headerElements, csvSep, overwrite);
               } catch (ProcessorProviderException e) {
                 log.error(
                     "Error during receiving of head line elements. Cannot prepare writer for class {}.",
