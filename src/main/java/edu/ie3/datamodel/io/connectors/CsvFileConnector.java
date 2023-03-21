@@ -126,7 +126,7 @@ public class CsvFileConnector implements DataConnector {
 
     File pathFile = new File(fullPath);
     boolean append = pathFile.exists();
-    if (overwrite == true) {
+    if (overwrite) {
       append = false;
     }
     BufferedCsvWriter writer =

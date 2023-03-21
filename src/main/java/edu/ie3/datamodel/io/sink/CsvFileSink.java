@@ -58,6 +58,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   private final String csvSep;
 
+  private final boolean overwrite;
+
   public CsvFileSink(String baseFolderPath) {
     this(baseFolderPath, new FileNamingStrategy(), false, false, ",");
   }
@@ -112,6 +114,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     this.csvSep = csvSep;
     this.processorProvider = processorProvider;
     this.connector = new CsvFileConnector(baseFolderPath, fileNamingStrategy);
+    this.overwrite = overwrite;
 
     if (initFiles) initFiles(processorProvider, connector, overwrite);
   }
@@ -266,7 +269,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     try {
       TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
       String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
-      Boolean overwrite = true;
+      boolean overwrite = true;
       BufferedCsvWriter writer =
           connector.getOrInitWriter(timeSeries, headerElements, csvSep, overwrite);
       persistTimeSeries(timeSeries, writer);
@@ -340,7 +343,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                               + "]"));
 
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
-      boolean overwrite = true;
       BufferedCsvWriter writer =
           connector.getOrInitWriter(entity.getClass(), headerElements, csvSep, overwrite);
       writer.write(entityFieldData);
