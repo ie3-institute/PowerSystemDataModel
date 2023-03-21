@@ -143,7 +143,7 @@ class CsvFileConnectorTest extends Specification {
 
     when:
     /* The head line is of no interest here */
-    connector.getOrInitWriter(NodeInput, [] as String[], ",")
+    connector.getOrInitWriter(NodeInput, [] as String[], ",", true)
 
     then:
     noExceptionThrown()
@@ -162,7 +162,7 @@ class CsvFileConnectorTest extends Specification {
 
     when:
     /* The head line is of no interest here */
-    connector.getOrInitWriter(NodeInput, [] as String[], ",")
+    connector.getOrInitWriter(NodeInput, [] as String[], ",", true)
 
     then:
     noExceptionThrown()
@@ -279,9 +279,10 @@ class CsvFileConnectorTest extends Specification {
     def baseFolderFile = new File(baseFolder)
     baseFolderFile.createNewFile()
     def fileDefinition = new CsvFileDefinition("test.csv", "", [] as String[], ",")
+    def overwrite = true;
 
     when:
-    cfc.initWriter(baseFolder, fileDefinition)
+    cfc.initWriter(baseFolder, fileDefinition, overwrite)
 
     then:
     def e = thrown(ConnectorException)
