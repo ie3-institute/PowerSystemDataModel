@@ -90,7 +90,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new ResultEntityProcessor(EvResult)
         ], [] as Map),
         new FileNamingStrategy(),
-        true,
+        true, true,
         ",")
     csvFileSink.shutdown()
 
@@ -166,7 +166,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new InputEntityProcessor(EmInput)
         ], [] as Map),
         new FileNamingStrategy(),
-        false,
+        false, true,
         ",")
 
     UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
@@ -237,7 +237,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
         new ProcessorProvider([], timeSeriesProcessorMap),
         new FileNamingStrategy(),
-        false,
+        false, true,
         ",")
 
     when:
@@ -311,7 +311,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         ProcessorProvider.allEntityProcessors(),
         new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
         new FileNamingStrategy(),
-        false,
+        false, true,
         ",")
 
     when:
@@ -331,7 +331,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         testBaseFolderPath,
         new ProcessorProvider(),
         new FileNamingStrategy(),
-        false,
+        false, true,
         ",")
 
     when:
