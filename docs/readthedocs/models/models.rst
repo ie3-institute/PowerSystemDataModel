@@ -24,7 +24,7 @@ Immutability
 Copyable
   With the general design principle of immutability, entity modifications (e.g. updates of field values) can become
   hard and annoying. To avoid generating methods to update each field value, we provide an adapted version of the
-  `builder pattern <https://en.wikipedia.org/wiki/Builder_pattern/>`_ to make entity modifications as easy as possible.
+  `builder pattern <https://en.wikipedia.org/wiki/Builder_pattern/>`__ to make entity modifications as easy as possible.
   Each entity holds it's own copy builder class, which follows the same inheritance as the entity class itself. With a
   call of `.copy()` on an entity instance a builder instance is returned, that allows for modification of fields and
   can be terminated with `.build()` which will return an instance of the entity with modified field values as required.
@@ -50,7 +50,7 @@ Harmonized Units System
 
 Equality Checks
   To represent quantities in the models within an acceptable accuracy, the JSR 385 reference implementation
-  `Indriya <https://github.com/unitsofmeasurement/indriya>`_ is used. Comparing quantity objects or objects holding quantity
+  `Indriya <https://github.com/unitsofmeasurement/indriya>`__ is used. Comparing quantity objects or objects holding quantity
   instances is not as trivial as it might seem, because there might be different understandings about the equality of
   quantities (e.g. there is a big difference between two instances being equal or equivalent). After long discussions how to
   treat quantities in the entity :code:`equals()` method, we agreed on the following rules to be applied:
@@ -74,12 +74,12 @@ Equality Checks
     would return :code:`false` as the equality check does NOT convert units. If you want to compare two entity instances
     based on their equivalence you have (for now) check for each quantity manually using their :code:`isEquivalentTo()`
     method. If you think you would benefit from a standard method that allows entity equivalence check, please consider
-    handing in an issue `here <https://github.com/ie3-institute/PowerSystemDataModel/issues>`_.
+    handing in an issue `here <https://github.com/ie3-institute/PowerSystemDataModel/issues>`__.
     Furthermore, the current existing implementation of :code:`isEquivalentTo()` in indriya does not allow the provision of
     a tolerance threshold that might be necessary when comparing values from floating point operations. We consider
-    providing such a method in our `PowerSystemUtils <https://github.com/ie3-institute/PowerSystemUtils>`_ library.
+    providing such a method in our `PowerSystemUtils <https://github.com/ie3-institute/PowerSystemUtils>`__ library.
     If you think you would benefit from such a method, please consider handing in an issue
-    `here <https://github.com/ie3-institute/PowerSystemUtils/issues>`_.
+    `here <https://github.com/ie3-institute/PowerSystemUtils/issues>`__.
 
 Conditional Parameters
   Some of the models have conditional parameters. When reading model data from a data source, their respective factories for building these 
@@ -97,8 +97,8 @@ Model classes you can use to describe a data set as input to power system simula
 
    input/operator
 
-Grid Related Models
-===================
+Grid Related Input Models
+=========================
 .. toctree::
    :maxdepth: 1
 
@@ -112,8 +112,8 @@ Grid Related Models
    input/grid/measurementunit
    input/grid/gridcontainer
 
-Participant Related Models
-==========================
+Participant Related Input Models
+================================
 .. toctree::
    :maxdepth: 1
 
@@ -137,8 +137,8 @@ Result
 ******
 Model classes you can use to describe the outcome of a power system simulation.
 
-Grid Related Models
-===================
+Grid Related Result Models
+==========================
 .. toctree::
    :maxdepth: 1
 
@@ -150,8 +150,8 @@ Grid Related Models
    result/grid/transformer2w
    result/grid/transformer3w
 
-Participant Related Models
-==========================
+Participant Related Result Models
+=================================
 .. toctree::
    :maxdepth: 1
 

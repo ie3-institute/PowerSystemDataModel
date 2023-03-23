@@ -66,5 +66,4 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   inletTemp,
   returnTemp,
   c)
-
 }

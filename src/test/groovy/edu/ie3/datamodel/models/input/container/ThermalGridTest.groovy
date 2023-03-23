@@ -31,4 +31,25 @@ class ThermalGridTest extends Specification {
     actualAllEntities.containsAll(thermalHouses)
     actualAllEntities.containsAll(thermalStorages)
   }
+
+  def "A ThermalGrid's copy method should work as expected"() {
+    given:
+    def thermalBus = Mock(ThermalBusInput)
+    def thermalHouses = []
+    def thermalStorages = []
+    def thermalGrid = new ThermalGrid(thermalBus, thermalHouses, thermalStorages)
+
+    def modifiedHouses = [Mock(ThermalHouseInput)]
+    def modifiedStorages = [Mock(CylindricalStorageInput)]
+
+    when:
+    def modifiedThermalGrid = thermalGrid.copy()
+        .houses(modifiedHouses as Set)
+        .storages(modifiedStorages as Set)
+        .build()
+
+    then:
+    modifiedThermalGrid.houses().first() == modifiedHouses.get(0)
+    modifiedThermalGrid.storages().first() == modifiedStorages.get(0)
+  }
 }
