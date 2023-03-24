@@ -73,7 +73,6 @@ if (project.hasProperty('user') && project.hasProperty('password') && project.ha
         from components.java
         artifact sourcesJar
         artifact javadocJar
-
       }
     }
     repositories {

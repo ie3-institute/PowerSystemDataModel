@@ -89,7 +89,6 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
     resultingCylindricalStorage.first().inletTemp == sptd.inletTemp
     resultingCylindricalStorage.first().returnTemp == sptd.returnTemp
     resultingCylindricalStorage.first().c == sptd.c
-
   }
 
   def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {
@@ -131,7 +130,6 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
     ThermalUnitInput,
     new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "testOperator"),
     new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermal_bus"))
-
   }
 
   def "A CsvThermalSource should return a ThermalHouseInput from valid and invalid input data as expected"() {
@@ -176,6 +174,5 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
     resultingThermalHouse.first().targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
     resultingThermalHouse.first().upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
     resultingThermalHouse.first().lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
-
   }
 }
