@@ -17,8 +17,8 @@ public class IoUtil {
   }
 
   /**
-   * Ensure to have harmonized file separator across the whole String. Will replace all occurences
-   * if "\" and "/" by the systems file separator
+   * Ensure to have harmonized file separator across the whole String. Will replace all occurrences
+   * of "\" and "/" by the systems file separator
    *
    * @param in The String to harmonize
    * @return The harmonized String
