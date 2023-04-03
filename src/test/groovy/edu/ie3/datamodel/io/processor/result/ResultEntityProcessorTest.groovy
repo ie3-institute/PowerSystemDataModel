@@ -89,7 +89,6 @@ class ResultEntityProcessorTest extends Specification {
     StorageResult     | new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc) || expectedSocResults
     HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)     || expectedQDotResults
     EmResult          | new EmResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)           || expectedStandardResults
-
   }
 
   def "A ResultEntityProcessor should throw an exception if the provided class is not registered"() {
@@ -126,7 +125,6 @@ class ResultEntityProcessorTest extends Specification {
     then:
     validProcessedElement.present
     validProcessedElement.get() == expectedResults
-
   }
 
   def "A ResultEntityProcessor should serialize a FlexOptionsResult correctly"() {
@@ -155,7 +153,6 @@ class ResultEntityProcessorTest extends Specification {
     then:
     validProcessedElement.present
     validProcessedElement.get() == expectedResults
-
   }
 
   @Shared
@@ -263,7 +260,6 @@ class ResultEntityProcessorTest extends Specification {
     then:
     validProcessedElement.present
     validProcessedElement.get() == expectedResults
-
   }
 
   def "A ResultEntityProcessor should throw an EntityProcessorException when it receives an entity result that is not eligible"() {
@@ -280,7 +276,6 @@ class ResultEntityProcessorTest extends Specification {
     EntityProcessorException exception = thrown()
     exception.message == "Cannot process InvalidTestResult.class with this EntityProcessor. " +
         "Please either provide an element of LoadResult.class or create a new processor for InvalidTestResult.class!"
-
   }
 
   def "The list of eligible entity classes for a ResultEntityProcessor should be valid"() {
@@ -310,6 +305,5 @@ class ResultEntityProcessorTest extends Specification {
       super(uuid, time, inputModel)
     }
   }
-
 }
 

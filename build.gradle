@@ -4,9 +4,9 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '6.16.0'//code format
-  id 'com.github.spotbugs' version '5.0.13' // code check, working on byte code
-  id 'de.undercouch.download' version '5.3.1'
+  id 'com.diffplug.spotless' version '6.17.0'//code format
+  id 'com.github.spotbugs' version '5.0.14' // code check, working on byte code
+  id 'de.undercouch.download' version '5.4.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
   id "org.sonarqube" version "4.0.0.2929" // sonarqube
@@ -43,7 +43,6 @@ repositories {
 
   // sonatype snapshot repo
   maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
-
 }
 
 dependencies {
@@ -67,7 +66,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
   testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
   testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.14.1' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.14.3' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
@@ -84,13 +83,12 @@ dependencies {
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.23'
-  implementation 'com.couchbase.client:java-client:3.4.3'
-  runtimeOnly 'org.postgresql:postgresql:42.5.4' // postgresql jdbc driver required during runtime
+  implementation 'com.couchbase.client:java-client:3.4.4'
+  runtimeOnly 'org.postgresql:postgresql:42.6.0' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
-  implementation 'org.apache.commons:commons-compress:1.22' // I/O functionalities
+  implementation 'org.apache.commons:commons-compress:1.23.0' // I/O functionalities
   implementation 'org.apache.commons:commons-lang3:3.12.0'
-
 }
 
 tasks.withType(JavaCompile) {

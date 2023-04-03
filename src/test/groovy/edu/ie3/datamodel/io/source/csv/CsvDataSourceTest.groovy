@@ -96,7 +96,6 @@ class CsvDataSourceTest extends Specification {
     dummyCsvSource.connector.baseDirectoryName == testBaseFolderPath
     dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
     dummyCsvSource.connector.entityWriters.isEmpty()
-
   }
 
   def "A CsvDataSource should build a valid fields to attributes map with valid data as expected"() {
@@ -128,7 +127,6 @@ class CsvDataSourceTest extends Specification {
       olmcharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : "cosPhiFixed:{(0.0,1.0)}"
     ]
-
   }
 
   def "A CsvDataSource should be able to handle deprecated invalid csvRows correctly"() {
@@ -359,7 +357,6 @@ class CsvDataSourceTest extends Specification {
       olmcharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : ""
     ]
-
   }
 
   def "A CsvDataSource should be able to handle several errors when the csvRow is invalid or cannot be processed"() {
@@ -383,7 +380,6 @@ class CsvDataSourceTest extends Specification {
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too less columns"
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too much columns"
-
   }
 
   def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
@@ -396,7 +392,6 @@ class CsvDataSourceTest extends Specification {
     "8f9682df-0744-4b58-a122-f0dc730f6510" | [sptd.hpInput.operator]| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || sptd.hpInput.operator
     "8f9682df-0744-4b58-a122-f0dc730f6520" | [sptd.hpInput.operator]| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
     "8f9682df-0744-4b58-a122-f0dc730f6510" | []| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
-
   }
 
   def "A CsvDataSource should collect be able to collect empty optionals when asked to do so"() {
@@ -460,7 +455,6 @@ class CsvDataSourceTest extends Specification {
       "v_target"      : "1.0",
       "volt_lvl"      : "Höchstspannung",
       "v_rated"       : "380"]
-
   }
 
   def "A CsvDataSource should return an empty set of csv row mappings if the provided collection of mappings contains duplicated UUIDs with different data"() {
@@ -538,5 +532,4 @@ class CsvDataSourceTest extends Specification {
     thermalBusInputEntity.present
     thermalBusInputEntity.get().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
   }
-
 }

@@ -56,7 +56,6 @@ class ContainerNodeUpdateUtilTest extends Specification {
     SampleJointGrid.nodeA | SampleJointGrid.nodeA.copy().geoPosition((Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 49.37770599548332] }")).build() || (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 49.37770599548332] }")
     SampleJointGrid.nodeD | SampleJointGrid.nodeD.copy().geoPosition((Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 50.37770599548332] }")).build() || (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 50.37770599548332] }")
     SampleJointGrid.nodeG | SampleJointGrid.nodeG.copy().geoPosition((Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 25.37770599548332] }")).build() || (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 25.37770599548332] }")
-
   }
 
   def "A ContainerUpdateUtil should update chained 2w transformers correctly when multiple node updates are provided"() {
@@ -102,7 +101,6 @@ class ContainerNodeUpdateUtilTest extends Specification {
       assert updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) })
       .collect(Collectors.toSet()) == updatedOldToNewNodes.values() as Set
     }
-
   }
 
   def "A ContainerUpdateUtil should update chained 2w and 3w transformers correctly when only one node update is provided"() {
@@ -219,7 +217,5 @@ class ContainerNodeUpdateUtilTest extends Specification {
 
     resultingGrid.rawGrid.lines.find {line -> line.getId().equals("lineDtoF")}.nodeA.geoPosition == alteredGeoPos
     resultingGrid.rawGrid.lines.find {line -> line.getId().equals("lineDtoF")}.geoPosition.coordinates.contains(alteredGeoPos.coordinate)
-
   }
-
 }

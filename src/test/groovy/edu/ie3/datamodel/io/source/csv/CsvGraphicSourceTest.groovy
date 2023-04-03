@@ -134,7 +134,6 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     []|| false     // no nodes provide
     [gtd.nodeA, gtd.nodeB]|| false     // node cannot be found
     [gtd.nodeC]|| true      // node found
-
   }
 
   def "A CsvGraphicSource should build line graphic entity data from valid and invalid input data correctly"() {
@@ -166,6 +165,5 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     []|| false     // no nodes provide
     [gtd.lineCtoD]|| false     // line cannot be found
     [gtd.lineAtoB]|| true      // line found
-
   }
 }

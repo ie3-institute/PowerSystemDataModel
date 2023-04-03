@@ -994,5 +994,4 @@ class FileNamingStrategyTest extends Specification {
     idFilePath.present
     idFilePath.get() ==  defaultHierarchy.baseDirectory.get().resolve("prefix_coordinates_suffix")
   }
-
 }
