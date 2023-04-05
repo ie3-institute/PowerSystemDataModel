@@ -23,16 +23,16 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 08.04.20
  */
-public class ThermalSource extends EntitySource implements DataSource {
+public class ThermalSource extends EntitySource {
   // general fields
-  TypeSource typeSource;
+  private final TypeSource typeSource;
 
   // factories
   private final ThermalBusInputFactory thermalBusInputFactory;
   private final CylindricalStorageInputFactory cylindricalStorageInputFactory;
   private final ThermalHouseInputFactory thermalHouseInputFactory;
 
-  public ThermalSource(TypeSource typeSource, FunctionalDataSource dataSource) {
+  public ThermalSource(TypeSource typeSource, DataSource dataSource) {
     this.typeSource = typeSource;
     this.dataSource = dataSource;
 

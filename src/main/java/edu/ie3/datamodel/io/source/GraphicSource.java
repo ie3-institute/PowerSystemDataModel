@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 08.04.20
  */
-public class GraphicSource extends EntitySource implements DataSource {
+public class GraphicSource extends EntitySource {
   // general fields
   TypeSource typeSource;
   RawGridSource rawGridSource;
@@ -42,8 +42,7 @@ public class GraphicSource extends EntitySource implements DataSource {
   private final LineGraphicInputFactory lineGraphicInputFactory;
   private final NodeGraphicInputFactory nodeGraphicInputFactory;
 
-  public GraphicSource(
-      TypeSource typeSource, RawGridSource rawGridSource, FunctionalDataSource dataSource) {
+  public GraphicSource(TypeSource typeSource, RawGridSource rawGridSource, DataSource dataSource) {
     this.typeSource = typeSource;
     this.rawGridSource = rawGridSource;
     this.dataSource = dataSource;

@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.connectors;
 
-import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.util.StringUtils;
 import edu.ie3.util.TimeUtil;
 import java.sql.*;
@@ -160,39 +159,5 @@ public class SqlConnector implements DataConnector {
       log.error("Exception at extracting ResultSet: ", e);
     }
     return insensitiveFieldsToAttributes;
-  }
-
-  /**
-   * Determine the corresponding database column name based on the provided factory field parameter
-   * name. Needed to support camel as well as snake case database column names.
-   *
-   * @param factoryColumnName the name of the field parameter set in the entity factory
-   * @param tableName the table name where the data is stored
-   * @return the column name that corresponds to the provided field parameter or an empty optional
-   *     if no matching column can be found
-   */
-  public String getDbColumnName(String factoryColumnName, String tableName) {
-    try {
-      ResultSet rs = getConnection().getMetaData().getColumns(null, null, tableName, null);
-
-      while (rs.next()) {
-        String databaseColumnName = rs.getString("COLUMN_NAME");
-        if (StringUtils.snakeCaseToCamelCase(databaseColumnName)
-            .equalsIgnoreCase(factoryColumnName)) {
-          return databaseColumnName;
-        }
-      }
-    } catch (SQLException ex) {
-      log.error(
-          "Cannot connect to database to retrieve db column name for factory column name '{}' in table '{}'",
-          factoryColumnName,
-          tableName,
-          ex);
-    }
-    throw new InvalidColumnNameException(
-        "Cannot find column for '"
-            + factoryColumnName
-            + "' in provided times series data configuration."
-            + "Please ensure that the database connection is working and the column names are correct!");
   }
 }

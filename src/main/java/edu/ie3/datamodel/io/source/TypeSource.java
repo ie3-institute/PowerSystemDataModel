@@ -25,7 +25,7 @@ import java.util.Set;
  * @version 0.1
  * @since 08.04.20
  */
-public class TypeSource extends EntitySource implements DataSource {
+public class TypeSource extends EntitySource {
   // factories
   private final OperatorInputFactory operatorInputFactory;
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
@@ -33,7 +33,7 @@ public class TypeSource extends EntitySource implements DataSource {
   private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
   private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
 
-  public TypeSource(FunctionalDataSource dataSource) {
+  public TypeSource(DataSource dataSource) {
     this.dataSource = dataSource;
 
     this.operatorInputFactory = new OperatorInputFactory();

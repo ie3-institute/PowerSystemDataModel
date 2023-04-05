@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 08.04.20
  */
-public class RawGridSource extends EntitySource implements DataSource {
+public class RawGridSource extends EntitySource {
 
   // field names
   protected static final String OPERATOR = "operator";
@@ -49,7 +49,7 @@ public class RawGridSource extends EntitySource implements DataSource {
   private final SwitchInputFactory switchInputFactory;
   private final MeasurementUnitInputFactory measurementUnitInputFactory;
 
-  public RawGridSource(TypeSource typeSource, FunctionalDataSource dataSource) {
+  public RawGridSource(TypeSource typeSource, DataSource dataSource) {
     this.typeSource = typeSource;
     this.dataSource = dataSource;
 

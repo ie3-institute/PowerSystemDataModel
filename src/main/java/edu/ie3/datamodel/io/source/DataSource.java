@@ -1,14 +1,21 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2023. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.io.source;
 
-/**
- * General interface that is implemented by all specific data sources for different types of data
- * structures that are persisted in different locations. Note: This interface is still under
- * development and should be considered more as an internal API. It might change or even will be
- * removed in the future!
- */
-public interface DataSource {}
+import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
+import edu.ie3.datamodel.models.UniqueEntity;
+import java.util.*;
+import java.util.stream.Stream;
+
+/** Interface that include functionalities for data sources */
+public interface DataSource {
+
+  /** Creates a stream of maps that represent the rows in the database */
+  Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass);
+
+  /** Creates a stream of maps that represent the rows in the database for IdCoordinates */
+  Stream<Map<String, String>> getIdCoordinateSourceData(IdCoordinateFactory factory);
+}

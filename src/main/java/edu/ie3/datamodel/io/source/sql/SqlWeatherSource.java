@@ -80,13 +80,12 @@ public class SqlWeatherSource extends WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         dataSource
-            .queryToListOfMaps(
+            .executeQuery(
                 queryTimeInterval,
                 ps -> {
                   ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
                 })
-            .stream()
             .map(this::createEntity)
             .flatMap(Optional::stream)
             .toList();
@@ -108,7 +107,7 @@ public class SqlWeatherSource extends WeatherSource {
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         dataSource
-            .queryToListOfMaps(
+            .executeQuery(
                 queryTimeIntervalAndCoordinates,
                 ps -> {
                   Array coordinateIdArr =
@@ -117,7 +116,6 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
                   ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
                 })
-            .stream()
             .map(this::createEntity)
             .flatMap(Optional::stream)
             .toList();
@@ -135,13 +133,12 @@ public class SqlWeatherSource extends WeatherSource {
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         dataSource
-            .queryToListOfMaps(
+            .executeQuery(
                 queryTimeAndCoordinate,
                 ps -> {
                   ps.setInt(1, coordinateId.get());
                   ps.setTimestamp(2, Timestamp.from(date.toInstant()));
                 })
-            .stream()
             .map(this::createEntity)
             .flatMap(Optional::stream)
             .toList();

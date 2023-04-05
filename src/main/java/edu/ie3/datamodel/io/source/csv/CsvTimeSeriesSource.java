@@ -29,32 +29,6 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   private final CsvDataSource dataSource;
 
-  public CsvTimeSeriesSource(
-      String csvSep,
-      String folderPath,
-      FileNamingStrategy fileNamingStrategy,
-      UUID timeSeriesUuid,
-      String filePath,
-      Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
-    this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
-
-    /* Read in the full time series */
-    try {
-      this.timeSeries =
-          buildIndividualTimeSeries(
-              timeSeriesUuid,
-              filePath,
-              fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory));
-    } catch (SourceException e) {
-      throw new IllegalArgumentException(
-          "Unable to obtain time series with UUID '"
-              + timeSeriesUuid
-              + "'. Please check arguments!",
-          e);
-    }
-  }
-
   /**
    * Factory method to build a source from given meta information
    *
@@ -146,6 +120,32 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         metaInformation.getFullFilePath(),
         valClass,
         valueFactory);
+  }
+
+  public CsvTimeSeriesSource(
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      UUID timeSeriesUuid,
+      String filePath,
+      Class<V> valueClass,
+      TimeBasedSimpleValueFactory<V> factory) {
+    this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
+
+    /* Read in the full time series */
+    try {
+      this.timeSeries =
+          buildIndividualTimeSeries(
+              timeSeriesUuid,
+              filePath,
+              fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory));
+    } catch (SourceException e) {
+      throw new IllegalArgumentException(
+          "Unable to obtain time series with UUID '"
+              + timeSeriesUuid
+              + "'. Please check arguments!",
+          e);
+    }
   }
 
   @Override

@@ -20,7 +20,7 @@ import org.locationtech.jts.geom.Point;
  * latitude and longitude values, which is especially needed for data source that don't offer
  * combined primary or foreign keys.
  */
-public class IdCoordinateSource implements DataSource {
+public class IdCoordinateSource {
 
   public final IdCoordinateFactory factory;
   /** Mapping in both ways (id -> coordinate) and (coordinate -> id) have to be unique */
@@ -28,9 +28,9 @@ public class IdCoordinateSource implements DataSource {
 
   public final Map<Point, Integer> coordinateToId;
 
-  FunctionalDataSource dataSource;
+  DataSource dataSource;
 
-  public IdCoordinateSource(IdCoordinateFactory factory, FunctionalDataSource dataSource) {
+  public IdCoordinateSource(IdCoordinateFactory factory, DataSource dataSource) {
     this.factory = factory;
     this.dataSource = dataSource;
 

@@ -38,7 +38,8 @@ public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
   }
 
   public Map<UUID, UUID> getMapping() {
-    return dataSource.queryToListOfMaps(queryFull, ps -> {}).stream()
+    return dataSource
+        .executeQuery(queryFull)
         .map(this::createEntity)
         .flatMap(Optional::stream)
         .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));

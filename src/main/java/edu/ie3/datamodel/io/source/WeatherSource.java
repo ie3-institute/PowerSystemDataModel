@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Abstract class for WeatherSource by Csv and Sql Data */
-public abstract class WeatherSource implements DataSource {
+public abstract class WeatherSource {
 
   protected static final Logger log = LoggerFactory.getLogger(WeatherSource.class);
 

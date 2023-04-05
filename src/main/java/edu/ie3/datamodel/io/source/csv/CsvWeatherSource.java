@@ -58,6 +58,17 @@ public class CsvWeatherSource extends WeatherSource {
         weatherFactory);
   }
 
+  /**
+   * Initializes a CsvWeatherSource and immediately imports weather data, which will be kept for the
+   * lifetime of this source
+   *
+   * @param csvSep the separator string for csv columns
+   * @param folderPath path to the folder holding the time series files
+   * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
+   * @param idCoordinateSource a coordinate source to map ids to points
+   * @param weatherFactory factory to transfer field to value mapping into actual java object
+   *     instances
+   */
   public CsvWeatherSource(
       String csvSep,
       String folderPath,

@@ -21,7 +21,7 @@ import java.util.*;
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
  */
-public abstract class TimeSeriesSource<V extends Value> implements DataSource {
+public abstract class TimeSeriesSource<V extends Value> {
 
   /**
    * Checks whether the given column scheme can be used with time series.

@@ -36,7 +36,7 @@ public abstract class EntitySource {
   protected static final String TYPE = "type";
   protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
-  FunctionalDataSource dataSource;
+  DataSource dataSource;
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -204,7 +204,7 @@ public abstract class EntitySource {
       String requestEntityUuid) {
     if (operatorUuid == null) {
       log.warn(
-          "Input file for class '{}' is missing the 'operator' field. "
+          "Input source for class '{}' is missing the 'operator' field. "
               + "This is okay, but you should consider fixing the file by adding the field. "
               + "Defaulting to 'NO OPERATOR ASSIGNED'",
           entityClassName);

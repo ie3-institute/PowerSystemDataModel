@@ -24,20 +24,17 @@ import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link SystemParticipantInput}
- * as well as {@link SystemParticipants} container from .csv files.
- *
- * @version 0.1
- * @since 08.04.20
+ * as well as {@link SystemParticipants} container.
  */
-public class SystemParticipantSource extends EntitySource implements DataSource {
+public class SystemParticipantSource extends EntitySource {
 
   private static final String THERMAL_STORAGE = "thermalstorage";
   private static final String THERMAL_BUS = "thermalbus";
 
   // general fields
-  TypeSource typeSource;
-  RawGridSource rawGridSource;
-  ThermalSource thermalSource;
+  private final TypeSource typeSource;
+  private final RawGridSource rawGridSource;
+  private final ThermalSource thermalSource;
 
   // factories
   private final BmInputFactory bmInputFactory;
@@ -56,7 +53,7 @@ public class SystemParticipantSource extends EntitySource implements DataSource 
       TypeSource typeSource,
       ThermalSource thermalSource,
       RawGridSource rawGridSource,
-      FunctionalDataSource dataSource) {
+      DataSource dataSource) {
 
     this.typeSource = typeSource;
     this.rawGridSource = rawGridSource;

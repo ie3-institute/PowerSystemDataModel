@@ -142,7 +142,8 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   @Override
   public IndividualTimeSeries<V> getTimeSeries() {
     List<TimeBasedValue<V>> timeBasedValues =
-        dataSource.queryToListOfMaps(queryFull, ps -> {}).stream()
+        dataSource
+            .executeQuery(queryFull, ps -> {})
             .map(this::createEntity)
             .flatMap(Optional::stream)
             .toList();
@@ -153,13 +154,12 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
     List<TimeBasedValue<V>> timeBasedValues =
         dataSource
-            .queryToListOfMaps(
+            .executeQuery(
                 queryTimeInterval,
                 ps -> {
                   ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
                 })
-            .stream()
             .map(this::createEntity)
             .flatMap(Optional::stream)
             .toList();
@@ -169,9 +169,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   public Optional<V> getValue(ZonedDateTime time) {
     List<TimeBasedValue<V>> timeBasedValues =
         dataSource
-            .queryToListOfMaps(
-                queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
-            .stream()
+            .executeQuery(queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
             .map(this::createEntity)
             .flatMap(Optional::stream)
             .toList();

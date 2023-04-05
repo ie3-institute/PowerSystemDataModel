@@ -9,7 +9,7 @@ import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
-import edu.ie3.datamodel.io.source.FunctionalDataSource;
+import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @version 0.1
  * @since 05.04.20
  */
-public class CsvDataSource implements FunctionalDataSource {
+public class CsvDataSource implements DataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvDataSource.class);
 
@@ -68,20 +68,6 @@ public class CsvDataSource implements FunctionalDataSource {
   @Override
   public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
-  }
-
-  @Override
-  public Stream<Map<String, String>> getSourceData(
-      Class<? extends UniqueEntity> entityClass, String explicitPath) throws SourceException {
-    try {
-      return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(explicitPath));
-    } catch (FileNotFoundException e) {
-      log.warn(
-          "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-      throw new SourceException("Unable to find a file with path '" + explicitPath + "'.", e);
-    } catch (IOException e) {
-      throw new SourceException("Error during reading of file'" + explicitPath + "'.", e);
-    }
   }
 
   @Override

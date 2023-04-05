@@ -37,13 +37,6 @@ class CsvDataSourceTest extends Specification {
       return super.buildFieldsToAttributes(csvRow, headline)
     }
 
-    /*
-     OperatorInput getFirstOrDefaultOperator(
-     Collection<OperatorInput> operators, String operatorUuid, String entityClassName, String requestEntityUuid) {
-     return super.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid)
-     }
-     */
-
     def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
         Class<T> entityClass, Collection<Map<String, String>> allRows) {
       return super.distinctRowsWithLog(allRows, uuidExtractor, entityClass.simpleName, "UUID")

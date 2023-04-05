@@ -38,7 +38,8 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
     String queryComplete = createQueryComplete(schemaName);
 
     this.mapping =
-        dataSource.queryToListOfMaps(queryComplete, ps -> {}).stream()
+        dataSource
+            .executeQuery(queryComplete)
             .map(this::createEntity)
             .flatMap(Optional::stream)
             .collect(
@@ -46,6 +47,12 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
                     IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
   }
 
+  /**
+   * Creates a query that retrieves all time series uuid from existing time series tables.
+   *
+   * @param schemaName schema that the time series reside in
+   * @return query String
+   */
   private String createQueryComplete(String schemaName) {
     Map<String, ColumnScheme> acceptedTableNames =
         TimeSeriesUtils.getAcceptedColumnSchemes().stream()

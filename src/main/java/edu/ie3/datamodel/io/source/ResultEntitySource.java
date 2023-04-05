@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @version 0.1
  * @since 22 June 2021
  */
-public class ResultEntitySource extends EntitySource implements DataSource {
+public class ResultEntitySource extends EntitySource {
 
   private final SystemParticipantResultFactory systemParticipantResultFactory;
   private final ThermalResultFactory thermalResultFactory;
@@ -36,7 +36,7 @@ public class ResultEntitySource extends EntitySource implements DataSource {
   private final ConnectorResultFactory connectorResultFactory;
   private final FlexOptionsResultFactory flexOptionsResultFactory;
 
-  public ResultEntitySource(FunctionalDataSource dataSource) {
+  public ResultEntitySource(DataSource dataSource) {
     this.dataSource = dataSource;
 
     // init factories
@@ -48,7 +48,7 @@ public class ResultEntitySource extends EntitySource implements DataSource {
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
-  public ResultEntitySource(FunctionalDataSource dataSource, String dtfPattern) {
+  public ResultEntitySource(DataSource dataSource, String dtfPattern) {
     this.dataSource = dataSource;
 
     // init factories
