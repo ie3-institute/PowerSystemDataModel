@@ -17,7 +17,7 @@ class CsvTimeSeriesMappingSourceIT extends Specification implements CsvTestDataM
   TimeSeriesMappingSource source
 
   def setupSpec() {
-    source = new CsvTimeSeriesMappingSource(";", timeSeriesFolderPath as Path, new FileNamingStrategy())
+    source = new CsvTimeSeriesMappingSource(";", timeSeriesFolderPath, new FileNamingStrategy())
   }
 
   def "The csv time series mapping source is able to provide a valid time series mapping from files"() {

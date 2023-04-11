@@ -187,11 +187,10 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
    * Gives the correct sub directory (w.r.t. {@link #baseDirectory}) for the provided class.
    *
    * @param cls Class to define the sub directory for
-   * @param fileSeparator The file separator to use
    * @return An Option to the regarding sub directory as a string
    */
   @Override
-  public Optional<Path> getSubDirectory(Class<? extends UniqueEntity> cls, String fileSeparator) {
+  public Optional<Path> getSubDirectory(Class<? extends UniqueEntity> cls) {
     /* Go through all sub directories and check, if the given class belongs to one of the classes mapped to the sub directories. */
     Optional<SubDirectories> maybeSubDirectory =
         Arrays.stream(SubDirectories.values())

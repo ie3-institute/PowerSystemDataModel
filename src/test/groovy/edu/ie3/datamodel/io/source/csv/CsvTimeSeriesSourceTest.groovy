@@ -28,7 +28,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
   def "The csv time series source is able to build time based values from simple data"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-    def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath as Path, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
+    def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
     def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
     def fieldToValue = [
@@ -55,7 +55,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     def metaInformation = new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), ColumnScheme.WEATHER, Path.of("its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"))
 
     when:
-    CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath as Path, fileNamingStrategy, metaInformation)
+    CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation)
 
     then:
     def e = thrown(SourceException)
@@ -67,7 +67,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     def metaInformation = new CsvIndividualTimeSeriesMetaInformation(uuid, columnScheme, path)
 
     when:
-    def actual = CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath as Path, fileNamingStrategy, metaInformation)
+    def actual = CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation)
 
     then:
     actual.timeSeries.entries.size() == amountOfEntries

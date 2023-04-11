@@ -35,6 +35,6 @@ trait CsvTestDataMeta {
   static FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 
   static Path getResourceAbs(String directory) {
-    return Paths.get(CsvTestDataMeta.getResource(directory).toURI())
+    return Path.of(CsvTestDataMeta.getResource(directory).toURI())
   }
 }

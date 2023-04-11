@@ -18,7 +18,7 @@ class CsvTimeSeriesMetaInformationSourceIT extends Specification implements CsvT
   CsvTimeSeriesMetaInformationSource source
 
   def setupSpec() {
-    source = new CsvTimeSeriesMetaInformationSource(";", timeSeriesFolderPath as Path, new FileNamingStrategy())
+    source = new CsvTimeSeriesMetaInformationSource(";", timeSeriesFolderPath, new FileNamingStrategy())
   }
 
   def "A CSV time series meta information source returns correct mapping of time series"() {

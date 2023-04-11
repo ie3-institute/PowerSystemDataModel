@@ -29,7 +29,7 @@ class CsvFileDefinitionTest extends Specification {
     headLineElements = ["a", "b", "c"] as String[]
     csvSep = ","
     fileName = "node_input.csv"
-    directory = Path.of("test").resolve("grid")
+    directory = Path.of("test", "grid")
   }
 
   def "A csv file definition is set up correctly, if the directory path has corrupt file separator"() {
@@ -121,6 +121,6 @@ class CsvFileDefinitionTest extends Specification {
     where:
     manipulatedDirectory    || expected
     Path.of("")             || Path.of(this.fileName)
-    Path.of("test", "grid") || Paths.get("test", "grid", this.fileName)
+    Path.of("test", "grid") || Path.of("test", "grid", this.fileName)
   }
 }

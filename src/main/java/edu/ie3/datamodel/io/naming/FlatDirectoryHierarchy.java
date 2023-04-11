@@ -16,11 +16,10 @@ public class FlatDirectoryHierarchy implements FileHierarchy {
    * Gives empty sub directory.
    *
    * @param cls Class to define the sub directory for
-   * @param fileSeparator The file separator to use
    * @return An Option to the regarding sub directory as a string
    */
   @Override
-  public Optional<Path> getSubDirectory(Class<? extends UniqueEntity> cls, String fileSeparator) {
+  public Optional<Path> getSubDirectory(Class<? extends UniqueEntity> cls) {
     return Optional.empty();
   }
 
