@@ -376,10 +376,8 @@ class ContainerUtilsTest extends Specification {
         }
 
         assert systemParticipants == unmodifiedSubGrid.systemParticipants
-
       }
     }
-
   }
 
   def "The container util builds the correct sub grid dependency graph"() {

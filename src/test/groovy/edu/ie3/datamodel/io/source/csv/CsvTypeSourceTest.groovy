@@ -187,7 +187,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
     //check for the individual points
     if (wecTypes.first().cpCharacteristic.points.iterator().hasNext())
       wecTypes.first().cpCharacteristic.points.iterator().next() == sptd.wecType.cpCharacteristic.points.iterator().next()
-
   }
 
   def "A CsvTypeSource should read and handle valid ev type file as expected"() {
