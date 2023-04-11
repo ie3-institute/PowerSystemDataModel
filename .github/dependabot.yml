@@ -13,10 +13,6 @@ updates:
   - sebastian-peter
   - danielfeismann
   - jo-bao
-  ignore:
-  - dependency-name: org.spockframework:spock-core
-    versions:
-        - 2.3-groovy-4.0
 
 - package-ecosystem: pip
   directory: "/docs/readthedocs"
