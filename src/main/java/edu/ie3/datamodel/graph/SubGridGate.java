@@ -53,24 +53,6 @@ public record SubGridGate(TransformerInput link, NodeInput superiorNode, NodeInp
     };
   }
 
-  /** @deprecated since 3.0. Use {@link #link()} instead */
-  @Deprecated(since = "3.0")
-  public TransformerInput getLink() {
-    return link;
-  }
-
-  /** @deprecated since 3.0. Use {@link #superiorNode()} instead */
-  @Deprecated(since = "3.0")
-  public NodeInput getSuperiorNode() {
-    return superiorNode;
-  }
-
-  /** @deprecated since 3.0. Use {@link #inferiorNode()} instead */
-  @Deprecated(since = "3.0")
-  public NodeInput getInferiorNode() {
-    return inferiorNode;
-  }
-
   public int getSuperiorSubGrid() {
     return superiorNode.getSubnet();
   }
