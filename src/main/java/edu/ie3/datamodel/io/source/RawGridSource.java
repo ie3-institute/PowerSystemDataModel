@@ -17,7 +17,6 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -30,14 +29,14 @@ import java.util.Set;
  */
 public interface RawGridSource extends DataSource {
   /**
-   * Should return either a consistent instance of {@link RawGridElements} wrapped in {@link
-   * Optional} or an empty {@link Optional}. The decision to use {@link Optional} instead of
-   * returning the {@link RawGridElements} instance directly is motivated by the fact, that a {@link
+   * Should return either a consistent instance of {@link RawGridElements} or throw a {@link
+   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
+   * incomplete {@link RawGridElements} instance is motivated by the fact, that a {@link
    * RawGridElements} is a container instance that depends on several other entities. Without being
    * complete, it is useless for further processing.
    *
    * <p>Hence, whenever at least one entity {@link RawGridElements} depends on cannot be provided,
-   * {@link Optional#empty()} should be returned and extensive logging should provide enough
+   * {@link SourceException} should be thrown. The thrown exception should provide enough
    * information to debug the error and fix the persistent data that has been failed to processed.
    *
    * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
@@ -45,8 +44,7 @@ public interface RawGridSource extends DataSource {
    * e.g. in the sense that not duplicate UUIDs exist within all entities contained in the returning
    * instance.
    *
-   * @return either a valid, complete {@link RawGridElements} or throws a {@link
-   *     edu.ie3.datamodel.exceptions.SourceException}
+   * @return either a valid, complete {@link RawGridElements} or throws a {@link SourceException}
    */
   RawGridElements getGridData() throws SourceException;
 

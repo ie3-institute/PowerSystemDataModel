@@ -11,7 +11,6 @@ import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -25,14 +24,14 @@ import java.util.Set;
 public interface GraphicSource extends DataSource {
 
   /**
-   * Should return either a consistent instance of {@link GraphicElements} wrapped in {@link
-   * Optional} or an empty {@link Optional}. The decision to use {@link Optional} instead of
-   * returning the {@link GraphicElements} instance directly is motivated by the fact, that a {@link
+   * Should return either a consistent instance of {@link GraphicElements} or throw a {@link
+   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
+   * incomplete {@link GraphicElements} instance is motivated by the fact, that a {@link
    * GraphicElements} is a container instance that depends on several other entities. Without being
    * complete, it is useless for further processing. Hence, whenever at least one entity {@link
-   * GraphicElements} depends on cannot be provided, {@link Optional#empty()} should be returned and
-   * extensive logging should provide enough information to debug the error and fix the persistent
-   * data that has been failed to processed.
+   * GraphicElements} depends on cannot be provided, {@link SourceException} should be thrown. The
+   * thrown exception exception should provide enough information to debug the error and fix the
+   * persistent data that has been failed to processed.
    *
    * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
    * only the completeness of the resulting {@link GraphicElements} instance, but also its validity

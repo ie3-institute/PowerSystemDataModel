@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -26,24 +25,22 @@ import java.util.Set;
 public interface SystemParticipantSource extends DataSource {
 
   /**
-   * Should return either a consistent instance of {@link SystemParticipants} wrapped in {@link
-   * Optional} or an empty {@link Optional}. The decision to use {@link Optional} instead of
-   * returning the {@link SystemParticipants} instance directly is motivated by the fact, that a
-   * {@link SystemParticipants} is a container instance that depends on several other entities.
-   * Without being complete, it is useless for further processing.
+   * Should return either a consistent instance of {@link SystemParticipants} or throw a {@link
+   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
+   * incomplete {@link SystemParticipants} instance is motivated by the fact, that a {@link
+   * SystemParticipants} is a container instance that depends on several other entities. Without
+   * being complete, it is useless for further processing.
    *
    * <p>Hence, whenever at least one entity {@link SystemParticipants} depends on cannot be
-   * provided, {@link Optional#empty()} should be returned and extensive logging should provide
-   * enough information to debug the error and fix the persistent data that has been failed to
-   * processed.
+   * provided, {@link SourceException} should be thrown. The thrown exception should provide enough
+   * information to debug the error and fix the persistent data that has been failed to processed.
    *
    * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
    * only the completeness of the resulting {@link SystemParticipants} instance, but also its
    * validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in the
    * returning instance.
    *
-   * @return either a valid, complete {@link SystemParticipants} or throws a {@link
-   *     edu.ie3.datamodel.exceptions.RawInputDataException}
+   * @return either a valid, complete {@link SystemParticipants} or throws a {@link SourceException}
    */
   SystemParticipants getSystemParticipants() throws SourceException;
 
