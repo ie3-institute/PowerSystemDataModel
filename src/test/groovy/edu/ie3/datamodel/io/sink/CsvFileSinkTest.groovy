@@ -72,33 +72,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     }
   }
 
-  def "A valid CsvFileSink called by simple constructor should not initialize files by default and consist of several default values"() {
-    given:
-    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath)
-    csvFileSink.shutdown()
-
-    expect:
-    !new File(testBaseFolderPath).exists()
-    csvFileSink.csvSep == ","
-  }
-
-  def "A valid CsvFileSink with 'initFiles' enabled should create files as expected"() {
-    given:
-    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-        new ProcessorProvider([
-          new ResultEntityProcessor(PvResult),
-          new ResultEntityProcessor(EvResult)
-        ], [] as Map),
-        new FileNamingStrategy(),
-        true,
-        ",")
-    csvFileSink.shutdown()
-
-    expect:
-    new File(testBaseFolderPath).exists()
-    new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
-  }
 
   def "A valid CsvFileSink is able to convert an entity data map correctly to RFC 4180 compliant strings"() {
     given:
@@ -140,91 +113,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     csvFileSink.shutdown()
   }
 
-  def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not init all files"() {
-    given:
-    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-        new ProcessorProvider([
-          new ResultEntityProcessor(PvResult),
-          new ResultEntityProcessor(WecResult),
-          new ResultEntityProcessor(EvResult),
-          new ResultEntityProcessor(EvcsResult),
-          new ResultEntityProcessor(EmResult),
-          new ResultEntityProcessor(FlexOptionsResult),
-          new InputEntityProcessor(Transformer2WInput),
-          new InputEntityProcessor(NodeInput),
-          new InputEntityProcessor(EvcsInput),
-          new InputEntityProcessor(Transformer2WTypeInput),
-          new InputEntityProcessor(LineGraphicInput),
-          new InputEntityProcessor(NodeGraphicInput),
-          new InputEntityProcessor(CylindricalStorageInput),
-          new InputEntityProcessor(ThermalHouseInput),
-          new InputEntityProcessor(OperatorInput),
-          new InputEntityProcessor(LineInput),
-          new InputEntityProcessor(ThermalBusInput),
-          new InputEntityProcessor(LineTypeInput),
-          new InputEntityProcessor(LoadInput),
-          new InputEntityProcessor(EmInput)
-        ], [] as Map),
-        new FileNamingStrategy(),
-        false,
-        ",")
-
-    UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-    UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-    Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
-    Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-    PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    WecResult wecResult = new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    EvcsResult evcsResult = new EvcsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    EmResult emResult = new EmResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-
-    Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
-    Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
-    Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
-    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, pRef, pMin, pMax)
-
-    when:
-    csvFileSink.persistAll([
-      pvResult,
-      wecResult,
-      evcsResult,
-      emResult,
-      flexOptionsResult,
-      GridTestData.transformerCtoG,
-      GridTestData.lineGraphicCtoD,
-      GridTestData.nodeGraphicC,
-      ThermalUnitInputTestData.cylindricStorageInput,
-      ThermalUnitInputTestData.thermalHouseInput,
-      SystemParticipantTestData.evcsInput,
-      SystemParticipantTestData.loadInput,
-      SystemParticipantTestData.emInput
-    ])
-    csvFileSink.shutdown()
-
-    then:
-    new File(testBaseFolderPath).exists()
-    new File(testBaseFolderPath + File.separator + "wec_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "evcs_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "em_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "flex_options_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "transformer_2_w_type_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "node_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "transformer_2_w_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "operator_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "cylindrical_storage_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "line_graphic_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "line_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "operator_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "node_graphic_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "thermal_bus_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "thermal_house_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "load_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "em_input.csv").exists()
-
-    !new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
-  }
-
   def "A valid CsvFileSink should persist a time series correctly"() {
     given:
     TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
@@ -237,7 +125,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
         new ProcessorProvider([], timeSeriesProcessorMap),
         new FileNamingStrategy(),
-        false,
         ",")
 
     when:
@@ -311,7 +198,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         ProcessorProvider.allEntityProcessors(),
         new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
         new FileNamingStrategy(),
-        false,
         ",")
 
     when:
@@ -331,7 +217,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         testBaseFolderPath,
         new ProcessorProvider(),
         new FileNamingStrategy(),
-        false,
         ",")
 
     when:

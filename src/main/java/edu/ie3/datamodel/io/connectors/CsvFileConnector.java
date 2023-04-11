@@ -122,7 +122,7 @@ public class CsvFileConnector implements DataConnector {
       throw new IOException("Unable to create directory tree '" + directories + "'");
 
     File pathFile = new File(fullPath);
-    boolean append = pathFile.exists();
+    boolean append = false;
     BufferedCsvWriter writer =
         new BufferedCsvWriter(
             fullPath, fileDefinition.headLineElements(), fileDefinition.csvSep(), append);
