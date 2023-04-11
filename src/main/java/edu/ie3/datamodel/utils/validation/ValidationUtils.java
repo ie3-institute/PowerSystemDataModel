@@ -228,6 +228,35 @@ public class ValidationUtils {
   }
 
   /**
+   * Checks the validity of the ids for a given set of {@link AssetInput}.
+   *
+   * @param inputs a set of asset inputs
+   * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, UnsafeEntityException>> checkTypeIds(
+      Set<? extends AssetInput> inputs) {
+    List<String> ids = new ArrayList<>();
+    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
+
+    inputs.forEach(
+        input -> {
+          String id = input.getId();
+          if (!ids.contains(id)) {
+            ids.add(id);
+            exceptions.add(Success.empty());
+          } else {
+            exceptions.add(
+                new Failure<>(
+                    new UnsafeEntityException(
+                        "There is already an entity with the id " + id, input)));
+          }
+        });
+
+    return exceptions;
+  }
+
+  /**
    * Checks, if the given object is null. If so, an {@link InvalidEntityException} is thrown.
    *
    * @param obj Object to check

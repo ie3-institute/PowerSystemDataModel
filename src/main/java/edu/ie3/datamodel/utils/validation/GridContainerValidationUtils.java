@@ -7,6 +7,7 @@ package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
+import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
@@ -202,6 +203,28 @@ public class GridContainerValidationUtils extends ValidationUtils {
               exceptions.add(MeasurementUnitValidationUtils.check(measurement));
             });
 
+    exceptions.addAll(checkRawGridTypeIds(rawGridElements));
+
+    return exceptions;
+  }
+
+  /**
+   * Checks the validity of type ids of every entity.
+   *
+   * @param rawGridElements the raw grid elements
+   * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, UnsafeEntityException>> checkRawGridTypeIds(
+      RawGridElements rawGridElements) {
+    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
+    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getNodes()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getLines()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getTransformer2Ws()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getTransformer3Ws()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getSwitches()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getMeasurementUnits()));
+
     return exceptions;
   }
 
@@ -340,6 +363,33 @@ public class GridContainerValidationUtils extends ValidationUtils {
               }
               exceptions.addAll(SystemParticipantValidationUtils.check(entity));
             });
+
+    exceptions.addAll(checkSystemParticipantsTypeIds(systemParticipants));
+
+    return exceptions;
+  }
+
+  /**
+   * Checks the validity of type ids of every entity.
+   *
+   * @param systemParticipants the system participants
+   * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, UnsafeEntityException>> checkSystemParticipantsTypeIds(
+      SystemParticipants systemParticipants) {
+    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getBmPlants()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getChpPlants()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getEvCS()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getEvs()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getFixedFeedIns()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getHeatPumps()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getLoads()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getPvPlants()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getStorages()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getWecPlants()));
+    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getEmSystems()));
 
     return exceptions;
   }

@@ -6,11 +6,13 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.utils.options.Failure;
 import edu.ie3.datamodel.utils.options.Success;
 import edu.ie3.datamodel.utils.options.Try;
@@ -18,7 +20,12 @@ import edu.ie3.util.geo.GeoUtils;
 import edu.ie3.util.quantities.QuantityUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.measure.Quantity;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.connectivity.ConnectivityInspector;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -364,6 +371,52 @@ public class ConnectorValidationUtils extends ValidationUtils {
     /* Remark: Connecting two different "subnets" is fine, because as of our definition regarding a switchgear in
      * "upstream" direction of a transformer, all the nodes, that hare within the switch chain, belong to the lower
      * grid, whilst the "real" upper node is within the upper grid */
+  }
+
+  /**
+   * Check if all given elements are connected.
+   *
+   * @param elements grid elements
+   * @param subnetNo subnet number
+   * @return a try object either containing an {@link InvalidGridException} or an empty Success
+   */
+  private static Try<Void, InvalidGridException> checkConnectivity(
+      RawGridElements elements, int subnetNo) {
+    Graph<UUID, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
+
+    elements.getNodes().forEach(node -> graph.addVertex(node.getUuid()));
+    elements
+        .getLines()
+        .forEach(line -> graph.addEdge(line.getNodeA().getUuid(), line.getNodeB().getUuid()));
+    elements
+        .getTransformer2Ws()
+        .forEach(
+            trafo2w -> graph.addEdge(trafo2w.getNodeA().getUuid(), trafo2w.getNodeB().getUuid()));
+    elements
+        .getTransformer3Ws()
+        .forEach(
+            trafor3w -> {
+              graph.addEdge(trafor3w.getNodeA().getUuid(), trafor3w.getNodeInternal().getUuid());
+              graph.addEdge(trafor3w.getNodeInternal().getUuid(), trafor3w.getNodeB().getUuid());
+              graph.addEdge(trafor3w.getNodeInternal().getUuid(), trafor3w.getNodeC().getUuid());
+            });
+    elements
+        .getSwitches()
+        .forEach(
+            switches ->
+                graph.addEdge(switches.getNodeA().getUuid(), switches.getNodeB().getUuid()));
+
+    ConnectivityInspector<UUID, DefaultEdge> inspector = new ConnectivityInspector<>(graph);
+
+    if (!inspector.isConnected()) {
+      return new Failure<>(
+          new InvalidGridException(
+              "The grid with subnetNo "
+                  + subnetNo
+                  + " is not connected! Please ensure that all elements are connected correctly!"));
+    } else {
+      return Success.empty();
+    }
   }
 
   /**
