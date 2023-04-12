@@ -5,7 +5,9 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.exceptions.UnsafeEntityException
 import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.datamodel.utils.options.Try
 
 import static edu.ie3.datamodel.models.StandardUnits.CONDUCTANCE_PER_LENGTH
@@ -251,5 +253,36 @@ class ValidationUtilsTest extends Specification {
     exceptions.size() == 2
     def e = exceptions.get(0).exception
     e.message.startsWith("Entity is invalid because of: No ID assigned [AssetTypeInput")
+  }
+
+  def "Checking if asset input ids are unique"() {
+    given:
+    Set<AssetInput> validAssetIds = [
+      new ValidAssetInput("first"),
+      new ValidAssetInput("second"),
+      new ValidAssetInput("third")
+    ]
+
+    when:
+    List<Try<Void, UnsafeEntityException>> exceptions = ValidationUtils.checkIds(validAssetIds)
+
+    then:
+    exceptions.forEach {ex -> ex.success }
+  }
+
+  def "Duplicate asset input ids leads to an exception"() {
+    given:
+    Set<AssetInput> invalidAssetIds = [
+      new InvalidAssetInput(),
+      new InvalidAssetInput()
+    ]
+
+    when:
+    List<Try<Void, UnsafeEntityException>> exceptions = ValidationUtils.checkIds(invalidAssetIds)
+
+    then:
+    exceptions.get(0).success
+    exceptions.get(1).failure
+    exceptions.get(1).exception.message.contains("Entity may be unsafe because of: There is already an entity with the id invalid_asset")
   }
 }

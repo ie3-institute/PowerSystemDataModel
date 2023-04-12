@@ -82,6 +82,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
             gridContainer.getRawGrid().getNodes(),
             gridContainer.getRawGrid().getLines()));
 
+    if (gridContainer instanceof SubGridContainer subGridContainer) {
+      exceptions.add(ConnectorValidationUtils.checkConnectivity(subGridContainer));
+    }
+
     return exceptions;
   }
 
@@ -218,12 +222,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
   protected static List<Try<Void, UnsafeEntityException>> checkRawGridTypeIds(
       RawGridElements rawGridElements) {
     List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
-    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getNodes()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getLines()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getTransformer2Ws()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getTransformer3Ws()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getSwitches()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(rawGridElements.getMeasurementUnits()));
+    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getNodes()));
+    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getLines()));
+    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getTransformer2Ws()));
+    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getTransformer3Ws()));
+    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getSwitches()));
+    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getMeasurementUnits()));
 
     return exceptions;
   }
@@ -379,17 +383,17 @@ public class GridContainerValidationUtils extends ValidationUtils {
   protected static List<Try<Void, UnsafeEntityException>> checkSystemParticipantsTypeIds(
       SystemParticipants systemParticipants) {
     List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getBmPlants()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getChpPlants()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getEvCS()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getEvs()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getFixedFeedIns()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getHeatPumps()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getLoads()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getPvPlants()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getStorages()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getWecPlants()));
-    exceptions.addAll(ValidationUtils.checkTypeIds(systemParticipants.getEmSystems()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getBmPlants()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getChpPlants()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getEvCS()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getEvs()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getFixedFeedIns()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getHeatPumps()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getLoads()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getPvPlants()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getStorages()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getWecPlants()));
+    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getEmSystems()));
 
     return exceptions;
   }

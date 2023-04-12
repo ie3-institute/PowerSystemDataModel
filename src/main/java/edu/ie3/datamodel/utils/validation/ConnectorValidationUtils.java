@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.models.input.container.SubGridContainer;
 import edu.ie3.datamodel.utils.options.Failure;
 import edu.ie3.datamodel.utils.options.Success;
 import edu.ie3.datamodel.utils.options.Try;
@@ -376,23 +376,25 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Check if all given elements are connected.
    *
-   * @param elements grid elements
-   * @param subnetNo subnet number
+   * @param subGridContainer the subgrid to check the connectivity for
    * @return a try object either containing an {@link InvalidGridException} or an empty Success
    */
-  private static Try<Void, InvalidGridException> checkConnectivity(
-      RawGridElements elements, int subnetNo) {
+  protected static Try<Void, InvalidGridException> checkConnectivity(
+      SubGridContainer subGridContainer) {
     Graph<UUID, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
 
-    elements.getNodes().forEach(node -> graph.addVertex(node.getUuid()));
-    elements
+    subGridContainer.getRawGrid().getNodes().forEach(node -> graph.addVertex(node.getUuid()));
+    subGridContainer
+        .getRawGrid()
         .getLines()
         .forEach(line -> graph.addEdge(line.getNodeA().getUuid(), line.getNodeB().getUuid()));
-    elements
+    subGridContainer
+        .getRawGrid()
         .getTransformer2Ws()
         .forEach(
             trafo2w -> graph.addEdge(trafo2w.getNodeA().getUuid(), trafo2w.getNodeB().getUuid()));
-    elements
+    subGridContainer
+        .getRawGrid()
         .getTransformer3Ws()
         .forEach(
             trafor3w -> {
@@ -400,7 +402,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
               graph.addEdge(trafor3w.getNodeInternal().getUuid(), trafor3w.getNodeB().getUuid());
               graph.addEdge(trafor3w.getNodeInternal().getUuid(), trafor3w.getNodeC().getUuid());
             });
-    elements
+    subGridContainer
+        .getRawGrid()
         .getSwitches()
         .forEach(
             switches ->
@@ -412,7 +415,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
       return new Failure<>(
           new InvalidGridException(
               "The grid with subnetNo "
-                  + subnetNo
+                  + subGridContainer.getSubnet()
                   + " is not connected! Please ensure that all elements are connected correctly!"));
     } else {
       return Success.empty();

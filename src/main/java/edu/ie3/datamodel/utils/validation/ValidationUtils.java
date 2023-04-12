@@ -234,7 +234,7 @@ public class ValidationUtils {
    * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
    *     Success
    */
-  protected static List<Try<Void, UnsafeEntityException>> checkTypeIds(
+  protected static List<Try<Void, UnsafeEntityException>> checkIds(
       Set<? extends AssetInput> inputs) {
     List<String> ids = new ArrayList<>();
     List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
