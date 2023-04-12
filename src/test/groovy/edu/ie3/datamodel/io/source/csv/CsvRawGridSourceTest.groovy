@@ -723,7 +723,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     then: "all elements are there"
     actual.present
     actual.get().with {
-      /* It's okay, to only test the uuids, because content is tested with the other test mehtods */
+      /* It's okay, to only test the uuids, because content is tested with the other test methods */
       assert nodes.size() == expected.nodes.size()
       assert nodes.each {entry -> expected.nodes.contains({it.uuid == entry.uuid})}
       assert lines.size() == expected.lines.size()
