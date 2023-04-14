@@ -130,34 +130,6 @@ public class EntityPersistenceNamingStrategy {
    * @param sourceName Name of the source to extract information from, e.g. file name or SQL table
    *     name
    * @return Meta information form individual time series source name
-   * @deprecated since 3.0. Use {@link #individualTimesSeriesMetaInformation(String)} instead
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  public edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
-      extractIndividualTimesSeriesMetaInformation(String sourceName) {
-    Matcher matcher = getIndividualTimeSeriesPattern().matcher(sourceName);
-    if (!matcher.matches())
-      throw new IllegalArgumentException(
-          "Cannot extract meta information on individual time series from '" + sourceName + "'.");
-
-    String columnSchemeKey = matcher.group("columnScheme");
-    edu.ie3.datamodel.io.csv.timeseries.ColumnScheme columnScheme =
-        edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.parse(columnSchemeKey)
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        "Cannot parse '" + columnSchemeKey + "' to valid column scheme."));
-
-    return new edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation(
-        UUID.fromString(matcher.group("uuid")), columnScheme);
-  }
-
-  /**
-   * Extracts meta information from a valid source name for an individual time series
-   *
-   * @param sourceName Name of the source to extract information from, e.g. file name or SQL table
-   *     name
-   * @return Meta information form individual time series source name
    */
   public IndividualTimeSeriesMetaInformation individualTimesSeriesMetaInformation(
       String sourceName) {
@@ -176,25 +148,6 @@ public class EntityPersistenceNamingStrategy {
 
     return new IndividualTimeSeriesMetaInformation(
         UUID.fromString(matcher.group("uuid")), columnScheme);
-  }
-
-  /**
-   * Extracts meta information from a valid file name for a load profile time series
-   *
-   * @param fileName File name to extract information from
-   * @return Meta information form load profile time series file name
-   * @deprecated since 3.0. Use {@link #loadProfileTimesSeriesMetaInformation(String)} instead
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  public edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation
-      extractLoadProfileTimesSeriesMetaInformation(String fileName) {
-    Matcher matcher = getLoadProfileTimeSeriesPattern().matcher(fileName);
-    if (!matcher.matches())
-      throw new IllegalArgumentException(
-          "Cannot extract meta information on load profile time series from '" + fileName + "'.");
-
-    return new edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation(
-        UUID.fromString(matcher.group("uuid")), matcher.group("profile"));
   }
 
   /**
