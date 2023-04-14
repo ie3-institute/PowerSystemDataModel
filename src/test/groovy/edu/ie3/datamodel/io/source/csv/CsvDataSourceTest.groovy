@@ -86,7 +86,7 @@ class CsvDataSourceTest extends Specification {
       "olmcharacteristic",
       "cosPhiFixed"
     ] as String[]
-    def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\",\"cosPhiFixed:{(0.0,1.0)}\""
+    def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,olm:{(0.0,1.0)},cosPhiFixed:{(0.0,1.0)}"
 
     expect:
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
@@ -100,6 +100,97 @@ class CsvDataSourceTest extends Specification {
       uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
       olmcharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : "cosPhiFixed:{(0.0,1.0)}"
+    ]
+  }
+
+  def "A CsvDataSource should be able to handle deprecated invalid csvRows correctly"() {
+    expect:
+    dummyCsvSource.oldFieldVals(csvSep, csvRow) as List == resultingArray
+
+    where:
+    csvSep | csvRow                                                                                                                                                                                                                                                                                                                                                                                                              || resultingArray
+    ","    | "4ca90220-74c2-4369-9afa-a18bf068840d,{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}},node_a,2020-03-25T15:11:31Z[UTC],2020-03-24T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0,olm:{(0.00,1.00)},cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"                                                     || [
+      "4ca90220-74c2-4369-9afa-a18bf068840d",
+      "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "node_a",
+      "2020-03-25T15:11:31Z[UTC]",
+      "2020-03-24T15:11:31Z[UTC]",
+      "8f9682df-0744-4b58-a122-f0dc730f6510",
+      "true",
+      "1",
+      "1.0",
+      "Höchstspannung",
+      "380.0",
+      "olm:{(0.00,1.00)}",
+      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+    ]
+    ","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z[UTC]\",\"2020-03-24T15:11:31Z[UTC]\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+      "4ca90220-74c2-4369-9afa-a18bf068840d",
+      "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "node_a",
+      "2020-03-25T15:11:31Z[UTC]",
+      "2020-03-24T15:11:31Z[UTC]",
+      "8f9682df-0744-4b58-a122-f0dc730f6510",
+      "true",
+      "1",
+      "1.0",
+      "Höchstspannung",
+      "380.0",
+      "olm:{(0.00,1.00)}",
+      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+    ]
+    ";"    | "4ca90220-74c2-4369-9afa-a18bf068840d;cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)};{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}};node_a;2020-03-25T15:11:31Z[UTC];2020-03-24T15:11:31Z[UTC];8f9682df-0744-4b58-a122-f0dc730f6510;true;1;1.0;Höchstspannung;380.0;olm:{(0.00,1.00)};cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"            || [
+      "4ca90220-74c2-4369-9afa-a18bf068840d",
+      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}",
+      "{(0.0,1.0),(0.9,1.0),(1.2,-0.3)};{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "node_a",
+      "2020-03-25T15:11:31Z[UTC]",
+      "2020-03-24T15:11:31Z[UTC]",
+      "8f9682df-0744-4b58-a122-f0dc730f6510",
+      "true",
+      "1",
+      "1.0",
+      "Höchstspannung",
+      "380.0",
+      "olm:{(0.00,1.00)}",
+      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+    ]
+    ";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z[UTC]\";\"2020-03-24T15:11:31Z[UTC]\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+      "4ca90220-74c2-4369-9afa-a18bf068840d",
+      "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "node_a",
+      "2020-03-25T15:11:31Z[UTC]",
+      "2020-03-24T15:11:31Z[UTC]",
+      "8f9682df-0744-4b58-a122-f0dc730f6510",
+      "true",
+      "1",
+      "1.0",
+      "Höchstspannung",
+      "380.0",
+      "olm:{(0.00,1.00)}",
+      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+    ]
+    ","    | "66275bfd-978b-4974-9f73-f270165a6351,Standard,f18a5a9b-6d45-4843-be12-be6d12de0e6b,{\"type\":\"LineString\",\"coordinates\":[[7.4116482,51.4843281],[7.4116482,51.4843281]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}},{\"type\":\"Point\",\"coordinates\":[0.25423729,0.75409836],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:0\"}}}\""                                  || [
+      "66275bfd-978b-4974-9f73-f270165a6351",
+      "Standard",
+      "f18a5a9b-6d45-4843-be12-be6d12de0e6b",
+      "{\"type\":\"LineString\",\"coordinates\":[[7.4116482,51.4843281],[7.4116482,51.4843281]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "{\"type\":\"Point\",\"coordinates\":[0.25423729,0.75409836],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:0\"}}}"
+    ]
+    ","    | "4ca90220-74c2-4369-9afa-a18bf068840d,{\"\"type\"\":\"\"Point\"\",\"\"coordinates\"\":[7.411111,51.492528],\"\"crs\"\":{\"\"type\"\":\"\"name\"\",\"\"properties\"\":{\"\"name\"\":\"\"EPSG:4326\"\"}}},node_a,2020-03-25T15:11:31Z[UTC],2020-03-24T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0,\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\""         || [
+      "4ca90220-74c2-4369-9afa-a18bf068840d",
+      "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "node_a",
+      "2020-03-25T15:11:31Z[UTC]",
+      "2020-03-24T15:11:31Z[UTC]",
+      "8f9682df-0744-4b58-a122-f0dc730f6510",
+      "true",
+      "1",
+      "1.0",
+      "Höchstspannung",
+      "380.0",
+      "olm:{(0.00,1.00)}",
+      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
     ]
   }
 
