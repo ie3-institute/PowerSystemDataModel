@@ -48,7 +48,7 @@ class IdCoordinateSourceTest extends Specification {
 
     when:
     List<CoordinateDistance> distances = coordinateSourceMock.getNearestCoordinates(point0, 9, points)
-    List<CoordinateDistance> result = coordinateSourceMock.restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
+    List<CoordinateDistance> result = coordinateSourceMock.restrictToBoundingBox(point0, distances, 4)
 
     then:
     for (CoordinateDistance value: result) {
@@ -65,7 +65,7 @@ class IdCoordinateSourceTest extends Specification {
     withExactMatch.addAll(matchingPoint)
 
     List<CoordinateDistance> distances = coordinateSourceMock.getNearestCoordinates(point0, 9, withExactMatch)
-    List<CoordinateDistance> result = coordinateSourceMock.restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
+    List<CoordinateDistance> result = coordinateSourceMock.restrictToBoundingBox(point0, distances, 4)
 
     then:
     result.size() == 1

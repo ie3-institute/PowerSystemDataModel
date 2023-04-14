@@ -1,4 +1,4 @@
-# csv files
+# CSV files
 
 ## Naming of files
 

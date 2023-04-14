@@ -52,21 +52,17 @@ The IdCoordinateSource also contains methods for calculation the distances og a 
 to a set of coordinates. All the following methods will return the closest n coordinates with their 
 distances.
 
-    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n)
     List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance)
     List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, Collection<Point> coordinates)
 
 
-1. This method is used when no set of coordinates or no maximal distance is given. The method will
-search for coordinates within a bounding box with increasing size until at least n coordinates are 
-found. After that this method will calculate the distances and return the closest n coordinates
+1. This method is used to return the closest n coordinates within a given maximum distance. The method will
+use the given distance to calculate a bounding box and reduce the collection of all available points into a collection 
+of points inside the bounding box. After that the distances to all the coordinates in the bounding box are calculated 
+and n the closest coordinates are returned. If the number of found coordinates < n, this method will return less than 
+n coordinates.
 
-2. This method is used to return the closest n coordinates within a given distance. The method will
-use the given distance to create a bounding box. After that the distances to all the coordinates in
-the bounding box are calculated and n the closest coordinates are returned. If the number of found 
-coordinates < n, this method will return less than n coordinates.
-
-3. This method is used to calculate the distances to a set of give coordinates. After the calculation
+2. This method is used to calculate the distances to a set of give coordinates. After the calculation
 the method will return the closest n coordinates. If the number of distances < n, this method will
 return less than n coordinates.
 

@@ -22,8 +22,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.Units;
 
 /**
  * Implementation of {@link IdCoordinateSource} to read the mapping between coordinate id and actual
@@ -98,35 +96,6 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
   @Override
   public Collection<Point> getAllCoordinates() {
     return coordinateToId.keySet();
-  }
-
-  @Override
-  public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
-    if (idToCoordinate.size() < n) {
-      return getNearestCoordinates(coordinate, n, coordinateToId.keySet());
-    }
-    Set<Point> points = coordinateToId.keySet();
-
-    ArrayList<Point> foundPoints = new ArrayList<>();
-    ComparableQuantity<Length> distance = Quantities.getQuantity(50000, Units.METRE);
-
-    // extends the search radius until n points are found
-    while (foundPoints.size() < n) {
-      foundPoints.clear();
-      distance = distance.multiply(2);
-
-      Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
-
-      for (Point point : points) {
-        if (envelope.contains(point.getCoordinate())) {
-          foundPoints.add(point);
-        }
-      }
-    }
-
-    SortedSet<CoordinateDistance> sortedDistances =
-        GeoUtils.calcOrderedCoordinateDistances(coordinate, foundPoints);
-    return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, sortedDistances, n);
   }
 
   @Override

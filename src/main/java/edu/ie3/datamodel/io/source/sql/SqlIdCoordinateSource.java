@@ -139,23 +139,6 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   }
 
   @Override
-  public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
-    List<CoordinateValue> values =
-        executeQuery(
-            queryForNearestPoints,
-            ps -> {
-              ps.setDouble(1, coordinate.getX());
-              ps.setDouble(2, coordinate.getY());
-              ps.setInt(3, n);
-            });
-
-    List<Point> points = values.stream().map(value -> value.coordinate).toList();
-    SortedSet<CoordinateDistance> sortedDistances =
-        GeoUtils.calcOrderedCoordinateDistances(coordinate, points);
-    return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, sortedDistances, n);
-  }
-
-  @Override
   public List<CoordinateDistance> getNearestCoordinates(
       Point coordinate, int n, ComparableQuantity<Length> distance) {
     Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
@@ -199,20 +182,21 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   /**
    * Creates a basic query to retrieve an id for a given point with the following pattern: <br>
-   * {@code <base query> WHERE <point column> ~= ST_Point( ?, ?);}
+   * {@code <base query> WHERE <point column> = ST_Point( ?, ?);}
    *
    * @param pointColumn the name of the column holding the geometry information
    * @return the query string
    */
   private String createQueryForId(String pointColumn) {
-    return basicQuery + WHERE + pointColumn + " ~= ST_Point( ?, ?); ";
+    return basicQuery + WHERE + pointColumn + " = ST_Point( ?, ?); ";
   }
 
   /**
    * Creates a basic query to retrieve all entries in a given box. The box is defines by a latitude
    * interval and a longitude interval. The intervals are provided via an envelope. The pattern
    * looks like this: <br>
-   * {@code <base query> WHERE ST_Contains(ST_MakeEnvelope(?, ?, ?, ?, 4326 ) , <point column> ) ;}
+   * {@code <base query> WHERE ST_Intersects(ST_MakeEnvelope(?, ?, ?, ?, 4326 ) , <point column> )
+   * ;}
    *
    * @param pointColumn the name of the column holding the geometry information
    * @return the query string
@@ -220,7 +204,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   private String createQueryForBoundingBox(String pointColumn) {
     return basicQuery
         + WHERE
-        + " ST_Contains(ST_MakeEnvelope(?, ?, ?, ?, 4326 ) , "
+        + " ST_Intersects(ST_MakeEnvelope(?, ?, ?, ?, 4326 ) , "
         + pointColumn
         + ");";
   }
@@ -228,8 +212,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   /**
    * Creates a query to retrieve the nearest n entries. The pattern looks like this: <br>
    * {@code SELECT <id column> AS id, <coordinate column> AS coordinate, <coordinate column> <->
-   * ST_SetSRID(ST_MakePoint( ?, ?),4326) AS distance FROM <schema>.<table> ORDER BY distance LIMIT
-   * ?;}
+   * ST_Point( ?, ?) AS distance FROM <schema>.<table> ORDER BY distance LIMIT ?;}
    *
    * @param schemaName the name of the database schema
    * @param tableName the name of the database table
@@ -245,7 +228,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
         + pointColumn
         + " AS coordinate, "
         + pointColumn
-        + " <-> ST_SetSRID(ST_MakePoint( ?, ?),4326) AS distance "
+        + " <-> ST_Point( ?, ?) AS distance "
         + "FROM "
         + schemaName
         + ".\""
