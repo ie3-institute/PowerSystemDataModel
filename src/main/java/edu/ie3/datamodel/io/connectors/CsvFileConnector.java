@@ -175,9 +175,8 @@ public class CsvFileConnector implements DataConnector {
    * @throws FileNotFoundException If the matching file cannot be found
    */
   public BufferedReader initReader(Class<? extends UniqueEntity> clz) throws FileNotFoundException {
-    Path filePath = null;
     try {
-      filePath =
+      Path filePath =
           fileNamingStrategy
               .getFilePath(clz)
               .orElseThrow(
@@ -186,13 +185,14 @@ public class CsvFileConnector implements DataConnector {
                           "Cannot find a naming strategy for class '"
                               + clz.getSimpleName()
                               + "'."));
+      return initReader(filePath);
     } catch (ConnectorException e) {
       log.error(
           "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception: {}",
           clz.getSimpleName(),
           e);
     }
-    return initReader(filePath);
+    return null;
   }
 
   /**

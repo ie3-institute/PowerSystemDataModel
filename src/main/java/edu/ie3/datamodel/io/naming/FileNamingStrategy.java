@@ -130,7 +130,8 @@ public class FileNamingStrategy {
                   maybeDirectoryName
                       .get()
                       .toString()
-                      .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, ""))));
+                      .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
+                      .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""))));
     }
   }
 
