@@ -84,7 +84,7 @@ public abstract class CsvDataSource {
    * @return a map containing the mapping of (fieldName to fieldValue) or an empty map if an error
    *     occurred
    */
-  private Map<String, String> buildFieldsToAttributes(
+  protected Map<String, String> buildFieldsToAttributes(
       final String csvRow, final String[] headline) {
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
@@ -172,7 +172,7 @@ public abstract class CsvDataSource {
    * @deprecated only left for downward compatibility. Will be removed in a major release
    */
   @Deprecated(since = "1.1.0", forRemoval = true)
-  private String[] oldFieldVals(String csvSep, String csvRow) {
+  protected String[] oldFieldVals(String csvSep, String csvRow) {
 
     /*geo json support*/
     final String geoJsonRegex = "\\{.+?}}}";
@@ -238,7 +238,7 @@ public abstract class CsvDataSource {
    * @return either the first found instancen of {@link OperatorInput} or {@link
    *     OperatorInput#NO_OPERATOR_ASSIGNED}
    */
-  private OperatorInput getFirstOrDefaultOperator(
+  protected OperatorInput getFirstOrDefaultOperator(
       Collection<OperatorInput> operators,
       String operatorUuid,
       String entityClassName,

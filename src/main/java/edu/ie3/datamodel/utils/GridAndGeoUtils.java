@@ -20,19 +20,6 @@ public class GridAndGeoUtils extends GeoUtils {
   }
 
   /**
-   * Builds a straight line string between the both nodes
-   *
-   * @param a Starting point of the line string
-   * @param b Ending point of the line string
-   * @return The equivalent straight line string
-   * @deprecated Use {@link #buildSafeLineStringBetweenNodes(NodeInput, NodeInput)} instead
-   */
-  @Deprecated(since = "1.1.0", forRemoval = true)
-  public static LineString buildLineStringBetweenNodes(NodeInput a, NodeInput b) {
-    return buildSafeLineStringBetweenPoints(a.getGeoPosition(), b.getGeoPosition());
-  }
-
-  /**
    * Builds a straight line string between the both nodes that can be compared safely even if the
    * two provided nodes contain exactly equal coordinates
    *

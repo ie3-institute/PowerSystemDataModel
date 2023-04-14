@@ -61,7 +61,7 @@ class InfluxDbSinkIT extends Specification {
     when:
     def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
     then:
-    connector.connectionValid
+    connector.isConnectionValid()
   }
 
   def "An InfluxDbSink can persist a ResultEntity"() {
