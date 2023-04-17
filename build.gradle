@@ -16,7 +16,9 @@ plugins {
 ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_17
-  testcontainersVersion = '1.17.6'
+  groovyVersion = "4.0"
+  groovyBinaryVersion = "4.0.11"
+  testcontainersVersion = '1.18.0'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -63,8 +65,10 @@ dependencies {
   implementation 'org.jgrapht:jgrapht-core:1.5.1'
 
   // testing
+  testImplementation "org.apache.groovy:groovy:$groovyBinaryVersion"
+
   testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
-  testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
+  testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
   testImplementation 'net.bytebuddy:byte-buddy:1.14.4' // Mocks of classes
 

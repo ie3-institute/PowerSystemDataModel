@@ -33,18 +33,6 @@ public interface TimeSeriesMappingSource extends DataSource {
     return Optional.ofNullable(getMapping().get(modelIdentifier));
   }
 
-  /**
-   * Get an option on the given time series meta information
-   *
-   * @param timeSeriesUuid Unique identifier of the time series in question
-   * @return An Option onto the meta information
-   * @deprecated since 3.0. Use {@link
-   *     TimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
-      getTimeSeriesMetaInformation(UUID timeSeriesUuid);
-
   /** Class to represent one entry within the participant to time series mapping */
   class MappingEntry extends InputEntity {
     private final UUID participant;
