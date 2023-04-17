@@ -43,14 +43,14 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     // create joint grid container
     def gridName = "vn_simona"
     def separator = ","
-    def firstGridContainer = CsvJointGridContainerSource.read(gridName, separator, jointGridFolderPath)
+    def firstGridContainer = CsvJointGridContainerSource.read(gridName, separator, jointGridFolderPath, false)
 
     when:
     // write files from joint grid container in output directory
     sink.persistJointGrid(firstGridContainer)
 
     // create second grid container from output folder
-    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString())
+    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString(), false)
 
     then:
     // compare input and output joint grid container

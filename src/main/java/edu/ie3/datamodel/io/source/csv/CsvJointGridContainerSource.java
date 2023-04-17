@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.*;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
@@ -17,12 +19,21 @@ import edu.ie3.datamodel.models.input.container.SystemParticipants;
 public class CsvJointGridContainerSource {
   private CsvJointGridContainerSource() {}
 
-  public static JointGridContainer read(String gridName, String csvSep, String directoryPath)
+  public static JointGridContainer read(
+      String gridName, String csvSep, String directoryPath, boolean isHierarchic)
       throws SourceException {
 
     /* Parameterization */
+    FileNamingStrategy namingStrategy;
 
-    FileNamingStrategy namingStrategy = new FileNamingStrategy(); // Default naming strategy
+    if (isHierarchic) {
+      namingStrategy =
+          new FileNamingStrategy(
+              new EntityPersistenceNamingStrategy(),
+              new DefaultDirectoryHierarchy(directoryPath, gridName));
+    } else {
+      namingStrategy = new FileNamingStrategy();
+    }
 
     /* Instantiating sources */
     TypeSource typeSource = new CsvTypeSource(csvSep, directoryPath, namingStrategy);
@@ -33,7 +44,7 @@ public class CsvJointGridContainerSource {
     SystemParticipantSource systemParticipantSource =
         new CsvSystemParticipantSource(
             csvSep, directoryPath, namingStrategy, typeSource, thermalSource, rawGridSource);
-    GraphicSource graphicsSource =
+    GraphicSource graphicSource =
         new CsvGraphicSource(csvSep, directoryPath, namingStrategy, typeSource, rawGridSource);
 
     /* Loading models */
@@ -47,7 +58,7 @@ public class CsvJointGridContainerSource {
             .orElseThrow(
                 () -> new SourceException("Error during reading of system participant data."));
     GraphicElements graphicElements =
-        graphicsSource
+        graphicSource
             .getGraphicElements()
             .orElseThrow(() -> new SourceException("Error during reading of graphic elements."));
 
