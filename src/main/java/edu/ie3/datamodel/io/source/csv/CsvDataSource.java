@@ -60,13 +60,6 @@ public abstract class CsvDataSource {
   protected static final String TYPE = "type";
   protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
-  /**
-   * @deprecated ensures downward compatibility with old csv data format. Can be removed when
-   *     support for old csv format is removed. *
-   */
-  @Deprecated(since = "1.1.0", forRemoval = true)
-  private boolean notYetLoggedWarning = true;
-
   protected CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
@@ -89,31 +82,10 @@ public abstract class CsvDataSource {
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    // todo when replacing deprecated workaround code below add final modifier before parseCsvRow as
-    // well as remove
-    //  'finalFieldVals' and notYetLoggedWarning below!
-    String[] fieldVals = parseCsvRow(csvRow, csvSep);
-
-    // start workaround for deprecated data model processing
-    if (fieldVals.length != headline.length) {
-      // try to parse old structure
-      fieldVals = oldFieldVals(csvSep, csvRow);
-      // if this works log a warning to inform the user that this will not work much longer,
-      // otherwise parsing will fail regularly as expected below
-      if (fieldVals.length == headline.length && notYetLoggedWarning) {
-        notYetLoggedWarning = false;
-        log.warn(
-            "You are using an outdated version of the data "
-                + "model with invalid formatted csv rows. This is okay for now, but please updated your files, as the "
-                + "support for the old model will be removed soon.");
-      }
-    }
-    // end workaround for deprecated data model processing
-
     try {
-      String[] finalFieldVals = fieldVals;
+      String[] finalFieldVals = parseCsvRow(csvRow, csvSep);
       insensitiveFieldsToAttributes.putAll(
-          IntStream.range(0, fieldVals.length)
+          IntStream.range(0, finalFieldVals.length)
               .boxed()
               .collect(
                   Collectors.toMap(
