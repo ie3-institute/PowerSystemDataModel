@@ -42,10 +42,6 @@ public class CsvFileConnector implements DataConnector {
   private final Map<Class<? extends UniqueEntity>, BufferedCsvWriter> entityWriters =
       new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
-  // ATTENTION: Do not finalize. It's meant for lazy evaluation.
-  @Deprecated(since = "3.0", forRemoval = true)
-  private Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
-      individualTimeSeriesMetaInformation;
 
   private final FileNamingStrategy fileNamingStrategy;
   private final String baseDirectoryName;
@@ -210,27 +206,6 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
-   * Get time series meta information for a given uuid.
-   *
-   * <p>This method lazily evaluates the mapping from <i>all</i> time series files to their meta
-   * information.
-   *
-   * @param timeSeriesUuid The time series in question
-   * @return An option on the queried information
-   * @deprecated since 3.0. Use {@link #getCsvIndividualTimeSeriesMetaInformation(ColumnScheme...)}
-   *     instead
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
-      getIndividualTimeSeriesMetaInformation(UUID timeSeriesUuid) {
-    if (Objects.isNull(individualTimeSeriesMetaInformation))
-      individualTimeSeriesMetaInformation = getCsvIndividualTimeSeriesMetaInformation();
-
-    return Optional.ofNullable(individualTimeSeriesMetaInformation.get(timeSeriesUuid))
-        .map(edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation::new);
-  }
-
-  /**
    * Receive the information for specific time series. They are given back filtered by the column
    * scheme in order to allow for accounting the different content types.
    *
@@ -358,61 +333,5 @@ public class CsvFileConnector implements DataConnector {
                 log.error("Error during CsvFileConnector shutdown process.", e);
               }
             });
-  }
-
-  /**
-   * Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file
-   *
-   * @deprecated since 3.0. Use {@link
-   *     edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation} instead
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  public static class CsvIndividualTimeSeriesMetaInformation
-      extends edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation {
-    private final String fullFilePath;
-
-    public CsvIndividualTimeSeriesMetaInformation(
-        UUID uuid,
-        edu.ie3.datamodel.io.csv.timeseries.ColumnScheme columnScheme,
-        String fullFilePath) {
-      super(uuid, columnScheme);
-      this.fullFilePath = fullFilePath;
-    }
-
-    public CsvIndividualTimeSeriesMetaInformation(
-        edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation metaInformation,
-        String fullFilePath) {
-      this(metaInformation.getUuid(), metaInformation.getColumnScheme(), fullFilePath);
-    }
-
-    public String getFullFilePath() {
-      return fullFilePath;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (!(o instanceof CsvIndividualTimeSeriesMetaInformation that)) return false;
-      if (!super.equals(o)) return false;
-      return fullFilePath.equals(that.fullFilePath);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(super.hashCode(), fullFilePath);
-    }
-
-    @Override
-    public String toString() {
-      return "CsvIndividualTimeSeriesMetaInformation{"
-          + "uuid="
-          + getUuid()
-          + ", columnScheme="
-          + getColumnScheme()
-          + ", fullFilePath='"
-          + fullFilePath
-          + '\''
-          + '}';
-    }
   }
 }

@@ -39,21 +39,4 @@ public class ImpedanceWeightedGraph extends SimpleWeightedGraph<NodeInput, Imped
         weight.to(ImpedanceWeightedEdge.DEFAULT_IMPEDANCE_UNIT).getValue().doubleValue();
     super.setEdgeWeight(edge, weightDouble);
   }
-
-  /**
-   * The only purpose for overriding this method is to provide a better indication of the unit that
-   * is expected to be passed in. It is highly advised to use the {@link
-   * ImpedanceWeightedGraph#setEdgeWeightQuantity(ImpedanceWeightedEdge, ComparableQuantity)} for
-   * safety purposes that the provided edge weight is correct.
-   *
-   * @param edge the edge whose weight should be altered
-   * @param impedanceInOhm the weight of the {@link ImpedanceWeightedEdge} in ohm
-   * @deprecated Use {@link ImpedanceWeightedGraph#setEdgeWeightQuantity(ImpedanceWeightedEdge,
-   *     ComparableQuantity)} instead, as it provides means for proper unit handling
-   */
-  @Override
-  @Deprecated(since = "Deprecated since 2.1.0. See Javadocs for more information.")
-  public void setEdgeWeight(ImpedanceWeightedEdge edge, double impedanceInOhm) {
-    super.setEdgeWeight(edge, impedanceInOhm);
-  }
 }

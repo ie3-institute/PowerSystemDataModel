@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ### Changed
+- Removing deprecated classes and methods [#540](https://github.com/ie3-institute/PowerSystemDataModel/issues/540)
 
 
 ## [3.0.0] - 2023-02-16

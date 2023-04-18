@@ -56,39 +56,12 @@ public record CsvFileDefinition(
     this.csvSep = csvSep;
   }
 
-  /** @deprecated since 3.0. Use {@link #directoryPath()} instead */
-  @Deprecated(since = "3.0")
-  public String getDirectoryPath() {
-    return directoryPath;
-  }
-
-  /**
-   * @return The file name including extension
-   * @deprecated since 3.0. Use {@link #fileName()} instead
-   */
-  @Deprecated(since = "3.0")
-  public String getFileName() {
-    return fileName;
-  }
-
   /**
    * @return The path to the file relative to a not explicitly defined base directory, including the
    *     file extension
    */
   public String getFilePath() {
     return !directoryPath.isEmpty() ? FilenameUtils.concat(directoryPath, fileName) : fileName;
-  }
-
-  /** @deprecated since 3.0. Use {@link #headLineElements()} instead */
-  @Deprecated(since = "3.0")
-  public String[] getHeadLineElements() {
-    return headLineElements;
-  }
-
-  /** @deprecated since 3.0. Use {@link #csvSep()} instead */
-  @Deprecated(since = "3.0")
-  public String getCsvSep() {
-    return csvSep;
   }
 
   @Override
