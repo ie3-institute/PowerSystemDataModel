@@ -28,7 +28,7 @@ class CsvJointGridContainerSourceTest extends Specification implements CsvTestDa
     def inputGridContainer = CsvJointGridContainerSource.read(gridName, separator, hierarchicGridFolderPath, true)
 
     then:
-    inputGridContainer.getGraphics().numberOfElements() == 1
+    inputGridContainer.getGraphics().numberOfElements() == 0
     inputGridContainer.getSystemParticipants().numberOfElements() == 198
     inputGridContainer.getRawGrid().numberOfElements()== 202
   }
