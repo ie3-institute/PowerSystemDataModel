@@ -269,108 +269,47 @@ public class GridContainerValidationUtils extends ValidationUtils {
                       systemParticipants.getClass().getSimpleName(), exceptionString))));
     }
 
-    systemParticipants
-        .getBmPlants()
-        .forEach(
-            entity -> {
-              try {
-                checkNodeAvailability(entity, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
-              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
-            });
-
-    systemParticipants
-        .getChpPlants()
-        .forEach(
-            entity -> {
-              try {
-                checkNodeAvailability(entity, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
-              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
-            });
-
-    /* TODO: Electric vehicle charging systems are currently only dummy implementation. if this has changed, the whole
-     *   method can be aggregated */
-
-    systemParticipants
-        .getFixedFeedIns()
-        .forEach(
-            entity -> {
-              try {
-                checkNodeAvailability(entity, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
-              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
-            });
-
-    systemParticipants
-        .getHeatPumps()
-        .forEach(
-            entity -> {
-              try {
-                checkNodeAvailability(entity, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
-              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
-            });
-
-    systemParticipants
-        .getLoads()
-        .forEach(
-            entity -> {
-              try {
-                checkNodeAvailability(entity, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
-              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
-            });
-
-    systemParticipants
-        .getPvPlants()
-        .forEach(
-            entity -> {
-              try {
-                checkNodeAvailability(entity, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
-              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
-            });
-
-    systemParticipants
-        .getStorages()
-        .forEach(
-            entity -> {
-              try {
-                checkNodeAvailability(entity, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
-              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
-            });
-
-    systemParticipants
-        .getWecPlants()
-        .forEach(
-            entity -> {
-              try {
-                checkNodeAvailability(entity, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
-              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
-            });
-
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getEvCS(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getFixedFeedIns(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getHeatPumps(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getLoads(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getPvPlants(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getStorages(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getWecPlants(), nodes));
     exceptions.addAll(checkSystemParticipantsTypeIds(systemParticipants));
 
     return exceptions;
+  }
+
+  /**
+   * Checks the validity of specific system participant. Moreover, it checks, if the systems are
+   * connected to a node that is not in the provided set
+   *
+   * @param participants a set of specific system participants
+   * @param nodes Set of already known nodes
+   * @return a list of try objects either containing an {@link ValidationException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, ? extends ValidationException>> checkSystemParticipants(
+      Set<? extends SystemParticipantInput> participants, Set<NodeInput> nodes) {
+    return participants.stream()
+        .map(
+            entity -> {
+              List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+
+              try {
+                checkNodeAvailability(entity, nodes);
+              } catch (InvalidGridException e) {
+                exceptions.add(new Failure<>(e));
+              }
+              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
+
+              return exceptions;
+            })
+        .flatMap(List::stream)
+        .toList();
   }
 
   /**
