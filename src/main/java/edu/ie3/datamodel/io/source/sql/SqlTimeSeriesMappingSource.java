@@ -46,19 +46,6 @@ public class SqlTimeSeriesMappingSource
         .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 
-  /**
-   * @deprecated since 3.0. Use {@link
-   *     SqlTimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
-   */
-  @Override
-  @Deprecated(since = "3.0", forRemoval = true)
-  public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
-      getTimeSeriesMetaInformation(UUID timeSeriesUuid) {
-    return getDbTables(schemaName, "%" + timeSeriesUuid.toString()).stream()
-        .findFirst()
-        .map(entityPersistenceNamingStrategy::extractIndividualTimesSeriesMetaInformation);
-  }
-
   @Override
   protected Optional<MappingEntry> createEntity(Map<String, String> fieldToValues) {
     SimpleEntityData entityData =

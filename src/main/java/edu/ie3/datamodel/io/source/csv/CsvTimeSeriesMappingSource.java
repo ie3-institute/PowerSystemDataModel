@@ -42,15 +42,4 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
   public Map<UUID, UUID> getMapping() {
     return mapping;
   }
-
-  /**
-   * @deprecated since 3.0. Use {@link
-   *     CsvTimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
-   */
-  @Override
-  @Deprecated(since = "3.0", forRemoval = true)
-  public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
-      getTimeSeriesMetaInformation(UUID timeSeriesUuid) {
-    return connector.getIndividualTimeSeriesMetaInformation(timeSeriesUuid);
-  }
 }
