@@ -16,9 +16,9 @@ class CsvJointGridContainerSourceTest extends Specification implements CsvTestDa
     def inputGridContainer = CsvJointGridContainerSource.read(gridName, separator, jointGridFolderPath, false)
 
     then:
-    inputGridContainer.getGraphics().allEntitiesAsList().size() == 590
-    inputGridContainer.getSystemParticipants().allEntitiesAsList().size() == 566
-    inputGridContainer.getRawGrid().allEntitiesAsList().size() == 898
+    inputGridContainer.getGraphics().numberOfElements()== 590
+    inputGridContainer.getSystemParticipants().numberOfElements() == 566
+    inputGridContainer.getRawGrid().numberOfElements() == 898
   }
 
   def "The CsvJointGridContainer is able to read a grid with hierarchic structure"() {
@@ -28,8 +28,8 @@ class CsvJointGridContainerSourceTest extends Specification implements CsvTestDa
     def inputGridContainer = CsvJointGridContainerSource.read(gridName, separator, hierarchicGridFolderPath, true)
 
     then:
-    inputGridContainer.getGraphics().allEntitiesAsList().size() == 0
-    inputGridContainer.getSystemParticipants().allEntitiesAsList().size() == 198
-    inputGridContainer.getRawGrid().allEntitiesAsList().size() == 202
+    inputGridContainer.getGraphics().numberOfElements() == 1
+    inputGridContainer.getSystemParticipants().numberOfElements() == 198
+    inputGridContainer.getRawGrid().numberOfElements()== 202
   }
 }
