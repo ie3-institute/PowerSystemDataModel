@@ -1,3 +1,0 @@
-uuid;auto_tap;id;node_a;node_b;operates_from;operates_until;operator;parallel_devices;tap_pos;type
-ac6c7565-9dae-4bb7-938f-b13e83e5577f;true;HV1-MV1.101-Trafo1;05fbea48-d81a-48c2-bc98-332b6a190a84;d51e347d-3d0e-4b13-9782-7687c11ba6d7;;;;1;0;b5ba7030-7b9c-4786-b3d5-2a1e7efd37d7
-8418ad4d-a08a-423b-b209-b32d7290d6ef;true;HV1-MV1.101-Trafo2;05fbea48-d81a-48c2-bc98-332b6a190a84;d51e347d-3d0e-4b13-9782-7687c11ba6d7;;;;1;0;b5ba7030-7b9c-4786-b3d5-2a1e7efd37d7
