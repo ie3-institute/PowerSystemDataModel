@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -129,54 +128,6 @@ public abstract class CsvDataSource {
                 StringUtils.unquoteStartEnd(maybeStartEndQuotedString.trim())
                     .replaceAll("\"{2}", "\"")
                     .trim())
-        .toArray(String[]::new);
-  }
-
-  /**
-   * Build an array of from the provided csv row string considering special cases where geoJson or
-   * {@link edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput} are provided
-   * in the csv row string.
-   *
-   * @param csvSep the column separator of the csv row string
-   * @param csvRow the csv row string
-   * @return an array with one entry per column of the provided csv row string
-   * @deprecated only left for downward compatibility. Will be removed in a major release
-   */
-  @Deprecated(since = "1.1.0", forRemoval = true)
-  protected String[] oldFieldVals(String csvSep, String csvRow) {
-
-    /*geo json support*/
-    final String geoJsonRegex = "\\{.+?}}}";
-    final String geoReplacement = "geoJSON";
-
-    /*characteristic input support */
-    final String charInputRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{[^}]++}";
-    final String charReplacement = "charRepl";
-
-    /*removes double double quotes*/
-    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow.replace("\"\"", "\""));
-    List<String> charList = extractMatchingStrings(charInputRegex, csvRow.replace("\"\"", "\""));
-
-    AtomicInteger geoCounter = new AtomicInteger(0);
-    AtomicInteger charCounter = new AtomicInteger(0);
-
-    return Arrays.stream(
-            csvRow
-                .replaceAll(charInputRegex, charReplacement)
-                .replaceAll(geoJsonRegex, geoReplacement)
-                .replaceAll("\"*", "") // remove all quotes from
-                .split(csvSep, -1))
-        .map(
-            fieldVal -> {
-              String returningFieldVal = fieldVal;
-              if (fieldVal.equalsIgnoreCase(geoReplacement)) {
-                returningFieldVal = geoList.get(geoCounter.getAndIncrement());
-              }
-              if (fieldVal.equalsIgnoreCase(charReplacement)) {
-                returningFieldVal = charList.get(charCounter.getAndIncrement());
-              }
-              return returningFieldVal.trim();
-            })
         .toArray(String[]::new);
   }
 
