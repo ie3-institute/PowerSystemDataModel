@@ -171,6 +171,8 @@ Participant Related Result Models
    result/participant/thermalhouse
    result/participant/cylindricalstorage
    result/participant/systemparticipant
+   result/participant/flexoption
+   result/participant/em
 
 ***********
 Time Series
