@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
@@ -21,18 +22,25 @@ public class CsvJointGridContainerSource {
 
   public static JointGridContainer read(
       String gridName, String csvSep, String directoryPath, boolean isHierarchic)
-      throws SourceException {
+          throws SourceException, FileException {
 
     /* Parameterization */
     FileNamingStrategy namingStrategy;
 
     if (isHierarchic) {
-      namingStrategy =
-          new FileNamingStrategy(
+      namingStrategy = new FileNamingStrategy(
               new EntityPersistenceNamingStrategy(),
               new DefaultDirectoryHierarchy(directoryPath, gridName));
+      namingStrategy.validateHierarchy();
     } else {
       namingStrategy = new FileNamingStrategy();
+      try {
+        DefaultDirectoryHierarchy fileHierarchy = new DefaultDirectoryHierarchy(directoryPath, gridName);
+        fileHierarchy.validate();
+      }
+      catch (FileException e) {
+
+      }
     }
 
     /* Instantiating sources */

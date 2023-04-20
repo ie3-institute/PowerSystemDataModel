@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.naming;
 
+import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Optional;
 
@@ -31,5 +32,10 @@ public class FlatDirectoryHierarchy implements FileHierarchy {
   @Override
   public Optional<String> getBaseDirectory() {
     return Optional.empty();
+  }
+
+  @Override
+  public void validate() throws FileException {
+
   }
 }

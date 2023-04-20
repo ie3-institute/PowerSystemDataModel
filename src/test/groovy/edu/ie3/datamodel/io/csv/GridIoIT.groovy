@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.csv
 
+import edu.ie3.datamodel.exceptions.FileException
 import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
@@ -84,5 +85,17 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     then:
     // compare input and output joint grid container
     firstGridContainer == secondGridContainer
+  }
+
+  def "CsvJointGridContainerSource throws exception if the hierarchy is wrong."() {
+    given:
+    def gridName = "vn_simona"
+    def separator = ","
+
+    when:
+    CsvJointGridContainerSource.read(gridName, separator, jointGridFolderPath, true)
+
+    then:
+    thrown(FileException)
   }
 }

@@ -102,6 +102,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
    *
    * @throws FileException if not
    */
+  @Override
   public void validate() throws FileException {
     if (!Files.exists(projectDirectory))
       throw new FileException("The path '" + projectDirectory + "' does not exist.");

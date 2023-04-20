@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.naming;
 
+import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -301,5 +302,10 @@ public class FileNamingStrategy {
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getEntityName(T timeSeries) {
     return entityPersistenceNamingStrategy.getEntityName(timeSeries);
+  }
+
+
+  public void validateHierarchy() throws FileException {
+    fileHierarchy.validate();
   }
 }
