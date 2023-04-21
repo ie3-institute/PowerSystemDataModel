@@ -36,8 +36,8 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
 
   def setupSpec() {
     FileNamingStrategy hierarchicNamingStrategy = new FileNamingStrategy(
-            new EntityPersistenceNamingStrategy(),
-            new DefaultDirectoryHierarchy("output", "vn_simona"))
+        new EntityPersistenceNamingStrategy(),
+        new DefaultDirectoryHierarchy("output", "vn_simona"))
     tempDirectory = Files.createTempDirectory("GridIoIT")
     sinkFlat = new CsvFileSink(tempDirectory.toAbsolutePath().toString())
     sinkHierarchic = new CsvFileSink(tempDirectory.toAbsolutePath().toString(), hierarchicNamingStrategy, false, ",")
@@ -60,8 +60,6 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     when:
     // write files from joint grid container in output directory
     sinkFlat.persistJointGrid(firstGridContainer)
-    System.out.println(tempDirectory.toAbsolutePath().toString())
-
     // create second grid container from output folder
     def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString(), false)
 
@@ -79,7 +77,6 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
 
     when:
     sinkHierarchic.persistJointGrid(firstGridContainer)
-    System.out.println(tempDirectory.toAbsolutePath().toString())
     def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString(), true)
 
     then:
@@ -87,7 +84,7 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     firstGridContainer == secondGridContainer
   }
 
-  def "CsvJointGridContainerSource throws exception if the hierarchy is wrong."() {
+  def "CsvJointGridContainerSource throws exception if a hierarchic grid is expected but a flat grid is presented."() {
     given:
     def gridName = "vn_simona"
     def separator = ","

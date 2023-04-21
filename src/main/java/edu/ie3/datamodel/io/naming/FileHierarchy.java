@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.io.File;
 import java.util.Optional;
@@ -42,6 +41,4 @@ public interface FileHierarchy {
    * @return An option to the base directory
    */
   Optional<String> getBaseDirectory();
-
-  void validate() throws FileException;
 }

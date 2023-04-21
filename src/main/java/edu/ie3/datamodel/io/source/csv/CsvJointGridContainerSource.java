@@ -22,25 +22,20 @@ public class CsvJointGridContainerSource {
 
   public static JointGridContainer read(
       String gridName, String csvSep, String directoryPath, boolean isHierarchic)
-          throws SourceException, FileException {
+      throws SourceException, FileException {
 
     /* Parameterization */
     FileNamingStrategy namingStrategy;
 
     if (isHierarchic) {
-      namingStrategy = new FileNamingStrategy(
-              new EntityPersistenceNamingStrategy(),
-              new DefaultDirectoryHierarchy(directoryPath, gridName));
-      namingStrategy.validateHierarchy();
+      // Hierarchic structure
+      DefaultDirectoryHierarchy fileHierarchy =
+          new DefaultDirectoryHierarchy(directoryPath, gridName);
+      namingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), fileHierarchy);
+      fileHierarchy.validate();
     } else {
+      // Flat structure
       namingStrategy = new FileNamingStrategy();
-      try {
-        DefaultDirectoryHierarchy fileHierarchy = new DefaultDirectoryHierarchy(directoryPath, gridName);
-        fileHierarchy.validate();
-      }
-      catch (FileException e) {
-
-      }
     }
 
     /* Instantiating sources */
