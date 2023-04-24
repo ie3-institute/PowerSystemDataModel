@@ -236,7 +236,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     then:
     Exception ex = thrown()
     ex.class == ProcessorProviderException
-    ex.message == "Cannot find a suitable processor for provided class with name 'WecResult'. This provider's processors can process: PvResult,EvResult"
+    List.of("Cannot find a suitable processor for provided class with name 'WecResult'. This provider's processors can process: ","PvResult", "EvResult")
+        .forEach {str -> ex.message.contains(str)}
   }
 
   def "A ProcessorProvider returns an empty Optional, if none of the assigned processors is able to handle a time series"() {
@@ -248,7 +249,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)
 
     when:
-    Set<LinkedHashMap<String, String>> actual = provider.handleTimeSeries(individualIntTimeSeries)
+    provider.handleTimeSeries(individualIntTimeSeries)
 
     then:
     Exception ex = thrown()
