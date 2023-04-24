@@ -24,6 +24,7 @@ import tech.units.indriya.unit.Units
 import javax.measure.Quantity
 import javax.measure.quantity.*
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class ResultEntityProcessorTest extends Specification {
 
@@ -66,7 +67,8 @@ class ResultEntityProcessorTest extends Specification {
 
   def "A ResultEntityProcessor should serialize a provided SystemParticipantResult correctly"() {
     given:
-    def sysPartResProcessor = new ResultEntityProcessor(modelClass)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def sysPartResProcessor = new ResultEntityProcessor(modelClass, dateTimeFormatter)
     def validResult = validSystemParticipantResult
 
     when:
@@ -93,7 +95,8 @@ class ResultEntityProcessorTest extends Specification {
 
   def "A ResultEntityProcessor should throw an exception if the provided class is not registered"() {
     given:
-    def sysPartResProcessor = new ResultEntityProcessor(LoadResult)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def sysPartResProcessor = new ResultEntityProcessor(LoadResult, dateTimeFormatter)
     def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, Quantities.getQuantity(10d, StandardUnits.SOC))
 
     when:
@@ -106,7 +109,8 @@ class ResultEntityProcessorTest extends Specification {
 
   def "A ResultEntityProcessor should serialize a NodeResult correctly"() {
     given:
-    def sysPartResProcessor = new ResultEntityProcessor(NodeResult)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def sysPartResProcessor = new ResultEntityProcessor(NodeResult, dateTimeFormatter)
 
     Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
     Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
@@ -129,7 +133,8 @@ class ResultEntityProcessorTest extends Specification {
 
   def "A ResultEntityProcessor should serialize a FlexOptionsResult correctly"() {
     given:
-    def sysPartResProcessor = new ResultEntityProcessor(FlexOptionsResult)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def sysPartResProcessor = new ResultEntityProcessor(FlexOptionsResult, dateTimeFormatter)
 
     // take wrong unit for pRef on purpose, should get converted
     Quantity<Power> pRef = Quantities.getQuantity(5100, PowerSystemUnits.KILOWATT)
@@ -218,7 +223,8 @@ class ResultEntityProcessorTest extends Specification {
 
   def "A ResultEntityProcessor should serialize all ConnectorResults correctly"() {
     given:
-    def sysPartResProcessor = new ResultEntityProcessor(modelClass)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def sysPartResProcessor = new ResultEntityProcessor(modelClass, dateTimeFormatter)
 
     def validResult = validConnectorResult
 
@@ -239,7 +245,8 @@ class ResultEntityProcessorTest extends Specification {
 
   def "A ResultEntityProcessor should serialize a CylindricalStorageResult correctly"() {
     given:
-    def sysPartResProcessor = new ResultEntityProcessor(CylindricalStorageResult)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def sysPartResProcessor = new ResultEntityProcessor(CylindricalStorageResult, dateTimeFormatter)
 
     Quantity<Power> qDot = Quantities.getQuantity(2, StandardUnits.Q_DOT_RESULT)
     Quantity<Energy> energy = Quantities.getQuantity(3, StandardUnits.ENERGY_RESULT)
@@ -265,7 +272,8 @@ class ResultEntityProcessorTest extends Specification {
   def "A ResultEntityProcessor should throw an EntityProcessorException when it receives an entity result that is not eligible"() {
 
     given:
-    def sysPartResProcessor = new ResultEntityProcessor(ResultEntityProcessor.eligibleEntityClasses.get(0))
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def sysPartResProcessor = new ResultEntityProcessor(ResultEntityProcessor.eligibleEntityClasses.get(0), dateTimeFormatter)
 
     def invalidClassResult = new InvalidTestResult(ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), uuid)
 
@@ -288,8 +296,9 @@ class ResultEntityProcessorTest extends Specification {
 
   def "ResultEntityProcessor should throw an exception if an invalid class is passed into the constructor"() {
 
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
     when:
-    new ResultEntityProcessor(InvalidTestResult)
+    new ResultEntityProcessor(InvalidTestResult, dateTimeFormatter)
 
     then:
     thrown(EntityProcessorException)
@@ -299,10 +308,6 @@ class ResultEntityProcessorTest extends Specification {
 
     InvalidTestResult(ZonedDateTime time, UUID inputModel) {
       super(time, inputModel)
-    }
-
-    InvalidTestResult(UUID uuid, ZonedDateTime time, UUID inputModel) {
-      super(uuid, time, inputModel)
     }
   }
 }

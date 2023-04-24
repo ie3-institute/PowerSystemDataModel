@@ -31,6 +31,7 @@ import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Testcontainers
 class InfluxDbSinkIT extends Specification {
@@ -50,9 +51,12 @@ class InfluxDbSinkIT extends Specification {
   @Shared
   InfluxDbSink sink
 
+  @Shared
+  DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+
   def setupSpec() {
     connector = new InfluxDbConnector(influxDbContainer.url,"test_out", "test_scenario")
-    sink = new InfluxDbSink(connector)
+    sink = new InfluxDbSink(connector, dateTimeFormatter)
     fileNamingStrategy = new FileNamingStrategy()
   }
 

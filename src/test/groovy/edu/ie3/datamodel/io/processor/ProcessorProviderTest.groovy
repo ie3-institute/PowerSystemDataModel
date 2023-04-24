@@ -52,12 +52,14 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Power
+import java.time.format.DateTimeFormatter
 
 class ProcessorProviderTest extends Specification implements TimeSeriesTestData {
 
   def "A ProcessorProvider should initialize all known EntityProcessors by default"() {
     given:
-    ProcessorProvider provider = new ProcessorProvider()
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    ProcessorProvider provider = new ProcessorProvider(dateTimeFormatter)
     List knownEntityProcessors = [
       /* InputEntity */
       OperatorInput,
@@ -129,7 +131,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 
   def "A ProcessorProvider should initialize all known TimeSeriesProcessors by default"() {
     given:
-    ProcessorProvider provider = new ProcessorProvider()
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    ProcessorProvider provider = new ProcessorProvider(dateTimeFormatter)
     Set expected = [
       new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue),
       new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, SolarIrradianceValue),
@@ -153,9 +156,10 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 
   def "A ProcessorProvider should return the header elements for a entity class known by one of its processors and do nothing otherwise"() {
     given:
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
     ProcessorProvider provider = new ProcessorProvider([
-      new ResultEntityProcessor(PvResult),
-      new ResultEntityProcessor(EvResult)
+      new ResultEntityProcessor(PvResult, dateTimeFormatter),
+      new ResultEntityProcessor(EvResult, dateTimeFormatter)
     ], [] as Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>)
 
     when:
@@ -180,9 +184,10 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 
   def "A ProcessorProvider should return the header elements for a time series key known by one of its processors and do nothing otherwise"() {
     given:
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
     TimeSeriesProcessorKey availableKey = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>> timeSeriesProcessors = new HashMap<>()
-    timeSeriesProcessors.put(availableKey, new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue))
+    timeSeriesProcessors.put(availableKey, new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue,dateTimeFormatter))
     ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessors)
 
     when:
@@ -205,9 +210,10 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 
   def "A ProcessorProvider should process an entity known by its underlying processors correctly and do nothing otherwise"() {
     given:
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
     ProcessorProvider provider = new ProcessorProvider([
-      new ResultEntityProcessor(PvResult),
-      new ResultEntityProcessor(EvResult)
+      new ResultEntityProcessor(PvResult, dateTimeFormatter),
+      new ResultEntityProcessor(EvResult, dateTimeFormatter)
     ], [] as Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>)
 
     Map expectedMap = ["uuid"      : "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
@@ -241,8 +247,9 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 
   def "A ProcessorProvider returns an empty Optional, if none of the assigned processors is able to handle a time series"() {
     given:
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, dateTimeFormatter)
     Map<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
     timeSeriesProcessorMap.put(key, processor)
     ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)
@@ -256,8 +263,9 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 
   def "A ProcessorProvider handles a time series correctly"() {
     given:
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, dateTimeFormatter)
     Map<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
     timeSeriesProcessorMap.put(key, processor)
     ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)

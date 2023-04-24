@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.lang.reflect.Method;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
@@ -37,8 +38,9 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
    *
    * @param registeredClass the class the entity processor should be able to handle
    */
-  protected EntityProcessor(Class<? extends T> registeredClass) {
-    super(registeredClass);
+  protected EntityProcessor(
+      Class<? extends T> registeredClass, DateTimeFormatter dateTimeFormatter) {
+    super(registeredClass, dateTimeFormatter);
     this.fieldNameToMethod =
         mapFieldNameToGetter(registeredClass, Collections.singleton(NODE_INTERNAL));
     this.headerElements = fieldNameToMethod.keySet().toArray(new String[0]);

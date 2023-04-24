@@ -19,6 +19,7 @@ import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -73,8 +74,9 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           StorageTypeInput.class,
           WecTypeInput.class);
 
-  public InputEntityProcessor(Class<? extends InputEntity> registeredClass) {
-    super(registeredClass);
+  public InputEntityProcessor(
+      Class<? extends InputEntity> registeredClass, DateTimeFormatter dateTimeFormatter) {
+    super(registeredClass, dateTimeFormatter);
   }
 
   @Override

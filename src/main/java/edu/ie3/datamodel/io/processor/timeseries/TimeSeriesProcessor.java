@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.*;
 import java.lang.reflect.Method;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -66,8 +67,12 @@ public class TimeSeriesProcessor<
 
   private final String[] flattenedHeaderElements;
 
-  public TimeSeriesProcessor(Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass) {
-    super(timeSeriesClass);
+  public TimeSeriesProcessor(
+      Class<T> timeSeriesClass,
+      Class<E> entryClass,
+      Class<V> valueClass,
+      DateTimeFormatter dateTimeFormatter) {
+    super(timeSeriesClass, dateTimeFormatter);
 
     /* Check, if this processor can handle the foreseen combination of time series, entry and value */
     TimeSeriesProcessorKey timeSeriesKey =

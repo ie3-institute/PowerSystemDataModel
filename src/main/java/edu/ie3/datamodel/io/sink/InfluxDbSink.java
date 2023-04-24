@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -44,13 +45,14 @@ public class InfluxDbSink implements OutputDataSink {
    */
   public InfluxDbSink(
       InfluxDbConnector connector,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
+      DateTimeFormatter dateTimeFormatter) {
     this.connector = connector;
     this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
     this.processorProvider =
         new ProcessorProvider(
-            ProcessorProvider.allResultEntityProcessors(),
-            ProcessorProvider.allTimeSeriesProcessors());
+            ProcessorProvider.allResultEntityProcessors(dateTimeFormatter),
+            ProcessorProvider.allTimeSeriesProcessors(dateTimeFormatter));
   }
 
   /**
@@ -58,8 +60,8 @@ public class InfluxDbSink implements OutputDataSink {
    *
    * @param connector needed for database connection
    */
-  public InfluxDbSink(InfluxDbConnector connector) {
-    this(connector, new EntityPersistenceNamingStrategy());
+  public InfluxDbSink(InfluxDbConnector connector, DateTimeFormatter dateTimeFormatter) {
+    this(connector, new EntityPersistenceNamingStrategy(), dateTimeFormatter);
   }
 
   @Override

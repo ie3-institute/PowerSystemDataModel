@@ -29,6 +29,7 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
@@ -42,7 +43,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "A InputEntityProcessor should serialize a provided NodeInput correctly"() {
     given:
-    def processor = new InputEntityProcessor(NodeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def processor = new InputEntityProcessor(NodeInput, dateTimeFormatter)
     def validResult = GridTestData.nodeA
 
     Map expectedResults = [
@@ -69,7 +71,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "A InputEntityProcessor should serialize a provided ConnectorInput correctly"() {
     given:
-    def processor = new InputEntityProcessor(modelClass)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def processor = new InputEntityProcessor(modelClass, dateTimeFormatter)
     def validInput = modelInstance
 
     when: "the entity is passed to the processor"
@@ -139,7 +142,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "A InputEntityProcessor should serialize a provided SystemParticipantInput correctly"() {
     given:
-    def processor = new InputEntityProcessor(modelClass)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def processor = new InputEntityProcessor(modelClass, dateTimeFormatter)
     def validInput = modelInstance
 
     when: "the entity is passed to the processor"
@@ -285,7 +289,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided NodeGraphicInput with point correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput, dateTimeFormatter)
     NodeGraphicInput validNode = GridTestData.nodeGraphicC
     Map expected = [
       "uuid"        : "09aec636-791b-45aa-b981-b14edf171c4c",
@@ -305,7 +310,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided NodeGraphicInput with path correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput, dateTimeFormatter)
     NodeGraphicInput validNode = GridTestData.nodeGraphicD
     Map expected = [
       "uuid"        : "9ecad435-bd16-4797-a732-762c09d4af25",
@@ -325,7 +331,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided LineGraphicInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(LineGraphicInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(LineGraphicInput, dateTimeFormatter)
     LineGraphicInput validNode = GridTestData.lineGraphicCtoD
     Map expected = [
       "uuid"        : "ece86139-3238-4a35-9361-457ecb4258b0",
@@ -344,7 +351,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided OperatorInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(OperatorInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(OperatorInput, dateTimeFormatter)
     OperatorInput operator = new OperatorInput(UUID.fromString("420ee39c-dd5a-4d9c-9156-23dbdef13e5e"), "Prof. Brokkoli")
     Map expected = [
       "uuid": "420ee39c-dd5a-4d9c-9156-23dbdef13e5e",
@@ -361,7 +369,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided RandomLoadParameters correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(RandomLoadParameters)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(RandomLoadParameters, dateTimeFormatter)
     RandomLoadParameters parameters = new RandomLoadParameters(
         UUID.fromString("a5b0f432-27b5-4b3e-b87a-61867b9edd79"),
         4,
@@ -399,7 +408,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided WecTypeInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(WecTypeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(WecTypeInput, dateTimeFormatter)
     WecTypeInput type = TypeTestData.wecType
     Map expected = [
       "uuid"            : "a24fc5b9-a26f-44de-96b8-c9f50b665cb3",
@@ -424,7 +434,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided Transformer2WTypeInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(Transformer2WTypeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(Transformer2WTypeInput, dateTimeFormatter)
     Transformer2WTypeInput type = GridTestData.transformerTypeBtoD
     Map expected = [
       "uuid"    : "202069a7-bcf8-422c-837c-273575220c8a",
@@ -454,7 +465,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided Transformer3WTypeInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(Transformer3WTypeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(Transformer3WTypeInput, dateTimeFormatter)
     Transformer3WTypeInput type = GridTestData.transformerTypeAtoBtoC
     Map expected = [
       "uuid"    : "5b0ee546-21fb-4a7f-a801-5dbd3d7bb356",
@@ -490,7 +502,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided LineTypeInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(LineTypeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(LineTypeInput, dateTimeFormatter)
     LineTypeInput type = GridTestData.lineTypeInputCtoD
     Map expected = [
       "uuid"  : "3bed3eb3-9790-4874-89b5-a5434d408088",
@@ -513,7 +526,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided EvTypeInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(EvTypeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(EvTypeInput, dateTimeFormatter)
     EvTypeInput type = TypeTestData.evType
     Map expected = [
       "uuid"       : "66b0db5d-b2fb-41d0-a9bc-990d6b6a36db",
@@ -536,7 +550,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided ChpTypeInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(ChpTypeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(ChpTypeInput, dateTimeFormatter)
     ChpTypeInput type = TypeTestData.chpType
     Map expected = [
       "uuid"       : "1c027d3e-5409-4e52-a0e2-f8a23d5d0af0",
@@ -561,7 +576,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided HpTypeInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(HpTypeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(HpTypeInput, dateTimeFormatter)
     HpTypeInput type = TypeTestData.hpType
     Map expected = [
       "uuid"       : "1059ef51-9e17-4c13-928c-7c1c716d4ee6",
@@ -583,7 +599,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided BmTypeInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(BmTypeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(BmTypeInput, dateTimeFormatter)
     BmTypeInput type = TypeTestData.bmType
     Map expected = [
       "uuid"               : "c3bd30f5-1a62-4a37-86e3-074040d965a4",
@@ -606,7 +623,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize a provided StorageTypeInput correctly"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(StorageTypeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(StorageTypeInput, dateTimeFormatter)
     StorageTypeInput type = TypeTestData.storageType
     Map expected = [
       "uuid"               : "fbee4995-24dd-45e4-9c85-7d986fe99ff3",
@@ -634,7 +652,8 @@ class InputEntityProcessorTest extends Specification {
 
   def "The InputEntityProcessor should serialize an entity but ignore the operator field when OperatorInput is equal to NO_OPERATOR_ASSIGNED"() {
     given:
-    InputEntityProcessor processor = new InputEntityProcessor(NodeInput)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    InputEntityProcessor processor = new InputEntityProcessor(NodeInput, dateTimeFormatter)
     def nodeWithOutOperator = new NodeInput(
         UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"), "node_d", OperatorInput.NO_OPERATOR_ASSIGNED,
         OperationTime.notLimited()

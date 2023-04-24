@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -47,9 +48,9 @@ public class ProcessorProvider {
       timeSeriesProcessors;
 
   /** Get an instance of this class with all existing entity processors */
-  public ProcessorProvider() {
-    this.entityProcessors = init(allEntityProcessors());
-    this.timeSeriesProcessors = allTimeSeriesProcessors();
+  public ProcessorProvider(DateTimeFormatter dateTimeFormatter) {
+    this.entityProcessors = init(allEntityProcessors(dateTimeFormatter));
+    this.timeSeriesProcessors = allTimeSeriesProcessors(dateTimeFormatter);
   }
 
   /**
@@ -235,10 +236,11 @@ public class ProcessorProvider {
    *
    * @return a collection of all existing processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors() {
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors(
+      DateTimeFormatter dateTimeFormatter) {
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
-    resultingProcessors.addAll(allInputEntityProcessors());
-    resultingProcessors.addAll(allResultEntityProcessors());
+    resultingProcessors.addAll(allInputEntityProcessors(dateTimeFormatter));
+    resultingProcessors.addAll(allResultEntityProcessors(dateTimeFormatter));
     return resultingProcessors;
   }
 
@@ -247,10 +249,11 @@ public class ProcessorProvider {
    *
    * @return a collection of all input processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allInputEntityProcessors() {
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allInputEntityProcessors(
+      DateTimeFormatter dateTimeFormatter) {
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
     for (Class<? extends InputEntity> cls : InputEntityProcessor.eligibleEntityClasses) {
-      resultingProcessors.add(new InputEntityProcessor(cls));
+      resultingProcessors.add(new InputEntityProcessor(cls, dateTimeFormatter));
     }
     return resultingProcessors;
   }
@@ -260,10 +263,11 @@ public class ProcessorProvider {
    *
    * @return a collection of all result processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allResultEntityProcessors() {
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allResultEntityProcessors(
+      DateTimeFormatter dateTimeFormatter) {
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
     for (Class<? extends ResultEntity> cls : ResultEntityProcessor.eligibleEntityClasses) {
-      resultingProcessors.add(new ResultEntityProcessor(cls));
+      resultingProcessors.add(new ResultEntityProcessor(cls, dateTimeFormatter));
     }
     return resultingProcessors;
   }
@@ -277,7 +281,7 @@ public class ProcessorProvider {
           TimeSeriesProcessorKey,
           TimeSeriesProcessor<
               TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>
-      allTimeSeriesProcessors() {
+      allTimeSeriesProcessors(DateTimeFormatter dateTimeFormatter) {
     return TimeSeriesProcessor.eligibleKeys.stream()
         .collect(
             Collectors.toMap(
@@ -286,7 +290,8 @@ public class ProcessorProvider {
                     new TimeSeriesProcessor<>(
                         (Class<TimeSeries<TimeSeriesEntry<Value>, Value>>) key.getTimeSeriesClass(),
                         (Class<TimeSeriesEntry<Value>>) key.getEntryClass(),
-                        (Class<Value>) key.getValueClass())));
+                        (Class<Value>) key.getValueClass(),
+                        dateTimeFormatter)));
   }
 
   @SuppressWarnings("unchecked cast")

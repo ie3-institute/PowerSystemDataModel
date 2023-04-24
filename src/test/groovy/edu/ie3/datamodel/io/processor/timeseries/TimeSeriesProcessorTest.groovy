@@ -17,11 +17,13 @@ import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
 
 import java.lang.reflect.Method
+import java.time.format.DateTimeFormatter
 
 class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestData {
   def "A TimeSeriesProcessor is instantiated correctly"() {
     when:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, dateTimeFormatter)
     Map expectedSourceMapping = [
       "uuid": FieldSourceToMethod.FieldSource.ENTRY,
       "price": FieldSourceToMethod.FieldSource.VALUE,
@@ -49,7 +51,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessor throws an Exception on instantiation, if the time series combination is not supported"() {
     when:
-    new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, IntValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, IntValue, dateTimeFormatter)
 
     then:
     EntityProcessorException thrown = thrown(EntityProcessorException)
@@ -58,7 +61,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessor throws an Exception, when the simple handle method is called"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, dateTimeFormatter)
 
     when:
     processor.handleEntity(individualEnergyPriceTimeSeries)
@@ -70,7 +74,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessor correctly extracts the field name to getter map"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, dateTimeFormatter)
 
     when:
     Map<String, Method> actual = processor.extractFieldToMethod(source)
@@ -87,7 +92,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessor handles an entry correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, dateTimeFormatter)
     Map<String, String> expected = Processor.putUuidFirst([
       "uuid" : "9e4dba1b-f3bb-4e40-bd7e-2de7e81b7704",
       "price": "5.0",
@@ -105,7 +111,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with EnergyPriceValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualEnergyPriceTimeSeries)
@@ -116,7 +123,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with TemperatureValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, TemperatureValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, TemperatureValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, TemperatureValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, TemperatureValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualTemperatureTimeSeries)
@@ -127,7 +135,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with WindValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WindValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WindValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WindValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WindValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualWindTimeSeries)
@@ -138,7 +147,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with IrradianceValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue,SolarIrradianceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SolarIrradianceValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue,SolarIrradianceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SolarIrradianceValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualIrradianceTimeSeries)
@@ -149,7 +159,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with WeatherValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WeatherValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WeatherValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WeatherValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WeatherValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualWeatherTimeSeries)
@@ -160,7 +171,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with HeatDemandValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatDemandValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatDemandValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatDemandValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatDemandValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualHeatDemandTimeSeries)
@@ -171,7 +183,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with PValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, PValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, PValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, PValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, PValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualPTimeSeries)
@@ -182,7 +195,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with HeatAndPValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatAndPValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatAndPValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatAndPValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatAndPValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualHeatAndPTimeSeries)
@@ -193,7 +207,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with SValue correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, SValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, SValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualSTimeSeries)
@@ -204,7 +219,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with HeatAndSValue correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatAndSValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatAndSValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatAndSValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatAndSValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualHeatAndSTimeSeries)
@@ -215,7 +231,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete LoadProfileInput correctly"() {
     given:
-    TimeSeriesProcessor<LoadProfileInput, LoadProfileEntry, PValue> processor = new TimeSeriesProcessor<>(LoadProfileInput, LoadProfileEntry, PValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<LoadProfileInput, LoadProfileEntry, PValue> processor = new TimeSeriesProcessor<>(LoadProfileInput, LoadProfileEntry, PValue, dateTimeFormatter)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(loadProfileInput)

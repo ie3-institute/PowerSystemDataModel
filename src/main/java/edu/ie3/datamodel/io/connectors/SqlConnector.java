@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
 public class SqlConnector implements DataConnector {
   public static final Logger log = LoggerFactory.getLogger(SqlConnector.class);
 
-  private final String jdbcUrl;
-  private final Properties connectionProps;
+  final String jdbcUrl;
+  final Properties connectionProps;
   private Connection connection;
 
   /**

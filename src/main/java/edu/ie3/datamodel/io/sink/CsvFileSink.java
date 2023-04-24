@@ -33,6 +33,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -54,12 +55,13 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   private static final Logger log = LoggerFactory.getLogger(CsvFileSink.class);
 
   private final CsvFileConnector connector;
+
   private final ProcessorProvider processorProvider;
 
   private final String csvSep;
 
-  public CsvFileSink(String baseFolderPath) {
-    this(baseFolderPath, new FileNamingStrategy(), false, ",");
+  public CsvFileSink(String baseFolderPath, DateTimeFormatter dateTimeFormatter) {
+    this(baseFolderPath, new FileNamingStrategy(), dateTimeFormatter, false, ",");
   }
 
   /**
@@ -77,9 +79,15 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   public CsvFileSink(
       String baseFolderPath,
       FileNamingStrategy fileNamingStrategy,
+      DateTimeFormatter dateTimeFormatter,
       boolean initFiles,
       String csvSep) {
-    this(baseFolderPath, new ProcessorProvider(), fileNamingStrategy, initFiles, csvSep);
+    this(
+        baseFolderPath,
+        new ProcessorProvider(dateTimeFormatter),
+        fileNamingStrategy,
+        initFiles,
+        csvSep);
   }
 
   /**
@@ -89,7 +97,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * {@link ProcessorProvider} because if you're not 100% sure that it knows about all entities
    * you're going to process exceptions might occur. Therefore it is strongly advised to either use
    * a constructor without providing the {@link ProcessorProvider} or provide a general {@link
-   * ProcessorProvider} by calling {@link ProcessorProvider#ProcessorProvider()}
+   * ProcessorProvider}
    *
    * @param baseFolderPath the base folder path where the files should be put into
    * @param processorProvider the processor provided that should be used for entity serialization

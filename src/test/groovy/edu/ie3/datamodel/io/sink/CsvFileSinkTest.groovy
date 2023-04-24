@@ -8,6 +8,8 @@ package edu.ie3.datamodel.io.sink
 import edu.ie3.datamodel.models.result.system.EmResult
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
 
+import java.time.format.DateTimeFormatter
+
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
@@ -74,7 +76,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
   def "A valid CsvFileSink called by simple constructor should not initialize files by default and consist of several default values"() {
     given:
-    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, dateTimeFormatter)
     csvFileSink.shutdown()
 
     expect:
@@ -84,10 +87,11 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
   def "A valid CsvFileSink with 'initFiles' enabled should create files as expected"() {
     given:
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
     CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
         new ProcessorProvider([
-          new ResultEntityProcessor(PvResult),
-          new ResultEntityProcessor(EvResult)
+          new ResultEntityProcessor(PvResult, dateTimeFormatter),
+          new ResultEntityProcessor(EvResult, dateTimeFormatter)
         ], [] as Map),
         new FileNamingStrategy(),
         true,
@@ -102,7 +106,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
   def "A valid CsvFileSink is able to convert an entity data map correctly to RFC 4180 compliant strings"() {
     given:
-    def csvFileSink = new CsvFileSink(testBaseFolderPath)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def csvFileSink = new CsvFileSink(testBaseFolderPath, dateTimeFormatter)
     def input = [
       "hello, whats up?": "nothing",
       "okay"            : "that's fine"
@@ -123,7 +128,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
   def "A valid CsvFileSink throws an IllegalStateException, if processing entity data map to RFC 4180 compliant strings generates duplicated keys"() {
     given:
-    def csvFileSink = new CsvFileSink(testBaseFolderPath)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def csvFileSink = new CsvFileSink(testBaseFolderPath, dateTimeFormatter)
     def input = [
       "what is \"this\"?"    : "nothing",
       "\"what is \"this\"?\"": "something"
@@ -142,28 +148,29 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
   def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not init all files"() {
     given:
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
     CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
         new ProcessorProvider([
-          new ResultEntityProcessor(PvResult),
-          new ResultEntityProcessor(WecResult),
-          new ResultEntityProcessor(EvResult),
-          new ResultEntityProcessor(EvcsResult),
-          new ResultEntityProcessor(EmResult),
-          new ResultEntityProcessor(FlexOptionsResult),
-          new InputEntityProcessor(Transformer2WInput),
-          new InputEntityProcessor(NodeInput),
-          new InputEntityProcessor(EvcsInput),
-          new InputEntityProcessor(Transformer2WTypeInput),
-          new InputEntityProcessor(LineGraphicInput),
-          new InputEntityProcessor(NodeGraphicInput),
-          new InputEntityProcessor(CylindricalStorageInput),
-          new InputEntityProcessor(ThermalHouseInput),
-          new InputEntityProcessor(OperatorInput),
-          new InputEntityProcessor(LineInput),
-          new InputEntityProcessor(ThermalBusInput),
-          new InputEntityProcessor(LineTypeInput),
-          new InputEntityProcessor(LoadInput),
-          new InputEntityProcessor(EmInput)
+          new ResultEntityProcessor(PvResult, dateTimeFormatter),
+          new ResultEntityProcessor(WecResult, dateTimeFormatter),
+          new ResultEntityProcessor(EvResult, dateTimeFormatter),
+          new ResultEntityProcessor(EvcsResult, dateTimeFormatter),
+          new ResultEntityProcessor(EmResult, dateTimeFormatter),
+          new ResultEntityProcessor(FlexOptionsResult, dateTimeFormatter),
+          new InputEntityProcessor(Transformer2WInput, dateTimeFormatter),
+          new InputEntityProcessor(NodeInput, dateTimeFormatter),
+          new InputEntityProcessor(EvcsInput, dateTimeFormatter),
+          new InputEntityProcessor(Transformer2WTypeInput, dateTimeFormatter),
+          new InputEntityProcessor(LineGraphicInput, dateTimeFormatter),
+          new InputEntityProcessor(NodeGraphicInput, dateTimeFormatter),
+          new InputEntityProcessor(CylindricalStorageInput, dateTimeFormatter),
+          new InputEntityProcessor(ThermalHouseInput, dateTimeFormatter),
+          new InputEntityProcessor(OperatorInput, dateTimeFormatter),
+          new InputEntityProcessor(LineInput, dateTimeFormatter),
+          new InputEntityProcessor(ThermalBusInput, dateTimeFormatter),
+          new InputEntityProcessor(LineTypeInput, dateTimeFormatter),
+          new InputEntityProcessor(LoadInput, dateTimeFormatter),
+          new InputEntityProcessor(EmInput, dateTimeFormatter)
         ], [] as Map),
         new FileNamingStrategy(),
         false,
@@ -227,7 +234,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
   def "A valid CsvFileSink should persist a time series correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, dateTimeFormatter)
     TimeSeriesProcessorKey timeSeriesProcessorKey = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
     timeSeriesProcessorMap.put(timeSeriesProcessorKey, timeSeriesProcessor)
@@ -251,7 +259,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
   def "A valid CsvFileSink persists a bunch of time series correctly"() {
     given:
-    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, dateTimeFormatter)
 
     when:
     csvFileSink.persistAll(allTimeSeries)
@@ -271,7 +280,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
   def "A valid CsvFileSink is able to persist an InputEntity without persisting the nested elements"() {
     given:
-    def csvFileSink = new CsvFileSink(testBaseFolderPath)
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    def csvFileSink = new CsvFileSink(testBaseFolderPath, dateTimeFormatter)
     def nestedInput = new PvInput(
         UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
         "test_pvInput",
@@ -327,9 +337,10 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
   def "A valid CsvFileSink should persist a valid joint grid container correctly"() {
     given:
     /* A csv file sink, that is NOT able to handle time series */
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
     def csvFileSink = new CsvFileSink(
         testBaseFolderPath,
-        new ProcessorProvider(),
+        new ProcessorProvider(dateTimeFormatter),
         new FileNamingStrategy(),
         false,
         ",")

@@ -21,6 +21,7 @@ import java.beans.Introspector;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
@@ -67,12 +68,15 @@ public abstract class Processor<T> {
 
   private static final String PARALLEL_DEVICES = "parallelDevices";
 
+  private final DateTimeFormatter dateTimeFormatter;
   /**
    * Instantiates a Processor for a foreseen class
    *
    * @param foreSeenClass Class and its children that are foreseen to be handled with this processor
+   * @param dateTimeFormatter
    */
-  protected Processor(Class<? extends T> foreSeenClass) {
+  protected Processor(Class<? extends T> foreSeenClass, DateTimeFormatter dateTimeFormatter) {
+    this.dateTimeFormatter = dateTimeFormatter;
     if (!getEligibleEntityClasses().contains(foreSeenClass))
       throw new EntityProcessorException(
           "Cannot register class '"
@@ -242,7 +246,7 @@ public abstract class Processor<T> {
                   })
               .orElse(""));
       case "ZonedDateTime" -> resultStringBuilder.append(
-          processZonedDateTime((ZonedDateTime) methodReturnObject));
+          dateTimeFormatter.format((ZonedDateTime) methodReturnObject));
       case "OperationTime" -> resultStringBuilder.append(
           processOperationTime((OperationTime) methodReturnObject, fieldName));
       case "VoltageLevel" -> resultStringBuilder.append(

@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
@@ -56,8 +57,9 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
           EmResult.class,
           FlexOptionsResult.class);
 
-  public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass) {
-    super(registeredClass);
+  public ResultEntityProcessor(
+      Class<? extends ResultEntity> registeredClass, DateTimeFormatter dateTimeFormatter) {
+    super(registeredClass, dateTimeFormatter);
   }
 
   @Override

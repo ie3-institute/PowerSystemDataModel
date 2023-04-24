@@ -13,6 +13,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 import java.sql.SQLException
+import java.time.format.DateTimeFormatter
 
 @Testcontainers
 class SqlConnectorIT extends Specification implements TestContainerHelper {
