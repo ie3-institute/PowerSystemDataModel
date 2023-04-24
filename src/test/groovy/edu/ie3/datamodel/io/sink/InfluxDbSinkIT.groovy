@@ -176,6 +176,7 @@ class InfluxDbSinkIT extends Specification {
 
   def "An InfluxDbSink will use the class name if the NamingStrategy is failing"() {
     given:
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
     def lineResult1 = new LineResult(ZonedDateTime.of(2020, 5, 3, 14, 18, 0, 0, ZoneId.of("UTC")),
         UUID.randomUUID(),
         Quantities.getQuantity(1.13d, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
@@ -186,7 +187,7 @@ class InfluxDbSinkIT extends Specification {
         new PValue(Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)))
     IndividualTimeSeries<PValue> timeSeries = new IndividualTimeSeries(UUID.randomUUID(), [p1] as Set<TimeBasedValue>)
 
-    def sinkWithEmptyNamingStrategy = new InfluxDbSink(connector, new EmptyFileNamingStrategy())
+    def sinkWithEmptyNamingStrategy = new InfluxDbSink(connector, new EmptyFileNamingStrategy(), dateTimeFormatter)
     when:
     sinkWithEmptyNamingStrategy.persist(lineResult1)
     sinkWithEmptyNamingStrategy.persist(timeSeries)

@@ -14,6 +14,7 @@ import spock.lang.Specification
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.format.DateTimeFormatter
 
 /**
  * Testing whether PSDM CSV grids are equal when serialized and deserialized sequentially.
@@ -27,9 +28,12 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
   @Shared
   CsvFileSink sink
 
+  @Shared
+  DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+
   def setupSpec() {
     tempDirectory = Files.createTempDirectory("GridIoIT")
-    sink = new CsvFileSink(tempDirectory.toAbsolutePath().toString())
+    sink = new CsvFileSink(tempDirectory.toAbsolutePath().toString(), dateTimeFormatter)
   }
 
   def cleanupSpec() {
