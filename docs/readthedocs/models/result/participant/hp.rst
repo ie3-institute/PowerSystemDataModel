@@ -1,6 +1,6 @@
 .. _hp_result:
 
-Load
+Heat Pump
 ----
 Result of a heat pump.
 
