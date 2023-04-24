@@ -27,7 +27,9 @@ public class FlatDirectoryHierarchy implements FileHierarchy {
    * Gives the baseDirectory, which is Empty.
    *
    * @return An Option to the base directory as a string
+   * @deprecated Use {@link edu.ie3.datamodel.io.connectors.CsvFileConnector} instead
    */
+  @Deprecated(since = "3.0", forRemoval = true)
   @Override
   public Optional<Path> getBaseDirectory() {
     return Optional.empty();

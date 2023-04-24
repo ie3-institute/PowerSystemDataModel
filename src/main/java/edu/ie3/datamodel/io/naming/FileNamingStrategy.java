@@ -267,7 +267,9 @@ public class FileNamingStrategy {
    * extension.
    *
    * @return An optional sub path to the id coordinate file
+   * @deprecated unused, no substitute
    */
+  @Deprecated(since = "3.0", forRemoval = true)
   public Optional<Path> getIdCoordinateFilePath() {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
