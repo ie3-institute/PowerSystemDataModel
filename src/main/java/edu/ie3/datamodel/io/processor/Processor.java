@@ -73,7 +73,6 @@ public abstract class Processor<T> {
    * Instantiates a Processor for a foreseen class
    *
    * @param foreSeenClass Class and its children that are foreseen to be handled with this processor
-   * @param dateTimeFormatter
    */
   protected Processor(Class<? extends T> foreSeenClass, DateTimeFormatter dateTimeFormatter) {
     this.dateTimeFormatter = dateTimeFormatter;
