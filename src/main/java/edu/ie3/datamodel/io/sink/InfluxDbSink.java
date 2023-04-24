@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.sink;
 
+import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
@@ -127,19 +128,7 @@ public class InfluxDbSink implements OutputDataSink {
   private Optional<Point> transformToPoint(ResultEntity entity, String measurementName) {
     LinkedHashMap<String, String> entityFieldData;
     try {
-      entityFieldData =
-          processorProvider
-              .handleEntity(entity)
-              .orElseThrow(
-                  () ->
-                      new SinkException(
-                          "Cannot persist entity of type '"
-                              + entity.getClass().getSimpleName()
-                              + "'. This sink can only process the following entities: ["
-                              + processorProvider.getRegisteredClasses().stream()
-                                  .map(Class::getSimpleName)
-                                  .collect(Collectors.joining(","))
-                              + "]"));
+      entityFieldData = processorProvider.handleEntity(entity);
       entityFieldData.remove(FIELD_NAME_TIME);
       return Optional.of(
           Point.measurement(transformToMeasurementName(measurementName))
@@ -148,11 +137,18 @@ public class InfluxDbSink implements OutputDataSink {
               .tag("scenario", connector.getScenarioName())
               .fields(Collections.unmodifiableMap(entityFieldData))
               .build());
-    } catch (SinkException e) {
+    } catch (ProcessorProviderException e) {
       log.error(
           "Cannot persist provided entity '{}'. Exception: {}",
           entity.getClass().getSimpleName(),
-          e);
+          new SinkException(
+              "Cannot persist entity of type '"
+                  + entity.getClass().getSimpleName()
+                  + "'. This sink can only process the following entities: ["
+                  + processorProvider.getRegisteredClasses().stream()
+                      .map(Class::getSimpleName)
+                      .collect(Collectors.joining(","))
+                  + "]"));
     }
     return Optional.empty();
   }
@@ -168,16 +164,21 @@ public class InfluxDbSink implements OutputDataSink {
   private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
       TimeSeries<E, V> timeSeries) {
     if (timeSeries.getEntries().isEmpty()) return Collections.emptySet();
-    Optional<String> measurementName = entityPersistenceNamingStrategy.getEntityName(timeSeries);
-    if (measurementName.isEmpty()) {
-      String valueClassName =
-          timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName();
-      log.warn(
-          "I could not get a measurement name for TimeSeries value class {}. I am using it's value's simple name instead.",
-          valueClassName);
-      return transformToPoints(timeSeries, valueClassName);
+
+    try {
+      Optional<String> measurementName = entityPersistenceNamingStrategy.getEntityName(timeSeries);
+      if (measurementName.isEmpty()) {
+        String valueClassName =
+            timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName();
+        log.warn(
+            "I could not get a measurement name for TimeSeries value class {}. I am using it's value's simple name instead.",
+            valueClassName);
+        return transformToPoints(timeSeries, valueClassName);
+      }
+      return transformToPoints(timeSeries, measurementName.get());
+    } catch (ProcessorProviderException e) {
+      throw new RuntimeException(e);
     }
-    return transformToPoints(timeSeries, measurementName.get());
   }
 
   /**
@@ -188,23 +189,12 @@ public class InfluxDbSink implements OutputDataSink {
    * @param measurementName equivalent to the name of a relational table
    */
   private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
-      TimeSeries<E, V> timeSeries, String measurementName) {
+      TimeSeries<E, V> timeSeries, String measurementName) throws ProcessorProviderException {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
     Set<Point> points = new HashSet<>();
     try {
       Set<LinkedHashMap<String, String>> entityFieldData =
-          processorProvider
-              .handleTimeSeries(timeSeries)
-              .orElseThrow(
-                  () ->
-                      new SinkException(
-                          "Cannot persist time series of combination '"
-                              + key
-                              + "'. This sink can only process the following combinations: ["
-                              + processorProvider.getRegisteredTimeSeriesCombinations().stream()
-                                  .map(TimeSeriesProcessorKey::toString)
-                                  .collect(Collectors.joining(","))
-                              + "]"));
+          processorProvider.handleTimeSeries(timeSeries);
 
       for (LinkedHashMap<String, String> dataMapping : entityFieldData) {
         String timeString = dataMapping.remove(FIELD_NAME_TIME);
@@ -217,8 +207,9 @@ public class InfluxDbSink implements OutputDataSink {
                 .build();
         points.add(point);
       }
-    } catch (SinkException e) {
+    } catch (ProcessorProviderException e) {
       log.error("Cannot persist provided time series '{}'. Exception: {}", key, e);
+      throw e;
     }
     return points;
   }

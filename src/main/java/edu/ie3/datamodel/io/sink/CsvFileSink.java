@@ -277,22 +277,9 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   private <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries, BufferedCsvWriter writer) {
-    TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
-
     try {
       Set<LinkedHashMap<String, String>> entityFieldData =
-          processorProvider
-              .handleTimeSeries(timeSeries)
-              .orElseThrow(
-                  () ->
-                      new SinkException(
-                          "Cannot persist time series of combination '"
-                              + key
-                              + "'. This sink can only process the following combinations: ["
-                              + processorProvider.getRegisteredTimeSeriesCombinations().stream()
-                                  .map(TimeSeriesProcessorKey::toString)
-                                  .collect(Collectors.joining(","))
-                              + "]"));
+          processorProvider.handleTimeSeries(timeSeries);
       entityFieldData.forEach(
           data -> {
             try {
@@ -303,8 +290,9 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
               log.error("Exception occurred during processing the provided data fields: ", e);
             }
           });
-    } catch (SinkException e) {
+    } catch (ProcessorProviderException e) {
       log.error("Exception occurred during processor request: ", e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -318,21 +306,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   private <C extends UniqueEntity> void write(C entity) {
     LinkedHashMap<String, String> entityFieldData;
     try {
-      entityFieldData =
-          processorProvider
-              .handleEntity(entity)
-              .map(this::csvEntityFieldData)
-              .orElseThrow(
-                  () ->
-                      new SinkException(
-                          "Cannot persist entity of type '"
-                              + entity.getClass().getSimpleName()
-                              + "'. This sink can only process the following entities: ["
-                              + processorProvider.getRegisteredClasses().stream()
-                                  .map(Class::getSimpleName)
-                                  .collect(Collectors.joining(","))
-                              + "]"));
-
+      entityFieldData = csvEntityFieldData(processorProvider.handleEntity(entity));
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
           connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);

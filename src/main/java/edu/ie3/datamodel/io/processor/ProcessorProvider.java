@@ -70,13 +70,14 @@ public class ProcessorProvider {
     this.timeSeriesProcessors = timeSeriesProcessors;
   }
 
-  public <T extends UniqueEntity> Optional<LinkedHashMap<String, String>> handleEntity(T entity) {
+  public <T extends UniqueEntity> LinkedHashMap<String, String> handleEntity(T entity)
+      throws ProcessorProviderException {
     try {
       EntityProcessor<? extends UniqueEntity> processor = getEntityProcessor(entity.getClass());
       return castProcessor(processor).handleEntity(entity);
     } catch (ProcessorProviderException e) {
       log.error("Exception occurred during entity handling.", e);
-      return Optional.empty();
+      throw e;
     }
   }
 
@@ -112,17 +113,18 @@ public class ProcessorProvider {
    * @return A set of mappings from field name to value
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      Optional<Set<LinkedHashMap<String, String>>> handleTimeSeries(T timeSeries) {
+      Set<LinkedHashMap<String, String>> handleTimeSeries(T timeSeries)
+          throws ProcessorProviderException {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
     try {
       TimeSeriesProcessor<T, E, V> processor = getTimeSeriesProcessor(key);
-      return Optional.of(processor.handleTimeSeries(timeSeries));
+      return processor.handleTimeSeries(timeSeries);
     } catch (ProcessorProviderException e) {
       log.error("Cannot handle the time series '{}'.", timeSeries, e);
-      return Optional.empty();
+      throw e;
     } catch (EntityProcessorException e) {
       log.error("Error during processing of time series.", e);
-      return Optional.empty();
+      throw e;
     }
   }
 

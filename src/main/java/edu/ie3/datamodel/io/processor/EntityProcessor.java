@@ -51,7 +51,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
    * @return an optional Map with fieldName to fieldValue or an empty optional if an error occurred
    *     during processing
    */
-  public Optional<LinkedHashMap<String, String>> handleEntity(T entity) {
+  public LinkedHashMap<String, String> handleEntity(T entity) {
     if (!registeredClass.equals(entity.getClass()))
       throw new EntityProcessorException(
           "Cannot process "
@@ -63,10 +63,10 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
               + ".class!");
 
     try {
-      return Optional.of(processObject(entity, fieldNameToMethod));
+      return processObject(entity, fieldNameToMethod);
     } catch (EntityProcessorException e) {
       logger.error("Cannot process the entity{}.", entity, e);
-      return Optional.empty();
+      throw new EntityProcessorException("Entity " + entity + " cannot be processed.", e);
     }
   }
 

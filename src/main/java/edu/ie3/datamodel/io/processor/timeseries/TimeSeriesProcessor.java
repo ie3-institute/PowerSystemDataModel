@@ -176,7 +176,7 @@ public class TimeSeriesProcessor<
   }
 
   @Override
-  public Optional<LinkedHashMap<String, String>> handleEntity(TimeSeries entity) {
+  public LinkedHashMap<String, String> handleEntity(TimeSeries entity) {
     throw new UnsupportedOperationException(
         "Don't invoke this simple method, but TimeSeriesProcessor#handleTimeSeries(TimeSeries).");
   }
