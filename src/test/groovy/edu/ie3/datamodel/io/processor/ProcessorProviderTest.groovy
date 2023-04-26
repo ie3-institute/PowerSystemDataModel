@@ -254,7 +254,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     then:
     Exception ex = thrown()
     ex.class == ProcessorProviderException
-    ex.message == "Cannot find processor for time series combination 'TimeSeriesProcessorKey{timeSeriesClass=class edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries, entryClass=class edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue, valueClass=class edu.ie3.datamodel.models.timeseries.IntValue}'. Either your provider is not properly initialized or there is no implementation to process this entity class!)"
+    ex.message == "Cannot handle the time series {" + individualIntTimeSeries + "}."
+    ex.cause.message == "Cannot find processor for time series combination 'TimeSeriesProcessorKey{timeSeriesClass=class edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries, entryClass=class edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue, valueClass=class edu.ie3.datamodel.models.timeseries.IntValue}'. Either your provider is not properly initialized or there is no implementation to process this entity class!)"
   }
 
   def "A ProcessorProvider handles a time series correctly"() {
