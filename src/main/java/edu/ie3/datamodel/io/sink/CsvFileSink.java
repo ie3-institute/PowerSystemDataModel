@@ -292,7 +292,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
           });
     } catch (ProcessorProviderException e) {
       log.error("Exception occurred during processor request: ", e);
-      throw e;
+      throw new ProcessorProviderException("Exception occurred during processor request: ", e);
     }
   }
 

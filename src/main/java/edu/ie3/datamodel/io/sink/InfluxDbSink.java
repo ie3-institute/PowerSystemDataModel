@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.sink;
 
 import edu.ie3.datamodel.exceptions.ProcessorProviderException;
-import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
@@ -18,7 +17,6 @@ import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
@@ -108,7 +106,7 @@ public class InfluxDbSink implements OutputDataSink {
    *
    * @param entity the entity to transform
    */
-  private Optional<Point> transformToPoint(ResultEntity entity) {
+  private Point transformToPoint(ResultEntity entity) throws ProcessorProviderException {
     Optional<String> measurementName =
         entityPersistenceNamingStrategy.getResultEntityName(entity.getClass());
     if (measurementName.isEmpty())
@@ -125,32 +123,26 @@ public class InfluxDbSink implements OutputDataSink {
    * @param entity the entity to transform
    * @param measurementName equivalent to the name of a relational table
    */
-  private Optional<Point> transformToPoint(ResultEntity entity, String measurementName) {
+  private Point transformToPoint(ResultEntity entity, String measurementName)
+      throws ProcessorProviderException {
     LinkedHashMap<String, String> entityFieldData;
     try {
       entityFieldData = processorProvider.handleEntity(entity);
       entityFieldData.remove(FIELD_NAME_TIME);
-      return Optional.of(
-          Point.measurement(transformToMeasurementName(measurementName))
-              .time(entity.getTime().toInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
-              .tag("input_model", entityFieldData.remove(FIELD_NAME_INPUT))
-              .tag("scenario", connector.getScenarioName())
-              .fields(Collections.unmodifiableMap(entityFieldData))
-              .build());
+      return Point.measurement(transformToMeasurementName(measurementName))
+          .time(entity.getTime().toInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
+          .tag("input_model", entityFieldData.remove(FIELD_NAME_INPUT))
+          .tag("scenario", connector.getScenarioName())
+          .fields(Collections.unmodifiableMap(entityFieldData))
+          .build();
     } catch (ProcessorProviderException e) {
       log.error(
           "Cannot persist provided entity '{}'. Exception: {}",
           entity.getClass().getSimpleName(),
-          new SinkException(
-              "Cannot persist entity of type '"
-                  + entity.getClass().getSimpleName()
-                  + "'. This sink can only process the following entities: ["
-                  + processorProvider.getRegisteredClasses().stream()
-                      .map(Class::getSimpleName)
-                      .collect(Collectors.joining(","))
-                  + "]"));
+          e);
+
+      throw new ProcessorProviderException(e);
     }
-    return Optional.empty();
   }
 
   /**
@@ -181,7 +173,8 @@ public class InfluxDbSink implements OutputDataSink {
           "Cannot persist provided time series '{}'. Exception: {}",
           timeSeries.getClass().getSimpleName(),
           e);
-      throw e;
+      throw new ProcessorProviderException(
+          "Cannot persist provided time series {" + timeSeries.getClass().getSimpleName() + "}", e);
     }
   }
 
@@ -215,7 +208,8 @@ public class InfluxDbSink implements OutputDataSink {
           "Cannot persist provided entity '{}'. Exception: {}",
           timeSeries.getClass().getSimpleName(),
           e);
-      throw e;
+      throw new ProcessorProviderException(
+          "Cannot persist provided time series {" + timeSeries.getClass().getSimpleName() + "}", e);
     }
     return points;
   }
@@ -236,10 +230,8 @@ public class InfluxDbSink implements OutputDataSink {
     /* Distinguish between result models and time series */
     if (entity instanceof ResultEntity resultEntity) {
       try {
-        points.add(
-            transformToPoint(resultEntity)
-                .orElseThrow(() -> new SinkException("Could not transform entity")));
-      } catch (SinkException e) {
+        points.add(transformToPoint(resultEntity));
+      } catch (ProcessorProviderException e) {
         log.error(
             "Cannot persist provided entity '{}'. Exception: {}",
             entity.getClass().getSimpleName(),

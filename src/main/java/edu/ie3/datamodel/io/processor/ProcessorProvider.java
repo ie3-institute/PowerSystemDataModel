@@ -121,10 +121,11 @@ public class ProcessorProvider {
       return processor.handleTimeSeries(timeSeries);
     } catch (ProcessorProviderException e) {
       log.error("Cannot handle the time series '{}'.", timeSeries, e);
-      throw e;
+      throw new ProcessorProviderException(
+          "Cannot handle the time series {" + timeSeries + "}.", e);
     } catch (EntityProcessorException e) {
       log.error("Error during processing of time series.", e);
-      throw e;
+      throw new EntityProcessorException("Error during processing of time series.", e);
     }
   }
 
