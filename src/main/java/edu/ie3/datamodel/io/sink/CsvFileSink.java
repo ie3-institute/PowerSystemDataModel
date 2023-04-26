@@ -276,7 +276,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   }
 
   private <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
-      TimeSeries<E, V> timeSeries, BufferedCsvWriter writer) {
+      TimeSeries<E, V> timeSeries, BufferedCsvWriter writer) throws ProcessorProviderException {
     try {
       Set<LinkedHashMap<String, String>> entityFieldData =
           processorProvider.handleTimeSeries(timeSeries);
@@ -292,7 +292,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
           });
     } catch (ProcessorProviderException e) {
       log.error("Exception occurred during processor request: ", e);
-      throw new RuntimeException(e);
+      throw e;
     }
   }
 

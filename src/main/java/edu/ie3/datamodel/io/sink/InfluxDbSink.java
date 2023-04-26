@@ -10,7 +10,6 @@ import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
-import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -69,7 +68,7 @@ public class InfluxDbSink implements OutputDataSink {
   }
 
   @Override
-  public <C extends UniqueEntity> void persist(C entity) {
+  public <C extends UniqueEntity> void persist(C entity) throws ProcessorProviderException {
     Set<Point> points = extractPoints(entity);
     // writes only the exact one point instead of unnecessarily wrapping it in BatchPoints
     if (points.size() == 1) write(points.iterator().next());
@@ -77,7 +76,8 @@ public class InfluxDbSink implements OutputDataSink {
   }
 
   @Override
-  public <C extends UniqueEntity> void persistAll(Collection<C> entities) {
+  public <C extends UniqueEntity> void persistAll(Collection<C> entities)
+      throws ProcessorProviderException {
     Set<Point> points = new HashSet<>();
     for (C entity : entities) {
       points.addAll(extractPoints(entity));
@@ -87,7 +87,7 @@ public class InfluxDbSink implements OutputDataSink {
 
   @Override
   public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
-      TimeSeries<E, V> timeSeries) {
+      TimeSeries<E, V> timeSeries) throws ProcessorProviderException {
     Set<Point> points = transformToPoints(timeSeries);
     writeAll(points);
   }
@@ -162,7 +162,7 @@ public class InfluxDbSink implements OutputDataSink {
    * @param timeSeries the time series to transform
    */
   private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
-      TimeSeries<E, V> timeSeries) {
+      TimeSeries<E, V> timeSeries) throws ProcessorProviderException {
     if (timeSeries.getEntries().isEmpty()) return Collections.emptySet();
 
     try {
@@ -177,7 +177,11 @@ public class InfluxDbSink implements OutputDataSink {
       }
       return transformToPoints(timeSeries, measurementName.get());
     } catch (ProcessorProviderException e) {
-      throw new RuntimeException(e);
+      log.error(
+          "Cannot persist provided time series '{}'. Exception: {}",
+          timeSeries.getClass().getSimpleName(),
+          e);
+      throw e;
     }
   }
 
@@ -190,7 +194,6 @@ public class InfluxDbSink implements OutputDataSink {
    */
   private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
       TimeSeries<E, V> timeSeries, String measurementName) throws ProcessorProviderException {
-    TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
     Set<Point> points = new HashSet<>();
     try {
       Set<LinkedHashMap<String, String>> entityFieldData =
@@ -208,7 +211,10 @@ public class InfluxDbSink implements OutputDataSink {
         points.add(point);
       }
     } catch (ProcessorProviderException e) {
-      log.error("Cannot persist provided time series '{}'. Exception: {}", key, e);
+      log.error(
+          "Cannot persist provided entity '{}'. Exception: {}",
+          timeSeries.getClass().getSimpleName(),
+          e);
       throw e;
     }
     return points;
@@ -224,7 +230,8 @@ public class InfluxDbSink implements OutputDataSink {
    * @param <C> bounded to be all unique entities, but logs an error and returns an empty Set if it
    *     does not extend {@link ResultEntity} or {@link TimeSeries}
    */
-  private <C extends UniqueEntity> Set<Point> extractPoints(C entity) {
+  private <C extends UniqueEntity> Set<Point> extractPoints(C entity)
+      throws ProcessorProviderException {
     Set<Point> points = new HashSet<>();
     /* Distinguish between result models and time series */
     if (entity instanceof ResultEntity resultEntity) {
