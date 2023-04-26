@@ -30,6 +30,8 @@ public class InfluxDbSink implements OutputDataSink {
   /** Field name for input model uuid field in result entities */
   private static final String FIELD_NAME_INPUT = "inputModel";
 
+  private static final String ERROR_MESSAGE = "Cannot persist provided entity '{}'. Exception: {}";
+
   private final InfluxDbConnector connector;
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final ProcessorProvider processorProvider;
@@ -136,10 +138,7 @@ public class InfluxDbSink implements OutputDataSink {
           .fields(Collections.unmodifiableMap(entityFieldData))
           .build();
     } catch (ProcessorProviderException e) {
-      log.error(
-          "Cannot persist provided entity '{}'. Exception: {}",
-          entity.getClass().getSimpleName(),
-          e);
+      log.error(ERROR_MESSAGE, entity.getClass().getSimpleName(), e);
 
       throw new ProcessorProviderException(e);
     }
@@ -169,10 +168,7 @@ public class InfluxDbSink implements OutputDataSink {
       }
       return transformToPoints(timeSeries, measurementName.get());
     } catch (ProcessorProviderException e) {
-      log.error(
-          "Cannot persist provided time series '{}'. Exception: {}",
-          timeSeries.getClass().getSimpleName(),
-          e);
+      log.error(ERROR_MESSAGE, timeSeries.getClass().getSimpleName(), e);
       throw new ProcessorProviderException(
           "Cannot persist provided time series {" + timeSeries.getClass().getSimpleName() + "}", e);
     }
@@ -204,10 +200,7 @@ public class InfluxDbSink implements OutputDataSink {
         points.add(point);
       }
     } catch (ProcessorProviderException e) {
-      log.error(
-          "Cannot persist provided entity '{}'. Exception: {}",
-          timeSeries.getClass().getSimpleName(),
-          e);
+      log.error(ERROR_MESSAGE, timeSeries.getClass().getSimpleName(), e);
       throw new ProcessorProviderException(
           "Cannot persist provided time series {" + timeSeries.getClass().getSimpleName() + "}", e);
     }
@@ -232,10 +225,7 @@ public class InfluxDbSink implements OutputDataSink {
       try {
         points.add(transformToPoint(resultEntity));
       } catch (ProcessorProviderException e) {
-        log.error(
-            "Cannot persist provided entity '{}'. Exception: {}",
-            entity.getClass().getSimpleName(),
-            e);
+        log.error(ERROR_MESSAGE, entity.getClass().getSimpleName(), e);
       }
     } else if (entity instanceof TimeSeries<?, ?> timeSeries) {
       points.addAll(transformToPoints(timeSeries));
