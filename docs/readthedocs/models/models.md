@@ -140,8 +140,13 @@ input/participant/cylindricalstorage
 ### Additional Data
 Some models can use additional data for their calculations.
 
-- [Time Series](/models/input/additionaldata/timeseries)
-- [Id Coordinate Source](/io/source/idcoordinatesource)
+```{toctree}
+---
+maxdepth: 1
+---
+input/additionaldata/timeseries
+input/additionaldata/idcoordinatesource
+```
 
 ## Result
 Model classes you can use to describe the outcome of a power system simulation.

@@ -50,12 +50,14 @@ public class SqlCoordinateFactory extends IdCoordinateFactory {
 
   @Override
   public String getLatField() {
-    return null;
+    throw new UnsupportedOperationException(
+        "This is not supported by " + SqlCoordinateFactory.class + "!");
   }
 
   @Override
   public String getLonField() {
-    return null;
+    throw new UnsupportedOperationException(
+        "this is not supported by " + SqlCoordinateFactory.class + "!");
   }
 
   /** Returns the field id for the coordinates */

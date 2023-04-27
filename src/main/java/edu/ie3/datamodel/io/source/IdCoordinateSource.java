@@ -50,30 +50,41 @@ public interface IdCoordinateSource extends DataSource {
   Collection<Point> getAllCoordinates();
 
   /**
-   * Returns the nearest n coordinate points to the given coordinate, that are inside a given
+   * Returns the nearest n coordinate points. If n is greater than four, this method will try to
+   * return the corner points of the bounding box.
+   *
+   * @param coordinate the coordinate to look up
+   * @param n number of searched points
+   * @return the nearest n coordinates or all coordinates if n is less than all available points
+   */
+  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n);
+
+  /**
+   * Returns the closest n coordinate points to the given coordinate, that are inside a given
    * bounding box, from a collection of all available points. The bounding box is calculated with
-   * the given distance.
+   * the given distance. If n is greater than four, this method will try to return the corner points
+   * of the bounding box.
    *
    * @param coordinate the coordinate to look up the nearest neighbours for
    * @param n how many neighbours to look up
    * @param distance to the borders of the envelope that contains the coordinates
    * @return the nearest n coordinates to the given point
    */
-  List<CoordinateDistance> getNearestCoordinates(
+  List<CoordinateDistance> getClosestCoordinates(
       Point coordinate, int n, ComparableQuantity<Length> distance);
 
   /**
-   * Returns the nearest n coordinate points to the given coordinate from a given collection of
-   * points. If the set is empty or null an empty list is returned.
+   * Calculates and returns the nearest n coordinate distances to the given coordinate from a given
+   * collection of points. If the set is empty or null an empty list is returned. If n is greater
+   * than four, this method will try to return the corner points of the bounding box.
    *
    * @param coordinate the coordinate to look up the nearest neighbours for
    * @param n how many neighbours to look up
    * @param coordinates the collection of points
    * @return a list of the nearest n coordinates to the given point or an empty list
    */
-  default List<CoordinateDistance> getNearestCoordinates(
+  default List<CoordinateDistance> calculateCoordinateDistances(
       Point coordinate, int n, Collection<Point> coordinates) {
-
     if (coordinates != null && !coordinates.isEmpty()) {
       SortedSet<CoordinateDistance> sortedDistances =
           GeoUtils.calcOrderedCoordinateDistances(coordinate, coordinates);

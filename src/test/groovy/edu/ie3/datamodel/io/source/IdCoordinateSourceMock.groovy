@@ -33,7 +33,12 @@ class IdCoordinateSourceMock implements IdCoordinateSource {
   }
 
   @Override
-  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
+  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+    return Collections.emptyList()
+  }
+
+  @Override
+  List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
     return Collections.emptyList()
   }
 }

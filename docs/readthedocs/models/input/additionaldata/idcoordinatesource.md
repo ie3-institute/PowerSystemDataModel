@@ -7,10 +7,10 @@ coordinates.
 
 ## Information
 
-| Attribute    | Remarks                                                      |
-|:-------------|:-------------------------------------------------------------|
-| `Id`         | An integer value for identifying the coordinate.             |
-| `Coordiante` | Geographical information each as `Lat/long` of as a `Point`. |
+| Attribute    | Remarks                                                        |
+|:-------------|:---------------------------------------------------------------|
+| `Id`         | An integer value for identifying the coordinate.               |
+| `Coordiante` | Geographical information presented as `Lat/long` of a `Point`. |
 
 
 
@@ -38,7 +38,6 @@ coordinates for existing ids.
 
 
 ## Method for ids:
-
 The IdCoordinateSource contains a method for retrieving the id of a given coordinate.
 
     Optional<Integer> getId(Point coordinate)
@@ -47,23 +46,25 @@ This method is used to return the id of a given coordinate. If no id is found fo
 coordinate, an empty optional is returned.
 
 
-## Method for calculating distances:
-The IdCoordinateSource also contains methods for calculation the distances og a given coordinate 
-to a set of coordinates. All the following methods will return the closest n coordinates with their 
-distances.
+## Method for retrieving near coordinates:
+The IdCoordinateSource also contains methods for retrieving coordinates/points that are near a given coordinate.
+All implementations of these methods in this project will use the method ``restrictToBoundingBox`` for finding and
+returning four corner points.
 
-    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance)
-    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, Collection<Point> coordinates)
+    List<CoordinateDistance> getNearestCoordinates(Point coordinatem int n)
+    List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance)
+    List<CoordinateDistance> calculateCoordinateDistances(Point coordinate, int n, Collection<Point> coordinates)
 
 
-1. This method is used to return the closest n coordinates within a given maximum distance. The method will
-use the given distance to calculate a bounding box and reduce the collection of all available points into a collection 
-of points inside the bounding box. After that the distances to all the coordinates in the bounding box are calculated 
-and n the closest coordinates are returned. If the number of found coordinates < n, this method will return less than 
-n coordinates.
+1. This method will return the nearest n coordinates for a given coordinate. The method works by having a default radius
+that is increased with every iteration until n coordinates are found.
 
-2. This method is used to calculate the distances to a set of give coordinates. After the calculation
-the method will return the closest n coordinates. If the number of distances < n, this method will
+2. This method will return the closest n coordinates for a given coordinate. Unlike the first method, this method has a
+defined radius, that won't be increased. Therefor this method can only consider the coordinates inside the bounding box
+around this radius.
+
+3. This method is used to calculate the distances to a set of give coordinates. After the calculation
+the method will return the closest n coordinates. If the number of distances is less than n, this method will
 return less than n coordinates.
 
 
@@ -72,7 +73,7 @@ In most cases we need four corner coordinates for our given coordinate. Therefor
 IdCoordinateSource contains a method that will use the calculated distances to find the closest 
 corner coordinates for the given coordinate.
 
-    List<CoordinateDistance> restrictToBoundingBoxWithSetNumberOfCorner(
+    List<CoordinateDistance> restrictToBoundingBox(
           Point coordinate,
           Collection<CoordinateDistance> distances,
           int numberOfPoints

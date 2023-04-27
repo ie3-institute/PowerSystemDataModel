@@ -134,7 +134,20 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
     ].sort()
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 2, allCoordinates)
+    def actualDistances = source.calculateCoordinateDistances(basePoint, 2, allCoordinates)
+
+    then:
+    actualDistances == expectedDistances
+  }
+
+  def "The CsvIdCoordinateSource will return the nearest n coordinates" () {
+    given:
+    def n = 5
+    def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+    def expectedDistances = source.calculateCoordinateDistances(basePoint, n, source.allCoordinates)
+
+    when:
+    def actualDistances = source.getNearestCoordinates(basePoint, n)
 
     then:
     actualDistances == expectedDistances
@@ -147,7 +160,7 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
     def distance = Quantities.getQuantity(100, Units.METRE)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, n, distance)
+    def actualDistances = source.getClosestCoordinates(basePoint, n, distance)
 
     then:
     actualDistances.empty
@@ -159,7 +172,7 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
     def distance = Quantities.getQuantity(10000, Units.METRE)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 3, distance)
+    def actualDistances = source.getClosestCoordinates(basePoint, 3, distance)
 
     then:
     actualDistances.size() == 3
@@ -171,7 +184,7 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
     def distance = Quantities.getQuantity(1000, Units.METRE)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 2, distance)
+    def actualDistances = source.getClosestCoordinates(basePoint, 2, distance)
 
     then:
     actualDistances.size() == 1

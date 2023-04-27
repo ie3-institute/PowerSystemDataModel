@@ -11,7 +11,6 @@ import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Coordinate
-import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
@@ -131,7 +130,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     def distance = Quantities.getQuantity(200000, Units.METRE)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 3, distance)
+    def actualDistances = source.getClosestCoordinates(basePoint, 3, distance)
 
     then:
     actualDistances.size() == 3
@@ -143,7 +142,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     def distance = Quantities.getQuantity(1000, Units.METRE)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 2, distance)
+    def actualDistances = source.getClosestCoordinates(basePoint, 2, distance)
 
     then:
     actualDistances.size() == 1
@@ -161,7 +160,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     def distance = Quantities.getQuantity(1000, Units.METRE)
 
     when:
-    def receivedValues = source.getNearestCoordinates(basePoint, 2, distance)
+    def receivedValues = source.getClosestCoordinates(basePoint, 2, distance)
 
     then:
     for(CoordinateDistance coordinateDistance : receivedValues){
@@ -181,7 +180,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     def distance = Quantities.getQuantity(1000, Units.METRE)
 
     when:
-    def receivedValues = source.getNearestCoordinates(basePoint, 5, distance)
+    def receivedValues = source.getClosestCoordinates(basePoint, 5, distance)
 
     then:
     for(CoordinateDistance coordinateDistance : receivedValues){

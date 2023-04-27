@@ -206,6 +206,6 @@ occur.
 
 ## Compression and extraction of files
 
-We consider either regular directories or compressed <a href="https://en.wikipedia.org/wiki/Tar_(computing)">tarball archives</a>
+We consider either regular directories or compressed [tarball archives](https://en.wikipedia.org/wiki/Tar_(computing))
 (`*.tar.gz`) as source of input files.
 The class `TarballUtils` offers some helpful functions to compress or extract input data files for easier shipping.

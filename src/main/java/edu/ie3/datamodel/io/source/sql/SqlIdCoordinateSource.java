@@ -139,7 +139,22 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   }
 
   @Override
-  public List<CoordinateDistance> getNearestCoordinates(
+  public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+    List<CoordinateValue> values =
+        executeQuery(
+            queryForNearestPoints,
+            ps -> {
+              ps.setDouble(1, coordinate.getX());
+              ps.setDouble(2, coordinate.getY());
+              ps.setInt(3, n);
+            });
+
+    List<Point> points = values.stream().map(value -> value.coordinate).toList();
+    return calculateCoordinateDistances(coordinate, n, points);
+  }
+
+  @Override
+  public List<CoordinateDistance> getClosestCoordinates(
       Point coordinate, int n, ComparableQuantity<Length> distance) {
     Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
 
@@ -155,7 +170,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
     List<Point> points = values.stream().map(value -> value.coordinate).toList();
 
-    return getNearestCoordinates(coordinate, n, points);
+    return calculateCoordinateDistances(coordinate, n, points);
   }
 
   /**

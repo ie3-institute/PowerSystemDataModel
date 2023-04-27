@@ -66,8 +66,13 @@ abstract class WeatherTestData {
     }
 
     @Override
-    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
-      return getNearestCoordinates(coordinate, n, allCoordinates)
+    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+      return calculateCoordinateDistances(coordinate, n, allCoordinates)
+    }
+
+    @Override
+    List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
+      return calculateCoordinateDistances(coordinate, n, allCoordinates)
     }
   }
 
