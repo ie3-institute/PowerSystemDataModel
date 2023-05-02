@@ -133,14 +133,10 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
     Set<Point> points = coordinateToId.keySet();
 
     Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
-    Set<Point> reducedPoints = new HashSet<>();
-
-    for (Point point : points) {
-      if (envelope.contains(point.getCoordinate())) {
-        reducedPoints.add(point);
-      }
-    }
-
+    Set<Point> reducedPoints =
+        points.stream()
+            .filter(point -> envelope.contains(point.getCoordinate()))
+            .collect(Collectors.toSet());
     return calculateCoordinateDistances(coordinate, n, reducedPoints);
   }
 
