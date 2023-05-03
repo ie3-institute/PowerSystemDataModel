@@ -62,12 +62,12 @@ dependencies {
   implementation 'org.locationtech.jts.io:jts-io-common:1.19.0'
 
   // Graphs
-  implementation 'org.jgrapht:jgrapht-core:1.5.1'
+  implementation 'org.jgrapht:jgrapht-core:1.5.2'
 
   // testing
   testImplementation "org.apache.groovy:groovy:$groovyBinaryVersion"
 
-  testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
   testImplementation 'net.bytebuddy:byte-buddy:1.14.4' // Mocks of classes
