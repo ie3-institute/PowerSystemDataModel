@@ -15,11 +15,6 @@ public interface InputContainer<T extends InputEntity> extends Serializable {
   /** @return unmodifiable List of all entities */
   List<T> allEntitiesAsList();
 
-  /** Returns number of holded elements in the container. */
-  default int numberOfElements() {
-    return allEntitiesAsList().size();
-  }
-
   /** Returns an input container copy builder */
   InputContainerCopyBuilder<T, ? extends InputContainer<T>> copy();
 
