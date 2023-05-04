@@ -85,7 +85,7 @@ models can handle nulls and empty Strings (as well as any combination of those) 
 factory will build an always-on line model.
 
 **Validation** <br>
-Information regarding validation of models can be found [here](/models/ValidationUtils).
+Information regarding validation of models can be found [here](/io/ValidationUtils).
 
 
 ## Input

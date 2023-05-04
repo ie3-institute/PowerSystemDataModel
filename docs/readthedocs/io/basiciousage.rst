@@ -11,7 +11,7 @@ Therefore, the I/O-package is structured as highly modular.
    csvfiles
    sql
    influxdb
-   ../models/ValidationUtils.md
+   ValidationUtils.md
 
 
 Data sink structure
