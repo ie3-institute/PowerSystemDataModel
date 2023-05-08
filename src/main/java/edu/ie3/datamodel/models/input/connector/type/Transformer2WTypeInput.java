@@ -18,7 +18,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   private final ComparableQuantity<ElectricResistance> rSc;
   /** Short circuit reactance (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> xSc;
-  /** Rated apparent power (typically in MVA) */
+  /** Rated apparent power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
   /** Rated voltage of the high voltage winding (typically in kV) */
   private final ComparableQuantity<ElectricPotential> vRatedA;
