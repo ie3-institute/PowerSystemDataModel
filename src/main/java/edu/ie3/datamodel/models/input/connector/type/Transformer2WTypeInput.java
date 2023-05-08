@@ -46,7 +46,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
    * @param id of the type
    * @param rSc Short circuit resistance
    * @param xSc Short circuit reactance
-   * @param sRated Rated apparent power (typically in MVA)
+   * @param sRated Rated apparent power (typically in kVA)
    * @param vRatedA Rated voltage of the high voltage winding
    * @param vRatedB Rated voltage of the low voltage winding
    * @param gM Phase-to-ground conductance
