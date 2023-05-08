@@ -27,7 +27,7 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   /** Rated voltage magnitude of the low voltage winding (typically in kV) */
   private final ComparableQuantity<ElectricPotential> vRatedC; // Lv
   /** Short-circuit resistance of the high voltage winding (typically in Ohm) */
-  private final ComparableQuantity<ElectricResistance> rScA; // Hvk
+  private final ComparableQuantity<ElectricResistance> rScA; // Hv
   /** Short-circuit resistance of the medium voltage winding (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> rScB; // Mv
   /** Short-circuit resistance of the low voltage winding (typically in Ohm) */
