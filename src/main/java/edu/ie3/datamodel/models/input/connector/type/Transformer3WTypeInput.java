@@ -14,11 +14,11 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput} */
 public class Transformer3WTypeInput extends AssetTypeInput {
-  /** Rated apparent power of the high voltage winding (typically in MVA) */
+  /** Rated apparent power of the high voltage winding (typically in kVA) */
   private final ComparableQuantity<Power> sRatedA; // Hv
-  /** Rated apparent power of the medium voltage winding (typically in MVA) */
+  /** Rated apparent power of the medium voltage winding (typically in kVA) */
   private final ComparableQuantity<Power> sRatedB; // Mv
-  /** Rated apparent power of the low voltage windings (typically in MVA) */
+  /** Rated apparent power of the low voltage windings (typically in kVA) */
   private final ComparableQuantity<Power> sRatedC; // Lv
   /** Rated voltage magnitude of the high voltage winding (typically in kV) */
   private final ComparableQuantity<ElectricPotential> vRatedA; // Hv
