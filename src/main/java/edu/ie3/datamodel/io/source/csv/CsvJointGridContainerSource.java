@@ -21,7 +21,8 @@ import java.nio.file.Path;
 public class CsvJointGridContainerSource {
   private CsvJointGridContainerSource() {}
 
-  public static JointGridContainer read(String gridName, String csvSep, Path directoryPath, boolean isHierarchic)
+  public static JointGridContainer read(
+      String gridName, String csvSep, Path directoryPath, boolean isHierarchic)
       throws SourceException, FileException {
 
     /* Parameterization */
