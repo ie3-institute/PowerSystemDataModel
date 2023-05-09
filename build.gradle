@@ -62,7 +62,7 @@ dependencies {
   implementation 'org.locationtech.jts.io:jts-io-common:1.19.0'
 
   // Graphs
-  implementation 'org.jgrapht:jgrapht-core:1.5.1'
+  implementation 'org.jgrapht:jgrapht-core:1.5.2'
 
   // testing
   testImplementation "org.apache.groovy:groovy:$groovyBinaryVersion"
@@ -87,7 +87,7 @@ dependencies {
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.23'
-  implementation 'com.couchbase.client:java-client:3.4.5'
+  implementation 'com.couchbase.client:java-client:3.4.6'
   runtimeOnly 'org.postgresql:postgresql:42.6.0' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
