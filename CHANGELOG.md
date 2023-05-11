@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Copy methods for container classes [#726](https://github.com/ie3-institute/PowerSystemDataModel/issues/726)
 - Allow hierarchic grid structure for JointGridContainer [#768](https://github.com/ie3-institute/PowerSystemDataModel/issues/768)
+- Enhanced error handling of coordinate sources with invalid column names [#670](https://github.com/ie3-institute/PowerSystemDataModel/issues/670)
 
 ### Fixed
 - Fixed wrong rated power unit hint [#804](https://github.com/ie3-institute/PowerSystemDataModel/issues/804)

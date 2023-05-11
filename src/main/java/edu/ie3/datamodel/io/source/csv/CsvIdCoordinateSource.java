@@ -112,6 +112,9 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
       // returning the original one
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
+      // checking the column names for each row
+      allRows.forEach(row -> factory.checkForInvalidColumnNames(row.keySet()));
+
       Function<Map<String, String>, String> idExtractor =
           fieldToValues -> fieldToValues.get(factory.getIdField());
       Set<Map<String, String>> withDistinctCoordinateId =

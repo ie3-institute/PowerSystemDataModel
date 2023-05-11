@@ -5,8 +5,11 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.factory.Factory;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
+import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 
@@ -28,4 +31,26 @@ public abstract class IdCoordinateFactory
 
   /** @return the field id for the coordinate longitude */
   public abstract String getLonField();
+
+  public void checkForInvalidColumnNames(Set<String> columnNames) {
+    List<String> validColumnNames = List.of(getIdField(), getLatField(), getLonField());
+
+    if (!columnNames.containsAll(validColumnNames)) {
+      throw new InvalidColumnNameException(
+          "The provided column names "
+              + columnNames
+              + " does not match the expected column names "
+              + validColumnNames
+              + "!");
+    }
+
+    if (columnNames.size() != validColumnNames.size()) {
+      log.warn(
+          "The provided row has more column names than expected. Provided: "
+              + columnNames
+              + ", expected: "
+              + validColumnNames
+              + ".");
+    }
+  }
 }

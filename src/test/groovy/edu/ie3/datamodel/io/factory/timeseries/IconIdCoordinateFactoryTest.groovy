@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.exceptions.InvalidColumnNameException
 import edu.ie3.datamodel.io.factory.SimpleFactoryData
 import edu.ie3.util.geo.GeoUtils
 import org.apache.commons.lang3.tuple.Pair
@@ -77,5 +78,17 @@ class IconIdCoordinateFactoryTest extends Specification {
       assert it.key == expectedPair.key
       assert it.value.equalsExact(expectedPair.value, 1E-6)
     }
+  }
+
+  def "Throws an exception if an invalid column name is given" () {
+    given:
+    def invalidColumnNames = ["id", "lat", "lon"] as Set<String>
+    when:
+    factory.checkForInvalidColumnNames(invalidColumnNames)
+
+    then:
+    Exception ex = thrown()
+    ex.class == InvalidColumnNameException
+    ex.message == "The provided column names [id, lat, lon] does not match the expected column names [id, latitude, longitude]!"
   }
 }
