@@ -137,6 +137,8 @@ public class StandardUnits {
   /** Length of a line in km */
   public static final Unit<Length> LINE_LENGTH = KILOMETRE;
 
+  public static final Unit<VolumetricFlowRate> VOLUMETRIC_FLOW_RATE = CUBIC_METRE_PER_SECOND;
+
   private StandardUnits() {
     throw new IllegalStateException("This is an Utility Class and not meant to be instantiated");
   }

@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.models.input.thermal
 
+import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.test.common.ThermalUnitInputTestData
 import spock.lang.Specification
 
@@ -16,10 +17,17 @@ class CylindricalStorageInputTest extends Specification {
     def cylindricalStorageInput = ThermalUnitInputTestData.cylindricStorageInput
 
     when:
-    def alteredUnit = cylindricalStorageInput.copy().storageVolumeLvl(ThermalUnitInputTestData.storageVolumeLvl)
-        .storageVolumeLvlMin(ThermalUnitInputTestData.storageVolumeLvlMin).inletTemp(ThermalUnitInputTestData.inletTemp)
-        .returnTemp(ThermalUnitInputTestData.returnTemp).c(ThermalUnitInputTestData.c)
-        .thermalBus(ThermalUnitInputTestData.thermalBus).build()
+    def alteredUnit = cylindricalStorageInput
+        .copy()
+        .storageVolumeLvl(ThermalUnitInputTestData.storageVolumeLvl)
+        .storageVolumeLvlMin(ThermalUnitInputTestData.storageVolumeLvlMin)
+        .inletTemp(ThermalUnitInputTestData.inletTemp)
+        .returnTemp(ThermalUnitInputTestData.returnTemp)
+        .c(ThermalUnitInputTestData.c)
+        .thermalBus(ThermalUnitInputTestData.thermalBus)
+        .inletRate(ThermalUnitInputTestData.inletRate)
+        .outletRate(ThermalUnitInputTestData.outletRate)
+        .build()
 
 
     then:
@@ -34,6 +42,8 @@ class CylindricalStorageInputTest extends Specification {
       assert inletTemp == ThermalUnitInputTestData.inletTemp
       assert returnTemp == ThermalUnitInputTestData.returnTemp
       assert c == ThermalUnitInputTestData.c
+      assert inletRate == ThermalUnitInputTestData.inletRate
+      assert outletRate == ThermalUnitInputTestData.outletRate
     }
   }
 }

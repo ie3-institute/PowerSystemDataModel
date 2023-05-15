@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
+import edu.ie3.util.quantities.interfaces.VolumetricFlowRate;
 import java.util.UUID;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
@@ -23,6 +24,8 @@ public class CylindricalStorageInputFactory
   private static final String INLET_TEMP = "inlettemp";
   private static final String RETURN_TEMP = "returntemp";
   private static final String C = "c";
+  private static final String OUTLET_RATE = "outletrate";
+  private static final String INLET_RATE = "inletrate";
 
   public CylindricalStorageInputFactory() {
     super(CylindricalStorageInput.class);
@@ -30,7 +33,15 @@ public class CylindricalStorageInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {STORAGE_VOLUME_LVL, STORAGE_VOLUME_LVL_MIN, INLET_TEMP, RETURN_TEMP, C};
+    return new String[] {
+      STORAGE_VOLUME_LVL,
+      STORAGE_VOLUME_LVL_MIN,
+      INLET_TEMP,
+      RETURN_TEMP,
+      C,
+      INLET_RATE,
+      OUTLET_RATE
+    };
   }
 
   @Override
@@ -51,6 +62,11 @@ public class CylindricalStorageInputFactory
         data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE);
     final ComparableQuantity<SpecificHeatCapacity> c =
         data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
+    final ComparableQuantity<VolumetricFlowRate> qIn =
+        data.getQuantity(INLET_RATE, StandardUnits.VOLUMETRIC_FLOW_RATE);
+    final ComparableQuantity<VolumetricFlowRate> qOut =
+        data.getQuantity(OUTLET_RATE, StandardUnits.VOLUMETRIC_FLOW_RATE);
+
     return new CylindricalStorageInput(
         uuid,
         id,
@@ -61,6 +77,8 @@ public class CylindricalStorageInputFactory
         storageVolumeLvlMin,
         inletTemp,
         returnTemp,
-        c);
+        c,
+        qIn,
+        qOut);
   }
 }

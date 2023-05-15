@@ -6,6 +6,7 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.OperationTime
+import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.container.SystemParticipants
@@ -151,6 +152,8 @@ class SystemParticipantTestData {
   public static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, TEMPERATURE)
   public static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(
   1, SPECIFIC_HEAT_CAPACITY)
+  private static final ComparableQuantity<VolumetricFlowRate> inletRate = Quantities.getQuantity(0.1, StandardUnits.VOLUMETRIC_FLOW_RATE)
+  private static final ComparableQuantity<VolumetricFlowRate> outletRate = Quantities.getQuantity(0.2, StandardUnits.VOLUMETRIC_FLOW_RATE)
   public static final ThermalStorageInput thermalStorage = new CylindricalStorageInput(
   UUID.fromString("8851813b-3a7d-4fee-874b-4df9d724e4b3"),
   "test_cylindricThermalStorage",
@@ -159,7 +162,9 @@ class SystemParticipantTestData {
   storageVolumeLvlMin,
   inletTemp,
   returnTemp,
-  c
+  c,
+  inletRate,
+  outletRate
   )
 
   public static final ChpInput chpInput = new ChpInput(
