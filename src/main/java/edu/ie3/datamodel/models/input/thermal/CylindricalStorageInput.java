@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
+import edu.ie3.util.quantities.interfaces.VolumetricFlowRate;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Temperature;
@@ -27,6 +28,10 @@ public class CylindricalStorageInput extends ThermalStorageInput {
   private final ComparableQuantity<Temperature> returnTemp;
   /** Specific heat capacity of the storage medium (typically in kWh/K*m³) */
   private final ComparableQuantity<SpecificHeatCapacity> c;
+  /** Flow rate of the inlet (typically in m³/s) */
+  private final ComparableQuantity<VolumetricFlowRate> inletRate;
+  /** Flow rate of the outlet (typically in m³/s) */
+  private final ComparableQuantity<VolumetricFlowRate> outletRate;
 
   /**
    * @param uuid Unique identifier of a cylindrical storage
@@ -39,6 +44,8 @@ public class CylindricalStorageInput extends ThermalStorageInput {
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
    * @param c Specific heat capacity of the storage medium
+   * @param inletRate flow rate of the inlet
+   * @param outletRate flow rate of the outlet
    */
   public CylindricalStorageInput(
       UUID uuid,
@@ -50,13 +57,17 @@ public class CylindricalStorageInput extends ThermalStorageInput {
       ComparableQuantity<Volume> storageVolumeLvlMin,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
-      ComparableQuantity<SpecificHeatCapacity> c) {
+      ComparableQuantity<SpecificHeatCapacity> c,
+      ComparableQuantity<VolumetricFlowRate> inletRate,
+      ComparableQuantity<VolumetricFlowRate> outletRate) {
     super(uuid, id, operator, operationTime, bus);
     this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
     this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
     this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
     this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
     this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
+    this.inletRate = inletRate.to(StandardUnits.VOLUMETRIC_FLOW_RATE);
+    this.outletRate = outletRate.to(StandardUnits.VOLUMETRIC_FLOW_RATE);
   }
 
   /**
@@ -68,6 +79,8 @@ public class CylindricalStorageInput extends ThermalStorageInput {
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
    * @param c Specific heat capacity of the storage medium
+   * @param inletRate flow rate of the inlet
+   * @param outletRate flow rate of the outlet
    */
   public CylindricalStorageInput(
       UUID uuid,
@@ -77,13 +90,17 @@ public class CylindricalStorageInput extends ThermalStorageInput {
       ComparableQuantity<Volume> storageVolumeLvlMin,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
-      ComparableQuantity<SpecificHeatCapacity> c) {
+      ComparableQuantity<SpecificHeatCapacity> c,
+      ComparableQuantity<VolumetricFlowRate> inletRate,
+      ComparableQuantity<VolumetricFlowRate> outletRate) {
     super(uuid, id, bus);
     this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
     this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
     this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
     this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
     this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
+    this.inletRate = inletRate.to(StandardUnits.VOLUMETRIC_FLOW_RATE);
+    this.outletRate = outletRate.to(StandardUnits.VOLUMETRIC_FLOW_RATE);
   }
 
   public ComparableQuantity<Volume> getStorageVolumeLvl() {
@@ -106,6 +123,14 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     return c;
   }
 
+  public ComparableQuantity<VolumetricFlowRate> getInletRate() {
+    return inletRate;
+  }
+
+  public ComparableQuantity<VolumetricFlowRate> getOutletRate() {
+    return outletRate;
+  }
+
   @Override
   public CylindricalStorageInputCopyBuilder copy() {
     return new CylindricalStorageInputCopyBuilder(this);
@@ -120,7 +145,9 @@ public class CylindricalStorageInput extends ThermalStorageInput {
         && storageVolumeLvlMin.equals(that.storageVolumeLvlMin)
         && inletTemp.equals(that.inletTemp)
         && returnTemp.equals(that.returnTemp)
-        && c.equals(that.c);
+        && c.equals(that.c)
+        && inletRate.equals(that.inletRate)
+        && outletRate.equals(that.outletRate);
   }
 
   @Override
@@ -152,6 +179,10 @@ public class CylindricalStorageInput extends ThermalStorageInput {
         + returnTemp
         + ", c="
         + c
+        + ", inletRate ="
+        + inletRate
+        + ", outletRate ="
+        + outletRate
         + '}';
   }
 
@@ -168,6 +199,8 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     private ComparableQuantity<Temperature> inletTemp;
     private ComparableQuantity<Temperature> returnTemp;
     private ComparableQuantity<SpecificHeatCapacity> c;
+    private ComparableQuantity<VolumetricFlowRate> inletRate;
+    private ComparableQuantity<VolumetricFlowRate> outletRate;
 
     private CylindricalStorageInputCopyBuilder(CylindricalStorageInput entity) {
       super(entity);
@@ -176,6 +209,8 @@ public class CylindricalStorageInput extends ThermalStorageInput {
       this.inletTemp = entity.getInletTemp();
       this.returnTemp = entity.getReturnTemp();
       this.c = entity.getC();
+      this.inletRate = entity.getInletRate();
+      this.outletRate = entity.getOutletRate();
     }
 
     @Override
@@ -190,7 +225,9 @@ public class CylindricalStorageInput extends ThermalStorageInput {
           storageVolumeLvlMin,
           inletTemp,
           returnTemp,
-          c);
+          c,
+          inletRate,
+          outletRate);
     }
 
     public CylindricalStorageInputCopyBuilder storageVolumeLvl(
@@ -218,6 +255,18 @@ public class CylindricalStorageInput extends ThermalStorageInput {
 
     public CylindricalStorageInputCopyBuilder c(ComparableQuantity<SpecificHeatCapacity> c) {
       this.c = c;
+      return this;
+    }
+
+    public CylindricalStorageInputCopyBuilder inletRate(
+        ComparableQuantity<VolumetricFlowRate> inletRate) {
+      this.inletRate = inletRate;
+      return this;
+    }
+
+    public CylindricalStorageInputCopyBuilder outletRate(
+        ComparableQuantity<VolumetricFlowRate> outletRate) {
+      this.outletRate = outletRate;
       return this;
     }
 
