@@ -5,11 +5,14 @@
 */
 package edu.ie3.datamodel.io.source.sql;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.SqlCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.models.value.CoordinateValue;
+import edu.ie3.datamodel.utils.options.Try;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
@@ -74,8 +77,8 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   protected Optional<CoordinateValue> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("distance");
 
-    SimpleFactoryData simpleFactoryData = new SimpleFactoryData(fieldToValues, Pair.class);
-    Optional<Pair<Integer, Point>> pair = factory.get(simpleFactoryData);
+    SimpleFactoryData simpleFactoryData = new SimpleFactoryData(new FactoryData.MapWithRowIndex("-1", fieldToValues), Pair.class);
+    Try<Pair<Integer, Point>, FactoryException> pair = factory.get(simpleFactoryData);
 
     if (pair.isEmpty()) {
       return Optional.empty();
