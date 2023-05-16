@@ -19,11 +19,11 @@
 
 project = 'PowerSystemDataModel'
 copyright = u'2023. TU Dortmund University, Institute of Energy Systems, Energy Efficiency and Energy Economics, Research group Distribution grid planning and operation '
-author = 'ie3'
+author = 'Institute of Energy Systems, Energy Efficiency and Energy Economics'
 
 # The full version, including alpha/beta/rc tags
-version = '3.0.0'
-release = '3.0-SNAPSHOT'
+version = '3.0'
+release = '3.0.0'
 
 pygments_style = 'tango'
 add_function_parentheses = True
