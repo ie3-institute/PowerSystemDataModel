@@ -24,9 +24,11 @@ The following implementations are currently known:
 ## Method for coordinates:
 The IdCoordinateSource contains method for returning coordinates for given ids.
 
+``` java 
     Optional<Point> getCoordinate(int id)
     Collection<Point> getCoordinates(int... ids)
     Collection<Point> getAllCoordinates()
+```
 
 1. This method is used to return the coordinate of a given id. If no coordinate is found for
 the given id, an empty optional is returned.
@@ -40,7 +42,9 @@ coordinates for existing ids.
 ## Method for ids:
 The IdCoordinateSource contains a method for retrieving the id of a given coordinate.
 
+``` java
     Optional<Integer> getId(Point coordinate)
+```
 
 This method is used to return the id of a given coordinate. If no id is found for the given
 coordinate, an empty optional is returned.
@@ -51,10 +55,11 @@ The IdCoordinateSource also contains methods for retrieving coordinates/points t
 All implementations of these methods in this project will use the method ``restrictToBoundingBox`` for finding and
 returning four corner points.
 
+``` java
     List<CoordinateDistance> getNearestCoordinates(Point coordinatem int n)
     List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance)
     List<CoordinateDistance> calculateCoordinateDistances(Point coordinate, int n, Collection<Point> coordinates)
-
+```
 
 1. This method will return the nearest n coordinates for a given coordinate. The method works by having a default radius
 that is increased with every iteration until n coordinates are found.
@@ -73,11 +78,13 @@ In most cases we need four corner coordinates for our given coordinate. Therefor
 IdCoordinateSource contains a method that will use the calculated distances to find the closest 
 corner coordinates for the given coordinate.
 
+``` java
     List<CoordinateDistance> restrictToBoundingBox(
           Point coordinate,
           Collection<CoordinateDistance> distances,
           int numberOfPoints
-          )
+    )
+```
 
 For a given set of coordinates, the closest four corner coordinates plus more close points if n > 4
 are returned. If n < 4 the method will return the closest n corner coordinates. If the set of 

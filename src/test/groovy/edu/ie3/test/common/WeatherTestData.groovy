@@ -67,12 +67,12 @@ abstract class WeatherTestData {
 
     @Override
     List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
-      return calculateCoordinateDistances(coordinate, n, allCoordinates)
+      throw new UnsupportedOperationException("This method is not supported!")
     }
 
     @Override
     List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
-      return calculateCoordinateDistances(coordinate, n, allCoordinates)
+      throw new UnsupportedOperationException("This method is not supported!")
     }
   }
 

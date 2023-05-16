@@ -24,35 +24,35 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 
 ### Input
 
-| Model                             | File Name                                                                                     |
-|:----------------------------------|:----------------------------------------------------------------------------------------------|
-| operator                          | *prefix_*\ operator_input\ *_suffix*                                                          |
-| node                              | *prefix_*\ node_input\ *_suffix*                                                              |
-| line                              | *prefix_*\ line_input\ *_suffix* <br> *prefix_*\ line_type_input\ *_suffix*                   |
-| switch                            | *prefix_*\ switch_input\ *_suffix*                                                            |
-| two winding transformer           | *prefix_*\ transformer2w_input\ *_suffix* <br> *prefix_*\ transformer2w_type_input\ *_suffix* |
-| three winding transformer         | *prefix_*\ transformer3w_input\ *_suffix* <br> *prefix_*\ transformer3w_type_input\ *_suffix* |
-| measurement unit                  | *prefix_*\ measurement_unit_input\ *_suffix*                                                  |
-| biomass plant                     | *prefix_*\ bm_input\ *_suffix* <br> *prefix_*\ bm_type_input\ *_suffix*                       |
-| combined heat and power plant     | *prefix_*\ chp_input\ *_suffix* <br> *prefix_*\ chp_type_input\ *_suffix*                     |
-| electric vehicle                  | *prefix_*\ ev_input\ *_suffix* <br> *prefix_*\ ev_type_input\ *_suffix*                       |
-| electric vehicle charging station | *prefix_*\ evcs_input\ *_suffix*                                                              |
-| fixed feed in facility            | *prefix_*\ fixed_feed_in_input\ *_suffix*                                                     |
-| heat pump                         | *prefix_*\ hp_input\ *_suffix* <br> *prefix_*\ hp_type_input\ *_suffix*                       |
-| load                              | *prefix_*\ load_input\ *_suffix*                                                              |
-| photovoltaic power plant          | *prefix_*\ pc_input\ *_suffix*                                                                |
-| electrical energy storage         | *prefix_*\ storage_input\ *_suffix* <br> *prefix_*\ storage_type_input\ *_suffix*             |
-| wind energy converter             | *prefix_*\ wec_input\ *_suffix* <br> *prefix_*\ wec_type_input\ *_suffix*                     |
-| schematic node graphic            | *prefix_*\ node_graphic_input\ *_suffix*                                                      |
-| schematic line graphic            | *prefix_*\ line_graphic_input\ *_suffix*                                                      |
+| Model                             | File Name                                                                                 |
+|:----------------------------------|:------------------------------------------------------------------------------------------|
+| operator                          | *prefix_* operator_input *_suffix*                                                        |
+| node                              | *prefix_* node_input *_suffix*                                                            |
+| line                              | *prefix_* line_input *_suffix* <br> *prefix_* line_type_input *_suffix*                   |
+| switch                            | *prefix_* switch_input *_suffix*                                                          |
+| two winding transformer           | *prefix_* transformer2w_input *_suffix* <br> *prefix_* transformer2w_type_input *_suffix* |
+| three winding transformer         | *prefix_* transformer3w_input *_suffix* <br> *prefix_* transformer3w_type_input *_suffix* |
+| measurement unit                  | *prefix_* measurement_unit_input *_suffix*                                                |
+| biomass plant                     | *prefix_* bm_input *_suffix* <br> *prefix_* bm_type_input *_suffix*                       |
+| combined heat and power plant     | *prefix_* chp_input *_suffix* <br> *prefix_* chp_type_input *_suffix*                     |
+| electric vehicle                  | *prefix_* ev_input *_suffix* <br> *prefix_* ev_type_input *_suffix*                       |
+| electric vehicle charging station | *prefix_* evcs_input *_suffix*                                                            |
+| fixed feed in facility            | *prefix_* fixed_feed_in_input *_suffix*                                                   |
+| heat pump                         | *prefix_* hp_input *_suffix* <br> *prefix_* hp_type_input *_suffix*                       |
+| load                              | *prefix_* load_input *_suffix*                                                            |
+| photovoltaic power plant          | *prefix_* pc_input *_suffix*                                                              |
+| electrical energy storage         | *prefix_* storage_input *_suffix* <br> *prefix_* storage_type_input *_suffix*             |
+| wind energy converter             | *prefix_* wec_input *_suffix* <br> *prefix_* wec_type_input *_suffix*                     |
+| schematic node graphic            | *prefix_* node_graphic_input *_suffix*                                                    |
+| schematic line graphic            | *prefix_* line_graphic_input *_suffix*                                                    |
 
 
 ### Time Series
 
-| Model                  | File Name                                   |
-|:-----------------------|:--------------------------------------------|
-| individual time series | *prefix_*\ its\ *_columnScheme_UUID_suffix* |
-| load profile input     | *prefix_*\ rts\ *_profileKey_UUID_suffix*   |
+| Model                  | File Name                                 |
+|:-----------------------|:------------------------------------------|
+| individual time series | *prefix_* its *_columnScheme_UUID_suffix* |
+| load profile input     | *prefix_* rts *_profileKey_UUID_suffix*   |
 
 
 Let's spend a few more words on the individual time series:
@@ -78,25 +78,25 @@ As the ``uuid`` and ``time`` field are mandatory, they are not mentioned explici
 ### Results
 
 
-| Model                             | File Name                                     |
-|:----------------------------------|:----------------------------------------------|
-| node                              | *prefix_*\ node_res\ *_suffix*                |
-| line                              | *prefix_*\ line_res\ *_suffix*                |
-| switch                            | *prefix_*\ switch_res\ *_suffix*              |
-| two winding transformer           | *prefix_*\ transformer2w_res\ *_suffix*       |
-| three winding transformer         | *prefix_*\ transformer3w_res\ *_suffix*       |
-| biomass plant                     | *prefix_*\ bm_res\ *_suffix*                  |
-| combined heat and power plant     | *prefix_*\ chp_res\ *_suffix*                 |
-| electric vehicle                  | *prefix_*\ ev_res\ *_suffix*                  |
-| electric vehicle charging station | *prefix_*\ evcs_res\ *_suffix*                |
-| fixed feed in                     | *prefix_*\ fixed_feed_in_res\ *_suffix*       |
-| heat pump                         | *prefix_*\ hp_res\ *_suffix*                  |
-| load                              | *prefix_*\ load_res\ *_suffix*                |
-| photovoltaic power plant          | *prefix_*\ pv_res\ *_suffix*                  |
-| storage                           | *prefix_*\ storage_res\ *_suffix*             |
-| wind energy converter             | *prefix_*\ wec_res\ *_suffix*                 |
-| thermal house model               | *prefix_*\ thermal_house_res\ *_suffix*       |
-| cylindrical thermal storage       | *prefix_*\ cylindrical_storage_res\ *_suffix* |
+| Model                             | File Name                                   |
+|:----------------------------------|:--------------------------------------------|
+| node                              | *prefix_* node_res *_suffix*                |
+| line                              | *prefix_* line_res *_suffix*                |
+| switch                            | *prefix_* switch_res *_suffix*              |
+| two winding transformer           | *prefix_* transformer2w_res *_suffix*       |
+| three winding transformer         | *prefix_* transformer3w_res *_suffix*       |
+| biomass plant                     | *prefix_* bm_res *_suffix*                  |
+| combined heat and power plant     | *prefix_* chp_res *_suffix*                 |
+| electric vehicle                  | *prefix_* ev_res *_suffix*                  |
+| electric vehicle charging station | *prefix_* evcs_res\*_suffix*                |
+| fixed feed in                     | *prefix_* fixed_feed_in_res *_suffix*       |
+| heat pump                         | *prefix_* hp_res *_suffix*                  |
+| load                              | *prefix_* load_res *_suffix*                |
+| photovoltaic power plant          | *prefix_* pv_res *_suffix*                  |
+| storage                           | *prefix_* storage_res *_suffix*             |
+| wind energy converter             | *prefix_* wec_res *_suffix*                 |
+| thermal house model               | *prefix_* thermal_house_res *_suffix*       |
+| cylindrical thermal storage       | *prefix_* cylindrical_storage_res *_suffix* |
 
 
 ## Default directory hierarchy
@@ -140,7 +140,7 @@ Therefore, the different sources have also references among themselves.
 An application example to load an *exampleGrid* from csv files located in `./exampleGrid` could look like this:
 
 
-
+``` java
     /* Parameterization */
     String gridName = "exampleGrid";
     String csvSep = ",";
@@ -180,6 +180,7 @@ An application example to load an *exampleGrid* from csv files located in `./exa
             systemParticipants,
             graphicElements
     );
+```
 
 As observable from the code, it doesn't play a role, where the different parts come from.
 It is also a valid solution, to receive types from file, but participants and raw grid elements from a data base.
@@ -189,6 +190,7 @@ Only prerequisite is an implementation of the different interfaces for the desir
 
 Serializing models is a bit easier:
 
+``` java
     /* Parameterization */
     String csvSep = ",";
     String folderPath = "./exampleGrid";
@@ -198,6 +200,7 @@ Serializing models is a bit easier:
     /* Instantiating the sink */
     CsvFileSink sink = new CsvFileSink(folderPath, namingStrategy, initEmptyFiles, csvSep);
     sink.persistJointGridContainer(grid);
+```
 
 The sink takes a collection of model suitable for serialization and handles the rest (e.g. unboxing of nested models)
 on its own.

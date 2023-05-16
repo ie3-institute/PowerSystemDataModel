@@ -18,12 +18,12 @@
 # -- Project information -----------------------------------------------------
 
 project = 'PowerSystemDataModel'
-copyright = 'ie3'
-author = 'Johannes Hiry, Debopama Sen Sarma, Chris Kittl'
+copyright = u'2023. TU Dortmund University, Institute of Energy Systems, Energy Efficiency and Energy Economics, Research group Distribution grid planning and operation '
+author = 'ie3'
 
 # The full version, including alpha/beta/rc tags
 version = '3.0.0'
-release = '4.0-SNAPSHOT'
+release = '3.0-SNAPSHOT'
 
 pygments_style = 'tango'
 add_function_parentheses = True
