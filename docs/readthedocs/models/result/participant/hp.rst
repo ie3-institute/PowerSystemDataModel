@@ -1,7 +1,7 @@
 .. _hp_result:
 
 Heat Pump
-----
+---------
 Result of a heat pump.
 
 Attributes, Units and Remarks
