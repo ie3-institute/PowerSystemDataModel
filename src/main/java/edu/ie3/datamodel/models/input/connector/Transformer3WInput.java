@@ -311,7 +311,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       if (nodeB.getVoltLvl().getNominalVoltage().compareTo(nodeA.getVoltLvl().getNominalVoltage())
           > 0) {
         throw new IllegalArgumentException(
-            "nodeA must be on the high voltage side of the transformer");
+            "nodeA must be on the upper voltage side of the transformer");
       }
       return new Transformer3WInput(
           getUuid(),

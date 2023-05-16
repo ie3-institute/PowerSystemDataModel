@@ -11,6 +11,8 @@ import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
+import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
+import edu.ie3.test.common.GridTestData
 
 import java.time.ZonedDateTime
 
@@ -38,8 +40,8 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
     ]
     def inputClass = Transformer2WInput
     def operatorInput = Mock(OperatorInput)
-    def nodeInputA = Mock(NodeInput)
-    def nodeInputB = Mock(NodeInput)
+    def nodeInputA = GridTestData.nodeA
+    def nodeInputB = GridTestData.nodeB
     def typeInput = Mock(Transformer2WTypeInput)
 
     when:

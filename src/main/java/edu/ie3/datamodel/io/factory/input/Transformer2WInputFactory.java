@@ -41,7 +41,7 @@ public class Transformer2WInputFactory
     if (nodeB.getVoltLvl().getNominalVoltage().compareTo(nodeA.getVoltLvl().getNominalVoltage())
         > 0) {
       throw new IllegalArgumentException(
-          "nodeA must be on the high voltage side of the transformer");
+          "nodeA must be on the upper voltage side of the transformer");
     }
 
     final int parallelDevices = data.getInt(PARALLEL_DEVICES);
