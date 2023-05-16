@@ -6,15 +6,19 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.io.source.IdCoordinateSource
+import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
+import tech.units.indriya.ComparableQuantity
 
+import javax.measure.quantity.Length
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
 abstract class WeatherTestData {
 
   protected static final class DummyIdCoordinateSource implements IdCoordinateSource {
+
     @Override
     Optional<Point> getCoordinate(int id) {
       switch (id) {
@@ -59,6 +63,16 @@ abstract class WeatherTestData {
         GeoUtils.buildPoint(8d, 50d),
         GeoUtils.buildPoint(7d, 51d)
       ]
+    }
+
+    @Override
+    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+      throw new UnsupportedOperationException("This method is not supported!")
+    }
+
+    @Override
+    List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
+      throw new UnsupportedOperationException("This method is not supported!")
     }
   }
 
