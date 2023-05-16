@@ -77,7 +77,8 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   protected Optional<CoordinateValue> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("distance");
 
-    SimpleFactoryData simpleFactoryData = new SimpleFactoryData(new FactoryData.MapWithRowIndex("-1", fieldToValues), Pair.class);
+    SimpleFactoryData simpleFactoryData =
+        new SimpleFactoryData(new FactoryData.MapWithRowIndex("-1", fieldToValues), Pair.class);
     Try<Pair<Integer, Point>, FactoryException> pair = factory.get(simpleFactoryData);
 
     if (pair.isEmpty()) {
