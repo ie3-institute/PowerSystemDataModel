@@ -96,6 +96,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             transformer -> {
               checkNodeAvailability(transformer, nodes);
+              checkNodeVoltageSide(transformer);
               ConnectorValidationUtils.check(transformer);
             });
 
@@ -105,6 +106,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             transformer -> {
               checkNodeAvailability(transformer, nodes);
+              checkNodeVoltageSide(transformer);
               ConnectorValidationUtils.check(transformer);
             });
 
@@ -292,6 +294,20 @@ public class GridContainerValidationUtils extends ValidationUtils {
   }
 
   /**
+   * Checks, if nodeA of the {@link ConnectorInput} is on the hv-side of the transformer
+   *
+   * @param connector Connector to examine
+   */
+  private static void checkNodeVoltageSide(ConnectorInput connector) {
+    if (connector
+            .getNodeB()
+            .getVoltLvl()
+            .getNominalVoltage()
+            .compareTo(connector.getNodeA().getVoltLvl().getNominalVoltage())
+        > 0) throw getWrongVoltageSideException(connector);
+  }
+
+  /**
    * Checks, if the nodes of the {@link Transformer3WInput} are in the collection of provided,
    * already determined nodes
    *
@@ -342,5 +358,20 @@ public class GridContainerValidationUtils extends ValidationUtils {
             + " "
             + input
             + " is connected to a node that is not in the set of nodes.");
+  }
+
+  /**
+   * Builds an exception, that announces that the nodes of a transformer are located at the wrong
+   * voltage side
+   *
+   * @param input Input model
+   * @return Exception for the wrong voltage side
+   */
+  private static InvalidGridException getWrongVoltageSideException(AssetInput input) {
+    return new InvalidGridException(
+        input.getClass().getSimpleName()
+            + "The nodes of transformer"
+            + input
+            + " are located at the wrong voltage side");
   }
 }
