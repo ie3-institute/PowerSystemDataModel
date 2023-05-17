@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import edu.ie3.util.quantities.interfaces.VolumetricFlowRate;
 import java.util.UUID;
+import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
@@ -24,8 +25,8 @@ public class CylindricalStorageInputFactory
   private static final String INLET_TEMP = "inlettemp";
   private static final String RETURN_TEMP = "returntemp";
   private static final String C = "c";
-  private static final String OUTLET_RATE = "outletrate";
-  private static final String INLET_RATE = "inletrate";
+  private static final String FLOW_RATE = "flowrate";
+  private static final String INPUT_POWER = "inputpower";
 
   public CylindricalStorageInputFactory() {
     super(CylindricalStorageInput.class);
@@ -39,8 +40,8 @@ public class CylindricalStorageInputFactory
       INLET_TEMP,
       RETURN_TEMP,
       C,
-      INLET_RATE,
-      OUTLET_RATE
+      FLOW_RATE,
+      INPUT_POWER
     };
   }
 
@@ -62,10 +63,10 @@ public class CylindricalStorageInputFactory
         data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE);
     final ComparableQuantity<SpecificHeatCapacity> c =
         data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
-    final ComparableQuantity<VolumetricFlowRate> qIn =
-        data.getQuantity(INLET_RATE, StandardUnits.VOLUMETRIC_FLOW_RATE);
-    final ComparableQuantity<VolumetricFlowRate> qOut =
-        data.getQuantity(OUTLET_RATE, StandardUnits.VOLUMETRIC_FLOW_RATE);
+    final ComparableQuantity<VolumetricFlowRate> flowRate =
+        data.getQuantity(FLOW_RATE, StandardUnits.VOLUMETRIC_FLOW_RATE);
+    final ComparableQuantity<Power> inputPower =
+        data.getQuantity(INPUT_POWER, StandardUnits.ACTIVE_POWER_IN);
 
     return new CylindricalStorageInput(
         uuid,
@@ -78,7 +79,7 @@ public class CylindricalStorageInputFactory
         inletTemp,
         returnTemp,
         c,
-        qIn,
-        qOut);
+        flowRate,
+        inputPower);
   }
 }
