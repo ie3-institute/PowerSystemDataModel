@@ -89,16 +89,6 @@ public class IdCoordinateSource {
   }
 
   /**
-   * Returns the nearest n coordinate points. If n is greater than four, this method will try to
-   * return the corner points of the bounding box.
-   *
-   * @param coordinate the coordinate to look up
-   * @param n number of searched points
-   * @return the nearest n coordinates or all coordinates if n is less than all available points
-   */
-  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n);
-
-  /**
    * Returns the closest n coordinate points to the given coordinate, that are inside a given
    * bounding box, from a collection of all available points. The bounding box is calculated with
    * the given distance. If n is greater than four, this method will try to return the corner points
@@ -178,7 +168,7 @@ public class IdCoordinateSource {
    * @param numberOfPoints that should be returned
    * @return list of distances
    */
-  default List<CoordinateDistance> restrictToBoundingBox(
+  public List<CoordinateDistance> restrictToBoundingBox(
       Point coordinate, Collection<CoordinateDistance> distances, int numberOfPoints) {
     boolean topLeft = false;
     boolean topRight = false;
