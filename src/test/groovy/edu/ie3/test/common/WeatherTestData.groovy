@@ -13,9 +13,12 @@ import edu.ie3.datamodel.io.source.csv.CsvDataSource
 import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
+import tech.units.indriya.ComparableQuantity
 
+import javax.measure.quantity.Length
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
@@ -73,11 +76,11 @@ abstract class WeatherTestData {
       }
       return Optional.empty()
     }
-
+    @Override
     Collection<Point> getCoordinates(int... ids) {
       return Stream.of(ids).map(this.&getCoordinate).filter({ c -> c != null }).collect(Collectors.toSet())
     }
-
+    @Override
     Optional<Integer> getId(Point coordinate) {
       if (coordinate.x == 49 && coordinate.y == 7) {
         return Optional.of(193186)
@@ -97,7 +100,7 @@ abstract class WeatherTestData {
       return Optional.empty()
     }
 
-
+    @Override
     Collection<Point> getAllCoordinates() {
       return [
         GeoUtils.buildPoint(7d, 49d),
@@ -106,6 +109,16 @@ abstract class WeatherTestData {
         GeoUtils.buildPoint(8d, 50d),
         GeoUtils.buildPoint(7d, 51d)
       ]
+    }
+
+    @Override
+    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+      throw new UnsupportedOperationException("This method is not supported!")
+    }
+
+    @Override
+    List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
+      throw new UnsupportedOperationException("This method is not supported!")
     }
   }
 

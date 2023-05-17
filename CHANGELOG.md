@@ -8,11 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Copy methods for container classes [#726](https://github.com/ie3-institute/PowerSystemDataModel/issues/726)
+- Allow hierarchic grid structure for JointGridContainer [#768](https://github.com/ie3-institute/PowerSystemDataModel/issues/768)
+- Adding SQL id coordinate sources (``IdCoordinateSource``) [#689](https://github.com/ie3-institute/PowerSystemDataModel/issues/689)
 
 ### Fixed
+- Fixed wrong rated power unit hint [#804](https://github.com/ie3-institute/PowerSystemDataModel/issues/804)
 
 
 ### Changed
+- Removing deprecated classes and methods [#540](https://github.com/ie3-institute/PowerSystemDataModel/issues/540)
 - Refactor CSV data sources [#716](https://github.com/ie3-institute/PowerSystemDataModel/issues/716)
 
 
@@ -87,6 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BREAKING: Updating PowerSystemUtils dependency to 2.0-SNAPSHOT [#595](https://github.com/ie3-institute/PowerSystemDataModel/issues/595)
 - BREAKING: Generified the `LoadInput` attribute `standardLoadProfile` to `loadProfile` as it should also address the newly added `TemperatureDependantLoadProfile`s [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
 - Adapted to new double converters in PSU [#705](https://github.com/ie3-institute/PowerSystemDataModel/issues/705)
+- Setting fixed groovy version and updating groovy [#788](https://github.com/ie3-institute/PowerSystemDataModel/issues/788)
 
 ## [2.1.0] - 2022-01-05
 
@@ -103,6 +108,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed class name in FlexOptionsResult.toString [#693](https://github.com/ie3-institute/PowerSystemDataModel/issues/693)
 - Deleted parameter decimalPlaces and changed naming of serialization method [#710](https://github.com/ie3-institute/PowerSystemDataModel/issues/710)
 - Changed switch result documentation according to the implementation [#757](https://github.com/ie3-institute/PowerSystemDataModel/issues/757)
+- Added documentation for EmResult and FlexOptionResult [#656](https://github.com/ie3-institute/PowerSystemDataModel/issues/656)
 
 ## [2.0.1] - 2021-07-08
 

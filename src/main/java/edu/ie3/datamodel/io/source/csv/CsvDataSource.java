@@ -7,7 +7,10 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
+import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -43,7 +46,7 @@ public class CsvDataSource implements DataSource {
 
   // general fields
   protected final String csvSep;
-  public final CsvFileConnector connector;
+  protected final CsvFileConnector connector;
 
   // field names
   protected static final String OPERATOR = "operator";
@@ -113,7 +116,7 @@ public class CsvDataSource implements DataSource {
    * @return a map containing the mapping of (fieldName to fieldValue) or an empty map if an error
    *     occurred
    */
-  private Map<String, String> buildFieldsToAttributes(
+  protected Map<String, String> buildFieldsToAttributes(
       final String csvRow, final String[] headline) {
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
@@ -201,7 +204,7 @@ public class CsvDataSource implements DataSource {
    * @deprecated only left for downward compatibility. Will be removed in a major release
    */
   @Deprecated(since = "1.1.0", forRemoval = true)
-  private String[] oldFieldVals(String csvSep, String csvRow) {
+  protected String[] oldFieldVals(String csvSep, String csvRow) {
 
     /*geo json support*/
     final String geoJsonRegex = "\\{.+?}}}";
@@ -307,13 +310,31 @@ public class CsvDataSource implements DataSource {
   }
 
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      CsvFileConnector connector, String explicitPath) {
+          CsvFileConnector connector, String explicitPath) {
     try {
       return buildStreamWithFieldsToAttributesMap(null, connector.initReader(explicitPath));
     } catch (FileNotFoundException e) {
       log.warn("Unable to find file for entity '{}': {}", "", e.getMessage());
     }
     return Stream.empty();
+  }
+
+  /**
+   * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
+   * matching the provided UUID or an empty {@code Optional} if no matching entity can be found.
+   *
+   * @param entityUuid uuid of the entity that should be looked for
+   * @param entities collection of entities that should be
+   * @param <T> type of the entity that will be returned, derived from the provided collection
+   * @return either an optional containing the first entity that has the provided uuid or an empty
+   *     optional if no matching entity with the provided uuid can be found
+   */
+  protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
+      String entityUuid, Collection<T> entities) {
+    return entities.stream()
+        .parallel()
+        .filter(uniqueEntity -> uniqueEntity.getUuid().toString().equalsIgnoreCase(entityUuid))
+        .findFirst();
   }
 
   /**
@@ -434,9 +455,9 @@ public class CsvDataSource implements DataSource {
           allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
           """
-                      '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
-                      Affected primary keys:
-                      {}""",
+          '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
+          Affected primary keys:
+          {}""",
           entityDescriptor,
           keyDescriptor,
           affectedCoordinateIds);
