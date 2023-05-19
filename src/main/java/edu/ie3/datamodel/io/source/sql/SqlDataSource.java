@@ -11,6 +11,9 @@ import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.value.CoordinateValue;
+import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,17 +32,6 @@ public class SqlDataSource implements DataSource {
   protected final SqlConnector connector;
   protected final DatabaseNamingStrategy databaseNamingStrategy;
   protected String schemaName;
-
-  protected SqlDataSource(
-      String jdbcUrl,
-      String userName,
-      String password,
-      String schemaName,
-      DatabaseNamingStrategy databaseNamingStrategy) {
-    this.connector = new SqlConnector(jdbcUrl, userName, password);
-    this.schemaName = schemaName;
-    this.databaseNamingStrategy = databaseNamingStrategy;
-  }
 
   protected SqlDataSource(
       SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy) {

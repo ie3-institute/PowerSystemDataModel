@@ -22,29 +22,21 @@ import tech.units.indriya.ComparableQuantity;
  * latitude and longitude values, which is especially needed for data source that don't offer
  * combined primary or foreign keys.
  */
-public class IdCoordinateSource {
+public abstract class IdCoordinateSource {
 
   public final IdCoordinateFactory factory;
-  /** Mapping in both ways (id -> coordinate) and (coordinate -> id) have to be unique */
-  public final Map<Integer, Point> idToCoordinate;
 
-  public final Map<Point, Integer> coordinateToId;
-
-  DataSource dataSource;
-
-  public IdCoordinateSource(IdCoordinateFactory factory, DataSource dataSource) {
+  public IdCoordinateSource(IdCoordinateFactory factory) {
     this.factory = factory;
-    this.dataSource = dataSource;
-
-    /* setup the coordinate id to lat/long mapping */
-    idToCoordinate = setupIdToCoordinateMap();
-    coordinateToId = invert(idToCoordinate);
   }
 
   /** For source testing */
-  public Stream<Map<String, String>> extractSourceData() {
+  public abstract Stream<Map<String, String>> extractSourceData();
+  /* {
     return dataSource.getIdCoordinateSourceData(factory);
   }
+
+   */
 
   /**
    * Get the matching coordinate for the given ID
@@ -52,9 +44,7 @@ public class IdCoordinateSource {
    * @param id the ID to look up
    * @return matching coordinate
    */
-  public Optional<Point> getCoordinate(int id) {
-    return Optional.ofNullable(idToCoordinate.get(id));
-  }
+  public abstract Optional<Point> getCoordinate(int id);
 
   /**
    * Get the matching coordinates for the given IDs
@@ -62,12 +52,7 @@ public class IdCoordinateSource {
    * @param ids the IDs to look up
    * @return the matching coordinates
    */
-  public Collection<Point> getCoordinates(int... ids) {
-    return Arrays.stream(ids)
-        .mapToObj(this::getCoordinate)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-  }
+  public abstract Collection<Point> getCoordinates(int... ids);
 
   /**
    * Get the ID for the coordinate point
@@ -75,18 +60,14 @@ public class IdCoordinateSource {
    * @param coordinate the coordinate to look up
    * @return the matching ID
    */
-  public Optional<Integer> getId(Point coordinate) {
-    return Optional.ofNullable(coordinateToId.get(coordinate));
-  }
+  public abstract Optional<Integer> getId(Point coordinate);
 
   /**
    * Returns all the coordinates of this source
    *
    * @return all available coordinates
    */
-  public Collection<Point> getAllCoordinates() {
-    return coordinateToId.keySet();
-  }
+  public abstract Collection<Point> getAllCoordinates();
 
   /**
    * Returns the closest n coordinate points to the given coordinate, that are inside a given
@@ -96,40 +77,11 @@ public class IdCoordinateSource {
    *
    * @param coordinate the coordinate to look up the nearest neighbours for
    * @param n how many neighbours to look up
-   * @param distance to the borders of the envelope that contains the coordinates
    * @return the nearest n coordinates to the given point
    */
-  public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
-    return getNearestCoordinates(coordinate, n, getAllCoordinates());
-  }
+  public abstract List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n);
 
-  /**
-   * Read in and process the mapping
-   *
-   * @return Mapping from coordinate id to coordinate
-   */
-  private Map<Integer, Point> setupIdToCoordinateMap() {
-    return dataSource
-        .getIdCoordinateSourceData(factory)
-        .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
-        .map(factory::get)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
-  }
-
-  /**
-   * Inverts the mapping, so that former values map to keys
-   *
-   * @param map Mapping in the "right" direction
-   * @param <V> Type of values
-   * @param <K> Type of keys
-   * @return Mapping in the "left" direction (Bad joke, I know...)
-   */
-  private <V, K> Map<V, K> invert(Map<K, V> map) {
-    Map<V, K> inv = new HashMap<>();
-    for (Map.Entry<K, V> entry : map.entrySet()) inv.put(entry.getValue(), entry.getKey());
-    return inv;
-  }
+  public abstract List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance);
 
   /**
    * Calculates and returns the nearest n coordinate distances to the given coordinate from a given
@@ -141,7 +93,7 @@ public class IdCoordinateSource {
    * @param coordinates the collection of points
    * @return a list of the nearest n coordinates to the given point or an empty list
    */
-  public List<CoordinateDistance> getNearestCoordinates(
+  public List<CoordinateDistance> calculateCoordinateDistances(
       Point coordinate, int n, Collection<Point> coordinates) {
     if (coordinates != null && !coordinates.isEmpty()) {
       SortedSet<CoordinateDistance> sortedDistances =
@@ -220,9 +172,5 @@ public class IdCoordinateSource {
     }
 
     return resultingDistances;
-  }
-
-  public int getCoordinateCount() {
-    return idToCoordinate.keySet().size();
   }
 }

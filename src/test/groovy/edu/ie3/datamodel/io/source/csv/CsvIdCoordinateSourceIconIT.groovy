@@ -23,7 +23,7 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
   IdCoordinateSource source
 
   def setupSpec() {
-    source = new IdCoordinateSource(new IconIdCoordinateFactory(), new CsvDataSource(csvSep, coordinatesIconFolderPath, fileNamingStrategy))
+    source = new CsvIdCoordinateSource(new IconIdCoordinateFactory(), new CsvDataSource(csvSep, coordinatesIconFolderPath, fileNamingStrategy))
   }
 
   def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {

@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.CosmoIdCoordinateFactory
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory
+import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -53,8 +54,8 @@ class SqlIdCoordinateSourceCosmoIT extends Specification implements TestContaine
     assert res.stderr.empty
 
     def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-    def idCoordinateFactory = new CosmoIdCoordinateFactory()
-    source = new IdCoordinateSource(idCoordinateFactory, new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy()))
+    def idCoordinateFactory = new SqlIdCoordinateFactory()
+    source = new SqlIdCoordinateSource(idCoordinateFactory, coordinateTableName, new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy()))
   }
 
   def "The SqlCoordinateSource is able to create a valid stream from a coordinate file"() {

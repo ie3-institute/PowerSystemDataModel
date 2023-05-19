@@ -7,7 +7,8 @@ package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
-import edu.ie3.datamodel.io.factory.timeseries.SqlCoordinateFactory;
+import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory;
+import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.models.value.CoordinateValue;
 import edu.ie3.util.geo.CoordinateDistance;
@@ -15,6 +16,7 @@ import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.util.*;
+import java.util.stream.Stream;
 import javax.measure.quantity.Length;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Envelope;
@@ -22,10 +24,8 @@ import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
 /** SQL source for coordinate data */
-public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
-    implements IdCoordinateSource {
+public class SqlIdCoordinateSource extends IdCoordinateSource {
   private static final String WHERE = " WHERE ";
-  private final SqlCoordinateFactory factory;
 
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
@@ -39,6 +39,33 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   private final String queryForBoundingBox;
   private final String queryForNearestPoints;
 
+  SqlDataSource dataSource;
+
+
+  public SqlIdCoordinateSource(
+          SqlIdCoordinateFactory factory,
+          String coordinateTableName,
+          SqlDataSource dataSource
+  ) {
+    super(factory);
+
+    this.dataSource = dataSource;
+
+    String dbIdColumnName = dataSource.getDbColumnName(factory.getIdField(), coordinateTableName);
+    String dbPointColumnName = dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
+
+    // setup queries
+    this.basicQuery = dataSource.createBaseQueryString(dataSource.schemaName, coordinateTableName);
+    this.queryForPoint = createQueryForPoint(dbIdColumnName);
+    this.queryForPoints = createQueryForPoints(dbIdColumnName);
+    this.queryForId = createQueryForId(dbPointColumnName);
+    this.queryForBoundingBox = createQueryForBoundingBox(dbPointColumnName);
+    this.queryForNearestPoints =
+            createQueryForNearestPoints(
+                    dataSource.schemaName, coordinateTableName, dbIdColumnName, dbPointColumnName);
+
+  }
+
   /**
    * Initializes a new SqlIdCoordinateSource
    *
@@ -51,26 +78,11 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
       SqlConnector connector,
       String schemaName,
       String coordinateTableName,
-      SqlCoordinateFactory factory) {
-    super(connector);
-
-    String dbIdColumnName = getDbColumnName(factory.getIdField(), coordinateTableName);
-    String dbPointColumnName = getDbColumnName(factory.getCoordinateField(), coordinateTableName);
-
-    this.factory = factory;
-
-    // setup queries
-    this.basicQuery = createBaseQueryString(schemaName, coordinateTableName);
-    this.queryForPoint = createQueryForPoint(dbIdColumnName);
-    this.queryForPoints = createQueryForPoints(dbIdColumnName);
-    this.queryForId = createQueryForId(dbPointColumnName);
-    this.queryForBoundingBox = createQueryForBoundingBox(dbPointColumnName);
-    this.queryForNearestPoints =
-        createQueryForNearestPoints(
-            schemaName, coordinateTableName, dbIdColumnName, dbPointColumnName);
+      SqlIdCoordinateFactory factory) {
+    this(factory, coordinateTableName, new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy()));
   }
 
-  @Override
+
   protected Optional<CoordinateValue> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("distance");
 
@@ -86,8 +98,13 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   }
 
   @Override
+  public Stream<Map<String, String>> extractSourceData() {
+    return dataSource.getIdCoordinateSourceData(factory);
+  }
+
+  @Override
   public Optional<Point> getCoordinate(int id) {
-    List<CoordinateValue> values = executeQuery(queryForPoint, ps -> ps.setInt(1, id));
+    List<CoordinateValue> values = executeQueryToList(queryForPoint, ps -> ps.setInt(1, id));
 
     if (values.isEmpty()) {
       return Optional.empty();
@@ -101,7 +118,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     Object[] idSet = Arrays.stream(ids).boxed().distinct().toArray();
 
     List<CoordinateValue> values =
-        executeQuery(
+            executeQueryToList(
             queryForPoints,
             ps -> {
               Array sqlArray = ps.getConnection().createArrayOf("int", idSet);
@@ -117,7 +134,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     double longitude = coordinate.getX();
 
     List<CoordinateValue> values =
-        executeQuery(
+        executeQueryToList(
             queryForId,
             ps -> {
               ps.setDouble(1, longitude);
@@ -133,7 +150,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   @Override
   public Collection<Point> getAllCoordinates() {
-    List<CoordinateValue> values = executeQuery(basicQuery + ";", PreparedStatement::execute);
+    List<CoordinateValue> values = executeQueryToList(basicQuery + ";", PreparedStatement::execute);
 
     return values.stream().map(value -> value.coordinate).toList();
   }
@@ -141,7 +158,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   @Override
   public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
     List<CoordinateValue> values =
-        executeQuery(
+      executeQueryToList(
             queryForNearestPoints,
             ps -> {
               ps.setDouble(1, coordinate.getX());
@@ -159,7 +176,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
 
     List<CoordinateValue> values =
-        executeQuery(
+        executeQueryToList(
             queryForBoundingBox,
             ps -> {
               ps.setDouble(1, envelope.getMinX());
@@ -171,6 +188,13 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     List<Point> points = values.stream().map(value -> value.coordinate).toList();
 
     return calculateCoordinateDistances(coordinate, n, points);
+  }
+
+  public List<CoordinateValue> executeQueryToList(
+          String query,
+          SqlDataSource.AddParams addParams
+  ) {
+    return dataSource.executeQuery(query, addParams).map(this::createEntity).flatMap(Optional::stream).toList();
   }
 
   /**

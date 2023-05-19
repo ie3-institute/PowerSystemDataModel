@@ -63,7 +63,12 @@ abstract class WeatherTestData {
   static final class DummyIdCoordinateSource extends IdCoordinateSource implements CsvTestDataMeta {
 
     DummyIdCoordinateSource() {
-      super(new CosmoIdCoordinateFactory(), new DummyCsvSource(csvSep, coordinatesCosmoFolderPath, fileNamingStrategy))
+      super(new CosmoIdCoordinateFactory())
+    }
+
+    @Override
+    Stream<Map<String, String>> extractSourceData() {
+      return null
     }
 
     Optional<Point> getCoordinate(int id) {

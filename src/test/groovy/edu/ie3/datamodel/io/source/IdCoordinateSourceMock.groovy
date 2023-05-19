@@ -5,13 +5,25 @@
  */
 package edu.ie3.datamodel.io.source
 
+import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory
 import edu.ie3.util.geo.CoordinateDistance
 import org.locationtech.jts.geom.Point
 import tech.units.indriya.ComparableQuantity
 
 import javax.measure.quantity.Length
+import java.util.stream.Stream
 
-class IdCoordinateSourceMock implements IdCoordinateSource {
+class IdCoordinateSourceMock extends IdCoordinateSource {
+
+  IdCoordinateSourceMock() {
+    super(null)
+  }
+
+  @Override
+  Stream<Map<String, String>> extractSourceData() {
+    return null
+  }
+
   @Override
   Optional<Point> getCoordinate(int id) {
     return Optional.empty()

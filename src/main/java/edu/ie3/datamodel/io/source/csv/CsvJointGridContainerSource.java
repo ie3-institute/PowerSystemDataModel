@@ -46,7 +46,7 @@ public class CsvJointGridContainerSource {
     ThermalSource thermalSource = new ThermalSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
         new SystemParticipantSource(typeSource, thermalSource, rawGridSource, dataSource);
-    GraphicSource graphicsSource = new GraphicSource(typeSource, rawGridSource, dataSource);
+    GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* Loading models */
     RawGridElements rawGridElements =

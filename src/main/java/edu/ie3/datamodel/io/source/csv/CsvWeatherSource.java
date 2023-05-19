@@ -53,7 +53,7 @@ public class CsvWeatherSource extends WeatherSource {
         csvSep,
         folderPath,
         fileNamingStrategy,
-        new IdCoordinateSource(
+        new CsvIdCoordinateSource(
             coordinateFactory, new CsvDataSource(csvSep, folderPath, fileNamingStrategy)),
         weatherFactory);
   }
