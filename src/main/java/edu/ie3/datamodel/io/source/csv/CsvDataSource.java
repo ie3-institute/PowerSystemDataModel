@@ -7,10 +7,6 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
@@ -49,14 +45,6 @@ public class CsvDataSource implements DataSource {
   protected final String csvSep;
   protected final CsvFileConnector connector;
 
-  // field names
-  protected static final String OPERATOR = "operator";
-  protected static final String NODE_A = "nodeA";
-  protected static final String NODE_B = "nodeB";
-  protected static final String NODE = "node";
-  protected static final String TYPE = "type";
-  protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
-
   /**
    * @deprecated ensures downward compatibility with old csv data format. Can be removed when
    *     support for old csv format is removed. *
@@ -74,7 +62,6 @@ public class CsvDataSource implements DataSource {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }
 
-  @Override
   public Stream<Map<String, String>> getIdCoordinateSourceData(IdCoordinateFactory factory) {
     try (BufferedReader reader = connector.initIdCoordinateReader()) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
@@ -311,7 +298,7 @@ public class CsvDataSource implements DataSource {
   }
 
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-          CsvFileConnector connector, String explicitPath) {
+      CsvFileConnector connector, String explicitPath) {
     try {
       return buildStreamWithFieldsToAttributesMap(null, connector.initReader(explicitPath));
     } catch (FileNotFoundException e) {

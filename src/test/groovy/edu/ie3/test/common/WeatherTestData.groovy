@@ -24,52 +24,7 @@ import java.util.stream.Stream
 
 abstract class WeatherTestData {
 
-  // Using a groovy bug to gain access to private methods in superclass:
-  // by default, we cannot access private methods with parameters from abstract parent classes, introducing a
-  // class that extends the abstract parent class and unveils the private methods by calling the parents private
-  // methods in a public or protected method makes them available for testing
-  static final class DummyCsvSource extends CsvDataSource {
-
-    DummyCsvSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
-      super(csvSep, folderPath, fileNamingStrategy)
-    }
-
-    Map<String, String> buildFieldsToAttributes(
-        final String csvRow, final String[] headline) {
-      return super.buildFieldsToAttributes(csvRow, headline)
-    }
-
-    OperatorInput getFirstOrDefaultOperator(
-        Collection<OperatorInput> operators, String operatorUuid, String entityClassName, String requestEntityUuid) {
-      return super.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid)
-    }
-
-    def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
-        Class<T> entityClass, Collection<Map<String, String>> allRows) {
-      return super.distinctRowsWithLog(allRows, uuidExtractor, entityClass.simpleName, "UUID")
-    }
-
-    String[] parseCsvRow(
-        String csvRow, String csvSep) {
-      return super.parseCsvRow(csvRow, csvSep)
-    }
-
-    String[] oldFieldVals(
-        String csvSep, String csvRow) {
-      return super.oldFieldVals(csvSep, csvRow)
-    }
-  }
-
   static final class DummyIdCoordinateSource extends IdCoordinateSource implements CsvTestDataMeta {
-
-    DummyIdCoordinateSource() {
-      super(new CosmoIdCoordinateFactory())
-    }
-
-    @Override
-    Stream<Map<String, String>> extractSourceData() {
-      return null
-    }
 
     Optional<Point> getCoordinate(int id) {
       switch (id) {

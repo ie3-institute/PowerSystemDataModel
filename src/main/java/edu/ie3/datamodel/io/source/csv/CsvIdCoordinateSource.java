@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
-import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
@@ -41,27 +40,16 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
   private final Map<Point, Integer> coordinateToId;
 
   CsvDataSource dataSource;
+  IdCoordinateFactory factory;
 
-  public CsvIdCoordinateSource(
-    IdCoordinateFactory factory,
-    CsvDataSource dataSource
-  ) {
-    super(factory);
+  public CsvIdCoordinateSource(IdCoordinateFactory factory, CsvDataSource dataSource) {
+    this.factory = factory;
     this.dataSource = dataSource;
 
     /* set up the coordinate id to lat/long mapping */
     idToCoordinate = setupIdToCoordinateMap();
     coordinateToId = invert(idToCoordinate);
   }
-
-  public CsvIdCoordinateSource(
-      String csvSep,
-      String folderPath,
-      FileNamingStrategy fileNamingStrategy,
-      IdCoordinateFactory factory) {
-    this(factory, new CsvDataSource(csvSep, folderPath, fileNamingStrategy));
-  }
-
 
   /**
    * Read in and process the mapping
@@ -90,7 +78,6 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
     return inv;
   }
 
-  @Override
   public Stream<Map<String, String>> extractSourceData() {
     return dataSource.getIdCoordinateSourceData(factory);
   }
@@ -175,19 +162,22 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows = dataSource.csvRowFieldValueMapping(reader, headline);
+      Collection<Map<String, String>> allRows =
+          dataSource.csvRowFieldValueMapping(reader, headline);
 
       Function<Map<String, String>, String> idExtractor =
           fieldToValues -> fieldToValues.get(factory.getIdField());
       Set<Map<String, String>> withDistinctCoordinateId =
-              dataSource.distinctRowsWithLog(allRows, idExtractor, "coordinate id mapping", "coordinate id");
+          dataSource.distinctRowsWithLog(
+              allRows, idExtractor, "coordinate id mapping", "coordinate id");
       Function<Map<String, String>, String> coordinateExtractor =
           fieldToValues ->
               fieldToValues
                   .get(factory.getLatField())
                   .concat(fieldToValues.get(factory.getLonField()));
-      return dataSource.distinctRowsWithLog(
-          withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
+      return dataSource
+          .distinctRowsWithLog(
+              withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
           .parallelStream();
     } catch (IOException e) {
       log.error("Cannot read the file for coordinate id to coordinate mapping.", e);

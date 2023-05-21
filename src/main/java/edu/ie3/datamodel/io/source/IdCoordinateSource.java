@@ -5,14 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.io.factory.SimpleFactoryData;
-import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.apache.commons.lang3.tuple.Pair;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
@@ -23,20 +18,6 @@ import tech.units.indriya.ComparableQuantity;
  * combined primary or foreign keys.
  */
 public abstract class IdCoordinateSource {
-
-  public final IdCoordinateFactory factory;
-
-  public IdCoordinateSource(IdCoordinateFactory factory) {
-    this.factory = factory;
-  }
-
-  /** For source testing */
-  public abstract Stream<Map<String, String>> extractSourceData();
-  /* {
-    return dataSource.getIdCoordinateSourceData(factory);
-  }
-
-   */
 
   /**
    * Get the matching coordinate for the given ID
@@ -81,7 +62,8 @@ public abstract class IdCoordinateSource {
    */
   public abstract List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n);
 
-  public abstract List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance);
+  public abstract List<CoordinateDistance> getClosestCoordinates(
+      Point coordinate, int n, ComparableQuantity<Length> distance);
 
   /**
    * Calculates and returns the nearest n coordinate distances to the given coordinate from a given

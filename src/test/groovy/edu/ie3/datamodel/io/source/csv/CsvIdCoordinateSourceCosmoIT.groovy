@@ -20,7 +20,7 @@ import java.util.stream.Stream
 class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataMeta {
 
   @Shared
-  IdCoordinateSource source
+  CsvIdCoordinateSource source
 
   def setupSpec() {
     source = new CsvIdCoordinateSource(new CosmoIdCoordinateFactory(), new CsvDataSource(csvSep, coordinatesCosmoFolderPath, fileNamingStrategy))

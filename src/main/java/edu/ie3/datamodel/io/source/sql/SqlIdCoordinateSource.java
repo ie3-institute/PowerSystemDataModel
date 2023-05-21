@@ -16,7 +16,6 @@ import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.util.*;
-import java.util.stream.Stream;
 import javax.measure.quantity.Length;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Envelope;
@@ -41,18 +40,16 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
 
   SqlDataSource dataSource;
 
+  SqlIdCoordinateFactory factory;
 
   public SqlIdCoordinateSource(
-          SqlIdCoordinateFactory factory,
-          String coordinateTableName,
-          SqlDataSource dataSource
-  ) {
-    super(factory);
-
+      SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource) {
+    this.factory = factory;
     this.dataSource = dataSource;
 
     String dbIdColumnName = dataSource.getDbColumnName(factory.getIdField(), coordinateTableName);
-    String dbPointColumnName = dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
+    String dbPointColumnName =
+        dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
 
     // setup queries
     this.basicQuery = dataSource.createBaseQueryString(dataSource.schemaName, coordinateTableName);
@@ -61,9 +58,8 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
     this.queryForId = createQueryForId(dbPointColumnName);
     this.queryForBoundingBox = createQueryForBoundingBox(dbPointColumnName);
     this.queryForNearestPoints =
-            createQueryForNearestPoints(
-                    dataSource.schemaName, coordinateTableName, dbIdColumnName, dbPointColumnName);
-
+        createQueryForNearestPoints(
+            dataSource.schemaName, coordinateTableName, dbIdColumnName, dbPointColumnName);
   }
 
   /**
@@ -79,9 +75,11 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
       String schemaName,
       String coordinateTableName,
       SqlIdCoordinateFactory factory) {
-    this(factory, coordinateTableName, new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy()));
+    this(
+        factory,
+        coordinateTableName,
+        new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy()));
   }
-
 
   protected Optional<CoordinateValue> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("distance");
@@ -95,11 +93,6 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
       Pair<Integer, Point> data = pair.get();
       return Optional.of(new CoordinateValue(data.getKey(), data.getValue()));
     }
-  }
-
-  @Override
-  public Stream<Map<String, String>> extractSourceData() {
-    return dataSource.getIdCoordinateSourceData(factory);
   }
 
   @Override
@@ -118,7 +111,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
     Object[] idSet = Arrays.stream(ids).boxed().distinct().toArray();
 
     List<CoordinateValue> values =
-            executeQueryToList(
+        executeQueryToList(
             queryForPoints,
             ps -> {
               Array sqlArray = ps.getConnection().createArrayOf("int", idSet);
@@ -158,7 +151,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   @Override
   public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
     List<CoordinateValue> values =
-      executeQueryToList(
+        executeQueryToList(
             queryForNearestPoints,
             ps -> {
               ps.setDouble(1, coordinate.getX());
@@ -190,11 +183,12 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
     return calculateCoordinateDistances(coordinate, n, points);
   }
 
-  public List<CoordinateValue> executeQueryToList(
-          String query,
-          SqlDataSource.AddParams addParams
-  ) {
-    return dataSource.executeQuery(query, addParams).map(this::createEntity).flatMap(Optional::stream).toList();
+  public List<CoordinateValue> executeQueryToList(String query, SqlDataSource.AddParams addParams) {
+    return dataSource
+        .executeQuery(query, addParams)
+        .map(this::createEntity)
+        .flatMap(Optional::stream)
+        .toList();
   }
 
   /**

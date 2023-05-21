@@ -20,7 +20,7 @@ import java.util.stream.Stream
 class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMeta {
 
   @Shared
-  IdCoordinateSource source
+  CsvIdCoordinateSource source
 
   def setupSpec() {
     source = new CsvIdCoordinateSource(new IconIdCoordinateFactory(), new CsvDataSource(csvSep, coordinatesIconFolderPath, fileNamingStrategy))

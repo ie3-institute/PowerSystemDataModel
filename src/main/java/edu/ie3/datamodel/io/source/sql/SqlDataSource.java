@@ -7,13 +7,9 @@ package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.value.CoordinateValue;
-import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,6 +19,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Contains all functions that are needed to read a SQL data source. */
 public class SqlDataSource implements DataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
@@ -33,7 +30,7 @@ public class SqlDataSource implements DataSource {
   protected final DatabaseNamingStrategy databaseNamingStrategy;
   protected String schemaName;
 
-  protected SqlDataSource(
+  public SqlDataSource(
       SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy) {
     this.connector = connector;
     this.schemaName = schemaName;
@@ -119,12 +116,6 @@ public class SqlDataSource implements DataSource {
     return buildStreamByTableName(explicitTableName);
   }
 
-  @Override
-  public Stream<Map<String, String>> getIdCoordinateSourceData(IdCoordinateFactory factory) {
-    String tableName = "coordinates";
-    return buildStreamByTableName(tableName);
-  }
-
   /**
    * Interface for anonymous functions that are used as a parameter for {@link #executeQuery}.
    *
@@ -160,18 +151,6 @@ public class SqlDataSource implements DataSource {
   protected Stream<Map<String, String>> buildStreamByTableName(String tableName) {
     String query = createBaseQueryString(schemaName, tableName);
     return executeQuery(query);
-    /*
-    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
-      ResultSet resultSet = ps.executeQuery();
-      List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
-
-      return fieldMaps.stream();
-    } catch (SQLException e) {
-      log.error(errorSQL, query, e);
-    }
-    return Stream.empty();
-
-     */
   }
 
   /**
@@ -193,25 +172,4 @@ public class SqlDataSource implements DataSource {
   protected Stream<Map<String, String>> executeQuery(String query) {
     return executeQuery(query, x -> {});
   }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-  /*
-  protected List<Map<String, String>> queryToListOfMaps(String query, AddParams addParams) {
-    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
-      addParams.addParams(ps);
-
-      ResultSet resultSet = ps.executeQuery();
-      return connector.extractFieldMaps(resultSet);
-    } catch (SQLException e) {
-      log.error("Error during execution of query {}", query, e);
-    }
-    return Collections.emptyList();
-  }
-
-  protected List<Map<String, String>> queryToListOfMaps(String query) {
-    return queryToListOfMaps(query, ps -> {});
-  }
-  */
-
 }
