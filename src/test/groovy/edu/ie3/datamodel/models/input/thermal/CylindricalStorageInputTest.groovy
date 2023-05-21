@@ -25,8 +25,8 @@ class CylindricalStorageInputTest extends Specification {
         .returnTemp(ThermalUnitInputTestData.returnTemp)
         .c(ThermalUnitInputTestData.c)
         .thermalBus(ThermalUnitInputTestData.thermalBus)
-        .inletRate(ThermalUnitInputTestData.inletRate)
-        .outletRate(ThermalUnitInputTestData.outletRate)
+        .inletFlowRate(ThermalUnitInputTestData.inletFlowRate)
+        .outletFlowRate(ThermalUnitInputTestData.outletFlowRate)
         .build()
 
 
@@ -42,8 +42,8 @@ class CylindricalStorageInputTest extends Specification {
       assert inletTemp == ThermalUnitInputTestData.inletTemp
       assert returnTemp == ThermalUnitInputTestData.returnTemp
       assert c == ThermalUnitInputTestData.c
-      assert inletRate == ThermalUnitInputTestData.inletRate
-      assert outletRate == ThermalUnitInputTestData.outletRate
+      assert inletFlowRate == ThermalUnitInputTestData.inletFlowRate
+      assert outletFlowRate == ThermalUnitInputTestData.outletFlowRate
     }
   }
 }

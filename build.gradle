@@ -50,7 +50,7 @@ repositories {
 dependencies {
 
   //	 ie³ power system utils
-  implementation 'com.github.ie3-institute:PowerSystemUtils:2.0'
+  implementation (files 'C:\\Users\\smjobaoo\\IdeaProjects\\PowerSystemUtils\\build\\libs\\PowerSystemUtils-3.0-SNAPSHOT.jar')
 
   implementation 'tech.units:indriya:2.1.4'
 

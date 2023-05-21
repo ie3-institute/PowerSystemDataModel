@@ -49,8 +49,8 @@ class ThermalUnitValidationUtilsTest extends Specification {
   private static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
-  private static final ComparableQuantity<VolumetricFlowRate> inletRate = Quantities.getQuantity(0.2, StandardUnits.VOLUMETRIC_FLOW_RATE)
-  private static final ComparableQuantity<VolumetricFlowRate> outletRate = Quantities.getQuantity(1.2, StandardUnits.VOLUMETRIC_FLOW_RATE)
+  private static final ComparableQuantity<VolumetricFlowRate> inletFlowRate = Quantities.getQuantity(0.2, StandardUnits.VOLUMETRIC_FLOW_RATE)
+  private static final ComparableQuantity<VolumetricFlowRate> outletFlowRate = Quantities.getQuantity(1.2, StandardUnits.VOLUMETRIC_FLOW_RATE)
 
 
 
@@ -109,8 +109,8 @@ class ThermalUnitValidationUtilsTest extends Specification {
 
     where:
     invalidCylindricalStorage                                                                                                                                                                                                                                                                                           || expectedException
-    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, storageVolumeLvlMin, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c, inletRate, outletRate)                                           || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower than outlet temperature", invalidCylindricalStorage)
-    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(100, StandardUnits.VOLUME), Quantities.getQuantity(200, StandardUnits.VOLUME), inletTemp, returnTemp, c, inletRate, outletRate)                                                                     || new InvalidEntityException("Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume", invalidCylindricalStorage)
-    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), Quantities.getQuantity(-200, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY), inletRate, outletRate) || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -200 ㎥, -1.05 kWh/K*m³", invalidCylindricalStorage)
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, storageVolumeLvlMin, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c, inletFlowRate, outletFlowRate)                                           || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower than outlet temperature", invalidCylindricalStorage)
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(100, StandardUnits.VOLUME), Quantities.getQuantity(200, StandardUnits.VOLUME), inletTemp, returnTemp, c, inletFlowRate, outletFlowRate)                                                                     || new InvalidEntityException("Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume", invalidCylindricalStorage)
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), Quantities.getQuantity(-200, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY), inletFlowRate, outletFlowRate) || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -200 ㎥, -1.05 kWh/K*m³", invalidCylindricalStorage)
   }
 }

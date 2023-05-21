@@ -71,6 +71,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
     resultingCylindricalStorageWoOperator.first().inletTemp == sptd.inletTemp
     resultingCylindricalStorageWoOperator.first().returnTemp == sptd.returnTemp
     resultingCylindricalStorageWoOperator.first().c == sptd.c
+    resultingCylindricalStorageWoOperator.first().inletFlowRate == sptd.inletFlowRate
+    resultingCylindricalStorageWoOperator.first().outletFlowRate == sptd.outletFlowRate
 
     //test method when operators and thermal buses are provided as constructor parameters
     when:
@@ -88,6 +90,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
     resultingCylindricalStorage.first().inletTemp == sptd.inletTemp
     resultingCylindricalStorage.first().returnTemp == sptd.returnTemp
     resultingCylindricalStorage.first().c == sptd.c
+    resultingCylindricalStorage.first().inletFlowRate == sptd.inletFlowRate
+    resultingCylindricalStorage.first().outletFlowRate == sptd.outletFlowRate
   }
 
   def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {

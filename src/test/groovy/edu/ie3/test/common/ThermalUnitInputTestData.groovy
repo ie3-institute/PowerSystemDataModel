@@ -55,8 +55,8 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   private static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
-  private static final ComparableQuantity<VolumetricFlowRate> inletRate = Quantities.getQuantity(0.1, StandardUnits.VOLUMETRIC_FLOW_RATE)
-  private static final ComparableQuantity<VolumetricFlowRate> outletRate = Quantities.getQuantity(0.2, StandardUnits.VOLUMETRIC_FLOW_RATE)
+  private static final ComparableQuantity<VolumetricFlowRate> inletFlowRate = Quantities.getQuantity(0.1, StandardUnits.VOLUMETRIC_FLOW_RATE)
+  private static final ComparableQuantity<VolumetricFlowRate> outletFlowRate = Quantities.getQuantity(0.2, StandardUnits.VOLUMETRIC_FLOW_RATE)
 
   public static final cylindricStorageInput = new CylindricalStorageInput(
   thermalUnitUuid,
@@ -69,7 +69,7 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   inletTemp,
   returnTemp,
   c,
-  inletRate,
-  outletRate
+  inletFlowRate,
+  outletFlowRate
   )
 }

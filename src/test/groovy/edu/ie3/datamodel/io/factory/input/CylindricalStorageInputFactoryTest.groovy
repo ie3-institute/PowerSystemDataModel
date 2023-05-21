@@ -34,8 +34,8 @@ class CylindricalStorageInputFactoryTest  extends Specification implements Facto
       "inlettemp"          : "5",
       "returntemp"         : "6",
       "c"                  : "7",
-      "inletrate"          : "8",
-      "outletrate"         : "9"
+      "inletflowrate"      : "8",
+      "outletflowrate"     : "9"
     ]
     def inputClass = CylindricalStorageInput
     def thermalBusInput = Mock(ThermalBusInput)
@@ -57,8 +57,8 @@ class CylindricalStorageInputFactoryTest  extends Specification implements Facto
       assert inletTemp == getQuant(parameter["inlettemp"], StandardUnits.TEMPERATURE)
       assert returnTemp == getQuant(parameter["returntemp"], StandardUnits.TEMPERATURE)
       assert c == getQuant(parameter["c"], StandardUnits.SPECIFIC_HEAT_CAPACITY)
-      assert inletRate == getQuant(parameter["inletrate"], StandardUnits.VOLUMETRIC_FLOW_RATE)
-      assert outletRate == getQuant(parameter["outletrate"], StandardUnits.VOLUMETRIC_FLOW_RATE)
+      assert inletFlowRate == getQuant(parameter["inletflowrate"], StandardUnits.VOLUMETRIC_FLOW_RATE)
+      assert outletFlowRate == getQuant(parameter["outletflowrate"], StandardUnits.VOLUMETRIC_FLOW_RATE)
     }
   }
 }
