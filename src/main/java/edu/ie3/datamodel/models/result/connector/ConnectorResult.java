@@ -124,7 +124,7 @@ public abstract class ConnectorResult extends ResultEntity {
 
   @Override
   public int hashCode() {
-    return Objects.hash(iAMag, iAAng, iBMag, iBAng);
+    return Objects.hash(super.hashCode(), iAMag, iAAng, iBMag, iBAng);
   }
 
   @Override
