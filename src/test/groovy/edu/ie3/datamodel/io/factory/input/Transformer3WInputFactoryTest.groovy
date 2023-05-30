@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
+import edu.ie3.test.common.GridTestData
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -34,9 +35,9 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
       "autotap"        : "true"
     ]
     def inputClass = Transformer3WInput
-    def nodeInputA = Mock(NodeInput)
-    def nodeInputB = Mock(NodeInput)
-    def nodeInputC = Mock(NodeInput)
+    def nodeInputA = GridTestData.nodeA
+    def nodeInputB = GridTestData.nodeB
+    def nodeInputC = GridTestData.nodeC
     def typeInput = Mock(Transformer3WTypeInput)
 
     when:

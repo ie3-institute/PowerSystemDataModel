@@ -68,9 +68,11 @@ public class Transformer3WInput extends TransformerInput implements HasType {
         tapPos,
         autoTap,
         false);
-    if (nodeA.getVoltLvl().getNominalVoltage().compareTo(nodeB.getVoltLvl().getNominalVoltage()) > 0
-        && nodeB.getVoltLvl().getNominalVoltage().compareTo(nodeC.getVoltLvl().getNominalVoltage())
-            > 0) {
+    if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
+        && nodeC
+            .getVoltLvl()
+            .getNominalVoltage()
+            .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
       throw new IllegalArgumentException(
           "NodeA must be greater than nodeB and nodeB must be greater than nodeC");
     }
@@ -134,9 +136,11 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             null,
             nodeA.getVoltLvl(),
             nodeA.getSubnet()));
-    if (nodeA.getVoltLvl().getNominalVoltage().compareTo(nodeB.getVoltLvl().getNominalVoltage()) > 0
-        && nodeB.getVoltLvl().getNominalVoltage().compareTo(nodeC.getVoltLvl().getNominalVoltage())
-            > 0) {
+    if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
+        && nodeC
+            .getVoltLvl()
+            .getNominalVoltage()
+            .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
       throw new IllegalArgumentException(
           "NodeA must be greater than nodeB and nodeB must be greater than nodeC");
     }
@@ -167,9 +171,11 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       int tapPos,
       boolean autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    if (nodeA.getVoltLvl().getNominalVoltage().compareTo(nodeB.getVoltLvl().getNominalVoltage()) > 0
-        && nodeB.getVoltLvl().getNominalVoltage().compareTo(nodeC.getVoltLvl().getNominalVoltage())
-            > 0) {
+    if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
+        && nodeC
+            .getVoltLvl()
+            .getNominalVoltage()
+            .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
       throw new IllegalArgumentException(
           "NodeA must be greater than nodeB and nodeB must be greater than nodeC");
     }
@@ -218,9 +224,11 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       boolean autoTap,
       NodeInput internalNode) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    if (nodeA.getVoltLvl().getNominalVoltage().compareTo(nodeB.getVoltLvl().getNominalVoltage()) > 0
-        && nodeB.getVoltLvl().getNominalVoltage().compareTo(nodeC.getVoltLvl().getNominalVoltage())
-            > 0) {
+    if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
+        && nodeC
+            .getVoltLvl()
+            .getNominalVoltage()
+            .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
       throw new IllegalArgumentException(
           "NodeA must be greater than nodeB and nodeB must be greater than nodeC");
     }

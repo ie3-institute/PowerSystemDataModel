@@ -48,8 +48,10 @@ public class Transformer2WInput extends TransformerInput implements HasType {
       int tapPos,
       boolean autoTap) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    if (nodeB.getVoltLvl().getNominalVoltage().compareTo(nodeA.getVoltLvl().getNominalVoltage())
-        > 0) {
+    if (nodeB
+        .getVoltLvl()
+        .getNominalVoltage()
+        .isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())) {
       throw new IllegalArgumentException(
           "nodeA must be on the upper voltage side of the transformer");
     }
@@ -79,8 +81,10 @@ public class Transformer2WInput extends TransformerInput implements HasType {
       int tapPos,
       boolean autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    if (nodeB.getVoltLvl().getNominalVoltage().compareTo(nodeA.getVoltLvl().getNominalVoltage())
-        > 0) {
+    if (nodeB
+        .getVoltLvl()
+        .getNominalVoltage()
+        .isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())) {
       throw new IllegalArgumentException(
           "nodeA must be on the upper voltage side of the transformer");
     }
