@@ -4,7 +4,7 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '6.18.0'//code format
+  id 'com.diffplug.spotless' version '6.19.0'//code format
   id 'com.github.spotbugs' version '5.0.14' // code check, working on byte code
   id 'de.undercouch.download' version '5.4.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
@@ -90,7 +90,7 @@ dependencies {
   implementation 'com.couchbase.client:java-client:3.4.6'
   runtimeOnly 'org.postgresql:postgresql:42.6.0' // postgresql jdbc driver required during runtime
 
-  implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
+  implementation 'commons-io:commons-io:2.12.0' // I/O functionalities
   implementation 'org.apache.commons:commons-compress:1.23.0' // I/O functionalities
   implementation 'org.apache.commons:commons-lang3:3.12.0'
 }
