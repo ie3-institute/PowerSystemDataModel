@@ -60,4 +60,28 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
       assert autoTap
     }
   }
+  def "A Transformer3WInputFactory should throw an IllegalArgumentException if nodeB is greater than nodeA or nodeC is greater than nodeB"() {
+    given: "a system participant input type factory and model data"
+    def inputFactory = new Transformer3WInputFactory()
+    Map<String, String> parameter = [
+      "uuid"           : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id"             : "TestID",
+      "paralleldevices": "2",
+      "tappos"         : "3",
+      "autotap"        : "true"
+    ]
+    def inputClass = Transformer3WInput
+    def nodeInputA = GridTestData.nodeC
+    def nodeInputB = GridTestData.nodeB
+    def nodeInputC = GridTestData.nodeA
+    def typeInput = Mock(Transformer3WTypeInput)
+
+    when:
+    Optional<Transformer3WInput> input = inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
+
+    then:
+    def e = thrown(IllegalArgumentException)
+    e.message == "NodeA must be greater than nodeB and nodeB must be greater than nodeC"
+  }
 }
+

@@ -69,7 +69,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
         autoTap,
         false);
     if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
-        && nodeC
+        || nodeC
             .getVoltLvl()
             .getNominalVoltage()
             .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
@@ -137,7 +137,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             nodeA.getVoltLvl(),
             nodeA.getSubnet()));
     if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
-        && nodeC
+        || nodeC
             .getVoltLvl()
             .getNominalVoltage()
             .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
@@ -172,7 +172,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       boolean autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
-        && nodeC
+        || nodeC
             .getVoltLvl()
             .getNominalVoltage()
             .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
@@ -225,7 +225,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       NodeInput internalNode) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
-        && nodeC
+        || nodeC
             .getVoltLvl()
             .getNominalVoltage()
             .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
