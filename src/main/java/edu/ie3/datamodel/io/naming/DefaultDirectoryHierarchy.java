@@ -98,7 +98,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
   }
 
   /**
-   * Checks, if the structure beneath {@link #baseDirectory} is okay.
+   * Checks, if the structure beneath {@link #projectDirectory} is okay.
    *
    * @throws FileException if not
    */
@@ -140,7 +140,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
   }
 
   /**
-   * Checks the elements, that are further available underneath the {@link this#baseDirectory}. If
+   * Checks the elements, that are further available underneath the {@link #projectDirectory}. If
    * there is a directory, that is neither mandatory, nor optional, raise an Exception.
    *
    * @throws FileException if there is an unexpected directory
@@ -195,7 +195,9 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
    * Gives the {@link #baseDirectory}).
    *
    * @return An Option to the base directory as a string
+   * @deprecated Use {@link edu.ie3.datamodel.io.connectors.CsvFileConnector} instead
    */
+  @Deprecated(since = "3.0", forRemoval = true)
   @Override
   public Optional<String> getBaseDirectory() {
     return Optional.of(this.baseDirectory.toString());
