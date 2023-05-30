@@ -10,9 +10,7 @@ import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.ConnectorInput;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.utils.ContainerUtils;
@@ -96,7 +94,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             transformer -> {
               checkNodeAvailability(transformer, nodes);
-              checkNodeVoltageSide(transformer);
+              checkNodeVoltageSide2W(transformer);
               ConnectorValidationUtils.check(transformer);
             });
 
@@ -106,7 +104,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             transformer -> {
               checkNodeAvailability(transformer, nodes);
-              checkNodeVoltageSide(transformer);
+              checkNodeVoltageSide3W(transformer);
               ConnectorValidationUtils.check(transformer);
             });
 
@@ -294,17 +292,42 @@ public class GridContainerValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Checks, if nodeA of the {@link ConnectorInput} is on the hv-side of the transformer
+   * Checks, if nodeA of the {@link Transformer2WInput} is on the hv-side of the transformer
    *
-   * @param connector Connector to examine
+   * @param transformer Connector to examine
    */
-  private static void checkNodeVoltageSide(ConnectorInput connector) {
-    if (connector
+  private static void checkNodeVoltageSide2W(Transformer2WInput transformer) {
+    if (transformer
             .getNodeB()
             .getVoltLvl()
             .getNominalVoltage()
-            .compareTo(connector.getNodeA().getVoltLvl().getNominalVoltage())
-        > 0) throw getWrongVoltageSideException(connector);
+            .compareTo(transformer.getNodeA().getVoltLvl().getNominalVoltage())
+        > 0)
+      throw new IllegalArgumentException("nodeA is expected to be at the higher voltage side");
+  }
+
+  /**
+   * Checks, if nodeA is greater than nodeB and nodeB is greater than nodeC of the {@link
+   * Transformer3WInput}
+   *
+   * @param transformer Connector to examine
+   */
+  private static void checkNodeVoltageSide3W(Transformer3WInput transformer) {
+    if (transformer
+                .getNodeA()
+                .getVoltLvl()
+                .getNominalVoltage()
+                .compareTo(transformer.getNodeB().getVoltLvl().getNominalVoltage())
+            > 0
+        && transformer
+                .getNodeB()
+                .getVoltLvl()
+                .getNominalVoltage()
+                .compareTo(transformer.getNodeC().getVoltLvl().getNominalVoltage())
+            > 0) {
+      throw new IllegalArgumentException(
+          "nodeA must be greater than nodeB and nodeB must be greater than nodeC");
+    }
   }
 
   /**
@@ -358,20 +381,5 @@ public class GridContainerValidationUtils extends ValidationUtils {
             + " "
             + input
             + " is connected to a node that is not in the set of nodes.");
-  }
-
-  /**
-   * Builds an exception, that announces that the nodes of a transformer are located at the wrong
-   * voltage side
-   *
-   * @param input Input model
-   * @return Exception for the wrong voltage side
-   */
-  private static InvalidGridException getWrongVoltageSideException(AssetInput input) {
-    return new InvalidGridException(
-        input.getClass().getSimpleName()
-            + "The nodes of transformer"
-            + input
-            + " are located at the wrong voltage side");
   }
 }
