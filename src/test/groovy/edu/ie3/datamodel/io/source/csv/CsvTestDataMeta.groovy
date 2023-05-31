@@ -15,21 +15,21 @@ import java.nio.file.Paths
  */
 trait CsvTestDataMeta {
 
-  static Path timeSeriesFolderPath = getResourceAbs("_timeseries")
-  static Path graphicsFolderPath = getResourceAbs("_graphics")
-  static Path typeFolderPath = getResourceAbs("_types")
-  static Path participantsFolderPath =  getResourceAbs("_participants")
-  static Path resultEntitiesFolderPath = getResourceAbs("_results")
-  static Path thermalFolderPath = getResourceAbs("_thermal")
-  static Path coordinatesIconFolderPath = getResourceAbs("_coordinates/icon")
-  static Path coordinatesCosmoFolderPath = getResourceAbs("_coordinates/cosmo")
-  static Path weatherCosmoFolderPath = getResourceAbs("_weather/cosmo")
-  static Path weatherIconFolderPath = getResourceAbs("_weather/icon")
-  static Path jointGridFolderPath = getResourceAbs("_joint_grid")
+  static Path timeSeriesFolderPath = CsvTestDataMeta.getResourceAbs("_timeseries")
+  static Path graphicsFolderPath = CsvTestDataMeta.getResourceAbs("_graphics")
+  static Path typeFolderPath = CsvTestDataMeta.getResourceAbs("_types")
+  static Path participantsFolderPath =  CsvTestDataMeta.getResourceAbs("_participants")
+  static Path resultEntitiesFolderPath = CsvTestDataMeta.getResourceAbs("_results")
+  static Path thermalFolderPath = CsvTestDataMeta.getResourceAbs("_thermal")
+  static Path coordinatesIconFolderPath = CsvTestDataMeta.getResourceAbs("_coordinates/icon")
+  static Path coordinatesCosmoFolderPath = CsvTestDataMeta.getResourceAbs("_coordinates/cosmo")
+  static Path weatherCosmoFolderPath = CsvTestDataMeta.getResourceAbs("_weather/cosmo")
+  static Path weatherIconFolderPath = CsvTestDataMeta.getResourceAbs("_weather/icon")
+  static Path jointGridFolderPath = CsvTestDataMeta.getResourceAbs("_joint_grid")
 
-  static Path gridDefaultFolderPath = getResourceAbs("_grid/default")
-  static Path gridMalformedFolderPath = getResourceAbs("_grid/malformed")
-  static Path gridEmptyFolderPath = getResourceAbs("_grid/empty")
+  static Path gridDefaultFolderPath = CsvTestDataMeta.getResourceAbs("_grid/default")
+  static Path gridMalformedFolderPath = CsvTestDataMeta.getResourceAbs("_grid/malformed")
+  static Path gridEmptyFolderPath = CsvTestDataMeta.getResourceAbs("_grid/empty")
 
   static String csvSep = ","
   static FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
