@@ -10,8 +10,6 @@ import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.nio.file.Path
-
 class CsvTimeSeriesMappingSourceIT extends Specification implements CsvTestDataMeta {
   @Shared
   TimeSeriesMappingSource source

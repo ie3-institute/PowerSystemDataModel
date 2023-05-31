@@ -70,7 +70,6 @@ import tech.units.indriya.quantity.Quantities
 
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.time.ZonedDateTime
 
 class FileNamingStrategyTest extends Specification {
@@ -193,8 +192,8 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     modelClass       || expectedPath
-    NodeGraphicInput || Paths.get("test_grid", "input", "graphics")
-    LineGraphicInput || Paths.get("test_grid", "input", "graphics")
+    NodeGraphicInput || Path.of("test_grid", "input", "graphics")
+    LineGraphicInput || Path.of("test_grid", "input", "graphics")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffix should return valid directory path for load profile time series"() {
@@ -211,7 +210,7 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     clazz            || expected
-    LoadProfileInput || Paths.get("test_grid", "input", "global")
+    LoadProfileInput || Path.of("test_grid", "input", "global")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and should return valid directory path for individual time series"() {
@@ -228,7 +227,7 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     clazz                || expected
-    IndividualTimeSeries || Paths.get("test_grid", "input", "participants", "time_series")
+    IndividualTimeSeries || Path.of("test_grid", "input", "participants", "time_series")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file paths for all result models"() {
@@ -244,24 +243,24 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     modelClass               || expectedPath
-    LoadResult               || Paths.get("test_grid", "results", "participants", "load_res")
-    FixedFeedInResult        || Paths.get("test_grid", "results", "participants", "fixed_feed_in_res")
-    BmResult                 || Paths.get("test_grid", "results", "participants", "bm_res")
-    PvResult                 || Paths.get("test_grid", "results", "participants", "pv_res")
-    ChpResult                || Paths.get("test_grid", "results", "participants", "chp_res")
-    WecResult                || Paths.get("test_grid", "results", "participants", "wec_res")
-    StorageResult            || Paths.get("test_grid", "results", "participants", "storage_res")
-    EvcsResult               || Paths.get("test_grid", "results", "participants", "evcs_res")
-    EvResult                 || Paths.get("test_grid", "results", "participants", "ev_res")
-    EmResult                 || Paths.get("test_grid", "results", "participants", "em_res")
-    FlexOptionsResult        || Paths.get("test_grid", "results", "participants", "flex_options_res")
-    Transformer2WResult      || Paths.get("test_grid", "results", "grid", "transformer_2_w_res")
-    Transformer3WResult      || Paths.get("test_grid", "results", "grid", "transformer_3_w_res")
-    LineResult               || Paths.get("test_grid", "results", "grid", "line_res")
-    SwitchResult             || Paths.get("test_grid", "results", "grid", "switch_res")
-    NodeResult               || Paths.get("test_grid", "results", "grid", "node_res")
-    CylindricalStorageResult || Paths.get("test_grid", "results", "thermal", "cylindrical_storage_res")
-    ThermalHouseResult       || Paths.get("test_grid", "results", "thermal", "thermal_house_res")
+    LoadResult               || Path.of("test_grid", "results", "participants", "load_res")
+    FixedFeedInResult        || Path.of("test_grid", "results", "participants", "fixed_feed_in_res")
+    BmResult                 || Path.of("test_grid", "results", "participants", "bm_res")
+    PvResult                 || Path.of("test_grid", "results", "participants", "pv_res")
+    ChpResult                || Path.of("test_grid", "results", "participants", "chp_res")
+    WecResult                || Path.of("test_grid", "results", "participants", "wec_res")
+    StorageResult            || Path.of("test_grid", "results", "participants", "storage_res")
+    EvcsResult               || Path.of("test_grid", "results", "participants", "evcs_res")
+    EvResult                 || Path.of("test_grid", "results", "participants", "ev_res")
+    EmResult                 || Path.of("test_grid", "results", "participants", "em_res")
+    FlexOptionsResult        || Path.of("test_grid", "results", "participants", "flex_options_res")
+    Transformer2WResult      || Path.of("test_grid", "results", "grid", "transformer_2_w_res")
+    Transformer3WResult      || Path.of("test_grid", "results", "grid", "transformer_3_w_res")
+    LineResult               || Path.of("test_grid", "results", "grid", "line_res")
+    SwitchResult             || Path.of("test_grid", "results", "grid", "switch_res")
+    NodeResult               || Path.of("test_grid", "results", "grid", "node_res")
+    CylindricalStorageResult || Path.of("test_grid", "results", "thermal", "cylindrical_storage_res")
+    ThermalHouseResult       || Path.of("test_grid", "results", "thermal", "thermal_house_res")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file paths for all other input assets models"() {
@@ -277,14 +276,14 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     modelClass              || expectedPath
-    LineInput               || Paths.get("test_grid", "input", "grid", "line_input")
-    SwitchInput             || Paths.get("test_grid", "input", "grid", "switch_input")
-    NodeInput               || Paths.get("test_grid", "input", "grid", "node_input")
-    MeasurementUnitInput    || Paths.get("test_grid", "input", "grid", "measurement_unit_input")
-    Transformer2WInput      || Paths.get("test_grid", "input", "grid", "transformer_2_w_input")
-    Transformer3WInput      || Paths.get("test_grid", "input", "grid", "transformer_3_w_input")
-    CylindricalStorageInput || Paths.get("test_grid", "input", "thermal", "cylindrical_storage_input")
-    ThermalHouseInput       || Paths.get("test_grid", "input", "thermal", "thermal_house_input")
+    LineInput               || Path.of("test_grid", "input", "grid", "line_input")
+    SwitchInput             || Path.of("test_grid", "input", "grid", "switch_input")
+    NodeInput               || Path.of("test_grid", "input", "grid", "node_input")
+    MeasurementUnitInput    || Path.of("test_grid", "input", "grid", "measurement_unit_input")
+    Transformer2WInput      || Path.of("test_grid", "input", "grid", "transformer_2_w_input")
+    Transformer3WInput      || Path.of("test_grid", "input", "grid", "transformer_3_w_input")
+    CylindricalStorageInput || Path.of("test_grid", "input", "thermal", "cylindrical_storage_input")
+    ThermalHouseInput       || Path.of("test_grid", "input", "thermal", "thermal_house_input")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file paths for all system input assets models"() {
@@ -300,16 +299,16 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     modelClass              || expectedPath
-    FixedFeedInInput        || Paths.get("test_grid", "input", "participants", "fixed_feed_in_input")
-    PvInput                 || Paths.get("test_grid", "input", "participants", "pv_input")
-    WecInput                || Paths.get("test_grid", "input", "participants", "wec_input")
-    ChpInput                || Paths.get("test_grid", "input", "participants", "chp_input")
-    BmInput                 || Paths.get("test_grid", "input", "participants", "bm_input")
-    EvInput                 || Paths.get("test_grid", "input", "participants", "ev_input")
-    LoadInput               || Paths.get("test_grid", "input", "participants", "load_input")
-    StorageInput            || Paths.get("test_grid", "input", "participants", "storage_input")
-    HpInput                 || Paths.get("test_grid", "input", "participants", "hp_input")
-    EvcsInput               || Paths.get("test_grid", "input", "participants", "evcs_input")
+    FixedFeedInInput        || Path.of("test_grid", "input", "participants", "fixed_feed_in_input")
+    PvInput                 || Path.of("test_grid", "input", "participants", "pv_input")
+    WecInput                || Path.of("test_grid", "input", "participants", "wec_input")
+    ChpInput                || Path.of("test_grid", "input", "participants", "chp_input")
+    BmInput                 || Path.of("test_grid", "input", "participants", "bm_input")
+    EvInput                 || Path.of("test_grid", "input", "participants", "ev_input")
+    LoadInput               || Path.of("test_grid", "input", "participants", "load_input")
+    StorageInput            || Path.of("test_grid", "input", "participants", "storage_input")
+    HpInput                 || Path.of("test_grid", "input", "participants", "hp_input")
+    EvcsInput               || Path.of("test_grid", "input", "participants", "evcs_input")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file paths for all input types models"() {
@@ -325,15 +324,15 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     modelClass             || expectedPath
-    BmTypeInput            || Paths.get("test_grid", "input", "global", "bm_type_input")
-    ChpTypeInput           || Paths.get("test_grid", "input", "global", "chp_type_input")
-    EvTypeInput            || Paths.get("test_grid", "input", "global", "ev_type_input")
-    HpTypeInput            || Paths.get("test_grid", "input", "global", "hp_type_input")
-    LineTypeInput          || Paths.get("test_grid", "input", "global", "line_type_input")
-    StorageTypeInput       || Paths.get("test_grid", "input", "global", "storage_type_input")
-    Transformer2WTypeInput || Paths.get("test_grid", "input", "global", "transformer_2_w_type_input")
-    Transformer3WTypeInput || Paths.get("test_grid", "input", "global", "transformer_3_w_type_input")
-    WecTypeInput           || Paths.get("test_grid", "input", "global", "wec_type_input")
+    BmTypeInput            || Path.of("test_grid", "input", "global", "bm_type_input")
+    ChpTypeInput           || Path.of("test_grid", "input", "global", "chp_type_input")
+    EvTypeInput            || Path.of("test_grid", "input", "global", "ev_type_input")
+    HpTypeInput            || Path.of("test_grid", "input", "global", "hp_type_input")
+    LineTypeInput          || Path.of("test_grid", "input", "global", "line_type_input")
+    StorageTypeInput       || Path.of("test_grid", "input", "global", "storage_type_input")
+    Transformer2WTypeInput || Path.of("test_grid", "input", "global", "transformer_2_w_type_input")
+    Transformer3WTypeInput || Path.of("test_grid", "input", "global", "transformer_3_w_type_input")
+    WecTypeInput           || Path.of("test_grid", "input", "global", "wec_type_input")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory path for a Load Parameter Model"() {
@@ -349,7 +348,7 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     modelClass           || expectedPath
-    RandomLoadParameters || Paths.get("test_grid", "input", "global")
+    RandomLoadParameters || Path.of("test_grid", "input", "global")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file path for a Load Parameter Model"() {
@@ -365,7 +364,7 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     modelClass           || expectedPath
-    RandomLoadParameters || Paths.get("test_grid", "input", "global", "random_load_parameters_input")
+    RandomLoadParameters || Path.of("test_grid", "input", "global", "random_load_parameters_input")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file paths for a graphic input Model"() {
@@ -381,8 +380,8 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     modelClass       || expectedPath
-    NodeGraphicInput || Paths.get("test_grid", "input", "graphics", "node_graphic_input")
-    LineGraphicInput || Paths.get("test_grid", "input", "graphics", "line_graphic_input")
+    NodeGraphicInput || Path.of("test_grid", "input", "graphics", "node_graphic_input")
+    LineGraphicInput || Path.of("test_grid", "input", "graphics", "line_graphic_input")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffix should return valid file path for individual time series"() {
@@ -404,7 +403,7 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     clazz                | uuid                                                    || expectedFilePath
-    IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || Paths.get("test_grid", "input", "participants", "time_series", "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+    IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || Path.of("test_grid", "input", "participants", "time_series", "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and with pre- or suffix should return valid file path for individual time series"() {
@@ -426,7 +425,7 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     clazz                | uuid                                                    || expectedFileName
-    IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || Paths.get("test_grid", "input", "participants", "time_series", "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz")
+    IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || Path.of("test_grid", "input", "participants", "time_series", "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffix should return valid file path for load profile time series"() {
@@ -445,7 +444,7 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     clazz            | uuid                                                    | type                       || expectedFileName
-    LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || Paths.get("test_grid", "input", "global", "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304")
+    LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || Path.of("test_grid", "input", "global", "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory path for time series mapping"() {
@@ -457,7 +456,7 @@ class FileNamingStrategyTest extends Specification {
 
     then:
     res.present
-    res.get() == Paths.get("test_grid", "input", "participants", "time_series")
+    res.get() == Path.of("test_grid", "input", "participants", "time_series")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file path for time series mapping"() {
@@ -469,7 +468,7 @@ class FileNamingStrategyTest extends Specification {
 
     then:
     res.present
-    res.get() == Paths.get("test_grid", "input", "participants", "time_series", "time_series_mapping")
+    res.get() == Path.of("test_grid", "input", "participants", "time_series", "time_series_mapping")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and pre- and suffix should return valid file path for time series mapping"() {
@@ -481,7 +480,7 @@ class FileNamingStrategyTest extends Specification {
 
     then:
     res.present
-    res.get() == Paths.get("test_grid", "input", "participants", "time_series", "prefix_time_series_mapping_suffix")
+    res.get() == Path.of("test_grid", "input", "participants", "time_series", "prefix_time_series_mapping_suffix")
   }
 
 
@@ -827,7 +826,7 @@ class FileNamingStrategyTest extends Specification {
   def "Trying to extract time series meta information throws an Exception, if it is provided a malformed string"() {
     given:
     def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-    def path = Paths.get("/bla/foo")
+    def path = Path.of("/bla/foo")
 
     when:
     fns.timeSeriesMetaInformation(path)
@@ -840,7 +839,7 @@ class FileNamingStrategyTest extends Specification {
   def "The FileNamingStrategy extracts correct meta information from a valid time series file name"() {
     given:
     def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-    def path = Paths.get(pathString)
+    def path = Path.of(pathString)
 
     when:
     def metaInformation = fns.timeSeriesMetaInformation(path)
@@ -866,7 +865,7 @@ class FileNamingStrategyTest extends Specification {
   def "The FileNamingStrategy extracts correct meta information from a valid time series file name with pre- and suffix"() {
     given:
     def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
-    def path = Paths.get(pathString)
+    def path = Path.of(pathString)
 
     when:
     def metaInformation = fns.timeSeriesMetaInformation(path)
@@ -930,7 +929,7 @@ class FileNamingStrategyTest extends Specification {
   def "The FileNamingStrategy throw an IllegalArgumentException, if the column scheme is malformed."() {
     given:
     def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-    def path = Paths.get("/bla/foo/its_whoops_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv")
+    def path = Path.of("/bla/foo/its_whoops_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv")
 
     when:
     fns.timeSeriesMetaInformation(path)
@@ -943,7 +942,7 @@ class FileNamingStrategyTest extends Specification {
   def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
     given:
     def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-    def path = Paths.get("/bla/foo/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304.csv")
+    def path = Path.of("/bla/foo/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304.csv")
 
     when:
     def metaInformation = fns.timeSeriesMetaInformation(path)
@@ -959,7 +958,7 @@ class FileNamingStrategyTest extends Specification {
   def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name with pre- and suffix"() {
     given:
     def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
-    def path = Paths.get("/bla/foo/prefix_lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304_suffix.csv")
+    def path = Path.of("/bla/foo/prefix_lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304_suffix.csv")
 
     when:
     def metaInformation = fns.timeSeriesMetaInformation(path)
