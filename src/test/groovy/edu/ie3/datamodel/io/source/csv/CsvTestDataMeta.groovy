@@ -8,33 +8,32 @@ package edu.ie3.datamodel.io.source.csv
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 
 import java.nio.file.Path
-import java.nio.file.Paths
 
 /**
  * Holds meta data for csv tests e.g. file and folder paths
  */
 trait CsvTestDataMeta {
 
-  static Path timeSeriesFolderPath = CsvTestDataMeta.getResourceAbs("_timeseries")
-  static Path graphicsFolderPath = CsvTestDataMeta.getResourceAbs("_graphics")
-  static Path typeFolderPath = CsvTestDataMeta.getResourceAbs("_types")
-  static Path participantsFolderPath =  CsvTestDataMeta.getResourceAbs("_participants")
-  static Path resultEntitiesFolderPath = CsvTestDataMeta.getResourceAbs("_results")
-  static Path thermalFolderPath = CsvTestDataMeta.getResourceAbs("_thermal")
-  static Path coordinatesIconFolderPath = CsvTestDataMeta.getResourceAbs("_coordinates/icon")
-  static Path coordinatesCosmoFolderPath = CsvTestDataMeta.getResourceAbs("_coordinates/cosmo")
-  static Path weatherCosmoFolderPath = CsvTestDataMeta.getResourceAbs("_weather/cosmo")
-  static Path weatherIconFolderPath = CsvTestDataMeta.getResourceAbs("_weather/icon")
-  static Path jointGridFolderPath = CsvTestDataMeta.getResourceAbs("_joint_grid")
+  Path timeSeriesFolderPath = getResourceAbs("_timeseries")
+  Path graphicsFolderPath = getResourceAbs("_graphics")
+  Path typeFolderPath = getResourceAbs("_types")
+  Path participantsFolderPath =  getResourceAbs("_participants")
+  Path resultEntitiesFolderPath = getResourceAbs("_results")
+  Path thermalFolderPath = getResourceAbs("_thermal")
+  Path coordinatesIconFolderPath = getResourceAbs("_coordinates/icon")
+  Path coordinatesCosmoFolderPath = getResourceAbs("_coordinates/cosmo")
+  Path weatherCosmoFolderPath = getResourceAbs("_weather/cosmo")
+  Path weatherIconFolderPath = getResourceAbs("_weather/icon")
+  Path jointGridFolderPath = getResourceAbs("_joint_grid")
 
-  static Path gridDefaultFolderPath = CsvTestDataMeta.getResourceAbs("_grid/default")
-  static Path gridMalformedFolderPath = CsvTestDataMeta.getResourceAbs("_grid/malformed")
-  static Path gridEmptyFolderPath = CsvTestDataMeta.getResourceAbs("_grid/empty")
+  Path gridDefaultFolderPath = getResourceAbs("_grid/default")
+  Path gridMalformedFolderPath = getResourceAbs("_grid/malformed")
+  Path gridEmptyFolderPath = getResourceAbs("_grid/empty")
 
-  static String csvSep = ","
-  static FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+  String csvSep = ","
+  FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 
-  static Path getResourceAbs(String directory) {
-    return Path.of(CsvTestDataMeta.getResource(directory).toURI())
+  Path getResourceAbs(String directory) {
+    return Path.of(getClass().getResource(directory).toURI())
   }
 }
