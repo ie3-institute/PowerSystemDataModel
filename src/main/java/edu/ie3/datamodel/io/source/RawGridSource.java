@@ -419,26 +419,6 @@ public class RawGridSource extends EntitySource {
         .collect(Collectors.toSet());
   }
 
-  /*
-  public Set<Transformer3WInput> buildTransformer3WEntities(
-      Transformer3WInputFactory transformer3WInputFactory,
-      Collection<NodeInput> nodes,
-      Collection<Transformer3WTypeInput> transformer3WTypeInputs,
-      Collection<OperatorInput> operators,
-      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
-    return buildTransformer3WEntityData(
-            buildTypedConnectorEntityData(
-                buildUntypedConnectorInputEntityData(
-                    assetInputEntityDataStream(Transformer3WInput.class, operators), nodes),
-                transformer3WTypeInputs),
-            nodes)
-        .filter(isPresentCollectIfNot(Transformer3WInput.class, nonBuildEntities))
-        .map(dataOpt -> dataOpt.flatMap(transformer3WInputFactory::get))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-  }
-   */
-
   public Set<Transformer3WInput> buildTransformer3WEntities(
       Transformer3WInputFactory transformer3WInputFactory,
       Collection<NodeInput> nodes,

@@ -34,7 +34,7 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
         ["id": "106583", "latgeo": "39.624249", "latrot": "-10", "longgeo": "1.5174021", "longrot": "-6.625", "tid": "4"])
 
     when:
-    def actualStream = source.extractSourceData()
+    def actualStream = source.buildStreamWithFieldsToAttributesMap()
 
     then:
     actualStream.collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))

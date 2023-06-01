@@ -35,7 +35,7 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
         )
 
     when:
-    def actualStream = source.extractSourceData()
+    def actualStream = source.buildStreamWithFieldsToAttributesMap()
 
     then:
     actualStream.collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))

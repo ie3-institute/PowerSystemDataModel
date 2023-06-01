@@ -61,38 +61,6 @@ public class CsvDataSource implements DataSource {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }
 
-  /*
-  public Stream<Map<String, String>> getIdCoordinateSourceData(IdCoordinateFactory factory) {
-    try (BufferedReader reader = connector.initIdCoordinateReader()) {
-      final String[] headline = parseCsvRow(reader.readLine(), csvSep);
-
-      // by default try-with-resources closes the reader directly when we leave this method (which
-      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
-      // As we still want to consume the data at other places, we start a new stream instead of
-      // returning the original one
-      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
-
-      Function<Map<String, String>, String> idExtractor =
-          fieldToValues -> fieldToValues.get(factory.getIdField());
-      Set<Map<String, String>> withDistinctCoordinateId =
-          distinctRowsWithLog(allRows, idExtractor, "coordinate id mapping", "coordinate id");
-      Function<Map<String, String>, String> coordinateExtractor =
-          fieldToValues ->
-              fieldToValues
-                  .get(factory.getLatField())
-                  .concat(fieldToValues.get(factory.getLonField()));
-      return distinctRowsWithLog(
-          withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
-          .parallelStream();
-    } catch (IOException e) {
-      log.error("Cannot read the file for coordinate id to coordinate mapping.", e);
-    }
-
-    return Stream.empty();
-  }
-
-   */
-
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**

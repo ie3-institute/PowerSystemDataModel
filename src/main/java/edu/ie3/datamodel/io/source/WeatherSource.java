@@ -127,7 +127,6 @@ public abstract class WeatherSource {
               fieldsToAttributes.remove("tid");
               Optional<TimeBasedWeatherValueData> data =
                   toTimeBasedWeatherValueData(fieldsToAttributes);
-              // if (data.isEmpty()) return Optional.empty();
               return factory.get(data.get());
             })
         .flatMap(Optional::stream)

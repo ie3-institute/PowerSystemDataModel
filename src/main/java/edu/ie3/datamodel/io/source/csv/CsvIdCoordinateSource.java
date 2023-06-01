@@ -34,6 +34,8 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvIdCoordinateSource.class);
 
+  private static final String coordinateIdMapping = "coordinate id mapping";
+
   /** Mapping in both ways (id -> coordinate) and (coordinate -> id) have to be unique */
   private final Map<Integer, Point> idToCoordinate;
 
@@ -76,38 +78,6 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
     Map<V, K> inv = new HashMap<>();
     for (Map.Entry<K, V> entry : map.entrySet()) inv.put(entry.getValue(), entry.getKey());
     return inv;
-  }
-
-  public Stream<Map<String, String>> extractSourceData() {
-    try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
-      final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
-
-      // by default try-with-resources closes the reader directly when we leave this method (which
-      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
-      // As we still want to consume the data at other places, we start a new stream instead of
-      // returning the original one
-      Collection<Map<String, String>> allRows =
-          dataSource.csvRowFieldValueMapping(reader, headline);
-
-      Function<Map<String, String>, String> idExtractor =
-          fieldToValues -> fieldToValues.get(factory.getIdField());
-      Set<Map<String, String>> withDistinctCoordinateId =
-          dataSource.distinctRowsWithLog(
-              allRows, idExtractor, "coordinate id mapping", "coordinate id");
-      Function<Map<String, String>, String> coordinateExtractor =
-          fieldToValues ->
-              fieldToValues
-                  .get(factory.getLatField())
-                  .concat(fieldToValues.get(factory.getLonField()));
-      return dataSource
-          .distinctRowsWithLog(
-              withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
-          .parallelStream();
-    } catch (IOException e) {
-      log.error("Cannot read the file for coordinate id to coordinate mapping.", e);
-    }
-
-    return Stream.empty();
   }
 
   @Override
@@ -182,7 +152,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    *
    * @return Stream with mappings from field identifiers to attributes
    */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap() {
+  public Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap() {
     try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
@@ -197,7 +167,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
           fieldToValues -> fieldToValues.get(factory.getIdField());
       Set<Map<String, String>> withDistinctCoordinateId =
           dataSource.distinctRowsWithLog(
-              allRows, idExtractor, "coordinate id mapping", "coordinate id");
+              allRows, idExtractor, coordinateIdMapping, "coordinate id");
       Function<Map<String, String>, String> coordinateExtractor =
           fieldToValues ->
               fieldToValues
@@ -205,7 +175,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
                   .concat(fieldToValues.get(factory.getLonField()));
       return dataSource
           .distinctRowsWithLog(
-              withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
+              withDistinctCoordinateId, coordinateExtractor, coordinateIdMapping, "coordinate")
           .parallelStream();
     } catch (IOException e) {
       log.error("Cannot read the file for coordinate id to coordinate mapping.", e);

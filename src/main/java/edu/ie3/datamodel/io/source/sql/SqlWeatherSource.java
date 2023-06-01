@@ -24,7 +24,7 @@ import org.locationtech.jts.geom.Point;
 
 /** SQL source for weather data */
 public class SqlWeatherSource extends WeatherSource {
-  // T = TimeBasedValue<WeatherValue>
+
   private final SqlDataSource dataSource;
 
   private static final String WHERE = " WHERE ";

@@ -24,7 +24,7 @@ public class SqlDataSource implements DataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
-  private final String errorSQL = "Error during execution of query {}";
+  private static final String errorSQL = "Error during execution of query {}";
 
   protected final SqlConnector connector;
   protected final DatabaseNamingStrategy databaseNamingStrategy;
