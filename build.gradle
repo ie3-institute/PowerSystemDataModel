@@ -9,7 +9,7 @@ plugins {
   id 'de.undercouch.download' version '5.4.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "4.1.0.3113" // sonarqube
+  id "org.sonarqube" version "4.2.0.3129" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
@@ -18,7 +18,7 @@ ext {
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
   groovyBinaryVersion = "4.0.12"
-  testcontainersVersion = '1.18.2'
+  testcontainersVersion = '1.18.3'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
