@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source.sql;
 
+import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
+
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory;
@@ -23,7 +25,7 @@ import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
 /** SQL source for coordinate data */
-public class SqlIdCoordinateSource extends IdCoordinateSource {
+public class SqlIdCoordinateSource implements IdCoordinateSource {
   private static final String WHERE = " WHERE ";
 
   /**
@@ -38,9 +40,9 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   private final String queryForBoundingBox;
   private final String queryForNearestPoints;
 
-  SqlDataSource dataSource;
+  private final SqlDataSource dataSource;
 
-  SqlIdCoordinateFactory factory;
+  private final SqlIdCoordinateFactory factory;
 
   public SqlIdCoordinateSource(
       SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource) {
@@ -52,7 +54,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
         dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
 
     // setup queries
-    this.basicQuery = dataSource.createBaseQueryString(dataSource.schemaName, coordinateTableName);
+    this.basicQuery = createBaseQueryString(dataSource.schemaName, coordinateTableName);
     this.queryForPoint = createQueryForPoint(dbIdColumnName);
     this.queryForPoints = createQueryForPoints(dbIdColumnName);
     this.queryForId = createQueryForId(dbPointColumnName);

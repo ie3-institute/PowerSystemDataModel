@@ -17,7 +17,7 @@ import tech.units.indriya.ComparableQuantity;
  * latitude and longitude values, which is especially needed for data source that don't offer
  * combined primary or foreign keys.
  */
-public abstract class IdCoordinateSource {
+public interface IdCoordinateSource {
 
   /**
    * Get the matching coordinate for the given ID
@@ -25,7 +25,7 @@ public abstract class IdCoordinateSource {
    * @param id the ID to look up
    * @return matching coordinate
    */
-  public abstract Optional<Point> getCoordinate(int id);
+  Optional<Point> getCoordinate(int id);
 
   /**
    * Get the matching coordinates for the given IDs
@@ -33,7 +33,7 @@ public abstract class IdCoordinateSource {
    * @param ids the IDs to look up
    * @return the matching coordinates
    */
-  public abstract Collection<Point> getCoordinates(int... ids);
+  Collection<Point> getCoordinates(int... ids);
 
   /**
    * Get the ID for the coordinate point
@@ -41,14 +41,24 @@ public abstract class IdCoordinateSource {
    * @param coordinate the coordinate to look up
    * @return the matching ID
    */
-  public abstract Optional<Integer> getId(Point coordinate);
+  Optional<Integer> getId(Point coordinate);
 
   /**
    * Returns all the coordinates of this source
    *
    * @return all available coordinates
    */
-  public abstract Collection<Point> getAllCoordinates();
+  Collection<Point> getAllCoordinates();
+
+  /**
+   * Returns the nearest n coordinate points. If n is greater than four, this method will try to
+   * return the corner points of the bounding box.
+   *
+   * @param coordinate the coordinate to look up
+   * @param n number of searched points
+   * @return the nearest n coordinates or all coordinates if n is less than all available points
+   */
+  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n);
 
   /**
    * Returns the closest n coordinate points to the given coordinate, that are inside a given
@@ -58,11 +68,10 @@ public abstract class IdCoordinateSource {
    *
    * @param coordinate the coordinate to look up the nearest neighbours for
    * @param n how many neighbours to look up
+   * @param distance to the borders of the envelope that contains the coordinates
    * @return the nearest n coordinates to the given point
    */
-  public abstract List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n);
-
-  public abstract List<CoordinateDistance> getClosestCoordinates(
+  List<CoordinateDistance> getClosestCoordinates(
       Point coordinate, int n, ComparableQuantity<Length> distance);
 
   /**
@@ -75,7 +84,7 @@ public abstract class IdCoordinateSource {
    * @param coordinates the collection of points
    * @return a list of the nearest n coordinates to the given point or an empty list
    */
-  public List<CoordinateDistance> calculateCoordinateDistances(
+  default List<CoordinateDistance> calculateCoordinateDistances(
       Point coordinate, int n, Collection<Point> coordinates) {
     if (coordinates != null && !coordinates.isEmpty()) {
       SortedSet<CoordinateDistance> sortedDistances =
@@ -102,7 +111,7 @@ public abstract class IdCoordinateSource {
    * @param numberOfPoints that should be returned
    * @return list of distances
    */
-  public List<CoordinateDistance> restrictToBoundingBox(
+  default List<CoordinateDistance> restrictToBoundingBox(
       Point coordinate, Collection<CoordinateDistance> distances, int numberOfPoints) {
     boolean topLeft = false;
     boolean topRight = false;

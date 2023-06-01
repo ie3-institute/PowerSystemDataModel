@@ -18,9 +18,12 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -78,6 +81,47 @@ public class CsvWeatherSource extends WeatherSource {
     super(idCoordinateSource, weatherFactory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     coordinateToTimeSeries = getWeatherTimeSeries();
+  }
+
+  // -=-
+
+  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+      ClosedInterval<ZonedDateTime> timeInterval) {
+    return trimMapToInterval(coordinateToTimeSeries, timeInterval);
+  }
+
+  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
+    Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
+        coordinateToTimeSeries.entrySet().stream()
+            .filter(entry -> coordinates.contains(entry.getKey()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    return trimMapToInterval(filteredMap, timeInterval);
+  }
+
+  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+    IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
+    if (timeSeries == null) return Optional.empty();
+    return timeSeries.getTimeBasedValue(date);
+  }
+
+  /**
+   * Trims all time series in a map to the given time interval
+   *
+   * @param map the map to trim the time series value of
+   * @param timeInterval the interval to trim the data to
+   * @return a map with trimmed time series
+   */
+  private Map<Point, IndividualTimeSeries<WeatherValue>> trimMapToInterval(
+      Map<Point, IndividualTimeSeries<WeatherValue>> map,
+      ClosedInterval<ZonedDateTime> timeInterval) {
+    // decided against parallel mode here as it likely wouldn't pay off as the expected coordinate
+    // count is too low
+    return map.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> TimeSeriesUtils.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

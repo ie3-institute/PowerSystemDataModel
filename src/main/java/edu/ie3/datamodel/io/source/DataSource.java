@@ -9,7 +9,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.*;
 import java.util.stream.Stream;
 
-/** Interface that include functionalities for data sources */
+/** Interface that include functionalities for data sources in the database table, csv file etc. */
 public interface DataSource {
 
   /** Creates a stream of maps that represent the rows in the database */

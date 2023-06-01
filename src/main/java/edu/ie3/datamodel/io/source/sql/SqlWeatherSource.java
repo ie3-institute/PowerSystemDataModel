@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.source.sql;
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -75,24 +74,20 @@ public class SqlWeatherSource extends WeatherSource {
             schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
   }
 
-  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
-        dataSource
-            .executeQuery(
+        buildTimeBasedValues(
+            weatherFactory,
+            dataSource.executeQuery(
                 queryTimeInterval,
                 ps -> {
                   ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
-                })
-            .map(this::createEntity)
-            .flatMap(Optional::stream)
-            .toList();
+                }));
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
-  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     Set<Integer> coordinateIds =
@@ -106,8 +101,9 @@ public class SqlWeatherSource extends WeatherSource {
     }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
-        dataSource
-            .executeQuery(
+        buildTimeBasedValues(
+            weatherFactory,
+            dataSource.executeQuery(
                 queryTimeIntervalAndCoordinates,
                 ps -> {
                   Array coordinateIdArr =
@@ -115,10 +111,7 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setArray(1, coordinateIdArr);
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
                   ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
-                })
-            .map(this::createEntity)
-            .flatMap(Optional::stream)
-            .toList();
+                }));
 
     return mapWeatherValuesToPoints(timeBasedValues);
   }
@@ -132,16 +125,14 @@ public class SqlWeatherSource extends WeatherSource {
     }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
-        dataSource
-            .executeQuery(
+        buildTimeBasedValues(
+            weatherFactory,
+            dataSource.executeQuery(
                 queryTimeAndCoordinate,
                 ps -> {
                   ps.setInt(1, coordinateId.get());
                   ps.setTimestamp(2, Timestamp.from(date.toInstant()));
-                })
-            .map(this::createEntity)
-            .flatMap(Optional::stream)
-            .toList();
+                }));
 
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
@@ -213,18 +204,5 @@ public class SqlWeatherSource extends WeatherSource {
         + "= ANY (?) AND "
         + timeColumnName
         + " BETWEEN ? AND ?;";
-  }
-
-  /**
-   * Converts a field to value map into a TimeBasedValue, removes the "tid"
-   *
-   * @param fieldMap the field to value map for one TimeBasedValue
-   * @return an Optional of that TimeBasedValue
-   */
-  protected Optional<TimeBasedValue<WeatherValue>> createEntity(Map<String, String> fieldMap) {
-    fieldMap.remove("tid");
-    Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
-    if (data.isEmpty()) return Optional.empty();
-    return weatherFactory.get(data.get());
   }
 }

@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /** Source for all available time series with their {@link UUID} and {@link ColumnScheme} */
-public abstract class TimeSeriesMetaInformationSource {
+public interface TimeSeriesMetaInformationSource {
 
   /**
    * Get a mapping from time series {@link UUID} to its meta information {@link
@@ -20,7 +20,7 @@ public abstract class TimeSeriesMetaInformationSource {
    *
    * @return that mapping
    */
-  public abstract Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation();
+  Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation();
 
   /**
    * Get an option on the given time series meta information
@@ -28,6 +28,5 @@ public abstract class TimeSeriesMetaInformationSource {
    * @param timeSeriesUuid Unique identifier of the time series in question
    * @return An Option on the meta information
    */
-  public abstract Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
-      UUID timeSeriesUuid);
+  Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(UUID timeSeriesUuid);
 }

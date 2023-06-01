@@ -20,7 +20,7 @@ import java.util.Optional;
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
  */
-public abstract class TimeSeriesSource<V extends Value> {
+public interface TimeSeriesSource<V extends Value> {
 
   /**
    * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
@@ -31,7 +31,7 @@ public abstract class TimeSeriesSource<V extends Value> {
    * @param factory Factory to process the "flat" information
    * @return Optional simple time based value
    */
-  public Optional<TimeBasedValue<V>> buildTimeBasedValue(
+  default Optional<TimeBasedValue<V>> buildTimeBasedValue(
       Map<String, String> fieldToValues,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
@@ -40,10 +40,10 @@ public abstract class TimeSeriesSource<V extends Value> {
     return factory.get(factoryData);
   }
 
-  public abstract IndividualTimeSeries<V> getTimeSeries();
+  IndividualTimeSeries<V> getTimeSeries();
 
-  public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
+  IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
       throws SourceException;
 
-  public abstract Optional<V> getValue(ZonedDateTime time) throws SourceException;
+  Optional<V> getValue(ZonedDateTime time) throws SourceException;
 }

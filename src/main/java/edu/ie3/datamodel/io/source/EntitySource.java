@@ -15,7 +15,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -30,8 +30,6 @@ public abstract class EntitySource {
 
   // field names
   protected static final String OPERATOR = "operator";
-  protected static final String NODE_A = "nodeA";
-  protected static final String NODE_B = "nodeB";
   protected static final String NODE = "node";
   protected static final String TYPE = "type";
   protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
@@ -57,7 +55,7 @@ public abstract class EntitySource {
    */
   protected <T extends UniqueEntity> Predicate<Optional<T>> isPresentCollectIfNot(
       Class<? extends UniqueEntity> entityClass,
-      ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
+      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
     return o -> {
       if (o.isPresent()) {
         return true;
@@ -86,7 +84,7 @@ public abstract class EntitySource {
         missingElementsString);
   }
 
-  protected String saveMapGet(Map<String, String> map, String key, String mapName) {
+  protected String safeMapGet(Map<String, String> map, String key, String mapName) {
     return Optional.ofNullable(map.get(key))
         .orElse(
             "Key '"
@@ -138,9 +136,9 @@ public abstract class EntitySource {
     if (assetType.isEmpty()) {
       logSkippingWarning(
           skippedClassString,
-          saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-          saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-          TYPE + ": " + saveMapGet(fieldsToAttributes, TYPE, FIELDS_TO_VALUES_MAP));
+          safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
+          safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
+          TYPE + ": " + safeMapGet(fieldsToAttributes, TYPE, FIELDS_TO_VALUES_MAP));
     }
     return assetType;
   }
@@ -304,7 +302,7 @@ public abstract class EntitySource {
             operators,
             operatorUuid,
             entityClass.getSimpleName(),
-            saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
+            safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
 
     // remove fields that are passed as objects to constructor
     fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
@@ -362,7 +360,7 @@ public abstract class EntitySource {
       EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
-      ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
+      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
     return nodeAssetEntityStream(entityClass, factory, nodes, operators)
         .filter(isPresentCollectIfNot(entityClass, nonBuildEntities))
         .flatMap(Optional::stream)

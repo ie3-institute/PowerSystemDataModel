@@ -20,7 +20,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** SQL implementation for retrieving {@link TimeSeriesMetaInformationSource} from the SQL scheme */
-public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
+public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInformationSource {
 
   private static final TimeSeriesMetaInformationFactory mappingFactory =
       new TimeSeriesMetaInformationFactory();
@@ -79,16 +79,12 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
     return String.join("\nUNION\n", selectQueries) + ";";
   }
 
+  @Override
   public Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation() {
     return this.mapping;
   }
 
-  /**
-   * Get an option on the given time series meta information
-   *
-   * @param timeSeriesUuid Unique identifier of the time series in question
-   * @return An Option on the meta information
-   */
+  @Override
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
       UUID timeSeriesUuid) {
     return Optional.ofNullable(this.mapping.get(timeSeriesUuid));

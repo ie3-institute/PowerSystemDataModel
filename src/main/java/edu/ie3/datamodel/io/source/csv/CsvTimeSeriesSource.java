@@ -24,7 +24,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** Source that is capable of providing information around time series from csv files. */
-public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
+public class CsvTimeSeriesSource<V extends Value> implements TimeSeriesSource<V> {
   private final IndividualTimeSeries<V> timeSeries;
   private final CsvDataSource dataSource;
 
@@ -70,6 +70,17 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         valueFactory);
   }
 
+  /**
+   * Initializes a new CsvTimeSeriesSource
+   *
+   * @param csvSep the separator string for csv columns
+   * @param folderPath path to the folder holding the time series files
+   * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
+   * @param timeSeriesUuid Unique identifier of the time series
+   * @param filePath Path of the file, excluding extension and being relative to {@code folderPath}
+   * @param valueClass Class of the value
+   * @param factory The factory implementation to use for actual parsing of input data
+   */
   public CsvTimeSeriesSource(
       String csvSep,
       String folderPath,

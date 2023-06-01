@@ -30,7 +30,7 @@ import tech.units.indriya.unit.Units;
  * Implementation of {@link IdCoordinateSource} to read the mapping between coordinate id and actual
  * coordinate from csv file and build a mapping from it.
  */
-public class CsvIdCoordinateSource extends IdCoordinateSource {
+public class CsvIdCoordinateSource implements IdCoordinateSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvIdCoordinateSource.class);
 
@@ -39,8 +39,8 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
 
   private final Map<Point, Integer> coordinateToId;
 
-  CsvDataSource dataSource;
-  IdCoordinateFactory factory;
+  private final CsvDataSource dataSource;
+  private final IdCoordinateFactory factory;
 
   public CsvIdCoordinateSource(IdCoordinateFactory factory, CsvDataSource dataSource) {
     this.factory = factory;
@@ -79,7 +79,35 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
   }
 
   public Stream<Map<String, String>> extractSourceData() {
-    return dataSource.getIdCoordinateSourceData(factory);
+    try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
+      final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
+
+      // by default try-with-resources closes the reader directly when we leave this method (which
+      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
+      // As we still want to consume the data at other places, we start a new stream instead of
+      // returning the original one
+      Collection<Map<String, String>> allRows =
+          dataSource.csvRowFieldValueMapping(reader, headline);
+
+      Function<Map<String, String>, String> idExtractor =
+          fieldToValues -> fieldToValues.get(factory.getIdField());
+      Set<Map<String, String>> withDistinctCoordinateId =
+          dataSource.distinctRowsWithLog(
+              allRows, idExtractor, "coordinate id mapping", "coordinate id");
+      Function<Map<String, String>, String> coordinateExtractor =
+          fieldToValues ->
+              fieldToValues
+                  .get(factory.getLatField())
+                  .concat(fieldToValues.get(factory.getLonField()));
+      return dataSource
+          .distinctRowsWithLog(
+              withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
+          .parallelStream();
+    } catch (IOException e) {
+      log.error("Cannot read the file for coordinate id to coordinate mapping.", e);
+    }
+
+    return Stream.empty();
   }
 
   @Override

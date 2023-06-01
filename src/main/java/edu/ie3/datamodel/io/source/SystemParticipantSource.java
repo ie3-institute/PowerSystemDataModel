@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -596,21 +597,21 @@ public class SystemParticipantSource extends EntitySource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  public <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
+  private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
       Set<T> buildSystemParticipantEntities(
           Class<T> entityClass,
           EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
           Collection<NodeInput> nodes,
           Collection<OperatorInput> operators,
           Collection<A> types,
-          ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
+          ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
     return typedSystemParticipantEntityStream(entityClass, factory, nodes, operators, types)
         .filter(isPresentCollectIfNot(entityClass, nonBuildEntities))
         .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
-  public <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
+  private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
       Set<T> buildTypedSystemParticipantEntities(
           Class<T> entityClass,
           EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
@@ -622,7 +623,7 @@ public class SystemParticipantSource extends EntitySource {
         .collect(Collectors.toSet());
   }
 
-  public Set<ChpInput> buildChpInputEntities(
+  private Set<ChpInput> buildChpInputEntities(
       ChpInputFactory factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
@@ -634,21 +635,21 @@ public class SystemParticipantSource extends EntitySource {
         .collect(Collectors.toSet());
   }
 
-  public Set<ChpInput> buildChpInputEntities(
+  private Set<ChpInput> buildChpInputEntities(
       ChpInputFactory factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
       Collection<ChpTypeInput> chpTypes,
       Collection<ThermalBusInput> thermalBuses,
       Collection<ThermalStorageInput> thermalStorages,
-      ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
+      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
     return chpInputStream(factory, nodes, operators, chpTypes, thermalBuses, thermalStorages)
         .filter(isPresentCollectIfNot(ChpInput.class, nonBuildEntities))
         .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
-  public Set<HpInput> buildHpInputEntities(
+  private Set<HpInput> buildHpInputEntities(
       HpInputFactory factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
@@ -659,13 +660,13 @@ public class SystemParticipantSource extends EntitySource {
         .collect(Collectors.toSet());
   }
 
-  public Set<HpInput> buildHpInputEntities(
+  private Set<HpInput> buildHpInputEntities(
       HpInputFactory factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
       Collection<HpTypeInput> types,
       Collection<ThermalBusInput> thermalBuses,
-      ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
+      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
     return hpInputStream(factory, nodes, operators, types, thermalBuses)
         .filter(isPresentCollectIfNot(ChpInput.class, nonBuildEntities))
         .flatMap(Optional::stream)
@@ -894,9 +895,9 @@ public class SystemParticipantSource extends EntitySource {
     if (hpInputEntityDataOpt.isEmpty()) {
       logSkippingWarning(
           typedEntityData.getTargetClass().getSimpleName(),
-          saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-          saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-          "thermalBus: " + saveMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
+          safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
+          safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
+          "thermalBus: " + safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
     }
 
     return hpInputEntityDataOpt;
@@ -941,17 +942,17 @@ public class SystemParticipantSource extends EntitySource {
       StringBuilder sB = new StringBuilder();
       if (!thermalStorage.isPresent()) {
         sB.append("thermalStorage: ")
-            .append(saveMapGet(fieldsToAttributes, THERMAL_STORAGE, FIELDS_TO_VALUES_MAP));
+            .append(safeMapGet(fieldsToAttributes, THERMAL_STORAGE, FIELDS_TO_VALUES_MAP));
       }
       if (!thermalBus.isPresent()) {
         sB.append("\nthermalBus: ")
-            .append(saveMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
+            .append(safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
       }
 
       logSkippingWarning(
           typedEntityData.getTargetClass().getSimpleName(),
-          saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-          saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
+          safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
+          safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
           sB.toString());
 
       return Optional.empty();

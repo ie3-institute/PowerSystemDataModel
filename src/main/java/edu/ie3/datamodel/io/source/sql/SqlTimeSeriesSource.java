@@ -5,9 +5,10 @@
 */
 package edu.ie3.datamodel.io.source.sql;
 
+import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
+
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
@@ -24,7 +25,7 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
+public class SqlTimeSeriesSource<V extends Value> implements TimeSeriesSource<V> {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlTimeSeriesSource.class);
   private final SqlDataSource dataSource;
@@ -180,15 +181,6 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  @Override
-  public Optional<TimeBasedValue<V>> buildTimeBasedValue(
-      Map<String, String> fieldToValues,
-      Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
-    SimpleTimeBasedValueData<V> factoryData =
-        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return factory.get(factoryData);
-  }
 
   /**
    * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
@@ -199,26 +191,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    */
   protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
-    SimpleTimeBasedValueData<V> factoryData =
-        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return valueFactory.get(factoryData);
-  }
-
-  /**
-   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
-   * need any additional information.
-   *
-   * @param fieldToValues Mapping from field id to values
-   * @param valueClass Class of the desired underlying value
-   * @param factory Factory to process the "flat" information
-   * @return Optional simple time based value
-   */
-  public Optional<TimeBasedValue<V>> buildTimeBasedValueReduced(
-      Map<String, String> fieldToValues,
-      Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
-    fieldToValues.remove("timeSeries");
-    return buildTimeBasedValue(fieldToValues, valueClass, factory);
+    return buildTimeBasedValue(fieldToValues, valueClass, valueFactory);
   }
 
   /**
@@ -230,7 +203,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @return the query string
    */
   private String createQueryFull(String schemaName, String tableName) {
-    return dataSource.createBaseQueryString(schemaName, tableName)
+    return createBaseQueryString(schemaName, tableName)
         + WHERE
         + TIME_SERIES
         + " = '"
@@ -250,7 +223,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    */
   private String createQueryForTimeInterval(
       String schemaName, String tableName, String timeColumnName) {
-    return dataSource.createBaseQueryString(schemaName, tableName)
+    return createBaseQueryString(schemaName, tableName)
         + WHERE
         + TIME_SERIES
         + " = '"
@@ -271,7 +244,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @return the query string
    */
   private String createQueryForTime(String schemaName, String tableName, String timeColumnName) {
-    return dataSource.createBaseQueryString(schemaName, tableName)
+    return createBaseQueryString(schemaName, tableName)
         + WHERE
         + TIME_SERIES
         + " = '"

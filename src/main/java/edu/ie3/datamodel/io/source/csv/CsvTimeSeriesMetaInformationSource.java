@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * CSV implementation for retrieving {@link TimeSeriesMetaInformationSource} from input directory
  * structures
  */
-public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
+public class CsvTimeSeriesMetaInformationSource implements TimeSeriesMetaInformationSource {
 
   protected final CsvDataSource dataSource;
 

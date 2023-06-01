@@ -11,11 +11,11 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,46 +41,16 @@ public abstract class WeatherSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
-    return trimMapToInterval(coordinateToTimeSeries, timeInterval);
-  }
+  public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+      ClosedInterval<ZonedDateTime> timeInterval);
 
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
-    Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
-        coordinateToTimeSeries.entrySet().stream()
-            .filter(entry -> coordinates.contains(entry.getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    return trimMapToInterval(filteredMap, timeInterval);
-  }
+  public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates);
 
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
-    IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
-    if (timeSeries == null) return Optional.empty();
-    return timeSeries.getTimeBasedValue(date);
-  }
+  public abstract Optional<TimeBasedValue<WeatherValue>> getWeather(
+      ZonedDateTime date, Point coordinate);
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-  /**
-   * Trims all time series in a map to the given time interval
-   *
-   * @param map the map to trim the time series value of
-   * @param timeInterval the interval to trim the data to
-   * @return a map with trimmed time series
-   */
-  private Map<Point, IndividualTimeSeries<WeatherValue>> trimMapToInterval(
-      Map<Point, IndividualTimeSeries<WeatherValue>> map,
-      ClosedInterval<ZonedDateTime> timeInterval) {
-    // decided against parallel mode here as it likely wouldn't pay off as the expected coordinate
-    // count is too low
-    return map.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> TimeSeriesUtils.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
-  }
 
   /**
    * Merge two individual time series into a new time series with the UUID of the first parameter
@@ -140,16 +110,27 @@ public abstract class WeatherSource {
     return coordinateToTimeSeriesMap;
   }
 
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
   /**
-   * Converts a field to value map into a TimeBasedValue, removes the "tid"
+   * Converts a stream of fields to value map into a TimeBasedValue, removes the "tid"
    *
-   * @param fieldMap the field to value map for one TimeBasedValue
+   * @param factory TimeBasedWeatherValueFactory
+   * @param inputStream stream of fields to convert into TimeBasedValues's
    * @return an Optional of that TimeBasedValue
    */
-  protected Optional<TimeBasedValue<WeatherValue>> createEntity(Map<String, String> fieldMap) {
-    fieldMap.remove("tid");
-    Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
-    if (data.isEmpty()) return Optional.empty();
-    return weatherFactory.get(data.get());
+  public List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
+      TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream) {
+    return inputStream
+        .map(
+            fieldsToAttributes -> {
+              fieldsToAttributes.remove("tid");
+              Optional<TimeBasedWeatherValueData> data =
+                  toTimeBasedWeatherValueData(fieldsToAttributes);
+              // if (data.isEmpty()) return Optional.empty();
+              return factory.get(data.get());
+            })
+        .flatMap(Optional::stream)
+        .toList();
   }
 }

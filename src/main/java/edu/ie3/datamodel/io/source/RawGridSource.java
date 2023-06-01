@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,12 +32,9 @@ import java.util.stream.Stream;
 public class RawGridSource extends EntitySource {
 
   // field names
-  protected static final String OPERATOR = "operator";
   protected static final String NODE_A = "nodeA";
   protected static final String NODE_B = "nodeB";
-  protected static final String NODE = "node";
   protected static final String TYPE = "type";
-  protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
   // general fields
   TypeSource typeSource;
@@ -399,47 +397,47 @@ public class RawGridSource extends EntitySource {
         .collect(Collectors.toSet());
   }
 
-  public <T extends ConnectorInput, A extends AssetTypeInput>
-      Set<T> buildUntypedConnectorInputEntities(
-          Class<T> entityClass,
-          EntityFactory<T, ConnectorInputEntityData> factory,
-          Collection<NodeInput> nodes,
-          Collection<OperatorInput> operators,
-          ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
+  public <T extends ConnectorInput> Set<T> buildUntypedConnectorInputEntities(
+      Class<T> entityClass,
+      EntityFactory<T, ConnectorInputEntityData> factory,
+      Collection<NodeInput> nodes,
+      Collection<OperatorInput> operators,
+      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
     return untypedConnectorInputEntityStream(entityClass, factory, nodes, operators)
         .filter(isPresentCollectIfNot(entityClass, nonBuildEntities))
         .map(Optional::get)
         .collect(Collectors.toSet());
   }
 
-  public <T extends ConnectorInput, A extends AssetTypeInput>
-      Set<T> buildUntypedConnectorInputEntities(
-          Class<T> entityClass,
-          EntityFactory<T, ConnectorInputEntityData> factory,
-          Collection<NodeInput> nodes,
-          Collection<OperatorInput> operators) {
+  public <T extends ConnectorInput> Set<T> buildUntypedConnectorInputEntities(
+      Class<T> entityClass,
+      EntityFactory<T, ConnectorInputEntityData> factory,
+      Collection<NodeInput> nodes,
+      Collection<OperatorInput> operators) {
     return untypedConnectorInputEntityStream(entityClass, factory, nodes, operators)
         .map(Optional::get)
         .collect(Collectors.toSet());
   }
 
+  /*
   public Set<Transformer3WInput> buildTransformer3WEntities(
       Transformer3WInputFactory transformer3WInputFactory,
       Collection<NodeInput> nodes,
       Collection<Transformer3WTypeInput> transformer3WTypeInputs,
       Collection<OperatorInput> operators,
-      ConcurrentHashMap<Transformer3WInput, LongAdder> nonBuildEntities) {
+      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
     return buildTransformer3WEntityData(
             buildTypedConnectorEntityData(
                 buildUntypedConnectorInputEntityData(
                     assetInputEntityDataStream(Transformer3WInput.class, operators), nodes),
                 transformer3WTypeInputs),
             nodes)
-        // .filter(isPresentCollectIfNot(Transformer3WInput.class, nonBuildEntities))
+        .filter(isPresentCollectIfNot(Transformer3WInput.class, nonBuildEntities))
         .map(dataOpt -> dataOpt.flatMap(transformer3WInputFactory::get))
         .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
+   */
 
   public Set<Transformer3WInput> buildTransformer3WEntities(
       Transformer3WInputFactory transformer3WInputFactory,
@@ -463,7 +461,7 @@ public class RawGridSource extends EntitySource {
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
       Collection<A> types,
-      ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
+      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
     return typedEntityStream(entityClass, factory, nodes, operators, types)
         .filter(isPresentCollectIfNot(entityClass, nonBuildEntities))
         .flatMap(Optional::stream)
@@ -517,49 +515,6 @@ public class RawGridSource extends EntitySource {
         .map(
             assetInputEntityData ->
                 buildUntypedConnectorInputEntityData(assetInputEntityData, nodes));
-  }
-
-  /**
-   * Finds the required asset type and if present, adds it to the untyped entity data
-   *
-   * @param untypedEntityData Untyped entity data to enrich
-   * @param availableTypes Yet available asset types
-   * @param <T> Type of the asset type
-   * @return Option to enhanced data
-   */
-  protected <T extends AssetTypeInput> Optional<TypedConnectorInputEntityData<T>> findAndAddType(
-      ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
-    Optional<T> assetTypeOption =
-        getAssetType(
-            availableTypes,
-            untypedEntityData.getFieldsToValues(),
-            untypedEntityData.getClass().getSimpleName());
-    return assetTypeOption.map(assetType -> addTypeToEntityData(untypedEntityData, assetType));
-  }
-
-  /**
-   * Enriches the given, untyped entity data with the provided asset type
-   *
-   * @param untypedEntityData Untyped entity data to enrich
-   * @param assetType Asset type to add
-   * @param <T> Type of the asset type
-   * @return The enriched entity data
-   */
-  protected <T extends AssetTypeInput> TypedConnectorInputEntityData<T> addTypeToEntityData(
-      ConnectorInputEntityData untypedEntityData, T assetType) {
-    Map<String, String> fieldsToAttributes = untypedEntityData.getFieldsToValues();
-
-    // remove fields that are passed as objects to constructor
-    fieldsToAttributes.keySet().remove(TYPE);
-
-    // build result object
-    return new TypedConnectorInputEntityData<>(
-        fieldsToAttributes,
-        untypedEntityData.getTargetClass(),
-        untypedEntityData.getOperatorInput(),
-        untypedEntityData.getNodeA(),
-        untypedEntityData.getNodeB(),
-        assetType);
   }
 
   /**
@@ -647,6 +602,25 @@ public class RawGridSource extends EntitySource {
   }
 
   /**
+   * Enriches the Stream of options on {@link Transformer3WInputEntityData} with the information of
+   * the internal node
+   *
+   * @param typedConnectorEntityDataStream Stream of already typed input entity data
+   * @param nodes Yet available nodes
+   * @return A stream of options on enriched data
+   */
+  protected Stream<Optional<Transformer3WInputEntityData>> buildTransformer3WEntityData(
+      Stream<Optional<TypedConnectorInputEntityData<Transformer3WTypeInput>>>
+          typedConnectorEntityDataStream,
+      Collection<NodeInput> nodes) {
+    return typedConnectorEntityDataStream
+        .parallel()
+        .map(
+            typedEntityDataOpt ->
+                typedEntityDataOpt.flatMap(typeEntityData -> addThirdNode(typeEntityData, nodes)));
+  }
+
+  /**
    * Enriches the third node to the already typed entity data of a three winding transformer. If no
    * matching node can be found, return an empty Optional.
    *
@@ -688,24 +662,5 @@ public class RawGridSource extends EntitySource {
             typeEntityData.getNodeB(),
             nodeC.get(),
             typeEntityData.getType()));
-  }
-
-  /**
-   * Enriches the Stream of options on {@link Transformer3WInputEntityData} with the information of
-   * the internal node
-   *
-   * @param typedConnectorEntityDataStream Stream of already typed input entity data
-   * @param nodes Yet available nodes
-   * @return A stream of options on enriched data
-   */
-  protected Stream<Optional<Transformer3WInputEntityData>> buildTransformer3WEntityData(
-      Stream<Optional<TypedConnectorInputEntityData<Transformer3WTypeInput>>>
-          typedConnectorEntityDataStream,
-      Collection<NodeInput> nodes) {
-    return typedConnectorEntityDataStream
-        .parallel()
-        .map(
-            typedEntityDataOpt ->
-                typedEntityDataOpt.flatMap(typeEntityData -> addThirdNode(typeEntityData, nodes)));
   }
 }

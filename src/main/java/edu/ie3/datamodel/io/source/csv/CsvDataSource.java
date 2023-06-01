@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -62,6 +61,7 @@ public class CsvDataSource implements DataSource {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }
 
+  /*
   public Stream<Map<String, String>> getIdCoordinateSourceData(IdCoordinateFactory factory) {
     try (BufferedReader reader = connector.initIdCoordinateReader()) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
@@ -90,6 +90,8 @@ public class CsvDataSource implements DataSource {
 
     return Stream.empty();
   }
+
+   */
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
