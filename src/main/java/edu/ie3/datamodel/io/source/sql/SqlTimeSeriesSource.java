@@ -169,9 +169,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  /**
-   * Creates a set of TimeBasedValues from database
-   */
+  /** Creates a set of TimeBasedValues from database */
   private Set<TimeBasedValue<V>> getTimeBasedValueSet(
       String query, SqlDataSource.AddParams addParams) {
     return dataSource
