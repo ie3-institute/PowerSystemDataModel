@@ -20,30 +20,33 @@ import java.util.Optional;
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
  */
-public interface TimeSeriesSource<V extends Value> {
+public abstract class TimeSeriesSource<V extends Value> {
+
+  protected Class<V> valueClass;
+  protected TimeBasedSimpleValueFactory<V> valueFactory;
+
+  protected TimeSeriesSource(Class<V> valueClass, TimeBasedSimpleValueFactory<V> factory) {
+    this.valueFactory = factory;
+    this.valueClass = valueClass;
+  }
 
   /**
    * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
    * need any additional information.
    *
    * @param fieldToValues Mapping from field id to values
-   * @param valueClass Class of the desired underlying value
-   * @param factory Factory to process the "flat" information
    * @return Optional simple time based value
    */
-  default Optional<TimeBasedValue<V>> buildTimeBasedValue(
-      Map<String, String> fieldToValues,
-      Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
+  protected Optional<TimeBasedValue<V>> createTimeBasedValue(Map<String, String> fieldToValues) {
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return factory.get(factoryData);
+    return valueFactory.get(factoryData);
   }
 
-  IndividualTimeSeries<V> getTimeSeries();
+  public abstract IndividualTimeSeries<V> getTimeSeries();
 
-  IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
+  public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
       throws SourceException;
 
-  Optional<V> getValue(ZonedDateTime time) throws SourceException;
+  public abstract Optional<V> getValue(ZonedDateTime time) throws SourceException;
 }

@@ -61,6 +61,12 @@ public class CsvDataSource implements DataSource {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }
 
+  // -=-=-
+
+  public BufferedReader createReader(String filePath) throws FileNotFoundException {
+    return connector.initReader(filePath);
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
@@ -247,7 +253,7 @@ public class CsvDataSource implements DataSource {
     };
   }
 
-  protected String saveMapGet(Map<String, String> map, String key, String mapName) {
+  protected String safeMapGet(Map<String, String> map, String key, String mapName) {
     return Optional.ofNullable(map.get(key))
         .orElse(
             "Key '"

@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -33,33 +32,7 @@ import org.locationtech.jts.geom.Point;
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
 public class CsvWeatherSource extends WeatherSource {
 
-  protected CsvDataSource dataSource;
-
-  /**
-   * Initializes a CsvWeatherSource with a {@link IdCoordinateSource} instance and immediately
-   * imports weather data, which will be kept for the lifetime of this source
-   *
-   * @param csvSep the separator string for csv columns
-   * @param folderPath path to the folder holding the time series files
-   * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
-   * @param weatherFactory factory to transfer field to value mapping into actual java object
-   *     instances
-   * @param coordinateFactory factory to build coordinate id to coordinate mapping
-   */
-  public CsvWeatherSource(
-      String csvSep,
-      String folderPath,
-      FileNamingStrategy fileNamingStrategy,
-      TimeBasedWeatherValueFactory weatherFactory,
-      IdCoordinateFactory coordinateFactory) {
-    this(
-        csvSep,
-        folderPath,
-        fileNamingStrategy,
-        new CsvIdCoordinateSource(
-            coordinateFactory, new CsvDataSource(csvSep, folderPath, fileNamingStrategy)),
-        weatherFactory);
-  }
+  private final CsvDataSource dataSource;
 
   /**
    * Initializes a CsvWeatherSource and immediately imports weather data, which will be kept for the
@@ -83,13 +56,15 @@ public class CsvWeatherSource extends WeatherSource {
     coordinateToTimeSeries = getWeatherTimeSeries();
   }
 
-  // -=-
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     return trimMapToInterval(coordinateToTimeSeries, timeInterval);
   }
 
+  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
@@ -99,11 +74,14 @@ public class CsvWeatherSource extends WeatherSource {
     return trimMapToInterval(filteredMap, timeInterval);
   }
 
+  @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
     if (timeSeries == null) return Optional.empty();
     return timeSeries.getTimeBasedValue(date);
   }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Trims all time series in a map to the given time interval
@@ -126,7 +104,7 @@ public class CsvWeatherSource extends WeatherSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
+  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
     /* Get only weather time series meta information */
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
         dataSource
@@ -180,7 +158,7 @@ public class CsvWeatherSource extends WeatherSource {
     return weatherTimeSeries;
   }
 
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+  private Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);

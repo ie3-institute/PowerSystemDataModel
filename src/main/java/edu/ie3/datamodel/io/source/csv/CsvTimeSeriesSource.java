@@ -24,7 +24,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** Source that is capable of providing information around time series from csv files. */
-public class CsvTimeSeriesSource<V extends Value> implements TimeSeriesSource<V> {
+public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final IndividualTimeSeries<V> timeSeries;
   private final CsvDataSource dataSource;
 
@@ -89,15 +89,14 @@ public class CsvTimeSeriesSource<V extends Value> implements TimeSeriesSource<V>
       String filePath,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
+    super(valueClass, factory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
 
     /* Read in the full time series */
     try {
       this.timeSeries =
           buildIndividualTimeSeries(
-              timeSeriesUuid,
-              filePath,
-              fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory));
+              timeSeriesUuid, filePath, fieldToValue -> this.createTimeBasedValue(fieldToValue));
     } catch (SourceException e) {
       throw new IllegalArgumentException(
           "Unable to obtain time series with UUID '"
@@ -122,6 +121,8 @@ public class CsvTimeSeriesSource<V extends Value> implements TimeSeriesSource<V>
     return timeSeries.getValue(time);
   }
 
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
   /**
    * Attempts to read a time series with given unique identifier and file path. Single entries are
    * obtained entries with the help of {@code fieldToValueFunction}.
@@ -133,24 +134,28 @@ public class CsvTimeSeriesSource<V extends Value> implements TimeSeriesSource<V>
    * @throws SourceException If the file cannot be read properly
    * @return An option onto an individual time series
    */
-  private IndividualTimeSeries<V> buildIndividualTimeSeries(
+  protected IndividualTimeSeries<V> buildIndividualTimeSeries(
       UUID timeSeriesUuid,
       String filePath,
       Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
       throws SourceException {
     try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
-      Set<TimeBasedValue<V>> timeBasedValues =
-          dataSource
-              .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-              .map(fieldToValueFunction)
-              .flatMap(Optional::stream)
-              .collect(Collectors.toSet());
-
+      Set<TimeBasedValue<V>> timeBasedValues = getTimeBasedValueSet(fieldToValueFunction, reader);
       return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
     } catch (FileNotFoundException e) {
       throw new SourceException("Unable to find a file with path '" + filePath + "'.", e);
     } catch (IOException e) {
       throw new SourceException("Error during reading of file'" + filePath + "'.", e);
     }
+  }
+
+  private Set<TimeBasedValue<V>> getTimeBasedValueSet(
+      Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction,
+      BufferedReader reader) {
+    return dataSource
+        .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+        .map(fieldToValueFunction)
+        .flatMap(Optional::stream)
+        .collect(Collectors.toSet());
   }
 }

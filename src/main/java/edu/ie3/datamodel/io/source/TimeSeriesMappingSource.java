@@ -5,12 +5,15 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This interface describes basic function to handle mapping between models and their respective
@@ -18,9 +21,9 @@ import java.util.UUID;
  */
 public abstract class TimeSeriesMappingSource {
 
-  protected final TimeSeriesMappingFactory mappingFactory;
+  private final TimeSeriesMappingFactory mappingFactory;
 
-  protected TimeSeriesMappingSource() {
+  public TimeSeriesMappingSource() {
     this.mappingFactory = new TimeSeriesMappingFactory();
   }
 
@@ -29,7 +32,12 @@ public abstract class TimeSeriesMappingSource {
    *
    * @return That mapping
    */
-  public abstract Map<UUID, UUID> getMapping();
+  public Map<UUID, UUID> getMapping() {
+    return getMappingSourceData()
+        .map(this::createMappingEntry)
+        .flatMap(Optional::stream)
+        .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
+  }
 
   /**
    * Get a time series identifier to a given model identifier
@@ -40,6 +48,22 @@ public abstract class TimeSeriesMappingSource {
   public Optional<UUID> getTimeSeriesUuid(UUID modelIdentifier) {
     return Optional.ofNullable(getMapping().get(modelIdentifier));
   }
+
+  /**
+   * Extract a stream of maps from the database for the mapping
+   *
+   * @return Stream of maps
+   */
+  public abstract Stream<Map<String, String>> getMappingSourceData();
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  private Optional<MappingEntry> createMappingEntry(Map<String, String> fieldToValues) {
+    SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
+    return mappingFactory.get(entityData);
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /** Class to represent one entry within the participant to time series mapping */
   public static class MappingEntry extends InputEntity {

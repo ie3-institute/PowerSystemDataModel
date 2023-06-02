@@ -51,6 +51,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
     this.connector = connector;
   }
 
+  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     try (InfluxDB session = connector.getSession()) {
@@ -73,6 +74,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
     }
   }
 
+  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     if (coordinates == null) return getWeather(timeInterval);
@@ -99,6 +101,19 @@ public class InfluxDbWeatherSource extends WeatherSource {
     return coordinateToTimeSeries;
   }
 
+  @Override
+  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
+    if (coordinateId.isEmpty()) {
+      return Optional.empty();
+    }
+    try (InfluxDB session = connector.getSession()) {
+      String query = createQueryStringForCoordinateAndTime(date, coordinateId.get());
+      QueryResult queryResult = session.query(new Query(query));
+      return filterEmptyOptionals(optTimeBasedValueStream(queryResult)).findFirst();
+    }
+  }
+
   /**
    * Return the weather for the given time interval AND coordinate
    *
@@ -123,17 +138,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
     }
   }
 
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
-    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (coordinateId.isEmpty()) {
-      return Optional.empty();
-    }
-    try (InfluxDB session = connector.getSession()) {
-      String query = createQueryStringForCoordinateAndTime(date, coordinateId.get());
-      QueryResult queryResult = session.query(new Query(query));
-      return filterEmptyOptionals(optTimeBasedValueStream(queryResult)).findFirst();
-    }
-  }
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Parses an influxQL QueryResult and then transforms it into a Stream of optional

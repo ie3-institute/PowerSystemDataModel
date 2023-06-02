@@ -83,20 +83,6 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
         new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy()));
   }
 
-  protected Optional<CoordinateValue> createEntity(Map<String, String> fieldToValues) {
-    fieldToValues.remove("distance");
-
-    SimpleFactoryData simpleFactoryData = new SimpleFactoryData(fieldToValues, Pair.class);
-    Optional<Pair<Integer, Point>> pair = factory.get(simpleFactoryData);
-
-    if (pair.isEmpty()) {
-      return Optional.empty();
-    } else {
-      Pair<Integer, Point> data = pair.get();
-      return Optional.of(new CoordinateValue(data.getKey(), data.getValue()));
-    }
-  }
-
   @Override
   public Optional<Point> getCoordinate(int id) {
     List<CoordinateValue> values = executeQueryToList(queryForPoint, ps -> ps.setInt(1, id));
@@ -185,10 +171,27 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
     return calculateCoordinateDistances(coordinate, n, points);
   }
 
-  public List<CoordinateValue> executeQueryToList(String query, SqlDataSource.AddParams addParams) {
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  private Optional<CoordinateValue> createCoordinateValue(Map<String, String> fieldToValues) {
+    fieldToValues.remove("distance");
+
+    SimpleFactoryData simpleFactoryData = new SimpleFactoryData(fieldToValues, Pair.class);
+    Optional<Pair<Integer, Point>> pair = factory.get(simpleFactoryData);
+
+    if (pair.isEmpty()) {
+      return Optional.empty();
+    } else {
+      Pair<Integer, Point> data = pair.get();
+      return Optional.of(new CoordinateValue(data.getKey(), data.getValue()));
+    }
+  }
+
+  private List<CoordinateValue> executeQueryToList(
+      String query, SqlDataSource.AddParams addParams) {
     return dataSource
         .executeQuery(query, addParams)
-        .map(this::createEntity)
+        .map(this::createCoordinateValue)
         .flatMap(Optional::stream)
         .toList();
   }

@@ -96,6 +96,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
     this.timeStampPattern = timeStampPattern;
   }
 
+  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     logger.warn(
@@ -104,6 +105,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
     return getWeather(timeInterval, idCoordinateSource.getAllCoordinates());
   }
 
+  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
@@ -134,6 +136,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
     return coordinateToTimeSeries;
   }
 
+  @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {

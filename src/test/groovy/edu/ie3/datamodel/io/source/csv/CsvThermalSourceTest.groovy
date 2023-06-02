@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import edu.ie3.test.common.ThermalUnitInputTestData
-import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.Csv
 import spock.lang.Specification
 
 import java.util.stream.Collectors

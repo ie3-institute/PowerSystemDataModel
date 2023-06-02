@@ -35,8 +35,8 @@ import java.util.stream.Stream;
  */
 public class GraphicSource extends EntitySource {
   // general fields
-  TypeSource typeSource;
-  RawGridSource rawGridSource;
+  private final TypeSource typeSource;
+  private final RawGridSource rawGridSource;
 
   // factories
   private final LineGraphicInputFactory lineGraphicInputFactory;

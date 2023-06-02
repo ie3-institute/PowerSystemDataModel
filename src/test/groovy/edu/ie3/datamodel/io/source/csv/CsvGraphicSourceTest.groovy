@@ -14,7 +14,6 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.test.common.GridTestData as gtd
-import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.Csv
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import spock.lang.Specification

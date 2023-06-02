@@ -28,7 +28,7 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
   private final DatabaseNamingStrategy namingStrategy;
   private final Map<UUID, IndividualTimeSeriesMetaInformation> mapping;
 
-  protected SqlDataSource dataSource;
+  private final SqlDataSource dataSource;
 
   public SqlTimeSeriesMetaInformationSource(
       SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy) {
@@ -90,7 +90,7 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
     return Optional.ofNullable(this.mapping.get(timeSeriesUuid));
   }
 
-  protected Optional<IndividualTimeSeriesMetaInformation> createEntity(
+  private Optional<IndividualTimeSeriesMetaInformation> createEntity(
       Map<String, String> fieldToValues) {
     SimpleEntityData entityData =
         new SimpleEntityData(fieldToValues, IndividualTimeSeriesMetaInformation.class);

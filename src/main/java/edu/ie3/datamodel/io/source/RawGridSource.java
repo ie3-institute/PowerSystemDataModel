@@ -37,7 +37,7 @@ public class RawGridSource extends EntitySource {
   protected static final String TYPE = "type";
 
   // general fields
-  TypeSource typeSource;
+  private final TypeSource typeSource;
 
   // factories
   private final NodeInputFactory nodeInputFactory;

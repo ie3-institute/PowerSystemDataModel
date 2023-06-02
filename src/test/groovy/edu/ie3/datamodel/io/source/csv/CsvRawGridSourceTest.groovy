@@ -17,7 +17,6 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.GridTestData as rgtd
-import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.Csv
 import spock.lang.Shared
 import spock.lang.Specification
 

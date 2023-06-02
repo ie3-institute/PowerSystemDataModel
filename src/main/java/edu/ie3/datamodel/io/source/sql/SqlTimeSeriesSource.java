@@ -22,10 +22,11 @@ import edu.ie3.util.interval.ClosedInterval;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SqlTimeSeriesSource<V extends Value> implements TimeSeriesSource<V> {
+public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlTimeSeriesSource.class);
   private final SqlDataSource dataSource;
@@ -45,14 +46,12 @@ public class SqlTimeSeriesSource<V extends Value> implements TimeSeriesSource<V>
   private final String queryTimeInterval;
   private final String queryTime;
 
-  private final Class<V> valueClass;
-  private final TimeBasedSimpleValueFactory<V> valueFactory;
-
   public SqlTimeSeriesSource(
       SqlDataSource sqlDataSource,
       UUID timeSeriesUuid,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
+    super(valueClass, factory);
     this.dataSource = sqlDataSource;
 
     this.timeSeriesUuid = timeSeriesUuid;
@@ -142,45 +141,49 @@ public class SqlTimeSeriesSource<V extends Value> implements TimeSeriesSource<V>
 
   @Override
   public IndividualTimeSeries<V> getTimeSeries() {
-    List<TimeBasedValue<V>> timeBasedValues =
-        dataSource
-            .executeQuery(queryFull, ps -> {})
-            .map(this::createEntity)
-            .flatMap(Optional::stream)
-            .toList();
-    return new IndividualTimeSeries<>(timeSeriesUuid, new HashSet<>(timeBasedValues));
+    Set<TimeBasedValue<V>> timeBasedValues = getTimeBasedValueSet(queryFull, ps -> {});
+    return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
   }
 
   @Override
   public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
-    List<TimeBasedValue<V>> timeBasedValues =
-        dataSource
-            .executeQuery(
-                queryTimeInterval,
-                ps -> {
-                  ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
-                  ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
-                })
-            .map(this::createEntity)
-            .flatMap(Optional::stream)
-            .toList();
-    return new IndividualTimeSeries<>(timeSeriesUuid, new HashSet<>(timeBasedValues));
+    Set<TimeBasedValue<V>> timeBasedValues =
+        getTimeBasedValueSet(
+            queryTimeInterval,
+            ps -> {
+              ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
+              ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
+            });
+    return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
   }
 
+  @Override
   public Optional<V> getValue(ZonedDateTime time) {
-    List<TimeBasedValue<V>> timeBasedValues =
-        dataSource
-            .executeQuery(queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
-            .map(this::createEntity)
-            .flatMap(Optional::stream)
-            .toList();
+    Set<TimeBasedValue<V>> timeBasedValues =
+        getTimeBasedValueSet(queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())));
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
-    return Optional.of(timeBasedValues.get(0).getValue());
+    return Optional.of(timeBasedValues.stream().toList().get(0).getValue());
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  /**
+   * Creates a set of TimeBasedValues from database
+   *
+   * @param query query for sql data source
+   * @param addParams
+   * @return set of TimeBasedValues
+   */
+  private Set<TimeBasedValue<V>> getTimeBasedValueSet(
+      String query, SqlDataSource.AddParams addParams) {
+    return dataSource
+        .executeQuery(query, addParams)
+        .map(this::createEntity)
+        .flatMap(Optional::stream)
+        .collect(Collectors.toSet());
+  }
 
   /**
    * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
@@ -189,9 +192,9 @@ public class SqlTimeSeriesSource<V extends Value> implements TimeSeriesSource<V>
    * @param fieldToValues Mapping from field id to values
    * @return Optional simple time based value
    */
-  protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
+  private Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
-    return buildTimeBasedValue(fieldToValues, valueClass, valueFactory);
+    return createTimeBasedValue(fieldToValues);
   }
 
   /**

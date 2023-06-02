@@ -74,6 +74,7 @@ public class SqlWeatherSource extends WeatherSource {
             schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
   }
 
+  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
@@ -88,6 +89,7 @@ public class SqlWeatherSource extends WeatherSource {
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
+  @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     Set<Integer> coordinateIds =
@@ -139,6 +141,8 @@ public class SqlWeatherSource extends WeatherSource {
       log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0));
   }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Creates a base query to retrieve all entities in the given time frame with the following

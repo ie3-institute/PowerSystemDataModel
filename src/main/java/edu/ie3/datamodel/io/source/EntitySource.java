@@ -355,6 +355,8 @@ public abstract class EntitySource {
         .map(dataOpt -> dataOpt.flatMap(factory::get));
   }
 
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
   public <T extends AssetInput> Set<T> buildNodeAssetEntities(
       Class<T> entityClass,
       EntityFactory<T, NodeAssetInputEntityData> factory,

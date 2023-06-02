@@ -5,14 +5,8 @@
  */
 package edu.ie3.test.common
 
-import edu.ie3.datamodel.io.factory.timeseries.CosmoIdCoordinateFactory
-import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
-import edu.ie3.datamodel.io.source.csv.CsvDataSource
-
 import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
-import edu.ie3.datamodel.models.UniqueEntity
-import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
@@ -24,7 +18,7 @@ import java.util.stream.Stream
 
 abstract class WeatherTestData {
 
-  static final class DummyIdCoordinateSource extends IdCoordinateSource implements CsvTestDataMeta {
+  static final class DummyIdCoordinateSource implements CsvTestDataMeta, IdCoordinateSource {
 
     Optional<Point> getCoordinate(int id) {
       switch (id) {
