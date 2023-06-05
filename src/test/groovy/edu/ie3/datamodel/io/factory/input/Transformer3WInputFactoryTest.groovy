@@ -77,7 +77,7 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
     def typeInput = Mock(Transformer3WTypeInput)
 
     when:
-    Optional<Transformer3WInput> input = inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
+    inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
 
     then:
     def e = thrown(IllegalArgumentException)

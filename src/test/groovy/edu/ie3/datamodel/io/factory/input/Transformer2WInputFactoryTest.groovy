@@ -84,7 +84,7 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
     def typeInput = Mock(Transformer2WTypeInput)
 
     when:
-    Optional<Transformer2WInput> input = inputFactory.get(new TypedConnectorInputEntityData<Transformer2WTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+    inputFactory.get(new TypedConnectorInputEntityData<Transformer2WTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
     then:
     def e = thrown(IllegalArgumentException)
