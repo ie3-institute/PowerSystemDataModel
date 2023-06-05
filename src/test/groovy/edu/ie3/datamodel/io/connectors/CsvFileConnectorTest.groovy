@@ -169,7 +169,6 @@ class CsvFileConnectorTest extends Specification {
 
   def "The csv file connector throws ConnectorException if no csv file definition can be built from class information"() {
     given:
-    def baseDirectory = baseDirectory
     def fileNamingStrategy = new FileNamingStrategy()
     def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
 
@@ -191,7 +190,11 @@ class CsvFileConnectorTest extends Specification {
     def actual = connector.buildFileDefinition(NodeInput, ["a", "b", "c"] as String[], ",")
 
     then:
-    actual == expected
+    actual.with {
+      assert it.file().fullPath == expected.file().fullPath
+      assert it.headLineElements() == expected.headLineElements()
+      assert it.csvSep() == expected.csvSep()
+    }
   }
 
   def "The csv file connector is able to build correct csv file definition from class upon request, utilizing directory hierarchy"() {
@@ -204,7 +207,11 @@ class CsvFileConnectorTest extends Specification {
     def actual = connector.buildFileDefinition(NodeInput, ["a", "b", "c"] as String[], ",")
 
     then:
-    actual == expected
+    actual.with {
+      assert it.file().fullPath == expected.file().fullPath
+      assert it.headLineElements() == expected.headLineElements()
+      assert it.csvSep() == expected.csvSep()
+    }
   }
 
   def "The csv file connector throws ConnectorException if no csv file definition can be built from time series"() {
@@ -241,7 +248,11 @@ class CsvFileConnectorTest extends Specification {
     def actual = connector.buildFileDefinition(timeSeries, ["a", "b", "c"] as String[], ",")
 
     then:
-    actual == expected
+    actual.with {
+      assert it.file().fullPath == expected.file().fullPath
+      assert it.headLineElements() == expected.headLineElements()
+      assert it.csvSep() == expected.csvSep()
+    }
   }
 
   def "The csv file connector is able to build correct csv file definition from time series upon request, utilizing directory hierarchy"() {
@@ -262,7 +273,11 @@ class CsvFileConnectorTest extends Specification {
     def actual = connector.buildFileDefinition(timeSeries, ["a", "b", "c"] as String[], ",")
 
     then:
-    actual == expected
+    actual.with {
+      assert it.file().fullPath == expected.file().fullPath
+      assert it.headLineElements() == expected.headLineElements()
+      assert it.csvSep() == expected.csvSep()
+    }
   }
 
   def "Initialising a writer with incorrect base directory leads to ConnectorException"() {

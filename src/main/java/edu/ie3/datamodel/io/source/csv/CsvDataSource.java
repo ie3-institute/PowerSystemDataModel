@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
@@ -355,7 +356,7 @@ public abstract class CsvDataSource {
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
     try {
       return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
-    } catch (FileNotFoundException e) {
+    } catch (FileNotFoundException | ConnectorException e) {
       log.warn(
           "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }

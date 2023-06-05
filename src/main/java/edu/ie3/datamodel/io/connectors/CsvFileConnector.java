@@ -104,7 +104,8 @@ public class CsvFileConnector implements DataConnector {
       throws ConnectorException, IOException {
     /* Join the full DIRECTORY path (excluding file name) */
     Path baseDirectoryHarmonized = Path.of(IoUtil.harmonizeFileSeparator(baseDirectory.toString()));
-    Path fullDirectoryPath = baseDirectoryHarmonized.resolve(fileDefinition.directoryPath());
+    Path fullDirectoryPath =
+        baseDirectoryHarmonized.resolve(fileDefinition.file().directoryPath());
     Path fullPath = baseDirectoryHarmonized.resolve(fileDefinition.getFilePath());
 
     /* Create missing directories */
@@ -124,7 +125,7 @@ public class CsvFileConnector implements DataConnector {
     } else {
       log.warn(
           "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
-          fileDefinition.fileName(),
+          fileDefinition.file().fileName(),
           pathFile.getAbsolutePath());
     }
     return writer;
@@ -174,7 +175,8 @@ public class CsvFileConnector implements DataConnector {
    * @return the reader that contains information about the file to be read in
    * @throws FileNotFoundException If the matching file cannot be found
    */
-  public BufferedReader initReader(Class<? extends UniqueEntity> clz) throws FileNotFoundException {
+  public BufferedReader initReader(Class<? extends UniqueEntity> clz)
+      throws FileNotFoundException, ConnectorException {
     try {
       Path filePath =
           fileNamingStrategy
@@ -191,8 +193,8 @@ public class CsvFileConnector implements DataConnector {
           "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception: {}",
           clz.getSimpleName(),
           e);
+      throw new ConnectorException("Cannot init reader due to the following exception: ", e);
     }
-    return null;
   }
 
   /**
@@ -226,8 +228,7 @@ public class CsvFileConnector implements DataConnector {
               IndividualTimeSeriesMetaInformation metaInformation =
                   fileNamingStrategy.individualTimeSeriesMetaInformation(filePath.toString());
               return new edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation(
-                  metaInformation,
-                  Path.of(FileNamingStrategy.removeFileNameEnding(filePath.toString())));
+                  metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
             })
         .filter(
             metaInformation ->

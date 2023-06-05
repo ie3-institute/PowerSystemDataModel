@@ -5,57 +5,23 @@
 */
 package edu.ie3.datamodel.io.csv;
 
-import edu.ie3.datamodel.io.IoUtil;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public record CsvFileDefinition(
-    String fileName, Path directoryPath, String[] headLineElements, String csvSep) {
-  private static final Logger logger = LoggerFactory.getLogger(CsvFileDefinition.class);
-
-  private static final Pattern FILE_NAME_PATTERN =
-      Pattern.compile(
-          "^(?<fileName>[^\\\\/\\s.]{0,255})(?:\\.(?<extension>[a-zA-Z0-9]{0,10}(?:\\.[a-zA-Z0-9]{0,10})?))?$");
-
-  private static final String FILE_EXTENSION = "csv";
-
+/**
+ * A definition of a csv file.
+ *
+ * @param file definition of the file which contains the relative path of the file
+ * @param headLineElements elements of the headline of the defined file
+ * @param csvSep the separator that is used in this csv file
+ */
+public record CsvFileDefinition(FileDefinition file, String[] headLineElements, String csvSep) {
   public CsvFileDefinition(
       String fileName, Path directoryPath, String[] headLineElements, String csvSep) {
-    /* Remove all file separators at the beginning and end of a directory path and ensure harmonized file separator */
-    this.directoryPath =
-        Path.of(
-            Objects.nonNull(directoryPath)
-                ? IoUtil.harmonizeFileSeparator(
-                    directoryPath
-                        .toString()
-                        .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
-                        .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""))
-                : "");
-
-    /* Check the given information of the file name */
-    Matcher matcher = FILE_NAME_PATTERN.matcher(fileName);
-    if (matcher.matches()) {
-      String extension = matcher.group("extension");
-      if (Objects.nonNull(extension) && !extension.equalsIgnoreCase(FILE_EXTENSION))
-        logger.warn(
-            "You provided a file name with extension '{}'. It will be overridden to '{}'.",
-            extension,
-            FILE_EXTENSION);
-      this.fileName = matcher.group("fileName") + "." + FILE_EXTENSION;
-    } else {
-      throw new IllegalArgumentException(
-          "The file name '"
-              + fileName
-              + "' is no valid file name. It may contain everything, except '/', '\\', '.' and any white space character.");
-    }
-
-    this.headLineElements = headLineElements;
-    this.csvSep = csvSep;
+    this(FileDefinition.ofCsvFile(fileName, directoryPath), headLineElements, csvSep);
   }
 
   /**
@@ -63,9 +29,7 @@ public record CsvFileDefinition(
    *     file extension
    */
   public Path getFilePath() {
-    return !directoryPath.toString().isEmpty()
-        ? directoryPath.resolve(fileName)
-        : Path.of(fileName);
+    return file.fullPath();
   }
 
   @Override
@@ -74,15 +38,14 @@ public record CsvFileDefinition(
     // records' equals method and array fields don't play together nicely
     if (this == o) return true;
     if (!(o instanceof CsvFileDefinition that)) return false;
-    return directoryPath.equals(that.directoryPath)
-        && fileName.equals(that.fileName)
+    return file.equals(that.file)
         && Arrays.equals(headLineElements, that.headLineElements)
         && csvSep.equals(that.csvSep);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(directoryPath, fileName, csvSep);
+    int result = Objects.hash(file, csvSep);
     result = 31 * result + Arrays.hashCode(headLineElements);
     return result;
   }
@@ -90,11 +53,8 @@ public record CsvFileDefinition(
   @Override
   public String toString() {
     return "CsvFileDefinition{"
-        + "directoryPath='"
-        + directoryPath
-        + '\''
-        + ", fileName='"
-        + fileName
+        + "fullPath='"
+        + file.getFile()
         + '\''
         + ", headLineElements="
         + Arrays.toString(headLineElements)
