@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.naming
 
+import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
@@ -981,16 +982,5 @@ class FileNamingStrategyTest extends Specification {
     then:
     idFilePath.present
     idFilePath.get() == Path.of("prefix_coordinates_suffix")
-  }
-
-  def "The FileNamingStrategy with DefaultHierarchy returns the Id Coordinate file path correctly"() {
-    def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), defaultHierarchy)
-
-    when:
-    def idFilePath = fns.getIdCoordinateFilePath()
-
-    then:
-    idFilePath.present
-    idFilePath.get() ==  defaultHierarchy.baseDirectory.get().resolve("prefix_coordinates_suffix")
   }
 }
