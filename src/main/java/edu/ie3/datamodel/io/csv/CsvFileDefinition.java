@@ -8,8 +8,6 @@ package edu.ie3.datamodel.io.csv;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A definition of a csv file.

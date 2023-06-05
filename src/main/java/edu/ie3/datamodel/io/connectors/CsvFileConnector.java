@@ -104,8 +104,7 @@ public class CsvFileConnector implements DataConnector {
       throws ConnectorException, IOException {
     /* Join the full DIRECTORY path (excluding file name) */
     Path baseDirectoryHarmonized = Path.of(IoUtil.harmonizeFileSeparator(baseDirectory.toString()));
-    Path fullDirectoryPath =
-        baseDirectoryHarmonized.resolve(fileDefinition.file().directoryPath());
+    Path fullDirectoryPath = baseDirectoryHarmonized.resolve(fileDefinition.file().directoryPath());
     Path fullPath = baseDirectoryHarmonized.resolve(fileDefinition.getFilePath());
 
     /* Create missing directories */

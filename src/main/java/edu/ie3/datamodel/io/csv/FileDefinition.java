@@ -48,8 +48,7 @@ public record FileDefinition(String fileName, Path directoryPath, Path fullPath)
    * @return a definition of a file
    */
   public static FileDefinition of(Optional<String> fileName, Optional<Path> directoryPath) {
-    return new FileDefinition(
-        fileName.orElse(""), IoUtil.harmonizeFileSeparator(directoryPath));
+    return new FileDefinition(fileName.orElse(""), IoUtil.harmonizeFileSeparator(directoryPath));
   }
 
   /**
