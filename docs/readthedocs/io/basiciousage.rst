@@ -21,36 +21,6 @@ Data sink structure
 :width: 650
 :alt: Class diagram of data sink classes
 
-Data source structure
-=====================
-
-The sources are divided in three blocks:
-#. InputEntities and ResultEntities
-#. TimeSeries related sources
-#. Weather and Coordinate sources
-
-.. figure:: ../_static/figures/uml/EntitySourceClassDiagram.png
-:align: center
-:width: 650
-:alt: Class diagram of entity sources
-
-.. figure:: ../_static/figures/uml/TimeSeriesSourceClassDiagram.png
-:align: center
-:width: 650
-:alt: Class diagram of time series sources
-
-.. figure:: ../_static/figures/uml/WeatherCoordinateSourceClassDiagram.png
-:align: center
-:width: 650
-:alt: Class diagram of weather and coordinate sources
-
-The function to read the sources are implemented in the DataSource classes.
-
-.. figure:: ../_static/figures/uml/FunctionalDataSourceClassDiagram.png
-:align: center
-:width: 650
-:alt: Class diagram of data sources
-
 
 Data deployment
 ===============
