@@ -191,7 +191,7 @@ class CsvFileConnectorTest extends Specification {
 
     then:
     actual.with {
-      assert it.file().fullPath == expected.file().fullPath
+      assert it.filePath == expected.filePath
       assert it.headLineElements() == expected.headLineElements()
       assert it.csvSep() == expected.csvSep()
     }
@@ -208,7 +208,7 @@ class CsvFileConnectorTest extends Specification {
 
     then:
     actual.with {
-      assert it.file().fullPath == expected.file().fullPath
+      assert it.filePath == expected.filePath
       assert it.headLineElements() == expected.headLineElements()
       assert it.csvSep() == expected.csvSep()
     }
@@ -249,7 +249,7 @@ class CsvFileConnectorTest extends Specification {
 
     then:
     actual.with {
-      assert it.file().fullPath == expected.file().fullPath
+      assert it.filePath == expected.filePath
       assert it.headLineElements() == expected.headLineElements()
       assert it.csvSep() == expected.csvSep()
     }
@@ -274,7 +274,7 @@ class CsvFileConnectorTest extends Specification {
 
     then:
     actual.with {
-      assert it.file().fullPath == expected.file().fullPath
+      assert it.filePath == expected.filePath
       assert it.headLineElements() == expected.headLineElements()
       assert it.csvSep() == expected.csvSep()
     }

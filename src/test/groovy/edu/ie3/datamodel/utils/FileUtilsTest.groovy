@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.io.csv
+package edu.ie3.datamodel.utils
 
 import edu.ie3.datamodel.io.IoUtil
 import spock.lang.Shared
@@ -11,7 +11,7 @@ import spock.lang.Specification
 
 import java.nio.file.Path
 
-class FileDefinitionTest extends Specification {
+class FileUtilsTest extends Specification {
   @Shared
   String fileName
 
@@ -25,10 +25,10 @@ class FileDefinitionTest extends Specification {
 
   def "A file definition is et up correctly, if an empty path is given" () {
     when:
-    def file = FileDefinition.of("name", path)
+    def file = FileUtils.of("name", path)
 
     then:
-    file.fullPath == expectedPath
+    file == expectedPath
 
     where:
     path || expectedPath
@@ -38,13 +38,12 @@ class FileDefinitionTest extends Specification {
 
   def "A file definition of a csv file is set up correctly, if the directory path has corrupt file separator" () {
     when:
-    def file = FileDefinition.ofCsvFile(fileName, manipulatedDirectory)
+    def file = FileUtils.ofCsv(fileName, manipulatedDirectory)
 
     then:
     file.with {
-      assert it.directoryPath == this.directory
-      assert it.fileName == this.fileName
-      assert it.fullPath == this.directory.resolve(this.fileName)
+      assert it.fileName == Path.of(this.fileName)
+      assert it == this.directory.resolve(this.fileName)
     }
 
     where:
@@ -56,28 +55,13 @@ class FileDefinitionTest extends Specification {
 
   def "A file definition of a csv file is set up correctly, if the directory path is null" () {
     when:
-    def file = FileDefinition.ofCsvFile(fileName, null)
+    def file = FileUtils.ofCsv(fileName, null)
 
     then:
     file.with {
-      assert it.fileName == this.fileName
-      assert it.directoryPath == Path.of("")
+      assert it.fileName == Path.of(this.fileName)
+      assert it.relativize(it.fileName) == Path.of("")
+      assert it.parent == null
     }
-  }
-
-  def "A file definition returns correct file path"() {
-    given:
-    def file = FileDefinition.ofCsvFile(fileName, manipulatedDirectory)
-
-    when:
-    def actual = file.fullPath
-
-    then:
-    actual == expected
-
-    where:
-    manipulatedDirectory    || expected
-    Path.of("")             || Path.of(this.fileName)
-    Path.of("test", "grid") || Path.of("test", "grid", this.fileName)
   }
 }

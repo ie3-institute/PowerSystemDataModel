@@ -52,8 +52,8 @@ class CsvFileDefinitionTest extends Specification {
 
     then:
     actual.with {
-      assert it.file().fileName == this.fileName
-      assert it.file().directoryPath == this.directory
+      assert it.filePath.fileName == Path.of(this.fileName)
+      assert it.directoryPath == this.directory
       assert it.headLineElements() == this.headLineElements
       assert it.csvSep() == this.csvSep
     }
@@ -68,8 +68,8 @@ class CsvFileDefinitionTest extends Specification {
 
     then:
     actual.with {
-      assert it.file().fileName == this.fileName
-      assert it.file().directoryPath == this.directory
+      assert it.filePath.fileName == Path.of(this.fileName)
+      assert it.directoryPath == this.directory
       assert it.headLineElements() == this.headLineElements
       assert it.csvSep() == this.csvSep
     }

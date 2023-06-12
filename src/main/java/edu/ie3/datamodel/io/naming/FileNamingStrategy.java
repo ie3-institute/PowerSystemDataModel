@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.IoUtil;
-import edu.ie3.datamodel.io.csv.FileDefinition;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -14,6 +13,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.utils.FileUtils;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -72,9 +72,7 @@ public class FileNamingStrategy {
    * @return An optional sub path to the actual file
    */
   public Optional<Path> getFilePath(Class<? extends UniqueEntity> cls) {
-    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
-    // details
-    return FileDefinition.of(getEntityName(cls), getDirectoryPath(cls)).getPathOption();
+    return FileUtils.of(getEntityName(cls), getDirectoryPath(cls));
   }
 
   /**
@@ -89,11 +87,8 @@ public class FileNamingStrategy {
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<Path> getFilePath(T timeSeries) {
-    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
-    // details
-    return FileDefinition.of(
-            entityPersistenceNamingStrategy.getEntityName(timeSeries), getDirectoryPath(timeSeries))
-        .getPathOption();
+    return FileUtils.of(
+        entityPersistenceNamingStrategy.getEntityName(timeSeries), getDirectoryPath(timeSeries));
   }
 
   /**
@@ -103,7 +98,7 @@ public class FileNamingStrategy {
    * @param fileName File name
    * @param subDirectories Sub directory path
    * @return Concatenation of sub directory structure and file name
-   * @deprecated replaced with {@link FileDefinition#getPathOption()}
+   * @deprecated replaced with {@link FileUtils#of(String, Optional)}
    */
   @Deprecated
   private Optional<Path> getFilePath(String fileName, Optional<Path> subDirectories) {
@@ -127,7 +122,7 @@ public class FileNamingStrategy {
       return Optional.empty();
     } else {
       /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
-      return Optional.of(IoUtil.harmonizeFileSeparator(maybeDirectoryName));
+      return maybeDirectoryName.map(IoUtil::harmonizeFileSeparator);
     }
   }
 
@@ -149,7 +144,7 @@ public class FileNamingStrategy {
       return Optional.empty();
     } else {
       /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
-      return Optional.of(IoUtil.harmonizeFileSeparator(maybeDirectoryName));
+      return maybeDirectoryName.map(IoUtil::harmonizeFileSeparator);
     }
   }
 
@@ -271,8 +266,7 @@ public class FileNamingStrategy {
   public Optional<Path> getIdCoordinateFilePath() {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
-    return FileDefinition.of(getIdCoordinateEntityName(), fileHierarchy.getBaseDirectory())
-        .getPathOption();
+    return Optional.of(FileUtils.of(getIdCoordinateEntityName(), fileHierarchy.getBaseDirectory()));
   }
 
   /**

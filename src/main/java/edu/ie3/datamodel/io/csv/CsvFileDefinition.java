@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.csv;
 
+import edu.ie3.datamodel.utils.FileUtils;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
@@ -12,14 +13,14 @@ import java.util.Objects;
 /**
  * A definition of a csv file.
  *
- * @param file definition of the file which contains the relative path of the file
+ * @param filePath the path of the csv file (including filename and relative path)
  * @param headLineElements elements of the headline of the defined file
  * @param csvSep the separator that is used in this csv file
  */
-public record CsvFileDefinition(FileDefinition file, String[] headLineElements, String csvSep) {
+public record CsvFileDefinition(Path filePath, String[] headLineElements, String csvSep) {
   public CsvFileDefinition(
       String fileName, Path directoryPath, String[] headLineElements, String csvSep) {
-    this(FileDefinition.ofCsvFile(fileName, directoryPath), headLineElements, csvSep);
+    this(FileUtils.ofCsv(fileName, directoryPath), headLineElements, csvSep);
   }
 
   /**
@@ -27,7 +28,13 @@ public record CsvFileDefinition(FileDefinition file, String[] headLineElements, 
    *     file extension
    */
   public Path getFilePath() {
-    return file.fullPath();
+    return filePath;
+  }
+
+  /** Returns the directory path of this file. */
+  public Path getDirectoryPath() {
+    Path parent = filePath.getParent();
+    return parent != null ? parent : Path.of("");
   }
 
   @Override
@@ -36,14 +43,14 @@ public record CsvFileDefinition(FileDefinition file, String[] headLineElements, 
     // records' equals method and array fields don't play together nicely
     if (this == o) return true;
     if (!(o instanceof CsvFileDefinition that)) return false;
-    return file.equals(that.file)
+    return filePath.equals(that.filePath)
         && Arrays.equals(headLineElements, that.headLineElements)
         && csvSep.equals(that.csvSep);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(file, csvSep);
+    int result = Objects.hash(filePath, csvSep);
     result = 31 * result + Arrays.hashCode(headLineElements);
     return result;
   }
@@ -52,7 +59,7 @@ public record CsvFileDefinition(FileDefinition file, String[] headLineElements, 
   public String toString() {
     return "CsvFileDefinition{"
         + "fullPath='"
-        + file.getFile()
+        + filePath
         + '\''
         + ", headLineElements="
         + Arrays.toString(headLineElements)

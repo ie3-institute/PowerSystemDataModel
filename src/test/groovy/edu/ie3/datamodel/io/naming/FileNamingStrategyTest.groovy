@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.naming
 
-import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation

@@ -103,8 +103,8 @@ public class CsvFileConnector implements DataConnector {
   private BufferedCsvWriter initWriter(Path baseDirectory, CsvFileDefinition fileDefinition)
       throws ConnectorException, IOException {
     /* Join the full DIRECTORY path (excluding file name) */
-    Path baseDirectoryHarmonized = Path.of(IoUtil.harmonizeFileSeparator(baseDirectory.toString()));
-    Path fullDirectoryPath = baseDirectoryHarmonized.resolve(fileDefinition.file().directoryPath());
+    Path baseDirectoryHarmonized = IoUtil.harmonizeFileSeparator(baseDirectory);
+    Path fullDirectoryPath = baseDirectoryHarmonized.resolve(fileDefinition.getDirectoryPath());
     Path fullPath = baseDirectoryHarmonized.resolve(fileDefinition.getFilePath());
 
     /* Create missing directories */
@@ -124,7 +124,7 @@ public class CsvFileConnector implements DataConnector {
     } else {
       log.warn(
           "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
-          fileDefinition.file().fileName(),
+          fileDefinition.getFilePath().getFileName(),
           pathFile.getAbsolutePath());
     }
     return writer;
