@@ -61,7 +61,7 @@ public class CsvDataSource implements DataSource {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }
 
-  // -=-=-
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   public BufferedReader createReader(String filePath) throws FileNotFoundException {
     return connector.initReader(filePath);
@@ -251,54 +251,6 @@ public class CsvDataSource implements DataSource {
         return false;
       }
     };
-  }
-
-  protected String safeMapGet(Map<String, String> map, String key, String mapName) {
-    return Optional.ofNullable(map.get(key))
-        .orElse(
-            "Key '"
-                + key
-                + "' not found"
-                + (mapName.isEmpty() ? "!" : " in map '" + mapName + "'!"));
-  }
-
-  protected void logSkippingWarning(
-      String entityDesc, String entityUuid, String entityId, String missingElementsString) {
-
-    log.warn(
-        "Skipping '{}' with uuid '{}' and id '{}'. Not all required entities found or map is missing entity key!\nMissing elements:\n{}",
-        entityDesc,
-        entityUuid,
-        entityId,
-        missingElementsString);
-  }
-
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      CsvFileConnector connector, String explicitPath) {
-    try {
-      return buildStreamWithFieldsToAttributesMap(null, connector.initReader(explicitPath));
-    } catch (FileNotFoundException e) {
-      log.warn("Unable to find file for entity '{}': {}", "", e.getMessage());
-    }
-    return Stream.empty();
-  }
-
-  /**
-   * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
-   * matching the provided UUID or an empty {@code Optional} if no matching entity can be found.
-   *
-   * @param entityUuid uuid of the entity that should be looked for
-   * @param entities collection of entities that should be
-   * @param <T> type of the entity that will be returned, derived from the provided collection
-   * @return either an optional containing the first entity that has the provided uuid or an empty
-   *     optional if no matching entity with the provided uuid can be found
-   */
-  protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
-      String entityUuid, Collection<T> entities) {
-    return entities.stream()
-        .parallel()
-        .filter(uniqueEntity -> uniqueEntity.getUuid().toString().equalsIgnoreCase(entityUuid))
-        .findFirst();
   }
 
   /**

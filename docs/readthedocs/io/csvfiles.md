@@ -122,23 +122,6 @@ hierarchy.
 
 ## De-serialization (loading models)
 
-The sources are divided in three blocks:
-1. InputEntities and ResultEntities
-2. TimeSeries related sources
-3. Weather and Coordinate sources
-
-![Class diagram of data sources for input and result entities](../_static/figures/uml/EntitySourceClassDiagram.png)
-Class diagram of entity sources
-![Class diagram of data sources for input and result entities](../_static/figures/uml/TimeSeriesSourceClassDiagram.png)
-Class diagram of time series sources
-![Class diagram of data sources for input and result entities](../_static/figures/uml/WeatherCoordinateSourceClassDiagram.png)
-Class diagram of weather and coordinate sources
-
-The function to read the sources are implemented in the DataSource classes.
-![Class diagram of data sources](../_static/figures/uml/FunctionalDataSourceClassDiagram.png)
-
-Class diagram of data sources
-
 Having an instance of [Grid Container](/models/input/grid/gridcontainer) is most of the time the target whenever you load your
 grid. It consists of the three main blocks:
 

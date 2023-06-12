@@ -9,7 +9,6 @@ import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
@@ -51,20 +50,6 @@ public abstract class WeatherSource {
       ZonedDateTime date, Point coordinate);
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-  /**
-   * Merge two individual time series into a new time series with the UUID of the first parameter
-   *
-   * @param a the first time series to merge
-   * @param b the second time series to merge
-   * @return merged time series with a's UUID
-   */
-  protected <V extends Value> IndividualTimeSeries<V> mergeTimeSeries(
-      IndividualTimeSeries<V> a, IndividualTimeSeries<V> b) {
-    SortedSet<TimeBasedValue<V>> entries = a.getEntries();
-    entries.addAll(b.getEntries());
-    return new IndividualTimeSeries<>(a.getUuid(), entries);
-  }
 
   /**
    * Converts a field to value map into TimeBasedWeatherValueData, extracts the coordinate id from

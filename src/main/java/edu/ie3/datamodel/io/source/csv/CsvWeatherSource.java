@@ -16,6 +16,7 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
+import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
@@ -100,6 +101,20 @@ public class CsvWeatherSource extends WeatherSource {
             Collectors.toMap(
                 Map.Entry::getKey,
                 entry -> TimeSeriesUtils.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
+  }
+
+  /**
+   * Merge two individual time series into a new time series with the UUID of the first parameter
+   *
+   * @param a the first time series to merge
+   * @param b the second time series to merge
+   * @return merged time series with a's UUID
+   */
+  protected <V extends Value> IndividualTimeSeries<V> mergeTimeSeries(
+      IndividualTimeSeries<V> a, IndividualTimeSeries<V> b) {
+    SortedSet<TimeBasedValue<V>> entries = a.getEntries();
+    entries.addAll(b.getEntries());
+    return new IndividualTimeSeries<>(a.getUuid(), entries);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

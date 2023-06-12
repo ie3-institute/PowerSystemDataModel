@@ -152,7 +152,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    *
    * @return Stream with mappings from field identifiers to attributes
    */
-  public Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap() {
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap() {
     try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 

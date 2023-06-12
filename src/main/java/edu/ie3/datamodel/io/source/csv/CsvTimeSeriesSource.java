@@ -140,22 +140,17 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
       throws SourceException {
     try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
-      Set<TimeBasedValue<V>> timeBasedValues = getTimeBasedValueSet(fieldToValueFunction, reader);
+      Set<TimeBasedValue<V>> timeBasedValues =
+          dataSource
+              .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+              .map(fieldToValueFunction)
+              .flatMap(Optional::stream)
+              .collect(Collectors.toSet());
       return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
     } catch (FileNotFoundException e) {
       throw new SourceException("Unable to find a file with path '" + filePath + "'.", e);
     } catch (IOException e) {
       throw new SourceException("Error during reading of file'" + filePath + "'.", e);
     }
-  }
-
-  private Set<TimeBasedValue<V>> getTimeBasedValueSet(
-      Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction,
-      BufferedReader reader) {
-    return dataSource
-        .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-        .map(fieldToValueFunction)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
   }
 }
