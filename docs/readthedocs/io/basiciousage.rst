@@ -25,9 +25,9 @@ Data source structure
 =====================
 
 The sources are divided in three blocks:
-1. InputEntities and ResultEntities
-2. TimeSeries related sources
-3. Weather and Coordinate sources
+#. InputEntities and ResultEntities
+#. TimeSeries related sources
+#. Weather and Coordinate sources
 
 .. figure:: ../_static/figures/uml/EntitySourceClassDiagram.png
 :align: center
@@ -45,6 +45,7 @@ The sources are divided in three blocks:
 :alt: Class diagram of weather and coordinate sources
 
 The function to read the sources are implemented in the DataSource classes.
+
 .. figure:: ../_static/figures/uml/FunctionalDataSourceClassDiagram.png
 :align: center
 :width: 650
