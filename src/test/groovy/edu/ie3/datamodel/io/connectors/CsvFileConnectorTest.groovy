@@ -51,7 +51,7 @@ class CsvFileConnectorTest extends Specification {
       "its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b.csv",
       "its_c_b88dee50-5484-4136-901d-050d8c1c97d1.csv",
       "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b.csv"
-    ].stream().map {file -> Path.of(file)}.collect(Collectors.toSet())
+    ].stream().map { file -> Path.of(file) }.collect(Collectors.toSet())
     pathsToIgnore = [
       Path.of("file_to_be_ignored.txt")
     ]
@@ -201,7 +201,7 @@ class CsvFileConnectorTest extends Specification {
     given:
     def fileNamingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(baseDirectory, "test"))
     def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
-    def expected = new CsvFileDefinition("node_input.csv", Path.of("test","input", "grid"), ["a", "b", "c"] as String[], ",")
+    def expected = new CsvFileDefinition("node_input.csv", Path.of("test", "input", "grid"), ["a", "b", "c"] as String[], ",")
 
     when:
     def actual = connector.buildFileDefinition(NodeInput, ["a", "b", "c"] as String[], ",")
@@ -259,7 +259,7 @@ class CsvFileConnectorTest extends Specification {
     given: "a suitable connector"
     def fileNamingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(baseDirectory, "test"))
     def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
-    def expected = new CsvFileDefinition("its_c_0c03ce9f-ab0e-4715-bc13-f9d903f26dbf.csv", Path.of("test","input", "participants", "time_series"), ["a", "b", "c"] as String[], ",")
+    def expected = new CsvFileDefinition("its_c_0c03ce9f-ab0e-4715-bc13-f9d903f26dbf.csv", Path.of("test", "input", "participants", "time_series"), ["a", "b", "c"] as String[], ",")
 
     and: "credible input"
     def entries = [
