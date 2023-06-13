@@ -24,8 +24,6 @@ public class SqlDataSource implements DataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
-  private static final String errorSQL = "Error during execution of query {}";
-
   protected final SqlConnector connector;
   protected final DatabaseNamingStrategy databaseNamingStrategy;
   protected String schemaName;
@@ -164,7 +162,7 @@ public class SqlDataSource implements DataSource {
       ResultSet resultSet = ps.executeQuery();
       return connector.extractFieldMaps(resultSet).stream();
     } catch (SQLException e) {
-      log.error(errorSQL, query, e);
+      log.error("Error during execution of query {}", query, e);
     }
     return Stream.empty();
   }

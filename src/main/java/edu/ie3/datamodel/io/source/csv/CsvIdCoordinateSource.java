@@ -34,7 +34,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvIdCoordinateSource.class);
 
-  private static final String coordinateIdMapping = "coordinate id mapping";
+  private static final String COORDINATE_ID_MAPPING = "coordinate id mapping";
 
   /** Mapping in both ways (id -> coordinate) and (coordinate -> id) have to be unique */
   private final Map<Integer, Point> idToCoordinate;
@@ -167,7 +167,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
           fieldToValues -> fieldToValues.get(factory.getIdField());
       Set<Map<String, String>> withDistinctCoordinateId =
           dataSource.distinctRowsWithLog(
-              allRows, idExtractor, coordinateIdMapping, "coordinate id");
+              allRows, idExtractor, COORDINATE_ID_MAPPING, "coordinate id");
       Function<Map<String, String>, String> coordinateExtractor =
           fieldToValues ->
               fieldToValues
@@ -175,7 +175,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
                   .concat(fieldToValues.get(factory.getLonField()));
       return dataSource
           .distinctRowsWithLog(
-              withDistinctCoordinateId, coordinateExtractor, coordinateIdMapping, "coordinate")
+              withDistinctCoordinateId, coordinateExtractor, COORDINATE_ID_MAPPING, "coordinate")
           .parallelStream();
     } catch (IOException e) {
       log.error("Cannot read the file for coordinate id to coordinate mapping.", e);

@@ -95,8 +95,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     /* Read in the full time series */
     try {
       this.timeSeries =
-          buildIndividualTimeSeries(
-              timeSeriesUuid, filePath, fieldToValue -> this.createTimeBasedValue(fieldToValue));
+          buildIndividualTimeSeries(timeSeriesUuid, filePath, this::createTimeBasedValue);
     } catch (SourceException e) {
       throw new IllegalArgumentException(
           "Unable to obtain time series with UUID '"

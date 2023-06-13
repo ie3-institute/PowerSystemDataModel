@@ -23,7 +23,7 @@ public abstract class TimeSeriesMappingSource {
 
   private final TimeSeriesMappingFactory mappingFactory;
 
-  public TimeSeriesMappingSource() {
+  protected TimeSeriesMappingSource() {
     this.mappingFactory = new TimeSeriesMappingFactory();
   }
 
