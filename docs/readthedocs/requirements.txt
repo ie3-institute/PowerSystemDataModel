@@ -2,5 +2,5 @@ commonmark==0.9.1
 recommonmark==0.7.1
 Sphinx==5.3.0
 sphinx-rtd-theme==1.2.2
-myst-parser==1.0.0
+myst-parser==2.0.0
 markdown-it-py==2.2.0
