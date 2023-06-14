@@ -10,7 +10,7 @@ import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.io.BufferedReader;
@@ -61,7 +61,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
     return buildStreamWithFieldsToAttributesMap()
         .map(mapWithRowIndex -> new SimpleFactoryData(mapWithRowIndex, Pair.class))
         .map(factory::get)
-        .map(Try::get)
+        .map(Try::getOrThrow)
         .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
   }
 

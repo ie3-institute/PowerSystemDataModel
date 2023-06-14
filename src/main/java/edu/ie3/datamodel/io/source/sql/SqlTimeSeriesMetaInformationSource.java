@@ -14,7 +14,7 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMetaInformationSource;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -96,6 +96,6 @@ public class SqlTimeSeriesMetaInformationSource
         new SimpleEntityData(
             new FactoryData.MapWithRowIndex("-1", fieldToValues),
             IndividualTimeSeriesMetaInformation.class);
-    return Optional.of(mappingFactory.get(entityData)).map(Try::get);
+    return Optional.of(mappingFactory.get(entityData)).map(Try::getOrThrow);
   }
 }

@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
@@ -21,7 +20,7 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -124,9 +123,9 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
         .map(
             fieldsToAttributes -> {
               SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
-              return (Try<T, FactoryException>) factory.get(data);
+              return (Try<T>) factory.get(data);
             })
-        .map(Try::get)
+        .map(Try::getOrThrow)
         .collect(Collectors.toSet());
   }
 }

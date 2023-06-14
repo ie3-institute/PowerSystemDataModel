@@ -5,13 +5,12 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -46,12 +45,12 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
     def typeInput = Mock(Transformer2WTypeInput)
 
     when:
-    Try<Transformer2WInput, FactoryException> input = inputFactory.get(new TypedConnectorInputEntityData<Transformer2WTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+    Try<Transformer2WInput> input = inputFactory.get(new TypedConnectorInputEntityData<Transformer2WTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])

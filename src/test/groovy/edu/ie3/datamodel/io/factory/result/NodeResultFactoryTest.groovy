@@ -5,12 +5,11 @@
  */
 package edu.ie3.datamodel.io.factory.result
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.NodeResult
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -36,12 +35,12 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<? extends NodeResult, FactoryException> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), NodeResult))
+    Try<? extends NodeResult> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), NodeResult))
 
     then:
     result.success
-    result.data.getClass() == NodeResult
-    ((NodeResult) result.data).with {
+    result.data().getClass() == NodeResult
+    ((NodeResult) result.data()).with {
       assert vMag == getQuant(parameter["vmag"], StandardUnits.VOLTAGE_MAGNITUDE)
       assert vAng == getQuant(parameter["vang"], StandardUnits.VOLTAGE_ANGLE)
       assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
@@ -59,11 +58,11 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<NodeResult, FactoryException> input = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), NodeResult))
+    Try<NodeResult> input = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), NodeResult))
 
     then:
     input.failure
-    input.exception.cause.message == "The provided fields [inputModel, time, vmag] with data \n" +
+    input.exception().cause.message == "The provided fields [inputModel, time, vmag] with data \n" +
         "{inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,\n" +
         "time -> 2020-01-30 17:26:44,\n" +
         "vmag -> 2} are invalid for instance of NodeResult. \n" +

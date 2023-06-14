@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.SystemParticipantsException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
@@ -24,7 +23,7 @@ import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -115,26 +114,23 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     /// go on with the nodes
     Set<NodeInput> nodes = rawGridSource.getNodes(operators);
 
-    Try<Set<FixedFeedInInput>, SourceException> fixedFeedInInputs =
-        Try.apply(() -> getFixedFeedIns(nodes, operators));
-    Try<Set<PvInput>, SourceException> pvInputs = Try.apply(() -> getPvPlants(nodes, operators));
-    Try<Set<LoadInput>, SourceException> loads = Try.apply(() -> getLoads(nodes, operators));
-    Try<Set<BmInput>, SourceException> bmInputs =
-        Try.apply(() -> getBmPlants(nodes, operators, bmTypes));
-    Try<Set<StorageInput>, SourceException> storages =
-        Try.apply(() -> getStorages(nodes, operators, storageTypes));
-    Try<Set<WecInput>, SourceException> wecInputs =
-        Try.apply(() -> getWecPlants(nodes, operators, wecTypes));
-    Try<Set<EvInput>, SourceException> evs = Try.apply(() -> getEvs(nodes, operators, evTypes));
-    Try<Set<EvcsInput>, SourceException> evcs = Try.apply(() -> getEvCS(nodes, operators));
-    Try<Set<ChpInput>, SourceException> chpInputs =
-        Try.apply(() -> getChpPlants(nodes, operators, chpTypes, thermalBuses, thermalStorages));
-    Try<Set<HpInput>, SourceException> hpInputs =
-        Try.apply(() -> getHeatPumps(nodes, operators, hpTypes, thermalBuses));
-    Try<Set<EmInput>, SourceException> emInputs = Try.apply(() -> getEmSystems(nodes, operators));
+    Try<Set<FixedFeedInInput>> fixedFeedInInputs = Try.of(() -> getFixedFeedIns(nodes, operators));
+    Try<Set<PvInput>> pvInputs = Try.of(() -> getPvPlants(nodes, operators));
+    Try<Set<LoadInput>> loads = Try.of(() -> getLoads(nodes, operators));
+    Try<Set<BmInput>> bmInputs = Try.of(() -> getBmPlants(nodes, operators, bmTypes));
+    Try<Set<StorageInput>> storages = Try.of(() -> getStorages(nodes, operators, storageTypes));
+    Try<Set<WecInput>> wecInputs = Try.of(() -> getWecPlants(nodes, operators, wecTypes));
+    Try<Set<EvInput>> evs = Try.of(() -> getEvs(nodes, operators, evTypes));
+    Try<Set<EvcsInput>> evcs = Try.of(() -> getEvCS(nodes, operators));
+    Try<Set<ChpInput>> chpInputs =
+        Try.of(() -> getChpPlants(nodes, operators, chpTypes, thermalBuses, thermalStorages));
+    Try<Set<HpInput>> hpInputs =
+        Try.of(() -> getHeatPumps(nodes, operators, hpTypes, thermalBuses));
+    Try<Set<EmInput>> emInputs = Try.of(() -> getEmSystems(nodes, operators));
 
     List<SourceException> exceptions =
-        Stream.of(
+        (List<SourceException>)
+            Try.getExceptions(
                 fixedFeedInInputs,
                 pvInputs,
                 loads,
@@ -145,10 +141,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                 evcs,
                 chpInputs,
                 hpInputs,
-                emInputs)
-            .filter(Try::isFailure)
-            .map(Try::getException)
-            .toList();
+                emInputs);
 
     if (exceptions.size() > 0) {
       throw new SystemParticipantsException(
@@ -157,17 +150,17 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     } else {
       // if everything is fine, return a system participants container
       return new SystemParticipants(
-          bmInputs.getData(),
-          chpInputs.getData(),
-          evcs.getData(),
-          evs.getData(),
-          fixedFeedInInputs.getData(),
-          hpInputs.getData(),
-          loads.getData(),
-          pvInputs.getData(),
-          storages.getData(),
-          wecInputs.getData(),
-          emInputs.getData());
+          bmInputs.getData().get(),
+          chpInputs.getData().get(),
+          evcs.getData().get(),
+          evs.getData().get(),
+          fixedFeedInInputs.getData().get(),
+          hpInputs.getData().get(),
+          loads.getData().get(),
+          pvInputs.getData().get(),
+          storages.getData().get(),
+          wecInputs.getData().get(),
+          emInputs.getData().get());
     }
   }
 
@@ -192,11 +185,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             nodeAssetEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
             FixedFeedInInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
   /** {@inheritDoc} */
@@ -221,11 +214,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
             PvInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
   /** {@inheritDoc} */
@@ -250,11 +243,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
             LoadInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
   /** {@inheritDoc} */
   @Override
@@ -278,11 +271,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
             EvcsInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
   /** {@inheritDoc} */
@@ -309,11 +302,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<BmInput> getBmPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, types)
                 .collect(Collectors.toSet()),
             BmInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
   /** {@inheritDoc} */
   @Override
@@ -339,11 +332,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<StorageInput> getStorages(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, types)
                 .collect(Collectors.toSet()),
             StorageInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
   /** {@inheritDoc} */
   @Override
@@ -369,11 +362,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<WecInput> getWecPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, types)
                 .collect(Collectors.toSet()),
             WecInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
   /** {@inheritDoc} */
   @Override
@@ -399,11 +392,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<EvInput> getEvs(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             typedEntityStream(EvInput.class, evInputFactory, nodes, operators, types)
                 .collect(Collectors.toSet()),
             EvInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
   /**
@@ -419,7 +412,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    * @return a stream of entity types holding an instance of a {@link SystemParticipantInput}
    */
   private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
-      Stream<Try<T, FactoryException>> typedEntityStream(
+      Stream<Try<T>> typedEntityStream(
           Class<T> entityClass,
           EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
           Set<NodeInput> nodes,
@@ -468,14 +461,14 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Set<ThermalStorageInput> thermalStorages)
       throws SourceException {
 
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             chpInputStream(nodes, operators, types, thermalBuses, thermalStorages)
                 .collect(Collectors.toSet()),
             ChpInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
-  private Stream<Try<ChpInput, FactoryException>> chpInputStream(
+  private Stream<Try<ChpInput>> chpInputStream(
       Set<NodeInput> nodes,
       Set<OperatorInput> operators,
       Set<ChpTypeInput> types,
@@ -523,13 +516,13 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Set<HpTypeInput> types,
       Set<ThermalBusInput> thermalBuses)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             hpInputStream(nodes, operators, types, thermalBuses).collect(Collectors.toSet()),
             HpInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
-  private Stream<Try<HpInput, FactoryException>> hpInputStream(
+  private Stream<Try<HpInput>> hpInputStream(
       Set<NodeInput> nodes,
       Set<OperatorInput> operators,
       Set<HpTypeInput> types,
@@ -771,10 +764,10 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
             EmInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 }

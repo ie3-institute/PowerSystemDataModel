@@ -15,7 +15,7 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,7 +63,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<ThermalBusInput> getThermalBuses() {
     return assetInputEntityDataStream(ThermalBusInput.class, typeSource.getOperators())
         .map(thermalBusInputFactory::get)
-        .map(Try::get)
+        .map(Try::getOrThrow)
         .collect(Collectors.toSet());
   }
 
@@ -77,7 +77,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<ThermalBusInput> getThermalBuses(Set<OperatorInput> operators) {
     return assetInputEntityDataStream(ThermalBusInput.class, operators)
         .map(thermalBusInputFactory::get)
-        .map(Try::get)
+        .map(Try::getOrThrow)
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -113,7 +113,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .map(thermalHouseInputFactory::get)
-                    .map(Try::get))
+                    .map(Try::getOrThrow))
         .collect(Collectors.toSet());
   }
 
@@ -140,7 +140,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .map(thermalHouseInputFactory::get)
-                    .map(Try::get))
+                    .map(Try::getOrThrow))
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -154,7 +154,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .map(cylindricalStorageInputFactory::get)
-                    .map(Try::get))
+                    .map(Try::getOrThrow))
         .collect(Collectors.toSet());
   }
 
@@ -181,7 +181,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .map(cylindricalStorageInputFactory::get)
-                    .map(Try::get))
+                    .map(Try::getOrThrow))
         .collect(Collectors.toSet());
   }
 

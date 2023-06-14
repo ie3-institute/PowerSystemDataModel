@@ -11,7 +11,7 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,6 +51,6 @@ public class SqlTimeSeriesMappingSource
     SimpleEntityData entityData =
         new SimpleEntityData(
             new FactoryData.MapWithRowIndex("-1", fieldToValues), MappingEntry.class);
-    return Optional.of(mappingFactory.get(entityData)).map(Try::get);
+    return Optional.of(mappingFactory.get(entityData)).map(Try::getOrThrow);
   }
 }

@@ -169,6 +169,6 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
       TimeBasedSimpleValueFactory<V> factory) {
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(mapWithRowIndex, valueClass);
-    return Optional.of(factory.get(factoryData).get());
+    return Optional.of(factory.get(factoryData).getOrThrow());
   }
 }

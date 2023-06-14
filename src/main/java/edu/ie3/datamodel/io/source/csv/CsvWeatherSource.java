@@ -21,7 +21,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -219,7 +219,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
               log.error("Unable to find coordinate for entry '{}'.", fieldToValues);
               return Optional.empty();
             })
-        .map(Try::get);
+        .map(Try::getOrThrow);
   }
 
   /**

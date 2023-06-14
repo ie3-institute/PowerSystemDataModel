@@ -6,10 +6,7 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FileException;
-import edu.ie3.datamodel.exceptions.GraphicSourceException;
-import edu.ie3.datamodel.exceptions.RawGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.exceptions.SystemParticipantsException;
 import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -18,9 +15,8 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
 import java.util.List;
-import java.util.stream.Stream;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
@@ -57,17 +53,13 @@ public class CsvJointGridContainerSource {
         new CsvGraphicSource(csvSep, directoryPath, namingStrategy, typeSource, rawGridSource);
 
     /* Loading models */
-    Try<RawGridElements, RawGridException> rawGridElements = Try.apply(rawGridSource::getGridData);
-    Try<SystemParticipants, SystemParticipantsException> systemParticipants =
-        Try.apply(systemParticipantSource::getSystemParticipants);
-    Try<GraphicElements, GraphicSourceException> graphicElements =
-        Try.apply(graphicSource::getGraphicElements);
+    Try<RawGridElements> rawGridElements = Try.of(rawGridSource::getGridData);
+    Try<SystemParticipants> systemParticipants =
+        Try.of(systemParticipantSource::getSystemParticipants);
+    Try<GraphicElements> graphicElements = Try.of(graphicSource::getGraphicElements);
 
     List<? extends Exception> exceptions =
-        Stream.of(rawGridElements, systemParticipants, graphicElements)
-            .filter(Try::isFailure)
-            .map(Try::getException)
-            .toList();
+        Try.getExceptions(rawGridElements, systemParticipants, graphicElements);
 
     if (exceptions.size() > 0) {
       throw new SourceException(
@@ -75,9 +67,9 @@ public class CsvJointGridContainerSource {
     } else {
       return new JointGridContainer(
           gridName,
-          rawGridElements.getData(),
-          systemParticipants.getData(),
-          graphicElements.getData());
+          rawGridElements.getData().get(),
+          systemParticipants.getData().get(),
+          graphicElements.getData().get());
     }
   }
 }

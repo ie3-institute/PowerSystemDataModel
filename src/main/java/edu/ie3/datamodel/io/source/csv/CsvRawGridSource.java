@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.RawGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
@@ -20,7 +19,7 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -83,22 +82,19 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     /* assets */
     Set<NodeInput> nodes = getNodes(operators);
 
-    Try<Set<LineInput>, SourceException> lineInputs =
-        Try.apply(() -> getLines(nodes, lineTypes, operators));
-    Try<Set<Transformer2WInput>, SourceException> transformer2WInputs =
-        Try.apply(() -> get2WTransformers(nodes, transformer2WTypeInputs, operators));
-    Try<Set<Transformer3WInput>, SourceException> transformer3WInputs =
-        Try.apply(() -> get3WTransformers(nodes, transformer3WTypeInputs, operators));
-    Try<Set<SwitchInput>, SourceException> switches =
-        Try.apply(() -> getSwitches(nodes, operators));
-    Try<Set<MeasurementUnitInput>, SourceException> measurementUnits =
-        Try.apply(() -> getMeasurementUnits(nodes, operators));
+    Try<Set<LineInput>> lineInputs = Try.of(() -> getLines(nodes, lineTypes, operators));
+    Try<Set<Transformer2WInput>> transformer2WInputs =
+        Try.of(() -> get2WTransformers(nodes, transformer2WTypeInputs, operators));
+    Try<Set<Transformer3WInput>> transformer3WInputs =
+        Try.of(() -> get3WTransformers(nodes, transformer3WTypeInputs, operators));
+    Try<Set<SwitchInput>> switches = Try.of(() -> getSwitches(nodes, operators));
+    Try<Set<MeasurementUnitInput>> measurementUnits =
+        Try.of(() -> getMeasurementUnits(nodes, operators));
 
     List<SourceException> exceptions =
-        Stream.of(lineInputs, transformer2WInputs, transformer3WInputs, switches, measurementUnits)
-            .filter(Try::isFailure)
-            .map(Try::getException)
-            .toList();
+        (List<SourceException>)
+            Try.getExceptions(
+                lineInputs, transformer2WInputs, transformer3WInputs, switches, measurementUnits);
 
     if (exceptions.size() > 0) {
       throw new RawGridException(
@@ -107,11 +103,11 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       /* build and return the grid if it is not empty */
       return new RawGridElements(
           nodes,
-          lineInputs.getData(),
-          transformer2WInputs.getData(),
-          transformer3WInputs.getData(),
-          switches.getData(),
-          measurementUnits.getData());
+          lineInputs.getData().get(),
+          transformer2WInputs.getData().get(),
+          transformer3WInputs.getData().get(),
+          switches.getData().get(),
+          measurementUnits.getData().get());
     }
   }
 
@@ -129,12 +125,12 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    */
   @Override
   public Set<NodeInput> getNodes(Set<OperatorInput> operators) throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             assetInputEntityDataStream(NodeInput.class, operators)
                 .map(nodeInputFactory::get)
                 .collect(Collectors.toSet()),
             NodeInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
   /** {@inheritDoc} */
@@ -161,11 +157,11 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   public Set<LineInput> getLines(
       Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs)
                 .collect(Collectors.toSet()),
             LineInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
   /** {@inheritDoc} */
@@ -194,7 +190,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Set<Transformer2WTypeInput> transformer2WTypes,
       Set<OperatorInput> operators)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             typedEntityStream(
                     Transformer2WInput.class,
                     transformer2WInputFactory,
@@ -203,7 +199,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                     transformer2WTypes)
                 .collect(Collectors.toSet()),
             Transformer2WInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
   /** {@inheritDoc} */
@@ -232,14 +228,14 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Set<Transformer3WTypeInput> transformer3WTypeInputs,
       Set<OperatorInput> operators)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             transformer3WEntityStream(nodes, transformer3WTypeInputs, operators)
                 .collect(Collectors.toSet()),
             Transformer3WInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
-  private Stream<Try<Transformer3WInput, FactoryException>> transformer3WEntityStream(
+  private Stream<Try<Transformer3WInput>> transformer3WEntityStream(
       Set<NodeInput> nodes,
       Set<Transformer3WTypeInput> transformer3WTypeInputs,
       Set<OperatorInput> operators) {
@@ -277,20 +273,19 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   @Override
   public Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators)
       throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             untypedConnectorInputEntityStream(
                     SwitchInput.class, switchInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
             SwitchInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
-  private <T extends ConnectorInput>
-      Stream<Try<T, FactoryException>> untypedConnectorInputEntityStream(
-          Class<T> entityClass,
-          EntityFactory<T, ConnectorInputEntityData> factory,
-          Set<NodeInput> nodes,
-          Set<OperatorInput> operators) {
+  private <T extends ConnectorInput> Stream<Try<T>> untypedConnectorInputEntityStream(
+      Class<T> entityClass,
+      EntityFactory<T, ConnectorInputEntityData> factory,
+      Set<NodeInput> nodes,
+      Set<OperatorInput> operators) {
 
     return buildUntypedConnectorInputEntityData(
             assetInputEntityDataStream(entityClass, operators), nodes)
@@ -321,21 +316,20 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   @Override
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Set<NodeInput> nodes, Set<OperatorInput> operators) throws SourceException {
-    return Try.scanForExceptions(
+    return Try.scanCollection(
             nodeAssetEntityStream(
                     MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
             MeasurementUnitInput.class)
-        .get();
+        .getOrThrow(SourceException.class);
   }
 
-  private <T extends ConnectorInput, A extends AssetTypeInput>
-      Stream<Try<T, FactoryException>> typedEntityStream(
-          Class<T> entityClass,
-          EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
-          Collection<NodeInput> nodes,
-          Collection<OperatorInput> operators,
-          Collection<A> types) {
+  private <T extends ConnectorInput, A extends AssetTypeInput> Stream<Try<T>> typedEntityStream(
+      Class<T> entityClass,
+      EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
+      Collection<NodeInput> nodes,
+      Collection<OperatorInput> operators,
+      Collection<A> types) {
 
     return buildTypedConnectorEntityData(
             buildUntypedConnectorInputEntityData(

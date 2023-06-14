@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.OperationTime
@@ -16,7 +15,7 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -52,13 +51,13 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
       "srated"             : "4",
       "cosphirated"        : "5"
     ]
-    Try<LoadInput, FactoryException> input = inputFactory.get(
+    Try<LoadInput> input = inputFactory.get(
         new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, nodeInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime == OperationTime.notLimited()
       assert operator == OperatorInput.NO_OPERATOR_ASSIGNED

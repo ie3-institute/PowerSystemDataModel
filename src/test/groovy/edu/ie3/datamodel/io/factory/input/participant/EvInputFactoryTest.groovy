@@ -5,14 +5,13 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.EvInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -48,13 +47,13 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
     def typeInput = Mock(EvTypeInput)
 
     when:
-    Try<EvInput, FactoryException> input = inputFactory.get(
+    Try<EvInput> input = inputFactory.get(
         new SystemParticipantTypedEntityData<EvTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput, typeInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])

@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
@@ -21,7 +20,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.utils.StreamUtils;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
@@ -617,7 +616,7 @@ public abstract class CsvDataSource {
    * @param <T> Type of the {@link AssetInput} to expect
    * @return stream of the entities that could and have been built by the factor
    */
-  protected <T extends AssetInput> Stream<Try<T, FactoryException>> nodeAssetEntityStream(
+  protected <T extends AssetInput> Stream<Try<T>> nodeAssetEntityStream(
       Class<T> entityClass,
       EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,

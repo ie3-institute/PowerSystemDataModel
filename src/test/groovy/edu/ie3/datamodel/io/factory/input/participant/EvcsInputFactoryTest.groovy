@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.input.NodeInput
@@ -14,7 +13,7 @@ import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Specification
@@ -58,13 +57,13 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<EvcsInput, FactoryException> input = inputFactory.get(
+    Try<EvcsInput> input = inputFactory.get(
         new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -107,12 +106,12 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<EvcsInput, FactoryException> input = inputFactory.get(
+    Try<EvcsInput> input = inputFactory.get(
         new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput))
 
     then:
     input.failure
-    input.exception.cause.message == "Exception while trying to parse field \"type\" with supposed int value \"-- invalid --\""
+    input.exception().cause.message == "Exception while trying to parse field \"type\" with supposed int value \"-- invalid --\""
   }
 
   def "A EvcsInputFactory should fail when passing an invalid EvcsLocationType"() {
@@ -135,11 +134,11 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<EvcsInput, FactoryException> input = inputFactory.get(
+    Try<EvcsInput> input = inputFactory.get(
         new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput))
 
     then:
     input.failure
-    input.exception.cause.message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
+    input.exception().cause.message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
   }
 }

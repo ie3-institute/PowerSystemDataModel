@@ -5,9 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.typeinput
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.FactoryData
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
@@ -41,12 +40,12 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
     def typeInputClass = LineTypeInput
 
     when:
-    Try<LineTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), typeInputClass))
+    Try<LineTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), typeInputClass))
 
     then:
     typeInput.success
-    typeInput.data.getClass() == typeInputClass
-    typeInput.data.with {
+    typeInput.data().getClass() == typeInputClass
+    typeInput.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert b == getQuant(parameter["b"], StandardUnits.SUSCEPTANCE_PER_LENGTH)

@@ -5,12 +5,11 @@
  */
 package edu.ie3.datamodel.io.factory.result
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.*
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.unit.Units
@@ -57,12 +56,12 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     when:
-    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), modelClass))
+    Try<? extends SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), modelClass))
 
     then:
     result.success
-    result.data.getClass() == resultingModelClass
-    ((SystemParticipantResult) result.data).with {
+    result.data().getClass() == resultingModelClass
+    ((SystemParticipantResult) result.data()).with {
       assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
       assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
       assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
@@ -70,19 +69,19 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     if (modelClass == EvResult) {
-      assert (((EvResult) result.data).soc == getQuant(parameter["soc"], Units.PERCENT))
+      assert (((EvResult) result.data()).soc == getQuant(parameter["soc"], Units.PERCENT))
     }
 
     if (modelClass == StorageResult) {
-      assert (((StorageResult) result.data).soc == getQuant(parameter["soc"], Units.PERCENT))
+      assert (((StorageResult) result.data()).soc == getQuant(parameter["soc"], Units.PERCENT))
     }
 
     if (modelClass == HpResult) {
-      assert(((HpResult)result.data).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+      assert(((HpResult) result.data()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
     }
 
     if (modelClass == ChpResult) {
-      assert(((ChpResult)result.data).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+      assert(((ChpResult) result.data()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
     }
 
     where:
@@ -111,12 +110,12 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "q"         : "2"
     ]
     when:
-    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), StorageResult))
+    Try<? extends SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), StorageResult))
 
     then:
     result.success
-    result.data.getClass() == StorageResult
-    ((StorageResult) result.data).with {
+    result.data().getClass() == StorageResult
+    ((StorageResult) result.data()).with {
       assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
       assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
       assert soc == getQuant(parameter["soc"], Units.PERCENT)
@@ -134,11 +133,11 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "q"         : "2"
     ]
     when:
-    Try<SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), WecResult))
+    Try<SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), WecResult))
 
     then:
     result.failure
-    result.exception.cause.message == "The provided fields [inputModel, q, time] with data \n" +
+    result.exception().cause.message == "The provided fields [inputModel, q, time] with data \n" +
         "{inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,\n" +
         "q -> 2,\n" +
         "time -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +
