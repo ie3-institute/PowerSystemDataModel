@@ -30,7 +30,7 @@ import java.util.stream.Collectors
 
 class CsvFileConnectorTest extends Specification {
   @Shared
-  Path baseDirectory
+  Path tmpDirectory
 
   @Shared
   CsvFileConnector cfc
@@ -42,8 +42,8 @@ class CsvFileConnectorTest extends Specification {
   Set<Path> pathsToIgnore
 
   def setupSpec() {
-    baseDirectory = Files.createTempDirectory("psdm_csv_file_connector_")
-    cfc = new CsvFileConnector(baseDirectory, new FileNamingStrategy())
+    tmpDirectory = Files.createTempDirectory("psdm_csv_file_connector_")
+    cfc = new CsvFileConnector(tmpDirectory, new FileNamingStrategy())
     def gridPaths = [Path.of("node_input.csv")]
     timeSeriesPaths = [
       "its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf.csv",
@@ -55,12 +55,12 @@ class CsvFileConnectorTest extends Specification {
     pathsToIgnore = [
       Path.of("file_to_be_ignored.txt")
     ]
-    (gridPaths + pathsToIgnore + timeSeriesPaths).forEach { path -> Files.createFile(baseDirectory.resolve(path)) }
+    (gridPaths + pathsToIgnore + timeSeriesPaths).forEach { path -> Files.createFile(tmpDirectory.resolve(path)) }
   }
 
   def cleanupSpec() {
     cfc.shutdown()
-    FileIOUtils.deleteRecursively(baseDirectory)
+    FileIOUtils.deleteRecursively(tmpDirectory)
   }
 
   def "The csv file connector is able to provide correct paths to time series files"() {
@@ -111,7 +111,7 @@ class CsvFileConnectorTest extends Specification {
 
   def "The csv file connector throws an Exception, if the foreseen file cannot be found"() {
     given:
-    def cfc = new CsvFileConnector(baseDirectory, new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(baseDirectory, "test")))
+    def cfc = new CsvFileConnector(tmpDirectory, new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(tmpDirectory, "test")))
 
     when:
     cfc.initReader(NodeInput)
@@ -130,7 +130,7 @@ class CsvFileConnectorTest extends Specification {
 
   def "The csv file connector is able to init writers utilizing a directory hierarchy"() {
     given: "a suitable connector"
-    def baseDirectory = baseDirectory.resolve("directoryHierarchy")
+    def baseDirectory = tmpDirectory.resolve("directoryHierarchy")
     def directoryHierarchy = new DefaultDirectoryHierarchy(baseDirectory, "test")
     def fileNamingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), directoryHierarchy)
     def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
@@ -150,7 +150,7 @@ class CsvFileConnectorTest extends Specification {
 
   def "The csv file connector is able to init writers utilizing no directory hierarchy"() {
     given: "a suitable connector"
-    def baseDirectory = baseDirectory.resolve("directoryHierarchy")
+    def baseDirectory = tmpDirectory.resolve("directoryHierarchy")
     def fileNamingStrategy = new FileNamingStrategy()
     def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
 
@@ -170,7 +170,7 @@ class CsvFileConnectorTest extends Specification {
   def "The csv file connector throws ConnectorException if no csv file definition can be built from class information"() {
     given:
     def fileNamingStrategy = new FileNamingStrategy()
-    def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+    def connector = new CsvFileConnector(tmpDirectory, fileNamingStrategy)
 
     when:
     connector.buildFileDefinition(String, ["a", "b", "c"] as String[], ",")
@@ -183,7 +183,7 @@ class CsvFileConnectorTest extends Specification {
   def "The csv file connector is able to build correct csv file definition from class upon request"() {
     given:
     def fileNamingStrategy = new FileNamingStrategy()
-    def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+    def connector = new CsvFileConnector(tmpDirectory, fileNamingStrategy)
     def expected = new CsvFileDefinition("node_input.csv", Path.of(""), ["a", "b", "c"] as String[], ",")
 
     when:
@@ -199,8 +199,8 @@ class CsvFileConnectorTest extends Specification {
 
   def "The csv file connector is able to build correct csv file definition from class upon request, utilizing directory hierarchy"() {
     given:
-    def fileNamingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(baseDirectory, "test"))
-    def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+    def fileNamingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(tmpDirectory, "test"))
+    def connector = new CsvFileConnector(tmpDirectory, fileNamingStrategy)
     def expected = new CsvFileDefinition("node_input.csv", Path.of("test", "input", "grid"), ["a", "b", "c"] as String[], ",")
 
     when:
@@ -217,7 +217,7 @@ class CsvFileConnectorTest extends Specification {
   def "The csv file connector throws ConnectorException if no csv file definition can be built from time series"() {
     given: "a suitable connector"
     def fileNamingStrategy = new FileNamingStrategy()
-    def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+    def connector = new CsvFileConnector(tmpDirectory, fileNamingStrategy)
 
     and: "credible input"
     def timeSeries = Mock(RepetitiveTimeSeries)
@@ -233,7 +233,7 @@ class CsvFileConnectorTest extends Specification {
   def "The csv file connector is able to build correct csv file definition from time series upon request"() {
     given: "a suitable connector"
     def fileNamingStrategy = new FileNamingStrategy()
-    def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+    def connector = new CsvFileConnector(tmpDirectory, fileNamingStrategy)
     def expected = new CsvFileDefinition("its_c_0c03ce9f-ab0e-4715-bc13-f9d903f26dbf.csv", Path.of(""), ["a", "b", "c"] as String[], ",")
 
     and: "credible input"
@@ -257,8 +257,8 @@ class CsvFileConnectorTest extends Specification {
 
   def "The csv file connector is able to build correct csv file definition from time series upon request, utilizing directory hierarchy"() {
     given: "a suitable connector"
-    def fileNamingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(baseDirectory, "test"))
-    def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+    def fileNamingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(tmpDirectory, "test"))
+    def connector = new CsvFileConnector(tmpDirectory, fileNamingStrategy)
     def expected = new CsvFileDefinition("its_c_0c03ce9f-ab0e-4715-bc13-f9d903f26dbf.csv", Path.of("test", "input", "participants", "time_series"), ["a", "b", "c"] as String[], ",")
 
     and: "credible input"
@@ -282,7 +282,7 @@ class CsvFileConnectorTest extends Specification {
 
   def "Initialising a writer with incorrect base directory leads to ConnectorException"() {
     given:
-    def baseFolder = baseDirectory.resolve("helloWorld.txt")
+    def baseFolder = tmpDirectory.resolve("helloWorld.txt")
     def baseFolderFile = baseFolder.toFile()
     baseFolderFile.createNewFile()
     def fileDefinition = new CsvFileDefinition("test.csv", Path.of(""), [] as String[], ",")
