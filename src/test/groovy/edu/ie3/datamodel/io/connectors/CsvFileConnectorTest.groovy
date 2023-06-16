@@ -42,7 +42,7 @@ class CsvFileConnectorTest extends Specification {
   Set<Path> pathsToIgnore
 
   def setupSpec() {
-    tmpDirectory = Files.createTempDirectory("psdm_csv_file_connector_").toAbsolutePath()
+    tmpDirectory = Files.createTempDirectory("psdm_csv_file_connector_")
     cfc = new CsvFileConnector(tmpDirectory, new FileNamingStrategy())
     def gridPaths = [Path.of("node_input.csv")]
     timeSeriesPaths = [
