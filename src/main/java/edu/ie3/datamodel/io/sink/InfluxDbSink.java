@@ -20,6 +20,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import edu.ie3.util.TimeUtil;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
@@ -38,10 +40,33 @@ public class InfluxDbSink implements OutputDataSink {
   private final ProcessorProvider processorProvider;
 
   /**
+   * Initializes a new InfluxDbWeatherSource with a default EntityPersistenceNamingStrategy
+   *
+   * @param connector needed for database connection
+   */
+  public InfluxDbSink(InfluxDbConnector connector) {
+    this(connector, new EntityPersistenceNamingStrategy(), TimeUtil.withDefaults.getDateTimeFormatter());
+  }
+
+  /**
    * Initializes a new InfluxDbWeatherSource
    *
    * @param connector needed for database connection
    * @param entityPersistenceNamingStrategy needed to create measurement names for entities
+   */
+  public InfluxDbSink(
+          InfluxDbConnector connector,
+          EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+    this(connector, entityPersistenceNamingStrategy, TimeUtil.withDefaults.getDateTimeFormatter());
+  }
+
+
+  /**
+   * Initializes a new InfluxDbWeatherSource
+   *
+   * @param connector needed for database connection
+   * @param entityPersistenceNamingStrategy needed to create measurement names for entities
+   * @param dateTimeFormatter the formatter to use for processing date time fields
    */
   public InfluxDbSink(
       InfluxDbConnector connector,
@@ -55,14 +80,7 @@ public class InfluxDbSink implements OutputDataSink {
             ProcessorProvider.allTimeSeriesProcessors(dateTimeFormatter));
   }
 
-  /**
-   * Initializes a new InfluxDbWeatherSource with a default EntityPersistenceNamingStrategy
-   *
-   * @param connector needed for database connection
-   */
-  public InfluxDbSink(InfluxDbConnector connector, DateTimeFormatter dateTimeFormatter) {
-    this(connector, new EntityPersistenceNamingStrategy(), dateTimeFormatter);
-  }
+
 
   @Override
   public void shutdown() {

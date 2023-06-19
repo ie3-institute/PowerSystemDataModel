@@ -37,6 +37,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import edu.ie3.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +62,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   private final String csvSep;
 
+  public CsvFileSink(String baseFolderPath) {
+    this(baseFolderPath, TimeUtil.withDefaults.getDateTimeFormatter());
+  }
+
   public CsvFileSink(String baseFolderPath, DateTimeFormatter dateTimeFormatter) {
     this(baseFolderPath, new FileNamingStrategy(), dateTimeFormatter, false, ",");
   }
@@ -71,6 +77,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    *
    * @param baseFolderPath the base folder path where the files should be put into
    * @param fileNamingStrategy the data sink file naming strategy that should be used
+   * @param dateTimeFormatter the formatter to use for processing date time fields
    * @param initFiles true if the files should be created during initialization (might create files,
    *     that only consist of a headline, because no data will be written into them), false
    *     otherwise
