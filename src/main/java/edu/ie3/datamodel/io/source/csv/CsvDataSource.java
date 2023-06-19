@@ -65,7 +65,7 @@ public class CsvDataSource implements DataSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  public BufferedReader createReader(String filePath) throws FileNotFoundException {
+  public BufferedReader createReader(Path filePath) throws FileNotFoundException {
     return connector.initReader(filePath);
   }
 

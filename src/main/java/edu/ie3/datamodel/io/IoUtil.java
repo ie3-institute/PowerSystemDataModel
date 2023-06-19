@@ -37,11 +37,7 @@ public class IoUtil {
    * @return the option for a harmonized path
    */
   public static Path harmonizeFileSeparator(Path path) {
-    return Path.of(
-        IoUtil.harmonizeFileSeparator(
-            path.toString()
-                .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
-                .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", "")));
+    return Path.of(IoUtil.harmonizeFileSeparator(path.toString()));
   }
 
   /**
