@@ -40,7 +40,7 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
         new DefaultDirectoryHierarchy("output", "vn_simona"))
     tempDirectory = Files.createTempDirectory("GridIoIT")
     sinkFlat = new CsvFileSink(tempDirectory.toAbsolutePath().toString())
-    sinkHierarchic = new CsvFileSink(tempDirectory.toAbsolutePath().toString(), hierarchicNamingStrategy, false, ",")
+    sinkHierarchic = new CsvFileSink(tempDirectory.toAbsolutePath().toString(), hierarchicNamingStrategy, ",")
   }
 
   def cleanupSpec() {
