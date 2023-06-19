@@ -69,14 +69,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
         tapPos,
         autoTap,
         false);
-    if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
-        || nodeC
-            .getVoltLvl()
-            .getNominalVoltage()
-            .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
-      throw new IllegalArgumentException(
-          "NodeA must be greater than nodeB and nodeB must be greater than nodeC");
-    }
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
   }
 
   /**
@@ -137,14 +130,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             null,
             nodeA.getVoltLvl(),
             nodeA.getSubnet()));
-    if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
-        || nodeC
-            .getVoltLvl()
-            .getNominalVoltage()
-            .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
-      throw new IllegalArgumentException(
-          "NodeA must be greater than nodeB and nodeB must be greater than nodeC");
-    }
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
   }
 
   /**

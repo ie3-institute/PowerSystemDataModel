@@ -330,7 +330,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
         .getNominalVoltage()
         .isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())) {
       throw new IllegalArgumentException(
-          "nodeA must be on the higher voltage side of the transformer.");
+          "nodeA must be on the higher voltage side of the transformer");
     }
   }
 
@@ -354,7 +354,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Checks whether the voltage level sides are correctly assigned. (nodeA < nodeB < nodeC)
+   * Checks whether the voltage level sides are correctly assigned. (nodeA > nodeB > nodeC)
    *
    * @param nodeA NodeInput a of the transformer
    * @param nodeB NodeInput b of the transformer
@@ -362,18 +362,20 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   public static void connectsNodesToCorrectVoltageSides(
       NodeInput nodeA, NodeInput nodeB, NodeInput nodeC) {
-    if (nodeA
+    String errorMessage =
+        "Voltage level of node a must be greater than voltage level of node b and voltage level of node b must be greater than voltage level of node c";
+    if (nodeC
         .getVoltLvl()
         .getNominalVoltage()
         .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
-      throw new IllegalArgumentException("Voltage level of nodeB must be greater than nodeA");
+      throw new IllegalArgumentException(errorMessage);
     }
 
     if (nodeB
         .getVoltLvl()
         .getNominalVoltage()
-        .isGreaterThan(nodeC.getVoltLvl().getNominalVoltage())) {
-      throw new IllegalArgumentException("Voltage level of nodeC must be greater than nodeB");
+        .isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())) {
+      throw new IllegalArgumentException(errorMessage);
     }
   }
 

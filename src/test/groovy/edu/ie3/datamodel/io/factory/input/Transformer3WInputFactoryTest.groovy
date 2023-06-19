@@ -81,7 +81,7 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
 
     then:
     def e = thrown(IllegalArgumentException)
-    e.message == "NodeA must be greater than nodeB and nodeB must be greater than nodeC"
+    e.message == "Voltage level of node a must be greater than voltage level of node b and voltage level of node b must be greater than voltage level of node c"
   }
 }
 

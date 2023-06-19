@@ -87,6 +87,6 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
 
     then:
     def e = thrown(IllegalArgumentException)
-    e.message == "nodeA must be on the upper voltage side of the transformer"
+    e.message == "nodeA must be on the higher voltage side of the transformer"
   }
 }
