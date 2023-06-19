@@ -49,7 +49,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
     def tsUuid = UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7")
 
     when:
-    def actual = source.buildIndividualTimeSeries(tsUuid, filePath, { source.buildTimeBasedValue(it, HeatAndPValue, factory) })
+    def actual = source.buildIndividualTimeSeries(tsUuid, filePath, { source.createTimeBasedValue(it) })
 
     then:
     noExceptionThrown()

@@ -43,7 +43,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
         )
 
     when:
-    def actual = source.buildTimeBasedValue(fieldToValue, EnergyPriceValue, factory)
+    def actual = source.createTimeBasedValue(fieldToValue)
 
     then:
     actual.present

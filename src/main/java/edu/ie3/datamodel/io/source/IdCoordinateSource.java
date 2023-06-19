@@ -17,7 +17,8 @@ import tech.units.indriya.ComparableQuantity;
  * latitude and longitude values, which is especially needed for data source that don't offer
  * combined primary or foreign keys.
  */
-public interface IdCoordinateSource extends DataSource {
+public interface IdCoordinateSource {
+
   /**
    * Get the matching coordinate for the given ID
    *

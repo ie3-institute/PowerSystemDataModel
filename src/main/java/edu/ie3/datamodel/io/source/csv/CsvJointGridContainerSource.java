@@ -39,17 +39,15 @@ public class CsvJointGridContainerSource {
       namingStrategy = new FileNamingStrategy();
     }
 
+    CsvDataSource dataSource = new CsvDataSource(csvSep, directoryPath, namingStrategy);
+
     /* Instantiating sources */
-    TypeSource typeSource = new CsvTypeSource(csvSep, directoryPath, namingStrategy);
-    RawGridSource rawGridSource =
-        new CsvRawGridSource(csvSep, directoryPath, namingStrategy, typeSource);
-    ThermalSource thermalSource =
-        new CsvThermalSource(csvSep, directoryPath, namingStrategy, typeSource);
+    TypeSource typeSource = new TypeSource(dataSource);
+    RawGridSource rawGridSource = new RawGridSource(typeSource, dataSource);
+    ThermalSource thermalSource = new ThermalSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
-        new CsvSystemParticipantSource(
-            csvSep, directoryPath, namingStrategy, typeSource, thermalSource, rawGridSource);
-    GraphicSource graphicSource =
-        new CsvGraphicSource(csvSep, directoryPath, namingStrategy, typeSource, rawGridSource);
+        new SystemParticipantSource(typeSource, thermalSource, rawGridSource, dataSource);
+    GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* Loading models */
     RawGridElements rawGridElements =

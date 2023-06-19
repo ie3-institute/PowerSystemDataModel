@@ -1,0 +1,26 @@
+@startuml
+
+note "Assuming all classes to implement \nthe abstract methods of their interfaces\n\n" as generalNotes
+
+interface DataSource {
+    {abstract} Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass)
+}
+
+DataSource <|-- CsvDataSource
+DataSource <|-- SqlDataSource
+
+' Implementations
+
+class CsvDataSource {
+    - String csvSep
+    # CsvFileConnector connector
+    + CsvDataSource(String, String, FileNamingStrategy)
+}
+
+class SqlDataSource {
+    - String schemaName
+    # SqlConnector connector
+    # DatabaseNamingStrategy databaseNamingStrategy
+    + SqlDataSource(String, String, DatabaseNamingStrategy)
+}
+@enduml
