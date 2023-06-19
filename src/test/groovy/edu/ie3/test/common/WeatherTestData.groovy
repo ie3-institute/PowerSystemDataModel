@@ -6,6 +6,7 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.io.source.IdCoordinateSource
+import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
 import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
@@ -17,9 +18,8 @@ import java.util.stream.Stream
 
 abstract class WeatherTestData {
 
-  protected static final class DummyIdCoordinateSource implements IdCoordinateSource {
+  static final class DummyIdCoordinateSource implements CsvTestDataMeta, IdCoordinateSource {
 
-    @Override
     Optional<Point> getCoordinate(int id) {
       switch (id) {
         case 193186: return Optional.of(GeoUtils.buildPoint(7d, 49d))
