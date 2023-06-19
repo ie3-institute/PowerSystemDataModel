@@ -69,10 +69,12 @@ public abstract class Processor<T> {
   private static final String PARALLEL_DEVICES = "parallelDevices";
 
   private final DateTimeFormatter dateTimeFormatter;
+
   /**
    * Instantiates a Processor for a foreseen class
    *
    * @param foreSeenClass Class and its children that are foreseen to be handled with this processor
+   * @param dateTimeFormatter Formatter to use for date time processing
    */
   protected Processor(Class<? extends T> foreSeenClass, DateTimeFormatter dateTimeFormatter) {
     this.dateTimeFormatter = dateTimeFormatter;
@@ -107,7 +109,7 @@ public abstract class Processor<T> {
    * Maps the foreseen table fields to the objects getters
    *
    * @param cls class to use for mapping
-   * @return an array of strings of all field values of the class
+   * @return a map of field name to its respective getter method name
    */
   protected SortedMap<String, Method> mapFieldNameToGetter(Class<?> cls) {
     return mapFieldNameToGetter(cls, Collections.emptyList());

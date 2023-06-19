@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.*;
+import edu.ie3.util.TimeUtil;
 import java.lang.reflect.Method;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -66,6 +67,10 @@ public class TimeSeriesProcessor<
   private final SortedMap<String, FieldSourceToMethod> fieldToSource;
 
   private final String[] flattenedHeaderElements;
+
+  public TimeSeriesProcessor(Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass) {
+    this(timeSeriesClass, entryClass, valueClass, TimeUtil.withDefaults.getDateTimeFormatter());
+  }
 
   public TimeSeriesProcessor(
       Class<T> timeSeriesClass,

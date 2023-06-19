@@ -37,6 +37,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
    * Create a new EntityProcessor
    *
    * @param registeredClass the class the entity processor should be able to handle
+   * @param dateTimeFormatter the formatter to use for date time fields
    */
   protected EntityProcessor(
       Class<? extends T> registeredClass, DateTimeFormatter dateTimeFormatter) {

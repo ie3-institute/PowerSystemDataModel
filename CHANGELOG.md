@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Removing deprecated classes and methods [#540](https://github.com/ie3-institute/PowerSystemDataModel/issues/540)
-- Included option to pass a dateTimeFormatter to the processors [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766)
+- Added dateTimeFormatter field to the processors [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766)
 
 
 ## [3.0.0] - 2023-02-16
@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ThermalUnits` as a container to hold all thermal units [#134](https://github.com/ie3-institute/PowerSystemDataModel/issues/134)
 - `ThermalInput` as a distinct abstract class for all thermal models
 - `ThermalGrid` as a container for a completely connected thermal grid
-- `EmResult` and `FlexOptionsResult` for Energy Management Systems [#651](https://github.com/ie3-institute/PowerSystemDataModel/issues/651)
+- `EmResult` and `FlexOptionsResult` for Energy Mdanagement Systems [#651](https://github.com/ie3-institute/PowerSystemDataModel/issues/651)
 - `EvcsInput` now has a parameter for enabling and disabling vehicle to grid support [#681](https://github.com/ie3-institute/PowerSystemDataModel/issues/681)
 - Added Dependabot updates to sphinx/readthedocs dependencies [#735](https://github.com/ie3-institute/PowerSystemDataModel/issues/735)
 - Created convenience function for JointGridContainer from CSV [#502](https://github.com/ie3-institute/PowerSystemDataModel/issues/502)

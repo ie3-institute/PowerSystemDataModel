@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.util.TimeUtil;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -236,6 +237,17 @@ public class ProcessorProvider {
    *
    * @return a collection of all existing processors
    */
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors() {
+    DateTimeFormatter dateTimeFormatter = TimeUtil.withDefaults.getDateTimeFormatter();
+    return allEntityProcessors(dateTimeFormatter);
+  }
+
+  /**
+   * Build a collection of all existing processors
+   *
+   * @param dateTimeFormatter the date time formatter to use for persisting date time values
+   * @return a collection of all existing processors
+   */
   public static Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors(
       DateTimeFormatter dateTimeFormatter) {
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
@@ -247,6 +259,17 @@ public class ProcessorProvider {
   /**
    * Build a collection of all input processors
    *
+   * @return a collection of all input processors
+   */
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allInputEntityProcessors() {
+    DateTimeFormatter dateTimeFormatter = TimeUtil.withDefaults.getDateTimeFormatter();
+    return allInputEntityProcessors(dateTimeFormatter);
+  }
+
+  /**
+   * Build a collection of all input processors
+   *
+   * @param dateTimeFormatter the date time formatter to use for persisting date time values
    * @return a collection of all input processors
    */
   public static Collection<EntityProcessor<? extends UniqueEntity>> allInputEntityProcessors(
@@ -263,6 +286,17 @@ public class ProcessorProvider {
    *
    * @return a collection of all result processors
    */
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allResultEntityProcessors() {
+    DateTimeFormatter dateTimeFormatter = TimeUtil.withDefaults.getDateTimeFormatter();
+    return allResultEntityProcessors(dateTimeFormatter);
+  }
+
+  /**
+   * Build a collection of all result processors
+   *
+   * @param dateTimeFormatter the date time formatter to use for persisting date time values
+   * @return a collection of all result processors
+   */
   public static Collection<EntityProcessor<? extends UniqueEntity>> allResultEntityProcessors(
       DateTimeFormatter dateTimeFormatter) {
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
@@ -277,6 +311,22 @@ public class ProcessorProvider {
    *
    * @return A mapping from eligible combinations to processors
    */
+  public static Map<
+          TimeSeriesProcessorKey,
+          TimeSeriesProcessor<
+              TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>
+      allTimeSeriesProcessors() {
+    DateTimeFormatter dateTimeFormatter = TimeUtil.withDefaults.getDateTimeFormatter();
+    return allTimeSeriesProcessors(dateTimeFormatter);
+  }
+
+  /**
+   * Create processors for all known eligible combinations and map them
+   *
+   * @param dateTimeFormatter the date time formatter to use for persisting date time values
+   * @return A mapping from eligible combinations to processors
+   */
+  @SuppressWarnings("unchecked")
   public static Map<
           TimeSeriesProcessorKey,
           TimeSeriesProcessor<
