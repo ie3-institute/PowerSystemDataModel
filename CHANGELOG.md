@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Removing deprecated classes and methods [#540](https://github.com/ie3-institute/PowerSystemDataModel/issues/540)
+- Included option to pass a dateTimeFormatter to the processors [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766)
 
 
 ## [3.0.0] - 2023-02-16
@@ -105,7 +106,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Deleted parameter decimalPlaces and changed naming of serialization method [#710](https://github.com/ie3-institute/PowerSystemDataModel/issues/710)
 - Changed switch result documentation according to the implementation [#757](https://github.com/ie3-institute/PowerSystemDataModel/issues/757)
 - Added documentation for EmResult and FlexOptionResult [#656](https://github.com/ie3-institute/PowerSystemDataModel/issues/656)
-- Included option to parse a dateTimeFormatter to the processors [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766)
 
 ## [2.0.1] - 2021-07-08
 
