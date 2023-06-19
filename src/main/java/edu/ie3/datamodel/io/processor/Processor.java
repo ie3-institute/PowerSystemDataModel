@@ -120,7 +120,7 @@ public abstract class Processor<T> {
    *
    * @param cls class to use for mapping
    * @param ignoreFields A collection of all field names to ignore during process
-   * @return an array of strings of all field values of the class
+   * @return a map of field name to its respective getter method name
    */
   protected SortedMap<String, Method> mapFieldNameToGetter(
       Class<?> cls, Collection<String> ignoreFields) {
