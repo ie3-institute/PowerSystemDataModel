@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import static edu.ie3.datamodel.utils.validation.ConnectorValidationUtils.connectsNodesToCorrectVoltageSides;
+
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -48,13 +50,7 @@ public class Transformer2WInput extends TransformerInput implements HasType {
       int tapPos,
       boolean autoTap) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    if (nodeB
-        .getVoltLvl()
-        .getNominalVoltage()
-        .isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())) {
-      throw new IllegalArgumentException(
-          "nodeA must be on the upper voltage side of the transformer");
-    }
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB);
     this.type = type;
   }
 
@@ -81,13 +77,7 @@ public class Transformer2WInput extends TransformerInput implements HasType {
       int tapPos,
       boolean autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    if (nodeB
-        .getVoltLvl()
-        .getNominalVoltage()
-        .isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())) {
-      throw new IllegalArgumentException(
-          "nodeA must be on the upper voltage side of the transformer");
-    }
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB);
     this.type = type;
   }
 

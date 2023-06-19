@@ -94,7 +94,6 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             transformer -> {
               checkNodeAvailability(transformer, nodes);
-              checkNodeVoltageSide2W(transformer);
               ConnectorValidationUtils.check(transformer);
             });
 
@@ -104,7 +103,6 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             transformer -> {
               checkNodeAvailability(transformer, nodes);
-              checkNodeVoltageSide3W(transformer);
               ConnectorValidationUtils.check(transformer);
             });
 
@@ -289,45 +287,6 @@ public class GridContainerValidationUtils extends ValidationUtils {
   private static void checkNodeAvailability(ConnectorInput connector, Collection<NodeInput> nodes) {
     if (!nodes.containsAll(Arrays.asList(connector.getNodeA(), connector.getNodeB())))
       throw getMissingNodeException(connector);
-  }
-
-  /**
-   * Checks, if nodeA of the {@link Transformer2WInput} is on the hv-side of the transformer
-   *
-   * @param transformer Connector to examine
-   */
-  private static void checkNodeVoltageSide2W(Transformer2WInput transformer) {
-    if (transformer
-            .getNodeB()
-            .getVoltLvl()
-            .getNominalVoltage()
-            .compareTo(transformer.getNodeA().getVoltLvl().getNominalVoltage())
-        > 0)
-      throw new IllegalArgumentException("nodeA is expected to be at the higher voltage side");
-  }
-
-  /**
-   * Checks, if nodeA is greater than nodeB and nodeB is greater than nodeC of the {@link
-   * Transformer3WInput}
-   *
-   * @param transformer Connector to examine
-   */
-  private static void checkNodeVoltageSide3W(Transformer3WInput transformer) {
-    if (transformer
-                .getNodeA()
-                .getVoltLvl()
-                .getNominalVoltage()
-                .compareTo(transformer.getNodeB().getVoltLvl().getNominalVoltage())
-            > 0
-        && transformer
-                .getNodeB()
-                .getVoltLvl()
-                .getNominalVoltage()
-                .compareTo(transformer.getNodeC().getVoltLvl().getNominalVoltage())
-            > 0) {
-      throw new IllegalArgumentException(
-          "nodeA must be greater than nodeB and nodeB must be greater than nodeC");
-    }
   }
 
   /**

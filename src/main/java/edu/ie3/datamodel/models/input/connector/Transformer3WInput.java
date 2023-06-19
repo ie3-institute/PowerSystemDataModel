@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import static edu.ie3.datamodel.utils.validation.ConnectorValidationUtils.connectsNodesToCorrectVoltageSides;
 import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 
 import edu.ie3.datamodel.io.extractor.HasType;
@@ -171,14 +172,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       int tapPos,
       boolean autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
-        || nodeC
-            .getVoltLvl()
-            .getNominalVoltage()
-            .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
-      throw new IllegalArgumentException(
-          "NodeA must be greater than nodeB and nodeB must be greater than nodeC");
-    }
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
     this.type = type;
     this.nodeC = nodeC;
     this.nodeInternal =
@@ -224,14 +218,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       boolean autoTap,
       NodeInput internalNode) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    if (nodeB.getVoltLvl().getNominalVoltage().isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())
-        || nodeC
-            .getVoltLvl()
-            .getNominalVoltage()
-            .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
-      throw new IllegalArgumentException(
-          "NodeA must be greater than nodeB and nodeB must be greater than nodeC");
-    }
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
     this.type = type;
     this.nodeC = nodeC;
     this.nodeInternal = internalNode;
