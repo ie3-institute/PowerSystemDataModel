@@ -8,12 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Copy methods for container classes [#726](https://github.com/ie3-institute/PowerSystemDataModel/issues/726)
+- Allow hierarchic grid structure for JointGridContainer [#768](https://github.com/ie3-institute/PowerSystemDataModel/issues/768)
+- Adding SQL id coordinate sources (``IdCoordinateSource``) [#689](https://github.com/ie3-institute/PowerSystemDataModel/issues/689)
 
 ### Fixed
-
+- Fixed wrong rated power unit hint [#804](https://github.com/ie3-institute/PowerSystemDataModel/issues/804)
+- Fixed wrong hash code generation of ConnectorResult [#817](https://github.com/ie3-institute/PowerSystemDataModel/issues/817) 
 
 ### Changed
 - Removing deprecated classes and methods [#540](https://github.com/ie3-institute/PowerSystemDataModel/issues/540)
+- Refactor CSV data sources [#716](https://github.com/ie3-institute/PowerSystemDataModel/issues/716)
 - Added dateTimeFormatter field to the processors [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766)
 
 
@@ -28,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ThermalUnits` as a container to hold all thermal units [#134](https://github.com/ie3-institute/PowerSystemDataModel/issues/134)
 - `ThermalInput` as a distinct abstract class for all thermal models
 - `ThermalGrid` as a container for a completely connected thermal grid
-- `EmResult` and `FlexOptionsResult` for Energy Mdanagement Systems [#651](https://github.com/ie3-institute/PowerSystemDataModel/issues/651)
+- `EmResult` and `FlexOptionsResult` for Energy Management Systems [#651](https://github.com/ie3-institute/PowerSystemDataModel/issues/651)
 - `EvcsInput` now has a parameter for enabling and disabling vehicle to grid support [#681](https://github.com/ie3-institute/PowerSystemDataModel/issues/681)
 - Added Dependabot updates to sphinx/readthedocs dependencies [#735](https://github.com/ie3-institute/PowerSystemDataModel/issues/735)
 - Created convenience function for JointGridContainer from CSV [#502](https://github.com/ie3-institute/PowerSystemDataModel/issues/502)
@@ -36,26 +40,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
-    - Protected constructors for abstract classes
-    - Use pattern matching
-    - Remove unused imports
-    - Use enhanced switch statements
-    - Replace lambdas with method references
-    - Use `Stream#toList`
-    - Adapt visibility for JUnit 5
+  - Protected constructors for abstract classes
+  - Use pattern matching
+  - Remove unused imports
+  - Use enhanced switch statements
+  - Replace lambdas with method references
+  - Use `Stream#toList`
+  - Adapt visibility for JUnit 5
 - More code smell fixing [#633](https://github.com/ie3-institute/PowerSystemDataModel/issues/633)
-    - Use `List#of`
-    - Use direct assignment with switch/case structures
-    - Turn some classes into records
-    - Making abstract classes' constructor protected
-    - Improving some RegExs
-    - Replacing `filter(Optional::isPresent).map(Optional::get)` on streams with `flatMap(Optional::stream)`
-    - instanceof variable declarations
-    - Removing unnecessary parentheses
-    - Miscellaneous code smells
+  - Use `List#of`
+  - Use direct assignment with switch/case structures
+  - Turn some classes into records
+  - Making abstract classes' constructor protected
+  - Improving some RegExs
+  - Replacing `filter(Optional::isPresent).map(Optional::get)` on streams with `flatMap(Optional::stream)`
+  - instanceof variable declarations
+  - Removing unnecessary parentheses
+  - Miscellaneous code smells
 - Fix JavaDoc creation
-    - Create JavaDoc with java 17 instead of java 8
-    - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
+  - Create JavaDoc with java 17 instead of java 8
+  - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
 - `BufferedCsvWriter` writes columns in the order, that the headline elements are defined [#434](https://github.com/ie3-institute/PowerSystemDataModel/issues/393)
 - Cleaned up `IndividualTimeSeriesMetaInformation`-related methods in `CsvFileConnector` [#544](https://github.com/ie3-institute/PowerSystemDataModel/issues/544)
 - Fixed spotlessApply handling for `.groovy` files [#637](https://github.com/ie3-institute/PowerSystemDataModel/issues/637)
@@ -76,15 +80,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation`
   - and related methods
 - BREAKING: Comprehensive harmonization around weather sources [#267](https://github.com/ie3-institute/PowerSystemDataModel/issues/267)
-    - Adapted the expected column scheme
-      - General weather model
-        - `coordinate` to `coordinateid`
-      - DWD COSMO model
-        - `diffuseirradiation` to `diffuseirradiance`
-        - `directirradiation` to `directirradiance`
-      - ICON model:
-        - `"datum"` to `"time"`
-    - Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
+  - Adapted the expected column scheme
+    - General weather model
+      - `coordinate` to `coordinateid`
+    - DWD COSMO model
+      - `diffuseirradiation` to `diffuseirradiance`
+      - `directirradiation` to `directirradiance`
+    - ICON model:
+      - `"datum"` to `"time"`
+  - Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
 - BREAKING: Updating PowerSystemUtils dependency to 2.0-SNAPSHOT [#595](https://github.com/ie3-institute/PowerSystemDataModel/issues/595)
 - BREAKING: Generified the `LoadInput` attribute `standardLoadProfile` to `loadProfile` as it should also address the newly added `TemperatureDependantLoadProfile`s [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
 - Adapted to new double converters in PSU [#705](https://github.com/ie3-institute/PowerSystemDataModel/issues/705)

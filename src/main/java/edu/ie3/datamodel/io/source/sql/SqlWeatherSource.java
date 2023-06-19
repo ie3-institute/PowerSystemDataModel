@@ -5,9 +5,11 @@
 */
 package edu.ie3.datamodel.io.source.sql;
 
+import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
+
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
+import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -21,13 +23,12 @@ import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
 
 /** SQL source for weather data */
-public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>>
-    implements WeatherSource {
-  private static final String WHERE = " WHERE ";
+public class SqlWeatherSource extends WeatherSource {
 
-  private final IdCoordinateSource idCoordinateSource;
+  private final SqlDataSource dataSource;
+
+  private static final String WHERE = " WHERE ";
   private final String factoryCoordinateFieldName;
-  private final TimeBasedWeatherValueFactory weatherFactory;
 
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
@@ -53,14 +54,14 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
       String schemaName,
       String weatherTableName,
       TimeBasedWeatherValueFactory weatherFactory) {
-    super(connector);
-    this.idCoordinateSource = idCoordinateSource;
-    this.weatherFactory = weatherFactory;
+    super(idCoordinateSource, weatherFactory);
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
+    this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy());
 
     String dbTimeColumnName =
-        getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
-    String dbCoordinateIdColumnName = getDbColumnName(factoryCoordinateFieldName, weatherTableName);
+        dataSource.getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
+    String dbCoordinateIdColumnName =
+        dataSource.getDbColumnName(factoryCoordinateFieldName, weatherTableName);
 
     // setup queries
     this.queryTimeInterval =
@@ -77,12 +78,14 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
-        executeQuery(
-            queryTimeInterval,
-            ps -> {
-              ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
-              ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
-            });
+        buildTimeBasedValues(
+            weatherFactory,
+            dataSource.executeQuery(
+                queryTimeInterval,
+                ps -> {
+                  ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
+                  ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
+                }));
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
@@ -100,15 +103,17 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
-        executeQuery(
-            queryTimeIntervalAndCoordinates,
-            ps -> {
-              Array coordinateIdArr =
-                  ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
-              ps.setArray(1, coordinateIdArr);
-              ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
-              ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
-            });
+        buildTimeBasedValues(
+            weatherFactory,
+            dataSource.executeQuery(
+                queryTimeIntervalAndCoordinates,
+                ps -> {
+                  Array coordinateIdArr =
+                      ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
+                  ps.setArray(1, coordinateIdArr);
+                  ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
+                  ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
+                }));
 
     return mapWeatherValuesToPoints(timeBasedValues);
   }
@@ -122,18 +127,22 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
-        executeQuery(
-            queryTimeAndCoordinate,
-            ps -> {
-              ps.setInt(1, coordinateId.get());
-              ps.setTimestamp(2, Timestamp.from(date.toInstant()));
-            });
+        buildTimeBasedValues(
+            weatherFactory,
+            dataSource.executeQuery(
+                queryTimeAndCoordinate,
+                ps -> {
+                  ps.setInt(1, coordinateId.get());
+                  ps.setTimestamp(2, Timestamp.from(date.toInstant()));
+                }));
 
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0));
   }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Creates a base query to retrieve all entities in the given time frame with the following
@@ -199,63 +208,5 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
         + "= ANY (?) AND "
         + timeColumnName
         + " BETWEEN ? AND ?;";
-  }
-
-  /**
-   * Converts a field to value map into a TimeBasedValue, removes the "tid"
-   *
-   * @param fieldMap the field to value map for one TimeBasedValue
-   * @return an Optional of that TimeBasedValue
-   */
-  @Override
-  protected Optional<TimeBasedValue<WeatherValue>> createEntity(Map<String, String> fieldMap) {
-    fieldMap.remove("tid");
-    Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
-    if (data.isEmpty()) return Optional.empty();
-    return weatherFactory.get(data.get());
-  }
-
-  /**
-   * Converts a field to value map into TimeBasedWeatherValueData, extracts the coordinate id from
-   * the field map and uses the {@link IdCoordinateSource} to map it to a point
-   *
-   * @param fieldMap the field to value map for one TimeBasedValue
-   * @return the TimeBasedWeatherValueData
-   */
-  private Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(
-      Map<String, String> fieldMap) {
-    String coordinateValue = fieldMap.remove(factoryCoordinateFieldName);
-    fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
-    int coordinateId = Integer.parseInt(coordinateValue);
-    Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
-    if (coordinate.isEmpty()) {
-      log.warn("Unable to match coordinate ID {} to a point", coordinateId);
-      return Optional.empty();
-    }
-    return Optional.of(new TimeBasedWeatherValueData(fieldMap, coordinate.get()));
-  }
-
-  /**
-   * Maps a collection of TimeBasedValues into time series for each contained coordinate point
-   *
-   * @param timeBasedValues the values to map
-   * @return a map of coordinate point to time series
-   */
-  private Map<Point, IndividualTimeSeries<WeatherValue>> mapWeatherValuesToPoints(
-      Collection<TimeBasedValue<WeatherValue>> timeBasedValues) {
-    Map<Point, Set<TimeBasedValue<WeatherValue>>> coordinateToValues =
-        timeBasedValues.stream()
-            .collect(
-                Collectors.groupingBy(
-                    timeBasedWeatherValue -> timeBasedWeatherValue.getValue().getCoordinate(),
-                    Collectors.toSet()));
-    Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
-    for (Map.Entry<Point, Set<TimeBasedValue<WeatherValue>>> entry :
-        coordinateToValues.entrySet()) {
-      Set<TimeBasedValue<WeatherValue>> values = entry.getValue();
-      IndividualTimeSeries<WeatherValue> timeSeries = new IndividualTimeSeries<>(null, values);
-      coordinateToTimeSeries.put(entry.getKey(), timeSeries);
-    }
-    return coordinateToTimeSeries;
   }
 }

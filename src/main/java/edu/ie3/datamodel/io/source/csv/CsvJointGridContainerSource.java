@@ -5,7 +5,10 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.*;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
@@ -17,24 +20,33 @@ import edu.ie3.datamodel.models.input.container.SystemParticipants;
 public class CsvJointGridContainerSource {
   private CsvJointGridContainerSource() {}
 
-  public static JointGridContainer read(String gridName, String csvSep, String directoryPath)
-      throws SourceException {
+  public static JointGridContainer read(
+      String gridName, String csvSep, String directoryPath, boolean isHierarchic)
+      throws SourceException, FileException {
 
     /* Parameterization */
+    FileNamingStrategy namingStrategy;
 
-    FileNamingStrategy namingStrategy = new FileNamingStrategy(); // Default naming strategy
+    if (isHierarchic) {
+      // Hierarchic structure
+      DefaultDirectoryHierarchy fileHierarchy =
+          new DefaultDirectoryHierarchy(directoryPath, gridName);
+      namingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), fileHierarchy);
+      fileHierarchy.validate();
+    } else {
+      // Flat structure
+      namingStrategy = new FileNamingStrategy();
+    }
+
+    CsvDataSource dataSource = new CsvDataSource(csvSep, directoryPath, namingStrategy);
 
     /* Instantiating sources */
-    TypeSource typeSource = new CsvTypeSource(csvSep, directoryPath, namingStrategy);
-    RawGridSource rawGridSource =
-        new CsvRawGridSource(csvSep, directoryPath, namingStrategy, typeSource);
-    ThermalSource thermalSource =
-        new CsvThermalSource(csvSep, directoryPath, namingStrategy, typeSource);
+    TypeSource typeSource = new TypeSource(dataSource);
+    RawGridSource rawGridSource = new RawGridSource(typeSource, dataSource);
+    ThermalSource thermalSource = new ThermalSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
-        new CsvSystemParticipantSource(
-            csvSep, directoryPath, namingStrategy, typeSource, thermalSource, rawGridSource);
-    GraphicSource graphicsSource =
-        new CsvGraphicSource(csvSep, directoryPath, namingStrategy, typeSource, rawGridSource);
+        new SystemParticipantSource(typeSource, thermalSource, rawGridSource, dataSource);
+    GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* Loading models */
     RawGridElements rawGridElements =
@@ -47,7 +59,7 @@ public class CsvJointGridContainerSource {
             .orElseThrow(
                 () -> new SourceException("Error during reading of system participant data."));
     GraphicElements graphicElements =
-        graphicsSource
+        graphicSource
             .getGraphicElements()
             .orElseThrow(() -> new SourceException("Error during reading of graphic elements."));
 

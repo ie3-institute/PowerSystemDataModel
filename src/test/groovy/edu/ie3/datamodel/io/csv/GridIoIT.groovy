@@ -5,6 +5,10 @@
  */
 package edu.ie3.datamodel.io.csv
 
+import edu.ie3.datamodel.exceptions.FileException
+import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.sink.CsvFileSink
 import edu.ie3.datamodel.io.source.csv.CsvJointGridContainerSource
 import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
@@ -26,38 +30,74 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
   Path tempDirectory
 
   @Shared
-  CsvFileSink sink
+  CsvFileSink sinkFlat
+
+  @Shared
+  CsvFileSink sinkHierarchic
 
   @Shared
   DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
 
   def setupSpec() {
+    FileNamingStrategy hierarchicNamingStrategy = new FileNamingStrategy(
+        new EntityPersistenceNamingStrategy(),
+        new DefaultDirectoryHierarchy("output", "vn_simona"))
     tempDirectory = Files.createTempDirectory("GridIoIT")
+    sinkFlat = new CsvFileSink(tempDirectory.toAbsolutePath().toString())
+    sinkHierarchic = new CsvFileSink(tempDirectory.toAbsolutePath().toString(), hierarchicNamingStrategy, false, ",")
     sink = new CsvFileSink(tempDirectory.toAbsolutePath().toString(), dateTimeFormatter)
   }
 
   def cleanupSpec() {
-    sink.shutdown()
+    sinkFlat.shutdown()
+    sinkHierarchic.shutdown()
     FileIOUtils.deleteRecursively(tempDirectory)
   }
 
-  def "Input JointGridContainer equals Output JointGridContainer."() {
+  def "Input flat JointGridContainer equals Output flat JointGridContainer."() {
 
     given:
     // create joint grid container
     def gridName = "vn_simona"
     def separator = ","
-    def firstGridContainer = CsvJointGridContainerSource.read(gridName, separator, jointGridFolderPath)
+    def firstGridContainer = CsvJointGridContainerSource.read(gridName, separator, jointGridFolderPath, false)
 
     when:
     // write files from joint grid container in output directory
-    sink.persistJointGrid(firstGridContainer)
-
+    sinkFlat.persistJointGrid(firstGridContainer)
     // create second grid container from output folder
-    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString())
+    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString(), false)
 
     then:
     // compare input and output joint grid container
     firstGridContainer == secondGridContainer
+  }
+
+  def "Input flat JointGridContainer equals Output hierarchic JointGridContainer."() {
+    given:
+    // create joint grid container
+    def gridName = "vn_simona"
+    def separator = ","
+    def firstGridContainer = CsvJointGridContainerSource.read(gridName, separator, jointGridFolderPath, false)
+
+    when:
+    sinkHierarchic.persistJointGrid(firstGridContainer)
+    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString(), true)
+
+    then:
+    // compare input and output joint grid container
+    firstGridContainer == secondGridContainer
+  }
+
+  def "CsvJointGridContainerSource throws exception if a hierarchic grid is expected but a flat grid is presented."() {
+    given:
+    def gridName = "vn_simona"
+    def separator = ","
+
+    when:
+    CsvJointGridContainerSource.read(gridName, separator, jointGridFolderPath, true)
+
+    then:
+    thrown(FileException)
   }
 }
