@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Removing deprecated classes and methods [#540](https://github.com/ie3-institute/PowerSystemDataModel/issues/540)
 - Refactor CSV data sources [#716](https://github.com/ie3-institute/PowerSystemDataModel/issues/716)
+- Deleted parameter initFiles, set parameter append to false by default [#791](https://github.com/ie3-institute/PowerSystemDataModel/issues/791)
 
 
 ## [3.0.0] - 2023-02-16
@@ -108,7 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed class name in FlexOptionsResult.toString [#693](https://github.com/ie3-institute/PowerSystemDataModel/issues/693)
 - Deleted parameter decimalPlaces and changed naming of serialization method [#710](https://github.com/ie3-institute/PowerSystemDataModel/issues/710)
 - Changed switch result documentation according to the implementation [#757](https://github.com/ie3-institute/PowerSystemDataModel/issues/757)
-- Deleted parameter initFiles, set parameter append to false by default [#791](https://github.com/ie3-institute/PowerSystemDataModel/issues/791)
+- Added documentation for EmResult and FlexOptionResult [#656](https://github.com/ie3-institute/PowerSystemDataModel/issues/656)
 
 ## [2.0.1] - 2021-07-08
 
