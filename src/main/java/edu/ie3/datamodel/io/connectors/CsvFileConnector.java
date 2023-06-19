@@ -212,7 +212,7 @@ public class CsvFileConnector implements DataConnector {
    *     possible readers will be initialized.
    * @return A mapping from column scheme to the individual time series meta information
    */
-  public Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
+  public Map<UUID, CsvIndividualTimeSeriesMetaInformation>
       getCsvIndividualTimeSeriesMetaInformation(final ColumnScheme... columnSchemes) {
     return getIndividualTimeSeriesFilePaths().parallelStream()
         .map(
@@ -220,7 +220,7 @@ public class CsvFileConnector implements DataConnector {
               /* Extract meta information from file path and enhance it with the file path itself */
               IndividualTimeSeriesMetaInformation metaInformation =
                   fileNamingStrategy.individualTimeSeriesMetaInformation(filePath);
-              return new edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation(
+              return new CsvIndividualTimeSeriesMetaInformation(
                   metaInformation, FileNamingStrategy.removeFileNameEnding(filePath));
             })
         .filter(
