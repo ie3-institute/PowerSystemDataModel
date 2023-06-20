@@ -38,11 +38,10 @@ public class IoUtil {
    */
   public static Path harmonizeFileSeparator(Path path) {
     String in = path.toString();
-
-    if (in.length() > 0 && FILE_SEPARATOR_REGEX.contains(in.substring(0, 1))) {
-      in = in.replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "");
-    }
-
+    in =
+        IoUtil.FILE_SEPARATOR_REPLACEMENT.equals("\\\\")
+            ? in.replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
+            : in;
     return Path.of(IoUtil.harmonizeFileSeparator(in));
   }
 
