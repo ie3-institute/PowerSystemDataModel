@@ -74,33 +74,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     }
   }
 
-  def "A valid CsvFileSink called by simple constructor should not initialize files by default and consist of several default values"() {
-    given:
-    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath)
-    csvFileSink.shutdown()
-
-    expect:
-    !testBaseFolderPath.toFile().exists()
-    csvFileSink.csvSep == ","
-  }
-
-  def "A valid CsvFileSink with 'initFiles' enabled should create files as expected"() {
-    given:
-    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-        new ProcessorProvider([
-          new ResultEntityProcessor(PvResult),
-          new ResultEntityProcessor(EvResult)
-        ], [] as Map),
-        new FileNamingStrategy(),
-        true,
-        ",")
-    csvFileSink.shutdown()
-
-    expect:
-    testBaseFolderPath.toFile().exists()
-    testBaseFolderPath.resolve("ev_res.csv").toFile().exists()
-    testBaseFolderPath.resolve("pv_res.csv").toFile().exists()
-  }
 
   def "A valid CsvFileSink is able to convert an entity data map correctly to RFC 4180 compliant strings"() {
     given:
@@ -142,7 +115,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     csvFileSink.shutdown()
   }
 
-  def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not init all files"() {
+  def "A valid CsvFileSink should persist provided elements correctly"() {
     given:
     CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
         new ProcessorProvider([
@@ -168,7 +141,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new InputEntityProcessor(EmInput)
         ], [] as Map),
         new FileNamingStrategy(),
-        false,
         ",")
 
     UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
@@ -239,7 +211,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
         new ProcessorProvider([], timeSeriesProcessorMap),
         new FileNamingStrategy(),
-        false,
         ",")
 
     when:
@@ -313,7 +284,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         ProcessorProvider.allEntityProcessors(),
         new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
         new FileNamingStrategy(),
-        false,
         ",")
 
     when:
@@ -333,7 +303,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         testBaseFolderPath,
         new ProcessorProvider(),
         new FileNamingStrategy(),
-        false,
         ",")
 
     when:

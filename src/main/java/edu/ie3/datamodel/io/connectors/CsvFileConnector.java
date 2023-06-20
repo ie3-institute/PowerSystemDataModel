@@ -114,19 +114,11 @@ public class CsvFileConnector implements DataConnector {
     if (!directories.exists() && !directories.mkdirs())
       throw new IOException("Unable to create directory tree '" + directories + "'");
 
-    File pathFile = fullPath.toFile();
-    boolean append = pathFile.exists();
     BufferedCsvWriter writer =
         new BufferedCsvWriter(
-            fullPath, fileDefinition.headLineElements(), fileDefinition.csvSep(), append);
-    if (!append) {
-      writer.writeFileHeader();
-    } else {
-      log.warn(
-          "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
-          fileDefinition.getFilePath().getFileName(),
-          pathFile.getAbsolutePath());
-    }
+            fullPath, fileDefinition.headLineElements(), fileDefinition.csvSep(), false);
+    writer.writeFileHeader();
+
     return writer;
   }
 
@@ -218,7 +210,7 @@ public class CsvFileConnector implements DataConnector {
    *     possible readers will be initialized.
    * @return A mapping from column scheme to the individual time series meta information
    */
-  public Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
+  public Map<UUID, CsvIndividualTimeSeriesMetaInformation>
       getCsvIndividualTimeSeriesMetaInformation(final ColumnScheme... columnSchemes) {
     return getIndividualTimeSeriesFilePaths().parallelStream()
         .map(
@@ -226,7 +218,7 @@ public class CsvFileConnector implements DataConnector {
               /* Extract meta information from file path and enhance it with the file path itself */
               IndividualTimeSeriesMetaInformation metaInformation =
                   fileNamingStrategy.individualTimeSeriesMetaInformation(filePath.toString());
-              return new edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation(
+              return new CsvIndividualTimeSeriesMetaInformation(
                   metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
             })
         .filter(
