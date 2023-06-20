@@ -7,20 +7,10 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.FactoryData;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.utils.StreamUtils;
-import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
@@ -40,6 +30,8 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
+
 /**
  * Parent class of all .csv file related sources containing methods and fields consumed by allmost
  * all implementations of .csv file related sources.
@@ -47,21 +39,13 @@ import org.slf4j.LoggerFactory;
  * @version 0.1
  * @since 05.04.20
  */
-public abstract class CsvDataSource {
+public class CsvDataSource implements DataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvDataSource.class);
 
   // general fields
   protected final String csvSep;
   protected final CsvFileConnector connector;
-
-  // field names
-  protected static final String OPERATOR = "operator";
-  protected static final String NODE_A = "nodeA";
-  protected static final String NODE_B = "nodeB";
-  protected static final String NODE = "node";
-  protected static final String TYPE = "type";
-  protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
   /**
    * @deprecated ensures downward compatibility with old csv data format. Can be removed when
@@ -74,6 +58,19 @@ public abstract class CsvDataSource {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
+
+  @Override
+  public Stream<FactoryData.MapWithRowIndex> getSourceData(Class<? extends UniqueEntity> entityClass) {
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector);
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  public BufferedReader createReader(String filePath) throws FileNotFoundException {
+    return connector.initReader(filePath);
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
@@ -232,43 +229,6 @@ public abstract class CsvDataSource {
   }
 
   /**
-   * Returns either the first instance of a {@link OperatorInput} in the provided collection of or
-   * {@link OperatorInput#NO_OPERATOR_ASSIGNED}
-   *
-   * @param operators the collections of {@link OperatorInput}s that should be searched in
-   * @param operatorUuid the operator uuid that is requested
-   * @return either the first found instancen of {@link OperatorInput} or {@link
-   *     OperatorInput#NO_OPERATOR_ASSIGNED}
-   */
-  protected OperatorInput getFirstOrDefaultOperator(
-      Collection<OperatorInput> operators,
-      String operatorUuid,
-      String entityClassName,
-      String requestEntityUuid) {
-    if (operatorUuid == null) {
-      log.warn(
-          "Input file for class '{}' is missing the 'operator' field. "
-              + "This is okay, but you should consider fixing the file by adding the field. "
-              + "Defaulting to 'NO OPERATOR ASSIGNED'",
-          entityClassName);
-      return OperatorInput.NO_OPERATOR_ASSIGNED;
-    } else {
-      return operatorUuid.trim().isEmpty()
-          ? OperatorInput.NO_OPERATOR_ASSIGNED
-          : findFirstEntityByUuid(operatorUuid, operators)
-              .orElseGet(
-                  () -> {
-                    log.debug(
-                        "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
-                        operatorUuid,
-                        entityClassName,
-                        requestEntityUuid);
-                    return OperatorInput.NO_OPERATOR_ASSIGNED;
-                  });
-    }
-  }
-
-  /**
    * Returns a predicate that can be used to filter optionals of {@link UniqueEntity}s and keep
    * track on the number of elements that have been empty optionals. This filter let only pass
    * optionals that are non-empty. Example usage:
@@ -294,53 +254,6 @@ public abstract class CsvDataSource {
         return false;
       }
     };
-  }
-
-  protected void printInvalidElementInformation(
-      Class<? extends UniqueEntity> entityClass, LongAdder noOfInvalidElements) {
-
-    log.error(
-        "{} entities of type '{}' are missing required elements!",
-        noOfInvalidElements,
-        entityClass.getSimpleName());
-  }
-
-  protected String saveMapGet(Map<String, String> map, String key, String mapName) {
-    return Optional.ofNullable(map.get(key))
-        .orElse(
-            "Key '"
-                + key
-                + "' not found"
-                + (mapName.isEmpty() ? "!" : " in map '" + mapName + "'!"));
-  }
-
-  protected void logSkippingWarning(
-      String entityDesc, String entityUuid, String entityId, String missingElementsString) {
-
-    log.warn(
-        "Skipping '{}' with uuid '{}' and id '{}'. Not all required entities found or map is missing entity key!\nMissing elements:\n{}",
-        entityDesc,
-        entityUuid,
-        entityId,
-        missingElementsString);
-  }
-
-  /**
-   * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
-   * matching the provided UUID or an empty {@code Optional} if no matching entity can be found.
-   *
-   * @param entityUuid uuid of the entity that should be looked for
-   * @param entities collection of entities that should be
-   * @param <T> type of the entity that will be returned, derived from the provided collection
-   * @return either an optional containing the first entity that has the provided uuid or an empty
-   *     optional if no matching entity with the provided uuid can be found
-   */
-  protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
-      String entityUuid, Collection<T> entities) {
-    return entities.stream()
-        .parallel()
-        .filter(uniqueEntity -> uniqueEntity.getUuid().toString().equalsIgnoreCase(entityUuid))
-        .findFirst();
   }
 
   /**
@@ -476,168 +389,5 @@ public abstract class CsvDataSource {
     }
 
     return allRowsSet;
-  }
-
-  /**
-   * Checks if the requested type of an asset can be found in the provided collection of types based
-   * on the provided fields to values mapping. The provided fields to values mapping needs to have
-   * one and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can
-   * be found in the provided collection based on the UUID it is returned wrapped in an optional.
-   * Otherwise an empty optional is returned and a warning is logged.
-   *
-   * @param types a collection of types that should be used for searching
-   * @param fieldsToAttributes the field name to value mapping incl. the key {@link #TYPE}
-   * @param skippedClassString debug string of the class that will be skipping
-   * @param <T> the type of the resulting type instance
-   * @return either an optional containing the type or an empty optional if the type cannot be found
-   */
-  protected <T extends AssetTypeInput> Optional<T> getAssetType(
-      Collection<T> types, Map<String, String> fieldsToAttributes, String skippedClassString) {
-
-    Optional<T> assetType =
-        Optional.ofNullable(fieldsToAttributes.get(TYPE))
-            .flatMap(typeUuid -> findFirstEntityByUuid(typeUuid, types));
-
-    // if the type is not present we return an empty element and
-    // log a warning
-    if (assetType.isEmpty()) {
-      logSkippingWarning(
-          skippedClassString,
-          saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-          saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-          TYPE + ": " + saveMapGet(fieldsToAttributes, TYPE, FIELDS_TO_VALUES_MAP));
-    }
-    return assetType;
-  }
-
-  /**
-   * Returns a stream of optional {@link AssetInputEntityData} that can be used to build instances
-   * of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that
-   * consumes this data.
-   *
-   * @param entityClass the entity class that should be build
-   * @param operators a collection of {@link OperatorInput} entities that should be used to build
-   *     the data
-   * @param <T> type of the entity that should be build
-   * @return stream of optionals of the entity data or empty optionals of the operator required for
-   *     the data cannot be found
-   */
-  protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
-      Class<T> entityClass, Collection<OperatorInput> operators) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
-        .map(
-            fieldsToAttributes ->
-                assetInputEntityDataStream(entityClass, fieldsToAttributes, operators));
-  }
-
-  protected <T extends AssetInput> AssetInputEntityData assetInputEntityDataStream(
-      Class<T> entityClass,
-      FactoryData.MapWithRowIndex mapWithRowIndex,
-      Collection<OperatorInput> operators) {
-
-    // get the operator of the entity
-    String operatorUuid = mapWithRowIndex.fieldsToAttribute().get(OPERATOR);
-    OperatorInput operator =
-        getFirstOrDefaultOperator(
-            operators,
-            operatorUuid,
-            entityClass.getSimpleName(),
-            saveMapGet(mapWithRowIndex.fieldsToAttribute(), "uuid", FIELDS_TO_VALUES_MAP));
-
-    // remove fields that are passed as objects to constructor
-    mapWithRowIndex
-        .fieldsToAttribute()
-        .keySet()
-        .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
-
-    return new AssetInputEntityData(mapWithRowIndex, entityClass, operator);
-  }
-
-  /**
-   * Returns a stream of optional {@link NodeAssetInputEntityData} that can be used to build
-   * instances of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory}
-   * that consumes this data. param assetInputEntityDataStream
-   *
-   * @param assetInputEntityDataStream a stream consisting of {@link AssetInputEntityData} that is
-   *     enriched with {@link NodeInput} data
-   * @param nodes a collection of {@link NodeInput} entities that should be used to build the data
-   * @return stream of optionals of the entity data or empty optionals of the node required for the
-   *     data cannot be found
-   */
-  protected Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
-      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
-
-    return assetInputEntityDataStream
-        .parallel()
-        .map(
-            assetInputEntityData -> {
-
-              // get the raw data
-              Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
-
-              // get the node of the entity
-              String nodeUuid = fieldsToAttributes.get(NODE);
-              Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
-
-              // if the node is not present we return an empty element and
-              // log a warning
-              if (node.isEmpty()) {
-                logSkippingWarning(
-                    assetInputEntityData.getTargetClass().getSimpleName(),
-                    fieldsToAttributes.get("uuid"),
-                    fieldsToAttributes.get("id"),
-                    NODE + ": " + nodeUuid);
-                return Optional.empty();
-              }
-
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove(NODE);
-
-              return Optional.of(
-                  new NodeAssetInputEntityData(
-                      new FactoryData.MapWithRowIndex(
-                          assetInputEntityData.getRowIndex(), fieldsToAttributes),
-                      assetInputEntityData.getTargetClass(),
-                      assetInputEntityData.getOperatorInput(),
-                      node.get()));
-            });
-  }
-
-  /**
-   * Returns a stream of entities that can be build by using {@link NodeAssetInputEntityData} and
-   * their corresponding factory.
-   *
-   * @param entityClass the entity class that should be build
-   * @param factory the factory that should be used for the building process
-   * @param nodes a collection of {@link NodeInput} entities that should be used to build the
-   *     entities
-   * @param operators a collection of {@link OperatorInput} entities should be used to build the
-   *     entities
-   * @param <T> Type of the {@link AssetInput} to expect
-   * @return stream of the entities that could and have been built by the factor
-   */
-  protected <T extends AssetInput> Stream<Try<T>> nodeAssetEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, NodeAssetInputEntityData> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators) {
-    return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .map(factory::get);
-  }
-
-  /**
-   * Returns a stream of {@link SimpleEntityData} for result entity classes, using a
-   * fields-to-attributes map.
-   *
-   * @param entityClass the entity class that should be build
-   * @param <T> Type of the {@link ResultEntity} to expect
-   * @return stream of {@link SimpleEntityData}
-   */
-  protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
-      Class<T> entityClass) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
-        .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
 }

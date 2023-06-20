@@ -5,40 +5,26 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
-import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.utils.Try;
 import java.util.Map;
+import java.util.stream.Stream;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSeriesMappingSource {
-  /* Available factories */
-  private static final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
+public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
 
-  private final Map<UUID, UUID> mapping;
+  private final CsvDataSource dataSource;
 
   public CsvTimeSeriesMappingSource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
-    super(csvSep, folderPath, fileNamingStrategy);
-
-    /* Build the map */
-    mapping =
-        buildStreamWithFieldsToAttributesMap(MappingEntry.class, connector)
-            .map(
-                fieldToValues -> {
-                  SimpleEntityData entityData =
-                      new SimpleEntityData(fieldToValues, MappingEntry.class);
-                  return mappingFactory.get(entityData);
-                })
-            .map(Try::getOrThrow)
-            .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
+      String csvSep, String gridFolderPath, FileNamingStrategy fileNamingStrategy) {
+    this.dataSource = new CsvDataSource(csvSep, gridFolderPath, fileNamingStrategy);
   }
 
   @Override
-  public Map<UUID, UUID> getMapping() {
-    return mapping;
+  public Stream<Map<String, String>> getMappingSourceData() {
+    return dataSource.buildStreamWithFieldsToAttributesMap(
+        MappingEntry.class, dataSource.connector);
   }
 }

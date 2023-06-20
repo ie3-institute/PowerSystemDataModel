@@ -5,38 +5,48 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.Optional;
 
 /**
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
  */
-public interface TimeSeriesSource<V extends Value> extends DataSource {
-  /**
-   * Obtain the full time series
-   *
-   * @return the time series
-   */
-  IndividualTimeSeries<V> getTimeSeries();
+public abstract class TimeSeriesSource<V extends Value> {
+
+  protected Class<V> valueClass;
+  protected TimeBasedSimpleValueFactory<V> valueFactory;
+
+  protected TimeSeriesSource(Class<V> valueClass, TimeBasedSimpleValueFactory<V> factory) {
+    this.valueFactory = factory;
+    this.valueClass = valueClass;
+  }
 
   /**
-   * Get the time series for the given time interval. If the interval is bigger than the time series
-   * itself, only the parts of the time series within the interval are handed back.
+   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
+   * need any additional information.
    *
-   * @param timeInterval Desired time interval to cover
-   * @return The parts of of interest of the time series
+   * @param fieldToValues Mapping from field id to values
+   * @return Optional simple time based value
    */
-  IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval);
+  protected Optional<TimeBasedValue<V>> createTimeBasedValue(Map<String, String> fieldToValues) {
+    SimpleTimeBasedValueData<V> factoryData =
+        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+    return valueFactory.get(factoryData);
+  }
 
-  /**
-   * Get the time series value for a specific time
-   *
-   * @param time The queried time
-   * @return Option on a value for that time
-   */
-  Optional<V> getValue(ZonedDateTime time);
+  public abstract IndividualTimeSeries<V> getTimeSeries();
+
+  public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
+      throws SourceException;
+
+  public abstract Optional<V> getValue(ZonedDateTime time) throws SourceException;
 }

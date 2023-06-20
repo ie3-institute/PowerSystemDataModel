@@ -22,7 +22,7 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
   CsvIdCoordinateSource source
 
   def setupSpec() {
-    source = new CsvIdCoordinateSource(csvSep, coordinatesCosmoFolderPath, fileNamingStrategy, new CosmoIdCoordinateFactory())
+    source = new CsvIdCoordinateSource(new CosmoIdCoordinateFactory(), new CsvDataSource(csvSep, coordinatesCosmoFolderPath, fileNamingStrategy))
   }
 
   def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {

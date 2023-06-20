@@ -11,13 +11,14 @@ import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData
 import edu.ie3.datamodel.io.factory.input.Transformer3WInputEntityData
 import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData
+import edu.ie3.datamodel.io.source.RawGridSource
+import edu.ie3.datamodel.io.source.TypeSource
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.GridTestData as rgtd
-
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -26,33 +27,33 @@ import java.util.stream.Stream
 
 class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
   @Shared
-  CsvRawGridSource source
+  RawGridSource source
 
   def setupSpec() {
-    CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-    source = new CsvRawGridSource(csvSep, gridDefaultFolderPath, fileNamingStrategy, typeSource)
+    TypeSource typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    source = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy))
   }
 
   def "The CsvRawGridSource is able to convert single valid AssetInputEntityData to ConnectorInputEntityData"() {
     given: "valid input data"
     def fieldsToAttributes = [
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
-      "id"			: "test_switch_AtoB",
+      "id"			    : "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
       "operatesFrom"	: "2020-03-24 15:11:31",
       "operatesUntil"	: "2020-03-24 15:11:31",
       "nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"			: "47d29df0-ba2d-4d23-8e75-c82229c5c758",
-      "closed"		: "true"
+      "closed"		    : "true"
     ]
 
     def expectedFieldsToAttributes = [
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
-      "id"			: "test_switch_AtoB",
+      "id"			    : "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
       "operatesFrom"	: "2020-03-24 15:11:31",
       "operatesUntil"	: "2020-03-24 15:11:31",
-      "closed"		: "true"
+      "closed"		    : "true"
     ]
 
     def validAssetEntityInputData = new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", fieldsToAttributes), SwitchInput)
@@ -743,8 +744,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The CsvRawGridSource throws a rawInputDataException, if one mandatory element for the RawGridElements is missing"() {
     given: "a source pointing to malformed grid data"
-    CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-    source = new CsvRawGridSource(csvSep, gridMalformedFolderPath, fileNamingStrategy, typeSource)
+    TypeSource typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    source = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridMalformedFolderPath, fileNamingStrategy))
 
     when: "loading a total grid structure from file"
     def actual = source.getGridData()
@@ -757,8 +758,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The CsvRawGridSource returns an empty grid, if the RawGridElements contain no single element"() {
     given: "a source pointing to malformed grid data"
-    CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-    source = new CsvRawGridSource(csvSep, gridEmptyFolderPath, fileNamingStrategy, typeSource)
+    TypeSource typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    source = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridEmptyFolderPath, fileNamingStrategy))
 
     when: "loading a total grid structure from file"
     def actual = source.getGridData()

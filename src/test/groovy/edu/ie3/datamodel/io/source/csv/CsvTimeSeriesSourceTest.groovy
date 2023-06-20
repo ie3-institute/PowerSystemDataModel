@@ -42,7 +42,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
         )
 
     when:
-    def actual = source.buildTimeBasedValue(new FactoryData.MapWithRowIndex("-1", fieldToValue), EnergyPriceValue, factory)
+    def actual = source.createTimeBasedValue(new FactoryData.MapWithRowIndex("-1", fieldToValue))
 
     then:
     actual.present

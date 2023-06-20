@@ -22,9 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** SQL implementation for retrieving {@link TimeSeriesMetaInformationSource} from the SQL scheme */
-public class SqlTimeSeriesMetaInformationSource
-    extends SqlDataSource<IndividualTimeSeriesMetaInformation>
-    implements TimeSeriesMetaInformationSource {
+public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInformationSource {
 
   private static final TimeSeriesMetaInformationFactory mappingFactory =
       new TimeSeriesMetaInformationFactory();
@@ -32,15 +30,20 @@ public class SqlTimeSeriesMetaInformationSource
   private final DatabaseNamingStrategy namingStrategy;
   private final Map<UUID, IndividualTimeSeriesMetaInformation> mapping;
 
+  private final SqlDataSource dataSource;
+
   public SqlTimeSeriesMetaInformationSource(
-      SqlConnector connector, String schemaName, DatabaseNamingStrategy namingStrategy) {
-    super(connector);
-    this.namingStrategy = namingStrategy;
+      SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy) {
+    this.dataSource = new SqlDataSource(connector, schemaName, databaseNamingStrategy);
+    this.namingStrategy = databaseNamingStrategy;
 
     String queryComplete = createQueryComplete(schemaName);
 
     this.mapping =
-        executeQuery(queryComplete, ps -> {}).stream()
+        dataSource
+            .executeQuery(queryComplete)
+            .map(this::createEntity)
+            .flatMap(Optional::stream)
             .collect(
                 Collectors.toMap(
                     IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
@@ -60,7 +63,7 @@ public class SqlTimeSeriesMetaInformationSource
                     namingStrategy::getTimeSeriesEntityName, columnScheme -> columnScheme));
 
     Iterable<String> selectQueries =
-        getDbTables(schemaName, namingStrategy.getTimeSeriesPrefix() + "%").stream()
+        dataSource.getDbTables(schemaName, namingStrategy.getTimeSeriesPrefix() + "%").stream()
             .map(
                 tableName ->
                     Optional.ofNullable(acceptedTableNames.get(tableName))
@@ -89,8 +92,7 @@ public class SqlTimeSeriesMetaInformationSource
     return Optional.ofNullable(this.mapping.get(timeSeriesUuid));
   }
 
-  @Override
-  protected Optional<IndividualTimeSeriesMetaInformation> createEntity(
+  private Optional<IndividualTimeSeriesMetaInformation> createEntity(
       Map<String, String> fieldToValues) {
     SimpleEntityData entityData =
         new SimpleEntityData(

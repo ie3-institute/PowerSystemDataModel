@@ -27,7 +27,7 @@ import org.influxdb.dto.QueryResult;
 import org.locationtech.jts.geom.Point;
 
 /** InfluxDB Source for weather data */
-public class InfluxDbWeatherSource implements WeatherSource {
+public class InfluxDbWeatherSource extends WeatherSource {
   private static final String BASIC_QUERY_STRING = "Select * from weather";
   private static final String WHERE = " where ";
   private static final String AND = " and ";
@@ -36,24 +36,21 @@ public class InfluxDbWeatherSource implements WeatherSource {
   private static final int MILLI_TO_NANO_FACTOR = 1000000;
 
   private final InfluxDbConnector connector;
-  private final IdCoordinateSource coordinateSource;
-  private final TimeBasedWeatherValueFactory weatherValueFactory;
 
   /**
    * Initializes a new InfluxDbWeatherSource
    *
    * @param connector needed for database connection
-   * @param coordinateSource needed to map coordinates to ID as InfluxDB does not support spatial
+   * @param idCoordinateSource needed to map coordinates to ID as InfluxDB does not support spatial
    *     types
    * @param weatherValueFactory instance of a time based weather value factory
    */
   public InfluxDbWeatherSource(
       InfluxDbConnector connector,
-      IdCoordinateSource coordinateSource,
+      IdCoordinateSource idCoordinateSource,
       TimeBasedWeatherValueFactory weatherValueFactory) {
+    super(idCoordinateSource, weatherValueFactory);
     this.connector = connector;
-    this.coordinateSource = coordinateSource;
-    this.weatherValueFactory = weatherValueFactory;
   }
 
   @Override
@@ -84,7 +81,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     if (coordinates == null) return getWeather(timeInterval);
     Map<Point, Optional<Integer>> coordinatesToId =
-        coordinates.stream().collect(Collectors.toMap(point -> point, coordinateSource::getId));
+        coordinates.stream().collect(Collectors.toMap(point -> point, idCoordinateSource::getId));
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     try (InfluxDB session = connector.getSession()) {
       for (Map.Entry<Point, Optional<Integer>> entry : coordinatesToId.entrySet()) {
@@ -106,6 +103,19 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return coordinateToTimeSeries;
   }
 
+  @Override
+  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
+    if (coordinateId.isEmpty()) {
+      return Optional.empty();
+    }
+    try (InfluxDB session = connector.getSession()) {
+      String query = createQueryStringForCoordinateAndTime(date, coordinateId.get());
+      QueryResult queryResult = session.query(new Query(query));
+      return filterEmptyOptionals(optTimeBasedValueStream(queryResult)).findFirst();
+    }
+  }
+
   /**
    * Return the weather for the given time interval AND coordinate
    *
@@ -115,7 +125,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
    */
   public IndividualTimeSeries<WeatherValue> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Point coordinate) {
-    Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       return new IndividualTimeSeries<>(UUID.randomUUID(), Collections.emptySet());
     }
@@ -130,18 +140,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     }
   }
 
-  @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
-    Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
-    if (coordinateId.isEmpty()) {
-      return Optional.empty();
-    }
-    try (InfluxDB session = connector.getSession()) {
-      String query = createQueryStringForCoordinateAndTime(date, coordinateId.get());
-      QueryResult queryResult = session.query(new Query(query));
-      return filterEmptyOptionals(optTimeBasedValueStream(queryResult)).findFirst();
-    }
-  }
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Parses an influxQL QueryResult and then transforms it into a Stream of optional
@@ -152,7 +151,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
       QueryResult queryResult) {
     Map<String, Set<Map<String, String>>> measurementsMap =
         InfluxDbConnector.parseQueryResult(queryResult, MEASUREMENT_NAME_WEATHER);
-    final String coordinateIdFieldName = weatherValueFactory.getCoordinateIdFieldString();
+    final String coordinateIdFieldName = weatherFactory.getCoordinateIdFieldString();
     return measurementsMap.get(MEASUREMENT_NAME_WEATHER).stream()
         .map(
             fieldToValue -> {
@@ -170,14 +169,11 @@ public class InfluxDbWeatherSource implements WeatherSource {
 
               /* Get the corresponding coordinate id from map AND REMOVE THE ENTRY !!! */
               int coordinateId = Integer.parseInt(flatCaseFields.remove(coordinateIdFieldName));
-              return coordinateSource
+              return idCoordinateSource
                   .getCoordinate(coordinateId)
-                  .map(
-                      point ->
-                          new TimeBasedWeatherValueData(
-                              new FactoryData.MapWithRowIndex("-1", flatCaseFields), point))
-                  .map(weatherValueFactory::get)
-                  .map(Try::getOrThrow);
+                  .map(point -> new TimeBasedWeatherValueData(new FactoryData.MapWithRowIndex("-1", flatCaseFields), point))
+                  .map(weatherFactory::get)
+                      .map(Try::getOrThrow);
             });
   }
 
@@ -203,17 +199,17 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   private String createTimeConstraint(ClosedInterval<ZonedDateTime> timeInterval) {
-    return weatherValueFactory.getTimeFieldString()
+    return weatherFactory.getTimeFieldString()
         + " >= "
         + timeInterval.getLower().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR
         + AND
-        + weatherValueFactory.getTimeFieldString()
+        + weatherFactory.getTimeFieldString()
         + " <= "
         + timeInterval.getUpper().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
 
   private String createTimeConstraint(ZonedDateTime date) {
-    return weatherValueFactory.getTimeFieldString()
+    return weatherFactory.getTimeFieldString()
         + "="
         + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
