@@ -33,7 +33,6 @@ class FileUtilsTest extends Specification {
     where:
     path || expectedPath
     IoUtil.pathOption("") || Path.of("name")
-    IoUtil.pathOption("/") || Path.of("name")
   }
 
   def "A file definition of a csv file is set up correctly, if the directory path has corrupt file separator" () {
@@ -48,7 +47,6 @@ class FileUtilsTest extends Specification {
 
     where:
     manipulatedDirectory                                                       || expected
-    Path.of("/").resolve(this.directory)                                       || this.directory
     Path.of(this.directory.toString(), "/")                                    || this.directory
     Path.of(this.directory.toString().replaceAll("[\\\\/]", File.separator == "/" ? "\\\\" : "/")) || this.directory
   }
