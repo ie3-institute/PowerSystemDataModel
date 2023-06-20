@@ -11,7 +11,6 @@ import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
-import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -19,7 +18,6 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -216,9 +214,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
             .collect(
                 Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
     fieldToValueMap.putIfAbsent("uuid", UUID.randomUUID().toString());
-    return Optional.of(
-        new TimeBasedWeatherValueData(
-            new FactoryData.MapWithRowIndex("-1", fieldToValueMap), coordinate.get()));
+    return Optional.of(new TimeBasedWeatherValueData(fieldToValueMap, coordinate.get()));
   }
 
   /**
@@ -236,13 +232,6 @@ public class CouchbaseWeatherSource extends WeatherSource {
       logger.debug("The following json could not be parsed:\n{}", jsonObj);
       return Optional.empty();
     }
-
-    Try<TimeBasedValue<WeatherValue>> timeBasedValue = weatherFactory.get(data.get());
-
-    if (timeBasedValue.isSuccess()) {
-      return timeBasedValue.getData();
-    } else {
-      return Optional.empty();
-    }
+    return weatherFactory.get(data.get()).getData();
   }
 }

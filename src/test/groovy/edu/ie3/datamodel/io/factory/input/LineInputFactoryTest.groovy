@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -59,7 +57,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     def typeInput = Mock(LineTypeInput)
 
     when:
-    Try<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+    Try<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
     then:
     input.success
@@ -110,7 +108,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     def typeInput = Mock(LineTypeInput)
 
     when:
-    Try<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+    Try<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
     then:
     input.success
@@ -161,7 +159,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     def typeInput = Mock(LineTypeInput)
 
     when:
-    Try<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+    Try<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
     then:
     input.success

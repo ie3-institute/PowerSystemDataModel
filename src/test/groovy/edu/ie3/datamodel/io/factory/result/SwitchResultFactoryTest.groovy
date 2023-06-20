@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.result
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.utils.Try
@@ -35,7 +34,7 @@ class SwitchResultFactoryTest extends Specification implements FactoryTestHelper
     ]
 
     when:
-    Try<SwitchResult> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), SwitchResult))
+    Try<SwitchResult> result = resultFactory.get(new SimpleEntityData(parameter, SwitchResult))
 
     then:
     result.success

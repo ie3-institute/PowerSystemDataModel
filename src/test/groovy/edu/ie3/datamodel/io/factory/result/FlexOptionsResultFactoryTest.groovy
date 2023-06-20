@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.result
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
@@ -36,7 +35,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     ]
 
     when:
-    Try<? extends FlexOptionsResult> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), FlexOptionsResult))
+    Try<? extends FlexOptionsResult> result = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
 
     then:
     result.success
@@ -61,11 +60,11 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     ]
 
     when:
-    Try<FlexOptionsResult> input = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), FlexOptionsResult))
+    Try<FlexOptionsResult> input = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
 
     then:
     input.failure
-    input.exception().cause.message == "The provided fields [inputModel, pmin, pref, time] with data \n" +
+    input.exception().message == "The provided fields [inputModel, pmin, pref, time] with data \n" +
         "{inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,\n" +
         "pmin -> -1,\n" +
         "pref -> 2,\n" +

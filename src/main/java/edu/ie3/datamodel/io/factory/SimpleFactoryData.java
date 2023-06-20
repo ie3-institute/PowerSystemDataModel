@@ -5,9 +5,11 @@
 */
 package edu.ie3.datamodel.io.factory;
 
+import java.util.Map;
+
 /** Simple class, that holds a mapping from key to value. */
 public class SimpleFactoryData extends FactoryData {
-  public SimpleFactoryData(MapWithRowIndex mapWithRowIndex, Class<?> targetClass) {
-    super(mapWithRowIndex, targetClass);
+  public SimpleFactoryData(Map<String, String> fieldsToAttributes, Class<?> targetClass) {
+    super(fieldsToAttributes, targetClass);
   }
 }

@@ -7,10 +7,9 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.utils.StreamUtils;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
@@ -29,8 +28,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 
 /**
  * Parent class of all .csv file related sources containing methods and fields consumed by allmost
@@ -60,7 +57,7 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Stream<FactoryData.MapWithRowIndex> getSourceData(Class<? extends UniqueEntity> entityClass) {
+  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }
 
@@ -263,10 +260,10 @@ public class CsvDataSource implements DataSource {
    * @param entityClass the entity class that should be build and that is used to get the
    *     corresponding reader
    * @param connector the connector that should be used to get the reader from
-   * @return a parallel stream of maps with row indexes, where each map represents one row of the
-   *     csv file with the mapping (fieldName to fieldValue)
+   * @return a parallel stream of maps, where each map represents one row of the csv file with the
+   *     mapping (fieldName to fieldValue)
    */
-  protected Stream<FactoryData.MapWithRowIndex> buildStreamWithFieldsToAttributesMap(
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
     try {
       return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
@@ -284,10 +281,10 @@ public class CsvDataSource implements DataSource {
    *
    * @param entityClass the entity class that should be build
    * @param bufferedReader the reader to use
-   * @return a parallel stream of maps with row indexes, where each map represents one row of the
-   *     csv file with the mapping (fieldName to fieldValue)
+   * @return a parallel stream of maps, where each map represents one row of the csv file with the
+   *     mapping (fieldName to fieldValue)
    */
-  protected Stream<FactoryData.MapWithRowIndex> buildStreamWithFieldsToAttributesMap(
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
@@ -303,13 +300,10 @@ public class CsvDataSource implements DataSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<FactoryData.MapWithRowIndex> allRows = csvRowFieldValueMapping(reader, headline);
+      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
       return distinctRowsWithLog(
-          allRows,
-          mapWithRowIndex -> mapWithRowIndex.fieldsToAttribute().get("uuid"),
-          entityClass.getSimpleName(),
-          "UUID")
+          allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
           .parallelStream();
     } catch (IOException e) {
       log.warn(
@@ -322,25 +316,24 @@ public class CsvDataSource implements DataSource {
     return Stream.empty();
   }
 
-  protected List<FactoryData.MapWithRowIndex> csvRowFieldValueMapping(
+  protected List<Map<String, String>> csvRowFieldValueMapping(
       BufferedReader reader, String[] headline) {
-    Stream<Map<String, String>> rowContentStream =
-        reader.lines().map(csvRow -> buildFieldsToAttributes(csvRow, headline));
-    return StreamUtils.zipWithRowIndex(rowContentStream)
-        .map(
-            pairStream ->
-                new FactoryData.MapWithRowIndex(String.valueOf(pairStream.b()), pairStream.a()))
+    return reader
+        .lines()
+        .parallel()
+        .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+        .filter(map -> !map.isEmpty())
         .toList();
   }
 
   /**
-   * Returns a collection of maps with row indexes each representing a row in csv file that can be
-   * used to built one entity. The uniqueness of each row is doubled checked by a) that no
-   * duplicated rows are returned that are full (1:1) matches and b) that no rows are returned that
-   * have the same composite key, which gets extracted by the provided extractor. As both cases
-   * destroy uniqueness constraints, an empty set is returned to indicate that these data cannot be
-   * processed safely and the error is logged. For case a), only the duplicates are filtered out and
-   * a set with unique rows is returned.
+   * Returns a collection of maps each representing a row in csv file that can be used to built one
+   * entity. The uniqueness of each row is doubled checked by a) that no duplicated rows are
+   * returned that are full (1:1) matches and b) that no rows are returned that have the same
+   * composite key, which gets extracted by the provided extractor. As both cases destroy uniqueness
+   * constraints, an empty set is returned to indicate that these data cannot be processed safely
+   * and the error is logged. For case a), only the duplicates are filtered out and a set with
+   * unique rows is returned.
    *
    * @param allRows collection of rows of a csv file an entity should be built from
    * @param keyExtractor Function, that extracts the key from field to value mapping, that is meant
@@ -352,12 +345,12 @@ public class CsvDataSource implements DataSource {
    * @return either a set containing only unique rows or an empty set if at least two rows with the
    *     same UUID but different field values exist
    */
-  protected Set<FactoryData.MapWithRowIndex> distinctRowsWithLog(
-      Collection<FactoryData.MapWithRowIndex> allRows,
-      final Function<FactoryData.MapWithRowIndex, String> keyExtractor,
+  protected Set<Map<String, String>> distinctRowsWithLog(
+      Collection<Map<String, String>> allRows,
+      final Function<Map<String, String>, String> keyExtractor,
       String entityDescriptor,
       String keyDescriptor) {
-    Set<FactoryData.MapWithRowIndex> allRowsSet = new HashSet<>(allRows);
+    Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
     // case a)
     if (allRows.size() != allRowsSet.size()) {
@@ -368,7 +361,7 @@ public class CsvDataSource implements DataSource {
     }
 
     /* Check for rows with the same key based on the provided key extractor function */
-    Set<FactoryData.MapWithRowIndex> distinctIdSet =
+    Set<Map<String, String>> distinctIdSet =
         allRowsSet.parallelStream()
             .filter(ValidationUtils.distinctByKey(keyExtractor))
             .collect(Collectors.toSet());
@@ -378,9 +371,9 @@ public class CsvDataSource implements DataSource {
           allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
           """
-          '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
-          Affected primary keys:
-          {}""",
+              '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
+              Affected primary keys:
+              {}""",
           entityDescriptor,
           keyDescriptor,
           affectedCoordinateIds);

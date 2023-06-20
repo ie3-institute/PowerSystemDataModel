@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.StorageInput
@@ -48,7 +47,7 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
 
     when:
     Try<StorageInput> input = inputFactory.get(
-        new SystemParticipantTypedEntityData<StorageTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput, typeInput))
+        new SystemParticipantTypedEntityData<StorageTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
     then:
     input.success

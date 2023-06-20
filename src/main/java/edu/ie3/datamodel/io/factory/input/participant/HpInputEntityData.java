@@ -10,27 +10,28 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.HpInput;
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import java.util.Map;
 import java.util.Objects;
 
 public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeInput> {
   private final ThermalBusInput thermalBusInput;
 
   public HpInputEntityData(
-      MapWithRowIndex mapWithRowIndex,
+      Map<String, String> fieldsToAttributes,
       NodeInput node,
       HpTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(mapWithRowIndex, HpInput.class, node, typeInput);
+    super(fieldsToAttributes, HpInput.class, node, typeInput);
     this.thermalBusInput = thermalBusInput;
   }
 
   public HpInputEntityData(
-      MapWithRowIndex mapWithRowIndex,
+      Map<String, String> fieldsToAttributes,
       OperatorInput operator,
       NodeInput node,
       HpTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(mapWithRowIndex, HpInput.class, operator, node, typeInput);
+    super(fieldsToAttributes, HpInput.class, operator, node, typeInput);
     this.thermalBusInput = thermalBusInput;
   }
 

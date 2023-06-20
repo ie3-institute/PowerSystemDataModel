@@ -5,11 +5,12 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.GraphicSourceException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputFactory;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
@@ -17,11 +18,11 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
+import edu.ie3.datamodel.utils.Try;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,7 +53,7 @@ public class GraphicSource extends EntitySource {
   }
 
   /** Returns the graphic elements of the grid as a option */
-  public Optional<GraphicElements> getGraphicElements() {
+  public GraphicElements getGraphicElements() throws SourceException {
 
     // read all needed entities
     /// start with types and operators
@@ -62,33 +63,20 @@ public class GraphicSource extends EntitySource {
     Set<NodeInput> nodes = rawGridSource.getNodes(operators);
     Set<LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
 
-    // start with the entities needed for a GraphicElements entity
-    /// as we want to return a working grid, keep an eye on empty optionals
-    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
-        new ConcurrentHashMap<>();
+    Try<Set<NodeGraphicInput>> nodeGraphics = Try.of(() -> getNodeGraphicInput(nodes));
+    Try<Set<LineGraphicInput>> lineGraphics = Try.of(() -> getLineGraphicInput(lines));
 
-    Set<NodeGraphicInput> nodeGraphics =
-        buildNodeGraphicEntityData(nodes)
-            .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get))
-            .filter(isPresentCollectIfNot(NodeGraphicInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
+    List<SourceException> exceptions =
+        (List<SourceException>) Try.getExceptions(nodeGraphics, lineGraphics);
 
-    Set<LineGraphicInput> lineGraphics =
-        buildLineGraphicEntityData(lines)
-            .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get))
-            .filter(isPresentCollectIfNot(LineGraphicInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-
-    // if we found invalid elements return an empty optional and log the problems
-    if (!nonBuildEntities.isEmpty()) {
-      nonBuildEntities.forEach(this::printInvalidElementInformation);
-      return Optional.empty();
+    if (exceptions.size() > 0) {
+      throw new GraphicSourceException(
+          exceptions.size() + "error(s) occurred while initializing graphic elements. ",
+          exceptions);
+    } else {
+      // if everything is fine, return a GraphicElements instance
+      return new GraphicElements(nodeGraphics.getData().get(), lineGraphics.getData().get());
     }
-
-    // if everything is fine, return a GraphicElements instance
-    return Optional.of(new GraphicElements(nodeGraphics, lineGraphics));
   }
 
   /**
@@ -96,15 +84,19 @@ public class GraphicSource extends EntitySource {
    * NodeGraphicInput} entities or if an error during the building process occurs, all entities that
    * has been able to be built are returned and the not-built ones are ignored (= filtered out).
    */
-  public Set<NodeGraphicInput> getNodeGraphicInput() {
+  public Set<NodeGraphicInput> getNodeGraphicInput() throws SourceException {
     return getNodeGraphicInput(rawGridSource.getNodes(typeSource.getOperators()));
   }
 
-  public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
-    return buildNodeGraphicEntityData(nodes)
-        .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+  public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) throws SourceException {
+    return Try.scanCollection(
+            buildNodeGraphicEntityData(nodes)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(nodeGraphicInputFactory::get)
+                .collect(Collectors.toSet()),
+            NodeGraphicInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   /**
@@ -112,18 +104,22 @@ public class GraphicSource extends EntitySource {
    * LineGraphicInput} entities or if an error during the building process occurs, all entities that
    * has been able to be built are returned and the not-built ones are ignored (= filtered out).
    */
-  public Set<LineGraphicInput> getLineGraphicInput() {
+  public Set<LineGraphicInput> getLineGraphicInput() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLineGraphicInput(
         rawGridSource.getLines(
             rawGridSource.getNodes(operators), typeSource.getLineTypes(), operators));
   }
 
-  public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) {
-    return buildLineGraphicEntityData(lines)
-        .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+  public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) throws SourceException {
+    return Try.scanCollection(
+            buildLineGraphicEntityData(lines)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(lineGraphicInputFactory::get)
+                .collect(Collectors.toSet()),
+            LineGraphicInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

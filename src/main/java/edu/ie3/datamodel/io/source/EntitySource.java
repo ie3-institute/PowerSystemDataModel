@@ -14,6 +14,7 @@ import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.utils.Try;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.LongAdder;
@@ -325,7 +326,7 @@ public abstract class EntitySource {
         .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
 
-  protected <T extends AssetInput> Stream<Optional<T>> assetInputEntityStream(
+  protected <T extends AssetInput> Stream<Try<T>> assetInputEntityStream(
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
       Collection<OperatorInput> operators) {
@@ -346,58 +347,44 @@ public abstract class EntitySource {
    * @return stream of optionals of the entities that has been built by the factor or empty
    *     optionals if the entity could not have been build
    */
-  protected <T extends AssetInput> Stream<Optional<T>> nodeAssetEntityStream(
+  protected <T extends AssetInput> Stream<Try<T>> nodeAssetEntityStream(
       Class<T> entityClass,
       EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
     return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-        .map(dataOpt -> dataOpt.flatMap(factory::get));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(factory::get);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  public <T extends AssetInput> Set<T> buildNodeAssetEntities(
-      Class<T> entityClass,
-      EntityFactory<T, NodeAssetInputEntityData> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
-    return nodeAssetEntityStream(entityClass, factory, nodes, operators)
-        .filter(isPresentCollectIfNot(entityClass, nonBuildEntities))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-  }
-
-  public <T extends AssetInput> Set<T> buildNodeAssetEntities(
+  public <T extends AssetInput> Set<Try<T>> buildNodeAssetEntities(
       Class<T> entityClass,
       EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
     return nodeAssetEntityStream(entityClass, factory, nodes, operators)
-        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
-  public <T extends AssetInput> Set<T> buildAssetInputEntities(
+  public <T extends AssetInput> Set<Try<T>> buildAssetInputEntities(
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
       Collection<OperatorInput> operators) {
-    return assetInputEntityStream(entityClass, factory, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return assetInputEntityStream(entityClass, factory, operators).collect(Collectors.toSet());
   }
 
-  public <T extends InputEntity> Set<T> buildEntities(
+  public <T extends InputEntity> Set<Try<T>> buildEntities(
       Class<T> entityClass, EntityFactory<? extends InputEntity, SimpleEntityData> factory) {
     return dataSource
         .getSourceData(entityClass)
         .map(
             fieldsToAttributes -> {
               SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
-              return (Optional<T>) factory.get(data);
+              return (Try<T>) factory.get(data);
             })
-        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 }

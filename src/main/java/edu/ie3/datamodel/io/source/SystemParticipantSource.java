@@ -5,11 +5,11 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.SystemParticipantsException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
-import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
@@ -17,13 +17,11 @@ import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
+import edu.ie3.datamodel.utils.Try;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.LongAdder;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.Set;
 
 /**
  * Interface that provides the capability to build entities of type {@link SystemParticipantInput}
@@ -95,7 +93,7 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return either a valid, complete {@link SystemParticipants} or throws a {@link SourceException}
    */
-  public Optional<SystemParticipants> getSystemParticipants() {
+  public SystemParticipants getSystemParticipants() throws SourceException {
 
     // read all needed entities
     /// start with types and operators
@@ -114,77 +112,54 @@ public class SystemParticipantSource extends EntitySource {
 
     /// go on with the nodes
     Set<NodeInput> nodes = rawGridSource.getNodes(operators);
+    Try<Set<FixedFeedInInput>> fixedFeedInInputs = Try.of(() -> getFixedFeedIns(nodes, operators));
+    Try<Set<PvInput>> pvInputs = Try.of(() -> getPvPlants(nodes, operators));
+    Try<Set<LoadInput>> loads = Try.of(() -> getLoads(nodes, operators));
+    Try<Set<BmInput>> bmInputs = Try.of(() -> getBmPlants(nodes, operators, bmTypes));
+    Try<Set<StorageInput>> storages = Try.of(() -> getStorages(nodes, operators, storageTypes));
+    Try<Set<WecInput>> wecInputs = Try.of(() -> getWecPlants(nodes, operators, wecTypes));
+    Try<Set<EvInput>> evs = Try.of(() -> getEvs(nodes, operators, evTypes));
+    Try<Set<EvcsInput>> evcs = Try.of(() -> getEvCS(nodes, operators));
+    Try<Set<ChpInput>> chpInputs =
+        Try.of(() -> getChpPlants(nodes, operators, chpTypes, thermalBuses, thermalStorages));
+    Try<Set<HpInput>> hpInputs =
+        Try.of(() -> getHeatPumps(nodes, operators, hpTypes, thermalBuses));
+    Try<Set<EmInput>> emInputs = Try.of(() -> getEmSystems(nodes, operators));
 
-    // start with the entities needed for SystemParticipants container
-    /// as we want to return a working grid, keep an eye on empty optionals which is equal to
-    // elements that
-    /// have been unable to be built e.g. due to missing elements they depend on
-    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
-        new ConcurrentHashMap<>();
+    List<SourceException> exceptions =
+        (List<SourceException>)
+            Try.getExceptions(
+                fixedFeedInInputs,
+                pvInputs,
+                loads,
+                bmInputs,
+                storages,
+                wecInputs,
+                evs,
+                evcs,
+                chpInputs,
+                hpInputs,
+                emInputs);
 
-    Set<FixedFeedInInput> fixedFeedInInputs =
-        buildNodeAssetEntities(
-            FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators, nonBuildEntities);
-    Set<PvInput> pvInputs =
-        buildNodeAssetEntities(PvInput.class, pvInputFactory, nodes, operators, nonBuildEntities);
-    Set<LoadInput> loads =
-        buildNodeAssetEntities(
-            LoadInput.class, loadInputFactory, nodes, operators, nonBuildEntities);
-    Set<BmInput> bmInputs =
-        buildSystemParticipantEntities(
-            BmInput.class, bmInputFactory, nodes, operators, bmTypes, nonBuildEntities);
-    Set<StorageInput> storages =
-        buildSystemParticipantEntities(
-            StorageInput.class,
-            storageInputFactory,
-            nodes,
-            operators,
-            storageTypes,
-            nonBuildEntities);
-    Set<WecInput> wecInputs =
-        buildSystemParticipantEntities(
-            WecInput.class, wecInputFactory, nodes, operators, wecTypes, nonBuildEntities);
-    Set<EvInput> evs =
-        buildSystemParticipantEntities(
-            EvInput.class, evInputFactory, nodes, operators, evTypes, nonBuildEntities);
-    Set<EvcsInput> evcs =
-        buildNodeAssetEntities(
-            EvcsInput.class, evcsInputFactory, nodes, operators, nonBuildEntities);
-    Set<ChpInput> chpInputs =
-        buildChpInputEntities(
-            chpInputFactory,
-            nodes,
-            operators,
-            chpTypes,
-            thermalBuses,
-            thermalStorages,
-            nonBuildEntities);
-    Set<HpInput> hpInputs =
-        buildHpInputEntities(
-            hpInputFactory, nodes, operators, hpTypes, thermalBuses, nonBuildEntities);
-    Set<EmInput> emInputs =
-        buildNodeAssetEntities(EmInput.class, emInputFactory, nodes, operators, nonBuildEntities);
-
-    // if we found invalid elements return an empty optional and log the problems
-    if (!nonBuildEntities.isEmpty()) {
-      nonBuildEntities.forEach(this::printInvalidElementInformation);
-      return Optional.empty();
+    if (exceptions.size() > 0) {
+      throw new SystemParticipantsException(
+          exceptions.size() + " error(s) occurred while initializing system participants. ",
+          exceptions);
+    } else {
+      // if everything is fine, return a system participants container
+      return new SystemParticipants(
+          bmInputs.getData().get(),
+          chpInputs.getData().get(),
+          evcs.getData().get(),
+          evs.getData().get(),
+          fixedFeedInInputs.getData().get(),
+          hpInputs.getData().get(),
+          loads.getData().get(),
+          pvInputs.getData().get(),
+          storages.getData().get(),
+          wecInputs.getData().get(),
+          emInputs.getData().get());
     }
-
-    // if everything is fine, return a system participants container
-    return Optional.of(
-        new SystemParticipants(
-            bmInputs,
-            chpInputs,
-            evcs,
-            evs,
-            fixedFeedInInputs,
-            hpInputs,
-            loads,
-            pvInputs,
-            storages,
-            wecInputs,
-            emInputs));
   }
 
   /**
@@ -197,7 +172,7 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link FixedFeedInInput} entities
    */
-  public Set<FixedFeedInInput> getFixedFeedIns() {
+  public Set<FixedFeedInInput> getFixedFeedIns() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getFixedFeedIns(rawGridSource.getNodes(operators), operators);
   }
@@ -221,9 +196,13 @@ public class SystemParticipantSource extends EntitySource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link FixedFeedInInput} entities
    */
-  public Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return buildNodeAssetEntities(
-        FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators);
+  public Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException {
+    return Try.scanCollection(
+            buildNodeAssetEntities(
+                FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators),
+            FixedFeedInInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   /**
@@ -235,7 +214,7 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link PvInput} entities
    */
-  public Set<PvInput> getPvPlants() {
+  public Set<PvInput> getPvPlants() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getPvPlants(rawGridSource.getNodes(operators), operators);
   }
@@ -259,8 +238,11 @@ public class SystemParticipantSource extends EntitySource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link PvInput} entities
    */
-  public Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return buildNodeAssetEntities(PvInput.class, pvInputFactory, nodes, operators);
+  public Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException {
+    return Try.scanCollection(
+            buildNodeAssetEntities(PvInput.class, pvInputFactory, nodes, operators), PvInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   /**
@@ -272,7 +254,7 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link LoadInput} entities
    */
-  public Set<LoadInput> getLoads() {
+  public Set<LoadInput> getLoads() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLoads(rawGridSource.getNodes(operators), operators);
   }
@@ -296,8 +278,12 @@ public class SystemParticipantSource extends EntitySource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link LoadInput} entities
    */
-  public Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return buildNodeAssetEntities(LoadInput.class, loadInputFactory, nodes, operators);
+  public Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException {
+    return Try.scanCollection(
+            buildNodeAssetEntities(LoadInput.class, loadInputFactory, nodes, operators),
+            LoadInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   /**
@@ -309,7 +295,7 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link EvcsInput} entities
    */
-  public Set<EvcsInput> getEvCS() {
+  public Set<EvcsInput> getEvCS() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getEvCS(rawGridSource.getNodes(operators), operators);
   }
@@ -333,8 +319,12 @@ public class SystemParticipantSource extends EntitySource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link EvcsInput} entities
    */
-  public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return buildNodeAssetEntities(EvcsInput.class, evcsInputFactory, nodes, operators);
+  public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException {
+    return Try.scanCollection(
+            buildNodeAssetEntities(EvcsInput.class, evcsInputFactory, nodes, operators),
+            EvcsInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   /**
@@ -346,7 +336,7 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link BmInput} entities
    */
-  public Set<BmInput> getBmPlants() {
+  public Set<BmInput> getBmPlants() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getBmPlants(rawGridSource.getNodes(operators), operators, typeSource.getBmTypes());
   }
@@ -372,9 +362,13 @@ public class SystemParticipantSource extends EntitySource {
    * @return a set of object and uuid unique {@link BmInput} entities
    */
   public Set<BmInput> getBmPlants(
-      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types) {
-    return buildTypedSystemParticipantEntities(
-        BmInput.class, bmInputFactory, nodes, operators, types);
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types)
+      throws SourceException {
+    return Try.scanCollection(
+            buildTypedSystemParticipantEntities(
+                BmInput.class, bmInputFactory, nodes, operators, types),
+            BmInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   /**
@@ -387,7 +381,7 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link StorageInput} entities
    */
-  public Set<StorageInput> getStorages() {
+  public Set<StorageInput> getStorages() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getStorages(rawGridSource.getNodes(operators), operators, typeSource.getStorageTypes());
   }
@@ -413,9 +407,13 @@ public class SystemParticipantSource extends EntitySource {
    * @return a set of object and uuid unique {@link StorageInput} entities
    */
   public Set<StorageInput> getStorages(
-      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types) {
-    return buildTypedSystemParticipantEntities(
-        StorageInput.class, storageInputFactory, nodes, operators, types);
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types)
+      throws SourceException {
+    return Try.scanCollection(
+            buildTypedSystemParticipantEntities(
+                StorageInput.class, storageInputFactory, nodes, operators, types),
+            StorageInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   /**
@@ -427,7 +425,7 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link WecInput} entities
    */
-  public Set<WecInput> getWecPlants() {
+  public Set<WecInput> getWecPlants() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getWecPlants(rawGridSource.getNodes(operators), operators, typeSource.getWecTypes());
   }
@@ -453,9 +451,13 @@ public class SystemParticipantSource extends EntitySource {
    * @return a set of object and uuid unique {@link WecInput} entities
    */
   public Set<WecInput> getWecPlants(
-      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types) {
-    return buildTypedSystemParticipantEntities(
-        WecInput.class, wecInputFactory, nodes, operators, types);
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types)
+      throws SourceException {
+    return Try.scanCollection(
+            buildTypedSystemParticipantEntities(
+                WecInput.class, wecInputFactory, nodes, operators, types),
+            WecInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   /**
@@ -467,7 +469,7 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link EvInput} entities
    */
-  public Set<EvInput> getEvs() {
+  public Set<EvInput> getEvs() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getEvs(rawGridSource.getNodes(operators), operators, typeSource.getEvTypes());
   }
@@ -493,9 +495,13 @@ public class SystemParticipantSource extends EntitySource {
    * @return a set of object and uuid unique {@link EvInput} entities
    */
   public Set<EvInput> getEvs(
-      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types) {
-    return buildTypedSystemParticipantEntities(
-        EvInput.class, evInputFactory, nodes, operators, types);
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types)
+      throws SourceException {
+    return Try.scanCollection(
+            buildTypedSystemParticipantEntities(
+                EvInput.class, evInputFactory, nodes, operators, types),
+            EvInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   /**
@@ -507,7 +513,7 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link EmInput} entities
    */
-  public Set<EmInput> getEmSystems() {
+  public Set<EmInput> getEmSystems() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getEmSystems(rawGridSource.getNodes(operators), operators);
   }
@@ -530,11 +536,14 @@ public class SystemParticipantSource extends EntitySource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link EmInput} entities
    */
-  public Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return buildNodeAssetEntities(EmInput.class, emInputFactory, nodes, operators);
+  public Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException {
+    return Try.scanCollection(
+            buildNodeAssetEntities(EmInput.class, emInputFactory, nodes, operators), EmInput.class)
+        .getOrThrow(SourceException.class);
   }
 
-  public Set<ChpInput> getChpPlants() {
+  public Set<ChpInput> getChpPlants() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     Set<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
     return getChpPlants(
@@ -561,13 +570,16 @@ public class SystemParticipantSource extends EntitySource {
       Set<OperatorInput> operators,
       Set<ChpTypeInput> types,
       Set<ThermalBusInput> thermalBuses,
-      Set<ThermalStorageInput> thermalStorages) {
-
-    return buildChpInputEntities(
-        chpInputFactory, nodes, operators, types, thermalBuses, thermalStorages);
+      Set<ThermalStorageInput> thermalStorages)
+      throws SourceException {
+    return Try.scanCollection(
+            buildChpInputEntities(
+                chpInputFactory, nodes, operators, types, thermalBuses, thermalStorages),
+            ChpInput.class)
+        .getOrThrow(SourceException.class);
   }
 
-  public Set<HpInput> getHeatPumps() {
+  public Set<HpInput> getHeatPumps() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getHeatPumps(
         rawGridSource.getNodes(operators),
@@ -591,39 +603,28 @@ public class SystemParticipantSource extends EntitySource {
       Set<NodeInput> nodes,
       Set<OperatorInput> operators,
       Set<HpTypeInput> types,
-      Set<ThermalBusInput> thermalBuses) {
-    return buildHpInputEntities(hpInputFactory, nodes, operators, types, thermalBuses);
+      Set<ThermalBusInput> thermalBuses)
+      throws SourceException {
+    return Try.scanCollection(
+            buildHpInputEntities(hpInputFactory, nodes, operators, types, thermalBuses),
+            HpInput.class)
+        .getOrThrow(SourceException.class);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
-      Set<T> buildSystemParticipantEntities(
-          Class<T> entityClass,
-          EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
-          Collection<NodeInput> nodes,
-          Collection<OperatorInput> operators,
-          Collection<A> types,
-          ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
-    return typedSystemParticipantEntityStream(entityClass, factory, nodes, operators, types)
-        .filter(isPresentCollectIfNot(entityClass, nonBuildEntities))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-  }
-
-  private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
-      Set<T> buildTypedSystemParticipantEntities(
+      Set<Try<T>> buildTypedSystemParticipantEntities(
           Class<T> entityClass,
           EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
           Collection<NodeInput> nodes,
           Collection<OperatorInput> operators,
           Collection<A> types) {
     return typedSystemParticipantEntityStream(entityClass, factory, nodes, operators, types)
-        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
-  private Set<ChpInput> buildChpInputEntities(
+  private Set<Try<ChpInput>> buildChpInputEntities(
       ChpInputFactory factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
@@ -631,45 +632,16 @@ public class SystemParticipantSource extends EntitySource {
       Collection<ThermalBusInput> thermalBuses,
       Collection<ThermalStorageInput> thermalStorages) {
     return chpInputStream(factory, nodes, operators, chpTypes, thermalBuses, thermalStorages)
-        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
-  private Set<ChpInput> buildChpInputEntities(
-      ChpInputFactory factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<ChpTypeInput> chpTypes,
-      Collection<ThermalBusInput> thermalBuses,
-      Collection<ThermalStorageInput> thermalStorages,
-      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
-    return chpInputStream(factory, nodes, operators, chpTypes, thermalBuses, thermalStorages)
-        .filter(isPresentCollectIfNot(ChpInput.class, nonBuildEntities))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-  }
-
-  private Set<HpInput> buildHpInputEntities(
+  private Set<Try<HpInput>> buildHpInputEntities(
       HpInputFactory factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
       Collection<HpTypeInput> types,
       Collection<ThermalBusInput> thermalBuses) {
     return hpInputStream(factory, nodes, operators, types, thermalBuses)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-  }
-
-  private Set<HpInput> buildHpInputEntities(
-      HpInputFactory factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<HpTypeInput> types,
-      Collection<ThermalBusInput> thermalBuses,
-      ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities) {
-    return hpInputStream(factory, nodes, operators, types, thermalBuses)
-        .filter(isPresentCollectIfNot(ChpInput.class, nonBuildEntities))
-        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -689,7 +661,7 @@ public class SystemParticipantSource extends EntitySource {
    *     SystemParticipantInput} of the requested entity class
    */
   private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
-      Stream<Optional<T>> typedSystemParticipantEntityStream(
+      Stream<Try<T>> typedSystemParticipantEntityStream(
           Class<T> entityClass,
           EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
           Collection<NodeInput> nodes,
@@ -699,10 +671,12 @@ public class SystemParticipantSource extends EntitySource {
             nodeAssetInputEntityDataStream(
                 assetInputEntityDataStream(entityClass, operators), nodes),
             types)
-        .map(dataOpt -> dataOpt.flatMap(factory::get));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(factory::get);
   }
 
-  private Stream<Optional<ChpInput>> chpInputStream(
+  private Stream<Try<ChpInput>> chpInputStream(
       ChpInputFactory factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
@@ -716,10 +690,12 @@ public class SystemParticipantSource extends EntitySource {
                 types),
             thermalStorages,
             thermalBuses)
-        .map(dataOpt -> dataOpt.flatMap(factory::get));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(factory::get);
   }
 
-  private Stream<Optional<HpInput>> hpInputStream(
+  private Stream<Try<HpInput>> hpInputStream(
       HpInputFactory factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
@@ -731,7 +707,9 @@ public class SystemParticipantSource extends EntitySource {
                     assetInputEntityDataStream(HpInput.class, operators), nodes),
                 types),
             thermalBuses)
-        .map(dataOpt -> dataOpt.flatMap(factory::get));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(factory::get);
   }
 
   /**

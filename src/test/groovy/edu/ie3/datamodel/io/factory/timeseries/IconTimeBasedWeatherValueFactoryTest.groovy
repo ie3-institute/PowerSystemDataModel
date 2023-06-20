@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.util.TimeUtil
@@ -19,10 +18,10 @@ import tech.units.indriya.unit.Units
 class IconTimeBasedWeatherValueFactoryTest extends Specification {
   def "A time based weather value factory for ICON column scheme determines wind velocity angle correctly"() {
     given:
-    def data = new TimeBasedWeatherValueData(new FactoryData.MapWithRowIndex("-1", [
+    def data = new TimeBasedWeatherValueData([
       "u131m": u.toString(),
       "v131m": v.toString(),
-    ]), Mock(Point))
+    ], Mock(Point))
     def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.DEGREE_GEOM)
 
     when:
@@ -46,10 +45,10 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
   def "A time based weather value factory for ICON column scheme determines wind velocity correctly"() {
     given:
-    def data = new TimeBasedWeatherValueData(new FactoryData.MapWithRowIndex("-1", [
+    def data = new TimeBasedWeatherValueData([
       "u131m": u.toString(),
       "v131m": v.toString(),
-    ]), Mock(Point))
+    ], Mock(Point))
     def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.METRE_PER_SECOND)
 
     when:
@@ -107,7 +106,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       "sobsRad"     : "",
       "t131m"       : ""
     ]
-    def data = new TimeBasedWeatherValueData(new FactoryData.MapWithRowIndex("-1", parameter), coordinate)
+    def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
     when:
     def actual = factory.buildModel(data)

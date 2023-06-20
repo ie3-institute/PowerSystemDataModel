@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.HpInput
@@ -50,7 +49,7 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<HpInput> input = inputFactory.get(
-        new HpInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), operatorInput, nodeInput, typeInput, thermalBusInput))
+        new HpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput))
 
     then:
     input.success

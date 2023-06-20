@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -20,7 +19,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
-import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -141,8 +139,8 @@ public class CsvWeatherSource extends WeatherSource {
       Set<CsvIndividualTimeSeriesMetaInformation> weatherMetaInformation,
       CsvFileConnector connector) {
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
-    Function<FactoryData.MapWithRowIndex, Optional<TimeBasedValue<WeatherValue>>>
-        fieldToValueFunction = this::buildWeatherValue;
+    Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
+        this::buildWeatherValue;
     /* Reading in weather time series */
     for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       // we need a reader for each file
@@ -175,7 +173,7 @@ public class CsvWeatherSource extends WeatherSource {
     return weatherTimeSeries;
   }
 
-  private Stream<FactoryData.MapWithRowIndex> buildStreamWithFieldsToAttributesMap(
+  private Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
@@ -184,7 +182,7 @@ public class CsvWeatherSource extends WeatherSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<FactoryData.MapWithRowIndex> allRows =
+      Collection<Map<String, String>> allRows =
           dataSource.csvRowFieldValueMapping(reader, headline);
 
       Function<Map<String, String>, String> timeCoordinateIdExtractor =
@@ -209,14 +207,11 @@ public class CsvWeatherSource extends WeatherSource {
    * Builds a {@link TimeBasedValue} of type {@link WeatherValue} from given "flat " input
    * information. If the single model cannot be built, an empty optional is handed back.
    *
-   * @param mapWithRowIndex "flat " input information as a mapping from field to value with their
-   *     row index
+   * @param fieldToValues "flat " input information as a mapping from field to value
    * @return Optional time based weather value
    */
   private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
-      FactoryData.MapWithRowIndex mapWithRowIndex) {
-    Map<String, String> fieldToValues = mapWithRowIndex.fieldsToAttribute();
-
+      Map<String, String> fieldToValues) {
     /* Try to get the coordinate from entries */
     Optional<Point> maybeCoordinate = extractCoordinate(fieldToValues);
     return maybeCoordinate
@@ -227,15 +222,14 @@ public class CsvWeatherSource extends WeatherSource {
 
               /* Build factory data */
               TimeBasedWeatherValueData factoryData =
-                  new TimeBasedWeatherValueData(mapWithRowIndex, coordinate);
-              return Optional.of(weatherFactory.get(factoryData));
+                  new TimeBasedWeatherValueData(fieldToValues, coordinate);
+              return weatherFactory.get(factoryData).getData();
             })
         .orElseGet(
             () -> {
               log.error("Unable to find coordinate for entry '{}'.", fieldToValues);
               return Optional.empty();
-            })
-        .map(Try::getOrThrow);
+            });
   }
 
   /**

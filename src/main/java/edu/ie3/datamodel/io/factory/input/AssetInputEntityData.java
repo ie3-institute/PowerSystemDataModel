@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.input;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -21,26 +22,26 @@ public class AssetInputEntityData extends EntityData {
   /**
    * Creates a new AssetInputEntityData object without operator.
    *
-   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
+   * @param fieldsToAttributes containing a mapping of field name to value
    * @param entityClass class of the entity to be created with this data
    */
   public AssetInputEntityData(
-      MapWithRowIndex mapWithRowIndex, Class<? extends UniqueEntity> entityClass) {
-    this(mapWithRowIndex, entityClass, OperatorInput.NO_OPERATOR_ASSIGNED);
+      Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
+    this(fieldsToAttributes, entityClass, OperatorInput.NO_OPERATOR_ASSIGNED);
   }
 
   /**
    * Creates a new AssetInputEntityData object with operator.
    *
-   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
+   * @param fieldsToAttributes containing a mapping of field name to value
    * @param entityClass class of the entity to be created with this data
    * @param operator operator input
    */
   public AssetInputEntityData(
-      MapWithRowIndex mapWithRowIndex,
+      Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator) {
-    super(mapWithRowIndex, entityClass);
+    super(fieldsToAttributes, entityClass);
     this.operator = operator;
   }
 

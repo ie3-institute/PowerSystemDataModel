@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -45,7 +44,7 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
     def typeInput = Mock(Transformer2WTypeInput)
 
     when:
-    Try<Transformer2WInput> input = inputFactory.get(new TypedConnectorInputEntityData<Transformer2WTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+    Try<Transformer2WInput> input = inputFactory.get(new TypedConnectorInputEntityData<Transformer2WTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
     then:
     input.success

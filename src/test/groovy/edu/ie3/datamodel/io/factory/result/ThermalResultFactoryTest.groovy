@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.result
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
@@ -41,7 +40,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
       "fillLevel" : "20"
     ]
     when:
-    Try<? extends ThermalUnitResult> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), CylindricalStorageResult))
+    Try<? extends ThermalUnitResult> result = resultFactory.get(new SimpleEntityData(parameter, CylindricalStorageResult))
 
     then:
     result.success
@@ -65,7 +64,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
       "indoorTemperature": "21"
     ]
     when:
-    Try<? extends ThermalUnitResult> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), ThermalHouseResult))
+    Try<? extends ThermalUnitResult> result = resultFactory.get(new SimpleEntityData(parameter, ThermalHouseResult))
 
     then:
     result.success

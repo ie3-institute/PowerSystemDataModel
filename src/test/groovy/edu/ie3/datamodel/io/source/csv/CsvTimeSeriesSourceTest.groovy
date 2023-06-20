@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 
@@ -42,11 +41,11 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
         )
 
     when:
-    def actual = source.createTimeBasedValue(new FactoryData.MapWithRowIndex("-1", fieldToValue))
+    def actual = source.createTimeBasedValue(fieldToValue)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual.success
+    actual.data() == expected
   }
 
   def "The factory method in csv time series source refuses to build time series with unsupported column type"() {

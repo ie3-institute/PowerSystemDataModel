@@ -7,11 +7,8 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
-import edu.ie3.datamodel.utils.Try;
 import java.util.Map;
 import java.util.stream.Stream;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
 

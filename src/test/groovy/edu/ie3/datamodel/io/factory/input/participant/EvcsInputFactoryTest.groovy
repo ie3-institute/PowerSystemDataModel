@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -58,7 +57,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<EvcsInput> input = inputFactory.get(
-        new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput))
+        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.success
@@ -107,11 +106,11 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<EvcsInput> input = inputFactory.get(
-        new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput))
+        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.failure
-    input.exception().cause.message == "Exception while trying to parse field \"type\" with supposed int value \"-- invalid --\""
+    input.exception().message == "Exception while trying to parse field \"type\" with supposed int value \"-- invalid --\""
   }
 
   def "A EvcsInputFactory should fail when passing an invalid EvcsLocationType"() {
@@ -135,10 +134,10 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<EvcsInput> input = inputFactory.get(
-        new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput))
+        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.failure
-    input.exception().cause.message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
+    input.exception().message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
   }
 }

@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.ChpInput
@@ -53,7 +52,7 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<ChpInput> input = inputFactory.get(
-        new ChpInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), operatorInput, nodeInput, typeInput, thermalBusInput, thermalStorageInput))
+        new ChpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput, thermalStorageInput))
 
     then:
     input.success

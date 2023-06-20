@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -52,7 +51,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<BmInput> input = inputFactory.get(
-        new SystemParticipantTypedEntityData<BmTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput, typeInput))
+        new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
     then:
     input.success

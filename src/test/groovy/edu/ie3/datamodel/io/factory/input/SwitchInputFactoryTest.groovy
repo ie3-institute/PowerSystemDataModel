@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
@@ -41,7 +40,7 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
     def nodeInputB = Mock(NodeInput)
 
     when:
-    Try<SwitchInput> input = inputFactory.get(new ConnectorInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInputA, nodeInputB))
+    Try<SwitchInput> input = inputFactory.get(new ConnectorInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB))
 
     then:
     input.success

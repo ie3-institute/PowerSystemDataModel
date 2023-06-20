@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -57,7 +56,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<PvInput> input = inputFactory.get(
-        new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput))
+        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.success

@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData
 import edu.ie3.datamodel.io.source.GraphicSource
@@ -126,16 +125,16 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     ]
 
     expect:
-    def res = csvGraphicSource.buildNodeGraphicEntityData(new FactoryData.MapWithRowIndex("-1", fieldsToAttributesMap), nodeCollection as Set)
+    def res = csvGraphicSource.buildNodeGraphicEntityData(fieldsToAttributesMap, nodeCollection as Set)
     res.present == isPresent
 
     res.ifPresent({ value ->
-      assert value == new NodeGraphicInputEntityData(new FactoryData.MapWithRowIndex("-1", [
+      assert value == new NodeGraphicInputEntityData([
         "uuid"         : "09aec636-791b-45aa-b981-b14edf171c4c",
         "graphic_layer": "main",
         "path"         : "",
         "point"        : "{\"type\":\"Point\",\"coordinates\":[0.0,10],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}"
-      ]), gtd.nodeC)
+      ], gtd.nodeC)
       assert value.node == gtd.nodeC
     })
 
@@ -161,14 +160,14 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     ]
 
     expect:
-    def res = csvGraphicSource.buildLineGraphicEntityData(new FactoryData.MapWithRowIndex("-1", fieldsToAttributesMap), nodeCollection as Set)
+    def res = csvGraphicSource.buildLineGraphicEntityData(fieldsToAttributesMap, nodeCollection as Set)
     res.present == isPresent
 
     res.ifPresent({ value ->
-      assert value == new LineGraphicInputEntityData(new FactoryData.MapWithRowIndex("-1", ["uuid"         : "ece86139-3238-4a35-9361-457ecb4258b0",
+      assert value == new LineGraphicInputEntityData(["uuid"         : "ece86139-3238-4a35-9361-457ecb4258b0",
         "graphic_layer": "main",
         "path"         : "{\"type\":\"LineString\",\"coordinates\":[[0.0,0.0],[0.0,10]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}"
-      ])
+      ]
       , gtd.lineAtoB)
       assert value.line == gtd.lineAtoB
     })

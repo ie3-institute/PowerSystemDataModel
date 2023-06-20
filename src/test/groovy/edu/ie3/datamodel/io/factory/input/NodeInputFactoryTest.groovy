@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -47,7 +46,7 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<NodeInput> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<NodeInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success

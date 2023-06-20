@@ -61,8 +61,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
           "An error occurred when creating instance of {}.class.",
           data.getTargetClass().getSimpleName(),
           e);
-      return new Failure<>(
-          new FactoryException("Error occurred in row " + data.getRowIndex() + ".", e));
+      return new Failure<>(e);
     }
   }
 

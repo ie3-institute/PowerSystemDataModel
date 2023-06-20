@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.graphics
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputFactory
 import edu.ie3.datamodel.models.input.NodeInput
@@ -42,7 +41,7 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
 
     when:
     Try<NodeGraphicInput> input = inputFactory.get(
-        new NodeGraphicInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), nodeInput))
+        new NodeGraphicInputEntityData(parameter, nodeInput))
 
     then:
     input.success
@@ -71,7 +70,7 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
 
     when:
     Try<NodeGraphicInput> input = inputFactory.get(
-        new NodeGraphicInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), nodeInput))
+        new NodeGraphicInputEntityData(parameter, nodeInput))
 
     then:
     input.success

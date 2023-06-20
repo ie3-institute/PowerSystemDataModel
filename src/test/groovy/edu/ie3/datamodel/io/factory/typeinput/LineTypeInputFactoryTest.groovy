@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.typeinput
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.datamodel.io.factory.SimpleEntityData
@@ -40,7 +39,7 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
     def typeInputClass = LineTypeInput
 
     when:
-    Try<LineTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), typeInputClass))
+    Try<LineTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success

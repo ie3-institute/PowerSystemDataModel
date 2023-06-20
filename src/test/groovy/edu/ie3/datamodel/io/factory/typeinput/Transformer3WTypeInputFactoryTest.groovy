@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.typeinput
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.datamodel.io.factory.SimpleEntityData
@@ -53,7 +52,7 @@ class Transformer3WTypeInputFactoryTest extends Specification implements Factory
     def typeInputClass = Transformer3WTypeInput
 
     when:
-    Try<Transformer3WTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), typeInputClass))
+    Try<Transformer3WTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success

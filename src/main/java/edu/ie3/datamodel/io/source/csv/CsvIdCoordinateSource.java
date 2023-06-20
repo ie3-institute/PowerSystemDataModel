@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -62,7 +61,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    */
   private Map<Integer, Point> setupIdToCoordinateMap() {
     return buildStreamWithFieldsToAttributesMap()
-        .map(mapWithRowIndex -> new SimpleFactoryData(mapWithRowIndex, Pair.class))
+        .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
         .map(factory::get)
         .map(Try::getOrThrow)
         .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
@@ -154,7 +153,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    *
    * @return Stream with mappings from field identifiers to attributes
    */
-  protected Stream<FactoryData.MapWithRowIndex> buildStreamWithFieldsToAttributesMap() {
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap() {
     try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
@@ -162,12 +161,12 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<FactoryData.MapWithRowIndex> allRows =
+      Collection<Map<String, String>> allRows =
           dataSource.csvRowFieldValueMapping(reader, headline);
 
-      Function<FactoryData.MapWithRowIndex, String> idExtractor =
-          mapWithRowIndex -> mapWithRowIndex.fieldsToAttribute().get(factory.getIdField());
-      Set<FactoryData.MapWithRowIndex> withDistinctCoordinateId =
+      Function<Map<String, String>, String> idExtractor =
+          fieldToValues -> fieldToValues.get(factory.getIdField());
+      Set<Map<String, String>> withDistinctCoordinateId =
           dataSource.distinctRowsWithLog(
               allRows, idExtractor, COORDINATE_ID_MAPPING, "coordinate id");
       Function<Map<String, String>, String> coordinateExtractor =

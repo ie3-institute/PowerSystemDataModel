@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.graphics
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -41,7 +40,7 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
 
     when:
     Try<LineGraphicInput> input = inputFactory.get(
-        new LineGraphicInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), lineInput))
+        new LineGraphicInputEntityData(parameter, lineInput))
 
     then:
     input.success
@@ -67,7 +66,7 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
 
     when:
     Try<LineGraphicInput> input = inputFactory.get(
-        new LineGraphicInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), lineInput))
+        new LineGraphicInputEntityData(parameter, lineInput))
 
     then:
     input.success

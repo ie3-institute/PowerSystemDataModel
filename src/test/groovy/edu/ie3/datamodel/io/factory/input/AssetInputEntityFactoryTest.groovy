@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -41,7 +40,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
@@ -67,7 +66,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
@@ -100,7 +99,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
@@ -127,7 +126,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
@@ -155,7 +154,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
@@ -181,7 +180,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
     then:
     input.success
@@ -205,7 +204,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
     then:
     input.success
@@ -231,7 +230,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
     then:
     input.success
@@ -258,7 +257,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
     then:
     input.success
@@ -285,11 +284,11 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    Try<AssetInput> input =  inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<AssetInput> input =  inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
     then:
     input.failure
-    input.exception().cause.message ==
+    input.exception().message ==
         "The provided fields [operatesfrom, operatesuntil, uuid] with data \n" +
         "{operatesfrom -> 2019-01-01T00:00:00+01:00[Europe/Berlin],\n" +
         "operatesuntil -> 2019-12-31T00:00:00+01:00[Europe/Berlin],\n" +

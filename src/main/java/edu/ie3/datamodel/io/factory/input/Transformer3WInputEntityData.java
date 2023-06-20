@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import java.util.Map;
 import java.util.Objects;
 
 public class Transformer3WInputEntityData
@@ -16,25 +17,25 @@ public class Transformer3WInputEntityData
   private final NodeInput nodeC;
 
   public Transformer3WInputEntityData(
-      MapWithRowIndex mapWithRowIndex,
+      Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       NodeInput nodeA,
       NodeInput nodeB,
       NodeInput nodeC,
       Transformer3WTypeInput type) {
-    super(mapWithRowIndex, entityClass, nodeA, nodeB, type);
+    super(fieldsToAttributes, entityClass, nodeA, nodeB, type);
     this.nodeC = nodeC;
   }
 
   public Transformer3WInputEntityData(
-      MapWithRowIndex mapWithRowIndex,
+      Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator,
       NodeInput nodeA,
       NodeInput nodeB,
       NodeInput nodeC,
       Transformer3WTypeInput type) {
-    super(mapWithRowIndex, entityClass, operator, nodeA, nodeB, type);
+    super(fieldsToAttributes, entityClass, operator, nodeA, nodeB, type);
     this.nodeC = nodeC;
   }
 

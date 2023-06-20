@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.EvInput
@@ -48,7 +47,7 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<EvInput> input = inputFactory.get(
-        new SystemParticipantTypedEntityData<EvTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput, typeInput))
+        new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
     then:
     input.success

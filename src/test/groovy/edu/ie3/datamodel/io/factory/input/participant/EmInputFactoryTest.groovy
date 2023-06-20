@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.ControlStrategy
 import edu.ie3.datamodel.models.EmControlStrategy
@@ -50,7 +49,7 @@ class EmInputFactoryTest extends Specification {
 
     when:
     Try<EmInput> input = inputFactory.get(
-        new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput))
+        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.success
@@ -95,7 +94,7 @@ class EmInputFactoryTest extends Specification {
 
     when:
     Try<EmInput> input = inputFactory.get(
-        new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput))
+        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.success
@@ -135,7 +134,7 @@ class EmInputFactoryTest extends Specification {
 
     when:
     Try<EmInput> input = inputFactory.get(
-        new NodeAssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput))
+        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.success

@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMetaInformationFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
@@ -95,9 +94,7 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
   private Optional<IndividualTimeSeriesMetaInformation> createEntity(
       Map<String, String> fieldToValues) {
     SimpleEntityData entityData =
-        new SimpleEntityData(
-            new FactoryData.MapWithRowIndex("-1", fieldToValues),
-            IndividualTimeSeriesMetaInformation.class);
+        new SimpleEntityData(fieldToValues, IndividualTimeSeriesMetaInformation.class);
     return Optional.of(mappingFactory.get(entityData)).map(Try::getOrThrow);
   }
 }

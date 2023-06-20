@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.result
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.connector.ConnectorResult
@@ -53,7 +52,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
     }
 
     when:
-    Try<? extends ConnectorResult> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), modelClass))
+    Try<? extends ConnectorResult> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
 
     then:
     result.success
