@@ -43,8 +43,7 @@ public class IoUtil {
       in = in.replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "");
     }
 
-    return Path.of(
-        IoUtil.harmonizeFileSeparator(in.replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", "")));
+    return Path.of(IoUtil.harmonizeFileSeparator(in));
   }
 
   /**
