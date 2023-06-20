@@ -20,7 +20,7 @@ class TryTest extends Specification {
     actual.data() == "success"
   }
 
-  def "A void method can be applied to a try object"() {
+  def "A failing method can be applied to a try object"() {
     when:
     Try<Void> actual = Try.of(() -> {
       throw new Exception("Exception thrown.")
@@ -29,6 +29,16 @@ class TryTest extends Specification {
     then:
     actual.failure
     actual.exception().message == "Exception thrown."
+  }
+
+  def "A void method can be applied to a try object"() {
+    when:
+    Try<Void> actual = Try.testForException(() -> 1)
+
+    then:
+    actual.isSuccess()
+    actual.isEmpty()
+    actual.data.empty
   }
 
   def "A success object can be resolved with get method"() {

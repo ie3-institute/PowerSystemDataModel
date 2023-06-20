@@ -61,6 +61,7 @@ public abstract class Try<T> {
    */
   public static Try<Void> testForException(TrySupplier<Void> supplier) {
     try {
+      supplier.get();
       return Success.empty();
     } catch (Exception e) {
       return new Failure<>(e);
