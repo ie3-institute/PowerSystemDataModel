@@ -15,13 +15,14 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
+import java.nio.file.Path;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
   private CsvJointGridContainerSource() {}
 
   public static JointGridContainer read(
-      String gridName, String csvSep, String directoryPath, boolean isHierarchic)
+      String gridName, String csvSep, Path directoryPath, boolean isHierarchic)
       throws SourceException, FileException {
 
     /* Parameterization */

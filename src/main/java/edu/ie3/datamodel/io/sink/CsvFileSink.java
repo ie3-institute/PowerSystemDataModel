@@ -33,6 +33,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,7 +59,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   private final String csvSep;
 
-  public CsvFileSink(String baseFolderPath) {
+  public CsvFileSink(Path baseFolderPath) {
     this(baseFolderPath, new FileNamingStrategy(), ",");
   }
 
@@ -71,7 +72,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param fileNamingStrategy the data sink file naming strategy that should be used
    * @param csvSep the csv file separator that should be use
    */
-  public CsvFileSink(String baseFolderPath, FileNamingStrategy fileNamingStrategy, String csvSep) {
+  public CsvFileSink(Path baseFolderPath, FileNamingStrategy fileNamingStrategy, String csvSep) {
     this(baseFolderPath, new ProcessorProvider(), fileNamingStrategy, csvSep);
   }
 
@@ -90,7 +91,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param csvSep the csv file separator that should be use
    */
   public CsvFileSink(
-      String baseFolderPath,
+      Path baseFolderPath,
       ProcessorProvider processorProvider,
       FileNamingStrategy fileNamingStrategy,
       String csvSep) {

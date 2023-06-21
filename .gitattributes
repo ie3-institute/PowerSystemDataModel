@@ -3,3 +3,4 @@
 src/test/resources/edu/ie3/datamodel/io/source/influxdb/_weather/cosmo/weather.txt eol=lf
 src/test/resources/edu/ie3/datamodel/io/source/influxdb/_weather/icon/weather.txt eol=lf
 
+gradlew eol=lf

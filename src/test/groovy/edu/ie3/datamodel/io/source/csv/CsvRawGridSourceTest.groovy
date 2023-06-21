@@ -20,6 +20,7 @@ import edu.ie3.test.common.GridTestData as rgtd
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.Stream
 

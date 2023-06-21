@@ -3,15 +3,13 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.io.csv
+package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.exceptions.FileException
 import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.sink.CsvFileSink
-import edu.ie3.datamodel.io.source.csv.CsvJointGridContainerSource
-import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
 import spock.lang.Specification
@@ -37,10 +35,10 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
   def setupSpec() {
     FileNamingStrategy hierarchicNamingStrategy = new FileNamingStrategy(
         new EntityPersistenceNamingStrategy(),
-        new DefaultDirectoryHierarchy("output", "vn_simona"))
+        new DefaultDirectoryHierarchy(Path.of("output"), "vn_simona"))
     tempDirectory = Files.createTempDirectory("GridIoIT")
-    sinkFlat = new CsvFileSink(tempDirectory.toAbsolutePath().toString())
-    sinkHierarchic = new CsvFileSink(tempDirectory.toAbsolutePath().toString(), hierarchicNamingStrategy, ",")
+    sinkFlat = new CsvFileSink(tempDirectory.toAbsolutePath())
+    sinkHierarchic = new CsvFileSink(tempDirectory.toAbsolutePath(), hierarchicNamingStrategy, ",")
   }
 
   def cleanupSpec() {
@@ -61,7 +59,7 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     // write files from joint grid container in output directory
     sinkFlat.persistJointGrid(firstGridContainer)
     // create second grid container from output folder
-    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString(), false)
+    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath(), false)
 
     then:
     // compare input and output joint grid container
@@ -77,7 +75,7 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
 
     when:
     sinkHierarchic.persistJointGrid(firstGridContainer)
-    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath().toString(), true)
+    def secondGridContainer = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath(), true)
 
     then:
     // compare input and output joint grid container
