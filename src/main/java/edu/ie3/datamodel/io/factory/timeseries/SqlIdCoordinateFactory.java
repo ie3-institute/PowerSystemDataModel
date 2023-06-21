@@ -17,7 +17,7 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKBReader;
 
-public class SqlCoordinateFactory extends IdCoordinateFactory {
+public class SqlIdCoordinateFactory extends IdCoordinateFactory {
   private static final String COORDINATE_ID = "id";
   private static final String COORDINATE = "coordinate";
   private final WKBReader reader = new WKBReader();
@@ -51,16 +51,15 @@ public class SqlCoordinateFactory extends IdCoordinateFactory {
   @Override
   public String getLatField() {
     throw new UnsupportedOperationException(
-        "This is not supported by " + SqlCoordinateFactory.class + "!");
+        "This is not supported by " + SqlIdCoordinateFactory.class + "!");
   }
 
   @Override
   public String getLonField() {
     throw new UnsupportedOperationException(
-        "this is not supported by " + SqlCoordinateFactory.class + "!");
+        "this is not supported by " + SqlIdCoordinateFactory.class + "!");
   }
 
-  /** Returns the field id for the coordinates */
   public String getCoordinateField() {
     return COORDINATE;
   }

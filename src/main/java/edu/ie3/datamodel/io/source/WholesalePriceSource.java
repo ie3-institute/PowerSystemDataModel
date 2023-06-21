@@ -11,7 +11,7 @@ import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 
 /** Describes a data source for wholesale prices */
-public interface WholesalePriceSource extends DataSource {
+public interface WholesalePriceSource {
   /**
    * Return the whole sale price for the given time interval
    *

@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.util.Optional;
 
 public class IoUtil {
   public static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
@@ -17,13 +19,34 @@ public class IoUtil {
   }
 
   /**
-   * Ensure to have harmonized file separator across the whole String. Will replace all occurences
-   * if "\" and "/" by the systems file separator
+   * Ensure to have harmonized file separator across the whole String. Will replace all occurrences
+   * of "\" and "/" by the systems file separator.
    *
    * @param in The String to harmonize
    * @return The harmonized String
    */
   public static String harmonizeFileSeparator(String in) {
     return in.replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT);
+  }
+
+  /**
+   * Ensure to have harmonized file separator across the whole path. Will replace all occurrences *
+   * of "\" and "/" by the systems file separator.
+   *
+   * @param path the path to harmonize
+   * @return the harmonized path
+   */
+  public static Path harmonizeFileSeparator(Path path) {
+    return Path.of(IoUtil.harmonizeFileSeparator(path.toString()));
+  }
+
+  /**
+   * Method to wrap a string of a path in an option for a path.
+   *
+   * @param in string of the path
+   * @return option of the path
+   */
+  public static Optional<Path> pathOption(String in) {
+    return Optional.of(Path.of(in));
   }
 }

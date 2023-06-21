@@ -15,13 +15,14 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
+import java.nio.file.Path;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
   private CsvJointGridContainerSource() {}
 
   public static JointGridContainer read(
-      String gridName, String csvSep, String directoryPath, boolean isHierarchic)
+      String gridName, String csvSep, Path directoryPath, boolean isHierarchic)
       throws SourceException, FileException {
 
     /* Parameterization */
@@ -38,17 +39,15 @@ public class CsvJointGridContainerSource {
       namingStrategy = new FileNamingStrategy();
     }
 
+    CsvDataSource dataSource = new CsvDataSource(csvSep, directoryPath, namingStrategy);
+
     /* Instantiating sources */
-    TypeSource typeSource = new CsvTypeSource(csvSep, directoryPath, namingStrategy);
-    RawGridSource rawGridSource =
-        new CsvRawGridSource(csvSep, directoryPath, namingStrategy, typeSource);
-    ThermalSource thermalSource =
-        new CsvThermalSource(csvSep, directoryPath, namingStrategy, typeSource);
+    TypeSource typeSource = new TypeSource(dataSource);
+    RawGridSource rawGridSource = new RawGridSource(typeSource, dataSource);
+    ThermalSource thermalSource = new ThermalSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
-        new CsvSystemParticipantSource(
-            csvSep, directoryPath, namingStrategy, typeSource, thermalSource, rawGridSource);
-    GraphicSource graphicSource =
-        new CsvGraphicSource(csvSep, directoryPath, namingStrategy, typeSource, rawGridSource);
+        new SystemParticipantSource(typeSource, thermalSource, rawGridSource, dataSource);
+    GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* Loading models */
     RawGridElements rawGridElements =
