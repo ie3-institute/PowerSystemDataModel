@@ -100,7 +100,7 @@ public class FileNamingStrategy {
    * @return Concatenation of sub directory structure and file name
    * @deprecated replaced with {@link FileUtils#of(String, Optional)}
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   private Optional<Path> getFilePath(String fileName, Optional<Path> subDirectories) {
     if (fileName.isEmpty()) return Optional.empty();
     return subDirectories
