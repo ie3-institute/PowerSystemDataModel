@@ -184,7 +184,7 @@ public class CsvFileConnector implements DataConnector {
           "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception: {}",
           clz.getSimpleName(),
           e);
-      throw new ConnectorException("Cannot init reader due to the following exception: ", e);
+      throw e;
     }
   }
 

@@ -16,6 +16,15 @@ import org.slf4j.LoggerFactory;
 
 /** Some utility functionalities. */
 public class FileUtils {
+  public static Pattern FILE_NAME_PATTERN =
+      Pattern.compile(
+          "^(?<fileName>[^\\\\/\\s.]{0,255})(?:\\.(?<extension>[a-zA-Z0-9]{0,10}(?:\\.[a-zA-Z0-9]{0,10})?))?$");
+  public static String CSV_FILE_EXTENSION = "csv";
+
+  private FileUtils() {
+    throw new IllegalStateException("Utility classes cannot be instantiated");
+  }
+
   private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
   /**
@@ -56,11 +65,6 @@ public class FileUtils {
    * @return a definition of the file
    */
   public static Path ofCsv(String fileName, Path directoryPath) {
-    Pattern FILE_NAME_PATTERN =
-        Pattern.compile(
-            "^(?<fileName>[^\\\\/\\s.]{0,255})(?:\\.(?<extension>[a-zA-Z0-9]{0,10}(?:\\.[a-zA-Z0-9]{0,10})?))?$");
-    String FILE_EXTENSION = "csv";
-
     /* Remove all file separators at the beginning and end of a directory path and ensure harmonized file separator */
     Path dirPath =
         Objects.nonNull(directoryPath) ? IoUtil.harmonizeFileSeparator(directoryPath) : Path.of("");
@@ -70,12 +74,12 @@ public class FileUtils {
 
     if (matcher.matches()) {
       String extension = matcher.group("extension");
-      if (Objects.nonNull(extension) && !extension.equalsIgnoreCase(FILE_EXTENSION))
+      if (Objects.nonNull(extension) && !extension.equalsIgnoreCase(CSV_FILE_EXTENSION))
         logger.warn(
             "You provided a file name with extension '{}'. It will be overridden to '{}'.",
             extension,
-            FILE_EXTENSION);
-      return dirPath.resolve(matcher.group("fileName") + "." + FILE_EXTENSION);
+            CSV_FILE_EXTENSION);
+      return dirPath.resolve(matcher.group("fileName") + "." + CSV_FILE_EXTENSION);
     } else {
       throw new IllegalArgumentException(
           "The file name '"

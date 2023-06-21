@@ -33,16 +33,11 @@ public class IoUtil {
    * Ensure to have harmonized file separator across the whole path. Will replace all occurrences *
    * of "\" and "/" by the systems file separator.
    *
-   * @param path an option for a path to harmonize
-   * @return the option for a harmonized path
+   * @param path the path to harmonize
+   * @return the harmonized path
    */
   public static Path harmonizeFileSeparator(Path path) {
-    String in = path.toString();
-    in =
-        IoUtil.FILE_SEPARATOR_REPLACEMENT.equals("\\\\")
-            ? in.replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
-            : in;
-    return Path.of(IoUtil.harmonizeFileSeparator(in));
+    return Path.of(IoUtil.harmonizeFileSeparator(path.toString()));
   }
 
   /**

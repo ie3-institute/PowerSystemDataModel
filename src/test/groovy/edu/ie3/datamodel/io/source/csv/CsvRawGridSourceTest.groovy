@@ -29,8 +29,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
   RawGridSource source
 
   def setupSpec() {
-    TypeSource typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath as Path, fileNamingStrategy))
-    source = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath as Path, fileNamingStrategy))
+    TypeSource typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    source = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy))
   }
 
   def "The CsvRawGridSource is able to convert single valid AssetInputEntityData to ConnectorInputEntityData"() {
