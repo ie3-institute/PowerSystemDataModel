@@ -59,7 +59,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   private final String csvSep;
 
   public CsvFileSink(String baseFolderPath) {
-    this(baseFolderPath, new FileNamingStrategy(), false, ",");
+    this(baseFolderPath, new FileNamingStrategy(), ",");
   }
 
   /**
@@ -69,17 +69,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    *
    * @param baseFolderPath the base folder path where the files should be put into
    * @param fileNamingStrategy the data sink file naming strategy that should be used
-   * @param initFiles true if the files should be created during initialization (might create files,
-   *     that only consist of a headline, because no data will be written into them), false
-   *     otherwise
    * @param csvSep the csv file separator that should be use
    */
-  public CsvFileSink(
-      String baseFolderPath,
-      FileNamingStrategy fileNamingStrategy,
-      boolean initFiles,
-      String csvSep) {
-    this(baseFolderPath, new ProcessorProvider(), fileNamingStrategy, initFiles, csvSep);
+  public CsvFileSink(String baseFolderPath, FileNamingStrategy fileNamingStrategy, String csvSep) {
+    this(baseFolderPath, new ProcessorProvider(), fileNamingStrategy, csvSep);
   }
 
   /**
@@ -94,22 +87,16 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param baseFolderPath the base folder path where the files should be put into
    * @param processorProvider the processor provided that should be used for entity serialization
    * @param fileNamingStrategy the data sink file naming strategy that should be used
-   * @param initFiles true if the files should be created during initialization (might create files,
-   *     that only consist of a headline, because no data will be written into them), false
-   *     otherwise
    * @param csvSep the csv file separator that should be use
    */
   public CsvFileSink(
       String baseFolderPath,
       ProcessorProvider processorProvider,
       FileNamingStrategy fileNamingStrategy,
-      boolean initFiles,
       String csvSep) {
     this.csvSep = csvSep;
     this.processorProvider = processorProvider;
     this.connector = new CsvFileConnector(baseFolderPath, fileNamingStrategy);
-
-    if (initFiles) initFiles(processorProvider, connector);
   }
 
   @Override
@@ -350,40 +337,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
           entity.getClass().getSimpleName(),
           e);
     }
-  }
-
-  /**
-   * Initialize files, hence create a file for each expected class that will be processed in the
-   * future. Please note, that files for time series can only be create on presence of a concrete
-   * time series, as their file name depends on the individual uuid of the time series.
-   *
-   * @param processorProvider the processor provider all files that will be processed is derived
-   *     from
-   * @param connector the connector to the files
-   */
-  private void initFiles(
-      final ProcessorProvider processorProvider, final CsvFileConnector connector) {
-    processorProvider
-        .getRegisteredClasses()
-        .forEach(
-            clz -> {
-              try {
-                String[] headerElements =
-                    csvHeaderElements(processorProvider.getHeaderElements(clz));
-
-                connector.getOrInitWriter(clz, headerElements, csvSep);
-              } catch (ProcessorProviderException e) {
-                log.error(
-                    "Error during receiving of head line elements. Cannot prepare writer for class {}.",
-                    clz,
-                    e);
-              } catch (ConnectorException e) {
-                log.error(
-                    "Error during instantiation files. Cannot get or init writer for class {}.",
-                    clz,
-                    e);
-              }
-            });
   }
 
   /**
