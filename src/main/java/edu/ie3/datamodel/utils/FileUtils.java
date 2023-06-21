@@ -21,11 +21,11 @@ public class FileUtils {
           "^(?<fileName>[^\\\\/\\s.]{0,255})(?:\\.(?<extension>[a-zA-Z0-9]{0,10}(?:\\.[a-zA-Z0-9]{0,10})?))?$");
   private static final String CSV_FILE_EXTENSION = "csv";
 
+  private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
+
   private FileUtils() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
   }
-
-  private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
   /**
    * Method to get a {@link Path} from a filename and an option of a directory path.
