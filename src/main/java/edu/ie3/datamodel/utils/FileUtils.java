@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
 
 /** Some utility functionalities. */
 public class FileUtils {
-  public static Pattern FILE_NAME_PATTERN =
+  public static final Pattern FILE_NAME_PATTERN =
       Pattern.compile(
           "^(?<fileName>[^\\\\/\\s.]{0,255})(?:\\.(?<extension>[a-zA-Z0-9]{0,10}(?:\\.[a-zA-Z0-9]{0,10})?))?$");
-  public static String CSV_FILE_EXTENSION = "csv";
+  public static final String CSV_FILE_EXTENSION = "csv";
 
   private FileUtils() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
