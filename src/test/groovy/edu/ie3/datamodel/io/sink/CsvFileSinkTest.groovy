@@ -8,6 +8,8 @@ package edu.ie3.datamodel.io.sink
 import edu.ie3.datamodel.models.result.system.EmResult
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
 
+import java.nio.file.Path
+
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
@@ -62,43 +64,16 @@ import javax.measure.quantity.Power
 class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
   @Shared
-  String testBaseFolderPath = "test"
+  Path testBaseFolderPath = Path.of("test")
 
   // called automatically by spock (see http://spockframework.org/spock/docs/1.0/spock_primer.html - Fixture Methods)
   def cleanup() {
     // delete files after each test if they exist
-    if (new File(testBaseFolderPath).exists()) {
+    if (testBaseFolderPath.toFile().exists()) {
       FileIOUtils.deleteRecursively(testBaseFolderPath)
     }
   }
 
-  def "A valid CsvFileSink called by simple constructor should not initialize files by default and consist of several default values"() {
-    given:
-    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath)
-    csvFileSink.shutdown()
-
-    expect:
-    !new File(testBaseFolderPath).exists()
-    csvFileSink.csvSep == ","
-  }
-
-  def "A valid CsvFileSink with 'initFiles' enabled should create files as expected"() {
-    given:
-    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-        new ProcessorProvider([
-          new ResultEntityProcessor(PvResult),
-          new ResultEntityProcessor(EvResult)
-        ], [] as Map),
-        new FileNamingStrategy(),
-        true,
-        ",")
-    csvFileSink.shutdown()
-
-    expect:
-    new File(testBaseFolderPath).exists()
-    new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
-  }
 
   def "A valid CsvFileSink is able to convert an entity data map correctly to RFC 4180 compliant strings"() {
     given:
@@ -140,7 +115,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     csvFileSink.shutdown()
   }
 
-  def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not init all files"() {
+  def "A valid CsvFileSink should persist provided elements correctly"() {
     given:
     CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
         new ProcessorProvider([
@@ -166,7 +141,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new InputEntityProcessor(EmInput)
         ], [] as Map),
         new FileNamingStrategy(),
-        false,
         ",")
 
     UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
@@ -202,27 +176,27 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     csvFileSink.shutdown()
 
     then:
-    new File(testBaseFolderPath).exists()
-    new File(testBaseFolderPath + File.separator + "wec_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "evcs_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "em_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "flex_options_res.csv").exists()
-    new File(testBaseFolderPath + File.separator + "transformer_2_w_type_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "node_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "transformer_2_w_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "operator_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "cylindrical_storage_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "line_graphic_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "line_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "operator_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "node_graphic_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "thermal_bus_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "thermal_house_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "load_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "em_input.csv").exists()
+    testBaseFolderPath.toFile().exists()
+    testBaseFolderPath.resolve("wec_res.csv").toFile().exists()
+    testBaseFolderPath.resolve("pv_res.csv").toFile().exists()
+    testBaseFolderPath.resolve("evcs_res.csv").toFile().exists()
+    testBaseFolderPath.resolve("em_res.csv").toFile().exists()
+    testBaseFolderPath.resolve("flex_options_res.csv").toFile().exists()
+    testBaseFolderPath.resolve("transformer_2_w_type_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("node_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("transformer_2_w_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("cylindrical_storage_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("line_graphic_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("line_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("node_graphic_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("thermal_bus_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("thermal_house_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("load_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("em_input.csv").toFile().exists()
 
-    !new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
+    !testBaseFolderPath.resolve("ev_res.csv").toFile().exists()
   }
 
   def "A valid CsvFileSink should persist a time series correctly"() {
@@ -237,7 +211,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
         new ProcessorProvider([], timeSeriesProcessorMap),
         new FileNamingStrategy(),
-        false,
         ",")
 
     when:
@@ -245,8 +218,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     csvFileSink.shutdown()
 
     then:
-    new File(testBaseFolderPath).exists()
-    new File(testBaseFolderPath + File.separator + "its_c_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").exists()
+    testBaseFolderPath.toFile().exists()
+    testBaseFolderPath.resolve("its_c_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").toFile().exists()
   }
 
   def "A valid CsvFileSink persists a bunch of time series correctly"() {
@@ -258,15 +231,15 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     csvFileSink.shutdown()
 
     then:
-    new File(testBaseFolderPath).exists()
-    new File(testBaseFolderPath + File.separator + "its_h_3c0ebc06-9bd7-44ea-a347-0c52d3dec854.csv").exists()
-    new File(testBaseFolderPath + File.separator + "its_p_b3d93b08-4985-41a6-b063-00f934a10b28.csv").exists()
-    new File(testBaseFolderPath + File.separator + "its_pq_7d085fc9-be29-4218-b768-00f885be066b.csv").exists()
-    new File(testBaseFolderPath + File.separator + "its_ph_56c20b88-c001-4225-8dac-cd13a75c6b48.csv").exists()
-    new File(testBaseFolderPath + File.separator + "its_pqh_83b577cc-06b1-47a1-bfff-ad648a00784b.csv").exists()
-    new File(testBaseFolderPath + File.separator + "its_c_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").exists()
-    new File(testBaseFolderPath + File.separator + "lpts_g2_b56853fe-b800-4c18-b324-db1878b22a28.csv").exists()
-    new File(testBaseFolderPath + File.separator + "its_weather_4fcbdfcd-4ff0-46dd-b0df-f3af7ae3ed98.csv").exists()
+    testBaseFolderPath.toFile().exists()
+    testBaseFolderPath.resolve("its_h_3c0ebc06-9bd7-44ea-a347-0c52d3dec854.csv").toFile().exists()
+    testBaseFolderPath.resolve("its_p_b3d93b08-4985-41a6-b063-00f934a10b28.csv").toFile().exists()
+    testBaseFolderPath.resolve("its_pq_7d085fc9-be29-4218-b768-00f885be066b.csv").toFile().exists()
+    testBaseFolderPath.resolve("its_ph_56c20b88-c001-4225-8dac-cd13a75c6b48.csv").toFile().exists()
+    testBaseFolderPath.resolve("its_pqh_83b577cc-06b1-47a1-bfff-ad648a00784b.csv").toFile().exists()
+    testBaseFolderPath.resolve("its_c_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").toFile().exists()
+    testBaseFolderPath.resolve("lpts_g2_b56853fe-b800-4c18-b324-db1878b22a28.csv").toFile().exists()
+    testBaseFolderPath.resolve("its_weather_4fcbdfcd-4ff0-46dd-b0df-f3af7ae3ed98.csv").toFile().exists()
   }
 
   def "A valid CsvFileSink is able to persist an InputEntity without persisting the nested elements"() {
@@ -294,9 +267,9 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     csvFileSink.persistIgnoreNested(nestedInput)
 
     then:
-    new File(testBaseFolderPath).exists()
-    new File(testBaseFolderPath + File.separator + "pv_input.csv").exists()
-    !(new File(testBaseFolderPath + File.separator + "node_input.csv").exists())
+    testBaseFolderPath.toFile().exists()
+    testBaseFolderPath.resolve("pv_input.csv").toFile().exists()
+    !testBaseFolderPath.resolve("node_input.csv").toFile().exists()
 
     cleanup:
     csvFileSink.shutdown()
@@ -311,14 +284,13 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         ProcessorProvider.allEntityProcessors(),
         new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
         new FileNamingStrategy(),
-        false,
         ",")
 
     when:
     csvFileSink.persist(individualEnergyPriceTimeSeries)
 
     then:
-    !(new File(testBaseFolderPath + File.separator + "its_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").exists())
+    !testBaseFolderPath.resolve("its_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").toFile().exists()
 
     cleanup:
     csvFileSink.shutdown()
@@ -331,23 +303,22 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         testBaseFolderPath,
         new ProcessorProvider(),
         new FileNamingStrategy(),
-        false,
         ",")
 
     when:
     csvFileSink.persistJointGrid(SampleJointGrid.grid())
 
     then:
-    new File(testBaseFolderPath + File.separator + "line_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "line_type_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "load_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "node_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "operator_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "pv_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "storage_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "storage_type_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "transformer_2_w_input.csv").exists()
-    new File(testBaseFolderPath + File.separator + "transformer_2_w_type_input.csv").exists()
+    testBaseFolderPath.resolve("line_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("line_type_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("load_input.csv").toFile().exists()
+    testBaseFolderPath.resolve( "node_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("pv_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("storage_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("storage_type_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("transformer_2_w_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("transformer_2_w_type_input.csv").toFile().exists()
 
     cleanup:
     csvFileSink.shutdown()

@@ -9,6 +9,8 @@ import org.apache.commons.io.FilenameUtils
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Path
+
 class CsvFileDefinitionTest extends Specification {
   @Shared
   String[] headLineElements
@@ -20,45 +22,13 @@ class CsvFileDefinitionTest extends Specification {
   String fileName
 
   @Shared
-  String directory
+  Path directory
 
   def setupSpec() {
     headLineElements = ["a", "b", "c"] as String[]
     csvSep = ","
     fileName = "node_input.csv"
-    directory = FilenameUtils.concat("test", "grid")
-  }
-
-  def "A csv file definition is set up correctly, if the directory path has corrupt file separator"() {
-    when:
-    def actual = new CsvFileDefinition(fileName, manipulatedDirectory, headLineElements, csvSep)
-
-    then:
-    actual.with {
-      assert it.fileName() == this.fileName
-      assert it.directoryPath() == this.directory
-      assert it.headLineElements() == this.headLineElements
-      assert it.csvSep() == this.csvSep
-    }
-
-    where:
-    manipulatedDirectory                                                       || expected
-    "/" + this.directory                                                       || this.directory
-    this.directory + "/"                                                       || this.directory
-    this.directory.replaceAll("[\\\\/]", File.separator == "/" ? "\\\\" : "/") || this.directory
-  }
-
-  def "A csv file definition is set up correctly, if the directory path is null"() {
-    when:
-    def actual = new CsvFileDefinition(fileName, null, headLineElements, csvSep)
-
-    then:
-    actual.with {
-      assert it.fileName() == this.fileName
-      assert it.directoryPath() == ""
-      assert it.headLineElements() == this.headLineElements
-      assert it.csvSep() == this.csvSep
-    }
+    directory = Path.of("test", "grid")
   }
 
   def "A csv file definition throw IllegalArgumentException, if the file name is malformed"() {
@@ -82,8 +52,8 @@ class CsvFileDefinitionTest extends Specification {
 
     then:
     actual.with {
-      assert it.fileName() == this.fileName
-      assert it.directoryPath() == this.directory
+      assert it.filePath.fileName == Path.of(this.fileName)
+      assert it.directoryPath == this.directory
       assert it.headLineElements() == this.headLineElements
       assert it.csvSep() == this.csvSep
     }
@@ -98,26 +68,10 @@ class CsvFileDefinitionTest extends Specification {
 
     then:
     actual.with {
-      assert it.fileName() == this.fileName
-      assert it.directoryPath() == directory
+      assert it.filePath.fileName == Path.of(this.fileName)
+      assert it.directoryPath == this.directory
       assert it.headLineElements() == this.headLineElements
       assert it.csvSep() == this.csvSep
     }
-  }
-
-  def "A csv file definition returns correct file path"() {
-    given:
-    def definition = new CsvFileDefinition(fileName, manipulatedDirectory, headLineElements, csvSep)
-
-    when:
-    def actual = definition.filePath
-
-    then:
-    actual == expected
-
-    where:
-    manipulatedDirectory                 || expected
-    ""                                   || this.fileName
-    FilenameUtils.concat("test", "grid") || FilenameUtils.concat(FilenameUtils.concat("test", "grid"), this.fileName)
   }
 }

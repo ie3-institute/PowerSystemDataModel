@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -24,6 +23,7 @@ import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -32,37 +32,9 @@ import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
-public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
+public class CsvWeatherSource extends WeatherSource {
 
-  private final TimeBasedWeatherValueFactory weatherFactory;
-
-  private final Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries;
-  private final IdCoordinateSource coordinateSource;
-
-  /**
-   * Initializes a CsvWeatherSource with a {@link CsvIdCoordinateSource} instance and immediately
-   * imports weather data, which will be kept for the lifetime of this source
-   *
-   * @param csvSep the separator string for csv columns
-   * @param folderPath path to the folder holding the time series files
-   * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
-   * @param weatherFactory factory to transfer field to value mapping into actual java object
-   *     instances
-   * @param coordinateFactory factory to build coordinate id to coordinate mapping
-   */
-  public CsvWeatherSource(
-      String csvSep,
-      String folderPath,
-      FileNamingStrategy fileNamingStrategy,
-      TimeBasedWeatherValueFactory weatherFactory,
-      IdCoordinateFactory coordinateFactory) {
-    this(
-        csvSep,
-        folderPath,
-        fileNamingStrategy,
-        new CsvIdCoordinateSource(csvSep, folderPath, fileNamingStrategy, coordinateFactory),
-        weatherFactory);
-  }
+  private final CsvDataSource dataSource;
 
   /**
    * Initializes a CsvWeatherSource and immediately imports weather data, which will be kept for the
@@ -71,35 +43,22 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
-   * @param coordinateSource a coordinate source to map ids to points
+   * @param idCoordinateSource a coordinate source to map ids to points
    * @param weatherFactory factory to transfer field to value mapping into actual java object
    *     instances
    */
   public CsvWeatherSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
-      IdCoordinateSource coordinateSource,
+      IdCoordinateSource idCoordinateSource,
       TimeBasedWeatherValueFactory weatherFactory) {
-    super(csvSep, folderPath, fileNamingStrategy);
-    this.coordinateSource = coordinateSource;
-    this.weatherFactory = weatherFactory;
-
+    super(idCoordinateSource, weatherFactory);
+    this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     coordinateToTimeSeries = getWeatherTimeSeries();
   }
 
-  /**
-   * Creates reader for all available weather time series files and then continues to parse them
-   *
-   * @return a map of coordinates to their time series
-   */
-  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
-    /* Get only weather time series meta information */
-    Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
-        connector.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
-
-    return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), connector);
-  }
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
@@ -124,6 +83,8 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
     return timeSeries.getTimeBasedValue(date);
   }
 
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
   /**
    * Trims all time series in a map to the given time interval
    *
@@ -141,6 +102,32 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
             Collectors.toMap(
                 Map.Entry::getKey,
                 entry -> TimeSeriesUtils.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
+  }
+
+  /**
+   * Merge two individual time series into a new time series with the UUID of the first parameter
+   *
+   * @param a the first time series to merge
+   * @param b the second time series to merge
+   * @return merged time series with a's UUID
+   */
+  protected <V extends Value> IndividualTimeSeries<V> mergeTimeSeries(
+      IndividualTimeSeries<V> a, IndividualTimeSeries<V> b) {
+    SortedSet<TimeBasedValue<V>> entries = a.getEntries();
+    entries.addAll(b.getEntries());
+    return new IndividualTimeSeries<>(a.getUuid(), entries);
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
+    /* Get only weather time series meta information */
+    Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
+        dataSource
+            .connector
+            .getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER)
+            .values();
+    return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
   }
 
   /**
@@ -187,6 +174,36 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
     return weatherTimeSeries;
   }
 
+  private Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+    try (BufferedReader reader = bufferedReader) {
+      final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
+
+      // by default try-with-resources closes the reader directly when we leave this method (which
+      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
+      // As we still want to consume the data at other places, we start a new stream instead of
+      // returning the original one
+      Collection<Map<String, String>> allRows =
+          dataSource.csvRowFieldValueMapping(reader, headline);
+
+      Function<Map<String, String>, String> timeCoordinateIdExtractor =
+          fieldToValues ->
+              fieldToValues
+                  .get(weatherFactory.getTimeFieldString())
+                  .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
+      return dataSource
+          .distinctRowsWithLog(
+              allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
+          .parallelStream();
+
+    } catch (IOException e) {
+      log.warn(
+          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+    }
+
+    return Stream.empty();
+  }
+
   /**
    * Builds a {@link TimeBasedValue} of type {@link WeatherValue} from given "flat " input
    * information. If the single model cannot be built, an empty optional is handed back.
@@ -217,50 +234,6 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
   }
 
   /**
-   * Reads the first line (considered to be the headline with headline fields) and returns a stream
-   * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
-   * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
-   *
-   * <p>This method overrides {@link CsvDataSource#buildStreamWithFieldsToAttributesMap(Class,
-   * BufferedReader)} to not do sanity check for available UUID. This is because the weather source
-   * might make use of ICON weather data, which don't have a UUID. For weather it is indeed not
-   * necessary, to have one unique UUID.
-   *
-   * @param entityClass the entity class that should be build
-   * @param bufferedReader the reader to use
-   * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName to fieldValue)
-   */
-  @Override
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
-    try (BufferedReader reader = bufferedReader) {
-      final String[] headline = parseCsvRow(reader.readLine(), csvSep);
-
-      // by default try-with-resources closes the reader directly when we leave this method (which
-      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
-      // As we still want to consume the data at other places, we start a new stream instead of
-      // returning the original one
-      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
-
-      Function<Map<String, String>, String> timeCoordinateIdExtractor =
-          fieldToValues ->
-              fieldToValues
-                  .get(weatherFactory.getTimeFieldString())
-                  .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
-      return distinctRowsWithLog(
-          allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
-          .parallelStream();
-
-    } catch (IOException e) {
-      log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-    }
-
-    return Stream.empty();
-  }
-
-  /**
    * Extract the coordinate identifier from the field to value mapping and obtain the actual
    * coordinate in collaboration with the source.
    *
@@ -277,20 +250,6 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
       return Optional.empty();
     }
     int coordinateId = Integer.parseInt(coordinateString);
-    return coordinateSource.getCoordinate(coordinateId);
-  }
-
-  /**
-   * Merge two individual time series into a new time series with the UUID of the first parameter
-   *
-   * @param a the first time series to merge
-   * @param b the second time series to merge
-   * @return merged time series with a's UUID
-   */
-  private <V extends Value> IndividualTimeSeries<V> mergeTimeSeries(
-      IndividualTimeSeries<V> a, IndividualTimeSeries<V> b) {
-    SortedSet<TimeBasedValue<V>> entries = a.getEntries();
-    entries.addAll(b.getEntries());
-    return new IndividualTimeSeries<>(a.getUuid(), entries);
+    return idCoordinateSource.getCoordinate(coordinateId);
   }
 }

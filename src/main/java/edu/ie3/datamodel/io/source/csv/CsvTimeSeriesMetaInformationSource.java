@@ -5,11 +5,13 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMetaInformationSource;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,11 +21,11 @@ import java.util.stream.Collectors;
  * CSV implementation for retrieving {@link TimeSeriesMetaInformationSource} from input directory
  * structures
  */
-public class CsvTimeSeriesMetaInformationSource extends CsvDataSource
-    implements TimeSeriesMetaInformationSource {
+public class CsvTimeSeriesMetaInformationSource implements TimeSeriesMetaInformationSource {
 
-  private final Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
-      timeSeriesMetaInformation;
+  protected final CsvDataSource dataSource;
+
+  private final Map<UUID, CsvIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
 
   /**
    * Creates a time series type source
@@ -33,12 +35,11 @@ public class CsvTimeSeriesMetaInformationSource extends CsvDataSource
    * @param fileNamingStrategy the file naming strategy
    */
   public CsvTimeSeriesMetaInformationSource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
-    super(csvSep, folderPath, fileNamingStrategy);
-
+      String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
+    this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     // retrieve only the desired time series
-    timeSeriesMetaInformation =
-        connector.getCsvIndividualTimeSeriesMetaInformation(
+    this.timeSeriesMetaInformation =
+        dataSource.connector.getCsvIndividualTimeSeriesMetaInformation(
             TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
   }
 

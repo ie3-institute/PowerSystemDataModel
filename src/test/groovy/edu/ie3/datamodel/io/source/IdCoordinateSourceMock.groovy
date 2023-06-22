@@ -12,6 +12,7 @@ import tech.units.indriya.ComparableQuantity
 import javax.measure.quantity.Length
 
 class IdCoordinateSourceMock implements IdCoordinateSource {
+
   @Override
   Optional<Point> getCoordinate(int id) {
     return Optional.empty()
