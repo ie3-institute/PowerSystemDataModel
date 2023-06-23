@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -15,7 +16,7 @@ public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
   private final CsvDataSource dataSource;
 
   public CsvTimeSeriesMappingSource(
-      String csvSep, String gridFolderPath, FileNamingStrategy fileNamingStrategy) {
+      String csvSep, Path gridFolderPath, FileNamingStrategy fileNamingStrategy) {
     this.dataSource = new CsvDataSource(csvSep, gridFolderPath, fileNamingStrategy);
   }
 
