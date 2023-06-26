@@ -15,8 +15,8 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
-import java.nio.file.Path;
 import edu.ie3.datamodel.utils.Try;
+import java.nio.file.Path;
 import java.util.List;
 
 /** Convenience class for cases where all used data comes from CSV sources */
