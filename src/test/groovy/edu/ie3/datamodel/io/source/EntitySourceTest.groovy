@@ -16,6 +16,8 @@ import edu.ie3.test.common.GridTestData as gtd
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Path
+
 class EntitySourceTest extends Specification {
 
   private final class DummyEntitySource extends EntitySource {
@@ -27,7 +29,7 @@ class EntitySourceTest extends Specification {
   @Shared
   String csvSep = ","
   @Shared
-  String testBaseFolderPath = "testBaseFolderPath" // does not have to exist for this test
+  Path testBaseFolderPath = Path.of("testBaseFolderPath") // does not have to exist for this test
   @Shared
   FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 

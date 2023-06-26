@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.util.StringUtils;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
@@ -39,10 +40,11 @@ public class BufferedCsvWriter extends BufferedWriter {
    *     if no file exists, a new one will be created in both cases
    * @throws IOException If the FileOutputStream cannot be established.
    */
-  public BufferedCsvWriter(
-      String filePath, String[] headLineElements, String csvSep, boolean append)
+  public BufferedCsvWriter(Path filePath, String[] headLineElements, String csvSep, boolean append)
       throws IOException {
-    super(new OutputStreamWriter(new FileOutputStream(filePath, append), StandardCharsets.UTF_8));
+    super(
+        new OutputStreamWriter(
+            new FileOutputStream(filePath.toFile(), append), StandardCharsets.UTF_8));
     this.headLineElements = headLineElements;
     this.csvSep = csvSep;
   }
@@ -59,10 +61,10 @@ public class BufferedCsvWriter extends BufferedWriter {
    *     if no file exists, a new one will be created in both cases
    * @throws IOException If the FileOutputStream cannot be established.
    */
-  public BufferedCsvWriter(String baseFolder, CsvFileDefinition fileDefinition, boolean append)
+  public BufferedCsvWriter(Path baseFolder, CsvFileDefinition fileDefinition, boolean append)
       throws IOException {
     this(
-        baseFolder + File.separator + fileDefinition.getFilePath(),
+        baseFolder.resolve(fileDefinition.getFilePath()),
         fileDefinition.headLineElements(),
         fileDefinition.csvSep(),
         append);
