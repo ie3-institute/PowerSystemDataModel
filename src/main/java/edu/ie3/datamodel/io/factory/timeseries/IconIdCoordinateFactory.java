@@ -50,4 +50,9 @@ public class IconIdCoordinateFactory extends IdCoordinateFactory {
   public String getLonField() {
     return LONG;
   }
+
+  @Override
+  List<String> getFieldNames() {
+    return List.of(COORDINATE_ID, LONG, LAT, "coordinate_type");
+  }
 }

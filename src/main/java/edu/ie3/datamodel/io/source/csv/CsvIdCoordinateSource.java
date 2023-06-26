@@ -156,15 +156,15 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
     try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
+      // checking the column names for each row
+      factory.checkForInvalidColumnNames(Set.of(headline));
+
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
       Collection<Map<String, String>> allRows =
           dataSource.csvRowFieldValueMapping(reader, headline);
-
-      // checking the column names for each row
-      allRows.forEach(row -> factory.checkForInvalidColumnNames(row.keySet()));
 
       Function<Map<String, String>, String> idExtractor =
           fieldToValues -> fieldToValues.get(factory.getIdField());

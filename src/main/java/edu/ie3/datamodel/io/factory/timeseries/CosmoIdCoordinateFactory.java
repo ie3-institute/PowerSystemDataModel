@@ -53,4 +53,9 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
   public String getLonField() {
     return LONG_GEO;
   }
+
+  @Override
+  List<String> getFieldNames() {
+    return List.of(TID, COORDINATE_ID, "long_geo", "lat_geo", "long_rot", "lat_rot");
+  }
 }

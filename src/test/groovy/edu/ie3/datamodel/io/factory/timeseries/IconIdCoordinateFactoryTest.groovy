@@ -89,6 +89,6 @@ class IconIdCoordinateFactoryTest extends Specification {
     then:
     Exception ex = thrown()
     ex.class == InvalidColumnNameException
-    ex.message == "The provided column names [id, lat, lon] does not match the expected column names [id, latitude, longitude]!"
+    ex.message == "The provided column names [id, lat, lon] does not match the expected column names [id, longitude, latitude, coordinate_type]!"
   }
 }

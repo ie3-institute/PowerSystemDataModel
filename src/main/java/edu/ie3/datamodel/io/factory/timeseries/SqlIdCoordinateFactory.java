@@ -60,6 +60,11 @@ public class SqlIdCoordinateFactory extends IdCoordinateFactory {
         "this is not supported by " + SqlIdCoordinateFactory.class + "!");
   }
 
+  @Override
+  List<String> getFieldNames() {
+    return List.of(COORDINATE_ID, COORDINATE);
+  }
+
   public String getCoordinateField() {
     return COORDINATE;
   }

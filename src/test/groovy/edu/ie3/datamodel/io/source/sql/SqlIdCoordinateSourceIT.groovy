@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
+import edu.ie3.datamodel.exceptions.InvalidColumnNameException
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory
 import edu.ie3.test.helper.TestContainerHelper
@@ -186,5 +187,17 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     for(CoordinateDistance coordinateDistance : receivedValues){
       expectedValues.contains(coordinateDistance.coordinateB)
     }
+  }
+
+  def "Throws an exception if an invalid column name is given" () {
+    given:
+    def invalidColumnNames = ["id", "lat", "lon"] as Set<String>
+    when:
+    source.factory.checkForInvalidColumnNames(invalidColumnNames)
+
+    then:
+    Exception ex = thrown()
+    ex.class == InvalidColumnNameException
+    ex.message == "The provided column names [id, lat, lon] does not match the expected column names [id, coordinate]!"
   }
 }

@@ -100,6 +100,6 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     then:
     Exception ex = thrown()
     ex.class == InvalidColumnNameException
-    ex.message == "The provided column names [id, lat, lon] does not match the expected column names [id, latgeo, longgeo]!"
+    ex.message == "The provided column names [id, lat, lon] does not match the expected column names [tid, id, long_geo, lat_geo, long_rot, lat_rot]!"
   }
 }

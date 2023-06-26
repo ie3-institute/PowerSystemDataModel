@@ -32,8 +32,11 @@ public abstract class IdCoordinateFactory
   /** @return the field id for the coordinate longitude */
   public abstract String getLonField();
 
+  /** @return all fields */
+  abstract List<String> getFieldNames();
+
   public void checkForInvalidColumnNames(Set<String> columnNames) {
-    List<String> validColumnNames = List.of(getIdField(), getLatField(), getLonField());
+    List<String> validColumnNames = getFieldNames();
 
     if (!columnNames.containsAll(validColumnNames)) {
       throw new InvalidColumnNameException(
@@ -46,11 +49,9 @@ public abstract class IdCoordinateFactory
 
     if (columnNames.size() != validColumnNames.size()) {
       log.warn(
-          "The provided row has more column names than expected. Provided: "
-              + columnNames
-              + ", expected: "
-              + validColumnNames
-              + ".");
+          "The provided row has more column names than expected. Provided: {}, expected: {}.",
+          columnNames,
+          validColumnNames);
     }
   }
 }
