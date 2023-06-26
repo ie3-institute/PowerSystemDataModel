@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Interface that provides the capability to build entities that are hold by a {@link
+ * Implementation that provides the capability to build entities that are hold by a {@link
  * RawGridElements} as well as the {@link RawGridElements} container as well from different data
  * sources e.g. .csv files or databases.
  *
@@ -142,13 +142,13 @@ public class RawGridSource extends EntitySource {
    * NodeInput} which has to be checked manually, as {@link NodeInput#equals(Object)} is NOT
    * restricted on the uuid of {@link NodeInput}.
    *
-   * <p>In contrast to {@link #getNodes} this interface provides the ability to pass in an already
+   * <p>In contrast to {@link #getNodes} this method provides the ability to pass in an already
    * existing set of {@link OperatorInput} entities, the {@link NodeInput} instances depend on.
    * Doing so, already loaded nodes can be recycled to improve performance and prevent unnecessary
    * loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -183,13 +183,13 @@ public class RawGridSource extends EntitySource {
    * LineInput} which has to be checked manually, as {@link LineInput#equals(Object)} is NOT
    * restricted on the uuid of {@link LineInput}.
    *
-   * <p>In contrast to {@link #getNodes} this interface provides the ability to pass in an already
+   * <p>In contrast to {@link #getNodes} this method provides the ability to pass in an already
    * existing set of {@link NodeInput}, {@link LineTypeInput} and {@link OperatorInput} entities,
    * the {@link LineInput} instances depend on. Doing so, already loaded nodes, line types and
    * operators can be recycled to improve performance and prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -228,14 +228,14 @@ public class RawGridSource extends EntitySource {
    * {@link Transformer2WInput} which has to be checked manually, as {@link
    * Transformer2WInput#equals(Object)} is NOT restricted on the uuid of {@link Transformer2WInput}.
    *
-   * <p>In contrast to {@link #getNodes()} this interface provides the ability to pass in an already
+   * <p>In contrast to {@link #getNodes()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput}, {@link Transformer2WTypeInput} and {@link OperatorInput}
    * entities, the {@link Transformer2WInput} instances depend on. Doing so, already loaded nodes,
    * line types and operators can be recycled to improve performance and prevent unnecessary loading
    * operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -282,14 +282,14 @@ public class RawGridSource extends EntitySource {
    * {@link Transformer3WInput} which has to be checked manually, as {@link
    * Transformer3WInput#equals(Object)} is NOT restricted on the uuid of {@link Transformer3WInput}.
    *
-   * <p>In contrast to {@link #getNodes()} this interface provides the ability to pass in an already
+   * <p>In contrast to {@link #getNodes()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput}, {@link Transformer3WTypeInput} and {@link OperatorInput}
    * entities, the {@link Transformer3WInput} instances depend on. Doing so, already loaded nodes,
    * line types and operators can be recycled to improve performance and prevent unnecessary loading
    * operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -331,13 +331,13 @@ public class RawGridSource extends EntitySource {
    * {@link SwitchInput} which has to be checked manually, as {@link SwitchInput#equals(Object)} is
    * NOT restricted on the uuid of {@link SwitchInput}.
    *
-   * <p>In contrast to {@link #getNodes()} this interface provides the ability to pass in an already
+   * <p>In contrast to {@link #getNodes()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link SwitchInput}
    * instances depend on. Doing so, already loaded nodes, line types and operators can be recycled
    * to improve performance and prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -371,13 +371,13 @@ public class RawGridSource extends EntitySource {
    * MeasurementUnitInput#equals(Object)} is NOT restricted on the uuid of {@link
    * MeasurementUnitInput}.
    *
-   * <p>In contrast to {@link #getNodes()} this interface provides the ability to pass in an already
+   * <p>In contrast to {@link #getNodes()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
    * MeasurementUnitInput} instances depend on. Doing so, already loaded nodes, line types and
    * operators can be recycled to improve performance and prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances

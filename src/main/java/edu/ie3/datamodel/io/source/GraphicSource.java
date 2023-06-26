@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.utils.Try;
@@ -27,9 +28,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Interface that provides the capability to build entities of type {@link
- * edu.ie3.datamodel.models.input.graphics.GraphicInput} from different data sources e.g. .csv files
- * or databases
+ * Implementation that provides the capability to build entities of type {@link GraphicInput} from
+ * different data sources e.g. .csv files or databases
  *
  * @version 0.1
  * @since 08.04.20
@@ -52,7 +52,7 @@ public class GraphicSource extends EntitySource {
     this.nodeGraphicInputFactory = new NodeGraphicInputFactory();
   }
 
-  /** Returns the graphic elements of the grid as a option */
+  /** Returns the graphic elements of the grid or throws a {@link SourceException} */
   public GraphicElements getGraphicElements() throws SourceException {
 
     // read all needed entities
@@ -81,8 +81,8 @@ public class GraphicSource extends EntitySource {
 
   /**
    * If the set of {@link NodeInput} entities is not exhaustive for all available {@link
-   * NodeGraphicInput} entities or if an error during the building process occurs, all entities that
-   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
+   * NodeGraphicInput} entities or if an error during the building process occurs a {@link
+   * SourceException} is thrown, else all entities that has been able to be built are returned.
    */
   public Set<NodeGraphicInput> getNodeGraphicInput() throws SourceException {
     return getNodeGraphicInput(rawGridSource.getNodes(typeSource.getOperators()));
@@ -101,8 +101,8 @@ public class GraphicSource extends EntitySource {
 
   /**
    * If the set of {@link LineInput} entities is not exhaustive for all available {@link
-   * LineGraphicInput} entities or if an error during the building process occurs, all entities that
-   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
+   * LineGraphicInput} entities or if an error during the building process occurs a {@link
+   * SourceException} is thrown, else all entities that has been able to be built are returned.
    */
   public Set<LineGraphicInput> getLineGraphicInput() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();

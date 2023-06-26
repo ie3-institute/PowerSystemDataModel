@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Interface that provides the capability to build entities of type {@link SystemParticipantInput}
- * as well as {@link SystemParticipants} container.
+ * Implementation that provides the capability to build entities of type {@link
+ * SystemParticipantInput} as well as {@link SystemParticipants} container.
  */
 public class SystemParticipantSource extends EntitySource {
 
@@ -183,13 +183,13 @@ public class SystemParticipantSource extends EntitySource {
    * {@link FixedFeedInInput} which has to be checked manually, as {@link
    * FixedFeedInInput#equals(Object)} is NOT restricted on the uuid of {@link FixedFeedInInput}.
    *
-   * <p>In contrast to {@link #getFixedFeedIns()} this interface provides the ability to pass in an
+   * <p>In contrast to {@link #getFixedFeedIns()} this method provides the ability to pass in an
    * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
    * FixedFeedInInput} instances depend on. Doing so, already loaded nodes can be recycled to
    * improve performance and prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -225,13 +225,13 @@ public class SystemParticipantSource extends EntitySource {
    * PvInput} which has to be checked manually, as {@link PvInput#equals(Object)} is NOT restricted
    * on the uuid of {@link PvInput}.
    *
-   * <p>In contrast to {@link #getPvPlants()} this interface provides the ability to pass in an
-   * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
-   * PvInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
-   * performance and prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getPvPlants()} this method provides the ability to pass in an already
+   * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link PvInput}
+   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
+   * prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -265,13 +265,13 @@ public class SystemParticipantSource extends EntitySource {
    * LoadInput} which has to be checked manually, as {@link LoadInput#equals(Object)} is NOT
    * restricted on the uuid of {@link LoadInput}.
    *
-   * <p>In contrast to {@link #getLoads()} this interface provides the ability to pass in an already
+   * <p>In contrast to {@link #getLoads()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link LoadInput}
    * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
    * prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -306,13 +306,13 @@ public class SystemParticipantSource extends EntitySource {
    * EvcsInput} which has to be checked manually, as {@link EvcsInput#equals(Object)} is NOT
    * restricted on the uuid of {@link EvcsInput}.
    *
-   * <p>In contrast to {@link #getEvCS()} this interface provides the ability to pass in an already
+   * <p>In contrast to {@link #getEvCS()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link EvcsInput}
    * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
    * prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -347,13 +347,13 @@ public class SystemParticipantSource extends EntitySource {
    * BmInput} which has to be checked manually, as {@link BmInput#equals(Object)} is NOT restricted
    * on the uuid of {@link BmInput}.
    *
-   * <p>In contrast to {@link #getBmPlants()} this interface provides the ability to pass in an
-   * already existing set of {@link NodeInput}, {@link BmTypeInput} and {@link OperatorInput}
-   * entities, the {@link BmInput} instances depend on. Doing so, already loaded nodes can be
-   * recycled to improve performance and prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getBmPlants()} this method provides the ability to pass in an already
+   * existing set of {@link NodeInput}, {@link BmTypeInput} and {@link OperatorInput} entities, the
+   * {@link BmInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
+   * performance and prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -392,13 +392,13 @@ public class SystemParticipantSource extends EntitySource {
    * {@link StorageInput} which has to be checked manually, as {@link StorageInput#equals(Object)}
    * is NOT restricted on the uuid of {@link StorageInput}.
    *
-   * <p>In contrast to {@link #getStorages()} this interface provides the ability to pass in an
-   * already existing set of {@link NodeInput}, {@link StorageTypeInput} and {@link OperatorInput}
-   * entities, the {@link StorageInput} instances depend on. Doing so, already loaded nodes can be
-   * recycled to improve performance and prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getStorages()} this method provides the ability to pass in an already
+   * existing set of {@link NodeInput}, {@link StorageTypeInput} and {@link OperatorInput} entities,
+   * the {@link StorageInput} instances depend on. Doing so, already loaded nodes can be recycled to
+   * improve performance and prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -436,13 +436,13 @@ public class SystemParticipantSource extends EntitySource {
    * WecInput} which has to be checked manually, as {@link WecInput#equals(Object)} is NOT
    * restricted on the uuid of {@link WecInput}.
    *
-   * <p>In contrast to {@link #getWecPlants()} this interface provides the ability to pass in an
+   * <p>In contrast to {@link #getWecPlants()} this method provides the ability to pass in an
    * already existing set of {@link NodeInput}, {@link WecTypeInput} and {@link OperatorInput}
    * entities, the {@link WecInput} instances depend on. Doing so, already loaded nodes can be
    * recycled to improve performance and prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -480,13 +480,13 @@ public class SystemParticipantSource extends EntitySource {
    * EvInput} which has to be checked manually, as {@link EvInput#equals(Object)} is NOT restricted
    * on the uuid of {@link EvInput}.
    *
-   * <p>In contrast to {@link #getEvs()} this interface provides the ability to pass in an already
+   * <p>In contrast to {@link #getEvs()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput}, {@link EvTypeInput} and {@link OperatorInput} entities, the
    * {@link EvInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
    * performance and prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -523,13 +523,13 @@ public class SystemParticipantSource extends EntitySource {
    * java.util.UUID} uniqueness of the provided {@link EmInput} which has to be checked manually, as
    * {@link EmInput#equals(Object)} is NOT restricted on the uuid of {@link EmInput}.
    *
-   * <p>In contrast to {@link #getHeatPumps()} this interface provides the ability to pass in an
+   * <p>In contrast to {@link #getHeatPumps()} this method provides the ability to pass in an
    * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
    * EmInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
    * performance and prevent unnecessary loading operations.
    *
-   * <p>If something fails during the creation process it's up to the concrete implementation of an
-   * empty set or a set with all entities that has been able to be build is returned.
+   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
+   * set with all entities that has been able to be build is returned.
    *
    * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
    *     the returning instances
@@ -558,9 +558,8 @@ public class SystemParticipantSource extends EntitySource {
    * If one of the sets of {@link NodeInput}, {@link ThermalBusInput}, {@link ThermalStorageInput}
    * or {@link ChpTypeInput} entities is not exhaustive for all available {@link ChpInput} entities
    * (e.g. a {@link NodeInput} or {@link ChpTypeInput} entity is missing) or if an error during the
-   * building process occurs, the entity that misses something will be skipped (which can be seen as
-   * a filtering functionality) but all entities that are able to be built will be returned anyway
-   * and the elements that couldn't have been built are logged.
+   * building process occurs a {@link SourceException} is thrown, else all entities that are able to
+   * be built will be returned.
    *
    * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
@@ -591,10 +590,9 @@ public class SystemParticipantSource extends EntitySource {
   /**
    * If one of the sets of {@link NodeInput}, {@link ThermalBusInput} or {@link HpTypeInput}
    * entities is not exhaustive for all available {@link HpInput} entities (e.g. a {@link NodeInput}
-   * or {@link HpTypeInput} entity is missing) or if an error during the building process occurs,
-   * the entity that misses something will be skipped (which can be seen as a filtering
-   * functionality) but all entities that are able to be built will be returned anyway and the
-   * elements that couldn't have been built are logged.
+   * or {@link HpTypeInput} entity is missing) or if an error during the building process occurs a
+   * {@link SourceException} is thrown, else all entities that are able to be built will be
+   * returned.
    *
    * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
