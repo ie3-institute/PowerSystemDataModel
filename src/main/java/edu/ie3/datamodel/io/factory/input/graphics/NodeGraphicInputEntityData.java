@@ -23,7 +23,7 @@ public class NodeGraphicInputEntityData extends EntityData {
   /**
    * Creates a new NodeGraphicInputentityData object for an a NodeGraphicInput
    *
-   * @param fieldsToAttributes containing mapping of field name to value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param node node input element of this graphic
    */
   public NodeGraphicInputEntityData(Map<String, String> fieldsToAttributes, NodeInput node) {

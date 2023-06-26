@@ -24,7 +24,7 @@ public class NodeAssetInputEntityData extends AssetInputEntityData {
    * Creates a new UntypedSingleNodeEntityData object for an operated, always on system participant
    * input
    *
-   * @param fieldsToAttributes containing a mapping of field name to value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param node input node
    */
@@ -39,7 +39,7 @@ public class NodeAssetInputEntityData extends AssetInputEntityData {
   /**
    * Creates a new UntypedSingleNodeEntityData object for an operable system participant input
    *
-   * @param fieldsToAttributes containing a mapping of field name to value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param node input node
    * @param operator operator input

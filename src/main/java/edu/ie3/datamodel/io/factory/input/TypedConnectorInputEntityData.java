@@ -29,7 +29,7 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
    * Creates a new TypedConnectorInputEntityData object for a connector input that needs a type
    * input as well. It sets the operator to default.
    *
-   * @param fieldsToAttributes containing a mapping of field name to value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param nodeA input nodeA
    * @param nodeB input nodeB
@@ -49,7 +49,7 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
    * Creates a new TypedConnectorInputEntityData object for an operable connector input input that
    * input that needs a type input as well
    *
-   * @param fieldsToAttributes containing a mapping of field name to value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param operator specific operator to use
    * @param nodeA input nodeA

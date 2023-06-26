@@ -19,8 +19,8 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
   /**
    * Creates a new TimeBasedEntryData object
    *
-   * @param fieldsToAttributes containing a mapping of field name to value
-   * @param coordinate coordinate for this WeatherValue
+   * @param fieldsToAttributes attribute map: field name to value * @param coordinate coordinate for
+   *     this WeatherValue
    */
   public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
     super(fieldsToAttributes, WeatherValue.class);

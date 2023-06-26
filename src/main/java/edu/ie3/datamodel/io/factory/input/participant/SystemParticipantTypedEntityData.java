@@ -30,7 +30,7 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
    * Creates a new SystemParticipantEntityData object for an operated, always on system participant
    * input that needs a type input as well
    *
-   * @param fieldsToAttributes containing a mapping of field name to value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param node input node
    * @param typeInput type input
@@ -48,7 +48,7 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
    * Creates a new SystemParticipantEntityData object for an operable system participant input that
    * needs a type input as well
    *
-   * @param fieldsToAttributes containing a mapping of field name to value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param operator operator input
    * @param node input node

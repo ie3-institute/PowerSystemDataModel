@@ -36,7 +36,7 @@ public abstract class EntityData extends FactoryData {
   /**
    * Creates a new EntityData object
    *
-   * @param fieldsToAttributes containing mapping of field name to value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    */
   protected EntityData(

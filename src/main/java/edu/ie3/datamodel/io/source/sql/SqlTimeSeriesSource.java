@@ -183,7 +183,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
    * need any additional information.
    *
-   * @param fieldToValues attribute map: field name to value
+   * @param fieldToValues Mapping from field id to values
    * @return Optional simple time based value
    */
   private Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
