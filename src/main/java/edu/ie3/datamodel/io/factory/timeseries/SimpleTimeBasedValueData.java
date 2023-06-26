@@ -18,8 +18,8 @@ public class SimpleTimeBasedValueData<V extends Value> extends TimeBasedValueDat
   /**
    * Creates a new SimpleTimeBasedValueData object
    *
-   * @param fieldsToAttributes attribute map: field name to value * @param valueClass Class of the
-   *     underlying value
+   * @param fieldsToAttributes attribute map: field name to value
+   * @param valueClass Class of the underlying value
    */
   public SimpleTimeBasedValueData(Map<String, String> fieldsToAttributes, Class<V> valueClass) {
     super(fieldsToAttributes, valueClass);
