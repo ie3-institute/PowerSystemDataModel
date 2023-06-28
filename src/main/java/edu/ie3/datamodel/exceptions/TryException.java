@@ -1,0 +1,24 @@
+/*
+ * © 2023. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+*/
+package edu.ie3.datamodel.exceptions;
+
+public class TryException extends RuntimeException {
+  public TryException() {
+    super();
+  }
+
+  public TryException(String message) {
+    super(message);
+  }
+
+  public TryException(String message, Throwable throwable) {
+    super(message, throwable);
+  }
+
+  public TryException(Throwable throwable) {
+    super(throwable);
+  }
+}

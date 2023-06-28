@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.TryException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -84,17 +85,17 @@ public abstract class Try<T> {
 
   /**
    * Method for getting the data. If this object is a {@link Failure} the exception is wrapped by a
-   * {@link RuntimeException}.
+   * {@link TryException}.
    *
    * @return data id this object is a {@link Success}
-   * @throws RuntimeException if this object is a {@link Failure}
+   * @throws TryException if this object is a {@link Failure}
    */
-  public T getOrThrow() throws RuntimeException {
+  public T getOrThrow() throws TryException {
     if (data != null) {
       return data;
     } else {
       assert exception != null;
-      throw new RuntimeException(exception);
+      throw new TryException(exception);
     }
   }
 
