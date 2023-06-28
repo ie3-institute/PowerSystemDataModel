@@ -53,6 +53,9 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
     String dbPointColumnName =
         dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
 
+    // checking the column names of sql source
+    factory.checkForInvalidColumnNames(Set.of(dbIdColumnName, dbPointColumnName));
+
     // setup queries
     this.basicQuery = createBaseQueryString(dataSource.schemaName, coordinateTableName);
     this.queryForPoint = createQueryForPoint(dbIdColumnName);

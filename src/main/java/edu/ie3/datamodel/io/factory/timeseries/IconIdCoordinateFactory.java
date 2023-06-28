@@ -52,7 +52,7 @@ public class IconIdCoordinateFactory extends IdCoordinateFactory {
   }
 
   @Override
-  List<String> getFieldNames() {
+  public List<String> getFieldNames() {
     return List.of(COORDINATE_ID, LONG, LAT, "coordinate_type");
   }
 }

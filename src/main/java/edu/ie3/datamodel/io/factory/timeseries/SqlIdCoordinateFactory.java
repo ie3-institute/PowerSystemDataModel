@@ -61,7 +61,7 @@ public class SqlIdCoordinateFactory extends IdCoordinateFactory {
   }
 
   @Override
-  List<String> getFieldNames() {
+  public List<String> getFieldNames() {
     return List.of(COORDINATE_ID, COORDINATE);
   }
 

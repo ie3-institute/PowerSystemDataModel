@@ -33,7 +33,7 @@ public abstract class IdCoordinateFactory
   public abstract String getLonField();
 
   /** @return all fields */
-  abstract List<String> getFieldNames();
+  public abstract List<String> getFieldNames();
 
   public void checkForInvalidColumnNames(Set<String> columnNames) {
     List<String> validColumnNames = getFieldNames();

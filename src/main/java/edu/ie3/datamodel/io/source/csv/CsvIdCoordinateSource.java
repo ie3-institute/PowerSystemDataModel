@@ -156,7 +156,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
     try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
-      // checking the column names for each row
+      // checking the column names of csv source
       factory.checkForInvalidColumnNames(Set.of(headline));
 
       // by default try-with-resources closes the reader directly when we leave this method (which
