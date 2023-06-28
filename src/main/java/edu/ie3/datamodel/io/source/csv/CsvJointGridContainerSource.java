@@ -58,17 +58,19 @@ public class CsvJointGridContainerSource {
     Try<GraphicElements> graphicElements = Try.of(graphicSource::getGraphicElements);
 
     List<? extends Exception> exceptions =
-        Try.getExceptions(rawGridElements, systemParticipants, graphicElements);
+        Try.getExceptions(List.of(rawGridElements, systemParticipants, graphicElements));
 
-    if (exceptions.size() > 0) {
+    if (!exceptions.isEmpty()) {
       throw new SourceException(
           exceptions.size() + " error(s) occurred while reading sources. ", exceptions);
     } else {
+      // getOrThrow should not throw an exception in this context, because all exception are
+      // filtered and thrown before
       return new JointGridContainer(
           gridName,
-          rawGridElements.getData().get(),
-          systemParticipants.getData().get(),
-          graphicElements.getData().get());
+          rawGridElements.getOrThrow(),
+          systemParticipants.getOrThrow(),
+          graphicElements.getOrThrow());
     }
   }
 }

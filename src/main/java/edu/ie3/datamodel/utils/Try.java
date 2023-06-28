@@ -15,7 +15,6 @@ public abstract class Try<T> {
   private final boolean isEmpty;
 
   // constructor
-
   /**
    * Constructor for {@link Try} used when a {@link Success} is created.
    *
@@ -140,7 +139,7 @@ public abstract class Try<T> {
    * Returns the data. WARNING: This method is for internal usage only and should therefore not be
    * called for other purposes.
    */
-  protected T data() {
+  T data() {
     return data;
   }
 
@@ -148,7 +147,7 @@ public abstract class Try<T> {
    * Returns the exception. WARNING: This method is for internal usage only and should therefore not
    * be called for other purposes.
    */
-  protected Exception exception() {
+  Exception exception() {
     return exception;
   }
 
@@ -244,8 +243,8 @@ public abstract class Try<T> {
    * @param tries collection of {@link Try} objects
    * @return a list of {@link Exception}'s
    */
-  public static List<? extends Exception> getExceptions(Try<?>... tries) {
-    return Arrays.stream(tries).filter(Try::isFailure).map(t -> ((Failure<?>) t).get()).toList();
+  public static <D> List<? extends Exception> getExceptions(Collection<Try<? extends D>> tries) {
+    return tries.stream().filter(Try::isFailure).map(t -> ((Failure<?>) t).get()).toList();
   }
 
   /** Implementation of {@link Try} class. This class is used to present a successful try. */
@@ -311,7 +310,7 @@ public abstract class Try<T> {
   /**
    * Functional interface for the {@link Try} class.
    *
-   * @param <T>
+   * @param <T> type of data that is supplied
    */
   @FunctionalInterface
   public interface TrySupplier<T> {

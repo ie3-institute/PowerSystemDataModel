@@ -20,10 +20,7 @@ import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.utils.Try;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,15 +64,17 @@ public class GraphicSource extends EntitySource {
     Try<Set<LineGraphicInput>> lineGraphics = Try.of(() -> getLineGraphicInput(lines));
 
     List<SourceException> exceptions =
-        (List<SourceException>) Try.getExceptions(nodeGraphics, lineGraphics);
+        (List<SourceException>) Try.getExceptions(List.of(nodeGraphics, lineGraphics));
 
-    if (exceptions.size() > 0) {
+    if (!exceptions.isEmpty()) {
       throw new GraphicSourceException(
           exceptions.size() + "error(s) occurred while initializing graphic elements. ",
           exceptions);
     } else {
       // if everything is fine, return a GraphicElements instance
-      return new GraphicElements(nodeGraphics.getData().get(), lineGraphics.getData().get());
+      // getOrThrow should not throw an exception in this context, because all exception are
+      // filtered and thrown before
+      return new GraphicElements(nodeGraphics.getOrThrow(), lineGraphics.getOrThrow());
     }
   }
 

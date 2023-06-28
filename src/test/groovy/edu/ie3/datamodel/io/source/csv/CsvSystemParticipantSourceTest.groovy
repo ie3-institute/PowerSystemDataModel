@@ -195,9 +195,9 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     [sptd.hpInput.node] | [] | [sptd.hpInput.type] | [sptd.hpInput.thermalBus] || 1             || [
       new HpInput(sptd.hpInput.uuid, sptd.hpInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.hpInput.operationTime, sptd.hpInput.node, sptd.hpInput.thermalBus, sptd.hpInput.qCharacteristics, sptd.hpInput.type)
     ]
-    [] | [] | [] | [] || 0             || []
-    [sptd.hpInput.node] | []| []| []|| 0             || []
-    [sptd.hpInput.node] | [sptd.hpInput.operator] | [] | [] || 0             || []
+    [] | [] | [] | []                                                        || 0             || []
+    [sptd.hpInput.node] | []                      | []                  | [] || 0             || []
+    [sptd.hpInput.node] | [sptd.hpInput.operator] | []                  | [] || 0             || []
     [sptd.hpInput.node] | [sptd.hpInput.operator] | [sptd.hpInput.type] | [] || 0             || []
   }
 
@@ -297,9 +297,9 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     [sptd.storageInput.node] | [] | [sptd.storageInput.type] || 1             || [
       new StorageInput(sptd.storageInput.uuid, sptd.storageInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.storageInput.operationTime, sptd.storageInput.node, sptd.storageInput.qCharacteristics, sptd.storageInput.type)
     ]
-    [sptd.storageInput.node] | [sptd.storageInput.operator] | []|| 0             || []
-    [sptd.storageInput.node] | [] | [] || 0             || []
-    [] | [] | [] || 0             || []
+    [sptd.storageInput.node] | [sptd.storageInput.operator] | [] || 0             || []
+    [sptd.storageInput.node] | []                           | [] || 0             || []
+    []                       | []                           | [] || 0             || []
   }
 
   def "A CsvSystemParticipantSource should return data from valid bm input file as expected"() {
@@ -321,9 +321,9 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     [sptd.bmInput.node] | [] | [sptd.bmInput.type] || 1             || [
       new BmInput(sptd.bmInput.uuid, sptd.bmInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.bmInput.operationTime, sptd.bmInput.node, sptd.bmInput.qCharacteristics, sptd.bmInput.type, sptd.bmInput.marketReaction, sptd.bmInput.costControlled, sptd.bmInput.feedInTariff)
     ]
-    [sptd.bmInput.node] | [sptd.bmInput.operator]| [] || 0             || []
-    [sptd.bmInput.node] | [] | [] || 0             || []
-    [] | [] | [] || 0             || []
+    [sptd.bmInput.node] | [sptd.bmInput.operator] | [] || 0             || []
+    [sptd.bmInput.node] | []                      | [] || 0             || []
+    []                  | []                      | [] || 0             || []
   }
 
   def "A CsvSystemParticipantSource should return data from valid ev charging station input file as expected"() {

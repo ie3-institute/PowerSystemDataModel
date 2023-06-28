@@ -5,9 +5,9 @@
  */
 package edu.ie3.datamodel.utils
 
+import edu.ie3.datamodel.exceptions.RawGridException
+import edu.ie3.datamodel.exceptions.SourceException
 import spock.lang.Specification
-
-import java.util.concurrent.Callable
 
 class TryTest extends Specification {
 
@@ -23,11 +23,12 @@ class TryTest extends Specification {
   def "A failing method can be applied to a try object"() {
     when:
     Try<Void> actual = Try.of(() -> {
-      throw new Exception("Exception thrown.")
+      throw new SourceException("Exception thrown.")
     })
 
     then:
     actual.failure
+    actual.exception().class == SourceException
     actual.exception().message == "Exception thrown."
   }
 
@@ -36,8 +37,8 @@ class TryTest extends Specification {
     Try<Void> actual = Try.testForException(() -> 1)
 
     then:
-    actual.isSuccess()
-    actual.isEmpty()
+    actual.success
+    actual.empty
     actual.data.empty
   }
 
@@ -84,10 +85,42 @@ class TryTest extends Specification {
     )
 
     when:
-    Try<Set<String>> scan = Try.scanCollection(set, String.class)
+    Try<Set<String>> scan = Try.scanCollection(set, String)
 
     then:
     scan.failure
     scan.exception().message == "1 exception(s) occurred within \"String\" data, one is: exception"
+  }
+
+  def "All exceptions of a collection of try objects should be returned"() {
+    given:
+    List<Try<String>> tries = List.of(
+    new Try.Success<>("one"),
+    new Try.Failure<>(new SourceException("source exception")),
+    new Try.Failure<>(new UnsupportedOperationException("unsupported operation exception")),
+    new Try.Success<>("two"),
+    new Try.Failure<>(new SourceException("source exception 2"))
+    )
+
+    when:
+    List<? extends Exception> exceptions = Try.getExceptions(tries)
+
+    then:
+    exceptions.size() == 3
+
+    exceptions.get(0).with {
+      assert it.class == SourceException
+      assert it.message == "source exception"
+    }
+
+    exceptions.get(1).with {
+      assert it.class == UnsupportedOperationException
+      assert it.message == "unsupported operation exception"
+    }
+
+    exceptions.get(2).with {
+      assert it.class == SourceException
+      assert it.message == "source exception 2"
+    }
   }
 }

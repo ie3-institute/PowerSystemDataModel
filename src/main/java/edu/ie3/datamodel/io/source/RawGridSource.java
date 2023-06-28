@@ -106,20 +106,27 @@ public class RawGridSource extends EntitySource {
     List<SourceException> exceptions =
         (List<SourceException>)
             Try.getExceptions(
-                lineInputs, transformer2WInputs, transformer3WInputs, switches, measurementUnits);
+                List.of(
+                    lineInputs,
+                    transformer2WInputs,
+                    transformer3WInputs,
+                    switches,
+                    measurementUnits));
 
-    if (exceptions.size() > 0) {
+    if (!exceptions.isEmpty()) {
       throw new RawGridException(
           exceptions.size() + " error(s) occurred while initializing raw grid. ", exceptions);
     } else {
       /* build and return the grid if it is not empty */
+      // getOrThrow should not throw an exception in this context, because all exception are
+      // filtered and thrown before
       return new RawGridElements(
           nodes,
-          lineInputs.getData().get(),
-          transformer2WInputs.getData().get(),
-          transformer3WInputs.getData().get(),
-          switches.getData().get(),
-          measurementUnits.getData().get());
+          lineInputs.getOrThrow(),
+          transformer2WInputs.getOrThrow(),
+          transformer3WInputs.getOrThrow(),
+          switches.getOrThrow(),
+          measurementUnits.getOrThrow());
     }
   }
 

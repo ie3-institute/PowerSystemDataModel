@@ -129,36 +129,39 @@ public class SystemParticipantSource extends EntitySource {
     List<SourceException> exceptions =
         (List<SourceException>)
             Try.getExceptions(
-                fixedFeedInInputs,
-                pvInputs,
-                loads,
-                bmInputs,
-                storages,
-                wecInputs,
-                evs,
-                evcs,
-                chpInputs,
-                hpInputs,
-                emInputs);
+                List.of(
+                    fixedFeedInInputs,
+                    pvInputs,
+                    loads,
+                    bmInputs,
+                    storages,
+                    wecInputs,
+                    evs,
+                    evcs,
+                    chpInputs,
+                    hpInputs,
+                    emInputs));
 
-    if (exceptions.size() > 0) {
+    if (!exceptions.isEmpty()) {
       throw new SystemParticipantsException(
           exceptions.size() + " error(s) occurred while initializing system participants. ",
           exceptions);
     } else {
       // if everything is fine, return a system participants container
+      // getOrThrow should not throw an exception in this context, because all exception are
+      // filtered and thrown before
       return new SystemParticipants(
-          bmInputs.getData().get(),
-          chpInputs.getData().get(),
-          evcs.getData().get(),
-          evs.getData().get(),
-          fixedFeedInInputs.getData().get(),
-          hpInputs.getData().get(),
-          loads.getData().get(),
-          pvInputs.getData().get(),
-          storages.getData().get(),
-          wecInputs.getData().get(),
-          emInputs.getData().get());
+          bmInputs.getOrThrow(),
+          chpInputs.getOrThrow(),
+          evcs.getOrThrow(),
+          evs.getOrThrow(),
+          fixedFeedInInputs.getOrThrow(),
+          hpInputs.getOrThrow(),
+          loads.getOrThrow(),
+          pvInputs.getOrThrow(),
+          storages.getOrThrow(),
+          wecInputs.getOrThrow(),
+          emInputs.getOrThrow());
     }
   }
 
@@ -914,13 +917,13 @@ public class SystemParticipantSource extends EntitySource {
 
     // if the thermal storage or the thermal bus are not present we return an
     // empty element and log a warning
-    if (!thermalStorage.isPresent() || !thermalBus.isPresent()) {
+    if (thermalStorage.isEmpty() || thermalBus.isEmpty()) {
       StringBuilder sB = new StringBuilder();
-      if (!thermalStorage.isPresent()) {
+      if (thermalStorage.isEmpty()) {
         sB.append("thermalStorage: ")
             .append(safeMapGet(fieldsToAttributes, THERMAL_STORAGE, FIELDS_TO_VALUES_MAP));
       }
-      if (!thermalBus.isPresent()) {
+      if (thermalBus.isEmpty()) {
         sB.append("\nthermalBus: ")
             .append(safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
       }
