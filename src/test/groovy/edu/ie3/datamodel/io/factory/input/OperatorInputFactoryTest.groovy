@@ -5,11 +5,9 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import spock.lang.Specification
 
 class OperatorInputFactoryTest extends Specification {
@@ -34,12 +32,12 @@ class OperatorInputFactoryTest extends Specification {
     def inputClass = OperatorInput
 
     when:
-    Try<OperatorInput, FactoryException> input = inputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<OperatorInput> input = inputFactory.get(new SimpleEntityData(parameter, inputClass))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
     }

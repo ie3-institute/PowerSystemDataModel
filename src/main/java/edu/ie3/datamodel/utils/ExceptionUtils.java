@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExceptionUtils {
+  private ExceptionUtils() {
+    throw new IllegalStateException("Utility classes cannot be instantiated");
+  }
+
   /**
    * Creates a string containing multiple exception messages.
    *

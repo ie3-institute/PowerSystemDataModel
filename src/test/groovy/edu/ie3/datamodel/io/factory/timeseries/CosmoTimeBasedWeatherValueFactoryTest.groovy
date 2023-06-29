@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -32,7 +31,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "windvelocity"     : "1.66103506088257"
     ]
 
-    def data = new TimeBasedWeatherValueData(new FactoryData.MapWithRowIndex("-1", parameter), coordinate)
+    def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
     def expectedResults = new TimeBasedValue(UUID.fromString("980f7714-8def-479f-baae-4deed6c8d6d1"),
         time, new WeatherValue(coordinate,
@@ -65,7 +64,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "windvelocity"     : "1.66103506088257"
     ]
 
-    def data = new TimeBasedWeatherValueData(new FactoryData.MapWithRowIndex("-1", parameter), coordinate)
+    def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
     def expectedResults = new TimeBasedValue(UUID.fromString("980f7714-8def-479f-baae-4deed6c8d6d1"),
         time, new WeatherValue(coordinate,

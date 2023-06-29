@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -28,19 +29,19 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
    * Creates a new TypedConnectorInputEntityData object for a connector input that needs a type
    * input as well. It sets the operator to default.
    *
-   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param nodeA input nodeA
    * @param nodeB input nodeB
    * @param type type input
    */
   public TypedConnectorInputEntityData(
-      MapWithRowIndex mapWithRowIndex,
+      Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       NodeInput nodeA,
       NodeInput nodeB,
       T type) {
-    super(mapWithRowIndex, entityClass, nodeA, nodeB);
+    super(fieldsToAttributes, entityClass, nodeA, nodeB);
     this.type = type;
   }
 
@@ -48,7 +49,7 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
    * Creates a new TypedConnectorInputEntityData object for an operable connector input input that
    * input that needs a type input as well
    *
-   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param operator specific operator to use
    * @param nodeA input nodeA
@@ -56,13 +57,13 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
    * @param type type input
    */
   public TypedConnectorInputEntityData(
-      MapWithRowIndex mapWithRowIndex,
+      Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator,
       NodeInput nodeA,
       NodeInput nodeB,
       T type) {
-    super(mapWithRowIndex, entityClass, operator, nodeA, nodeB);
+    super(fieldsToAttributes, entityClass, operator, nodeA, nodeB);
     this.type = type;
   }
 

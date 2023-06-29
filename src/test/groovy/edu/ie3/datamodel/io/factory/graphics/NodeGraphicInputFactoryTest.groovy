@@ -5,14 +5,12 @@
  */
 package edu.ie3.datamodel.io.factory.graphics
 
-import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputFactory
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.utils.GridAndGeoUtils
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
@@ -42,13 +40,13 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
     def nodeInput = Mock(NodeInput)
 
     when:
-    Try<NodeGraphicInput, FactoryException> input = inputFactory.get(
-        new NodeGraphicInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), nodeInput))
+    Try<NodeGraphicInput> input = inputFactory.get(
+        new NodeGraphicInputEntityData(parameter, nodeInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert point == getGeometry(parameter["point"])
       assert path == getGeometry(parameter["path"])
@@ -71,13 +69,13 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
     def nodeInput = Mock(NodeInput)
 
     when:
-    Try<NodeGraphicInput, FactoryException> input = inputFactory.get(
-        new NodeGraphicInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), nodeInput))
+    Try<NodeGraphicInput> input = inputFactory.get(
+        new NodeGraphicInputEntityData(parameter, nodeInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert path == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["path"]) as LineString)
     }
     where:

@@ -6,10 +6,7 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FileException;
-import edu.ie3.datamodel.exceptions.GraphicSourceException;
-import edu.ie3.datamodel.exceptions.RawGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.exceptions.SystemParticipantsException;
 import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -18,16 +15,16 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Stream;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
   private CsvJointGridContainerSource() {}
 
   public static JointGridContainer read(
-      String gridName, String csvSep, String directoryPath, boolean isHierarchic)
+      String gridName, String csvSep, Path directoryPath, boolean isHierarchic)
       throws SourceException, FileException {
 
     /* Parameterization */
@@ -44,40 +41,36 @@ public class CsvJointGridContainerSource {
       namingStrategy = new FileNamingStrategy();
     }
 
+    CsvDataSource dataSource = new CsvDataSource(csvSep, directoryPath, namingStrategy);
+
     /* Instantiating sources */
-    TypeSource typeSource = new CsvTypeSource(csvSep, directoryPath, namingStrategy);
-    RawGridSource rawGridSource =
-        new CsvRawGridSource(csvSep, directoryPath, namingStrategy, typeSource);
-    ThermalSource thermalSource =
-        new CsvThermalSource(csvSep, directoryPath, namingStrategy, typeSource);
+    TypeSource typeSource = new TypeSource(dataSource);
+    RawGridSource rawGridSource = new RawGridSource(typeSource, dataSource);
+    ThermalSource thermalSource = new ThermalSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
-        new CsvSystemParticipantSource(
-            csvSep, directoryPath, namingStrategy, typeSource, thermalSource, rawGridSource);
-    GraphicSource graphicSource =
-        new CsvGraphicSource(csvSep, directoryPath, namingStrategy, typeSource, rawGridSource);
+        new SystemParticipantSource(typeSource, thermalSource, rawGridSource, dataSource);
+    GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* Loading models */
-    Try<RawGridElements, RawGridException> rawGridElements = Try.apply(rawGridSource::getGridData);
-    Try<SystemParticipants, SystemParticipantsException> systemParticipants =
-        Try.apply(systemParticipantSource::getSystemParticipants);
-    Try<GraphicElements, GraphicSourceException> graphicElements =
-        Try.apply(graphicSource::getGraphicElements);
+    Try<RawGridElements> rawGridElements = Try.of(rawGridSource::getGridData);
+    Try<SystemParticipants> systemParticipants =
+        Try.of(systemParticipantSource::getSystemParticipants);
+    Try<GraphicElements> graphicElements = Try.of(graphicSource::getGraphicElements);
 
     List<? extends Exception> exceptions =
-        Stream.of(rawGridElements, systemParticipants, graphicElements)
-            .filter(Try::isFailure)
-            .map(Try::getException)
-            .toList();
+        Try.getExceptions(List.of(rawGridElements, systemParticipants, graphicElements));
 
-    if (exceptions.size() > 0) {
+    if (!exceptions.isEmpty()) {
       throw new SourceException(
           exceptions.size() + " error(s) occurred while reading sources. ", exceptions);
     } else {
+      // getOrThrow should not throw an exception in this context, because all exception are
+      // filtered and thrown before
       return new JointGridContainer(
           gridName,
-          rawGridElements.getData(),
-          systemParticipants.getData(),
-          graphicElements.getData());
+          rawGridElements.getOrThrow(),
+          systemParticipants.getOrThrow(),
+          graphicElements.getOrThrow());
     }
   }
 }

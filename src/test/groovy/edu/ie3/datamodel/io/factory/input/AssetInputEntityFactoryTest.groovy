@@ -5,12 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import org.apache.commons.lang3.NotImplementedException
 import spock.lang.Specification
@@ -42,12 +40,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime == OperationTime.notLimited()
       assert operator == operatorInput
@@ -68,12 +66,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime == OperationTime.notLimited()
       assert operator == operatorInput
@@ -101,12 +99,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -128,12 +126,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert !operationTime.startDate.present
       assert operationTime.endDate.present
@@ -156,12 +154,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -182,12 +180,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime == OperationTime.notLimited()
       assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
@@ -206,12 +204,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -232,12 +230,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert !operationTime.startDate.present
       assert operationTime.endDate.present
@@ -259,12 +257,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -286,11 +284,11 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    Try<AssetInput, FactoryException> input =  inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<AssetInput> input =  inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
     then:
     input.failure
-    input.exception.cause.message ==
+    input.exception().message ==
         "The provided fields [operatesfrom, operatesuntil, uuid] with data \n" +
         "{operatesfrom -> 2019-01-01T00:00:00+01:00[Europe/Berlin],\n" +
         "operatesuntil -> 2019-12-31T00:00:00+01:00[Europe/Berlin],\n" +

@@ -6,34 +6,51 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
+import spock.lang.Shared
 
-import java.nio.file.Paths
+import java.nio.file.Path
 
 /**
  * Holds meta data for csv tests e.g. file and folder paths
  */
 trait CsvTestDataMeta {
 
-  static String timeSeriesFolderPath = getResourceAbs("_timeseries")
-  static String graphicsFolderPath = getResourceAbs("_graphics")
-  static String typeFolderPath = getResourceAbs("_types")
-  static String participantsFolderPath =  getResourceAbs("_participants")
-  static String resultEntitiesFolderPath = getResourceAbs("_results")
-  static String thermalFolderPath = getResourceAbs("_thermal")
-  static String coordinatesIconFolderPath = getResourceAbs("_coordinates/icon")
-  static String coordinatesCosmoFolderPath = getResourceAbs("_coordinates/cosmo")
-  static String weatherCosmoFolderPath = getResourceAbs("_weather/cosmo")
-  static String weatherIconFolderPath = getResourceAbs("_weather/icon")
-  static String jointGridFolderPath = getResourceAbs("_joint_grid")
+  @Shared
+  Path timeSeriesFolderPath = getResourceAbs("_timeseries")
+  @Shared
+  Path graphicsFolderPath = getResourceAbs("_graphics")
+  @Shared
+  Path typeFolderPath = getResourceAbs("_types")
+  @Shared
+  Path participantsFolderPath =  getResourceAbs("_participants")
+  @Shared
+  Path resultEntitiesFolderPath = getResourceAbs("_results")
+  @Shared
+  Path thermalFolderPath = getResourceAbs("_thermal")
+  @Shared
+  Path coordinatesIconFolderPath = getResourceAbs("_coordinates/icon")
+  @Shared
+  Path coordinatesCosmoFolderPath = getResourceAbs("_coordinates/cosmo")
+  @Shared
+  Path weatherCosmoFolderPath = getResourceAbs("_weather/cosmo")
+  @Shared
+  Path weatherIconFolderPath = getResourceAbs("_weather/icon")
+  @Shared
+  Path jointGridFolderPath = getResourceAbs("_joint_grid")
 
-  static String gridDefaultFolderPath = getResourceAbs("_grid/default")
-  static String gridMalformedFolderPath = getResourceAbs("_grid/malformed")
-  static String gridEmptyFolderPath = getResourceAbs("_grid/empty")
+  @Shared
+  Path gridDefaultFolderPath = getResourceAbs("_grid/default")
+  @Shared
+  Path gridMalformedFolderPath = getResourceAbs("_grid/malformed")
+  @Shared
+  Path gridEmptyFolderPath = getResourceAbs("_grid/empty")
 
-  static String csvSep = ","
-  static FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+  @Shared
+  String csvSep = ","
+  @Shared
+  FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 
-  static String getResourceAbs(String directory) {
-    return Paths.get(CsvTestDataMeta.getResource(directory).toURI()).toString()
+  Path getResourceAbs(String directory) {
+    return Path.of(CsvTestDataMeta.getResource(directory).toURI())
   }
 }

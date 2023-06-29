@@ -6,9 +6,8 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.utils.options.Failure;
-import edu.ie3.datamodel.utils.options.Success;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -45,7 +44,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
    * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a
    *     {@link Failure}
    */
-  public Try<R, FactoryException> get(D data) {
+  public Try<R> get(D data) {
     isSupportedClass(data.getTargetClass());
 
     // magic: case-insensitive get/set calls on set strings
@@ -62,8 +61,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
           "An error occurred when creating instance of {}.class.",
           data.getTargetClass().getSimpleName(),
           e);
-      return new Failure<>(
-          new FactoryException("Error occurred in row " + data.getRowIndex() + ".", e));
+      return new Failure<>(e);
     }
   }
 

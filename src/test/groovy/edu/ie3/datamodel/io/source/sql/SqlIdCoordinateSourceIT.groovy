@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.source.sql
 
 import edu.ie3.datamodel.io.connectors.SqlConnector
-import edu.ie3.datamodel.io.factory.timeseries.SqlCoordinateFactory
+import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
@@ -42,7 +42,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     assert res.stderr.empty
 
     def connector = new SqlConnector(postgisSQLContainer.jdbcUrl, postgisSQLContainer.username, postgisSQLContainer.password)
-    def coordinatesFactory = new SqlCoordinateFactory()
+    def coordinatesFactory = new SqlIdCoordinateFactory()
     source = new SqlIdCoordinateSource(connector, schemaName, coordinateTableName, coordinatesFactory)
   }
 

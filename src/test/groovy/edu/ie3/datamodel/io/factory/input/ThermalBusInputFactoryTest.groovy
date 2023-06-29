@@ -5,11 +5,9 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -38,12 +36,12 @@ class ThermalBusInputFactoryTest extends Specification implements FactoryTestHel
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<ThermalBusInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
+    Try<ThermalBusInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])

@@ -5,11 +5,18 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.utils.Try;
 import java.util.Set;
 
 /**
@@ -20,7 +27,23 @@ import java.util.Set;
  * @version 0.1
  * @since 08.04.20
  */
-public interface TypeSource extends DataSource {
+public class TypeSource extends EntitySource {
+  // factories
+  private final OperatorInputFactory operatorInputFactory;
+  private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
+  private final LineTypeInputFactory lineTypeInputFactory;
+  private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
+  private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
+
+  public TypeSource(DataSource dataSource) {
+    this.dataSource = dataSource;
+
+    this.operatorInputFactory = new OperatorInputFactory();
+    this.transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
+    this.lineTypeInputFactory = new LineTypeInputFactory();
+    this.transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
+    this.systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
+  }
 
   /**
    * Returns a set of {@link Transformer2WTypeInput} instances. This set has to be unique in the
@@ -31,7 +54,12 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer2WTypeInput} entities
    */
-  Set<Transformer2WTypeInput> getTransformer2WTypes();
+  public Set<Transformer2WTypeInput> getTransformer2WTypes() throws SourceException {
+    return Try.scanCollection(
+            buildEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory),
+            Transformer2WTypeInput.class)
+        .getOrThrow(SourceException.class);
+  }
 
   /**
    * Returns a set of {@link OperatorInput} instances. This set has to be unique in the sense of
@@ -41,7 +69,11 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link OperatorInput} entities
    */
-  Set<OperatorInput> getOperators();
+  public Set<OperatorInput> getOperators() {
+    return Try.scanCollection(
+            buildEntities(OperatorInput.class, operatorInputFactory), OperatorInput.class)
+        .getOrThrow();
+  }
 
   /**
    * Returns a set of {@link LineTypeInput} instances. This set has to be unique in the sense of
@@ -51,7 +83,11 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link LineTypeInput} entities
    */
-  Set<LineTypeInput> getLineTypes();
+  public Set<LineTypeInput> getLineTypes() throws SourceException {
+    return Try.scanCollection(
+            buildEntities(LineTypeInput.class, lineTypeInputFactory), LineTypeInput.class)
+        .getOrThrow(SourceException.class);
+  }
 
   /**
    * Returns a set of {@link Transformer3WTypeInput} instances. This set has to be unique in the
@@ -62,7 +98,12 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer3WTypeInput} entities
    */
-  Set<Transformer3WTypeInput> getTransformer3WTypes();
+  public Set<Transformer3WTypeInput> getTransformer3WTypes() throws SourceException {
+    return Try.scanCollection(
+            buildEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory),
+            Transformer3WTypeInput.class)
+        .getOrThrow(SourceException.class);
+  }
 
   /**
    * Returns a set of {@link BmTypeInput} instances. This set has to be unique in the sense of
@@ -72,7 +113,11 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link BmTypeInput} entities
    */
-  Set<BmTypeInput> getBmTypes();
+  public Set<BmTypeInput> getBmTypes() throws SourceException {
+    return Try.scanCollection(
+            buildEntities(BmTypeInput.class, systemParticipantTypeInputFactory), BmTypeInput.class)
+        .getOrThrow(SourceException.class);
+  }
 
   /**
    * Returns a set of {@link ChpTypeInput} instances. This set has to be unique in the sense of
@@ -82,7 +127,12 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link ChpTypeInput} entities
    */
-  Set<ChpTypeInput> getChpTypes();
+  public Set<ChpTypeInput> getChpTypes() throws SourceException {
+    return Try.scanCollection(
+            buildEntities(ChpTypeInput.class, systemParticipantTypeInputFactory),
+            ChpTypeInput.class)
+        .getOrThrow(SourceException.class);
+  }
 
   /**
    * Returns a set of {@link HpTypeInput} instances. This set has to be unique in the sense of
@@ -92,7 +142,11 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link HpTypeInput} entities
    */
-  Set<HpTypeInput> getHpTypes();
+  public Set<HpTypeInput> getHpTypes() throws SourceException {
+    return Try.scanCollection(
+            buildEntities(HpTypeInput.class, systemParticipantTypeInputFactory), HpTypeInput.class)
+        .getOrThrow(SourceException.class);
+  }
 
   /**
    * Returns a set of {@link StorageTypeInput} instances. This set has to be unique in the sense of
@@ -102,7 +156,12 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link StorageTypeInput} entities
    */
-  Set<StorageTypeInput> getStorageTypes();
+  public Set<StorageTypeInput> getStorageTypes() throws SourceException {
+    return Try.scanCollection(
+            buildEntities(StorageTypeInput.class, systemParticipantTypeInputFactory),
+            StorageTypeInput.class)
+        .getOrThrow(SourceException.class);
+  }
 
   /**
    * Returns a set of {@link WecTypeInput} instances. This set has to be unique in the sense of
@@ -112,7 +171,12 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link WecTypeInput} entities
    */
-  Set<WecTypeInput> getWecTypes();
+  public Set<WecTypeInput> getWecTypes() throws SourceException {
+    return Try.scanCollection(
+            buildEntities(WecTypeInput.class, systemParticipantTypeInputFactory),
+            WecTypeInput.class)
+        .getOrThrow(SourceException.class);
+  }
 
   /**
    * Returns a set of {@link EvTypeInput} instances. This set has to be unique in the sense of
@@ -122,5 +186,9 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link EvTypeInput} entities
    */
-  Set<EvTypeInput> getEvTypes();
+  public Set<EvTypeInput> getEvTypes() throws SourceException {
+    return Try.scanCollection(
+            buildEntities(EvTypeInput.class, systemParticipantTypeInputFactory), EvTypeInput.class)
+        .getOrThrow(SourceException.class);
+  }
 }

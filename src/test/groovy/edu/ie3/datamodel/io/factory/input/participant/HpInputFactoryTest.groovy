@@ -5,15 +5,13 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.HpInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -50,13 +48,13 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
     def thermalBusInput = Mock(ThermalBusInput)
 
     when:
-    Try<HpInput, FactoryException> input = inputFactory.get(
-        new HpInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), operatorInput, nodeInput, typeInput, thermalBusInput))
+    Try<HpInput> input = inputFactory.get(
+        new HpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput))
 
     then:
     input.success
-    input.data.getClass() == inputClass
-    input.data.with {
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])

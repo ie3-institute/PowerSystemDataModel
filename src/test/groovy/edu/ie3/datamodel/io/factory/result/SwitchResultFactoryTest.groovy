@@ -5,11 +5,9 @@
  */
 package edu.ie3.datamodel.io.factory.result
 
-import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.result.connector.SwitchResult
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -36,12 +34,12 @@ class SwitchResultFactoryTest extends Specification implements FactoryTestHelper
     ]
 
     when:
-    Try<SwitchResult, FactoryException> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), SwitchResult))
+    Try<SwitchResult> result = resultFactory.get(new SimpleEntityData(parameter, SwitchResult))
 
     then:
     result.success
-    result.data.getClass() == SwitchResult
-    ((SwitchResult) result.data).with {
+    result.data().getClass() == SwitchResult
+    ((SwitchResult) result.data()).with {
       assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
       assert inputModel == UUID.fromString(parameter["inputModel"])
       assert closed == Boolean.parseBoolean(parameter["closed"])

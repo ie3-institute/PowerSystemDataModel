@@ -5,12 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.result
 
-import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -37,12 +35,12 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     ]
 
     when:
-    Try<? extends FlexOptionsResult, FactoryException> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), FlexOptionsResult))
+    Try<? extends FlexOptionsResult> result = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
 
     then:
     result.success
-    result.data.getClass() == FlexOptionsResult
-    ((FlexOptionsResult) result.data).with {
+    result.data().getClass() == FlexOptionsResult
+    ((FlexOptionsResult) result.data()).with {
       assert pRef == getQuant(parameter["pref"], StandardUnits.ACTIVE_POWER_RESULT)
       assert pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_RESULT)
       assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_RESULT)
@@ -62,11 +60,11 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     ]
 
     when:
-    Try<FlexOptionsResult, FactoryException> input = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), FlexOptionsResult))
+    Try<FlexOptionsResult> input = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
 
     then:
     input.failure
-    input.exception.cause.message == "The provided fields [inputModel, pmin, pref, time] with data \n" +
+    input.exception().message == "The provided fields [inputModel, pmin, pref, time] with data \n" +
         "{inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,\n" +
         "pmin -> -1,\n" +
         "pref -> 2,\n" +

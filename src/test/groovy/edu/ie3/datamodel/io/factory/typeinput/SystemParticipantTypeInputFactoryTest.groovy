@@ -5,13 +5,11 @@
  */
 package edu.ie3.datamodel.io.factory.typeinput
 
-import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.*
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -57,13 +55,13 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = EvTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), typeInputClass))
+    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
-    typeInput.data.getClass() == typeInputClass
+    typeInput.data().getClass() == typeInputClass
 
-    ((EvTypeInput) typeInput.data).with {
+    ((EvTypeInput) typeInput.data()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -92,13 +90,13 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = HpTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), typeInputClass))
+    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
-    typeInput.data.getClass() == typeInputClass
+    typeInput.data().getClass() == typeInputClass
 
-    ((HpTypeInput) typeInput.data).with {
+    ((HpTypeInput) typeInput.data()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -126,13 +124,13 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = BmTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), typeInputClass))
+    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
-    typeInput.data.getClass() == typeInputClass
+    typeInput.data().getClass() == typeInputClass
 
-    ((BmTypeInput) typeInput.data).with {
+    ((BmTypeInput) typeInput.data()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -164,13 +162,13 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = WecTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), typeInputClass))
+    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
-    typeInput.data.getClass() == typeInputClass
+    typeInput.data().getClass() == typeInputClass
 
-    ((WecTypeInput) typeInput.data).with {
+    ((WecTypeInput) typeInput.data()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -211,13 +209,13 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = ChpTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), typeInputClass))
+    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
-    typeInput.data.getClass() == typeInputClass
+    typeInput.data().getClass() == typeInputClass
 
-    ((ChpTypeInput) typeInput.data).with {
+    ((ChpTypeInput) typeInput.data()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -254,13 +252,13 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = StorageTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), typeInputClass))
+    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
-    typeInput.data.getClass() == typeInputClass
+    typeInput.data().getClass() == typeInputClass
 
-    ((StorageTypeInput) typeInput.data).with {
+    ((StorageTypeInput) typeInput.data()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -297,11 +295,11 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     ]
 
     when:
-    Try<SystemParticipantTypeInput, FactoryException> input = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), StorageTypeInput))
+    Try<SystemParticipantTypeInput> input = typeInputFactory.get(new SimpleEntityData(parameter, StorageTypeInput))
 
     then:
     input.failure
-    input.exception.cause.message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
+    input.exception().message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
         "{capex -> 3,\n" +
         "cosPhiRated -> 6,\n" +
         "dod -> 10,\n" +

@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -29,17 +30,17 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
    * Creates a new SystemParticipantEntityData object for an operated, always on system participant
    * input that needs a type input as well
    *
-   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param node input node
    * @param typeInput type input
    */
   public SystemParticipantTypedEntityData(
-      MapWithRowIndex mapWithRowIndex,
+      Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       NodeInput node,
       T typeInput) {
-    super(mapWithRowIndex, entityClass, node);
+    super(fieldsToAttributes, entityClass, node);
     this.typeInput = typeInput;
   }
 
@@ -47,19 +48,19 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
    * Creates a new SystemParticipantEntityData object for an operable system participant input that
    * needs a type input as well
    *
-   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param operator operator input
    * @param node input node
    * @param typeInput type input
    */
   public SystemParticipantTypedEntityData(
-      MapWithRowIndex mapWithRowIndex,
+      Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator,
       NodeInput node,
       T typeInput) {
-    super(mapWithRowIndex, entityClass, operator, node);
+    super(fieldsToAttributes, entityClass, operator, node);
     this.typeInput = typeInput;
   }
 

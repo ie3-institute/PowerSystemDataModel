@@ -36,12 +36,12 @@ public abstract class EntityData extends FactoryData {
   /**
    * Creates a new EntityData object
    *
-   * @param mapWithRowIndex mapWithRowIndex object containing an attribute map: field name to value
-   *     and a row index
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    */
-  protected EntityData(MapWithRowIndex mapWithRowIndex, Class<? extends UniqueEntity> entityClass) {
-    super(mapWithRowIndex, entityClass);
+  protected EntityData(
+      Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
+    super(fieldsToAttributes, entityClass);
   }
 
   @Override

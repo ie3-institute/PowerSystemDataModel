@@ -5,10 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.factory.FactoryData
-
-import static edu.ie3.datamodel.models.StandardUnits.*
-
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -28,6 +24,8 @@ import org.locationtech.jts.geom.Point
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
+
+import static edu.ie3.datamodel.models.StandardUnits.*
 
 class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
 
@@ -149,7 +147,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
         )
 
     when:
-    def actual = source.buildWeatherValue(new FactoryData.MapWithRowIndex("-1", fieldToValues))
+    def actual = source.buildWeatherValue(fieldToValues)
 
     then:
     actual.present
@@ -175,7 +173,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     ]
 
     when:
-    def actual = source.buildWeatherValue(new FactoryData.MapWithRowIndex("-1", fieldToValues))
+    def actual = source.buildWeatherValue(fieldToValues)
 
     then:
     actual.empty
@@ -199,7 +197,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     ]
 
     when:
-    def actual = source.buildWeatherValue(new FactoryData.MapWithRowIndex("-1", fieldToValues))
+    def actual = source.buildWeatherValue(fieldToValues)
 
     then:
     actual.empty
@@ -223,7 +221,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     ]
 
     when:
-    def actual = source.buildWeatherValue(new FactoryData.MapWithRowIndex("-1", fieldToValues))
+    def actual = source.buildWeatherValue(fieldToValues)
 
     then:
     actual.empty

@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
@@ -15,19 +14,21 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** Source that is capable of providing information around time series from csv files. */
-public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
-    implements TimeSeriesSource<V> {
+public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final IndividualTimeSeries<V> timeSeries;
+  private final CsvDataSource dataSource;
 
   /**
    * Factory method to build a source from given meta information
@@ -41,7 +42,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    */
   public static CsvTimeSeriesSource<? extends Value> getSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
@@ -56,7 +57,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
 
   private static <T extends Value> CsvTimeSeriesSource<T> create(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation,
       Class<T> valClass) {
@@ -84,21 +85,19 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    */
   public CsvTimeSeriesSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       UUID timeSeriesUuid,
-      String filePath,
+      Path filePath,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
-    super(csvSep, folderPath, fileNamingStrategy);
+    super(valueClass, factory);
+    this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
 
     /* Read in the full time series */
     try {
       this.timeSeries =
-          buildIndividualTimeSeries(
-              timeSeriesUuid,
-              filePath,
-              mapWithRowIndex -> this.buildTimeBasedValue(mapWithRowIndex, valueClass, factory));
+          buildIndividualTimeSeries(timeSeriesUuid, filePath, this::createTimeBasedValue);
     } catch (SourceException e) {
       throw new IllegalArgumentException(
           "Unable to obtain time series with UUID '"
@@ -123,6 +122,8 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
     return timeSeries.getValue(time);
   }
 
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
   /**
    * Attempts to read a time series with given unique identifier and file path. Single entries are
    * obtained entries with the help of {@code fieldToValueFunction}.
@@ -134,41 +135,23 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    * @throws SourceException If the file cannot be read properly
    * @return An option onto an individual time series
    */
-  private IndividualTimeSeries<V> buildIndividualTimeSeries(
+  protected IndividualTimeSeries<V> buildIndividualTimeSeries(
       UUID timeSeriesUuid,
-      String filePath,
-      Function<FactoryData.MapWithRowIndex, Optional<TimeBasedValue<V>>> fieldToValueFunction)
+      Path filePath,
+      Function<Map<String, String>, Try<TimeBasedValue<V>>> fieldToValueFunction)
       throws SourceException {
-    try (BufferedReader reader = connector.initReader(filePath)) {
+    try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
       Set<TimeBasedValue<V>> timeBasedValues =
-          buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+          dataSource
+              .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
               .map(fieldToValueFunction)
-              .flatMap(Optional::stream)
+              .map(Try::getOrThrow)
               .collect(Collectors.toSet());
-
       return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
     } catch (FileNotFoundException e) {
       throw new SourceException("Unable to find a file with path '" + filePath + "'.", e);
     } catch (IOException e) {
       throw new SourceException("Error during reading of file'" + filePath + "'.", e);
     }
-  }
-
-  /**
-   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
-   * need any additional information.
-   *
-   * @param mapWithRowIndex object containing an attribute map: field name to value and an row index
-   * @param valueClass Class of the desired underlying value
-   * @param factory Factory to process the "flat" information
-   * @return Optional simple time based value
-   */
-  private Optional<TimeBasedValue<V>> buildTimeBasedValue(
-      FactoryData.MapWithRowIndex mapWithRowIndex,
-      Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
-    SimpleTimeBasedValueData<V> factoryData =
-        new SimpleTimeBasedValueData<>(mapWithRowIndex, valueClass);
-    return Optional.of(factory.get(factoryData).get());
   }
 }

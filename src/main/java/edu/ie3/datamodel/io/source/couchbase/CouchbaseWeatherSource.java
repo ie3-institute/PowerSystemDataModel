@@ -10,9 +10,7 @@ import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
-import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -20,7 +18,6 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.datamodel.utils.options.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,17 +30,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Couchbase Source for weather data */
-public class CouchbaseWeatherSource implements WeatherSource {
+public class CouchbaseWeatherSource extends WeatherSource {
   private static final Logger logger = LoggerFactory.getLogger(CouchbaseWeatherSource.class);
   private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
   /** The start of the document key, comparable to a table name in relational databases */
   private static final String DEFAULT_KEY_PREFIX = "weather";
 
-  private final TimeBasedWeatherValueFactory weatherFactory;
-
   private final String keyPrefix;
   private final CouchbaseConnector connector;
-  private final IdCoordinateSource coordinateSource;
   private final String coordinateIdColumnName;
   private final String timeStampPattern;
 
@@ -80,7 +74,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
    * connector
    *
    * @param connector Connector, that establishes the connection to the couchbase instance
-   * @param coordinateSource Source to obtain actual coordinates from
+   * @param idCoordinateSource Source to obtain actual coordinates from
    * @param coordinateIdColumnName Name of the column containing the information about the
    *     coordinate identifier
    * @param keyPrefix Prefix of entries, that belong to weather
@@ -90,16 +84,15 @@ public class CouchbaseWeatherSource implements WeatherSource {
    */
   public CouchbaseWeatherSource(
       CouchbaseConnector connector,
-      IdCoordinateSource coordinateSource,
+      IdCoordinateSource idCoordinateSource,
       String coordinateIdColumnName,
       String keyPrefix,
       TimeBasedWeatherValueFactory weatherFactory,
       String timeStampPattern) {
+    super(idCoordinateSource, weatherFactory);
     this.connector = connector;
-    this.coordinateSource = coordinateSource;
     this.coordinateIdColumnName = coordinateIdColumnName;
     this.keyPrefix = keyPrefix;
-    this.weatherFactory = weatherFactory;
     this.timeStampPattern = timeStampPattern;
   }
 
@@ -109,7 +102,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
     logger.warn(
         "By not providing coordinates you are forcing couchbase to check all possible coordinates one by one."
             + " This is not very performant. Please consider providing specific coordinates instead.");
-    return getWeather(timeInterval, coordinateSource.getAllCoordinates());
+    return getWeather(timeInterval, idCoordinateSource.getAllCoordinates());
   }
 
   @Override
@@ -117,7 +110,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     for (Point coordinate : coordinates) {
-      Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
+      Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
       if (coordinateId.isPresent()) {
         String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinateId.get());
         CompletableFuture<QueryResult> futureResult = connector.query(query);
@@ -145,7 +138,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
 
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
-    Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
       return Optional.empty();
@@ -211,7 +204,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
   private Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(JsonObject jsonObj) {
     Integer coordinateId = jsonObj.getInt(coordinateIdColumnName);
     jsonObj.removeKey(coordinateIdColumnName);
-    Optional<Point> coordinate = coordinateSource.getCoordinate(coordinateId);
+    Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
     if (coordinate.isEmpty()) {
       logger.warn("Unable to match coordinate ID {} to a coordinate", coordinateId);
       return Optional.empty();
@@ -221,9 +214,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
             .collect(
                 Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
     fieldToValueMap.putIfAbsent("uuid", UUID.randomUUID().toString());
-    return Optional.of(
-        new TimeBasedWeatherValueData(
-            new FactoryData.MapWithRowIndex("-1", fieldToValueMap), coordinate.get()));
+    return Optional.of(new TimeBasedWeatherValueData(fieldToValueMap, coordinate.get()));
   }
 
   /**
@@ -241,14 +232,6 @@ public class CouchbaseWeatherSource implements WeatherSource {
       logger.debug("The following json could not be parsed:\n{}", jsonObj);
       return Optional.empty();
     }
-
-    Try<TimeBasedValue<WeatherValue>, FactoryException> timeBasedValue =
-        weatherFactory.get(data.get());
-
-    if (timeBasedValue.isSuccess()) {
-      return Optional.of(timeBasedValue.get());
-    } else {
-      return Optional.empty();
-    }
+    return weatherFactory.get(data.get()).getData();
   }
 }
