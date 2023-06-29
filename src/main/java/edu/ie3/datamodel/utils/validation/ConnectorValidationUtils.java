@@ -13,9 +13,8 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.SubGridContainer;
-import edu.ie3.datamodel.utils.options.Failure;
-import edu.ie3.datamodel.utils.options.Success;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
 import edu.ie3.util.geo.GeoUtils;
 import edu.ie3.util.quantities.QuantityUtil;
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing a {@link InvalidEntityException} or an empty
    *     Success
    */
-  protected static List<Try<Void, InvalidEntityException>> check(ConnectorInput connector) {
+  protected static List<Try<Void>> check(ConnectorInput connector) {
     try {
       checkNonNull(connector, "a connector");
     } catch (InvalidEntityException e) {
@@ -64,8 +63,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
-    exceptions.add(Try.apply(() -> connectsDifferentNodes(connector)));
+    List<Try<Void>> exceptions = new ArrayList<>();
+    exceptions.add(Try.ofVoid(() -> connectsDifferentNodes(connector)));
 
     // Further checks for subclasses
     if (LineInput.class.isAssignableFrom(connector.getClass())) {
@@ -101,17 +100,16 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
-  private static List<Try<Void, InvalidEntityException>> checkLine(LineInput line) {
-    List<Try<Void, InvalidEntityException>> exceptions =
-        new ArrayList<>(checkLineType(line.getType()));
+  private static List<Try<Void>> checkLine(LineInput line) {
+    List<Try<Void>> exceptions = new ArrayList<>(checkLineType(line.getType()));
 
-    exceptions.add(Try.apply(() -> connectsNodesInDifferentSubnets(line, false)));
-    exceptions.add(Try.apply(() -> connectsNodesWithDifferentVoltageLevels(line, false)));
+    exceptions.add(Try.ofVoid(() -> connectsNodesInDifferentSubnets(line, false)));
+    exceptions.add(Try.ofVoid(() -> connectsNodesWithDifferentVoltageLevels(line, false)));
     exceptions.add(
-        Try.apply(
+        Try.ofVoid(
             () -> detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line)));
-    exceptions.add(Try.apply(() -> coordinatesOfLineEqualCoordinatesOfNodes(line)));
-    exceptions.add(Try.apply(() -> lineLengthMatchesDistancesBetweenPointsOfLineString(line)));
+    exceptions.add(Try.ofVoid(() -> coordinatesOfLineEqualCoordinatesOfNodes(line)));
+    exceptions.add(Try.ofVoid(() -> lineLengthMatchesDistancesBetweenPointsOfLineString(line)));
 
     return exceptions;
   }
@@ -130,7 +128,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
-  protected static List<Try<Void, InvalidEntityException>> checkLineType(LineTypeInput lineType) {
+  protected static List<Try<Void>> checkLineType(LineTypeInput lineType) {
     try {
       checkNonNull(lineType, "a line type");
     } catch (InvalidEntityException e) {
@@ -142,11 +140,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
     }
 
     return List.of(
-        Try.apply(
+        Try.ofVoid(
             () ->
                 detectNegativeQuantities(
                     new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType)),
-        Try.apply(
+        Try.ofVoid(
             () ->
                 detectZeroOrNegativeQuantities(
                     new Quantity<?>[] {
@@ -168,16 +166,14 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
-  private static List<Try<Void, InvalidEntityException>> checkTransformer2W(
-      Transformer2WInput transformer2W) {
-    List<Try<Void, InvalidEntityException>> exceptions =
-        new ArrayList<>(checkTransformer2WType(transformer2W.getType()));
+  private static List<Try<Void>> checkTransformer2W(Transformer2WInput transformer2W) {
+    List<Try<Void>> exceptions = new ArrayList<>(checkTransformer2WType(transformer2W.getType()));
 
-    exceptions.add(Try.apply(() -> checkIfTapPositionIsWithinBounds(transformer2W)));
-    exceptions.add(Try.apply(() -> connectsNodesWithDifferentVoltageLevels(transformer2W, true)));
-    exceptions.add(Try.apply(() -> connectsNodesInDifferentSubnets(transformer2W, true)));
+    exceptions.add(Try.ofVoid(() -> checkIfTapPositionIsWithinBounds(transformer2W)));
+    exceptions.add(Try.ofVoid(() -> connectsNodesWithDifferentVoltageLevels(transformer2W, true)));
+    exceptions.add(Try.ofVoid(() -> connectsNodesInDifferentSubnets(transformer2W, true)));
     exceptions.add(
-        Try.apply(() -> ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(transformer2W)));
+        Try.ofVoid(() -> ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(transformer2W)));
 
     return exceptions;
   }
@@ -201,7 +197,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
-  protected static List<Try<Void, InvalidEntityException>> checkTransformer2WType(
+  protected static List<Try<Void>> checkTransformer2WType(
       Transformer2WTypeInput transformer2WType) {
     try {
       checkNonNull(transformer2WType, "a two winding transformer type");
@@ -216,7 +212,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     }
 
     return List.of(
-        Try.apply(
+        Try.ofVoid(
             () ->
                 detectNegativeQuantities(
                     new Quantity<?>[] {
@@ -225,7 +221,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
                       transformer2WType.getrSc()
                     },
                     transformer2WType)),
-        Try.apply(
+        Try.ofVoid(
             () ->
                 detectZeroOrNegativeQuantities(
                     new Quantity<?>[] {
@@ -235,13 +231,14 @@ public class ConnectorValidationUtils extends ValidationUtils {
                       transformer2WType.getxSc()
                     },
                     transformer2WType)),
-        Try.apply(
+        Try.ofVoid(
             () ->
                 detectPositiveQuantities(
                     new Quantity<?>[] {transformer2WType.getbM()}, transformer2WType)),
-        Try.apply(() -> checkVoltageMagnitudeChangePerTapPosition(transformer2WType)),
-        Try.apply(() -> checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer2WType)),
-        Try.apply(() -> checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer2WType)));
+        Try.ofVoid(() -> checkVoltageMagnitudeChangePerTapPosition(transformer2WType)),
+        Try.ofVoid(() -> checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer2WType)),
+        Try.ofVoid(
+            () -> checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer2WType)));
   }
 
   /**
@@ -257,12 +254,10 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
-  private static List<Try<Void, InvalidEntityException>> checkTransformer3W(
-      Transformer3WInput transformer3W) {
-    List<Try<Void, InvalidEntityException>> exceptions =
-        new ArrayList<>(checkTransformer3WType(transformer3W.getType()));
+  private static List<Try<Void>> checkTransformer3W(Transformer3WInput transformer3W) {
+    List<Try<Void>> exceptions = new ArrayList<>(checkTransformer3WType(transformer3W.getType()));
 
-    exceptions.add(Try.apply(() -> checkIfTapPositionIsWithinBounds(transformer3W)));
+    exceptions.add(Try.ofVoid(() -> checkIfTapPositionIsWithinBounds(transformer3W)));
 
     // Check if transformer connects different voltage levels
     if (transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeB().getVoltLvl()
@@ -284,7 +279,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     }
 
     exceptions.add(
-        Try.apply(() -> ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(transformer3W)));
+        Try.ofVoid(() -> ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(transformer3W)));
 
     return exceptions;
   }
@@ -307,7 +302,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
-  protected static List<Try<Void, InvalidEntityException>> checkTransformer3WType(
+  protected static List<Try<Void>> checkTransformer3WType(
       Transformer3WTypeInput transformer3WType) {
     try {
       checkNonNull(transformer3WType, "a three winding transformer type");
@@ -322,12 +317,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
     }
 
     return List.of(
-        Try.apply(
+        Try.ofVoid(
             () ->
                 detectNegativeQuantities(
                     new Quantity<?>[] {transformer3WType.getgM(), transformer3WType.getdPhi()},
                     transformer3WType)),
-        Try.apply(
+        Try.ofVoid(
             () ->
                 detectZeroOrNegativeQuantities(
                     new Quantity<?>[] {
@@ -345,13 +340,14 @@ public class ConnectorValidationUtils extends ValidationUtils {
                       transformer3WType.getxScC()
                     },
                     transformer3WType)),
-        Try.apply(
+        Try.ofVoid(
             () ->
                 detectPositiveQuantities(
                     new Quantity<?>[] {transformer3WType.getbM()}, transformer3WType)),
-        Try.apply(() -> checkVoltageMagnitudeChangePerTapPosition(transformer3WType)),
-        Try.apply(() -> checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer3WType)),
-        Try.apply(() -> checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer3WType)));
+        Try.ofVoid(() -> checkVoltageMagnitudeChangePerTapPosition(transformer3WType)),
+        Try.ofVoid(() -> checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer3WType)),
+        Try.ofVoid(
+            () -> checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer3WType)));
   }
 
   /**
@@ -361,7 +357,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param switchInput Switch to validate
    * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static Try<Void, InvalidEntityException> checkSwitch(SwitchInput switchInput) {
+  private static Try<Void> checkSwitch(SwitchInput switchInput) {
     if (!switchInput.getNodeA().getVoltLvl().equals(switchInput.getNodeB().getVoltLvl())) {
       return new Failure<>(
           new InvalidEntityException("Switch connects two different voltage levels", switchInput));
@@ -379,8 +375,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param subGridContainer the subgrid to check the connectivity for
    * @return a try object either containing an {@link InvalidGridException} or an empty Success
    */
-  protected static Try<Void, InvalidGridException> checkConnectivity(
-      SubGridContainer subGridContainer) {
+  protected static Try<Void> checkConnectivity(SubGridContainer subGridContainer) {
     Graph<UUID, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
 
     subGridContainer.getRawGrid().getNodes().forEach(node -> graph.addVertex(node.getUuid()));

@@ -35,7 +35,7 @@ class TryTest extends Specification {
 
   def "A void method can be applied to a try object"() {
     when:
-    Try<Void> actual = Try.testForException(() -> 1)
+    Try<Void> actual = Try.ofVoid(() -> void)
 
     then:
     actual.success

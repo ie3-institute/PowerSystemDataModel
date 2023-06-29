@@ -9,8 +9,8 @@ import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
-import edu.ie3.datamodel.utils.options.Failure;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class GraphicValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
-  protected static List<Try<Void, InvalidEntityException>> check(GraphicInput graphicInput) {
+  protected static List<Try<Void>> check(GraphicInput graphicInput) {
     try {
       checkNonNull(graphicInput, "a graphic input");
     } catch (InvalidEntityException e) {
@@ -44,7 +44,7 @@ public class GraphicValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
+    List<Try<Void>> exceptions = new ArrayList<>();
 
     if (graphicInput.getGraphicLayer() == null) {
       exceptions.add(
@@ -55,9 +55,9 @@ public class GraphicValidationUtils extends ValidationUtils {
 
     // Further checks for subclasses
     if (LineGraphicInput.class.isAssignableFrom(graphicInput.getClass())) {
-      exceptions.add(Try.apply(() -> checkLineGraphicInput((LineGraphicInput) graphicInput)));
+      exceptions.add(Try.ofVoid(() -> checkLineGraphicInput((LineGraphicInput) graphicInput)));
     } else if (NodeGraphicInput.class.isAssignableFrom(graphicInput.getClass())) {
-      exceptions.add(Try.apply(() -> checkNodeGraphicInput((NodeGraphicInput) graphicInput)));
+      exceptions.add(Try.ofVoid(() -> checkNodeGraphicInput((NodeGraphicInput) graphicInput)));
     }
 
     return exceptions;

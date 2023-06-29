@@ -59,9 +59,9 @@ public abstract class Try<T> {
    * @param supplier that either returns no data or throws an exception
    * @return a try object
    */
-  public static Try<Void> testForException(TrySupplier<Void> supplier) {
+  public static Try<Void> ofVoid(Runnable supplier) {
     try {
-      supplier.get();
+      supplier.run();
       return Success.empty();
     } catch (Exception e) {
       return new Failure<>(e);
@@ -244,7 +244,7 @@ public abstract class Try<T> {
    * @param tries collection of {@link Try} objects
    * @return a list of {@link Exception}'s
    */
-  public static <D> List<? extends Exception> getExceptions(Collection<Try<? extends D>> tries) {
+  public static List<? extends Exception> getExceptions(Collection<Try<?>> tries) {
     return tries.stream().filter(Try::isFailure).map(t -> ((Failure<?>) t).get()).toList();
   }
 

@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.utils.validation
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import spock.lang.Specification
 
@@ -30,11 +30,11 @@ class GraphicValidationUtilsTest extends Specification {
 
   def "GraphicValidationUtils.check() recognizes all potential errors for a graphic input"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = GraphicValidationUtils.check(invalidGraphicInput).stream().filter {it -> it.failure}.toList()
+    List<Try<Void>> exceptions = GraphicValidationUtils.check(invalidGraphicInput).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception
+    Exception ex = exceptions.get(0).exception()
     ex.class == expectedException.class
     ex.message == expectedException.message
 
@@ -45,11 +45,11 @@ class GraphicValidationUtilsTest extends Specification {
 
   def "GraphicValidationUtils.checkLineGraphicInput() recognizes all potential errors for a line graphic input"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = GraphicValidationUtils.check(invalidLineGraphicInput).stream().filter {it -> it.failure}.toList()
+    List<Try<Void>> exceptions = GraphicValidationUtils.check(invalidLineGraphicInput).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception
+    Exception ex = exceptions.get(0).exception()
     ex.class == expectedException.class
     ex.message == expectedException.message
 
@@ -60,11 +60,11 @@ class GraphicValidationUtilsTest extends Specification {
 
   def "GraphicValidationUtils.checkNodeGraphicInput() recognizes all potential errors for a line graphic input"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = GraphicValidationUtils.check(invalidNodeGraphicInput).stream().filter {it -> it.failure}.toList()
+    List<Try<Void>> exceptions = GraphicValidationUtils.check(invalidNodeGraphicInput).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception
+    Exception ex = exceptions.get(0).exception()
     ex.class == expectedException.class
     ex.message == expectedException.message
 

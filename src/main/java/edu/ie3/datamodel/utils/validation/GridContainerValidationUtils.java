@@ -18,8 +18,8 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.utils.ContainerUtils;
-import edu.ie3.datamodel.utils.options.Failure;
-import edu.ie3.datamodel.utils.options.Try;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -45,8 +45,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
-  protected static List<Try<Void, ? extends ValidationException>> check(
-      GridContainer gridContainer) {
+  protected static List<Try<Void>> check(GridContainer gridContainer) {
     try {
       checkNonNull(gridContainer, "grid container");
     } catch (InvalidEntityException e) {
@@ -59,7 +58,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    List<Try<Void>> exceptions = new ArrayList<>();
 
     /* sanity check to ensure distinct UUIDs */
     Optional<String> exceptionString =
@@ -97,8 +96,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
-  protected static List<Try<Void, ? extends ValidationException>> checkRawGridElements(
-      RawGridElements rawGridElements) {
+  protected static List<Try<Void>> checkRawGridElements(RawGridElements rawGridElements) {
     try {
       checkNonNull(rawGridElements, "raw grid elements");
     } catch (InvalidEntityException e) {
@@ -111,7 +109,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    List<Try<Void>> exceptions = new ArrayList<>();
 
     /* sanity check to ensure distinct UUIDs */
     Optional<String> exceptionString =
@@ -219,9 +217,8 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
    *     Success
    */
-  protected static List<Try<Void, UnsafeEntityException>> checkRawGridTypeIds(
-      RawGridElements rawGridElements) {
-    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
+  protected static List<Try<Void>> checkRawGridTypeIds(RawGridElements rawGridElements) {
+    List<Try<Void>> exceptions = new ArrayList<>();
     exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getNodes()));
     exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getLines()));
     exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getTransformer2Ws()));
@@ -241,7 +238,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
-  protected static List<Try<Void, ? extends ValidationException>> checkSystemParticipants(
+  protected static List<Try<Void>> checkSystemParticipants(
       SystemParticipants systemParticipants, Set<NodeInput> nodes) {
     try {
       checkNonNull(systemParticipants, "system participants");
@@ -255,7 +252,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    List<Try<Void>> exceptions = new ArrayList<>();
 
     // sanity check for distinct uuids
     Optional<String> exceptionString =
@@ -292,12 +289,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
-  protected static List<Try<Void, ? extends ValidationException>> checkSystemParticipants(
+  protected static List<Try<Void>> checkSystemParticipants(
       Set<? extends SystemParticipantInput> participants, Set<NodeInput> nodes) {
     return participants.stream()
         .map(
             entity -> {
-              List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+              List<Try<Void>> exceptions = new ArrayList<>();
 
               try {
                 checkNodeAvailability(entity, nodes);
@@ -319,9 +316,9 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
    *     Success
    */
-  protected static List<Try<Void, UnsafeEntityException>> checkSystemParticipantsTypeIds(
+  protected static List<Try<Void>> checkSystemParticipantsTypeIds(
       SystemParticipants systemParticipants) {
-    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
+    List<Try<Void>> exceptions = new ArrayList<>();
     exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getBmPlants()));
     exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getChpPlants()));
     exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getEvCS()));
@@ -346,7 +343,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
-  protected static List<Try<Void, ValidationException>> checkGraphicElements(
+  protected static List<Try<Void>> checkGraphicElements(
       GraphicElements graphicElements, Set<NodeInput> nodes, Set<LineInput> lines) {
     try {
       checkNonNull(graphicElements, "graphic elements");
@@ -360,7 +357,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void, ValidationException>> exceptions = new ArrayList<>();
+    List<Try<Void>> exceptions = new ArrayList<>();
 
     // sanity check for distinct uuids
     Optional<String> exceptionString =

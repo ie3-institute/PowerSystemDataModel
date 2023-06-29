@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.utils.validation
 
 import edu.ie3.datamodel.exceptions.ValidationException
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 
 import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.*
@@ -72,12 +72,11 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkLine() recognizes all potential errors for a line"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidLine).stream().filter {it -> it.failure}.toList()
-
+    List<Try<Void>> exceptions = ConnectorValidationUtils.check(invalidLine).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception
+    Exception ex = exceptions.get(0).exception()
     ex.class == expectedException.class
     ex.message == expectedException.message
 
@@ -115,11 +114,11 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer2W recognizes all potential errors for a transformer2W"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidTransformer2W).stream().filter {it -> it.failure}.toList()
+    List<Try<Void>> exceptions = ConnectorValidationUtils.check(invalidTransformer2W).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception
+    Exception ex = exceptions.get(0).exception()
     ex.class == expectedException.class
     ex.message == expectedException.message
 
@@ -161,10 +160,10 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer2WType recognizes all potential errors for a transformer2W type"() {
     when:
-    Try<Void, ValidationException> exceptions =  ConnectorValidationUtils.check(invalidTransformer2WType)
+    Try<Void> exceptions = ConnectorValidationUtils.check(invalidTransformer2WType)
 
     then:
-    Exception ex = exceptions.exception
+    Exception ex = exceptions.exception()
     ex.message.contains(expectedException.message)
 
     where:
@@ -187,12 +186,11 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer3W recognizes all potential errors for a transformer3W"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidTransformer3W).stream().filter {it -> it.failure}.toList()
+    List<Try<Void>> exceptions = ConnectorValidationUtils.check(invalidTransformer3W).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception
-    ex.class == expectedException.class
+    Exception ex = exceptions.get(0).exception()
     ex.message == expectedException.message
 
     where:
@@ -228,10 +226,10 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer3WType recognizes all potential errors for a transformer3W type"() {
     when:
-    Try<Void, ValidationException> exceptions = ConnectorValidationUtils.check(invalidTransformer3WType)
+    Try<Void> exceptions = ConnectorValidationUtils.check(invalidTransformer3WType)
 
     then:
-    Exception ex = exceptions.exception
+    Exception ex = exceptions.exception()
     ex.message.contains(expectedException.message)
 
     where:
@@ -254,12 +252,11 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkSwitch recognizes all potential errors for a switch"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidSwitch).stream().filter {it -> it.failure}.toList()
+    List<Try<Void>> exceptions = ConnectorValidationUtils.check(invalidSwitch).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception
-    ex.class == expectedException.class
+    Exception ex = exceptions.get(0).exception()
     ex.message == expectedException.message
 
     where:

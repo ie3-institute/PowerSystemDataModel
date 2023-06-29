@@ -6,9 +6,8 @@
 package edu.ie3.datamodel.utils.validation
 
 import edu.ie3.datamodel.exceptions.UnsafeEntityException
-import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.input.AssetInput
-import edu.ie3.datamodel.utils.options.Try
+import edu.ie3.datamodel.utils.Try
 
 import static edu.ie3.datamodel.models.StandardUnits.CONDUCTANCE_PER_LENGTH
 import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
@@ -111,11 +110,11 @@ class ValidationUtilsTest extends Specification {
 
   def "If an object can't be identified, a ValidationException is thrown as expected"() {
     when:
-    Try<Void, ValidationException> actual = ValidationUtils.check(invalidObject)
+    Try<Void> actual = ValidationUtils.check(invalidObject)
 
     then:
     actual.failure
-    Throwable ex = actual.exception
+    Throwable ex = actual.exception()
     ex.message.contains(expectedException.message)
 
     where:
@@ -125,11 +124,11 @@ class ValidationUtilsTest extends Specification {
 
   def "The validation check method recognizes all potential errors for an asset"() {
     when:
-    Try<Void, ValidationException> actual = ValidationUtils.check(invalidAsset)
+    Try<Void> actual = ValidationUtils.check(invalidAsset)
 
     then:
     actual.failure
-    Exception ex = actual.exception
+    Exception ex = actual.exception()
     ex.message.contains(expectedException.message)
 
     where:
@@ -221,11 +220,11 @@ class ValidationUtilsTest extends Specification {
     def invalidAsset = new InvalidAssetInput()
 
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAsset(invalidAsset).stream().filter {it -> it.failure}.toList()
+    List<Try<Void>> exceptions = ValidationUtils.checkAsset(invalidAsset).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == 1
-    def e = exceptions.get(0).exception
+    def e = exceptions.get(0).exception()
     e.message.contains("Cannot validate object of class 'InvalidAssetInput', as no routine is implemented.")
   }
 
@@ -234,11 +233,11 @@ class ValidationUtilsTest extends Specification {
     def invalidAssetType = new InvalidAssetTypeInput()
 
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter {it -> it.failure}.toList()
+    List<Try<Void>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == 1
-    def e = exceptions.get(0).exception
+    def e = exceptions.get(0).exception()
     e.message.contains("Cannot validate object of class 'InvalidAssetTypeInput', as no routine is implemented.")
   }
 
@@ -247,11 +246,11 @@ class ValidationUtilsTest extends Specification {
     def invalidAssetType = new InvalidAssetTypeInput(UUID.randomUUID(), null)
 
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter {it -> it.failure}.toList()
+    List<Try<Void>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == 2
-    def e = exceptions.get(0).exception
+    def e = exceptions.get(0).exception()
     e.message.startsWith("Entity is invalid because of: No ID assigned [AssetTypeInput")
   }
 
@@ -264,7 +263,7 @@ class ValidationUtilsTest extends Specification {
     ]
 
     when:
-    List<Try<Void, UnsafeEntityException>> exceptions = ValidationUtils.checkIds(validAssetIds)
+    List<Try<Void>> exceptions = ValidationUtils.checkIds(validAssetIds)
 
     then:
     exceptions.forEach {ex -> ex.success }
@@ -278,11 +277,12 @@ class ValidationUtilsTest extends Specification {
     ]
 
     when:
-    List<Try<Void, UnsafeEntityException>> exceptions = ValidationUtils.checkIds(invalidAssetIds)
+    List<Try<Void>> exceptions = ValidationUtils.checkIds(invalidAssetIds)
 
     then:
     exceptions.get(0).success
     exceptions.get(1).failure
-    exceptions.get(1).exception.message.contains("Entity may be unsafe because of: There is already an entity with the id invalid_asset")
+    exceptions.get(1).exception().class == UnsafeEntityException.class
+    exceptions.get(1).exception().message.contains("Entity may be unsafe because of: There is already an entity with the id invalid_asset")
   }
 }
