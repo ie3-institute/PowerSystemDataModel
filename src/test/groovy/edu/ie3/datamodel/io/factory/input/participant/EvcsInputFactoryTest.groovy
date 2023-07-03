@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -56,7 +57,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<EvcsInput> input = inputFactory.get(
+    Try<EvcsInput, FactoryException> input = inputFactory.get(
         new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
@@ -105,12 +106,12 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<EvcsInput> input = inputFactory.get(
+    Try<EvcsInput, FactoryException> input = inputFactory.get(
         new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.failure
-    input.exception().message == "Exception while trying to parse field \"type\" with supposed int value \"-- invalid --\""
+    input.exception().cause.message == "Exception while trying to parse field \"type\" with supposed int value \"-- invalid --\""
   }
 
   def "A EvcsInputFactory should fail when passing an invalid EvcsLocationType"() {
@@ -133,11 +134,11 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<EvcsInput> input = inputFactory.get(
+    Try<EvcsInput, FactoryException> input = inputFactory.get(
         new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.failure
-    input.exception().message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
+    input.exception().cause.message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
   }
 }

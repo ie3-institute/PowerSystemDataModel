@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.WecInput
@@ -47,7 +48,7 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
     def typeInput = Mock(WecTypeInput)
 
     when:
-    Try<WecInput> input = inputFactory.get(
+    Try<WecInput, FactoryException> input = inputFactory.get(
         new SystemParticipantTypedEntityData<WecTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
     then:

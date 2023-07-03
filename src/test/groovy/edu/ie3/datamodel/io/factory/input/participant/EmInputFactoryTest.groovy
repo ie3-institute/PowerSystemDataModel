@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.ControlStrategy
 import edu.ie3.datamodel.models.EmControlStrategy
@@ -48,7 +49,7 @@ class EmInputFactoryTest extends Specification {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<EmInput> input = inputFactory.get(
+    Try<EmInput, FactoryException> input = inputFactory.get(
         new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
@@ -93,7 +94,7 @@ class EmInputFactoryTest extends Specification {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<EmInput> input = inputFactory.get(
+    Try<EmInput, FactoryException> input = inputFactory.get(
         new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
@@ -133,7 +134,7 @@ class EmInputFactoryTest extends Specification {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<EmInput> input = inputFactory.get(
+    Try<EmInput, FactoryException> input = inputFactory.get(
         new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:

@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -41,7 +42,7 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
     def typeInput = Mock(Transformer3WTypeInput)
 
     when:
-    Try<Transformer3WInput> input = inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
+    Try<Transformer3WInput, FactoryException> input = inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
 
     then:
     input.success

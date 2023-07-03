@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.graphics
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputFactory
 import edu.ie3.datamodel.models.input.NodeInput
@@ -40,7 +41,7 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
     def nodeInput = Mock(NodeInput)
 
     when:
-    Try<NodeGraphicInput> input = inputFactory.get(
+    Try<NodeGraphicInput, FactoryException> input = inputFactory.get(
         new NodeGraphicInputEntityData(parameter, nodeInput))
 
     then:
@@ -69,7 +70,7 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
     def nodeInput = Mock(NodeInput)
 
     when:
-    Try<NodeGraphicInput> input = inputFactory.get(
+    Try<NodeGraphicInput, FactoryException> input = inputFactory.get(
         new NodeGraphicInputEntityData(parameter, nodeInput))
 
     then:

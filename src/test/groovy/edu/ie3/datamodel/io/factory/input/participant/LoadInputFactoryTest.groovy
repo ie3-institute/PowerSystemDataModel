@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
@@ -50,7 +51,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
       "srated"             : "4",
       "cosphirated"        : "5"
     ]
-    Try<LoadInput> input = inputFactory.get(
+    Try<LoadInput, FactoryException> input = inputFactory.get(
         new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
 
     then:

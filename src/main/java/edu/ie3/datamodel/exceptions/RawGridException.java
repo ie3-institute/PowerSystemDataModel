@@ -5,11 +5,10 @@
 */
 package edu.ie3.datamodel.exceptions;
 
-import edu.ie3.datamodel.utils.ExceptionUtils;
 import java.util.List;
 
-public class RawGridException extends RuntimeException {
+public class RawGridException extends SourceException {
   public RawGridException(String message, List<SourceException> exceptions) {
-    super(message + " " + ExceptionUtils.getMessages(exceptions), exceptions.get(0));
+    super(message, exceptions);
   }
 }

@@ -44,7 +44,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
    * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a
    *     {@link Failure}
    */
-  public Try<R> get(D data) {
+  public Try<R, FactoryException> get(D data) {
     isSupportedClass(data.getTargetClass());
 
     // magic: case-insensitive get/set calls on set strings
@@ -56,13 +56,28 @@ public abstract class Factory<C, D extends FactoryData, R> {
       // build the model
       return new Success<>(buildModel(data));
     } catch (FactoryException e) {
-      // only catch FactoryExceptions, as more serious exceptions should be handled elsewhere
-      log.error(
-          "An error occurred when creating instance of {}.class.",
-          data.getTargetClass().getSimpleName(),
-          e);
-      return new Failure<>(e);
+      return new Failure<>(
+          new FactoryException(
+              "An error occurred when creating instance of "
+                  + data.getTargetClass().getSimpleName()
+                  + ".class.",
+              e));
     }
+  }
+
+  /**
+   * Builds entity with data from given EntityData object after doing all kinds of checks on the
+   * data
+   *
+   * @param data EntityData (or subclass) containing the data wrapped in a {@link Try}
+   * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a
+   *     {@link Failure}
+   */
+  @SuppressWarnings("unchecked")
+  public Try<R, FactoryException> get(Try<D, ?> data) {
+    return data.map(this::get) instanceof Try.Success<Try<R, FactoryException>, ?> success
+        ? success.get()
+        : (Try<R, FactoryException>) Failure.of(new FactoryException(data.getException().get()));
   }
 
   /**

@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -50,7 +51,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
     def typeInput = Mock(BmTypeInput)
 
     when:
-    Try<BmInput> input = inputFactory.get(
+    Try<BmInput, FactoryException> input = inputFactory.get(
         new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
     then:

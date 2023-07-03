@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.result
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.*
@@ -55,7 +56,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     when:
-    Try<? extends SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
 
     then:
     result.success
@@ -109,7 +110,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "q"         : "2"
     ]
     when:
-    Try<? extends SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(parameter, StorageResult))
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, StorageResult))
 
     then:
     result.success
@@ -132,11 +133,11 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "q"         : "2"
     ]
     when:
-    Try<SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(parameter, WecResult))
+    Try<SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, WecResult))
 
     then:
     result.failure
-    result.exception().message == "The provided fields [inputModel, q, time] with data \n" +
+    result.exception().cause.message == "The provided fields [inputModel, q, time] with data \n" +
         "{inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,\n" +
         "q -> 2,\n" +
         "time -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +

@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.EvInput
@@ -46,7 +47,7 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
     def typeInput = Mock(EvTypeInput)
 
     when:
-    Try<EvInput> input = inputFactory.get(
+    Try<EvInput, FactoryException> input = inputFactory.get(
         new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
     then:

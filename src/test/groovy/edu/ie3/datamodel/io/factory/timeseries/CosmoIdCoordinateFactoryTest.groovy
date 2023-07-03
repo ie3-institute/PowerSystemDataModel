@@ -68,7 +68,7 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 
     then:
     actual.failure
-    actual.exception().message.startsWith("The provided fields [id, latrot, longrot, tid] with data \n{id -> 106580,\nlatrot" +
+    actual.exception().cause.message.startsWith("The provided fields [id, latrot, longrot, tid] with data \n{id -> 106580,\nlatrot" +
         " -> -10,\nlongrot -> -6.8125,\ntid -> 1} are invalid for instance of Pair.")
   }
 

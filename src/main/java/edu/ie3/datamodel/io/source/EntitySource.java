@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
@@ -15,6 +17,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.LongAdder;
@@ -54,6 +57,7 @@ public abstract class EntitySource {
    * @param <T> the type of the entity
    * @return a predicate that can be used to filter and count empty optionals
    */
+  @Deprecated
   protected <T extends UniqueEntity> Predicate<Optional<T>> isPresentCollectIfNot(
       Class<? extends UniqueEntity> entityClass,
       ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
@@ -67,6 +71,7 @@ public abstract class EntitySource {
     };
   }
 
+  @Deprecated
   protected void printInvalidElementInformation(
       Class<? extends UniqueEntity> entityClass, LongAdder noOfInvalidElements) {
     log.error(
@@ -75,14 +80,20 @@ public abstract class EntitySource {
         entityClass.getSimpleName());
   }
 
-  protected void logSkippingWarning(
+  protected String logSkippingWarning(
       String entityDesc, String entityUuid, String entityId, String missingElementsString) {
-    log.warn(
-        "Skipping '{}' with uuid '{}' and id '{}'. Not all required entities found or map is missing entity key!\nMissing elements:\n{}",
-        entityDesc,
-        entityUuid,
-        entityId,
-        missingElementsString);
+    String logMessage =
+        "Skipping "
+            + entityDesc
+            + " with uuid "
+            + entityUuid
+            + " and id "
+            + entityId
+            + ". Not all required entities found or map is missing entity key!\nMissing elements:\n"
+            + missingElementsString;
+
+    log.warn(logMessage);
+    return logMessage;
   }
 
   protected String safeMapGet(Map<String, String> map, String key, String mapName) {
@@ -116,16 +127,16 @@ public abstract class EntitySource {
    * Checks if the requested type of an asset can be found in the provided collection of types based
    * on the provided fields to values mapping. The provided fields to values mapping needs to have
    * one and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can
-   * be found in the provided collection based on the UUID it is returned wrapped in an optional.
-   * Otherwise an empty optional is returned and a warning is logged.
+   * be found in the provided collection based on the UUID it is returned wrapped in a {@link
+   * Success}. Otherwise a {@link Failure} is returned and a warning is logged.
    *
    * @param types a collection of types that should be used for searching
    * @param fieldsToAttributes the field name to value mapping incl. the key {@link #TYPE}
    * @param skippedClassString debug string of the class that will be skipping
    * @param <T> the type of the resulting type instance
-   * @return either an optional containing the type or an empty optional if the type cannot be found
+   * @return a {@link Success} containing the type or a {@link Failure} if the type cannot be found
    */
-  protected <T extends AssetTypeInput> Optional<T> getAssetType(
+  protected <T extends AssetTypeInput> Try<T, SourceException> getAssetType(
       Collection<T> types, Map<String, String> fieldsToAttributes, String skippedClassString) {
 
     Optional<T> assetType =
@@ -135,13 +146,15 @@ public abstract class EntitySource {
     // if the type is not present we return an empty element and
     // log a warning
     if (assetType.isEmpty()) {
-      logSkippingWarning(
-          skippedClassString,
-          safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-          safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-          TYPE + ": " + safeMapGet(fieldsToAttributes, TYPE, FIELDS_TO_VALUES_MAP));
+      String logMessage =
+          logSkippingWarning(
+              skippedClassString,
+              safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
+              safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
+              TYPE + ": " + safeMapGet(fieldsToAttributes, TYPE, FIELDS_TO_VALUES_MAP));
+      return new Failure<>(new SourceException("Failure due to: " + logMessage));
     }
-    return assetType;
+    return new Success<>(assetType.get());
   }
 
   /**
@@ -150,11 +163,12 @@ public abstract class EntitySource {
    * @param untypedEntityData Untyped entity data to enrich
    * @param availableTypes Yet available asset types
    * @param <T> Type of the asset type
-   * @return Option to enhanced data
+   * @return {@link Try} to enhanced data
    */
-  protected <T extends AssetTypeInput> Optional<TypedConnectorInputEntityData<T>> findAndAddType(
-      ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
-    Optional<T> assetTypeOption =
+  protected <T extends AssetTypeInput>
+      Try<TypedConnectorInputEntityData<T>, SourceException> findAndAddType(
+          ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
+    Try<T, SourceException> assetTypeOption =
         getAssetType(
             availableTypes,
             untypedEntityData.getFieldsToValues(),
@@ -225,17 +239,16 @@ public abstract class EntitySource {
   }
 
   /**
-   * Returns a stream of optional {@link NodeAssetInputEntityData} that can be used to build
+   * Returns a stream of tries of {@link NodeAssetInputEntityData} that can be used to build
    * instances of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory}
    * that consumes this data. param assetInputEntityDataStream
    *
    * @param assetInputEntityDataStream a stream consisting of {@link AssetInputEntityData} that is
    *     enriched with {@link NodeInput} data
    * @param nodes a collection of {@link NodeInput} entities that should be used to build the data
-   * @return stream of optionals of the entity data or empty optionals of the node required for the
-   *     data cannot be found
+   * @return stream of the entity data wrapped in a {@link Try}
    */
-  protected Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
+  protected Stream<Try<NodeAssetInputEntityData, SourceException>> nodeAssetInputEntityDataStream(
       Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
     return assetInputEntityDataStream
         .parallel()
@@ -250,18 +263,19 @@ public abstract class EntitySource {
               // if the node is not present we return an empty element and
               // log a warning
               if (node.isEmpty()) {
-                logSkippingWarning(
-                    assetInputEntityData.getTargetClass().getSimpleName(),
-                    fieldsToAttributes.get("uuid"),
-                    fieldsToAttributes.get("id"),
-                    NODE + ": " + nodeUuid);
-                return Optional.empty();
+                String logMessage =
+                    logSkippingWarning(
+                        assetInputEntityData.getTargetClass().getSimpleName(),
+                        fieldsToAttributes.get("uuid"),
+                        fieldsToAttributes.get("id"),
+                        NODE + ": " + nodeUuid);
+                return new Failure<>(new SourceException("Failure due to: " + logMessage));
               }
 
               // remove fields that are passed as objects to constructor
               fieldsToAttributes.keySet().remove(NODE);
 
-              return Optional.of(
+              return new Success<>(
                   new NodeAssetInputEntityData(
                       fieldsToAttributes,
                       assetInputEntityData.getTargetClass(),
@@ -279,8 +293,7 @@ public abstract class EntitySource {
    * @param operators a collection of {@link OperatorInput} entities that should be used to build
    *     the data
    * @param <T> type of the entity that should be build
-   * @return stream of optionals of the entity data or empty optionals of the operator required for
-   *     the data cannot be found
+   * @return stream of the entity data wrapped in a {@link Try}
    */
   protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
       Class<T> entityClass, Collection<OperatorInput> operators) {
@@ -326,7 +339,7 @@ public abstract class EntitySource {
         .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
 
-  protected <T extends AssetInput> Stream<Try<T>> assetInputEntityStream(
+  protected <T extends AssetInput> Stream<Try<T, FactoryException>> assetInputEntityStream(
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
       Collection<OperatorInput> operators) {
@@ -334,7 +347,7 @@ public abstract class EntitySource {
   }
 
   /**
-   * Returns a stream of optional entities that can be build by using {@link
+   * Returns a stream of {@link Try} entities that can be build by using {@link
    * NodeAssetInputEntityData} and their corresponding factory.
    *
    * @param entityClass the entity class that should be build
@@ -344,23 +357,20 @@ public abstract class EntitySource {
    * @param operators a collection of {@link OperatorInput} entities should be used to build the
    *     entities
    * @param <T> Type of the {@link AssetInput} to expect
-   * @return stream of optionals of the entities that has been built by the factor or empty
-   *     optionals if the entity could not have been build
+   * @return stream of tries of the entities that has been built by the factory
    */
-  protected <T extends AssetInput> Stream<Try<T>> nodeAssetEntityStream(
+  protected <T extends AssetInput> Stream<Try<T, FactoryException>> nodeAssetEntityStream(
       Class<T> entityClass,
       EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
     return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
         .map(factory::get);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  public <T extends AssetInput> Set<Try<T>> buildNodeAssetEntities(
+  public <T extends AssetInput> Set<Try<T, FactoryException>> buildNodeAssetEntities(
       Class<T> entityClass,
       EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,
@@ -369,21 +379,22 @@ public abstract class EntitySource {
         .collect(Collectors.toSet());
   }
 
-  public <T extends AssetInput> Set<Try<T>> buildAssetInputEntities(
+  public <T extends AssetInput> Set<Try<T, FactoryException>> buildAssetInputEntities(
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
       Collection<OperatorInput> operators) {
     return assetInputEntityStream(entityClass, factory, operators).collect(Collectors.toSet());
   }
 
-  public <T extends InputEntity> Set<Try<T>> buildEntities(
+  @SuppressWarnings("unchecked")
+  public <T extends InputEntity> Set<Try<T, FactoryException>> buildEntities(
       Class<T> entityClass, EntityFactory<? extends InputEntity, SimpleEntityData> factory) {
     return dataSource
         .getSourceData(entityClass)
         .map(
             fieldsToAttributes -> {
               SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
-              return (Try<T>) factory.get(data);
+              return (Try<T, FactoryException>) factory.get(data);
             })
         .collect(Collectors.toSet());
   }

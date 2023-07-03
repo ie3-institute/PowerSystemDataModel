@@ -5,11 +5,10 @@
 */
 package edu.ie3.datamodel.exceptions;
 
-import edu.ie3.datamodel.utils.ExceptionUtils;
 import java.util.List;
 
-public class GraphicSourceException extends RuntimeException {
+public class GraphicSourceException extends SourceException {
   public GraphicSourceException(String message, List<SourceException> exceptions) {
-    super(message + " " + ExceptionUtils.getMessages(exceptions), exceptions.get(0));
+    super(message, exceptions);
   }
 }

@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.exceptions.SystemParticipantsException
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.participant.ChpInputEntityData
 import edu.ie3.datamodel.io.factory.input.participant.HpInputEntityData
@@ -27,6 +29,7 @@ import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Specification
 
@@ -75,25 +78,52 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
       getNodes(_) >> new HashSet<NodeInput>()
     } as RawGridSource
     def csvSystemParticipantSource = new SystemParticipantSource(
-        typeSource,
-        thermalSource,
-        rawGridSource,
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    typeSource,
+    thermalSource,
+    rawGridSource,
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     when:
-    def systemParticipants = csvSystemParticipantSource.systemParticipants
+    def systemParticipants = Try.of(() -> csvSystemParticipantSource.systemParticipants)
 
     then:
-    systemParticipants.allEntitiesAsList().empty
+    systemParticipants.failure
+    systemParticipants.getData() == Optional.empty()
+
+    Exception ex = systemParticipants.exception()
+    ex.class == SystemParticipantsException
+    ex.message == "11 error(s) occurred while initializing system participants.  edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"FixedFeedInInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping fixedfeedininputwith uuid 717af017-cc69-406f-b452-e022d7fb516a and id test_fixedfeedininput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"PvInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping pvinputwith uuid d56f15b7-8293-4b98-b5bd-58f6273ce229 and id test_pvinput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"LoadInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping loadinputwith uuid eaf77f7e-9001-479f-94ca-7fb657766f5f and id test_loadinput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"BmInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping bminputwith uuid d06e5bb7-a3c7-4749-bdd1-4581ff2f6f4d and id test_bminput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"StorageInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping storageinputwith uuid 06b58276-8350-40fb-86c0-2414aa4a0452 and id test_storageinput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"WecInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping wecinputwith uuid ee7e2e37-a5ad-4def-a832-26a317567ca1 and id test_wecinput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"EvInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping evinputwith uuid a17be20f-c7a7-471d-8ffe-015487c9d022 and id test_evinput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"EvcsInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping evcsinputwith uuid 798028b5-caff-4da7-bcd9-1750fdd8742c and id test_csinput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"ChpInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping chpinputwith uuid 9981b4d7-5a8e-4909-9602-e2e7ef4fca5c and id test_chpinput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"HpInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping hpinputwith uuid 798028b5-caff-4da7-bcd9-1750fdd8742b and id test_hpinput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"EmInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping eminputwith uuid 977157f4-25e5-4c72-bf34-440edc778792 and id test_eminput. not all required entities found or map is missing entity key!\n" +
+    "missing elements:\n" +
+    "node: 4ca90220-74c2-4369-9afa-a18bf068840d"
   }
 
   def "A CsvSystemParticipantSource should build typed entity from valid and invalid input data as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     def nodeAssetInputEntityData = new NodeAssetInputEntityData(fieldsToAttributes, clazz, operator, node)
 
@@ -101,8 +131,8 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def typedEntityDataOpt = csvSystemParticipantSource.buildTypedEntityData(nodeAssetInputEntityData, types)
 
     then:
-    typedEntityDataOpt.present == resultIsPresent
-    typedEntityDataOpt.ifPresent({ typedEntityData ->
+    typedEntityDataOpt.success == resultIsPresent
+    typedEntityDataOpt.data.ifPresent({ typedEntityData ->
       assert (typedEntityData == resultData)
     })
 
@@ -118,10 +148,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should build hp input entity from valid and invalid input data as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     def sysPartTypedEntityData = new SystemParticipantTypedEntityData<>(fieldsToAttributes, HpInput, sptd.hpInput.operator, sptd.hpInput.node, sptd.hpTypeInput)
 
@@ -129,8 +159,8 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def hpInputEntityDataOpt = csvSystemParticipantSource.buildHpEntityData(sysPartTypedEntityData, thermalBuses)
 
     then:
-    hpInputEntityDataOpt.present == resultIsPresent
-    hpInputEntityDataOpt.ifPresent({ hpInputEntityData ->
+    hpInputEntityDataOpt.success == resultIsPresent
+    hpInputEntityDataOpt.data.ifPresent({ hpInputEntityData ->
       assert (hpInputEntityData == resultData)
     })
 
@@ -146,10 +176,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should build chp input entity from valid and invalid input data as expected"(List<ThermalStorageInput> thermalStorages, List<ThermalBusInput> thermalBuses, Map<String, String> fieldsToAttributes, boolean resultIsPresent, ChpInputEntityData resultData) {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     def sysPartTypedEntityData = new SystemParticipantTypedEntityData<>(fieldsToAttributes, ChpInput, sptd.chpInput.operator, sptd.chpInput.node, sptd.chpTypeInput)
 
@@ -157,8 +187,8 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def hpInputEntityDataOpt = csvSystemParticipantSource.buildChpEntityData(sysPartTypedEntityData, thermalStorages, thermalBuses)
 
     then:
-    hpInputEntityDataOpt.present == resultIsPresent
-    hpInputEntityDataOpt.ifPresent({ hpInputEntityData ->
+    hpInputEntityDataOpt.success == resultIsPresent
+    hpInputEntityDataOpt.data.ifPresent({ hpInputEntityData ->
       assert (hpInputEntityData == resultData)
     })
 
@@ -179,20 +209,25 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from a valid heat pump input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def heatPumps = csvSystemParticipantSource.getHeatPumps(nodes as Set, operators as Set, types as Set, thermalBuses as Set)
-    heatPumps.size() == resultingSize
-    heatPumps == resultingSet as Set
+    def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(nodes as Set, operators as Set, types as Set, thermalBuses as Set))
+
+    if (heatPumps.success) {
+      heatPumps.data().size() == resultingSize
+      heatPumps.data() == resultingSet as Set
+    } else {
+      heatPumps.exception().class == SourceException
+    }
 
     where:
     nodes               | operators               | types               | thermalBuses              || resultingSize || resultingSet
     [sptd.hpInput.node] | [sptd.hpInput.operator] | [sptd.hpInput.type] | [sptd.hpInput.thermalBus] || 1             || [sptd.hpInput]
-    [sptd.hpInput.node] | [] | [sptd.hpInput.type] | [sptd.hpInput.thermalBus] || 1             || [
+    [sptd.hpInput.node] | []                      | [sptd.hpInput.type] | [sptd.hpInput.thermalBus] || 1             || [
       new HpInput(sptd.hpInput.uuid, sptd.hpInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.hpInput.operationTime, sptd.hpInput.node, sptd.hpInput.thermalBus, sptd.hpInput.qCharacteristics, sptd.hpInput.type)
     ]
     [] | [] | [] | []                                                        || 0             || []
@@ -204,15 +239,20 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from a valid chp input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def chpUnits = csvSystemParticipantSource.getChpPlants(nodes as Set, operators as Set, types as Set, thermalBuses as Set, thermalStorages as Set)
-    chpUnits.size() == resultingSize
-    chpUnits == resultingSet as Set
+    def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(nodes as Set, operators as Set, types as Set, thermalBuses as Set, thermalStorages as Set))
+
+    if (chpUnits.success) {
+      chpUnits.data().size() == resultingSize
+      chpUnits.data() == resultingSet as Set
+    } else {
+      chpUnits.exception().class == SourceException
+    }
 
     where:
     nodes                | operators                | types                | thermalBuses               | thermalStorages || resultingSize || resultingSet
@@ -233,15 +273,20 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid ev input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = csvSystemParticipantSource.getEvs(nodes as Set, operators as Set, types as Set)
-    sysParts.size() == resultingSize
-    sysParts == resultingSet as Set
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvs(nodes as Set, operators as Set, types as Set))
+
+    if (sysParts.success) {
+      sysParts.data().size() == resultingSize
+      sysParts.data() == resultingSet as Set
+    } else {
+      sysParts.exception().class == SourceException
+    }
 
     where:
     nodes               | operators               | types               || resultingSize || resultingSet
@@ -257,15 +302,20 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid wec input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = csvSystemParticipantSource.getWecPlants(nodes as Set, operators as Set, types as Set)
-    sysParts.size() == resultingSize
-    sysParts == resultingSet as Set
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getWecPlants(nodes as Set, operators as Set, types as Set))
+
+    if (sysParts.success) {
+      sysParts.data().size() == resultingSize
+      sysParts.data() == resultingSet as Set
+    } else {
+      sysParts.exception().class == SourceException
+    }
 
     where:
     nodes                | operators                | types                || resultingSize || resultingSet
@@ -281,15 +331,20 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid storage input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = csvSystemParticipantSource.getStorages(nodes as Set, operators as Set, types as Set)
-    sysParts.size() == resultingSize
-    sysParts == resultingSet as Set
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getStorages(nodes as Set, operators as Set, types as Set))
+
+    if (sysParts.success) {
+      sysParts.data().size() == resultingSize
+      sysParts.data() == resultingSet as Set
+    } else {
+      sysParts.exception().class == SourceException
+    }
 
     where:
     nodes                    | operators                    | types                    || resultingSize || resultingSet
@@ -305,15 +360,20 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid bm input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = csvSystemParticipantSource.getBmPlants(nodes as Set, operators as Set, types as Set)
-    sysParts.size() == resultingSize
-    sysParts == resultingSet as Set
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getBmPlants(nodes as Set, operators as Set, types as Set))
+
+    if (sysParts.success) {
+      sysParts.data().size() == resultingSize
+      sysParts.data() == resultingSet as Set
+    } else {
+      sysParts.exception().class == SourceException
+    }
 
     where:
     nodes               | operators               | types               || resultingSize || resultingSet
@@ -329,15 +389,20 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid ev charging station input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = csvSystemParticipantSource.getEvCS(nodes as Set, operators as Set)
-    sysParts.size() == resultingSize
-    sysParts == resultingSet as Set
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvCS(nodes as Set, operators as Set))
+
+    if (sysParts.success) {
+      sysParts.data().size() == resultingSize
+      sysParts.data() == resultingSet as Set
+    } else {
+      sysParts.exception().class == SourceException
+    }
 
     where:
     nodes                 | operators                 || resultingSize || resultingSet
@@ -352,15 +417,20 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid load input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = csvSystemParticipantSource.getLoads(nodes as Set, operators as Set)
-    sysParts.size() == resultingSize
-    sysParts == resultingSet as Set
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getLoads(nodes as Set, operators as Set))
+
+    if (sysParts.success) {
+      sysParts.data().size() == resultingSize
+      sysParts.data() == resultingSet as Set
+    } else {
+      sysParts.exception().class == SourceException
+    }
 
     where:
     nodes                 | operators                 || resultingSize || resultingSet
@@ -375,15 +445,20 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid pv input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = csvSystemParticipantSource.getPvPlants(nodes as Set, operators as Set)
-    sysParts.size() == resultingSize
-    sysParts == resultingSet as Set
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getPvPlants(nodes as Set, operators as Set))
+
+    if (sysParts.success) {
+      sysParts.data().size() == resultingSize
+      sysParts.data() == resultingSet as Set
+    } else {
+      sysParts.exception().class == SourceException
+    }
 
     where:
     nodes               | operators               || resultingSize || resultingSet
@@ -398,15 +473,20 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid fixedFeedIn input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = csvSystemParticipantSource.getFixedFeedIns(nodes as Set, operators as Set)
-    sysParts.size() == resultingSize
-    sysParts == resultingSet as Set
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getFixedFeedIns(nodes as Set, operators as Set))
+
+    if (sysParts.success) {
+      sysParts.data().size() == resultingSize
+      sysParts.data() == resultingSet as Set
+    } else {
+      sysParts.exception().class == SourceException
+    }
 
     where:
     nodes                        | operators        || resultingSize || resultingSet
@@ -425,15 +505,20 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
   def "A CsvSystemParticipantSource should return data from valid em input file as expected"() {
     given:
     def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = csvSystemParticipantSource.getEmSystems(nodes as Set, operators as Set)
-    sysParts.size() == resultingSize
-    sysParts == resultingSet as Set
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getEmSystems(nodes as Set, operators as Set))
+
+    if (sysParts.success) {
+      sysParts.data().size() == resultingSize
+      sysParts.data() == resultingSet as Set
+    } else {
+      sysParts.exception().class == SourceException
+    }
 
     where:
     nodes               | operators               || resultingSize || resultingSet

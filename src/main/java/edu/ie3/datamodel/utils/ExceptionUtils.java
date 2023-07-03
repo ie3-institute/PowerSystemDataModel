@@ -19,9 +19,9 @@ public class ExceptionUtils {
    * @return str containing the messages
    */
   public static String getMessages(List<? extends Exception> exceptions) {
-    Exception firstInList = exceptions.remove(0);
     return exceptions.stream()
         .map(Throwable::getMessage)
-        .reduce(firstInList.getMessage(), (a, b) -> a + ", " + b);
+        .reduce("", (a, b) -> a + ", " + b)
+        .replaceFirst(", ", "");
   }
 }

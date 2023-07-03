@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.RawGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
@@ -23,6 +24,7 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -85,7 +87,7 @@ public class RawGridSource extends EntitySource {
    *
    * @return either a valid, complete {@link RawGridElements} or throws a {@link SourceException}
    */
-  public RawGridElements getGridData() throws RawGridException, SourceException {
+  public RawGridElements getGridData() throws SourceException {
     /* read all needed entities start with the types and operators */
     Set<OperatorInput> operators = typeSource.getOperators();
     Set<LineTypeInput> lineTypes = typeSource.getLineTypes();
@@ -94,24 +96,20 @@ public class RawGridSource extends EntitySource {
 
     /* assets */
     Set<NodeInput> nodes = getNodes(operators);
-    Try<Set<LineInput>> lineInputs = Try.of(() -> getLines(nodes, lineTypes, operators));
-    Try<Set<Transformer2WInput>> transformer2WInputs =
+    Try<Set<LineInput>, SourceException> lineInputs =
+        Try.of(() -> getLines(nodes, lineTypes, operators));
+    Try<Set<Transformer2WInput>, SourceException> transformer2WInputs =
         Try.of(() -> get2WTransformers(nodes, transformer2WTypeInputs, operators));
-    Try<Set<Transformer3WInput>> transformer3WInputs =
+    Try<Set<Transformer3WInput>, SourceException> transformer3WInputs =
         Try.of(() -> get3WTransformers(nodes, transformer3WTypeInputs, operators));
-    Try<Set<SwitchInput>> switches = Try.of(() -> getSwitches(nodes, operators));
-    Try<Set<MeasurementUnitInput>> measurementUnits =
+    Try<Set<SwitchInput>, SourceException> switches = Try.of(() -> getSwitches(nodes, operators));
+    Try<Set<MeasurementUnitInput>, SourceException> measurementUnits =
         Try.of(() -> getMeasurementUnits(nodes, operators));
 
     List<SourceException> exceptions =
-        (List<SourceException>)
-            Try.getExceptions(
-                List.of(
-                    lineInputs,
-                    transformer2WInputs,
-                    transformer3WInputs,
-                    switches,
-                    measurementUnits));
+        Try.getExceptions(
+            List.of(
+                lineInputs, transformer2WInputs, transformer3WInputs, switches, measurementUnits));
 
     if (!exceptions.isEmpty()) {
       throw new RawGridException(
@@ -167,7 +165,8 @@ public class RawGridSource extends EntitySource {
                 .map(nodeInputFactory::get)
                 .collect(Collectors.toSet()),
             NodeInput.class)
-        .getOrThrow(SourceException.class);
+        .transformEx(SourceException::new)
+        .getOrThrow();
   }
 
   /**
@@ -211,7 +210,8 @@ public class RawGridSource extends EntitySource {
             typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs)
                 .collect(Collectors.toSet()),
             LineInput.class)
-        .getOrThrow(SourceException.class);
+        .transformEx(SourceException::new)
+        .getOrThrow();
   }
 
   /**
@@ -265,7 +265,8 @@ public class RawGridSource extends EntitySource {
                     transformer2WTypes)
                 .collect(Collectors.toSet()),
             Transformer2WInput.class)
-        .getOrThrow(SourceException.class);
+        .transformEx(SourceException::new)
+        .getOrThrow();
   }
 
   /**
@@ -314,7 +315,8 @@ public class RawGridSource extends EntitySource {
             buildTransformer3WEntities(
                 transformer3WInputFactory, nodes, transformer3WTypeInputs, operators),
             Transformer3WInput.class)
-        .getOrThrow(SourceException.class);
+        .transformEx(SourceException::new)
+        .getOrThrow();
   }
 
   /**
@@ -351,7 +353,8 @@ public class RawGridSource extends EntitySource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
-  public Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators) {
+  public Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws SourceException {
     return buildUntypedConnectorInputEntities(
         SwitchInput.class, switchInputFactory, nodes, operators);
   }
@@ -397,11 +400,12 @@ public class RawGridSource extends EntitySource {
             buildNodeAssetEntities(
                 MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators),
             MeasurementUnitInput.class)
-        .getOrThrow(SourceException.class);
+        .transformEx(SourceException::new)
+        .getOrThrow();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  public <T extends AssetInput> Set<Try<T>> buildNodeInputEntities(
+  public <T extends AssetInput> Set<Try<T, FactoryException>> buildNodeInputEntities(
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
       Collection<OperatorInput> operators) {
@@ -414,12 +418,17 @@ public class RawGridSource extends EntitySource {
       Class<T> entityClass,
       EntityFactory<T, ConnectorInputEntityData> factory,
       Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators) {
-    return untypedConnectorInputEntityStream(entityClass, factory, nodes, operators)
-        .collect(Collectors.toSet());
+      Collection<OperatorInput> operators)
+      throws SourceException {
+    return Try.scanCollection(
+            untypedConnectorInputEntityStream(entityClass, factory, nodes, operators)
+                .collect(Collectors.toSet()),
+            entityClass)
+        .transformEx(SourceException::new)
+        .getOrThrow();
   }
 
-  public Set<Try<Transformer3WInput>> buildTransformer3WEntities(
+  public Set<Try<Transformer3WInput, FactoryException>> buildTransformer3WEntities(
       Transformer3WInputFactory transformer3WInputFactory,
       Collection<NodeInput> nodes,
       Collection<Transformer3WTypeInput> transformer3WTypeInputs,
@@ -430,34 +439,33 @@ public class RawGridSource extends EntitySource {
                     assetInputEntityDataStream(Transformer3WInput.class, operators), nodes),
                 transformer3WTypeInputs),
             nodes)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
         .map(transformer3WInputFactory::get)
         .collect(Collectors.toSet());
   }
 
-  public <T extends ConnectorInput, A extends AssetTypeInput> Set<Try<T>> buildTypedEntities(
-      Class<T> entityClass,
-      EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<A> types) {
+  public <T extends ConnectorInput, A extends AssetTypeInput>
+      Set<Try<T, FactoryException>> buildTypedEntities(
+          Class<T> entityClass,
+          EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<A> types) {
     return typedEntityStream(entityClass, factory, nodes, operators, types)
         .collect(Collectors.toSet());
   }
 
   /**
    * Enriches the given untyped entity data with the equivalent asset type. If this is not possible,
-   * an empty Optional is returned
+   * a {@link Failure} is returned.
    *
    * @param noTypeConnectorEntityDataStream Stream of untyped entity data
    * @param availableTypes Yet available asset types
    * @param <T> Type of the asset type
-   * @return Stream of option to enhanced data
+   * @return Stream of {@link Try} to enhanced data
    */
   protected <T extends AssetTypeInput>
-      Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntityData(
-          Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
+      Stream<Try<TypedConnectorInputEntityData<T>, SourceException>> buildTypedConnectorEntityData(
+          Stream<Try<ConnectorInputEntityData, SourceException>> noTypeConnectorEntityDataStream,
           Collection<T> availableTypes) {
     return noTypeConnectorEntityDataStream
         .parallel()
@@ -473,10 +481,11 @@ public class RawGridSource extends EntitySource {
    *
    * @param assetInputEntityDataStream Input stream of {@link AssetInputEntityData}
    * @param nodes A collection of known nodes
-   * @return A stream on option to matching {@link ConnectorInputEntityData}
+   * @return A stream on {@link Try} to matching {@link ConnectorInputEntityData}
    */
-  protected Stream<Optional<ConnectorInputEntityData>> buildUntypedConnectorInputEntityData(
-      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
+  protected Stream<Try<ConnectorInputEntityData, SourceException>>
+      buildUntypedConnectorInputEntityData(
+          Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
     return assetInputEntityDataStream
         .parallel()
         .map(
@@ -486,14 +495,14 @@ public class RawGridSource extends EntitySource {
 
   /**
    * Converts a single given {@link AssetInputEntityData} in connection with a collection of known
-   * {@link NodeInput}s to {@link ConnectorInputEntityData}. If this is not possible, an empty
-   * option is given back.
+   * {@link NodeInput}s to {@link ConnectorInputEntityData}. If this is not possible, a {@link
+   * Failure}.
    *
    * @param assetInputEntityData Input entity data to convert
    * @param nodes A collection of known nodes
-   * @return An option to matching {@link ConnectorInputEntityData}
+   * @return A {@link Try} to matching {@link ConnectorInputEntityData}
    */
-  protected Optional<ConnectorInputEntityData> buildUntypedConnectorInputEntityData(
+  protected Try<ConnectorInputEntityData, SourceException> buildUntypedConnectorInputEntityData(
       AssetInputEntityData assetInputEntityData, Collection<NodeInput> nodes) {
     // get the raw data
     Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
@@ -504,7 +513,7 @@ public class RawGridSource extends EntitySource {
     Optional<NodeInput> nodeA = findFirstEntityByUuid(nodeAUuid, nodes);
     Optional<NodeInput> nodeB = findFirstEntityByUuid(nodeBUuid, nodes);
 
-    // if nodeA or nodeB are not present we return an empty element and log a
+    // if nodeA or nodeB are not present we return a failure and log a
     // warning
     if (nodeA.isEmpty() || nodeB.isEmpty()) {
       String debugString =
@@ -515,18 +524,20 @@ public class RawGridSource extends EntitySource {
               .map(AbstractMap.SimpleEntry::getValue)
               .collect(Collectors.joining("\n"));
 
-      logSkippingWarning(
-          assetInputEntityData.getTargetClass().getSimpleName(),
-          fieldsToAttributes.get("uuid"),
-          fieldsToAttributes.get("id"),
-          debugString);
-      return Optional.empty();
+      String logMessage =
+          logSkippingWarning(
+              assetInputEntityData.getTargetClass().getSimpleName(),
+              fieldsToAttributes.get("uuid"),
+              fieldsToAttributes.get("id"),
+              debugString);
+
+      return new Failure<>(new SourceException("Failure due to: " + logMessage));
     }
 
     // remove fields that are passed as objects to constructor
     fieldsToAttributes.keySet().removeAll(new HashSet<>(Arrays.asList(NODE_A, NODE_B)));
 
-    return Optional.of(
+    return new Success<>(
         new ConnectorInputEntityData(
             fieldsToAttributes,
             assetInputEntityData.getTargetClass(),
@@ -535,53 +546,51 @@ public class RawGridSource extends EntitySource {
             nodeB.get()));
   }
 
-  private <T extends ConnectorInput, A extends AssetTypeInput> Stream<Try<T>> typedEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<A> types) {
+  private <T extends ConnectorInput, A extends AssetTypeInput>
+      Stream<Try<T, FactoryException>> typedEntityStream(
+          Class<T> entityClass,
+          EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<A> types) {
     return buildTypedConnectorEntityData(
             buildUntypedConnectorInputEntityData(
                 assetInputEntityDataStream(entityClass, operators), nodes),
             types)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
         .map(factory::get);
   }
 
-  public <T extends ConnectorInput> Stream<T> untypedConnectorInputEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, ConnectorInputEntityData> factory,
-      Set<NodeInput> nodes,
-      Set<OperatorInput> operators) {
+  public <T extends ConnectorInput>
+      Stream<Try<T, FactoryException>> untypedConnectorInputEntityStream(
+          Class<T> entityClass,
+          EntityFactory<T, ConnectorInputEntityData> factory,
+          Set<NodeInput> nodes,
+          Set<OperatorInput> operators) {
     return buildUntypedConnectorInputEntityData(
             assetInputEntityDataStream(entityClass, operators), nodes)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .map(factory::get)
-        .map(Try::getOrThrow);
+        .map(factory::get);
   }
 
-  private <T extends ConnectorInput> Stream<T> untypedConnectorInputEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, ConnectorInputEntityData> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators) {
+  private <T extends ConnectorInput>
+      Stream<Try<T, FactoryException>> untypedConnectorInputEntityStream(
+          Class<T> entityClass,
+          EntityFactory<T, ConnectorInputEntityData> factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators) {
     return untypedConnectorInputEntityStream(
         entityClass, factory, new HashSet<>(nodes), new HashSet<>(operators));
   }
 
   /**
-   * Enriches the Stream of options on {@link Transformer3WInputEntityData} with the information of
-   * the internal node
+   * Enriches the Stream of tries on {@link Transformer3WInputEntityData} with the information of
+   * the internal node.
    *
    * @param typedConnectorEntityDataStream Stream of already typed input entity data
    * @param nodes Yet available nodes
-   * @return A stream of options on enriched data
+   * @return A stream of {@link Try} on enriched data
    */
-  protected Stream<Optional<Transformer3WInputEntityData>> buildTransformer3WEntityData(
-      Stream<Optional<TypedConnectorInputEntityData<Transformer3WTypeInput>>>
+  protected Stream<Try<Transformer3WInputEntityData, SourceException>> buildTransformer3WEntityData(
+      Stream<Try<TypedConnectorInputEntityData<Transformer3WTypeInput>, SourceException>>
           typedConnectorEntityDataStream,
       Collection<NodeInput> nodes) {
     return typedConnectorEntityDataStream
@@ -593,13 +602,13 @@ public class RawGridSource extends EntitySource {
 
   /**
    * Enriches the third node to the already typed entity data of a three winding transformer. If no
-   * matching node can be found, return an empty Optional.
+   * matching node can be found, return a {@link Failure}.
    *
    * @param typeEntityData Already typed entity data
    * @param nodes Yet available nodes
-   * @return An option to the enriched data
+   * @return a {@link Try} to the enriched data
    */
-  protected Optional<Transformer3WInputEntityData> addThirdNode(
+  protected Try<Transformer3WInputEntityData, SourceException> addThirdNode(
       TypedConnectorInputEntityData<Transformer3WTypeInput> typeEntityData,
       Collection<NodeInput> nodes) {
 
@@ -610,21 +619,22 @@ public class RawGridSource extends EntitySource {
     String nodeCUuid = fieldsToAttributes.get("nodeC");
     Optional<NodeInput> nodeC = findFirstEntityByUuid(nodeCUuid, nodes);
 
-    // if nodeC is not present we return an empty element and
+    // if nodeC is not present we return a failure
     // log a warning
     if (nodeC.isEmpty()) {
-      logSkippingWarning(
-          typeEntityData.getTargetClass().getSimpleName(),
-          fieldsToAttributes.get("uuid"),
-          fieldsToAttributes.get("id"),
-          "nodeC: " + nodeCUuid);
-      return Optional.empty();
+      String logMessage =
+          logSkippingWarning(
+              typeEntityData.getTargetClass().getSimpleName(),
+              fieldsToAttributes.get("uuid"),
+              fieldsToAttributes.get("id"),
+              "nodeC: " + nodeCUuid);
+      return new Failure<>(new SourceException("Failure due to: " + logMessage));
     }
 
     // remove fields that are passed as objects to constructor
     fieldsToAttributes.keySet().remove("nodeC");
 
-    return Optional.of(
+    return new Success<>(
         new Transformer3WInputEntityData(
             fieldsToAttributes,
             typeEntityData.getTargetClass(),

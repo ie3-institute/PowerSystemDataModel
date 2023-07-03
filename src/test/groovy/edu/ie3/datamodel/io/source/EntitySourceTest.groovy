@@ -72,8 +72,8 @@ class EntitySourceTest extends Specification {
     def assetTypeOpt = dummyEntitySource.getAssetType(types, fieldsToAttributes, "TestClassName")
 
     then:
-    assetTypeOpt.present == resultIsPresent
-    assetTypeOpt.ifPresent({ assetType ->
+    assetTypeOpt.data.present == resultIsPresent
+    assetTypeOpt.data.ifPresent({ assetType ->
       assert (assetType == resultData)
     })
 
