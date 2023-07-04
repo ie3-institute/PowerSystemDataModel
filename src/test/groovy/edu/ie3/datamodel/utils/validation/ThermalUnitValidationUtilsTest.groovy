@@ -108,5 +108,4 @@ class ThermalUnitValidationUtilsTest extends Specification {
     new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(100, StandardUnits.VOLUME), Quantities.getQuantity(200, StandardUnits.VOLUME), inletTemp, returnTemp, c)                                                                     || new InvalidEntityException("Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume", invalidCylindricalStorage)
     new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), Quantities.getQuantity(-200, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)) || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -200 ㎥, -1.05 kWh/K*m³", invalidCylindricalStorage)
   }
-
 }

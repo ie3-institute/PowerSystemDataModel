@@ -54,7 +54,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
 
     then:
-    connector.connectionValid
+    connector.isConnectionValid()
   }
 
   def "An InfluxDbWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {

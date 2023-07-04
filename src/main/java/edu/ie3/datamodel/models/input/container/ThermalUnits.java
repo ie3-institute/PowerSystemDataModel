@@ -32,7 +32,69 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
   }
 
   @Override
+  public ThermalUnitsCopyBuilder copy() {
+    return new ThermalUnitsCopyBuilder(this);
+  }
+
+  @Override
   public String toString() {
     return "ThermalUnits{" + "#houses=" + houses.size() + ", #storages=" + storages.size() + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link ThermalUnits} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * ThermalUnits}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
+  public static class ThermalUnitsCopyBuilder
+      extends InputContainerCopyBuilder<ThermalUnitInput, ThermalUnits> {
+    private Set<ThermalHouseInput> houses;
+    private Set<ThermalStorageInput> storages;
+
+    /**
+     * Constructor for {@link ThermalUnitsCopyBuilder}
+     *
+     * @param thermalUnits instance of {@link ThermalUnits}
+     */
+    protected ThermalUnitsCopyBuilder(ThermalUnits thermalUnits) {
+      super();
+      this.houses = thermalUnits.houses();
+      this.storages = thermalUnits.storages();
+    }
+
+    /**
+     * Method to alter {@link ThermalHouseInput}
+     *
+     * @param houses altered thermal houses
+     * @return child instance of {@link ThermalUnitsCopyBuilder}
+     */
+    public ThermalUnitsCopyBuilder houses(Set<ThermalHouseInput> houses) {
+      this.houses = houses;
+      return childInstance();
+    }
+
+    /**
+     * Method to alter {@link ThermalStorageInput}
+     *
+     * @param storages altered thermal storages
+     * @return child instance of {@link ThermalUnitsCopyBuilder}
+     */
+    public ThermalUnitsCopyBuilder storages(Set<ThermalStorageInput> storages) {
+      this.storages = storages;
+      return childInstance();
+    }
+
+    @Override
+    protected ThermalUnitsCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    ThermalUnits build() {
+      return new ThermalUnits(houses, storages);
+    }
   }
 }

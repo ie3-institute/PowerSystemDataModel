@@ -12,7 +12,12 @@ updates:
   - sensarmad
   - sebastian-peter
   - danielfeismann
-  ignore:
-  - dependency-name: org.spockframework:spock-core
-    versions:
-        - 2.3-groovy-4.0
+  - jo-bao
+
+- package-ecosystem: pip
+  directory: "/docs/readthedocs"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 8
+  target-branch: dev

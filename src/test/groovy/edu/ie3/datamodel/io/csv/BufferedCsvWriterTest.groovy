@@ -29,9 +29,9 @@ class BufferedCsvWriterTest extends Specification {
 
   def "The convenience constructor of the BufferedCsvWriter class works as expected."() {
     given:
-    def baseDirectory = tmpDirectory.toString()
-    def fileDefinition = new CsvFileDefinition("test.csv", "", ["a", "b", "c"] as String[], ",")
-    def expectedFile = new File(FilenameUtils.concat(tmpDirectory.toString(), fileDefinition.filePath))
+    def baseDirectory = tmpDirectory
+    def fileDefinition = new CsvFileDefinition("test.csv", Path.of(""), ["a", "b", "c"] as String[], ",")
+    def expectedFile = tmpDirectory.resolve(fileDefinition.filePath).toFile()
 
     when:
     def actual = new BufferedCsvWriter(baseDirectory, fileDefinition, false)
@@ -47,7 +47,7 @@ class BufferedCsvWriterTest extends Specification {
 
   def "The buffered csv writer refuses to write entries, if their length does not conform the needed length of head line elements"() {
     given:
-    def targetFile = FilenameUtils.concat(tmpDirectory.toString(), "test.csv")
+    def targetFile = tmpDirectory.resolve("test.csv")
     def writer = new BufferedCsvWriter(targetFile, ["a", "b", "c"] as String[], "c,", false)
     def malFormedInput = [
       "a": "z",
@@ -64,7 +64,7 @@ class BufferedCsvWriterTest extends Specification {
 
   def "The buffered csv writer refuses to write entries, if keys do not match the required head line"() {
     given:
-    def targetFile = FilenameUtils.concat(tmpDirectory.toString(), "test.csv")
+    def targetFile = tmpDirectory.resolve("test.csv")
     def writer = new BufferedCsvWriter(targetFile, ["a", "b", "c"] as String[], "c,", false)
     def malFormedInput = [
       "a": "z",
@@ -82,7 +82,7 @@ class BufferedCsvWriterTest extends Specification {
 
   def "The buffered csv writer writes out content in the order specified by the headline elements"() {
     given:
-    def targetFile = FilenameUtils.concat(tmpDirectory.toString(), "order_test.csv")
+    def targetFile = tmpDirectory.resolve("order_test.csv")
     def writer = new BufferedCsvWriter(targetFile, ["third_header", "second_header", "first_header"] as String[], ",", false)
     writer.writeFileHeader()
     def content = [
@@ -97,7 +97,7 @@ class BufferedCsvWriterTest extends Specification {
     /* Read in the content */
     def writtenContent = ""
     def headline = ""
-    try(BufferedReader reader = new BufferedReader(new FileReader(targetFile))) {
+    try(BufferedReader reader = new BufferedReader(new FileReader(targetFile.toFile()))) {
       headline = reader.readLine()
       writtenContent = reader.readLine()
     } catch (Exception e) {

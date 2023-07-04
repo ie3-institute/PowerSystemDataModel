@@ -7,6 +7,9 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData
+import edu.ie3.datamodel.io.source.GraphicSource
+import edu.ie3.datamodel.io.source.RawGridSource
+import edu.ie3.datamodel.io.source.TypeSource
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
@@ -20,9 +23,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
   def "A CsvGraphicSource should provide an instance of GraphicElements based on valid input data correctly"() {
     given:
-    def typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-    def rawGridSource = new CsvRawGridSource(csvSep, gridDefaultFolderPath, fileNamingStrategy, typeSource)
-    def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, typeSource, rawGridSource)
+    def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    def rawGridSource = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy))
+    def csvGraphicSource = new GraphicSource(typeSource, rawGridSource, new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
     when:
     def graphicElementsOpt = csvGraphicSource.getGraphicElements()
@@ -38,9 +41,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
   def "A CsvGraphicSource should process invalid input data as expected when requested to provide an instance of GraphicElements"() {
     given:
-    def typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
+    def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
     def rawGridSource =
-        new CsvRawGridSource(csvSep, gridDefaultFolderPath, fileNamingStrategy, typeSource) {
+        new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
           @Override
           Set<NodeInput> getNodes() {
             return Collections.emptySet()
@@ -52,7 +55,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
           }
         }
 
-    def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, typeSource, rawGridSource)
+    def csvGraphicSource = new GraphicSource(typeSource, rawGridSource, new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
     when:
     def graphicElementsOpt = csvGraphicSource.getGraphicElements()
@@ -64,7 +67,10 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
   def "A CsvGraphicSource should read and handle a valid node graphics file as expected"() {
     given:
-    def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
+    def csvGraphicSource = new GraphicSource(
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     def expectedNodeGraphicD = new NodeGraphicInput(
         gtd.nodeGraphicD.uuid,
         gtd.nodeGraphicD.graphicLayer,
@@ -93,7 +99,10 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
   def "A CsvGraphicSource should read and handle a valid line graphics file as expected"() {
     given:
-    def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
+    def csvGraphicSource = new GraphicSource(
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
     when:
     def lineGraphics = csvGraphicSource.getLineGraphicInput([gtd.lineCtoD] as Set)
@@ -105,7 +114,10 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
   def "A CsvGraphicSource should build node graphic entity data from valid and invalid input data correctly"() {
     given:
-    def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
+    def csvGraphicSource = new GraphicSource(
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     def fieldsToAttributesMap = [
       "uuid"         : "09aec636-791b-45aa-b981-b14edf171c4c",
       "graphic_layer": "main",
@@ -134,12 +146,14 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     []|| false     // no nodes provide
     [gtd.nodeA, gtd.nodeB]|| false     // node cannot be found
     [gtd.nodeC]|| true      // node found
-
   }
 
   def "A CsvGraphicSource should build line graphic entity data from valid and invalid input data correctly"() {
     given:
-    def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
+    def csvGraphicSource = new GraphicSource(
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     def fieldsToAttributesMap = [
       "uuid"         : "ece86139-3238-4a35-9361-457ecb4258b0",
       "graphic_layer": "main",
@@ -166,6 +180,5 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     []|| false     // no nodes provide
     [gtd.lineCtoD]|| false     // line cannot be found
     [gtd.lineAtoB]|| true      // line found
-
   }
 }

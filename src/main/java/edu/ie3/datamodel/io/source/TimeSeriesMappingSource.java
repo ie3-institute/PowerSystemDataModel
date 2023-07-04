@@ -5,23 +5,39 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This interface describes basic function to handle mapping between models and their respective
  * time series
  */
-public interface TimeSeriesMappingSource extends DataSource {
+public abstract class TimeSeriesMappingSource {
+
+  private final TimeSeriesMappingFactory mappingFactory;
+
+  protected TimeSeriesMappingSource() {
+    this.mappingFactory = new TimeSeriesMappingFactory();
+  }
+
   /**
    * Get a mapping from model {@link UUID} to the time series {@link UUID}
    *
    * @return That mapping
    */
-  Map<UUID, UUID> getMapping();
+  public Map<UUID, UUID> getMapping() {
+    return getMappingSourceData()
+        .map(this::createMappingEntry)
+        .flatMap(Optional::stream)
+        .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
+  }
 
   /**
    * Get a time series identifier to a given model identifier
@@ -29,24 +45,28 @@ public interface TimeSeriesMappingSource extends DataSource {
    * @param modelIdentifier Identifier of the model
    * @return An {@link Optional} to the time series identifier
    */
-  default Optional<UUID> getTimeSeriesUuid(UUID modelIdentifier) {
+  public Optional<UUID> getTimeSeriesUuid(UUID modelIdentifier) {
     return Optional.ofNullable(getMapping().get(modelIdentifier));
   }
 
   /**
-   * Get an option on the given time series meta information
+   * Extract a stream of maps from the database for the mapping
    *
-   * @param timeSeriesUuid Unique identifier of the time series in question
-   * @return An Option onto the meta information
-   * @deprecated since 3.0. Use {@link
-   *     TimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
+   * @return Stream of maps
    */
-  @Deprecated(since = "3.0", forRemoval = true)
-  Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
-      getTimeSeriesMetaInformation(UUID timeSeriesUuid);
+  public abstract Stream<Map<String, String>> getMappingSourceData();
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  private Optional<MappingEntry> createMappingEntry(Map<String, String> fieldToValues) {
+    SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
+    return mappingFactory.get(entityData);
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /** Class to represent one entry within the participant to time series mapping */
-  class MappingEntry extends InputEntity {
+  public static class MappingEntry extends InputEntity {
     private final UUID participant;
     private final UUID timeSeries;
 
