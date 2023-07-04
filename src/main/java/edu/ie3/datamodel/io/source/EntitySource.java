@@ -57,7 +57,7 @@ public abstract class EntitySource {
    * @param <T> the type of the entity
    * @return a predicate that can be used to filter and count empty optionals
    */
-  @Deprecated
+  @Deprecated(since = "4.0")
   protected <T extends UniqueEntity> Predicate<Optional<T>> isPresentCollectIfNot(
       Class<? extends UniqueEntity> entityClass,
       ConcurrentMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
@@ -71,7 +71,7 @@ public abstract class EntitySource {
     };
   }
 
-  @Deprecated
+  @Deprecated(since = "4.0")
   protected void printInvalidElementInformation(
       Class<? extends UniqueEntity> entityClass, LongAdder noOfInvalidElements) {
     log.error(

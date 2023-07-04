@@ -66,7 +66,7 @@ public abstract class Try<T, E extends Exception> {
   public static <E extends Exception> Try<Void, E> ofVoid(TrySupplier<?, E> supplier) {
     try {
       supplier.get();
-      return (Try<Void, E>) Success.empty();
+      return Success.empty();
     } catch (Exception e) {
       return (Try<Void, E>) Failure.of(e);
     }
@@ -286,7 +286,7 @@ public abstract class Try<T, E extends Exception> {
       super(data);
     }
 
-    public static <E extends Exception> Success<?, E> empty() {
+    public static <U, E extends Exception> Success<U, E> empty() {
       return new Success<>(null);
     }
 
@@ -312,7 +312,7 @@ public abstract class Try<T, E extends Exception> {
       super(e);
     }
 
-    public static <E extends Exception> Failure<?, E> of(E exception) {
+    public static <E extends Exception> Failure<Void, E> of(E exception) {
       return new Failure<>(exception);
     }
 

@@ -73,11 +73,8 @@ public abstract class Factory<C, D extends FactoryData, R> {
    * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a
    *     {@link Failure}
    */
-  @SuppressWarnings("unchecked")
   public Try<R, FactoryException> get(Try<D, ?> data) {
-    return data.map(this::get) instanceof Try.Success<Try<R, FactoryException>, ?> success
-        ? success.get()
-        : (Try<R, FactoryException>) Failure.of(new FactoryException(data.getException().get()));
+    return data.transformEx(FactoryException::new).flatMap(this::get);
   }
 
   /**
