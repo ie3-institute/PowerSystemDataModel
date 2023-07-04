@@ -5,7 +5,9 @@
  */
 package edu.ie3.datamodel.utils
 
+import edu.ie3.datamodel.exceptions.FailureException
 import edu.ie3.datamodel.exceptions.SourceException
+import org.codehaus.groovy.runtime.typehandling.GroovyCastException
 import spock.lang.Specification
 
 class TryTest extends Specification {
@@ -29,6 +31,19 @@ class TryTest extends Specification {
     actual.failure
     actual.exception().class == SourceException
     actual.exception().message == "Exception thrown."
+  }
+
+  def "A CastException is thrown if a wrong exception type is set"() {
+    when:
+    Try<String, FailureException> actual = Try.of(() -> {
+      throw new SourceException("")
+    })
+    FailureException failureException = actual.exception()
+
+    then:
+    Exception ex = thrown()
+    ex.class == GroovyCastException
+    ex.message == "Cannot cast object 'edu.ie3.datamodel.exceptions.SourceException: ' with class 'edu.ie3.datamodel.exceptions.SourceException' to class 'edu.ie3.datamodel.exceptions.FailureException'"
   }
 
   def "A void method can be applied to a try object"() {

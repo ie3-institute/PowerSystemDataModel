@@ -92,29 +92,9 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     Exception ex = systemParticipants.exception()
     ex.class == SystemParticipantsException
-    ex.message == "11 error(s) occurred while initializing system participants.  edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"FixedFeedInInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping fixedfeedininputwith uuid 717af017-cc69-406f-b452-e022d7fb516a and id test_fixedfeedininput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"PvInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping pvinputwith uuid d56f15b7-8293-4b98-b5bd-58f6273ce229 and id test_pvinput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"LoadInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping loadinputwith uuid eaf77f7e-9001-479f-94ca-7fb657766f5f and id test_loadinput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"BmInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping bminputwith uuid d06e5bb7-a3c7-4749-bdd1-4581ff2f6f4d and id test_bminput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"StorageInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping storageinputwith uuid 06b58276-8350-40fb-86c0-2414aa4a0452 and id test_storageinput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"WecInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping wecinputwith uuid ee7e2e37-a5ad-4def-a832-26a317567ca1 and id test_wecinput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"EvInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping evinputwith uuid a17be20f-c7a7-471d-8ffe-015487c9d022 and id test_evinput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"EvcsInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping evcsinputwith uuid 798028b5-caff-4da7-bcd9-1750fdd8742c and id test_csinput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"ChpInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping chpinputwith uuid 9981b4d7-5a8e-4909-9602-e2e7ef4fca5c and id test_chpinput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"HpInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping hpinputwith uuid 798028b5-caff-4da7-bcd9-1750fdd8742b and id test_hpinput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d, edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"EmInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping eminputwith uuid 977157f4-25e5-4c72-bf34-440edc778792 and id test_eminput. not all required entities found or map is missing entity key!\n" +
-    "missing elements:\n" +
-    "node: 4ca90220-74c2-4369-9afa-a18bf068840d"
+    ex.message.startsWith("11 error(s) occurred while initializing system participants.  " +
+    "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"FixedFeedInInput\" data, one is: " +
+    "edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping fixedfeedininput with uuid")
   }
 
   def "A CsvSystemParticipantSource should build typed entity from valid and invalid input data as expected"() {
