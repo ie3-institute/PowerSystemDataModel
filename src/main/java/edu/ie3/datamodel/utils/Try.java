@@ -112,15 +112,6 @@ public abstract class Try<T, E extends Exception> {
     return data != null ? data : value;
   }
 
-  /**
-   * @apiNote The preferred alternative to this method is {@link #getOrThrow()}.
-   * @return the data of this {@link Try} object, even if the data is null. This method should only
-   *     be used, if this object is a {@link Success}.
-   */
-  public T getOrNull() {
-    return data;
-  }
-
   /** Returns an option for data. */
   public Optional<T> getData() {
     return data != null ? Optional.of(data) : Optional.empty();
