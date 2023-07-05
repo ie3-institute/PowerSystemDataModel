@@ -165,7 +165,7 @@ public class RawGridSource extends EntitySource {
                 .map(nodeInputFactory::get)
                 .collect(Collectors.toSet()),
             NodeInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -210,7 +210,7 @@ public class RawGridSource extends EntitySource {
             typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs)
                 .collect(Collectors.toSet()),
             LineInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -265,7 +265,7 @@ public class RawGridSource extends EntitySource {
                     transformer2WTypes)
                 .collect(Collectors.toSet()),
             Transformer2WInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -315,7 +315,7 @@ public class RawGridSource extends EntitySource {
             buildTransformer3WEntities(
                 transformer3WInputFactory, nodes, transformer3WTypeInputs, operators),
             Transformer3WInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -400,7 +400,7 @@ public class RawGridSource extends EntitySource {
             buildNodeAssetEntities(
                 MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators),
             MeasurementUnitInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -424,7 +424,7 @@ public class RawGridSource extends EntitySource {
             untypedConnectorInputEntityStream(entityClass, factory, nodes, operators)
                 .collect(Collectors.toSet()),
             entityClass)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 

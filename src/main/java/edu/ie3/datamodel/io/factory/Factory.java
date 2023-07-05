@@ -74,7 +74,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
    *     {@link Failure}
    */
   public Try<R, FactoryException> get(Try<D, ?> data) {
-    return data.transformEx(FactoryException::new).flatMap(this::get);
+    return data.transformF(FactoryException::new).flatMap(this::get);
   }
 
   /**

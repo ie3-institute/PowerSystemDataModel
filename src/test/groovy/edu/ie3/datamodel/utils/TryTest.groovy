@@ -139,8 +139,8 @@ class TryTest extends Specification {
     Try<String, Exception> failure = new Try.Failure<>(new SourceException(""))
 
     when:
-    Try<Integer, Exception> first = failure.transform( str -> Integer.parseInt(str) )
-    Try<Integer, Exception> second = failure.transform( str -> Integer.parseInt(str), ex -> new Exception(ex) )
+    Try<Integer, Exception> first = failure.transformS(str -> Integer.parseInt(str) )
+    Try<Integer, Exception> second = failure.transform(str -> Integer.parseInt(str), ex -> new Exception(ex) )
 
     then:
     first.failure

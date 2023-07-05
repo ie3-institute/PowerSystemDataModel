@@ -118,7 +118,7 @@ public abstract class WeatherSource {
                       toTimeBasedWeatherValueData(fieldsToAttributes);
                   return factory.get(data.get());
                 }))
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 }

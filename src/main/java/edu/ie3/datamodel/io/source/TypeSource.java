@@ -58,7 +58,7 @@ public class TypeSource extends EntitySource {
     return Try.scanCollection(
             buildEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory),
             Transformer2WTypeInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -73,7 +73,7 @@ public class TypeSource extends EntitySource {
   public Set<OperatorInput> getOperators() throws SourceException {
     return Try.scanCollection(
             buildEntities(OperatorInput.class, operatorInputFactory), OperatorInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -88,7 +88,7 @@ public class TypeSource extends EntitySource {
   public Set<LineTypeInput> getLineTypes() throws SourceException {
     return Try.scanCollection(
             buildEntities(LineTypeInput.class, lineTypeInputFactory), LineTypeInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -105,7 +105,7 @@ public class TypeSource extends EntitySource {
     return Try.scanCollection(
             buildEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory),
             Transformer3WTypeInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -120,7 +120,7 @@ public class TypeSource extends EntitySource {
   public Set<BmTypeInput> getBmTypes() throws SourceException {
     return Try.scanCollection(
             buildEntities(BmTypeInput.class, systemParticipantTypeInputFactory), BmTypeInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -136,7 +136,7 @@ public class TypeSource extends EntitySource {
     return Try.scanCollection(
             buildEntities(ChpTypeInput.class, systemParticipantTypeInputFactory),
             ChpTypeInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -151,7 +151,7 @@ public class TypeSource extends EntitySource {
   public Set<HpTypeInput> getHpTypes() throws SourceException {
     return Try.scanCollection(
             buildEntities(HpTypeInput.class, systemParticipantTypeInputFactory), HpTypeInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -167,7 +167,7 @@ public class TypeSource extends EntitySource {
     return Try.scanCollection(
             buildEntities(StorageTypeInput.class, systemParticipantTypeInputFactory),
             StorageTypeInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -183,7 +183,7 @@ public class TypeSource extends EntitySource {
     return Try.scanCollection(
             buildEntities(WecTypeInput.class, systemParticipantTypeInputFactory),
             WecTypeInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -198,7 +198,7 @@ public class TypeSource extends EntitySource {
   public Set<EvTypeInput> getEvTypes() throws SourceException {
     return Try.scanCollection(
             buildEntities(EvTypeInput.class, systemParticipantTypeInputFactory), EvTypeInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 }

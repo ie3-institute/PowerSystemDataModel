@@ -95,7 +95,7 @@ public class GraphicSource extends EntitySource {
                 .map(nodeGraphicInputFactory::get)
                 .collect(Collectors.toSet()),
             NodeGraphicInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -117,7 +117,7 @@ public class GraphicSource extends EntitySource {
                 .map(lineGraphicInputFactory::get)
                 .collect(Collectors.toSet()),
             LineGraphicInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 

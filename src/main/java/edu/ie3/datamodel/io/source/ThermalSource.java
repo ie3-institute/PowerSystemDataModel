@@ -82,7 +82,7 @@ public class ThermalSource extends EntitySource {
     return Try.scanCollection(
             buildAssetInputEntities(ThermalBusInput.class, thermalBusInputFactory, operators),
             ThermalBusInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -139,7 +139,7 @@ public class ThermalSource extends EntitySource {
    */
   public Set<ThermalHouseInput> getThermalHouses() throws SourceException {
     return buildThermalHouseInputEntities(thermalHouseInputFactory)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -168,7 +168,7 @@ public class ThermalSource extends EntitySource {
     return Try.scanCollection(
             buildThermalHouseInputEntities(thermalHouseInputFactory, operators, thermalBuses),
             ThermalHouseInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -184,7 +184,7 @@ public class ThermalSource extends EntitySource {
    */
   public Set<CylindricalStorageInput> getCylindricStorages() throws SourceException {
     return buildCylindricalStorageInputEntities(cylindricalStorageInputFactory)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -215,7 +215,7 @@ public class ThermalSource extends EntitySource {
             buildCylindricalStorageInputEntities(
                 cylindricalStorageInputFactory, operators, thermalBuses),
             CylindricalStorageInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 

@@ -66,7 +66,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
             buildStreamWithFieldsToAttributesMap()
                 .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
                 .map(factory::get))
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow()
         .stream()
         .collect(Collectors.toMap(Pair::getKey, Pair::getValue));

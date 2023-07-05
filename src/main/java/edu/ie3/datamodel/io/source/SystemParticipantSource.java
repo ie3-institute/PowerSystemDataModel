@@ -210,7 +210,7 @@ public class SystemParticipantSource extends EntitySource {
             buildNodeAssetEntities(
                 FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators),
             FixedFeedInInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -251,7 +251,7 @@ public class SystemParticipantSource extends EntitySource {
       throws SourceException {
     return Try.scanCollection(
             buildNodeAssetEntities(PvInput.class, pvInputFactory, nodes, operators), PvInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -293,7 +293,7 @@ public class SystemParticipantSource extends EntitySource {
     return Try.scanCollection(
             buildNodeAssetEntities(LoadInput.class, loadInputFactory, nodes, operators),
             LoadInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -335,7 +335,7 @@ public class SystemParticipantSource extends EntitySource {
     return Try.scanCollection(
             buildNodeAssetEntities(EvcsInput.class, evcsInputFactory, nodes, operators),
             EvcsInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -380,7 +380,7 @@ public class SystemParticipantSource extends EntitySource {
             buildTypedSystemParticipantEntities(
                 BmInput.class, bmInputFactory, nodes, operators, types),
             BmInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -426,7 +426,7 @@ public class SystemParticipantSource extends EntitySource {
             buildTypedSystemParticipantEntities(
                 StorageInput.class, storageInputFactory, nodes, operators, types),
             StorageInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -471,7 +471,7 @@ public class SystemParticipantSource extends EntitySource {
             buildTypedSystemParticipantEntities(
                 WecInput.class, wecInputFactory, nodes, operators, types),
             WecInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -516,7 +516,7 @@ public class SystemParticipantSource extends EntitySource {
             buildTypedSystemParticipantEntities(
                 EvInput.class, evInputFactory, nodes, operators, types),
             EvInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -556,7 +556,7 @@ public class SystemParticipantSource extends EntitySource {
       throws SourceException {
     return Try.scanCollection(
             buildNodeAssetEntities(EmInput.class, emInputFactory, nodes, operators), EmInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -592,7 +592,7 @@ public class SystemParticipantSource extends EntitySource {
             buildChpInputEntities(
                 chpInputFactory, nodes, operators, types, thermalBuses, thermalStorages),
             ChpInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 
@@ -624,7 +624,7 @@ public class SystemParticipantSource extends EntitySource {
     return Try.scanCollection(
             buildHpInputEntities(hpInputFactory, nodes, operators, types, thermalBuses),
             HpInput.class)
-        .transformEx(SourceException::new)
+        .transformF(SourceException::new)
         .getOrThrow();
   }
 

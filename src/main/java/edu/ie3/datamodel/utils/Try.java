@@ -148,7 +148,7 @@ public abstract class Try<T, E extends Exception> {
    * @param <U> type of the data
    */
   public <U> Try<U, E> map(Function<? super T, ? extends U> mapper) {
-    return transform(mapper);
+    return transformS(mapper);
   }
 
   /**
@@ -160,7 +160,7 @@ public abstract class Try<T, E extends Exception> {
    */
   @SuppressWarnings("unchecked")
   public <U> Try<U, E> flatMap(Function<? super T, ? extends Try<U, E>> mapper) {
-    Try<Try<U, E>, E> t = transform(mapper);
+    Try<Try<U, E>, E> t = transformS(mapper);
     return t instanceof Success<Try<U, E>, ?> success ? success.data() : (Try<U, E>) t;
   }
 
@@ -172,7 +172,7 @@ public abstract class Try<T, E extends Exception> {
    * @return a new {@link Try} object
    * @param <U> type of data
    */
-  public <U> Try<U, E> transform(Function<? super T, ? extends U> successFunc) {
+  public <U> Try<U, E> transformS(Function<? super T, ? extends U> successFunc) {
     return isSuccess() ? new Success<>(successFunc.apply(data)) : Failure.of((Failure<T, E>) this);
   }
 
@@ -185,7 +185,7 @@ public abstract class Try<T, E extends Exception> {
    * @param <R> type of new exception
    */
   @SuppressWarnings("unchecked")
-  public <R extends Exception> Try<T, R> transformEx(Function<? super E, ? extends R> failureFunc) {
+  public <R extends Exception> Try<T, R> transformF(Function<? super E, ? extends R> failureFunc) {
     return isFailure() ? (Try<T, R>) Failure.of(failureFunc.apply(exception)) : new Success<>(data);
   }
 
