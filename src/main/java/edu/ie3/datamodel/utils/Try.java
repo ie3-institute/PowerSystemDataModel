@@ -281,7 +281,7 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /** Implementation of {@link Try} class. This class is used to present a successful try. */
-  public static class Success<T, E extends Exception> extends Try<T, E> {
+  public static final class Success<T, E extends Exception> extends Try<T, E> {
     public Success(T data) {
       super(data);
     }
@@ -307,7 +307,7 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /** Implementation of {@link Try} class. This class is used to present a failed try. */
-  public static class Failure<T, E extends Exception> extends Try<T, E> {
+  public static final class Failure<T, E extends Exception> extends Try<T, E> {
     public Failure(E e) {
       super(e);
     }
