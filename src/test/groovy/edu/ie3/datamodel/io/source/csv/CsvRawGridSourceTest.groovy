@@ -175,7 +175,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       it.success
     }
 
-    actualSet.stream().map {it.data() }.toList().containsAll(expectedSet)
+    actualSet.stream().map { it.data() }.toList().containsAll(expectedSet)
   }
 
   def "The CsvRawGridSource is able to add a type to untyped ConnectorInputEntityData correctly"() {
@@ -460,7 +460,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The CsvRawGridSource is able to add the third node for a three winding transformer to a stream of candidates"() {
     given: "suitable input data"
-    def inputStream = Stream.of(Try.of(()-> new TypedConnectorInputEntityData([
+    def inputStream = Stream.of(Try.of(() -> new TypedConnectorInputEntityData([
       "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
       "id"				: "3w_test",
       "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",

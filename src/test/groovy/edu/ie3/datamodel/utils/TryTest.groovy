@@ -39,6 +39,7 @@ class TryTest extends Specification {
       throw new SourceException("")
     })
     FailureException failureException = actual.exception()
+    failureException.class
 
     then:
     Exception ex = thrown()
@@ -111,7 +112,7 @@ class TryTest extends Specification {
     Try<String, SourceException> failure = new Try.Failure<>(new SourceException("source exception"))
 
     when:
-    failure.getOrThrow()
+    failure.orThrow
 
     then:
     Exception ex = thrown()

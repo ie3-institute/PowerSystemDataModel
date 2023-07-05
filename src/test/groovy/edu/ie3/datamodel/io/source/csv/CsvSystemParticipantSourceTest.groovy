@@ -88,7 +88,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     then:
     systemParticipants.failure
-    systemParticipants.getData() == Optional.empty()
+    systemParticipants.data == Optional.empty()
 
     Exception ex = systemParticipants.exception()
     ex.class == SystemParticipantsException
