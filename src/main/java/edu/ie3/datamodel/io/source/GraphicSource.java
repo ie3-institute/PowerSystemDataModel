@@ -62,9 +62,9 @@ public class GraphicSource extends EntitySource {
     Set<LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
 
     Try<Set<NodeGraphicInput>, SourceException> nodeGraphics =
-        Try.of(() -> getNodeGraphicInput(nodes));
+        Try.of(() -> getNodeGraphicInput(nodes), SourceException.class);
     Try<Set<LineGraphicInput>, SourceException> lineGraphics =
-        Try.of(() -> getLineGraphicInput(lines));
+        Try.of(() -> getLineGraphicInput(lines), SourceException.class);
 
     List<SourceException> exceptions = Try.getExceptions(List.of(nodeGraphics, lineGraphics));
 

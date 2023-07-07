@@ -84,7 +84,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     when:
-    def systemParticipants = Try.of(() -> csvSystemParticipantSource.systemParticipants)
+    def systemParticipants = Try.of(() -> csvSystemParticipantSource.systemParticipants, SystemParticipantsException)
 
     then:
     systemParticipants.failure
@@ -195,7 +195,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(nodes as Set, operators as Set, types as Set, thermalBuses as Set))
+    def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(nodes as Set, operators as Set, types as Set, thermalBuses as Set), SourceException)
 
     if (heatPumps.success) {
       heatPumps.data().size() == resultingSize
@@ -225,7 +225,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(nodes as Set, operators as Set, types as Set, thermalBuses as Set, thermalStorages as Set))
+    def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(nodes as Set, operators as Set, types as Set, thermalBuses as Set, thermalStorages as Set), SourceException)
 
     if (chpUnits.success) {
       chpUnits.data().size() == resultingSize
@@ -259,7 +259,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvs(nodes as Set, operators as Set, types as Set))
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvs(nodes as Set, operators as Set, types as Set), SourceException)
 
     if (sysParts.success) {
       sysParts.data().size() == resultingSize
@@ -288,7 +288,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getWecPlants(nodes as Set, operators as Set, types as Set))
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getWecPlants(nodes as Set, operators as Set, types as Set), SourceException)
 
     if (sysParts.success) {
       sysParts.data().size() == resultingSize
@@ -317,7 +317,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getStorages(nodes as Set, operators as Set, types as Set))
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getStorages(nodes as Set, operators as Set, types as Set), SourceException)
 
     if (sysParts.success) {
       sysParts.data().size() == resultingSize
@@ -346,7 +346,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getBmPlants(nodes as Set, operators as Set, types as Set))
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getBmPlants(nodes as Set, operators as Set, types as Set), SourceException)
 
     if (sysParts.success) {
       sysParts.data().size() == resultingSize
@@ -375,7 +375,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvCS(nodes as Set, operators as Set))
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvCS(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
       sysParts.data().size() == resultingSize
@@ -403,7 +403,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getLoads(nodes as Set, operators as Set))
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getLoads(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
       sysParts.data().size() == resultingSize
@@ -431,7 +431,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getPvPlants(nodes as Set, operators as Set))
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getPvPlants(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
       sysParts.data().size() == resultingSize
@@ -459,7 +459,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getFixedFeedIns(nodes as Set, operators as Set))
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getFixedFeedIns(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
       sysParts.data().size() == resultingSize
@@ -491,7 +491,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getEmSystems(nodes as Set, operators as Set))
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getEmSystems(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
       sysParts.data().size() == resultingSize

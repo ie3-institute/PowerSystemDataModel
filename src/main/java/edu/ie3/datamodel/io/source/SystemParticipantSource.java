@@ -115,22 +115,29 @@ public class SystemParticipantSource extends EntitySource {
     /// go on with the nodes
     Set<NodeInput> nodes = rawGridSource.getNodes(operators);
     Try<Set<FixedFeedInInput>, SourceException> fixedFeedInInputs =
-        Try.of(() -> getFixedFeedIns(nodes, operators));
-    Try<Set<PvInput>, SourceException> pvInputs = Try.of(() -> getPvPlants(nodes, operators));
-    Try<Set<LoadInput>, SourceException> loads = Try.of(() -> getLoads(nodes, operators));
+        Try.of(() -> getFixedFeedIns(nodes, operators), SourceException.class);
+    Try<Set<PvInput>, SourceException> pvInputs =
+        Try.of(() -> getPvPlants(nodes, operators), SourceException.class);
+    Try<Set<LoadInput>, SourceException> loads =
+        Try.of(() -> getLoads(nodes, operators), SourceException.class);
     Try<Set<BmInput>, SourceException> bmInputs =
-        Try.of(() -> getBmPlants(nodes, operators, bmTypes));
+        Try.of(() -> getBmPlants(nodes, operators, bmTypes), SourceException.class);
     Try<Set<StorageInput>, SourceException> storages =
-        Try.of(() -> getStorages(nodes, operators, storageTypes));
+        Try.of(() -> getStorages(nodes, operators, storageTypes), SourceException.class);
     Try<Set<WecInput>, SourceException> wecInputs =
-        Try.of(() -> getWecPlants(nodes, operators, wecTypes));
-    Try<Set<EvInput>, SourceException> evs = Try.of(() -> getEvs(nodes, operators, evTypes));
-    Try<Set<EvcsInput>, SourceException> evcs = Try.of(() -> getEvCS(nodes, operators));
+        Try.of(() -> getWecPlants(nodes, operators, wecTypes), SourceException.class);
+    Try<Set<EvInput>, SourceException> evs =
+        Try.of(() -> getEvs(nodes, operators, evTypes), SourceException.class);
+    Try<Set<EvcsInput>, SourceException> evcs =
+        Try.of(() -> getEvCS(nodes, operators), SourceException.class);
     Try<Set<ChpInput>, SourceException> chpInputs =
-        Try.of(() -> getChpPlants(nodes, operators, chpTypes, thermalBuses, thermalStorages));
+        Try.of(
+            () -> getChpPlants(nodes, operators, chpTypes, thermalBuses, thermalStorages),
+            SourceException.class);
     Try<Set<HpInput>, SourceException> hpInputs =
-        Try.of(() -> getHeatPumps(nodes, operators, hpTypes, thermalBuses));
-    Try<Set<EmInput>, SourceException> emInputs = Try.of(() -> getEmSystems(nodes, operators));
+        Try.of(() -> getHeatPumps(nodes, operators, hpTypes, thermalBuses), SourceException.class);
+    Try<Set<EmInput>, SourceException> emInputs =
+        Try.of(() -> getEmSystems(nodes, operators), SourceException.class);
 
     List<SourceException> exceptions =
         Try.getExceptions(

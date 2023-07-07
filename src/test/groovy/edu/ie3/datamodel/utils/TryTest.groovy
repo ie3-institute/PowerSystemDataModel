@@ -7,14 +7,14 @@ package edu.ie3.datamodel.utils
 
 import edu.ie3.datamodel.exceptions.FailureException
 import edu.ie3.datamodel.exceptions.SourceException
-import org.codehaus.groovy.runtime.typehandling.GroovyCastException
+import edu.ie3.datamodel.exceptions.TryException
 import spock.lang.Specification
 
 class TryTest extends Specification {
 
   def "A method can be applied to a try object"() {
     when:
-    Try<String, Exception> actual = Try.of(() -> "success")
+    Try<String, Exception> actual = Try.of(() -> "success", Exception)
 
     then:
     actual.success
@@ -25,7 +25,7 @@ class TryTest extends Specification {
     when:
     Try<Void, SourceException> actual = Try.of(() -> {
       throw new SourceException("Exception thrown.")
-    })
+    }, SourceException)
 
     then:
     actual.failure
@@ -33,23 +33,41 @@ class TryTest extends Specification {
     actual.exception().message == "Exception thrown."
   }
 
-  def "A CastException is thrown if a wrong exception type is set"() {
+  def "A TryException is thrown if a wrong exception type is set when using #of()"() {
     when:
     Try<String, FailureException> actual = Try.of(() -> {
-      throw new SourceException("")
-    })
-    FailureException failureException = actual.exception()
-    failureException.class
+      throw new SourceException("source exception")
+    }, FailureException)
+    actual.failure
 
     then:
     Exception ex = thrown()
-    ex.class == GroovyCastException
-    ex.message == "Cannot cast object 'edu.ie3.datamodel.exceptions.SourceException: ' with class 'edu.ie3.datamodel.exceptions.SourceException' to class 'edu.ie3.datamodel.exceptions.FailureException'"
+    ex.class == TryException
+    ex.message == "Wrongly caught exception: "
+    Throwable cause = ex.cause
+    cause.class == SourceException
+    cause.message == "source exception"
+  }
+
+  def "A TryException is thrown if a wrong exception type is set when using #ofVoid()"() {
+    when:
+    Try<Void, FailureException> actual = Try.ofVoid(() -> {
+      throw new SourceException("source exception")
+    }, FailureException)
+    actual.failure
+
+    then:
+    Exception ex = thrown()
+    ex.class == TryException
+    ex.message == "Wrongly caught exception: "
+    Throwable cause = ex.cause
+    cause.class == SourceException
+    cause.message == "source exception"
   }
 
   def "A void method can be applied to a try object"() {
     when:
-    Try<Void, Exception> actual = Try.ofVoid(() -> null)
+    Try<Void, Exception> actual = Try.ofVoid(() -> null, Exception)
 
     then:
     actual.success

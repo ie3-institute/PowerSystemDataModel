@@ -474,7 +474,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     Transformer3WInput,
     rgtd.nodeA,
     rgtd.nodeB,
-    rgtd.transformerTypeAtoBtoC)),
+    rgtd.transformerTypeAtoBtoC), SourceException),
     Try.of(() -> new TypedConnectorInputEntityData([
       "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
       "id"				: "3w_test",
@@ -489,7 +489,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     Transformer3WInput,
     rgtd.nodeA,
     rgtd.nodeB,
-    rgtd.transformerTypeAtoBtoC)))
+    rgtd.transformerTypeAtoBtoC), SourceException))
 
     def availableNodes = [
       rgtd.nodeA,

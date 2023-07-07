@@ -52,11 +52,12 @@ public class CsvJointGridContainerSource {
     GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* Loading models */
-    Try<RawGridElements, SourceException> rawGridElements = Try.of(rawGridSource::getGridData);
+    Try<RawGridElements, SourceException> rawGridElements =
+        Try.of(rawGridSource::getGridData, SourceException.class);
     Try<SystemParticipants, SourceException> systemParticipants =
-        Try.of(systemParticipantSource::getSystemParticipants);
+        Try.of(systemParticipantSource::getSystemParticipants, SourceException.class);
     Try<GraphicElements, SourceException> graphicElements =
-        Try.of(graphicSource::getGraphicElements);
+        Try.of(graphicSource::getGraphicElements, SourceException.class);
 
     List<? extends Exception> exceptions =
         Try.getExceptions(List.of(rawGridElements, systemParticipants, graphicElements));

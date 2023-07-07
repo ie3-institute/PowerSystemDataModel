@@ -57,7 +57,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     def csvGraphicSource = new GraphicSource(typeSource, rawGridSource, new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
     when:
-    def graphicElements = Try.of(() -> csvGraphicSource.graphicElements)
+    def graphicElements = Try.of(() -> csvGraphicSource.graphicElements, SourceException)
 
     then:
     graphicElements.failure

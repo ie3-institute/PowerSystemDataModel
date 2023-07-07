@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.exceptions.FailureException;
+import edu.ie3.datamodel.exceptions.TryException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -42,16 +43,21 @@ public abstract class Try<T, E extends Exception> {
    * Method to create a {@link Try} object easily.
    *
    * @param supplier that either returns data or throws an exception
+   * @param clazz class of the exception
    * @return a try object
    * @param <T> type of data
    * @param <E> type of exception that could be thrown
    */
   @SuppressWarnings("unchecked")
-  public static <T, E extends Exception> Try<T, E> of(TrySupplier<T, E> supplier) {
+  public static <T, E extends Exception> Try<T, E> of(TrySupplier<T, E> supplier, Class<E> clazz) {
     try {
       return new Success<>(supplier.get());
     } catch (Exception e) {
-      return (Try<T, E>) new Failure<>(e);
+      if (e.getClass().isAssignableFrom(clazz)) {
+        return (Try<T, E>) new Failure<>(e);
+      } else {
+        throw new TryException("Wrongly caught exception: ", e);
+      }
     }
   }
 
@@ -59,16 +65,22 @@ public abstract class Try<T, E extends Exception> {
    * Method to create a {@link Try} object easily.
    *
    * @param supplier that either returns no data or throws an exception
+   * @param clazz class of the exception
    * @return a try object
    * @param <E> type of exception that could be thrown
    */
   @SuppressWarnings("unchecked")
-  public static <E extends Exception> Try<Void, E> ofVoid(TrySupplier<?, E> supplier) {
+  public static <E extends Exception> Try<Void, E> ofVoid(
+      TrySupplier<?, E> supplier, Class<E> clazz) {
     try {
       supplier.get();
       return Success.empty();
     } catch (Exception e) {
-      return (Try<Void, E>) Failure.of(e);
+      if (e.getClass().isAssignableFrom(clazz)) {
+        return (Try<Void, E>) Failure.ofVoid(e);
+      } else {
+        throw new TryException("Wrongly caught exception: ", e);
+      }
     }
   }
 
@@ -286,10 +298,6 @@ public abstract class Try<T, E extends Exception> {
       super(data);
     }
 
-    public static <U, E extends Exception> Success<U, E> empty() {
-      return new Success<>(null);
-    }
-
     @Override
     public boolean isSuccess() {
       return true;
@@ -304,16 +312,21 @@ public abstract class Try<T, E extends Exception> {
     public T get() {
       return data();
     }
+
+    /**
+     * Returns an empty {@link Success}.
+     *
+     * @param <E> type of exception
+     */
+    public static <E extends Exception> Success<Void, E> empty() {
+      return new Success<>(null);
+    }
   }
 
   /** Implementation of {@link Try} class. This class is used to present a failed try. */
   public static final class Failure<T, E extends Exception> extends Try<T, E> {
     public Failure(E e) {
       super(e);
-    }
-
-    public static <E extends Exception> Failure<Void, E> of(E exception) {
-      return new Failure<>(exception);
     }
 
     @Override
@@ -329,6 +342,29 @@ public abstract class Try<T, E extends Exception> {
     /** Returns the thrown exception. */
     public E get() {
       return exception();
+    }
+
+    /**
+     * Method to create a {@link Failure} object, when a non-empty {@link Success} can be returned.
+     *
+     * @param exception that should be saved
+     * @return a {@link Failure}
+     * @param <T> type of data
+     * @param <E> type of exception
+     */
+    public static <T, E extends Exception> Failure<T, E> of(E exception) {
+      return new Failure<>(exception);
+    }
+
+    /**
+     * Method to create a {@link Failure} object, when an empty {@link Success} can be returned.
+     *
+     * @param exception that should be saved
+     * @return a {@link Failure}
+     * @param <E> type of exception
+     */
+    public static <E extends Exception> Failure<Void, E> ofVoid(E exception) {
+      return new Failure<>(exception);
     }
 
     /**

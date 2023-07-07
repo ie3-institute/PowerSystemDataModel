@@ -97,14 +97,19 @@ public class RawGridSource extends EntitySource {
     /* assets */
     Set<NodeInput> nodes = getNodes(operators);
     Try<Set<LineInput>, SourceException> lineInputs =
-        Try.of(() -> getLines(nodes, lineTypes, operators));
+        Try.of(() -> getLines(nodes, lineTypes, operators), SourceException.class);
     Try<Set<Transformer2WInput>, SourceException> transformer2WInputs =
-        Try.of(() -> get2WTransformers(nodes, transformer2WTypeInputs, operators));
+        Try.of(
+            () -> get2WTransformers(nodes, transformer2WTypeInputs, operators),
+            SourceException.class);
     Try<Set<Transformer3WInput>, SourceException> transformer3WInputs =
-        Try.of(() -> get3WTransformers(nodes, transformer3WTypeInputs, operators));
-    Try<Set<SwitchInput>, SourceException> switches = Try.of(() -> getSwitches(nodes, operators));
+        Try.of(
+            () -> get3WTransformers(nodes, transformer3WTypeInputs, operators),
+            SourceException.class);
+    Try<Set<SwitchInput>, SourceException> switches =
+        Try.of(() -> getSwitches(nodes, operators), SourceException.class);
     Try<Set<MeasurementUnitInput>, SourceException> measurementUnits =
-        Try.of(() -> getMeasurementUnits(nodes, operators));
+        Try.of(() -> getMeasurementUnits(nodes, operators), SourceException.class);
 
     List<SourceException> exceptions =
         Try.getExceptions(
