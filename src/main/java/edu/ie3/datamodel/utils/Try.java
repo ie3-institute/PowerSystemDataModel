@@ -53,6 +53,7 @@ public abstract class Try<T, E extends Exception> {
     try {
       return new Success<>(supplier.get());
     } catch (Exception e) {
+      // this is necessary because we only want to catch exceptions that are of type E
       if (e.getClass().isAssignableFrom(clazz)) {
         return (Try<T, E>) new Failure<>(e);
       } else {
@@ -76,6 +77,7 @@ public abstract class Try<T, E extends Exception> {
       supplier.get();
       return Success.empty();
     } catch (Exception e) {
+      // this is necessary because we only want to catch exceptions that are of type E
       if (e.getClass().isAssignableFrom(clazz)) {
         return (Try<Void, E>) Failure.ofVoid(e);
       } else {
