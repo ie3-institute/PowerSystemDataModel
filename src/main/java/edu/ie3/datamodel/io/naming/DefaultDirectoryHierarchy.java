@@ -31,7 +31,6 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -47,9 +46,6 @@ import org.slf4j.LoggerFactory;
 public class DefaultDirectoryHierarchy implements FileHierarchy {
   private static final Logger logger = LoggerFactory.getLogger(DefaultDirectoryHierarchy.class);
 
-  /** Use the unix file separator here. */
-  protected static final String FILE_SEPARATOR = File.separator;
-
   /** Base directory for this specific grid model. The base path should be a directory. */
   private final Path baseDirectory;
 
@@ -64,37 +60,23 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
 
   private final Path resultTree;
 
-  public DefaultDirectoryHierarchy(String baseDirectory, String gridName) {
+  public DefaultDirectoryHierarchy(Path baseDirectory, String gridName) {
     /* Prepare the base path */
-    String baseDirectoryNormalized =
-        FilenameUtils.normalizeNoEndSeparator(baseDirectory, true) + FILE_SEPARATOR;
-    this.baseDirectory = Paths.get(baseDirectoryNormalized).toAbsolutePath();
-    this.projectDirectory =
-        Paths.get(
-                baseDirectoryNormalized
-                    + FilenameUtils.normalizeNoEndSeparator(gridName, true)
-                    + FILE_SEPARATOR)
-            .toAbsolutePath();
+    Path baseDirectoryNormalized =
+        Path.of(FilenameUtils.normalizeNoEndSeparator(String.valueOf(baseDirectory), true));
+    this.baseDirectory = baseDirectoryNormalized.toAbsolutePath();
+    this.projectDirectory = baseDirectoryNormalized.resolve(gridName).toAbsolutePath();
 
     /* Prepare the sub directories by appending the relative path to base path and mapping to information about being mandatory */
     this.subDirectories =
         Arrays.stream(SubDirectories.values())
             .collect(
                 Collectors.toMap(
-                    subDirectory ->
-                        Paths.get(
-                            FilenameUtils.concat(
-                                this.projectDirectory.toString(), subDirectory.getRelPath())),
+                    subDirectory -> this.projectDirectory.resolve(subDirectory.getRelPath()),
                     SubDirectories::isMandatory));
 
-    inputTree =
-        Paths.get(
-            FilenameUtils.concat(
-                projectDirectory.toString(), SubDirectories.Constants.INPUT_SUB_TREE));
-    resultTree =
-        Paths.get(
-            FilenameUtils.concat(
-                projectDirectory.toString(), SubDirectories.Constants.RESULT_SUB_TREE));
+    inputTree = projectDirectory.resolve(SubDirectories.Constants.INPUT_SUB_TREE);
+    resultTree = projectDirectory.resolve(SubDirectories.Constants.RESULT_SUB_TREE);
   }
 
   /**
@@ -199,19 +181,18 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
    */
   @Deprecated(since = "3.0", forRemoval = true)
   @Override
-  public Optional<String> getBaseDirectory() {
-    return Optional.of(this.baseDirectory.toString());
+  public Optional<Path> getBaseDirectory() {
+    return Optional.of(this.baseDirectory);
   }
 
   /**
    * Gives the correct sub directory (w.r.t. {@link #baseDirectory}) for the provided class.
    *
    * @param cls Class to define the sub directory for
-   * @param fileSeparator The file separator to use
    * @return An Option to the regarding sub directory as a string
    */
   @Override
-  public Optional<String> getSubDirectory(Class<? extends UniqueEntity> cls, String fileSeparator) {
+  public Optional<Path> getSubDirectory(Class<? extends UniqueEntity> cls) {
     /* Go through all sub directories and check, if the given class belongs to one of the classes mapped to the sub directories. */
     Optional<SubDirectories> maybeSubDirectory =
         Arrays.stream(SubDirectories.values())
@@ -226,11 +207,8 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
       return Optional.empty();
     } else {
       /* Build the full path and then refer it to the base directory */
-      Path fullPath =
-          Paths.get(
-              FilenameUtils.concat(
-                  this.projectDirectory.toString(), maybeSubDirectory.get().getRelPath()));
-      String relPath = this.baseDirectory.relativize(fullPath).toString();
+      Path fullPath = this.projectDirectory.resolve(maybeSubDirectory.get().getRelPath());
+      Path relPath = this.baseDirectory.relativize(fullPath);
 
       return Optional.of(relPath);
     }
@@ -238,7 +216,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
 
   private enum SubDirectories {
     GRID_INPUT(
-        Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "grid" + FILE_SEPARATOR,
+        Constants.INPUT_SUB_TREE.resolve("grid"),
         true,
         Stream.of(
                 LineInput.class,
@@ -249,7 +227,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 NodeInput.class)
             .collect(Collectors.toSet())),
     GRID_RESULT(
-        Constants.RESULT_SUB_TREE + FILE_SEPARATOR + "grid" + FILE_SEPARATOR,
+        Constants.RESULT_SUB_TREE.resolve("grid"),
         false,
         Stream.of(
                 LineResult.class,
@@ -259,7 +237,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 NodeResult.class)
             .collect(Collectors.toSet())),
     GLOBAL(
-        Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "global" + FILE_SEPARATOR,
+        Constants.INPUT_SUB_TREE.resolve("global"),
         true,
         Stream.of(
                 LineTypeInput.class,
@@ -277,7 +255,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 LoadProfileInput.class)
             .collect(Collectors.toSet())),
     PARTICIPANTS_INPUT(
-        Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "participants" + FILE_SEPARATOR,
+        Constants.INPUT_SUB_TREE.resolve("participants"),
         true,
         Stream.of(
                 BmInput.class,
@@ -292,7 +270,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 WecInput.class)
             .collect(Collectors.toSet())),
     PARTICIPANTS_RESULTS(
-        Constants.RESULT_SUB_TREE + FILE_SEPARATOR + "participants" + FILE_SEPARATOR,
+        Constants.RESULT_SUB_TREE.resolve("participants"),
         false,
         Stream.of(
                 BmResult.class,
@@ -309,27 +287,27 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 FlexOptionsResult.class)
             .collect(Collectors.toSet())),
     TIME_SERIES(
-        PARTICIPANTS_INPUT.relPath + "time_series" + FILE_SEPARATOR,
+        PARTICIPANTS_INPUT.relPath.resolve("time_series"),
         false,
         Stream.of(TimeSeries.class, TimeSeriesMappingSource.MappingEntry.class)
             .collect(Collectors.toSet())),
     THERMAL_INPUT(
-        Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
+        Constants.INPUT_SUB_TREE.resolve("thermal"),
         false,
         Stream.of(ThermalUnitInput.class, ThermalBusInput.class).collect(Collectors.toSet())),
     THERMAL_RESULTS(
-        Constants.RESULT_SUB_TREE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
+        Constants.RESULT_SUB_TREE.resolve("thermal"),
         false,
         Stream.of(ThermalUnitResult.class).collect(Collectors.toSet())),
     GRAPHICS(
-        Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "graphics" + FILE_SEPARATOR,
+        Constants.INPUT_SUB_TREE.resolve("graphics"),
         false,
         Stream.of(GraphicInput.class).collect(Collectors.toSet()));
-    private final String relPath;
+    private final Path relPath;
     private final boolean mandatory;
     private final Set<Class<?>> relevantClasses;
 
-    public String getRelPath() {
+    public Path getRelPath() {
       return relPath;
     }
 
@@ -341,15 +319,15 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
       return relevantClasses;
     }
 
-    SubDirectories(String relPath, boolean mandatory, Set<Class<?>> relevantClasses) {
+    SubDirectories(Path relPath, boolean mandatory, Set<Class<?>> relevantClasses) {
       this.relPath = relPath;
       this.mandatory = mandatory;
       this.relevantClasses = Collections.unmodifiableSet(relevantClasses);
     }
 
     private static class Constants {
-      private static final String INPUT_SUB_TREE = "input";
-      private static final String RESULT_SUB_TREE = "results";
+      private static final Path INPUT_SUB_TREE = Paths.get("input");
+      private static final Path RESULT_SUB_TREE = Paths.get("results");
     }
   }
 }

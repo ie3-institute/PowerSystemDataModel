@@ -6,16 +6,14 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
-import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
-import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
-import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
+
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.LongAdder
 import java.util.function.Function
@@ -31,38 +29,40 @@ class CsvDataSourceTest extends Specification {
   // methods in a public or protected method makes them available for testing
   private final class DummyCsvSource extends CsvDataSource {
 
-    DummyCsvSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+    DummyCsvSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
       super(csvSep, folderPath, fileNamingStrategy)
+    }
+
+    Map<String, String> buildFieldsToAttributes(
+        final String csvRow, final String[] headline) {
+      return super.buildFieldsToAttributes(csvRow, headline)
+    }
+
+    def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
+        Class<T> entityClass, Collection<Map<String, String>> allRows) {
+      return super.distinctRowsWithLog(allRows, uuidExtractor, entityClass.simpleName, "UUID")
+    }
+
+    String[] parseCsvRow(
+        String csvRow, String csvSep) {
+      return super.parseCsvRow(csvRow, csvSep)
+    }
+
+    String[] oldFieldVals(
+        String csvSep, String csvRow) {
+      return super.oldFieldVals(csvSep, csvRow)
     }
   }
 
   @Shared
   String csvSep = ","
   @Shared
-  String testBaseFolderPath = "testBaseFolderPath" // does not have to exist for this test
+  Path testBaseFolderPath = Path.of("testBaseFolderPath") // does not have to exist for this test
   @Shared
   FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 
   @Shared
   DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, fileNamingStrategy)
-
-  def "A csv data source is able to find the correct first entity by uuid"() {
-    given:
-    def uuid = UUID.randomUUID()
-    def queriedOperator = new OperatorInput(uuid, "b")
-    def entities = Arrays.asList(
-        new OperatorInput(UUID.randomUUID(), "a"),
-        queriedOperator,
-        new OperatorInput(UUID.randomUUID(), "c")
-        )
-
-    when:
-    def actual = dummyCsvSource.findFirstEntityByUuid(uuid.toString(), entities)
-
-    then:
-    actual.present
-    actual.get() == queriedOperator
-  }
 
   def "A DataSource should contain a valid connector after initialization"() {
     expect:
@@ -265,18 +265,6 @@ class CsvDataSourceTest extends Specification {
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too much columns"
   }
 
-  def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
-
-    expect:
-    dummyCsvSource.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid) == expectedOperator
-
-    where:
-    operatorUuid                           | operators               | entityClassName   | requestEntityUuid                      || expectedOperator
-    "8f9682df-0744-4b58-a122-f0dc730f6510" | [sptd.hpInput.operator]| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || sptd.hpInput.operator
-    "8f9682df-0744-4b58-a122-f0dc730f6520" | [sptd.hpInput.operator]| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
-    "8f9682df-0744-4b58-a122-f0dc730f6510" | []| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
-  }
-
   def "A CsvDataSource should collect be able to collect empty optionals when asked to do so"() {
 
     given:
@@ -376,43 +364,5 @@ class CsvDataSourceTest extends Specification {
 
     then:
     distinctRows.size() == 0
-  }
-
-  def "A CsvDataSource should be able to handle the extraction process of an asset type correctly"() {
-
-    when:
-    def assetTypeOpt = dummyCsvSource.getAssetType(types, fieldsToAttributes, "TestClassName")
-
-    then:
-    assetTypeOpt.present == resultIsPresent
-    assetTypeOpt.ifPresent({ assetType ->
-      assert (assetType == resultData)
-    })
-
-    where:
-    types                     | fieldsToAttributes                               || resultIsPresent || resultData
-    []| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || false           || null
-    []| ["bla": "foo"]                                   || false           || null
-    [gtd.transformerTypeBtoD]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || true            || gtd.transformerTypeBtoD
-    [sptd.chpTypeInput]| ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true            || sptd.chpTypeInput
-  }
-
-  def "A CsvDataSource should not throw an exception but assume NO_OPERATOR_ASSIGNED if the operator field is missing in the headline"() {
-
-    given:
-    def thermalBusInputFieldsToAttributesMap = [
-      "uuid"          : "0d95d7f2-49fb-4d49-8636-383a5220384e",
-      "id"            : "test_thermalBusInput",
-      "operatesuntil": "2020-03-25T15:11:31Z[UTC]",
-      "operatesfrom" : "2020-03-24T15:11:31Z[UTC]"
-    ]
-
-    when:
-    def thermalBusInputEntity = new ThermalBusInputFactory().get(dummyCsvSource.assetInputEntityDataStream(ThermalBusInput, thermalBusInputFieldsToAttributesMap, Collections.emptyList()))
-
-    then:
-    noExceptionThrown() // no NPE should be thrown
-    thermalBusInputEntity.present
-    thermalBusInputEntity.get().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
   }
 }

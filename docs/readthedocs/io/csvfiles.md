@@ -121,6 +121,7 @@ The class `DefaultInputHierarchy` offers some helpful methods to validate and cr
 hierarchy.
 
 ## De-serialization (loading models)
+
 Having an instance of [Grid Container](/models/input/grid/gridcontainer) is most of the time the target whenever you load your
 grid. It consists of the three main blocks:
 
@@ -130,9 +131,6 @@ grid. It consists of the three main blocks:
 
 Those blocks are also reflected in the structure of data source interface definitions.
 There is one source for each of the containers, respectively.
-
-![Class diagram of data sources](../_static/figures/uml/DataSourceClassDiagram.png)
-Class diagram of data sources
 
 As a full data set has references among the models (e.g. a line model points to its' nodes it connects), there is a
 hierarchical structure, in which models have to be loaded.

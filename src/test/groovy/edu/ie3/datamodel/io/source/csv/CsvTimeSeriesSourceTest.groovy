@@ -9,6 +9,8 @@ import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 
+import java.nio.file.Path
+
 import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
 
 import edu.ie3.datamodel.exceptions.SourceException
@@ -26,7 +28,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
   def "The csv time series source is able to build time based values from simple data"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-    def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1", EnergyPriceValue, factory)
+    def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
     def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
     def fieldToValue = [
@@ -41,7 +43,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
         )
 
     when:
-    def actual = source.buildTimeBasedValue(fieldToValue, EnergyPriceValue, factory)
+    def actual = source.createTimeBasedValue(fieldToValue)
 
     then:
     actual.present
@@ -50,7 +52,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The factory method in csv time series source refuses to build time series with unsupported column type"() {
     given:
-    def metaInformation = new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), ColumnScheme.WEATHER, "its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9")
+    def metaInformation = new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), ColumnScheme.WEATHER, Path.of("its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"))
 
     when:
     CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation)
@@ -72,12 +74,12 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     actual.timeSeries.entries[0].value.class == valueClass
 
     where:
-    uuid                                                    | columnScheme                                | path                                           || amountOfEntries | valueClass
-    UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1") | ColumnScheme.ENERGY_PRICE                   | "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"   || 2               | EnergyPriceValue
-    UUID.fromString("c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0") | ColumnScheme.HEAT_DEMAND                    | "its_h_c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0"   || 2               | HeatDemandValue
-    UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5") | ColumnScheme.ACTIVE_POWER                   | "its_p_9185b8c1-86ba-4a16-8dea-5ac898e8caa5"   || 2               | PValue
-    UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7") | ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND   | "its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7"  || 2               | HeatAndPValue
-    UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26") | ColumnScheme.APPARENT_POWER                 | "its_pq_3fbfaa97-cff4-46d4-95ba-a95665e87c26"  || 2               | SValue
-    UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047") | ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND | "its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047" || 2               | HeatAndSValue
+    uuid                                                    | columnScheme                                | path                                                    || amountOfEntries | valueClass
+    UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1") | ColumnScheme.ENERGY_PRICE                   | Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1")   || 2               | EnergyPriceValue
+    UUID.fromString("c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0") | ColumnScheme.HEAT_DEMAND                    | Path.of("its_h_c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0")   || 2               | HeatDemandValue
+    UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5") | ColumnScheme.ACTIVE_POWER                   | Path.of("its_p_9185b8c1-86ba-4a16-8dea-5ac898e8caa5")   || 2               | PValue
+    UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7") | ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND   | Path.of("its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7")  || 2               | HeatAndPValue
+    UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26") | ColumnScheme.APPARENT_POWER                 | Path.of("its_pq_3fbfaa97-cff4-46d4-95ba-a95665e87c26")  || 2               | SValue
+    UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047") | ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND | Path.of("its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047") || 2               | HeatAndSValue
   }
 }
