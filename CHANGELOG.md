@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copy methods for container classes [#726](https://github.com/ie3-institute/PowerSystemDataModel/issues/726)
 - Allow hierarchic grid structure for JointGridContainer [#768](https://github.com/ie3-institute/PowerSystemDataModel/issues/768)
 - Adding SQL id coordinate sources (``IdCoordinateSource``) [#689](https://github.com/ie3-institute/PowerSystemDataModel/issues/689)
+- Added some standard asset types to documentation [#642](https://github.com/ie3-institute/PowerSystemDataModel/issues/642)
 - Enhanced error handling of coordinate sources with invalid column names [#670](https://github.com/ie3-institute/PowerSystemDataModel/issues/670)
 
 ### Fixed
