@@ -889,13 +889,13 @@ public class SystemParticipantSource extends EntitySource {
     // if the requested entity is not present we return an empty element and
     // log a warning
     if (hpInputEntityDataOpt.isEmpty()) {
-      String logMessage =
-          logSkippingWarning(
+      String skippingMessage =
+          buildSkippingMessage(
               typedEntityData.getTargetClass().getSimpleName(),
               safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
               safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
               "thermalBus: " + safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
-      return new Failure<>(new SourceException("Failure due to: " + logMessage));
+      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
     }
 
     return new Success<>(hpInputEntityDataOpt.get());
@@ -948,13 +948,13 @@ public class SystemParticipantSource extends EntitySource {
             .append(safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
       }
 
-      String logMessage =
-          logSkippingWarning(
+      String skippingMessage =
+          buildSkippingMessage(
               typedEntityData.getTargetClass().getSimpleName(),
               safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
               safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
               sB.toString());
-      return new Failure<>(new SourceException("Failure due to: " + logMessage));
+      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
     }
 
     // remove fields that are passed as objects to constructor

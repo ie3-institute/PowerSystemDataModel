@@ -104,8 +104,8 @@ public abstract class WeatherSource {
    * Converts a stream of fields to value map into a TimeBasedValue, removes the "tid"
    *
    * @param factory TimeBasedWeatherValueFactory
-   * @param inputStream stream of fields to convert into TimeBasedValues's
-   * @return an Optional of that TimeBasedValue
+   * @param inputStream stream of fields to convert into TimeBasedValues
+   * @return a list of that TimeBasedValues
    */
   public List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
       TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream)
@@ -117,8 +117,10 @@ public abstract class WeatherSource {
                   Optional<TimeBasedWeatherValueData> data =
                       toTimeBasedWeatherValueData(fieldsToAttributes);
                   return factory.get(data.get());
-                }))
+                }),
+            "TimeBasedValue<WeatherValue>")
         .transformF(SourceException::new)
-        .getOrThrow();
+        .getOrThrow()
+        .toList();
   }
 }

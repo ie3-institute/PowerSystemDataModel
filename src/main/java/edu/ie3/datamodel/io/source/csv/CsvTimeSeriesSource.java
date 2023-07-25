@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /** Source that is capable of providing information around time series from csv files. */
 public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
@@ -134,7 +135,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @param fieldToValueFunction function, that is able to transfer a mapping (from field to value)
    *     onto a specific instance of the targeted entry class
    * @throws SourceException If the file cannot be read properly
-   * @return An option onto an individual time series
+   * @return an individual time series
    */
   protected IndividualTimeSeries<V> buildIndividualTimeSeries(
       UUID timeSeriesUuid,
@@ -142,13 +143,14 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       Function<Map<String, String>, Try<TimeBasedValue<V>, FactoryException>> fieldToValueFunction)
       throws SourceException {
     try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
-      Try<List<TimeBasedValue<V>>, FailureException> timeBasedValues =
+      Try<Stream<TimeBasedValue<V>>, FailureException> timeBasedValues =
           Try.scanStream(
               dataSource
                   .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-                  .map(fieldToValueFunction));
+                  .map(fieldToValueFunction),
+              "TimeBasedValue<V>");
       return new IndividualTimeSeries<>(
-          timeSeriesUuid, new HashSet<>(timeBasedValues.getOrThrow()));
+          timeSeriesUuid, new HashSet<>(timeBasedValues.getOrThrow().toList()));
     } catch (FileNotFoundException e) {
       throw new SourceException("Unable to find a file with path '" + filePath + "'.", e);
     } catch (IOException e) {

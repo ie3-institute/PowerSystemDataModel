@@ -767,7 +767,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     then: "the optional is empty"
     actual == null
     SourceException ex = thrown()
-    ex.message == "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"NodeInput\" data, one is: an error occurred when creating instance of nodeinput.class."
+    ex.message == "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"NodeInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: An error occurred when creating instance of NodeInput.class."
   }
 
   def "The CsvRawGridSource returns an empty grid, if the RawGridElements contain no single element"() {

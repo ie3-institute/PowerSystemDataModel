@@ -65,10 +65,10 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
     return Try.scanStream(
             buildStreamWithFieldsToAttributesMap()
                 .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
-                .map(factory::get))
+                .map(factory::get),
+            "Pair<Integer, Point>")
         .transformF(SourceException::new)
         .getOrThrow()
-        .stream()
         .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
   }
 

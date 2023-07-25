@@ -122,7 +122,7 @@ class TryTest extends Specification {
 
     then:
     scan.failure
-    scan.exception().message == "1 exception(s) occurred within \"String\" data, one is: exception"
+    scan.exception().message == "1 exception(s) occurred within \"String\" data, one is: java.lang.Exception: exception"
   }
 
   def "The getOrThrow method should work as expected"() {

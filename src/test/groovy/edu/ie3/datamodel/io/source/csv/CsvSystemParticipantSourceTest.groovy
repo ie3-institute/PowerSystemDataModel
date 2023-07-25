@@ -94,7 +94,8 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     ex.class == SystemParticipantsException
     ex.message.startsWith("11 error(s) occurred while initializing system participants.  " +
     "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"FixedFeedInInput\" data, one is: " +
-    "edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping fixedfeedininput with uuid")
+    "edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: " +
+    "Failure due to: Skipping FixedFeedInInput with uuid ")
   }
 
   def "A CsvSystemParticipantSource should build typed entity from valid and invalid input data as expected"() {

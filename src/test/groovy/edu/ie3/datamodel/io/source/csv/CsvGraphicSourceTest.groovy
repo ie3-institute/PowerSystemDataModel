@@ -65,7 +65,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
     Exception ex = graphicElements.exception()
     ex.class == SourceException
-    ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.sourceexception: failure due to: skipping lineinput with uuid")
+    ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Failure due to: Skipping LineInput with uuid")
   }
 
 

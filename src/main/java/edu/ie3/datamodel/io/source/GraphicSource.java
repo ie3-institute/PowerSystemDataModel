@@ -156,13 +156,13 @@ public class GraphicSource extends EntitySource {
     // if the node is not present we return a failure
     // log a warning
     if (node.isEmpty()) {
-      String logMessage =
-          logSkippingWarning(
+      String skippingMessage =
+          buildSkippingMessage(
               NodeGraphicInput.class.getSimpleName(),
               fieldsToAttributes.get("uuid"),
               "no id (graphic entities don't have one)",
               NODE + ": " + nodeUuid);
-      return new Failure<>(new SourceException("Failure due to: " + logMessage));
+      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
     }
 
     // remove fields that are passed as objects to constructor
@@ -203,13 +203,13 @@ public class GraphicSource extends EntitySource {
     // if the node is not present we return an empty element and
     // log a warning
     if (line.isEmpty()) {
-      String logMessage =
-          logSkippingWarning(
+      String skippingMessage =
+          buildSkippingMessage(
               LineGraphicInput.class.getSimpleName(),
               fieldsToAttributes.get("uuid"),
               "no id (graphic entities don't have one)",
               "line: " + lineUuid);
-      return new Failure<>(new SourceException("Failure due to: " + logMessage));
+      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
     }
 
     // remove fields that are passed as objects to constructor

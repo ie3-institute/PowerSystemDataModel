@@ -165,9 +165,7 @@ public class ThermalSource extends EntitySource {
    */
   public Set<ThermalHouseInput> getThermalHouses(
       Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) throws SourceException {
-    return Try.scanCollection(
-            buildThermalHouseInputEntities(thermalHouseInputFactory, operators, thermalBuses),
-            ThermalHouseInput.class)
+    return buildThermalHouseInputEntities(thermalHouseInputFactory, operators, thermalBuses)
         .transformF(SourceException::new)
         .getOrThrow();
   }
@@ -241,13 +239,13 @@ public class ThermalSource extends EntitySource {
     // if the type is not present we return an empty element and
     // log a warning
     if (thermalBus.isEmpty()) {
-      String logMessage =
-          logSkippingWarning(
+      String skippingMessage =
+          buildSkippingMessage(
               assetInputEntityData.getTargetClass().getSimpleName(),
               fieldsToAttributes.get("uuid"),
               fieldsToAttributes.get("id"),
               "thermalBus: " + thermalBusUuid);
-      return Stream.of(new Failure<>(new SourceException("Failure due to: " + logMessage)));
+      return Stream.of(new Failure<>(new SourceException("Failure due to: " + skippingMessage)));
     }
 
     return Stream.of(
@@ -273,16 +271,18 @@ public class ThermalSource extends EntitySource {
         ThermalHouseInput.class);
   }
 
-  public Set<Try<ThermalHouseInput, FactoryException>> buildThermalHouseInputEntities(
+  public Try<Set<ThermalHouseInput>, FailureException> buildThermalHouseInputEntities(
       ThermalHouseInputFactory factory,
       Collection<OperatorInput> operators,
       Collection<ThermalBusInput> thermalBuses) {
-    return assetInputEntityDataStream(ThermalHouseInput.class, operators)
-        .flatMap(
-            assetInputEntityData ->
-                buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
-                    .map(factory::get))
-        .collect(Collectors.toSet());
+    return Try.scanCollection(
+        assetInputEntityDataStream(ThermalHouseInput.class, operators)
+            .flatMap(
+                assetInputEntityData ->
+                    buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
+                        .map(factory::get))
+            .collect(Collectors.toSet()),
+        ThermalHouseInput.class);
   }
 
   public Try<Set<CylindricalStorageInput>, FailureException> buildCylindricalStorageInputEntities(

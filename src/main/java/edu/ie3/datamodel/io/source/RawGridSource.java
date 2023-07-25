@@ -529,14 +529,14 @@ public class RawGridSource extends EntitySource {
               .map(AbstractMap.SimpleEntry::getValue)
               .collect(Collectors.joining("\n"));
 
-      String logMessage =
-          logSkippingWarning(
+      String skippingMessage =
+          buildSkippingMessage(
               assetInputEntityData.getTargetClass().getSimpleName(),
               fieldsToAttributes.get("uuid"),
               fieldsToAttributes.get("id"),
               debugString);
 
-      return new Failure<>(new SourceException("Failure due to: " + logMessage));
+      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
     }
 
     // remove fields that are passed as objects to constructor
@@ -627,13 +627,13 @@ public class RawGridSource extends EntitySource {
     // if nodeC is not present we return a failure
     // log a warning
     if (nodeC.isEmpty()) {
-      String logMessage =
-          logSkippingWarning(
+      String skippingMessage =
+          buildSkippingMessage(
               typeEntityData.getTargetClass().getSimpleName(),
               fieldsToAttributes.get("uuid"),
               fieldsToAttributes.get("id"),
               "nodeC: " + nodeCUuid);
-      return new Failure<>(new SourceException("Failure due to: " + logMessage));
+      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
     }
 
     // remove fields that are passed as objects to constructor
