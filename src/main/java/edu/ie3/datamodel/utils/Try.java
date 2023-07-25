@@ -246,11 +246,12 @@ public abstract class Try<T, E extends Exception> {
    */
   public static <U, E extends Exception> Try<Stream<U>, FailureException> scanStream(
       Stream<Try<U, E>> stream, String typeOfData) {
-
     Map<Boolean, List<Try<U, E>>> map = stream.collect(partitioningBy(Try::isSuccess));
 
-    if (!map.get(false).isEmpty()) {
-      List<Try<U, E>> failures = map.get(false);
+    List<Try<U, E>> successes = map.get(true);
+    List<Try<U, E>> failures = map.get(false);
+
+    if (!failures.isEmpty()) {
       E first = failures.get(0).exception;
 
       return new Failure<>(
@@ -262,7 +263,7 @@ public abstract class Try<T, E extends Exception> {
                   + first,
               first.getCause()));
     } else {
-      return new Success<>(map.get(true).stream().map(t -> t.data));
+      return new Success<>(successes.stream().map(t -> t.data));
     }
   }
 
