@@ -5,11 +5,13 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -41,13 +43,14 @@ public abstract class WeatherSource {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval);
+      ClosedInterval<ZonedDateTime> timeInterval) throws SourceException;
 
   public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates);
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+      throws SourceException;
 
   public abstract Optional<TimeBasedValue<WeatherValue>> getWeather(
-      ZonedDateTime date, Point coordinate);
+      ZonedDateTime date, Point coordinate) throws SourceException;
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -101,20 +104,23 @@ public abstract class WeatherSource {
    * Converts a stream of fields to value map into a TimeBasedValue, removes the "tid"
    *
    * @param factory TimeBasedWeatherValueFactory
-   * @param inputStream stream of fields to convert into TimeBasedValues's
-   * @return an Optional of that TimeBasedValue
+   * @param inputStream stream of fields to convert into TimeBasedValues
+   * @return a list of that TimeBasedValues
    */
   public List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
-      TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream) {
-    return inputStream
-        .map(
-            fieldsToAttributes -> {
-              fieldsToAttributes.remove("tid");
-              Optional<TimeBasedWeatherValueData> data =
-                  toTimeBasedWeatherValueData(fieldsToAttributes);
-              return factory.get(data.get());
-            })
-        .flatMap(Optional::stream)
+      TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream)
+      throws SourceException {
+    return Try.scanStream(
+            inputStream.map(
+                fieldsToAttributes -> {
+                  fieldsToAttributes.remove("tid");
+                  Optional<TimeBasedWeatherValueData> data =
+                      toTimeBasedWeatherValueData(fieldsToAttributes);
+                  return factory.get(data.get());
+                }),
+            "TimeBasedValue<WeatherValue>")
+        .transformF(SourceException::new)
+        .getOrThrow()
         .toList();
   }
 }
