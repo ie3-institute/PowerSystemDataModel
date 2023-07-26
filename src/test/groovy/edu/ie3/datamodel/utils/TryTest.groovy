@@ -33,12 +33,23 @@ class TryTest extends Specification {
     actual.exception().message == "Exception thrown."
   }
 
-  def "A TryException is thrown if a wrong exception type is set when using #of()"() {
+  def "A failure is returned if an expected exception type is thrown when using #of()"() {
     when:
-    Try<String, FailureException> actual = Try.of(() -> {
+    def exception = new SourceException("source exception")
+    Try<Void, SourceException> actual = Try.of(() -> {
+      throw exception
+    }, SourceException)
+
+    then:
+    actual.failure
+    actual.exception.get() == exception
+  }
+
+  def "A TryException is thrown if an unexpected exception type is thrown when using #of()"() {
+    when:
+    Try.of(() -> {
       throw new SourceException("source exception")
     }, FailureException)
-    actual.failure
 
     then:
     Exception ex = thrown()
@@ -49,12 +60,53 @@ class TryTest extends Specification {
     cause.message == "source exception"
   }
 
-  def "A TryException is thrown if a wrong exception type is set when using #ofVoid()"() {
+  def "A failure is returned when using Failure#ofVoid() with an exception"() {
     when:
-    Try<Void, FailureException> actual = Try.ofVoid(() -> {
+    def exception = new SourceException("source exception")
+    Try<Void, SourceException> actual = Try.Failure.ofVoid(exception)
+
+    then:
+    actual.failure
+    actual.exception.get() == exception
+  }
+
+  def "A failure is returned when using Failure#of() with an exception"() {
+    when:
+    def exception = new SourceException("source exception")
+    Try<String, SourceException> actual = Try.Failure.of(exception)
+
+    then:
+    actual.failure
+    actual.exception.get() == exception
+  }
+
+  def "A failure is returned when using Failure#of() with a failure"() {
+    when:
+    def exception = new SourceException("source exception")
+    Try<Void, SourceException> actual = Try.Failure.of(new Try.Failure<String,SourceException>(exception))
+
+    then:
+    actual.failure
+    actual.exception.get() == exception
+  }
+
+  def "A failure is returned if an expected exception type is thrown when using Try#ofVoid()"() {
+    when:
+    def exception = new SourceException("source exception")
+    Try<Void, SourceException> actual = Try.ofVoid(() -> {
+      throw exception
+    }, SourceException)
+
+    then:
+    actual.failure
+    actual.exception.get() == exception
+  }
+
+  def "A TryException is thrown if an unexpected exception type is thrown when using Try#ofVoid()"() {
+    when:
+    Try.ofVoid(() -> {
       throw new SourceException("source exception")
     }, FailureException)
-    actual.failure
 
     then:
     Exception ex = thrown()
@@ -84,7 +136,6 @@ class TryTest extends Specification {
 
     then:
     str == "success"
-    success.get() == "success"
   }
 
   def "A failure object can be resolved with get method"() {
@@ -166,6 +217,22 @@ class TryTest extends Specification {
     then:
     successResult == "success"
     failureResult == "else"
+  }
+
+  def "A Try objects transformation should work as correctly for successes"() {
+    given:
+    Try<String, Exception> success = new Try.Success<>("5")
+
+    when:
+    Try<Integer, Exception> first = success.transformS(str -> Integer.parseInt(str) )
+    Try<Integer, Exception> second = success.transform(str -> Integer.parseInt(str), ex -> new Exception(ex) )
+
+    then:
+    first.success
+    second.success
+
+    first.data() == 5
+    second.data() == 5
   }
 
   def "A Try objects transformation should work as correctly for failures"() {
