@@ -108,7 +108,7 @@ class TryTest extends Specification {
     empty.empty
   }
 
-  def "A scan for exceptions should work as expected"() {
+  def "A scan for exceptions should work as expected when failures are included"() {
     given:
     Set<Try<String, Exception>> set = Set.of(
     new Try.Success<>("one"),
@@ -123,6 +123,22 @@ class TryTest extends Specification {
     then:
     scan.failure
     scan.exception().message == "1 exception(s) occurred within \"String\" data, one is: java.lang.Exception: exception"
+  }
+
+  def "A scan for exceptions should work as expected when no failures are included"() {
+    given:
+    Set<Try<String, Exception>> set = Set.of(
+    new Try.Success<>("one"),
+    new Try.Success<>("two"),
+    new Try.Success<>("three")
+    )
+
+    when:
+    Try<Set<String>, Exception> scan = Try.scanCollection(set, String)
+
+    then:
+    scan.success
+    scan.data().size() == 3
   }
 
   def "The getOrThrow method should work as expected"() {
