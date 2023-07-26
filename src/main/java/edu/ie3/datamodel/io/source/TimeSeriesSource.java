@@ -5,12 +5,14 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -35,9 +37,10 @@ public abstract class TimeSeriesSource<V extends Value> {
    * need any additional information.
    *
    * @param fieldToValues Mapping from field id to values
-   * @return Optional simple time based value
+   * @return {@link Try} of simple time based value
    */
-  protected Optional<TimeBasedValue<V>> createTimeBasedValue(Map<String, String> fieldToValues) {
+  protected Try<TimeBasedValue<V>, FactoryException> createTimeBasedValue(
+      Map<String, String> fieldToValues) {
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return valueFactory.get(factoryData);

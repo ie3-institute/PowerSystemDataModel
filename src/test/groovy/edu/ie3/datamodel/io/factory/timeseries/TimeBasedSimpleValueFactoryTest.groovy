@@ -11,12 +11,7 @@ import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.value.EnergyPriceValue
-import edu.ie3.datamodel.models.value.HeatAndPValue
-import edu.ie3.datamodel.models.value.HeatAndSValue
-import edu.ie3.datamodel.models.value.HeatDemandValue
-import edu.ie3.datamodel.models.value.PValue
-import edu.ie3.datamodel.models.value.SValue
+import edu.ie3.datamodel.models.value.*
 import edu.ie3.util.TimeUtil
 import spock.lang.Shared
 import spock.lang.Specification

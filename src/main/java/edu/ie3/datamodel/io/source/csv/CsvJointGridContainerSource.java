@@ -15,7 +15,9 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
+import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
+import java.util.List;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
@@ -50,20 +52,27 @@ public class CsvJointGridContainerSource {
     GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* Loading models */
-    RawGridElements rawGridElements =
-        rawGridSource
-            .getGridData()
-            .orElseThrow(() -> new SourceException("Error during reading of raw grid data."));
-    SystemParticipants systemParticipants =
-        systemParticipantSource
-            .getSystemParticipants()
-            .orElseThrow(
-                () -> new SourceException("Error during reading of system participant data."));
-    GraphicElements graphicElements =
-        graphicSource
-            .getGraphicElements()
-            .orElseThrow(() -> new SourceException("Error during reading of graphic elements."));
+    Try<RawGridElements, SourceException> rawGridElements =
+        Try.of(rawGridSource::getGridData, SourceException.class);
+    Try<SystemParticipants, SourceException> systemParticipants =
+        Try.of(systemParticipantSource::getSystemParticipants, SourceException.class);
+    Try<GraphicElements, SourceException> graphicElements =
+        Try.of(graphicSource::getGraphicElements, SourceException.class);
 
-    return new JointGridContainer(gridName, rawGridElements, systemParticipants, graphicElements);
+    List<? extends Exception> exceptions =
+        Try.getExceptions(List.of(rawGridElements, systemParticipants, graphicElements));
+
+    if (!exceptions.isEmpty()) {
+      throw new SourceException(
+          exceptions.size() + " error(s) occurred while reading sources. ", exceptions);
+    } else {
+      // getOrThrow should not throw an exception in this context, because all exception are
+      // filtered and thrown before
+      return new JointGridContainer(
+          gridName,
+          rawGridElements.getOrThrow(),
+          systemParticipants.getOrThrow(),
+          graphicElements.getOrThrow());
+    }
   }
 }

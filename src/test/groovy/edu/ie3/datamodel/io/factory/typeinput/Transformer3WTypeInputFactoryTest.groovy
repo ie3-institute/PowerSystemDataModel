@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.typeinput
 
+import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
@@ -51,13 +53,13 @@ class Transformer3WTypeInputFactoryTest extends Specification implements Factory
     def typeInputClass = Transformer3WTypeInput
 
     when:
-    Optional<Transformer3WTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<Transformer3WTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
-    typeInput.present
-    typeInput.get().getClass() == typeInputClass
+    typeInput.success
+    typeInput.data().getClass() == typeInputClass
 
-    typeInput.get().with {
+    typeInput.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert sRatedA == getQuant(parameter["srateda"], StandardUnits.S_RATED)

@@ -224,7 +224,7 @@ public class CsvWeatherSource extends WeatherSource {
               /* Build factory data */
               TimeBasedWeatherValueData factoryData =
                   new TimeBasedWeatherValueData(fieldToValues, coordinate);
-              return weatherFactory.get(factoryData);
+              return weatherFactory.get(factoryData).getData();
             })
         .orElseGet(
             () -> {
