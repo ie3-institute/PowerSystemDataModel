@@ -251,7 +251,7 @@ public abstract class Try<T, E extends Exception> {
     List<Try<U, E>> successes = map.get(true);
     List<Try<U, E>> failures = map.get(false);
 
-    if (!failures.isEmpty()) {
+    if (failures != null && !failures.isEmpty()) {
       E first = failures.get(0).exception;
 
       return new Failure<>(
