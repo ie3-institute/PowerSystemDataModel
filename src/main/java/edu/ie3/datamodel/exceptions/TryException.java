@@ -6,19 +6,7 @@
 package edu.ie3.datamodel.exceptions;
 
 public class TryException extends RuntimeException {
-  public TryException() {
-    super();
-  }
-
-  public TryException(String message) {
-    super(message);
-  }
-
   public TryException(String message, Throwable throwable) {
     super(message, throwable);
-  }
-
-  public TryException(Throwable throwable) {
-    super(throwable);
   }
 }

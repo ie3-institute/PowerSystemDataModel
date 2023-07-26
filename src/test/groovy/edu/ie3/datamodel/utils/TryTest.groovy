@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.utils
 
-import edu.ie3.datamodel.exceptions.RawGridException
+import edu.ie3.datamodel.exceptions.FailureException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.exceptions.TryException
 import spock.lang.Specification
@@ -14,7 +14,7 @@ class TryTest extends Specification {
 
   def "A method can be applied to a try object"() {
     when:
-    Try<String> actual = Try.of(() -> "success")
+    Try<String, Exception> actual = Try.of(() -> "success", Exception)
 
     then:
     actual.success
@@ -23,9 +23,9 @@ class TryTest extends Specification {
 
   def "A failing method can be applied to a try object"() {
     when:
-    Try<Void> actual = Try.of(() -> {
+    Try<Void, SourceException> actual = Try.of(() -> {
       throw new SourceException("Exception thrown.")
-    })
+    }, SourceException)
 
     then:
     actual.failure
@@ -33,9 +33,93 @@ class TryTest extends Specification {
     actual.exception().message == "Exception thrown."
   }
 
+  def "A failure is returned if an expected exception type is thrown when using #of()"() {
+    when:
+    def exception = new SourceException("source exception")
+    Try<Void, SourceException> actual = Try.of(() -> {
+      throw exception
+    }, SourceException)
+
+    then:
+    actual.failure
+    actual.exception.get() == exception
+  }
+
+  def "A TryException is thrown if an unexpected exception type is thrown when using #of()"() {
+    when:
+    Try.of(() -> {
+      throw new SourceException("source exception")
+    }, FailureException)
+
+    then:
+    Exception ex = thrown()
+    ex.class == TryException
+    ex.message == "Wrongly caught exception: "
+    Throwable cause = ex.cause
+    cause.class == SourceException
+    cause.message == "source exception"
+  }
+
+  def "A failure is returned when using Failure#ofVoid() with an exception"() {
+    when:
+    def exception = new SourceException("source exception")
+    Try<Void, SourceException> actual = Try.Failure.ofVoid(exception)
+
+    then:
+    actual.failure
+    actual.exception.get() == exception
+  }
+
+  def "A failure is returned when using Failure#of() with an exception"() {
+    when:
+    def exception = new SourceException("source exception")
+    Try<String, SourceException> actual = Try.Failure.of(exception)
+
+    then:
+    actual.failure
+    actual.exception.get() == exception
+  }
+
+  def "A failure is returned when using Failure#of() with a failure"() {
+    when:
+    def exception = new SourceException("source exception")
+    Try<Void, SourceException> actual = Try.Failure.of(new Try.Failure<String,SourceException>(exception))
+
+    then:
+    actual.failure
+    actual.exception.get() == exception
+  }
+
+  def "A failure is returned if an expected exception type is thrown when using Try#ofVoid()"() {
+    when:
+    def exception = new SourceException("source exception")
+    Try<Void, SourceException> actual = Try.ofVoid(() -> {
+      throw exception
+    }, SourceException)
+
+    then:
+    actual.failure
+    actual.exception.get() == exception
+  }
+
+  def "A TryException is thrown if an unexpected exception type is thrown when using Try#ofVoid()"() {
+    when:
+    Try.ofVoid(() -> {
+      throw new SourceException("source exception")
+    }, FailureException)
+
+    then:
+    Exception ex = thrown()
+    ex.class == TryException
+    ex.message == "Wrongly caught exception: "
+    Throwable cause = ex.cause
+    cause.class == SourceException
+    cause.message == "source exception"
+  }
+
   def "A void method can be applied to a try object"() {
     when:
-    Try<Void> actual = Try.ofVoid(() -> void)
+    Try<Void, Exception> actual = Try.ofVoid(() -> null, Exception)
 
     then:
     actual.success
@@ -45,19 +129,18 @@ class TryTest extends Specification {
 
   def "A success object can be resolved with get method"() {
     given:
-    Try<String> success = new Try.Success<>("success")
+    Try<String, Exception> success = new Try.Success<>("success")
 
     when:
     String str = success.get()
 
     then:
     str == "success"
-    success.get() == "success"
   }
 
   def "A failure object can be resolved with get method"() {
     given:
-    Try<String> failure = new Try.Failure<>(new Exception("failure"))
+    Try<String, Exception> failure = new Try.Failure<>(new Exception("failure"))
 
     when:
     Exception ex = failure.get()
@@ -68,7 +151,7 @@ class TryTest extends Specification {
 
   def "An empty Success should work as expected"() {
     given:
-    Try<Void> empty = Try.Success.empty()
+    Try<Void, Exception> empty = Try.Success.empty() as Try<Void, Exception>
 
     expect:
     empty.success
@@ -76,9 +159,9 @@ class TryTest extends Specification {
     empty.empty
   }
 
-  def "A scan for exceptions should work as expected"() {
+  def "A scan for exceptions should work as expected when failures are included"() {
     given:
-    Set<Try<String>> set = Set.of(
+    Set<Try<String, Exception>> set = Set.of(
     new Try.Success<>("one"),
     new Try.Failure<>(new Exception("exception")),
     new Try.Success<>("two"),
@@ -86,57 +169,46 @@ class TryTest extends Specification {
     )
 
     when:
-    Try<Set<String>> scan = Try.scanCollection(set, String)
+    Try<Set<String>, Exception> scan = Try.scanCollection(set, String)
 
     then:
     scan.failure
-    scan.exception().message == "1 exception(s) occurred within \"String\" data, one is: exception"
+    scan.exception().message == "1 exception(s) occurred within \"String\" data, one is: java.lang.Exception: exception"
+  }
+
+  def "A scan for exceptions should work as expected when no failures are included"() {
+    given:
+    Set<Try<String, Exception>> set = Set.of(
+    new Try.Success<>("one"),
+    new Try.Success<>("two"),
+    new Try.Success<>("three")
+    )
+
+    when:
+    Try<Set<String>, Exception> scan = Try.scanCollection(set, String)
+
+    then:
+    scan.success
+    scan.data().size() == 3
   }
 
   def "The getOrThrow method should work as expected"() {
     given:
-    Try<String> failure = new Try.Failure<>(new SourceException("source exception"))
+    Try<String, SourceException> failure = new Try.Failure<>(new SourceException("source exception"))
 
     when:
-    failure.getOrThrow()
+    failure.orThrow
 
     then:
     Exception ex = thrown()
-    ex.class == TryException
-    ex.cause.class == SourceException
-    ex.cause.message == "source exception"
-  }
-
-  def "An exception thrown by a getOrThrow method can be cast to the specific exception class"() {
-    given:
-    Try<String> failure = new Try.Failure<>(new SourceException("source exception"))
-
-    when:
-    failure.getOrThrow(SourceException)
-
-    then:
-    SourceException ex = thrown()
+    ex.class == SourceException
     ex.message == "source exception"
-  }
-
-  def "An exception thrown by a getOrThrow method cannot be cast to a wrong exception class"() {
-    given:
-    Try<String> failure = new Try.Failure<>(new TryException())
-
-    when:
-    Try<String> empty = Try.of {
-      failure.getOrThrow(RawGridException)
-    }
-
-    then:
-    empty.failure
-    empty.exception().class == ClassCastException
   }
 
   def "The getOrElse method should work as expected"() {
     given:
-    Try<String> success = new Try.Success<>("success")
-    Try<String> failure = new Try.Failure<>(new TryException())
+    Try<String, Exception> success = new Try.Success<>("success")
+    Try<String, SourceException> failure = new Try.Failure<>(new SourceException("exception"))
 
     when:
     String successResult = success.getOrElse("else")
@@ -149,39 +221,39 @@ class TryTest extends Specification {
 
   def "A Try objects transformation should work as correctly for successes"() {
     given:
-    Try<String> numberString = new Try.Success<>("1")
+    Try<String, Exception> success = new Try.Success<>("5")
 
     when:
-    Try<Integer> first = numberString.transform( str -> Integer.parseInt(str) )
-    Try<Integer> second = numberString.transform( str -> Integer.parseInt(str), ex -> new TryException(ex) ) as Try<Integer>
+    Try<Integer, Exception> first = success.transformS(str -> Integer.parseInt(str) )
+    Try<Integer, Exception> second = success.transform(str -> Integer.parseInt(str), ex -> new Exception(ex) )
 
     then:
     first.success
     second.success
 
-    first.data() == 1
-    second.data() == 1
+    first.data() == 5
+    second.data() == 5
   }
 
   def "A Try objects transformation should work as correctly for failures"() {
     given:
-    Try<String> failure = new Try.Failure<>(new TryException())
+    Try<String, Exception> failure = new Try.Failure<>(new SourceException(""))
 
     when:
-    Try<Integer> first = failure.transform( str -> Integer.parseInt(str) )
-    Try<Integer> second = failure.transform( str -> Integer.parseInt(str), ex -> new Exception(ex) ) as Try<Integer>
+    Try<Integer, Exception> first = failure.transformS(str -> Integer.parseInt(str) )
+    Try<Integer, Exception> second = failure.transform(str -> Integer.parseInt(str), ex -> new Exception(ex) )
 
     then:
     first.failure
     second.failure
 
-    first.exception().class == TryException
+    first.exception().class == SourceException
     second.exception().class == Exception
   }
 
   def "All exceptions of a collection of try objects should be returned"() {
     given:
-    List<Try<String>> tries = List.of(
+    List<Try<String, Exception>> tries = List.of(
     new Try.Success<>("one"),
     new Try.Failure<>(new SourceException("source exception")),
     new Try.Failure<>(new UnsupportedOperationException("unsupported operation exception")),
@@ -190,7 +262,7 @@ class TryTest extends Specification {
     )
 
     when:
-    List<? extends Exception> exceptions = Try.getExceptions(tries)
+    List<Exception> exceptions = Try.getExceptions(tries)
 
     then:
     exceptions.size() == 3

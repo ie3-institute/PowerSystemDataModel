@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExceptionUtils {
@@ -20,10 +19,9 @@ public class ExceptionUtils {
    * @return str containing the messages
    */
   public static String getMessages(List<? extends Exception> exceptions) {
-    ArrayList<? extends Exception> list = new ArrayList<>(exceptions);
-    Exception firstInList = list.remove(0);
-    return list.stream()
+    return exceptions.stream()
         .map(Throwable::getMessage)
-        .reduce(firstInList.getMessage(), (a, b) -> a + ",\n" + b);
+        .reduce("", (a, b) -> a + ", " + b)
+        .replaceFirst(", ", "");
   }
 }

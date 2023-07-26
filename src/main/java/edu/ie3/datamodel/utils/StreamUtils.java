@@ -10,12 +10,12 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 /** Class containing some stream utils. */
 public class StreamUtils {
   private StreamUtils() {}
-
-  public record Pair<A, B>(A a, B b) {}
 
   /**
    * Used to zip a stream with an integer stream.
@@ -60,7 +60,7 @@ public class StreamUtils {
       }
 
       public Pair<A, B> next() {
-        return new Pair<>(a.next(), b.next());
+        return new ImmutablePair<>(a.next(), b.next());
       }
     };
   }

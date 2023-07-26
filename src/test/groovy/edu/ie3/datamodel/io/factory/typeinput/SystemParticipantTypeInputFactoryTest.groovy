@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.typeinput
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
@@ -55,7 +56,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = EvTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -90,7 +91,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = HpTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -124,7 +125,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = BmTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -162,7 +163,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = WecTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -209,7 +210,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = ChpTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -252,7 +253,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = StorageTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -295,11 +296,11 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     ]
 
     when:
-    Try<SystemParticipantTypeInput> input = typeInputFactory.get(new SimpleEntityData(parameter, StorageTypeInput))
+    Try<SystemParticipantTypeInput, FactoryException> input = typeInputFactory.get(new SimpleEntityData(parameter, StorageTypeInput))
 
     then:
     input.failure
-    input.exception().message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
+    input.exception().cause.message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
         "{capex -> 3,\n" +
         "cosPhiRated -> 6,\n" +
         "dod -> 10,\n" +

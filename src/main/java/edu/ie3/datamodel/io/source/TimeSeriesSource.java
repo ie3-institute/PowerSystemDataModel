@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
@@ -36,9 +37,10 @@ public abstract class TimeSeriesSource<V extends Value> {
    * need any additional information.
    *
    * @param fieldToValues Mapping from field id to values
-   * @return Optional simple time based value
+   * @return {@link Try} of simple time based value
    */
-  protected Try<TimeBasedValue<V>> createTimeBasedValue(Map<String, String> fieldToValues) {
+  protected Try<TimeBasedValue<V>, FactoryException> createTimeBasedValue(
+      Map<String, String> fieldToValues) {
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return valueFactory.get(factoryData);

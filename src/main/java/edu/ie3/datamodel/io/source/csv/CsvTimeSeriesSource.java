@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
@@ -23,7 +25,7 @@ import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Source that is capable of providing information around time series from csv files. */
 public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
@@ -133,25 +135,28 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @param fieldToValueFunction function, that is able to transfer a mapping (from field to value)
    *     onto a specific instance of the targeted entry class
    * @throws SourceException If the file cannot be read properly
-   * @return An option onto an individual time series
+   * @return an individual time series
    */
   protected IndividualTimeSeries<V> buildIndividualTimeSeries(
       UUID timeSeriesUuid,
       Path filePath,
-      Function<Map<String, String>, Try<TimeBasedValue<V>>> fieldToValueFunction)
+      Function<Map<String, String>, Try<TimeBasedValue<V>, FactoryException>> fieldToValueFunction)
       throws SourceException {
     try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
-      Set<TimeBasedValue<V>> timeBasedValues =
-          dataSource
-              .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-              .map(fieldToValueFunction)
-              .map(Try::getOrThrow)
-              .collect(Collectors.toSet());
-      return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
+      Try<Stream<TimeBasedValue<V>>, FailureException> timeBasedValues =
+          Try.scanStream(
+              dataSource
+                  .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+                  .map(fieldToValueFunction),
+              "TimeBasedValue<V>");
+      return new IndividualTimeSeries<>(
+          timeSeriesUuid, new HashSet<>(timeBasedValues.getOrThrow().toList()));
     } catch (FileNotFoundException e) {
       throw new SourceException("Unable to find a file with path '" + filePath + "'.", e);
     } catch (IOException e) {
       throw new SourceException("Error during reading of file'" + filePath + "'.", e);
+    } catch (FailureException e) {
+      throw new SourceException("Unable to build individual time series. ", e.getCause());
     }
   }
 }

@@ -172,7 +172,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
                   .getCoordinate(coordinateId)
                   .map(point -> new TimeBasedWeatherValueData(flatCaseFields, point))
                   .map(weatherFactory::get)
-                  .map(Try::getOrThrow);
+                  .flatMap(Try::getData);
             });
   }
 
@@ -225,6 +225,6 @@ public class InfluxDbWeatherSource extends WeatherSource {
    */
   protected Stream<TimeBasedValue<WeatherValue>> filterEmptyOptionals(
       Stream<Optional<TimeBasedValue<WeatherValue>>> elements) {
-    return elements.filter(Optional::isPresent).map(Optional::get).map(TimeBasedValue.class::cast);
+    return elements.flatMap(Optional::stream).map(TimeBasedValue.class::cast);
   }
 }

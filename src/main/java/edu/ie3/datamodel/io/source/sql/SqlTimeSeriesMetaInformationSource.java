@@ -13,7 +13,6 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMetaInformationSource;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
-import edu.ie3.datamodel.utils.Try;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -95,6 +94,6 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
       Map<String, String> fieldToValues) {
     SimpleEntityData entityData =
         new SimpleEntityData(fieldToValues, IndividualTimeSeriesMetaInformation.class);
-    return Optional.of(mappingFactory.get(entityData)).map(Try::getOrThrow);
+    return mappingFactory.get(entityData).getData();
   }
 }

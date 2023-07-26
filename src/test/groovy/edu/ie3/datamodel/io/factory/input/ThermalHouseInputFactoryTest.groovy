@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -40,7 +41,7 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
     def thermalBusInput = Mock(ThermalBusInput)
 
     when:
-    Try<ThermalHouseInput> input = inputFactory.get(new ThermalUnitInputEntityData(parameter, inputClass, thermalBusInput))
+    Try<ThermalHouseInput, FactoryException> input = inputFactory.get(new ThermalUnitInputEntityData(parameter, inputClass, thermalBusInput))
 
     then:
     input.success

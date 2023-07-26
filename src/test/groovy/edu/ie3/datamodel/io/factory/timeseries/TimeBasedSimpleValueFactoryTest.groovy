@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
+import static edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory.*
+
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -16,8 +18,6 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
-
-import static edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory.*
 
 class TimeBasedSimpleValueFactoryTest extends Specification {
   @Shared

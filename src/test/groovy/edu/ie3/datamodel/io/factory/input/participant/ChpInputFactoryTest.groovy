@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.ChpInput
@@ -51,7 +52,7 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
     def thermalStorageInput = Mock(ThermalStorageInput)
 
     when:
-    Try<ChpInput> input = inputFactory.get(
+    Try<ChpInput, FactoryException> input = inputFactory.get(
         new ChpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput, thermalStorageInput))
 
     then:

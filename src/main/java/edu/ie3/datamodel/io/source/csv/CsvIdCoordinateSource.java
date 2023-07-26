@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -45,7 +46,8 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
   private final CsvDataSource dataSource;
   private final IdCoordinateFactory factory;
 
-  public CsvIdCoordinateSource(IdCoordinateFactory factory, CsvDataSource dataSource) {
+  public CsvIdCoordinateSource(IdCoordinateFactory factory, CsvDataSource dataSource)
+      throws SourceException {
     this.factory = factory;
     this.dataSource = dataSource;
 
@@ -59,11 +61,14 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    *
    * @return Mapping from coordinate id to coordinate
    */
-  private Map<Integer, Point> setupIdToCoordinateMap() {
-    return buildStreamWithFieldsToAttributesMap()
-        .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
-        .map(factory::get)
-        .map(Try::getOrThrow)
+  private Map<Integer, Point> setupIdToCoordinateMap() throws SourceException {
+    return Try.scanStream(
+            buildStreamWithFieldsToAttributesMap()
+                .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
+                .map(factory::get),
+            "Pair<Integer, Point>")
+        .transformF(SourceException::new)
+        .getOrThrow()
         .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
   }
 

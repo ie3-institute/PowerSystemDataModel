@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.typeinput
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
@@ -46,7 +47,7 @@ class Transformer2WTypeInputFactoryTest extends Specification implements Factory
     def typeInputClass = Transformer2WTypeInput
 
     when:
-    Try<Transformer2WTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<Transformer2WTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
     then:
     typeInput.success

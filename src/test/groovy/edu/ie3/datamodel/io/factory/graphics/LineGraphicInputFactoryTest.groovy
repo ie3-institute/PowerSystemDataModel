@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.graphics
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -39,7 +40,7 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
     def lineInput = Mock(LineInput)
 
     when:
-    Try<LineGraphicInput> input = inputFactory.get(
+    Try<LineGraphicInput, FactoryException> input = inputFactory.get(
         new LineGraphicInputEntityData(parameter, lineInput))
 
     then:
@@ -65,7 +66,7 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
     def lineInput = Mock(LineInput)
 
     when:
-    Try<LineGraphicInput> input = inputFactory.get(
+    Try<LineGraphicInput, FactoryException> input = inputFactory.get(
         new LineGraphicInputEntityData(parameter, lineInput))
 
     then:

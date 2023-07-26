@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -48,7 +49,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<FixedFeedInInput> input = inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
+    Try<FixedFeedInInput, FactoryException> input = inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.success
@@ -85,11 +86,11 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
     def nodeInput = Mock(NodeInput)
 
     when:
-    Try<FixedFeedInInput> input =  inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
+    Try<FixedFeedInInput, FactoryException> input =  inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
 
     then:
     input.failure
-    input.exception().message == "The provided fields [cosphirated, id, srated, uuid] with data \n" +
+    input.exception().cause.message == "The provided fields [cosphirated, id, srated, uuid] with data \n" +
         "{cosphirated -> 4,\n" +
         "id -> TestID,\n" +
         "srated -> 3,\n" +
