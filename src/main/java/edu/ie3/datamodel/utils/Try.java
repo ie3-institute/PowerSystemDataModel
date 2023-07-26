@@ -251,7 +251,11 @@ public abstract class Try<T, E extends Exception> {
     List<Try<U, E>> successes = map.get(true);
     List<Try<U, E>> failures = map.get(false);
 
-    if (failures != null && !failures.isEmpty()) {
+    // Both lists should exist in map per definition of partitioningBy
+    assert successes != null;
+    assert failures != null;
+
+    if (!failures.isEmpty()) {
       E first = failures.get(0).exception;
 
       return new Failure<>(
