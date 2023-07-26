@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.utils.validation
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -65,7 +66,7 @@ class ThermalUnitValidationUtilsTest extends Specification {
 
   def "ThermalUnitValidationUtils.checkThermalHouse() recognizes all potential errors for a thermal house"() {
     when:
-    List<Try<Void>> exceptions = ThermalUnitValidationUtils.check(invalidThermalHouse).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = ThermalUnitValidationUtils.check(invalidThermalHouse).stream().filter { it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -97,7 +98,7 @@ class ThermalUnitValidationUtilsTest extends Specification {
 
   def "ThermalUnitValidationUtils.checkCylindricalStorage() recognizes all potential errors for a thermal cylindrical storage"() {
     when:
-    List<Try<Void>> exceptions = ThermalUnitValidationUtils.check(invalidCylindricalStorage).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = ThermalUnitValidationUtils.check(invalidCylindricalStorage).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize

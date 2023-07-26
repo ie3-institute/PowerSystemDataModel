@@ -7,6 +7,7 @@ package edu.ie3.datamodel.utils.validation
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.NotImplementedException
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.*
@@ -48,7 +49,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.check() recognizes all potential errors for a system participant"() {
     when:
-    List<Try<Void>> exceptions = SystemParticipantValidationUtils.check(invalidSystemParticipant).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidSystemParticipant).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -97,7 +98,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkType() recognizes all potential errors for a system participant type"() {
     when:
-    Try<Void> exceptions = SystemParticipantValidationUtils.check(invalidType)
+    Try<Void, ? extends ValidationException> exceptions = SystemParticipantValidationUtils.check(invalidType)
 
     then:
     Exception ex = exceptions.exception()
@@ -138,7 +139,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkBmType() recognizes all potential errors for a biomass power plant type"() {
     when:
-    Try<Void> exceptions = ValidationUtils.check(invalidBmType)
+    Try<Void, ? extends ValidationException> exceptions = ValidationUtils.check(invalidBmType)
 
     then:
     Exception ex = exceptions.exception()
@@ -178,7 +179,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkChpType() recognizes all potential errors for a CHP type"() {
     when:
-    Try<Void> exceptions = SystemParticipantValidationUtils.check(invalidChpType)
+    Try<Void, ? extends ValidationException> exceptions = SystemParticipantValidationUtils.check(invalidChpType)
 
     then:
     Exception ex = exceptions.exception()
@@ -220,7 +221,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkEvType() recognizes all potential errors for an EV type"() {
     when:
-    Try<Void> exceptions = SystemParticipantValidationUtils.check(invalidEvType)
+    Try<Void, ? extends ValidationException> exceptions = SystemParticipantValidationUtils.check(invalidEvType)
 
     then:
     Exception ex = exceptions.exception()
@@ -246,7 +247,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkFixedFeedIn() recognizes all potential errors for an a Fixed Feed-In"() {
     when:
-    List<Try<Void>> exceptions = SystemParticipantValidationUtils.check(invalidFixedFeedIn).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidFixedFeedIn).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -287,7 +288,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkHpType() recognizes all potential errors for an HP type"() {
     when:
-    Try<Void> exceptions = SystemParticipantValidationUtils.check(invalidHpType)
+    Try<Void, ? extends ValidationException> exceptions = SystemParticipantValidationUtils.check(invalidHpType)
 
     then:
     Exception ex = exceptions.exception()
@@ -313,7 +314,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkLoad() recognizes all potential errors for a load"() {
     when:
-    List<Try<Void>> exceptions = SystemParticipantValidationUtils.check(invalidLoad).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidLoad).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -342,7 +343,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkPV() recognizes all potential errors for a PV"() {
     when:
-    List<Try<Void>> exceptions = SystemParticipantValidationUtils.check(invalidPV).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidPV).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -387,7 +388,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkStorageType() recognizes all potential errors for a storage type"() {
     when:
-    Try<Void> exceptions = SystemParticipantValidationUtils.check(invalidStorageType)
+    Try<Void, ? extends ValidationException> exceptions = SystemParticipantValidationUtils.check(invalidStorageType)
 
     then:
     Exception ex = exceptions.exception()
@@ -430,7 +431,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkWecType() recognizes all potential errors for a wec type"() {
     when:
-    Try<Void> exceptions = SystemParticipantValidationUtils.check(invalidWecType)
+    Try<Void, ? extends ValidationException> exceptions = SystemParticipantValidationUtils.check(invalidWecType)
 
     then:
     Exception ex = exceptions.exception()
@@ -449,7 +450,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     def invalidParticipant = new InvalidSystemParticipantInput(node)
 
     when:
-    List<Try<Void>> exceptions = SystemParticipantValidationUtils.check(invalidParticipant).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidParticipant).stream().filter {it -> it.failure}.toList()
 
     then:
     def e = exceptions.get(0).exception().cause
@@ -461,7 +462,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     def invalidParticipantInput = new InvalidSystemParticipantTypeInput()
 
     when:
-    Try<Void> exceptions = SystemParticipantValidationUtils.check(invalidParticipantInput)
+    Try<Void, ? extends ValidationException> exceptions = SystemParticipantValidationUtils.check(invalidParticipantInput)
 
     then:
     def e = exceptions.exception()

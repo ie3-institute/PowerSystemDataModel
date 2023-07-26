@@ -30,7 +30,7 @@ class GraphicValidationUtilsTest extends Specification {
 
   def "GraphicValidationUtils.check() recognizes all potential errors for a graphic input"() {
     when:
-    List<Try<Void>> exceptions = GraphicValidationUtils.check(invalidGraphicInput).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = GraphicValidationUtils.check(invalidGraphicInput).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -45,7 +45,7 @@ class GraphicValidationUtilsTest extends Specification {
 
   def "GraphicValidationUtils.checkLineGraphicInput() recognizes all potential errors for a line graphic input"() {
     when:
-    List<Try<Void>> exceptions = GraphicValidationUtils.check(invalidLineGraphicInput).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = GraphicValidationUtils.check(invalidLineGraphicInput).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -60,7 +60,7 @@ class GraphicValidationUtilsTest extends Specification {
 
   def "GraphicValidationUtils.checkNodeGraphicInput() recognizes all potential errors for a line graphic input"() {
     when:
-    List<Try<Void>> exceptions = GraphicValidationUtils.check(invalidNodeGraphicInput).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = GraphicValidationUtils.check(invalidNodeGraphicInput).stream().filter {it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize

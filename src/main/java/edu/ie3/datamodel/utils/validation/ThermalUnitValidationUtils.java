@@ -32,7 +32,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
-  protected static List<Try<Void>> check(ThermalUnitInput thermalUnitInput) {
+  protected static List<Try<Void, ? extends ValidationException>> check(
+      ThermalUnitInput thermalUnitInput) {
     try {
       checkNonNull(thermalUnitInput, "a thermal unit");
     } catch (InvalidEntityException e) {
@@ -45,7 +46,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
     // Further checks for subclasses
     if (ThermalSinkInput.class.isAssignableFrom(thermalUnitInput.getClass())) {
@@ -72,7 +73,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
-  private static List<Try<Void>> checkThermalSink(ThermalSinkInput thermalSinkInput) {
+  private static List<Try<Void, ? extends ValidationException>> checkThermalSink(
+      ThermalSinkInput thermalSinkInput) {
     try {
       checkNonNull(thermalSinkInput, "a thermal sink");
     } catch (InvalidEntityException e) {
@@ -85,7 +87,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
     // Further checks for subclasses
     if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass())) {
@@ -110,7 +112,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
-  private static List<Try<Void>> checkThermalStorage(ThermalStorageInput thermalStorageInput) {
+  private static List<Try<Void, ? extends ValidationException>> checkThermalStorage(
+      ThermalStorageInput thermalStorageInput) {
     try {
       checkNonNull(thermalStorageInput, "a thermal storage");
     } catch (InvalidEntityException e) {
@@ -123,7 +126,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
     // Further checks for subclasses
     if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass())) {
@@ -150,7 +153,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
-  private static List<Try<Void>> checkThermalHouse(ThermalHouseInput thermalHouseInput) {
+  private static List<Try<Void, InvalidEntityException>> checkThermalHouse(
+      ThermalHouseInput thermalHouseInput) {
     try {
       checkNonNull(thermalHouseInput, "a thermal house");
     } catch (InvalidEntityException e) {
@@ -163,17 +167,16 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void>> exceptions = new ArrayList<>();
-    exceptions.add(
-        Try.ofVoid(
-            () ->
-                detectNegativeQuantities(
-                    new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput)));
-    exceptions.add(
-        Try.ofVoid(
-            () ->
-                detectZeroOrNegativeQuantities(
-                    new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput)));
+    List<Try<Void, InvalidEntityException>> exceptions =
+        new ArrayList<>(
+            Try.ofVoid(
+                InvalidEntityException.class,
+                () ->
+                    detectNegativeQuantities(
+                        new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput),
+                () ->
+                    detectZeroOrNegativeQuantities(
+                        new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput)));
 
     if (thermalHouseInput
             .getLowerTemperatureLimit()
@@ -204,7 +207,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
-  private static List<Try<Void>> checkCylindricalStorage(
+  private static List<Try<Void, InvalidEntityException>> checkCylindricalStorage(
       CylindricalStorageInput cylindricalStorageInput) {
     try {
       checkNonNull(cylindricalStorageInput, "a cylindrical storage");
@@ -218,7 +221,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void>> exceptions = new ArrayList<>();
+    List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
 
     // Check if inlet temperature is higher/equal to outlet temperature
     if (cylindricalStorageInput.getInletTemp().isLessThan(cylindricalStorageInput.getReturnTemp()))
@@ -246,7 +249,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
                       cylindricalStorageInput.getStorageVolumeLvlMin(),
                       cylindricalStorageInput.getC()
                     },
-                    cylindricalStorageInput)));
+                    cylindricalStorageInput),
+            InvalidEntityException.class));
 
     return exceptions;
   }

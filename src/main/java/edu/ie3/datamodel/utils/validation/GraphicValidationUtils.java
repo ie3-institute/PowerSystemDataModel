@@ -33,7 +33,7 @@ public class GraphicValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
-  protected static List<Try<Void>> check(GraphicInput graphicInput) {
+  protected static List<Try<Void, InvalidEntityException>> check(GraphicInput graphicInput) {
     try {
       checkNonNull(graphicInput, "a graphic input");
     } catch (InvalidEntityException e) {
@@ -44,7 +44,7 @@ public class GraphicValidationUtils extends ValidationUtils {
                   e)));
     }
 
-    List<Try<Void>> exceptions = new ArrayList<>();
+    List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
 
     if (graphicInput.getGraphicLayer() == null) {
       exceptions.add(
@@ -55,9 +55,15 @@ public class GraphicValidationUtils extends ValidationUtils {
 
     // Further checks for subclasses
     if (LineGraphicInput.class.isAssignableFrom(graphicInput.getClass())) {
-      exceptions.add(Try.ofVoid(() -> checkLineGraphicInput((LineGraphicInput) graphicInput)));
+      exceptions.add(
+          Try.ofVoid(
+              () -> checkLineGraphicInput((LineGraphicInput) graphicInput),
+              InvalidEntityException.class));
     } else if (NodeGraphicInput.class.isAssignableFrom(graphicInput.getClass())) {
-      exceptions.add(Try.ofVoid(() -> checkNodeGraphicInput((NodeGraphicInput) graphicInput)));
+      exceptions.add(
+          Try.ofVoid(
+              () -> checkNodeGraphicInput((NodeGraphicInput) graphicInput),
+              InvalidEntityException.class));
     }
 
     return exceptions;

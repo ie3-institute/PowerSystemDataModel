@@ -62,14 +62,14 @@ public class ValidationUtils {
    * @return a list of try objects either containing a {@link ValidationException} or an empty
    *     Success
    */
-  public static Try<Void> check(Object obj) {
+  public static Try<Void, ? extends ValidationException> check(Object obj) {
     try {
       checkNonNull(obj, "an object");
     } catch (InvalidEntityException e) {
       return new Failure<>(e);
     }
 
-    List<Try<?>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
     if (AssetInput.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(checkAsset((AssetInput) obj));
@@ -85,7 +85,11 @@ public class ValidationUtils {
               new FailedValidationException(checkNotImplementedException(obj).getMessage())));
     }
 
-    List<ValidationException> list = (List<ValidationException>) Try.getExceptions(exceptions);
+    List<? extends ValidationException> list =
+        exceptions.stream()
+            .filter(Try::isFailure)
+            .map(t -> ((Failure<?, ? extends ValidationException>) t).get())
+            .toList();
 
     if (!list.isEmpty()) {
       return new Failure<>(new FailedValidationException(list));
@@ -107,7 +111,7 @@ public class ValidationUtils {
    * @return a list of try objects either containing a {@link ValidationException} or an empty
    *     Success
    */
-  private static List<Try<Void>> checkAsset(AssetInput assetInput) {
+  private static List<Try<Void, ? extends ValidationException>> checkAsset(AssetInput assetInput) {
     try {
       checkNonNull(assetInput, "an asset");
     } catch (InvalidEntityException e) {
@@ -118,7 +122,7 @@ public class ValidationUtils {
                   e)));
     }
 
-    List<Try<Void>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
     if (assetInput.getId() == null) {
       exceptions.add(new Failure<>(new InvalidEntityException("No ID assigned", assetInput)));
@@ -182,7 +186,8 @@ public class ValidationUtils {
    * @return a list of try objects either containing a {@link ValidationException} or an empty
    *     Success
    */
-  private static List<Try<Void>> checkAssetType(AssetTypeInput assetTypeInput) {
+  private static List<Try<Void, ? extends ValidationException>> checkAssetType(
+      AssetTypeInput assetTypeInput) {
     try {
       checkNonNull(assetTypeInput, "an asset type");
     } catch (InvalidEntityException e) {
@@ -195,7 +200,7 @@ public class ValidationUtils {
                   e)));
     }
 
-    List<Try<Void>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
     if (assetTypeInput.getUuid() == null)
       exceptions.add(new Failure<>(new InvalidEntityException("No UUID assigned", assetTypeInput)));
@@ -231,9 +236,10 @@ public class ValidationUtils {
    * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
    *     Success
    */
-  protected static List<Try<Void>> checkIds(Set<? extends AssetInput> inputs) {
+  protected static List<Try<Void, UnsafeEntityException>> checkIds(
+      Set<? extends AssetInput> inputs) {
     List<String> ids = new ArrayList<>();
-    List<Try<Void>> exceptions = new ArrayList<>();
+    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
 
     inputs.forEach(
         input -> {

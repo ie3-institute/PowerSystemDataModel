@@ -26,7 +26,7 @@ class MeasurementUnitValidationUtilsTest extends Specification {
 
   def "MeasurementUnitValidationUtils.check() recognizes all potential errors for a measurement unit"() {
     when:
-    Try<Void> exception = MeasurementUnitValidationUtils.check(invalidMeasurementUnit)
+    Try<Void, ? extends ValidationException> exception = MeasurementUnitValidationUtils.check(invalidMeasurementUnit)
 
     then:
     exception.failure

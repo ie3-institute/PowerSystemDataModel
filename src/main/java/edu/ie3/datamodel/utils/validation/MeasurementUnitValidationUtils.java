@@ -27,7 +27,8 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
    * @param measurementUnit Measurement unit to validate
    * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  protected static Try<Void> check(MeasurementUnitInput measurementUnit) {
+  protected static Try<Void, ? extends ValidationException> check(
+      MeasurementUnitInput measurementUnit) {
     try {
       checkNonNull(measurementUnit, "a measurement unit");
     } catch (InvalidEntityException e) {

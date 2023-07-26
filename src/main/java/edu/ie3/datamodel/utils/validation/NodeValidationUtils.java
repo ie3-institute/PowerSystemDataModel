@@ -35,7 +35,7 @@ public class NodeValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
-  protected static List<Try<Void>> check(NodeInput node) {
+  protected static List<Try<Void, ? extends ValidationException>> check(NodeInput node) {
     try {
       checkNonNull(node, "a node");
     } catch (InvalidEntityException e) {
@@ -45,7 +45,7 @@ public class NodeValidationUtils extends ValidationUtils {
                   "Validation not possible because received object {" + node + "} was null", e)));
     }
 
-    List<Try<Void>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
     try {
       checkVoltageLevel(node.getVoltLvl());

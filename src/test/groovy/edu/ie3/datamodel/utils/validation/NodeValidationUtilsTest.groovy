@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.utils.Try
 
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
@@ -34,7 +35,7 @@ class NodeValidationUtilsTest extends Specification {
 
   def "The check method recognizes all potential errors for a node"() {
     when:
-    List<Try<Void>> exceptions = NodeValidationUtils.check(invalidNode).stream().filter { it -> it.failure}.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = NodeValidationUtils.check(invalidNode).stream().filter { it -> it.failure}.toList()
 
     then:
     exceptions.size() == expectedSize

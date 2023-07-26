@@ -75,7 +75,7 @@ public abstract class Try<T, E extends Exception> {
    */
   @SuppressWarnings("unchecked")
   public static <E extends Exception> Try<Void, E> ofVoid(
-      TrySupplier<?, E> supplier, Class<E> clazz) {
+      VoidSupplier<E> supplier, Class<E> clazz) {
     try {
       supplier.get();
       return Success.empty();
@@ -271,6 +271,20 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
+   * Utility method to check a list of {@link VoidSupplier}'s.
+   *
+   * @param supplier list of {@link VoidSupplier}
+   * @param clazz class of the exception
+   * @return a list of {@link Try}
+   * @param <E> type of the exception
+   */
+  @SafeVarargs
+  public static <E extends Exception> List<Try<Void, E>> ofVoid(
+      Class<E> clazz, VoidSupplier<E>... supplier) {
+    return Arrays.stream(supplier).map(sup -> Try.ofVoid(sup, clazz)).toList();
+  }
+
+  /**
    * Method to retrieve the exceptions from all {@link Failure} objects.
    *
    * @param tries collection of {@link Try} objects
@@ -378,5 +392,15 @@ public abstract class Try<T, E extends Exception> {
   @FunctionalInterface
   public interface TrySupplier<T, E extends Exception> {
     T get() throws E;
+  }
+
+  /**
+   * Supplier for void methods to {@link Try} class.
+   *
+   * @param <E> type of exception that could be thrown
+   */
+  @FunctionalInterface
+  public interface VoidSupplier<E extends Exception> {
+    void get() throws E;
   }
 }
