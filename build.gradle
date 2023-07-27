@@ -4,12 +4,12 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '6.19.0'//code format
+  id 'com.diffplug.spotless' version '6.20.0'//code format
   id 'com.github.spotbugs' version '5.0.14' // code check, working on byte code
   id 'de.undercouch.download' version '5.4.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "4.2.1.3168" // sonarqube
+  id "org.sonarqube" version "4.3.0.3225" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
@@ -17,7 +17,7 @@ ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
-  groovyBinaryVersion = "4.0.12"
+  groovyBinaryVersion = "4.0.13"
   testcontainersVersion = '1.18.3'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
@@ -52,7 +52,7 @@ dependencies {
   //	 ie³ power system utils
   implementation 'com.github.ie3-institute:PowerSystemUtils:2.0'
 
-  implementation 'tech.units:indriya:2.1.4'
+  implementation 'tech.units:indriya:2.2'
 
   // JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
   implementation ('org.locationtech.jts:jts-core:1.19.0'){
@@ -67,7 +67,7 @@ dependencies {
   // testing
   testImplementation "org.apache.groovy:groovy:$groovyBinaryVersion"
 
-  testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
   testImplementation 'net.bytebuddy:byte-buddy:1.14.5' // Mocks of classes
@@ -87,7 +87,7 @@ dependencies {
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.23'
-  implementation 'com.couchbase.client:java-client:3.4.7'
+  implementation 'com.couchbase.client:java-client:3.4.8'
   runtimeOnly 'org.postgresql:postgresql:42.6.0' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.13.0' // I/O functionalities

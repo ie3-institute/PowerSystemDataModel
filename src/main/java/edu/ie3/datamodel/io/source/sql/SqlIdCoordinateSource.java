@@ -177,7 +177,7 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
     fieldToValues.remove("distance");
 
     SimpleFactoryData simpleFactoryData = new SimpleFactoryData(fieldToValues, Pair.class);
-    Optional<Pair<Integer, Point>> pair = factory.get(simpleFactoryData);
+    Optional<Pair<Integer, Point>> pair = factory.get(simpleFactoryData).getData();
 
     if (pair.isEmpty()) {
       return Optional.empty();

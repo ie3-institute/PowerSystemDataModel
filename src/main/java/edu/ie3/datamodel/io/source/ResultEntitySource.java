@@ -321,7 +321,10 @@ public class ResultEntitySource extends EntitySource {
     return simpleEntityDataStream(entityClass)
         .map(
             entityData ->
-                factory.get(entityData).flatMap(loadResult -> cast(entityClass, loadResult)))
+                factory
+                    .get(entityData)
+                    .getData()
+                    .flatMap(loadResult -> cast(entityClass, loadResult)))
         .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }

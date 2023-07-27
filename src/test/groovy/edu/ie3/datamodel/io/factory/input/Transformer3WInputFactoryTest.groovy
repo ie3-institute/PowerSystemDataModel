@@ -5,11 +5,13 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
@@ -41,12 +43,12 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
     def typeInput = Mock(Transformer3WTypeInput)
 
     when:
-    Optional<Transformer3WInput> input = inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
+    Try<Transformer3WInput, FactoryException> input = inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
 
     then:
-    input.present
-    input.get().getClass() == inputClass
-    ((Transformer3WInput) input.get()).with {
+    input.success
+    input.data().getClass() == inputClass
+    input.data().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime == OperationTime.notLimited()
       assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
