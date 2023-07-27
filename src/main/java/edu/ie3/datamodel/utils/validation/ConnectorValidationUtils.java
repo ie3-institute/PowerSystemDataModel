@@ -475,18 +475,18 @@ public class ConnectorValidationUtils extends ValidationUtils {
         || line.getGeoPosition()
             .getEndPoint()
             .isWithinDistance(line.getNodeA().getGeoPosition(), ALLOWED_COORDINATE_ERROR)))
-      logger.debug(
-          "Coordinates of start and end point do not match coordinates of connected nodes: "
-              + line);
+      logger.warn(
+          "Coordinates of start and end point do not match coordinates of connected nodes: {}",
+          line);
     if (!(line.getGeoPosition()
             .getStartPoint()
             .isWithinDistance(line.getNodeB().getGeoPosition(), ALLOWED_COORDINATE_ERROR)
         || line.getGeoPosition()
             .getEndPoint()
             .isWithinDistance(line.getNodeB().getGeoPosition(), ALLOWED_COORDINATE_ERROR)))
-      logger.debug(
-          "Coordinates of start and end point do not match coordinates of connected nodes: "
-              + line);
+      logger.warn(
+          "Coordinates of start and end point do not match coordinates of connected nodes: {}",
+          line);
   }
 
   /**
@@ -501,11 +501,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
         && line.getLength()
             .isGreaterThan(
                 GeoUtils.calcHaversine(line.getGeoPosition()).multiply(ALLOWED_LENGTH_ERROR))) {
-      logger.debug(
-          "Line length is more than "
-              + ALLOWED_LENGTH_ERROR
-              + "% greater than the calculated distances between points building the line: "
-              + line);
+      logger.warn(
+          "Line length is more than {}% greater than the calculated distances between points building the line: {}",
+          ALLOWED_LENGTH_ERROR, line);
     }
   }
 
