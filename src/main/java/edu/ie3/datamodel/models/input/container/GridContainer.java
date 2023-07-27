@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.*;
 
@@ -174,6 +175,6 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     protected abstract T childInstance();
 
     @Override
-    abstract GridContainer build();
+    abstract GridContainer build() throws InvalidGridException;
   }
 }

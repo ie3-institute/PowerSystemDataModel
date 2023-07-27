@@ -385,7 +385,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param pvInput PvInput to validate
    */
-  private static void checkAlbedo(PvInput pvInput) {
+  private static void checkAlbedo(PvInput pvInput) throws InvalidEntityException {
     if (pvInput.getAlbedo() < 0d || pvInput.getAlbedo() > 1d)
       throw new InvalidEntityException(
           "Albedo of the plant's surrounding of "
@@ -399,7 +399,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param pvInput PvInput to validate
    */
-  private static void checkAzimuth(PvInput pvInput) {
+  private static void checkAzimuth(PvInput pvInput) throws InvalidEntityException {
     if (pvInput.getAzimuth().isLessThan(Quantities.getQuantity(-90d, AZIMUTH))
         || pvInput.getAzimuth().isGreaterThan(Quantities.getQuantity(90d, AZIMUTH)))
       throw new InvalidEntityException(
@@ -414,7 +414,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param pvInput PvInput to validate
    */
-  private static void checkElevationAngle(PvInput pvInput) {
+  private static void checkElevationAngle(PvInput pvInput) throws InvalidEntityException {
     if (pvInput.getElevationAngle().isLessThan(Quantities.getQuantity(0d, SOLAR_ELEVATION_ANGLE))
         || pvInput
             .getElevationAngle()
@@ -541,7 +541,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param input entity to validate
    * @param cosPhiRated rated power factor to check
    */
-  private static void checkRatedPowerFactor(InputEntity input, double cosPhiRated) {
+  private static void checkRatedPowerFactor(InputEntity input, double cosPhiRated)
+      throws InvalidEntityException {
     if (cosPhiRated < 0d || cosPhiRated > 1d)
       throw new InvalidEntityException(
           "Rated power factor of " + input.getClass().getSimpleName() + " must be between 0 and 1",
@@ -556,7 +557,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param value value of entity to check
    */
   private static void isBetweenZeroAndHundredPercent(
-      InputEntity input, ComparableQuantity<Dimensionless> value, String string) {
+      InputEntity input, ComparableQuantity<Dimensionless> value, String string)
+      throws InvalidEntityException {
     if (value.isLessThan(Quantities.getQuantity(0d, Units.PERCENT))
         || value.isGreaterThan(Quantities.getQuantity(100d, Units.PERCENT)))
       throw new InvalidEntityException(

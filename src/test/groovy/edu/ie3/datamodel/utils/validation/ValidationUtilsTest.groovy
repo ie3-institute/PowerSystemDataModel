@@ -111,11 +111,10 @@ class ValidationUtilsTest extends Specification {
 
   def "If an object can't be identified, a ValidationException is thrown as expected"() {
     when:
-    Try<Void, ? extends ValidationException> actual = ValidationUtils.check(invalidObject)
+    ValidationUtils.check(invalidObject)
 
     then:
-    actual.failure
-    Throwable ex = actual.exception()
+    Exception ex = thrown()
     ex.message.contains(expectedException.message)
 
     where:
@@ -125,11 +124,10 @@ class ValidationUtilsTest extends Specification {
 
   def "The validation check method recognizes all potential errors for an asset"() {
     when:
-    Try<Void, ? extends ValidationException> actual = ValidationUtils.check(invalidAsset)
+    ValidationUtils.check(invalidAsset)
 
     then:
-    actual.failure
-    Exception ex = actual.exception()
+    Exception ex = thrown()
     ex.message.contains(expectedException.message)
 
     where:
@@ -267,7 +265,7 @@ class ValidationUtilsTest extends Specification {
     List<Try<Void, UnsafeEntityException>> exceptions = ValidationUtils.checkIds(validAssetIds)
 
     then:
-    exceptions.forEach { ex -> ex.success }
+    exceptions.every { ex -> ex.success }
   }
 
   def "Duplicate asset input ids leads to an exception"() {

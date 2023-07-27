@@ -148,7 +148,7 @@ class TryTest extends Specification {
 
     then:
     failures.size() == 2
-    failures.forEach {
+    failures.every {
       it.failure
     }
   }

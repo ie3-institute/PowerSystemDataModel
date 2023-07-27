@@ -419,7 +419,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param connectorInput ConnectorInput to validate
    * @param yes determines if subnets should be equal or not
    */
-  private static void connectsNodesInDifferentSubnets(ConnectorInput connectorInput, boolean yes) {
+  private static void connectsNodesInDifferentSubnets(ConnectorInput connectorInput, boolean yes)
+      throws InvalidEntityException {
     if (yes) {
       if (connectorInput.getNodeA().getSubnet() == connectorInput.getNodeB().getSubnet()) {
         throw new InvalidEntityException(
@@ -444,7 +445,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param yes determines if voltage levels should be equal or not
    */
   private static void connectsNodesWithDifferentVoltageLevels(
-      ConnectorInput connectorInput, boolean yes) {
+      ConnectorInput connectorInput, boolean yes) throws InvalidEntityException {
     if (yes) {
       if (connectorInput.getNodeA().getVoltLvl().equals(connectorInput.getNodeB().getVoltLvl())) {
         throw new InvalidEntityException(
@@ -512,7 +513,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer2W Transformer2WInput to validate
    */
-  private static void checkIfTapPositionIsWithinBounds(Transformer2WInput transformer2W) {
+  private static void checkIfTapPositionIsWithinBounds(Transformer2WInput transformer2W)
+      throws InvalidEntityException {
     if (transformer2W.getTapPos() < transformer2W.getType().getTapMin()
         || transformer2W.getTapPos() > transformer2W.getType().getTapMax())
       throw new InvalidEntityException(
@@ -525,7 +527,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer3W Transformer3WInput to validate
    */
-  private static void checkIfTapPositionIsWithinBounds(Transformer3WInput transformer3W) {
+  private static void checkIfTapPositionIsWithinBounds(Transformer3WInput transformer3W)
+      throws InvalidEntityException {
     if (transformer3W.getTapPos() < transformer3W.getType().getTapMin()
         || transformer3W.getTapPos() > transformer3W.getType().getTapMax())
       throw new InvalidEntityException(
@@ -539,7 +542,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param transformer2W Transformer2WInput to validate
    */
   private static void ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(
-      Transformer2WInput transformer2W) {
+      Transformer2WInput transformer2W) throws InvalidEntityException {
     if (!QuantityUtil.isEquivalentAbs(
             transformer2W.getType().getvRatedA(),
             transformer2W.getNodeA().getVoltLvl().getNominalVoltage(),
@@ -561,7 +564,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param transformer3W Transformer3WInput to validate
    */
   private static void ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(
-      Transformer3WInput transformer3W) {
+      Transformer3WInput transformer3W) throws InvalidEntityException {
     if (!QuantityUtil.isEquivalentAbs(
             transformer3W.getType().getvRatedA(),
             transformer3W.getNodeA().getVoltLvl().getNominalVoltage(),
@@ -588,7 +591,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param transformer2WType Transformer2WTypeInput to validate
    */
   private static void checkVoltageMagnitudeChangePerTapPosition(
-      Transformer2WTypeInput transformer2WType) {
+      Transformer2WTypeInput transformer2WType) throws InvalidEntityException {
     if (transformer2WType.getdV().isLessThan(Quantities.getQuantity(0d, Units.PERCENT))
         || transformer2WType.getdV().isGreaterThan(Quantities.getQuantity(100d, Units.PERCENT)))
       throw new InvalidEntityException(
@@ -603,7 +606,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param transformer3WType Transformer3WTypeInput to validate
    */
   private static void checkVoltageMagnitudeChangePerTapPosition(
-      Transformer3WTypeInput transformer3WType) {
+      Transformer3WTypeInput transformer3WType) throws InvalidEntityException {
     if (transformer3WType.getdV().isLessThan(Quantities.getQuantity(0d, Units.PERCENT))
         || transformer3WType.getdV().isGreaterThan(Quantities.getQuantity(100d, Units.PERCENT)))
       throw new InvalidEntityException(
@@ -617,7 +620,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param transformer2WType Transformer2WTypeInput to validate
    */
   private static void checkMinimumTapPositionIsLowerThanMaximumTapPosition(
-      Transformer2WTypeInput transformer2WType) {
+      Transformer2WTypeInput transformer2WType) throws InvalidEntityException {
     if (transformer2WType.getTapMax() < transformer2WType.getTapMin())
       throw new InvalidEntityException(
           "Minimum tap position must be lower than maximum tap position", transformer2WType);
@@ -629,7 +632,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param transformer3WType Transformer3WTypeInput to validate
    */
   private static void checkMinimumTapPositionIsLowerThanMaximumTapPosition(
-      Transformer3WTypeInput transformer3WType) {
+      Transformer3WTypeInput transformer3WType) throws InvalidEntityException {
     if (transformer3WType.getTapMax() < transformer3WType.getTapMin())
       throw new InvalidEntityException(
           "Minimum tap position must be lower than maximum tap position", transformer3WType);
@@ -641,7 +644,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param transformer2WType Transformer3WTypeInput to validate
    */
   private static void checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(
-      Transformer2WTypeInput transformer2WType) {
+      Transformer2WTypeInput transformer2WType) throws InvalidEntityException {
     if (transformer2WType.getTapNeutr() < transformer2WType.getTapMin()
         || transformer2WType.getTapNeutr() > transformer2WType.getTapMax())
       throw new InvalidEntityException(
@@ -655,7 +658,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param transformer3WType Transformer3WTypeInput to validate
    */
   private static void checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(
-      Transformer3WTypeInput transformer3WType) {
+      Transformer3WTypeInput transformer3WType) throws InvalidEntityException {
     if (transformer3WType.getTapNeutr() < transformer3WType.getTapMin()
         || transformer3WType.getTapNeutr() > transformer3WType.getTapMax())
       throw new InvalidEntityException(

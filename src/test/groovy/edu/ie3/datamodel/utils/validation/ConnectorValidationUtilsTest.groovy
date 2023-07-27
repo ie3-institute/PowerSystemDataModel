@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.utils.validation
 
-import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.utils.Try
 
 import static edu.ie3.datamodel.models.StandardUnits.*
@@ -160,10 +159,10 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer2WType recognizes all potential errors for a transformer2W type"() {
     when:
-    Try<Void, ? extends ValidationException> exceptions = ConnectorValidationUtils.check(invalidTransformer2WType)
+    ConnectorValidationUtils.check(invalidTransformer2WType)
 
     then:
-    Exception ex = exceptions.exception()
+    Exception ex = thrown()
     ex.message.contains(expectedException.message)
 
     where:
@@ -226,10 +225,10 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer3WType recognizes all potential errors for a transformer3W type"() {
     when:
-    Try<Void, ? extends ValidationException> exceptions = ConnectorValidationUtils.check(invalidTransformer3WType)
+    ConnectorValidationUtils.check(invalidTransformer3WType)
 
     then:
-    Exception ex = exceptions.exception()
+    Exception ex = thrown()
     ex.message.contains(expectedException.message)
 
     where:

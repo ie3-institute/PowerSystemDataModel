@@ -59,15 +59,9 @@ public class ValidationUtils {
    * fulfill the checking task, based on the class of the given object.
    *
    * @param obj Object to check
-   * @return a list of try objects either containing a {@link ValidationException} or an empty
-   *     Success
    */
-  public static Try<Void, ? extends ValidationException> check(Object obj) {
-    Try<Void, InvalidEntityException> isNull = checkNonNull(obj, "an object");
-
-    if (isNull.isFailure()) {
-      return isNull;
-    }
+  public static void check(Object obj) throws ValidationException {
+    checkNonNull(obj, "an object").getOrThrow();
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
@@ -91,7 +85,7 @@ public class ValidationUtils {
             .map(t -> ((Failure<?, ? extends ValidationException>) t).get())
             .toList();
 
-    return Try.ofVoid(!list.isEmpty(), new FailedValidationException(list));
+    Try.ofVoid(!list.isEmpty(), new FailedValidationException(list)).getOrThrow();
   }
 
   /**
@@ -276,7 +270,8 @@ public class ValidationUtils {
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  protected static void detectNegativeQuantities(Quantity<?>[] quantities, UniqueEntity entity) {
+  protected static void detectNegativeQuantities(Quantity<?>[] quantities, UniqueEntity entity)
+      throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() < 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be zero or positive");
@@ -290,7 +285,7 @@ public class ValidationUtils {
    * @param entity Unique entity holding the malformed quantities
    */
   protected static void detectZeroOrNegativeQuantities(
-      Quantity<?>[] quantities, UniqueEntity entity) {
+      Quantity<?>[] quantities, UniqueEntity entity) throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() <= 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be positive");
@@ -301,7 +296,8 @@ public class ValidationUtils {
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  protected static void detectPositiveQuantities(Quantity<?>[] quantities, UniqueEntity entity) {
+  protected static void detectPositiveQuantities(Quantity<?>[] quantities, UniqueEntity entity)
+      throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() > 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be negative");
@@ -317,7 +313,8 @@ public class ValidationUtils {
    * @param msg Message prefix to use for the exception message: [msg]: [malformedQuantities]
    */
   protected static void detectMalformedQuantities(
-      Quantity<?>[] quantities, UniqueEntity entity, Predicate<Quantity<?>> predicate, String msg) {
+      Quantity<?>[] quantities, UniqueEntity entity, Predicate<Quantity<?>> predicate, String msg)
+      throws InvalidEntityException {
     String malformedQuantities =
         Arrays.stream(quantities)
             .filter(predicate)

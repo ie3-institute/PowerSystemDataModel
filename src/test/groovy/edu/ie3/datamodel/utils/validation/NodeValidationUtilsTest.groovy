@@ -30,7 +30,7 @@ class NodeValidationUtilsTest extends Specification {
     List<Try<Void, ? extends ValidationException>> tries = NodeValidationUtils.check(node)
 
     then:
-    tries.forEach { it.success }
+    tries.every { it.success }
   }
 
   def "The check method recognizes all potential errors for a node"() {
