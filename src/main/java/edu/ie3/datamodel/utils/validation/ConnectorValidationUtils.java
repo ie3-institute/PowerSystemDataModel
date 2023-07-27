@@ -407,7 +407,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   private static Try<Void, InvalidEntityException> connectsDifferentNodes(
       ConnectorInput connectorInput) {
     return Try.ofVoid(
-        connectorInput.getNodeA() == connectorInput.getNodeB(),
+        connectorInput.getNodeA().equals(connectorInput.getNodeB()),
         new InvalidEntityException(
             connectorInput.getClass().getSimpleName() + " connects the same node, but shouldn't",
             connectorInput));
