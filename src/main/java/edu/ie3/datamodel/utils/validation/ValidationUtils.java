@@ -119,30 +119,33 @@ public class ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             assetInput.getId() == null, new InvalidEntityException("No ID assigned", assetInput)));
-    exceptions.add(
-        Try.ofVoid(
-            assetInput.getOperationTime() == null,
-            new InvalidEntityException("Operation time of the asset is not defined", assetInput)));
 
-    // Check if start time and end time are not null and start time is before end time
-    if (assetInput.getOperationTime().isLimited()) {
-      assetInput
-          .getOperationTime()
-          .getEndDate()
-          .ifPresent(
-              endDate ->
-                  assetInput
-                      .getOperationTime()
-                      .getStartDate()
-                      .ifPresent(
-                          startDate -> {
-                            if (endDate.isBefore(startDate))
-                              exceptions.add(
-                                  new Failure<>(
-                                      new InvalidEntityException(
-                                          "Operation start time of the asset has to be before end time",
-                                          assetInput)));
-                          }));
+    if (assetInput.getOperationTime() == null) {
+      exceptions.add(
+          Failure.ofVoid(
+              new InvalidEntityException(
+                  "Operation time of the asset is not defined", assetInput)));
+    } else {
+      // Check if start time and end time are not null and start time is before end time
+      if (assetInput.getOperationTime().isLimited()) {
+        assetInput
+            .getOperationTime()
+            .getEndDate()
+            .ifPresent(
+                endDate ->
+                    assetInput
+                        .getOperationTime()
+                        .getStartDate()
+                        .ifPresent(
+                            startDate -> {
+                              if (endDate.isBefore(startDate))
+                                exceptions.add(
+                                    new Failure<>(
+                                        new InvalidEntityException(
+                                            "Operation start time of the asset has to be before end time",
+                                            assetInput)));
+                            }));
+      }
     }
 
     // Further checks for subclasses
