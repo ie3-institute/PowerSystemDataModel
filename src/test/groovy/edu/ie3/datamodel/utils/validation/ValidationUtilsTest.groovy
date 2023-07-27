@@ -221,7 +221,7 @@ class ValidationUtilsTest extends Specification {
     def invalidAsset = new InvalidAssetInput()
 
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAsset(invalidAsset).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAsset(invalidAsset).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == 1
@@ -234,7 +234,7 @@ class ValidationUtilsTest extends Specification {
     def invalidAssetType = new InvalidAssetTypeInput()
 
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == 1
@@ -247,7 +247,7 @@ class ValidationUtilsTest extends Specification {
     def invalidAssetType = new InvalidAssetTypeInput(UUID.randomUUID(), null)
 
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == 2
@@ -267,7 +267,7 @@ class ValidationUtilsTest extends Specification {
     List<Try<Void, UnsafeEntityException>> exceptions = ValidationUtils.checkIds(validAssetIds)
 
     then:
-    exceptions.forEach {ex -> ex.success }
+    exceptions.forEach { ex -> ex.success }
   }
 
   def "Duplicate asset input ids leads to an exception"() {

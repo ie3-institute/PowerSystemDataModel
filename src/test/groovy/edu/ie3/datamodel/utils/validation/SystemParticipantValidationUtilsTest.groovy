@@ -49,7 +49,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.check() recognizes all potential errors for a system participant"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidSystemParticipant).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidSystemParticipant).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -247,7 +247,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkFixedFeedIn() recognizes all potential errors for an a Fixed Feed-In"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidFixedFeedIn).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidFixedFeedIn).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -314,7 +314,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkLoad() recognizes all potential errors for a load"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidLoad).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidLoad).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -343,7 +343,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkPV() recognizes all potential errors for a PV"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidPV).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidPV).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -450,7 +450,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     def invalidParticipant = new InvalidSystemParticipantInput(node)
 
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidParticipant).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidParticipant).stream().filter { it -> it.failure }.toList()
 
     then:
     def e = exceptions.get(0).exception().cause

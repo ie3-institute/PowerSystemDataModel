@@ -72,7 +72,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkLine() recognizes all potential errors for a line"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidLine).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidLine).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -114,7 +114,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer2W recognizes all potential errors for a transformer2W"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidTransformer2W).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidTransformer2W).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -186,7 +186,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer3W recognizes all potential errors for a transformer3W"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidTransformer3W).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidTransformer3W).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -252,7 +252,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkSwitch recognizes all potential errors for a switch"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidSwitch).stream().filter {it -> it.failure}.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidSwitch).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize

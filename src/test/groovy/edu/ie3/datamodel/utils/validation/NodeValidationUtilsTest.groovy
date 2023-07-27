@@ -30,12 +30,12 @@ class NodeValidationUtilsTest extends Specification {
     List<Try<Void, ? extends ValidationException>> tries = NodeValidationUtils.check(node)
 
     then:
-    tries.forEach { it.success}
+    tries.forEach { it.success }
   }
 
   def "The check method recognizes all potential errors for a node"() {
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = NodeValidationUtils.check(invalidNode).stream().filter { it -> it.failure}.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = NodeValidationUtils.check(invalidNode).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
