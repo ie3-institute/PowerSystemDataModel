@@ -117,6 +117,62 @@ class TryTest extends Specification {
     cause.message == "source exception"
   }
 
+  def "A Try object can be creates by a boolean and an exception"() {
+    when:
+    def actual = Try.ofVoid(bool, ex)
+
+    then:
+    actual.failure == expected
+
+    if (expected) {
+      actual.exception() == ex
+    }
+
+    where:
+    bool | ex | expected
+    true | new FailureException("failure") | true
+    false | new FailureException("no failure") | false
+  }
+
+  def "A list of Tries is returned when applying a multiple VoidSupplier to Try#ofVoid()"() {
+    given:
+    Try.VoidSupplier<FailureException> one = () -> {
+      throw new FailureException("failure 1")
+    }
+    Try.VoidSupplier<FailureException> two = () -> {
+      throw new FailureException("failure 2")
+    }
+
+    when:
+    List<Try<Void, FailureException>> failures = Try.ofVoid(FailureException, one, two)
+
+    then:
+    failures.size() == 2
+    failures.forEach {
+      it.failure
+    }
+  }
+
+  def "A TryException is thrown if an unexpected exception type is thrown when using Try#ofVoid() with multiple VoidSuppliers"() {
+    given:
+    Try.VoidSupplier<FailureException> one = () -> {
+      throw new FailureException("failure")
+    }
+    Try.VoidSupplier<SourceException> two = () -> {
+      throw new SourceException("source exception")
+    }
+
+    when:
+    Try.ofVoid(FailureException, one, two)
+
+    then:
+    Exception ex = thrown()
+    ex.class == TryException
+    Throwable cause = ex.cause
+    cause.class == SourceException
+    cause.message == "source exception"
+  }
+
   def "A void method can be applied to a try object"() {
     when:
     Try<Void, Exception> actual = Try.ofVoid(() -> null, Exception)

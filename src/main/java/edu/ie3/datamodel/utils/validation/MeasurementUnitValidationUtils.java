@@ -10,7 +10,6 @@ import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
 
 public class MeasurementUnitValidationUtils extends ValidationUtils {
 
@@ -29,24 +28,17 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
    */
   protected static Try<Void, ? extends ValidationException> check(
       MeasurementUnitInput measurementUnit) {
-    try {
-      checkNonNull(measurementUnit, "a measurement unit");
-    } catch (InvalidEntityException e) {
-      return new Failure<>(
-          new InvalidEntityException(
-              "Validation not possible because received object {" + measurementUnit + "} was null",
-              e));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(measurementUnit, "a measurement unit");
+
+    if (isNull.isFailure()) {
+      return isNull;
     }
 
-    if (!measurementUnit.getP()
-        && !measurementUnit.getQ()
-        && !measurementUnit.getVAng()
-        && !measurementUnit.getVMag()) {
-      return new Failure<>(
-          new UnsafeEntityException(
-              "Measurement Unit does not measure any values", measurementUnit));
-    } else {
-      return Success.empty();
-    }
+    return Try.ofVoid(
+        !measurementUnit.getP()
+            && !measurementUnit.getQ()
+            && !measurementUnit.getVAng()
+            && !measurementUnit.getVMag(),
+        new UnsafeEntityException("Measurement Unit does not measure any values", measurementUnit));
   }
 }

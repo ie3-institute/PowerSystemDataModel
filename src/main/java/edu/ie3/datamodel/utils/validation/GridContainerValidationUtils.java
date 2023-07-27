@@ -16,10 +16,11 @@ import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -47,16 +48,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
    */
   protected static List<Try<Void, ? extends ValidationException>> check(
       GridContainer gridContainer) {
-    try {
-      checkNonNull(gridContainer, "grid container");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + gridContainer
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(gridContainer, "grid container");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
@@ -64,13 +59,11 @@ public class GridContainerValidationUtils extends ValidationUtils {
     /* sanity check to ensure distinct UUIDs */
     Optional<String> exceptionString =
         checkForDuplicateUuids(new HashSet<>(gridContainer.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidGridException(
-                  duplicateUuidsString(
-                      gridContainer.getClass().getSimpleName(), exceptionString))));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            exceptionString.isPresent(),
+            new InvalidGridException(
+                duplicateUuidsString(gridContainer.getClass().getSimpleName(), exceptionString))));
 
     exceptions.addAll(checkRawGridElements(gridContainer.getRawGrid()));
     exceptions.addAll(
@@ -99,16 +92,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
    */
   protected static List<Try<Void, ? extends ValidationException>> checkRawGridElements(
       RawGridElements rawGridElements) {
-    try {
-      checkNonNull(rawGridElements, "raw grid elements");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + rawGridElements
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(rawGridElements, "raw grid elements");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
@@ -116,13 +103,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
     /* sanity check to ensure distinct UUIDs */
     Optional<String> exceptionString =
         checkForDuplicateUuids(new HashSet<>(rawGridElements.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidGridException(
-                  duplicateUuidsString(
-                      rawGridElements.getClass().getSimpleName(), exceptionString))));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            exceptionString.isPresent(),
+            new InvalidGridException(
+                duplicateUuidsString(
+                    rawGridElements.getClass().getSimpleName(), exceptionString))));
 
     /* Checking nodes */
     Set<NodeInput> nodes = rawGridElements.getNodes();
@@ -133,11 +119,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .getLines()
         .forEach(
             line -> {
-              try {
-                checkNodeAvailability(line, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
+              exceptions.add(checkNodeAvailability(line, nodes));
               exceptions.addAll(ConnectorValidationUtils.check(line));
             });
 
@@ -146,11 +128,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .getTransformer2Ws()
         .forEach(
             transformer -> {
-              try {
-                checkNodeAvailability(transformer, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
+              exceptions.add(checkNodeAvailability(transformer, nodes));
               exceptions.addAll(ConnectorValidationUtils.check(transformer));
             });
 
@@ -159,11 +137,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .getTransformer3Ws()
         .forEach(
             transformer -> {
-              try {
-                checkNodeAvailability(transformer, nodes);
-              } catch (ValidationException e) {
-                exceptions.add(new Failure<>(e));
-              }
+              exceptions.add(checkNodeAvailability(transformer, nodes));
               exceptions.addAll(ConnectorValidationUtils.check(transformer));
             });
 
@@ -186,11 +160,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .getSwitches()
         .forEach(
             switcher -> {
-              try {
-                checkNodeAvailability(switcher, validSwitchNodes);
-              } catch (ValidationException e) {
-                exceptions.add(new Failure<>(e));
-              }
+              exceptions.add(checkNodeAvailability(switcher, validSwitchNodes));
               exceptions.addAll(ConnectorValidationUtils.check(switcher));
             });
 
@@ -199,11 +169,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .getMeasurementUnits()
         .forEach(
             measurement -> {
-              try {
-                checkNodeAvailability(measurement, nodes);
-              } catch (ValidationException e) {
-                exceptions.add(new Failure<>(e));
-              }
+              exceptions.add(checkNodeAvailability(measurement, nodes));
               exceptions.add(MeasurementUnitValidationUtils.check(measurement));
             });
 
@@ -243,16 +209,11 @@ public class GridContainerValidationUtils extends ValidationUtils {
    */
   protected static List<Try<Void, ? extends ValidationException>> checkSystemParticipants(
       SystemParticipants systemParticipants, Set<NodeInput> nodes) {
-    try {
-      checkNonNull(systemParticipants, "system participants");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + systemParticipants
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull =
+        checkNonNull(systemParticipants, "system participants");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
@@ -261,13 +222,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
     Optional<String> exceptionString =
         ValidationUtils.checkForDuplicateUuids(
             new HashSet<>(systemParticipants.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidGridException(
-                  duplicateUuidsString(
-                      systemParticipants.getClass().getSimpleName(), exceptionString))));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            exceptionString.isPresent(),
+            new InvalidGridException(
+                duplicateUuidsString(
+                    systemParticipants.getClass().getSimpleName(), exceptionString))));
 
     exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
@@ -299,11 +259,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
             entity -> {
               List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
-              try {
-                checkNodeAvailability(entity, nodes);
-              } catch (InvalidGridException e) {
-                exceptions.add(new Failure<>(e));
-              }
+              exceptions.add(checkNodeAvailability(entity, nodes));
               exceptions.addAll(SystemParticipantValidationUtils.check(entity));
 
               return exceptions;
@@ -346,142 +302,112 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
-  protected static List<Try<Void, ValidationException>> checkGraphicElements(
+  protected static List<Try<Void, ? extends ValidationException>> checkGraphicElements(
       GraphicElements graphicElements, Set<NodeInput> nodes, Set<LineInput> lines) {
-    try {
-      checkNonNull(graphicElements, "graphic elements");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + graphicElements
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(graphicElements, "graphic elements");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
-    List<Try<Void, ValidationException>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
     // sanity check for distinct uuids
     Optional<String> exceptionString =
         checkForDuplicateUuids(new HashSet<>(graphicElements.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidGridException(
-                  duplicateUuidsString(
-                      graphicElements.getClass().getSimpleName(), exceptionString))));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            exceptionString.isPresent(),
+            new InvalidGridException(
+                duplicateUuidsString(
+                    graphicElements.getClass().getSimpleName(), exceptionString))));
 
     graphicElements
         .getNodeGraphics()
         .forEach(
             graphic -> {
-              try {
-                GraphicValidationUtils.check(graphic);
-              } catch (InvalidEntityException e) {
-                exceptions.add(new Failure<>(e));
-              }
-              if (!nodes.contains(graphic.getNode())) {
-                exceptions.add(
-                    new Failure<>(
-                        new InvalidEntityException(
-                            "The node graphic with uuid '"
-                                + graphic.getUuid()
-                                + "' refers to node with uuid '"
-                                + graphic.getNode().getUuid()
-                                + "', that is not among the provided ones.",
-                            graphic)));
-              }
+              exceptions.addAll(GraphicValidationUtils.check(graphic));
+              exceptions.add(
+                  Try.ofVoid(
+                      !nodes.contains(graphic.getNode()),
+                      buildGraphicExceptionMessage(graphic, "node", graphic.getNode().getUuid())));
             });
 
     graphicElements
         .getLineGraphics()
         .forEach(
             graphic -> {
-              try {
-                GraphicValidationUtils.check(graphic);
-              } catch (InvalidEntityException e) {
-                exceptions.add(new Failure<>(e));
-              }
-              if (!lines.contains(graphic.getLine())) {
-                exceptions.add(
-                    new Failure<>(
-                        new InvalidEntityException(
-                            "The line graphic with uuid '"
-                                + graphic.getUuid()
-                                + "' refers to line with uuid '"
-                                + graphic.getLine().getUuid()
-                                + "', that is not among the provided ones.",
-                            graphic)));
-              }
+              exceptions.addAll(GraphicValidationUtils.check(graphic));
+              exceptions.add(
+                  Try.ofVoid(
+                      !lines.contains(graphic.getLine()),
+                      buildGraphicExceptionMessage(graphic, "line", graphic.getLine().getUuid())));
             });
 
     return exceptions;
   }
 
   /**
-   * Checks, if the nodes of the {@link ConnectorInput} are in the collection of provided, already
-   * determined nodes
+   * Checks if the node(s) of the given {@link AssetInput} are in the collection of provided already
+   * determined nodes.
    *
-   * @param connector Connector to examine
-   * @param nodes Permissible, already known nodes
+   * @param input asset to examine
+   * @param nodes permissible, already known nodes
+   * @return either an {@link InvalidGridException} wrapped in a {@link Failure} or an empty {@link
+   *     Success}
    */
-  private static void checkNodeAvailability(ConnectorInput connector, Collection<NodeInput> nodes) {
-    if (!nodes.containsAll(Arrays.asList(connector.getNodeA(), connector.getNodeB())))
-      throw getMissingNodeException(connector);
+  private static Try<Void, InvalidGridException> checkNodeAvailability(
+      AssetInput input, Collection<NodeInput> nodes) {
+    boolean available;
+
+    if (input instanceof Transformer3WInput transformer) {
+      available =
+          !nodes.containsAll(
+              Arrays.asList(
+                  transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()));
+    } else if (input instanceof ConnectorInput connector) {
+      available = !nodes.containsAll(Arrays.asList(connector.getNodeA(), connector.getNodeB()));
+    } else if (input instanceof SystemParticipantInput participant) {
+      available = !nodes.contains(participant.getNode());
+    } else if (input instanceof MeasurementUnitInput measurementUnit) {
+      available = !nodes.contains(measurementUnit.getNode());
+    } else {
+      return Failure.ofVoid(
+          new InvalidGridException(
+              "Checking the node availability of"
+                  + input.getClass().getSimpleName()
+                  + " is not implemented."));
+    }
+
+    return Try.ofVoid(
+        available,
+        new InvalidGridException(
+            input.getClass().getSimpleName()
+                + " "
+                + input
+                + " is connected to a node that is not in the set of nodes."));
   }
 
   /**
-   * Checks, if the nodes of the {@link Transformer3WInput} are in the collection of provided,
-   * already determined nodes
+   * Creates a {@link InvalidEntityException} for graphic inputs.
    *
-   * @param transformer Transformer to examine
-   * @param nodes Permissible, already known nodes
+   * @param graphic input
+   * @param type of the graphic
+   * @param asset uuid of the referred asset
+   * @return a {@link Failure}
    */
-  private static void checkNodeAvailability(
-      Transformer3WInput transformer, Collection<NodeInput> nodes) {
-    if (!nodes.containsAll(
-        Arrays.asList(transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC())))
-      throw getMissingNodeException(transformer);
-  }
-
-  /**
-   * Checks, if the node of the {@link SystemParticipantInput} are in the collection of provided,
-   * already determined nodes
-   *
-   * @param participant Connector to examine
-   * @param nodes Permissible, already known nodes
-   */
-  private static void checkNodeAvailability(
-      SystemParticipantInput participant, Collection<NodeInput> nodes) {
-    if (!nodes.contains(participant.getNode())) throw getMissingNodeException(participant);
-  }
-
-  /**
-   * Checks, if the node of the {@link MeasurementUnitInput} are in the collection of provided,
-   * already determined nodes
-   *
-   * @param measurementUnit Connector to examine
-   * @param nodes Permissible, already known nodes
-   */
-  private static void checkNodeAvailability(
-      MeasurementUnitInput measurementUnit, Collection<NodeInput> nodes) {
-    if (!nodes.contains(measurementUnit.getNode())) throw getMissingNodeException(measurementUnit);
-  }
-
-  /**
-   * Builds an exception, that announces, that the given input is connected to a node, that is not
-   * in the set of nodes provided.
-   *
-   * @param input Input model
-   * @return Exception for a missing node
-   */
-  private static InvalidGridException getMissingNodeException(AssetInput input) {
-    return new InvalidGridException(
-        input.getClass().getSimpleName()
-            + " "
-            + input
-            + " is connected to a node that is not in the set of nodes.");
+  private static InvalidEntityException buildGraphicExceptionMessage(
+      GraphicInput graphic, String type, UUID asset) {
+    return new InvalidEntityException(
+        "The "
+            + type
+            + " graphic with uuid '"
+            + graphic.getUuid()
+            + "' refers to "
+            + type
+            + " with uuid '"
+            + asset
+            + "', that is not a,ong the provided ones.",
+        graphic);
   }
 }

@@ -54,19 +54,14 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *     Success
    */
   protected static List<Try<Void, InvalidEntityException>> check(ConnectorInput connector) {
-    try {
-      checkNonNull(connector, "a connector");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {" + connector + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(connector, "a connector");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
-    exceptions.add(
-        Try.ofVoid(() -> connectsDifferentNodes(connector), InvalidEntityException.class));
+    exceptions.add(connectsDifferentNodes(connector));
 
     // Further checks for subclasses
     if (LineInput.class.isAssignableFrom(connector.getClass())) {
@@ -81,7 +76,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
       exceptions.add(
           new Failure<>(
               new InvalidEntityException(
-                  "Validation failed due to: ", checkNotImplementedException(connector))));
+                  "Validation failed due to: ", buildNotImplementedException(connector))));
     }
 
     return exceptions;
@@ -135,14 +130,10 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *     Success
    */
   protected static List<Try<Void, InvalidEntityException>> checkLineType(LineTypeInput lineType) {
-    try {
-      checkNonNull(lineType, "a line type");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {" + lineType + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(lineType, "a line type");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     return Try.ofVoid(
@@ -208,16 +199,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   protected static List<Try<Void, InvalidEntityException>> checkTransformer2WType(
       Transformer2WTypeInput transformer2WType) {
-    try {
-      checkNonNull(transformer2WType, "a two winding transformer type");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + transformer2WType
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull =
+        checkNonNull(transformer2WType, "a two winding transformer type");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     return Try.ofVoid(
@@ -268,23 +254,22 @@ public class ConnectorValidationUtils extends ValidationUtils {
             () -> checkIfTapPositionIsWithinBounds(transformer3W), InvalidEntityException.class));
 
     // Check if transformer connects different voltage levels
-    if (transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeB().getVoltLvl()
-        || transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeC().getVoltLvl()
-        || transformer3W.getNodeB().getVoltLvl() == transformer3W.getNodeC().getVoltLvl()) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Transformer connects nodes of the same voltage level", transformer3W)));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeB().getVoltLvl()
+                || transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeC().getVoltLvl()
+                || transformer3W.getNodeB().getVoltLvl() == transformer3W.getNodeC().getVoltLvl(),
+            new InvalidEntityException(
+                "Transformer connects nodes of the same voltage level", transformer3W)));
+
     // Check if transformer connects different subnets
-    if (transformer3W.getNodeA().getSubnet() == transformer3W.getNodeB().getSubnet()
-        || transformer3W.getNodeA().getSubnet() == transformer3W.getNodeC().getSubnet()
-        || transformer3W.getNodeB().getSubnet() == transformer3W.getNodeC().getSubnet()) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Transformer connects nodes in the same subnet", transformer3W)));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            transformer3W.getNodeA().getSubnet() == transformer3W.getNodeB().getSubnet()
+                || transformer3W.getNodeA().getSubnet() == transformer3W.getNodeC().getSubnet()
+                || transformer3W.getNodeB().getSubnet() == transformer3W.getNodeC().getSubnet(),
+            new InvalidEntityException(
+                "Transformer connects nodes in the same subnet", transformer3W)));
 
     exceptions.add(
         Try.ofVoid(
@@ -314,16 +299,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   protected static List<Try<Void, InvalidEntityException>> checkTransformer3WType(
       Transformer3WTypeInput transformer3WType) {
-    try {
-      checkNonNull(transformer3WType, "a three winding transformer type");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + transformer3WType
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull =
+        checkNonNull(transformer3WType, "a three winding transformer type");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     return Try.ofVoid(
@@ -365,12 +345,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
   private static Try<Void, InvalidEntityException> checkSwitch(SwitchInput switchInput) {
-    if (!switchInput.getNodeA().getVoltLvl().equals(switchInput.getNodeB().getVoltLvl())) {
-      return Failure.ofVoid(
-          new InvalidEntityException("Switch connects two different voltage levels", switchInput));
-    } else {
-      return Success.empty();
-    }
+    return Try.ofVoid(
+        !switchInput.getNodeA().getVoltLvl().equals(switchInput.getNodeB().getVoltLvl()),
+        new InvalidEntityException("Switch connects two different voltage levels", switchInput));
     /* Remark: Connecting two different "subnets" is fine, because as of our definition regarding a switchgear in
      * "upstream" direction of a transformer, all the nodes, that hare within the switch chain, belong to the lower
      * grid, whilst the "real" upper node is within the upper grid */
@@ -414,15 +391,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
 
     ConnectivityInspector<UUID, DefaultEdge> inspector = new ConnectivityInspector<>(graph);
 
-    if (!inspector.isConnected()) {
-      return new Failure<>(
-          new InvalidGridException(
-              "The grid with subnetNo "
-                  + subGridContainer.getSubnet()
-                  + " is not connected! Please ensure that all elements are connected correctly!"));
-    } else {
-      return Success.empty();
-    }
+    return Try.ofVoid(
+        !inspector.isConnected(),
+        new InvalidGridException(
+            "The grid with subnetNo "
+                + subGridContainer.getSubnet()
+                + " is not connected! Please ensure that all elements are connected correctly!"));
   }
 
   /**
@@ -430,12 +404,13 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param connectorInput connectorInput to validate
    */
-  private static void connectsDifferentNodes(ConnectorInput connectorInput) {
-    if (connectorInput.getNodeA() == connectorInput.getNodeB()) {
-      throw new InvalidEntityException(
-          connectorInput.getClass().getSimpleName() + " connects the same node, but shouldn't",
-          connectorInput);
-    }
+  private static Try<Void, InvalidEntityException> connectsDifferentNodes(
+      ConnectorInput connectorInput) {
+    return Try.ofVoid(
+        connectorInput.getNodeA() == connectorInput.getNodeB(),
+        new InvalidEntityException(
+            connectorInput.getClass().getSimpleName() + " connects the same node, but shouldn't",
+            connectorInput));
   }
 
   /**

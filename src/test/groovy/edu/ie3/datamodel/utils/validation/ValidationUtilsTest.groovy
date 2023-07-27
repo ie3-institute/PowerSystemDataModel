@@ -281,8 +281,8 @@ class ValidationUtilsTest extends Specification {
     List<Try<Void, UnsafeEntityException>> exceptions = ValidationUtils.checkIds(invalidAssetIds)
 
     then:
-    exceptions.get(0).success
-    exceptions.get(1).failure
-    exceptions.get(1).exception().message.contains("Entity may be unsafe because of: There is already an entity with the id invalid_asset")
+    exceptions.size() == 1
+    exceptions.get(0).failure
+    exceptions.get(0).exception().message.contains("Entity may be unsafe because of: There is already an entity with the id invalid_asset")
   }
 }

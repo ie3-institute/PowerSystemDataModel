@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class Try<T, E extends Exception> {
+  // fields
   private final T data;
   private final E exception;
   private final boolean isEmpty;
@@ -41,6 +42,8 @@ public abstract class Try<T, E extends Exception> {
     this.exception = ex;
     isEmpty = true;
   }
+
+  // static utility methods
 
   /**
    * Method to create a {@link Try} object easily.
@@ -90,6 +93,96 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
+   * Method to create a {@link Try} object easily.
+   *
+   * @param failure a {@link Failure} is returned.
+   * @param exception exception that should be wrapped by a {@link Failure}
+   * @return a {@link Try}
+   * @param <E> type of exception
+   */
+  public static <E extends Exception> Try<Void, E> ofVoid(boolean failure, E exception) {
+    if (failure) {
+      return Failure.ofVoid(exception);
+    } else {
+      return Success.empty();
+    }
+  }
+
+  /**
+   * Utility method to check a list of {@link VoidSupplier}'s.
+   *
+   * @param supplier list of {@link VoidSupplier}
+   * @param clazz class of the exception
+   * @return a list of {@link Try}
+   * @param <E> type of the exception
+   */
+  @SafeVarargs
+  public static <E extends Exception> List<Try<Void, E>> ofVoid(
+      Class<E> clazz, VoidSupplier<E>... supplier) {
+    return Arrays.stream(supplier).map(sup -> Try.ofVoid(sup, clazz)).toList();
+  }
+
+  /**
+   * Method to retrieve the exceptions from all {@link Failure} objects.
+   *
+   * @param tries collection of {@link Try} objects
+   * @return a list of {@link Exception}'s
+   */
+  public static <D, E extends Exception> List<E> getExceptions(
+      Collection<Try<? extends D, E>> tries) {
+    return tries.stream().filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
+  }
+
+  /**
+   * Method to scan a collection of {@link Try} objects for {@link Failure}'s.
+   *
+   * @param c collection of {@link Try} objects
+   * @param typeOfData type of data
+   * @return a {@link Success} if no {@link Failure}'s are found in the collection
+   * @param <U> type of data
+   */
+  public static <U, E extends Exception> Try<Set<U>, FailureException> scanCollection(
+      Collection<Try<U, E>> c, Class<U> typeOfData) {
+    return scanStream(c.stream(), typeOfData.getSimpleName())
+        .transformS(stream -> stream.collect(Collectors.toSet()));
+  }
+
+  /**
+   * Method to scan a stream of {@link Try} objects for {@link Failure}'s.
+   *
+   * @param stream of {@link Try} objects
+   * @return a {@link Success} if no {@link Failure}'s are found in the stream
+   * @param <U> type of data
+   */
+  public static <U, E extends Exception> Try<Stream<U>, FailureException> scanStream(
+      Stream<Try<U, E>> stream, String typeOfData) {
+    Map<Boolean, List<Try<U, E>>> map = stream.collect(partitioningBy(Try::isSuccess));
+
+    List<Try<U, E>> successes = map.get(true);
+    List<Try<U, E>> failures = map.get(false);
+
+    // Both lists should exist in map per definition of partitioningBy
+    assert successes != null && failures != null;
+
+    if (!failures.isEmpty()) {
+      E first = failures.get(0).exception;
+
+      return new Failure<>(
+          new FailureException(
+              failures.size()
+                  + " exception(s) occurred within \""
+                  + typeOfData
+                  + "\" data, one is: "
+                  + first,
+              first.getCause()));
+    } else {
+      return new Success<>(successes.stream().map(t -> t.data));
+    }
+  }
+
+  // methods of try object
+
+  /**
    * Returns true if this object is a {@link Success} or false if this object is a {@link Failure}.
    */
   public abstract boolean isSuccess();
@@ -111,7 +204,7 @@ public abstract class Try<T, E extends Exception> {
    * @throws E if this object is a {@link Failure}
    */
   public T getOrThrow() throws E {
-    if (data != null) {
+    if (isSuccess()) {
       return data;
     } else {
       assert exception != null;
@@ -223,80 +316,10 @@ public abstract class Try<T, E extends Exception> {
     }
   }
 
-  /**
-   * Method to scan a collection of {@link Try} objects for {@link Failure}'s.
-   *
-   * @param c collection of {@link Try} objects
-   * @param typeOfData type of data
-   * @return a {@link Success} if no {@link Failure}'s are found in the collection
-   * @param <U> type of data
-   */
-  public static <U, E extends Exception> Try<Set<U>, FailureException> scanCollection(
-      Collection<Try<U, E>> c, Class<U> typeOfData) {
-    return scanStream(c.stream(), typeOfData.getSimpleName())
-        .transformS(stream -> stream.collect(Collectors.toSet()));
-  }
-
-  /**
-   * Method to scan a stream of {@link Try} objects for {@link Failure}'s.
-   *
-   * @param stream of {@link Try} objects
-   * @return a {@link Success} if no {@link Failure}'s are found in the stream
-   * @param <U> type of data
-   */
-  public static <U, E extends Exception> Try<Stream<U>, FailureException> scanStream(
-      Stream<Try<U, E>> stream, String typeOfData) {
-    Map<Boolean, List<Try<U, E>>> map = stream.collect(partitioningBy(Try::isSuccess));
-
-    List<Try<U, E>> successes = map.get(true);
-    List<Try<U, E>> failures = map.get(false);
-
-    // Both lists should exist in map per definition of partitioningBy
-    assert successes != null && failures != null;
-
-    if (!failures.isEmpty()) {
-      E first = failures.get(0).exception;
-
-      return new Failure<>(
-          new FailureException(
-              failures.size()
-                  + " exception(s) occurred within \""
-                  + typeOfData
-                  + "\" data, one is: "
-                  + first,
-              first.getCause()));
-    } else {
-      return new Success<>(successes.stream().map(t -> t.data));
-    }
-  }
-
-  /**
-   * Utility method to check a list of {@link VoidSupplier}'s.
-   *
-   * @param supplier list of {@link VoidSupplier}
-   * @param clazz class of the exception
-   * @return a list of {@link Try}
-   * @param <E> type of the exception
-   */
-  @SafeVarargs
-  public static <E extends Exception> List<Try<Void, E>> ofVoid(
-      Class<E> clazz, VoidSupplier<E>... supplier) {
-    return Arrays.stream(supplier).map(sup -> Try.ofVoid(sup, clazz)).toList();
-  }
-
-  /**
-   * Method to retrieve the exceptions from all {@link Failure} objects.
-   *
-   * @param tries collection of {@link Try} objects
-   * @return a list of {@link Exception}'s
-   */
-  public static <D, E extends Exception> List<E> getExceptions(
-      Collection<Try<? extends D, E>> tries) {
-    return tries.stream().filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
-  }
-
   /** Implementation of {@link Try} class. This class is used to present a successful try. */
   public static final class Success<T, E extends Exception> extends Try<T, E> {
+    private static final Success<Void, ?> emptySuccess = new Success<>(null);
+
     public Success(T data) {
       super(data);
     }
@@ -321,8 +344,9 @@ public abstract class Try<T, E extends Exception> {
      *
      * @param <E> type of exception
      */
+    @SuppressWarnings("unchecked")
     public static <E extends Exception> Success<Void, E> empty() {
-      return new Success<>(null);
+      return (Success<Void, E>) emptySuccess;
     }
   }
 

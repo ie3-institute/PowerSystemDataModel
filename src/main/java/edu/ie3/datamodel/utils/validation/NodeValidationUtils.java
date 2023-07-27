@@ -36,13 +36,10 @@ public class NodeValidationUtils extends ValidationUtils {
    *     Success
    */
   protected static List<Try<Void, ? extends ValidationException>> check(NodeInput node) {
-    try {
-      checkNonNull(node, "a node");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {" + node + "} was null", e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(node, "a node");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
@@ -56,24 +53,25 @@ public class NodeValidationUtils extends ValidationUtils {
       exceptions.add(new Failure<>(invalidEntityException));
     }
 
-    if (node.getvTarget()
-        .isLessThanOrEqualTo(Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE_MAGNITUDE))) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException("Target voltage (p.u.) is not a positive value", node)));
-    } else if (node.getvTarget()
-        .isGreaterThan(Quantities.getQuantity(2, StandardUnits.TARGET_VOLTAGE_MAGNITUDE))) {
-      exceptions.add(
-          new Failure<>(
-              new UnsafeEntityException("Target voltage (p.u.) might be too high", node)));
-    }
-    if (node.getSubnet() <= 0)
-      exceptions.add(
-          new Failure<>(new InvalidEntityException("Subnet can't be zero or negative", node)));
-    if (node.getGeoPosition() == null) {
-      exceptions.add(
-          new Failure<>(new InvalidEntityException("GeoPosition of node is null", node)));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            node.getvTarget()
+                .isLessThanOrEqualTo(
+                    Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)),
+            new InvalidEntityException("Target voltage (p.u.) is not a positive value", node)));
+    exceptions.add(
+        Try.ofVoid(
+            node.getvTarget()
+                .isGreaterThan(Quantities.getQuantity(2, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)),
+            new UnsafeEntityException("Target voltage (p.u.) might be too high", node)));
+    exceptions.add(
+        Try.ofVoid(
+            node.getSubnet() <= 0,
+            new InvalidEntityException("Subnet can't be zero or negative", node)));
+    exceptions.add(
+        Try.ofVoid(
+            node.getGeoPosition() == null,
+            new InvalidEntityException("GeoPosition of node is null", node)));
 
     return exceptions;
   }
@@ -87,7 +85,7 @@ public class NodeValidationUtils extends ValidationUtils {
    */
   private static void checkVoltageLevel(VoltageLevel voltageLevel)
       throws InvalidEntityException, VoltageLevelException {
-    checkNonNull(voltageLevel, "a voltage level");
+    checkNonNull(voltageLevel, "a voltage level").getOrThrow();
     if (voltageLevel.getNominalVoltage() == null)
       throw new VoltageLevelException(
           "The nominal voltage of voltage level " + voltageLevel + " is null");

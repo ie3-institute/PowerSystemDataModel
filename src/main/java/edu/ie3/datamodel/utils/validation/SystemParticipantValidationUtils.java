@@ -44,27 +44,21 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   protected static List<Try<Void, InvalidEntityException>> check(
       SystemParticipantInput systemParticipant) {
-    try {
-      checkNonNull(systemParticipant, "a system participant");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + systemParticipant
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull =
+        checkNonNull(systemParticipant, "a system participant");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
 
-    if (systemParticipant.getqCharacteristics() == null) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Reactive power characteristics of system participant is not defined",
-                  systemParticipant)));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            systemParticipant.getqCharacteristics() == null,
+            new InvalidEntityException(
+                "Reactive power characteristics of system participant is not defined",
+                systemParticipant)));
 
     // Further checks for subclasses
     if (BmInput.class.isAssignableFrom(systemParticipant.getClass())) {
@@ -93,7 +87,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       exceptions.add(
           new Failure<>(
               new InvalidEntityException(
-                  "Validation failed due to: ", checkNotImplementedException(systemParticipant))));
+                  "Validation failed due to: ", buildNotImplementedException(systemParticipant))));
     }
 
     return exceptions;
@@ -116,28 +110,22 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   protected static List<Try<Void, InvalidEntityException>> checkType(
       SystemParticipantTypeInput systemParticipantTypeInput) {
-    try {
-      checkNonNull(systemParticipantTypeInput, "a system participant type");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + systemParticipantTypeInput
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull =
+        checkNonNull(systemParticipantTypeInput, "a system participant type");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
 
-    if ((systemParticipantTypeInput.getCapex() == null)
-        || (systemParticipantTypeInput.getOpex() == null)
-        || (systemParticipantTypeInput.getsRated() == null)) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException(
-                  "At least one of capex, opex, or sRated is null", systemParticipantTypeInput)));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            (systemParticipantTypeInput.getCapex() == null)
+                || (systemParticipantTypeInput.getOpex() == null)
+                || (systemParticipantTypeInput.getsRated() == null),
+            new InvalidEntityException(
+                "At least one of capex, opex, or sRated is null", systemParticipantTypeInput)));
 
     try {
       exceptions.add(
@@ -180,7 +168,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       exceptions.add(
           new Failure<>(
               new InvalidEntityException(
-                  checkNotImplementedException(systemParticipantTypeInput).getMessage(),
+                  buildNotImplementedException(systemParticipantTypeInput).getMessage(),
                   systemParticipantTypeInput)));
     }
 
@@ -349,11 +337,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   private static List<Try<Void, InvalidEntityException>> checkLoad(LoadInput loadInput) {
     List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
 
-    if (loadInput.getLoadProfile() == null) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException("No standard load profile defined for load", loadInput)));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            loadInput.getLoadProfile() == null,
+            new InvalidEntityException("No standard load profile defined for load", loadInput)));
 
     exceptions.addAll(
         Try.ofVoid(
@@ -470,13 +457,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       StorageTypeInput storageTypeInput) {
     List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
 
-    if (storageTypeInput.getLifeCycle() < 0) {
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Permissible amount of life cycles of the storage type must be zero or positive",
-                  storageTypeInput)));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            storageTypeInput.getLifeCycle() < 0,
+            new InvalidEntityException(
+                "Permissible amount of life cycles of the storage type must be zero or positive",
+                storageTypeInput)));
 
     exceptions.addAll(
         Try.ofVoid(

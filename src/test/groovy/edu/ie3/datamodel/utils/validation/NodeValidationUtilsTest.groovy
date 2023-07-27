@@ -27,10 +27,10 @@ class NodeValidationUtilsTest extends Specification {
     def node = GridTestData.nodeA
 
     when:
-    NodeValidationUtils.check(node)
+    List<Try<Void, ? extends ValidationException>> tries = NodeValidationUtils.check(node)
 
     then:
-    noExceptionThrown()
+    tries.forEach { it.success}
   }
 
   def "The check method recognizes all potential errors for a node"() {
@@ -45,7 +45,7 @@ class NodeValidationUtilsTest extends Specification {
 
     where:
     invalidNode                                                            	    || expectedSize || expectedException
-    GridTestData.nodeA.copy().voltLvl(null).build()								|| 1            || new InvalidEntityException("Expected a voltage level, but got nothing. :-(", new NullPointerException())
+    GridTestData.nodeA.copy().voltLvl(null).build()								|| 1            || new InvalidEntityException("Validation not possible because received object was null. Expected a voltage level, but got nothing. :-(", new NullPointerException())
     GridTestData.nodeA.copy().voltLvl(new CommonVoltageLevel(
         "null",
         null,

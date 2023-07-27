@@ -47,7 +47,7 @@ public class ValidationUtils {
    * @param obj Object, that cannot be checked
    * @return Exception with predefined error string
    */
-  protected static NotImplementedException checkNotImplementedException(Object obj) {
+  protected static NotImplementedException buildNotImplementedException(Object obj) {
     return new NotImplementedException(
         String.format(
             "Cannot validate object of class '%s', as no routine is implemented.",
@@ -63,10 +63,10 @@ public class ValidationUtils {
    *     Success
    */
   public static Try<Void, ? extends ValidationException> check(Object obj) {
-    try {
-      checkNonNull(obj, "an object");
-    } catch (InvalidEntityException e) {
-      return new Failure<>(e);
+    Try<Void, InvalidEntityException> isNull = checkNonNull(obj, "an object");
+
+    if (isNull.isFailure()) {
+      return isNull;
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
@@ -82,7 +82,7 @@ public class ValidationUtils {
     } else {
       exceptions.add(
           new Failure<>(
-              new FailedValidationException(checkNotImplementedException(obj).getMessage())));
+              new FailedValidationException(buildNotImplementedException(obj).getMessage())));
     }
 
     List<? extends ValidationException> list =
@@ -91,11 +91,7 @@ public class ValidationUtils {
             .map(t -> ((Failure<?, ? extends ValidationException>) t).get())
             .toList();
 
-    if (!list.isEmpty()) {
-      return new Failure<>(new FailedValidationException(list));
-    } else {
-      return Success.empty();
-    }
+    return Try.ofVoid(!list.isEmpty(), new FailedValidationException(list));
   }
 
   /**
@@ -112,27 +108,22 @@ public class ValidationUtils {
    *     Success
    */
   private static List<Try<Void, ? extends ValidationException>> checkAsset(AssetInput assetInput) {
-    try {
-      checkNonNull(assetInput, "an asset");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {" + assetInput + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(assetInput, "an asset");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
-    if (assetInput.getId() == null) {
-      exceptions.add(new Failure<>(new InvalidEntityException("No ID assigned", assetInput)));
-    }
-    if (assetInput.getOperationTime() == null) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Operation time of the asset is not defined", assetInput)));
-    }
+    exceptions.add(
+        Try.ofVoid(
+            assetInput.getId() == null, new InvalidEntityException("No ID assigned", assetInput)));
+    exceptions.add(
+        Try.ofVoid(
+            assetInput.getOperationTime() == null,
+            new InvalidEntityException("Operation time of the asset is not defined", assetInput)));
+
     // Check if start time and end time are not null and start time is before end time
     if (assetInput.getOperationTime().isLimited()) {
       assetInput
@@ -170,7 +161,7 @@ public class ValidationUtils {
       exceptions.add(
           new Failure<>(
               new FailedValidationException(
-                  checkNotImplementedException(assetInput).getMessage())));
+                  buildNotImplementedException(assetInput).getMessage())));
     }
 
     return exceptions;
@@ -188,24 +179,22 @@ public class ValidationUtils {
    */
   private static List<Try<Void, ? extends ValidationException>> checkAssetType(
       AssetTypeInput assetTypeInput) {
-    try {
-      checkNonNull(assetTypeInput, "an asset type");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + assetTypeInput
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(assetTypeInput, "an asset type");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
-    if (assetTypeInput.getUuid() == null)
-      exceptions.add(new Failure<>(new InvalidEntityException("No UUID assigned", assetTypeInput)));
-    if (assetTypeInput.getId() == null)
-      exceptions.add(new Failure<>(new InvalidEntityException("No ID assigned", assetTypeInput)));
+    exceptions.add(
+        Try.ofVoid(
+            assetTypeInput.getUuid() == null,
+            new InvalidEntityException("No UUID assigned", assetTypeInput)));
+    exceptions.add(
+        Try.ofVoid(
+            assetTypeInput.getId() == null,
+            new InvalidEntityException("No ID assigned", assetTypeInput)));
 
     // Further checks for subclasses
     if (LineTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
@@ -223,7 +212,7 @@ public class ValidationUtils {
       exceptions.add(
           new Failure<>(
               new FailedValidationException(
-                  checkNotImplementedException(assetTypeInput).getMessage())));
+                  buildNotImplementedException(assetTypeInput).getMessage())));
     }
 
     return exceptions;
@@ -246,7 +235,6 @@ public class ValidationUtils {
           String id = input.getId();
           if (!ids.contains(id)) {
             ids.add(id);
-            exceptions.add(Success.empty());
           } else {
             exceptions.add(
                 new Failure<>(
@@ -259,15 +247,23 @@ public class ValidationUtils {
   }
 
   /**
-   * Checks, if the given object is null. If so, an {@link InvalidEntityException} is thrown.
+   * Checks, if the given object is null. If so, an {@link InvalidEntityException} wrapped in a
+   * {@link Failure} is returned.
    *
    * @param obj Object to check
    * @param expectedDescription Further description, of what has been expected.
+   * @return either an {@link InvalidEntityException} wrapped in a {@link Failure} or an empty
+   *     {@link Success}
    */
-  protected static void checkNonNull(Object obj, String expectedDescription) {
-    if (obj == null)
-      throw new InvalidEntityException(
-          "Expected " + expectedDescription + ", but got nothing. :-(", new NullPointerException());
+  protected static Try<Void, InvalidEntityException> checkNonNull(
+      Object obj, String expectedDescription) {
+    return Try.ofVoid(
+        obj == null,
+        new InvalidEntityException(
+            "Validation not possible because received object was null. Expected "
+                + expectedDescription
+                + ", but got nothing. :-(",
+            new NullPointerException()));
   }
 
   /**

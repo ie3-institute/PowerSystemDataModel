@@ -34,16 +34,10 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    */
   protected static List<Try<Void, ? extends ValidationException>> check(
       ThermalUnitInput thermalUnitInput) {
-    try {
-      checkNonNull(thermalUnitInput, "a thermal unit");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + thermalUnitInput
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(thermalUnitInput, "a thermal unit");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
@@ -57,7 +51,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       exceptions.add(
           new Failure<>(
               new FailedValidationException(
-                  checkNotImplementedException(thermalUnitInput).getMessage())));
+                  buildNotImplementedException(thermalUnitInput).getMessage())));
     }
 
     return exceptions;
@@ -75,16 +69,10 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    */
   private static List<Try<Void, ? extends ValidationException>> checkThermalSink(
       ThermalSinkInput thermalSinkInput) {
-    try {
-      checkNonNull(thermalSinkInput, "a thermal sink");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + thermalSinkInput
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(thermalSinkInput, "a thermal sink");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
@@ -96,7 +84,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       exceptions.add(
           new Failure<>(
               new FailedValidationException(
-                  checkNotImplementedException(thermalSinkInput).getMessage())));
+                  buildNotImplementedException(thermalSinkInput).getMessage())));
     }
 
     return exceptions;
@@ -114,16 +102,11 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    */
   private static List<Try<Void, ? extends ValidationException>> checkThermalStorage(
       ThermalStorageInput thermalStorageInput) {
-    try {
-      checkNonNull(thermalStorageInput, "a thermal storage");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + thermalStorageInput
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull =
+        checkNonNull(thermalStorageInput, "a thermal storage");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
@@ -135,7 +118,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       exceptions.add(
           new Failure<>(
               new FailedValidationException(
-                  checkNotImplementedException(thermalStorageInput).getMessage())));
+                  buildNotImplementedException(thermalStorageInput).getMessage())));
     }
 
     return exceptions;
@@ -155,16 +138,10 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    */
   private static List<Try<Void, InvalidEntityException>> checkThermalHouse(
       ThermalHouseInput thermalHouseInput) {
-    try {
-      checkNonNull(thermalHouseInput, "a thermal house");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + thermalHouseInput
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull = checkNonNull(thermalHouseInput, "a thermal house");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, InvalidEntityException>> exceptions =
@@ -209,36 +186,33 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    */
   private static List<Try<Void, InvalidEntityException>> checkCylindricalStorage(
       CylindricalStorageInput cylindricalStorageInput) {
-    try {
-      checkNonNull(cylindricalStorageInput, "a cylindrical storage");
-    } catch (InvalidEntityException e) {
-      return List.of(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation not possible because received object {"
-                      + cylindricalStorageInput
-                      + "} was null",
-                  e)));
+    Try<Void, InvalidEntityException> isNull =
+        checkNonNull(cylindricalStorageInput, "a cylindrical storage");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
     List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
 
     // Check if inlet temperature is higher/equal to outlet temperature
-    if (cylindricalStorageInput.getInletTemp().isLessThan(cylindricalStorageInput.getReturnTemp()))
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Inlet temperature of the cylindrical storage cannot be lower than outlet temperature",
-                  cylindricalStorageInput)));
+    exceptions.add(
+        Try.ofVoid(
+            cylindricalStorageInput
+                .getInletTemp()
+                .isLessThan(cylindricalStorageInput.getReturnTemp()),
+            new InvalidEntityException(
+                "Inlet temperature of the cylindrical storage cannot be lower than outlet temperature",
+                cylindricalStorageInput)));
     // Check if minimum permissible storage volume is lower than overall available storage volume
-    if (cylindricalStorageInput
-        .getStorageVolumeLvlMin()
-        .isGreaterThan(cylindricalStorageInput.getStorageVolumeLvl()))
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume",
-                  cylindricalStorageInput)));
+    exceptions.add(
+        Try.ofVoid(
+            cylindricalStorageInput
+                .getStorageVolumeLvlMin()
+                .isGreaterThan(cylindricalStorageInput.getStorageVolumeLvl()),
+            new InvalidEntityException(
+                "Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume",
+                cylindricalStorageInput)));
 
     exceptions.add(
         Try.ofVoid(
