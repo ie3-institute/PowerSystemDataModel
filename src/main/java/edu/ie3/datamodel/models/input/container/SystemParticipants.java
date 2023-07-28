@@ -325,7 +325,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder bmPlants(Set<BmInput> bmPlants) {
       this.bmPlants = bmPlants;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -336,7 +336,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder chpPlants(Set<ChpInput> chpPlants) {
       this.chpPlants = chpPlants;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -347,7 +347,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder evCS(Set<EvcsInput> evCS) {
       this.evCS = evCS;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -358,7 +358,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder evs(Set<EvInput> evs) {
       this.evs = evs;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -369,7 +369,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder fixedFeedIn(Set<FixedFeedInInput> fixedFeedIns) {
       this.fixedFeedIns = fixedFeedIns;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -380,7 +380,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder heatPumps(Set<HpInput> heatPumps) {
       this.heatPumps = heatPumps;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -391,7 +391,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder loads(Set<LoadInput> loads) {
       this.loads = loads;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -402,7 +402,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder pvPlants(Set<PvInput> pvPlants) {
       this.pvPlants = pvPlants;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -413,7 +413,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder storages(Set<StorageInput> storages) {
       this.storages = storages;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -424,7 +424,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder wecPlants(Set<WecInput> wecPlants) {
       this.wecPlants = wecPlants;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -435,7 +435,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder emSystems(Set<EmInput> emSystems) {
       this.emSystems = emSystems;
-      return childInstance();
+      return this;
     }
 
     @Override
@@ -452,11 +452,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
           storages,
           wecPlants,
           emSystems);
-    }
-
-    @Override
-    protected SystemParticipantsCopyBuilder childInstance() {
-      return this;
     }
   }
 }

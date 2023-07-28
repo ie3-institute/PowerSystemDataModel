@@ -85,7 +85,7 @@ public record ThermalGrid(
      */
     public ThermalGridCopyBuilder bus(ThermalBusInput bus) {
       this.bus = bus;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -96,7 +96,7 @@ public record ThermalGrid(
      */
     public ThermalGridCopyBuilder houses(Set<ThermalHouseInput> houses) {
       this.houses = houses;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -107,11 +107,6 @@ public record ThermalGrid(
      */
     public ThermalGridCopyBuilder storages(Set<ThermalStorageInput> storages) {
       this.storages = storages;
-      return childInstance();
-    }
-
-    @Override
-    protected ThermalGridCopyBuilder childInstance() {
       return this;
     }
 

@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.io.Serializable;
 import java.util.List;
@@ -32,9 +32,11 @@ public interface InputContainer<T extends InputEntity> extends Serializable {
     protected InputContainerCopyBuilder() {}
 
     /** Returns a child instance of {@link InputContainerCopyBuilder} */
-    protected abstract InputContainerCopyBuilder<T, E> childInstance();
+    protected InputContainerCopyBuilder<T, E> childInstance() {
+      return this;
+    }
 
     /** Returns the altered {@link InputContainer} */
-    abstract InputContainer<T> build() throws InvalidGridException;
+    abstract InputContainer<T> build() throws ValidationException;
   }
 }
