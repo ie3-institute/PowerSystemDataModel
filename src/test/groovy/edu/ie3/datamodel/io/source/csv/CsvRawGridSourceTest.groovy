@@ -497,33 +497,35 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       rgtd.nodeC
     ]
 
-    def expectedSet = [
-      new Transformer3WInputEntityData([
-        "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
-        "id"				: "3w_test",
-        "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-        "operatesFrom"		: "2020-03-24 15:11:31",
-        "operatesUntil"		: "2020-03-24 15:11:31",
-        "parallelDevices"	: "1",
-        "tapPos"			: "0",
-        "autoTap"			: "true"
-      ],
-      Transformer3WInput,
-      rgtd.nodeA,
-      rgtd.nodeB,
-      rgtd.nodeC,
-      rgtd.transformerTypeAtoBtoC),
-      null
-    ]
+    def expected = new Transformer3WInputEntityData([
+      "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
+      "id"				: "3w_test",
+      "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
+      "operatesFrom"		: "2020-03-24 15:11:31",
+      "operatesUntil"		: "2020-03-24 15:11:31",
+      "parallelDevices"	: "1",
+      "tapPos"			: "0",
+      "autoTap"			: "true"
+    ],
+    Transformer3WInput,
+    rgtd.nodeA,
+    rgtd.nodeB,
+    rgtd.nodeC,
+    rgtd.transformerTypeAtoBtoC)
 
     when: "the sources tries to add nodes"
     def actualSet = source.buildTransformer3WEntityData(inputStream, availableNodes).collect(Collectors.toSet())
+    def successes = actualSet.stream().filter {
+      it.success
+    }.toList()
+    def failures = actualSet.stream().filter {
+      it.failure
+    }.toList()
 
     then: "everything is fine"
-    actualSet.size() == expectedSet.size()
-    actualSet.stream().map {
-      it.data.get()
-    }.toList().containsAll(expectedSet)
+    actualSet.size() == 2
+    successes.get(0).data.get() == expected
+    failures.get(0).exception.get().class == SourceException
   }
 
   def "The CsvRawGridSource is able to load all nodes from file"() {
