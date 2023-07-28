@@ -73,7 +73,7 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
      */
     public ThermalUnitsCopyBuilder houses(Set<ThermalHouseInput> houses) {
       this.houses = houses;
-      return childInstance();
+      return this;
     }
 
     /**
@@ -84,11 +84,6 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
      */
     public ThermalUnitsCopyBuilder storages(Set<ThermalStorageInput> storages) {
       this.storages = storages;
-      return childInstance();
-    }
-
-    @Override
-    protected ThermalUnitsCopyBuilder childInstance() {
       return this;
     }
 

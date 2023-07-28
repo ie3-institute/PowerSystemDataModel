@@ -14,6 +14,8 @@ import static edu.ie3.datamodel.models.StandardUnits.CONDUCTANCE_PER_LENGTH
 import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
 import static edu.ie3.datamodel.models.StandardUnits.RATED_VOLTAGE_MAGNITUDE
 import static edu.ie3.datamodel.models.StandardUnits.SUSCEPTANCE_PER_LENGTH
+import static edu.ie3.datamodel.utils.validation.DummyAssetInput.invalid
+import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
 import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
@@ -216,7 +218,7 @@ class ValidationUtilsTest extends Specification {
 
   def "Checking an unsupported asset leads to an exception"() {
     given:
-    def invalidAsset = new InvalidAssetInput()
+    def invalidAsset = invalid()
 
     when:
     List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAsset(invalidAsset).stream().filter { it -> it.failure }.toList()
@@ -224,7 +226,7 @@ class ValidationUtilsTest extends Specification {
     then:
     exceptions.size() == 1
     def e = exceptions.get(0).exception()
-    e.message.contains("Cannot validate object of class 'InvalidAssetInput', as no routine is implemented.")
+    e.message.contains("Cannot validate object of class 'DummyAssetInput', as no routine is implemented.")
   }
 
   def "Checking an unsupported asset type leads to an exception"() {
@@ -256,9 +258,9 @@ class ValidationUtilsTest extends Specification {
   def "Checking if asset input ids are unique"() {
     given:
     Set<AssetInput> validAssetIds = [
-      new ValidAssetInput("first"),
-      new ValidAssetInput("second"),
-      new ValidAssetInput("third")
+      valid("first"),
+      valid("second"),
+      valid("third")
     ]
 
     when:
@@ -271,8 +273,8 @@ class ValidationUtilsTest extends Specification {
   def "Duplicate asset input ids leads to an exception"() {
     given:
     Set<AssetInput> invalidAssetIds = [
-      new InvalidAssetInput(),
-      new InvalidAssetInput()
+      invalid(),
+      invalid()
     ]
 
     when:
