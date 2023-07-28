@@ -45,8 +45,8 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
 
     then:
     result.success
-    result.data().getClass() == CylindricalStorageResult
-    ((CylindricalStorageResult) result.data()).with {
+    result.data.get().getClass() == CylindricalStorageResult
+    ((CylindricalStorageResult) result.data.get()).with {
       assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
       assert inputModel == UUID.fromString(parameter.get("inputModel"))
       assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
@@ -69,8 +69,8 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
 
     then:
     result.success
-    result.data().getClass() == ThermalHouseResult
-    ((ThermalHouseResult) result.data()).with {
+    result.data.get().getClass() == ThermalHouseResult
+    ((ThermalHouseResult) result.data.get()).with {
       assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
       assert inputModel == UUID.fromString(parameter.get("inputModel"))
       assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)

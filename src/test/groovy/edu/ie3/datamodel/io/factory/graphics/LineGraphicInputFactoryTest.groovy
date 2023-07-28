@@ -45,8 +45,8 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert path == getGeometry(parameter["path"])
       assert graphicLayer == parameter["graphiclayer"]
@@ -71,8 +71,8 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert path == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["path"]) as LineString)
     }
 

@@ -30,7 +30,7 @@ class MeasurementUnitValidationUtilsTest extends Specification {
 
     then:
     exception.failure
-    Exception ex = exception.exception()
+    Exception ex = exception.exception.get()
     ex.class == expectedException.class
     ex.message == expectedException.message
 

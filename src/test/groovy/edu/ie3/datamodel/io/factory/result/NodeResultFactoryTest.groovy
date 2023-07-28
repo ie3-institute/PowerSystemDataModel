@@ -39,8 +39,8 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     result.success
-    result.data().getClass() == NodeResult
-    ((NodeResult) result.data()).with {
+    result.data.get().getClass() == NodeResult
+    ((NodeResult) result.data.get()).with {
       assert vMag == getQuant(parameter["vmag"], StandardUnits.VOLTAGE_MAGNITUDE)
       assert vAng == getQuant(parameter["vang"], StandardUnits.VOLTAGE_ANGLE)
       assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
@@ -62,7 +62,7 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.failure
-    input.exception().cause.message == "The provided fields [inputModel, time, vmag] with data \n" +
+    input.exception.get().cause.message == "The provided fields [inputModel, time, vmag] with data \n" +
         "{inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,\n" +
         "time -> 2020-01-30 17:26:44,\n" +
         "vmag -> 2} are invalid for instance of NodeResult. \n" +

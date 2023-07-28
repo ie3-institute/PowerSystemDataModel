@@ -65,7 +65,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     connectorDataOption.success
-    connectorDataOption.data().with {
+    connectorDataOption.data.get().with {
       assert fieldsToValues == expectedFieldsToAttributes
       assert targetClass == SwitchInput
       assert nodeA == rgtd.nodeA
@@ -175,7 +175,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       it.success
     }
 
-    actualSet.stream().map { it.data() }.toList().containsAll(expectedSet)
+    actualSet.stream().map { it.data.get() }.toList().containsAll(expectedSet)
   }
 
   def "The CsvRawGridSource is able to add a type to untyped ConnectorInputEntityData correctly"() {
@@ -264,7 +264,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actual.success
-    actual.data() == expectedTypedEntityData
+    actual.data.get() == expectedTypedEntityData
   }
 
   def "The CsvRawGridSource is able to identify ConnectorInputEntityData data with non matching type requirements correctly"() {
@@ -375,7 +375,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       it.success
     }
     actualSet.stream().map {
-      it.data()
+      it.data.get()
     }.toList().containsAll(expectedSet)
   }
 
@@ -424,7 +424,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actual.success
-    actual.data() == expected
+    actual.data.get() == expected
   }
 
   def "The CsvRawGridSource is NOT able to add the third node for a three winding transformer, if it is not available"() {
@@ -522,7 +522,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
     actualSet.stream().map {
-      it.data()
+      it.data.get()
     }.toList().containsAll(expectedSet)
   }
 

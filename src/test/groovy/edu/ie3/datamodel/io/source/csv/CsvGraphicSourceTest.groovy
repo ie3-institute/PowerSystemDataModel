@@ -63,7 +63,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     graphicElements.failure
     graphicElements.data == Optional.empty()
 
-    Exception ex = graphicElements.exception()
+    Exception ex = graphicElements.exception.get()
     ex.class == SourceException
     ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Failure due to: Skipping LineInput with uuid")
   }
@@ -135,7 +135,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     res.success == isPresent
 
     if (isPresent) {
-      def value = res.data()
+      def value = res.data.get()
 
       assert value == new NodeGraphicInputEntityData([
         "uuid"         : "09aec636-791b-45aa-b981-b14edf171c4c",
@@ -171,7 +171,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     res.success == isPresent
 
     if (isPresent) {
-      def value = res.data()
+      def value = res.data.get()
 
       assert value == new LineGraphicInputEntityData(["uuid"         : "ece86139-3238-4a35-9361-457ecb4258b0",
         "graphic_layer": "main",

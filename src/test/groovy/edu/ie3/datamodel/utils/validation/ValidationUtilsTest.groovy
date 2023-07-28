@@ -225,7 +225,7 @@ class ValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == 1
-    def e = exceptions.get(0).exception()
+    def e = exceptions.get(0).exception.get()
     e.message.contains("Cannot validate object of class 'DummyAssetInput', as no routine is implemented.")
   }
 
@@ -238,7 +238,7 @@ class ValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == 1
-    def e = exceptions.get(0).exception()
+    def e = exceptions.get(0).exception.get()
     e.message.contains("Cannot validate object of class 'InvalidAssetTypeInput', as no routine is implemented.")
   }
 
@@ -251,7 +251,7 @@ class ValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == 2
-    def e = exceptions.get(0).exception()
+    def e = exceptions.get(0).exception.get()
     e.message.startsWith("Entity is invalid because of: No ID assigned [AssetTypeInput")
   }
 
@@ -283,6 +283,6 @@ class ValidationUtilsTest extends Specification {
     then:
     exceptions.size() == 1
     exceptions.get(0).failure
-    exceptions.get(0).exception().message.contains("Entity may be unsafe because of: There is already an entity with the id invalid_asset")
+    exceptions.get(0).exception.get().message.contains("Entity may be unsafe because of: There is already an entity with the id invalid_asset")
   }
 }

@@ -49,8 +49,8 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])

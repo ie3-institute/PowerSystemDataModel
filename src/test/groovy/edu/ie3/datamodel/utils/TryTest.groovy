@@ -18,7 +18,9 @@ class TryTest extends Specification {
 
     then:
     actual.success
-    actual.data() == "success"
+    actual.data.get() == "success"
+    actual.orThrow == "success"
+    actual.exception == Optional.empty()
   }
 
   def "A failing method can be applied to a try object"() {
@@ -29,8 +31,9 @@ class TryTest extends Specification {
 
     then:
     actual.failure
-    actual.exception().class == SourceException
-    actual.exception().message == "Exception thrown."
+    actual.data == Optional.empty()
+    actual.exception.get().class == SourceException
+    actual.exception.get().message == "Exception thrown."
   }
 
   def "A failure is returned if an expected exception type is thrown when using #of()"() {
@@ -80,16 +83,6 @@ class TryTest extends Specification {
     actual.exception.get() == exception
   }
 
-  def "A failure is returned when using Failure#of() with a failure"() {
-    when:
-    def exception = new SourceException("source exception")
-    Try<Void, SourceException> actual = Try.Failure.of(new Try.Failure<String,SourceException>(exception))
-
-    then:
-    actual.failure
-    actual.exception.get() == exception
-  }
-
   def "A failure is returned if an expected exception type is thrown when using Try#ofVoid()"() {
     when:
     def exception = new SourceException("source exception")
@@ -125,7 +118,7 @@ class TryTest extends Specification {
     actual.failure == expected
 
     if (expected) {
-      actual.exception() == ex
+      actual.exception.get() == ex
     }
 
     where:
@@ -179,7 +172,7 @@ class TryTest extends Specification {
 
     then:
     actual.success
-    actual.empty
+    ((Try.Success<Void, Exception>) actual).empty
     actual.data.empty
   }
 
@@ -212,7 +205,6 @@ class TryTest extends Specification {
     expect:
     empty.success
     empty.data == Optional.empty()
-    empty.empty
   }
 
   def "A scan for exceptions should work as expected when failures are included"() {
@@ -229,7 +221,7 @@ class TryTest extends Specification {
 
     then:
     scan.failure
-    scan.exception().message == "1 exception(s) occurred within \"String\" data, one is: java.lang.Exception: exception"
+    scan.exception.get().message == "1 exception(s) occurred within \"String\" data, one is: java.lang.Exception: exception"
   }
 
   def "A scan for exceptions should work as expected when no failures are included"() {
@@ -245,7 +237,7 @@ class TryTest extends Specification {
 
     then:
     scan.success
-    scan.data().size() == 3
+    scan.data.get().size() == 3
   }
 
   def "The getOrThrow method should work as expected"() {
@@ -261,34 +253,33 @@ class TryTest extends Specification {
     ex.message == "source exception"
   }
 
-  def "The getOrElse method should work as expected"() {
-    given:
-    Try<String, Exception> success = new Try.Success<>("success")
-    Try<String, SourceException> failure = new Try.Failure<>(new SourceException("exception"))
-
-    when:
-    String successResult = success.getOrElse("else")
-    String failureResult = failure.getOrElse("else")
-
-    then:
-    successResult == "success"
-    failureResult == "else"
-  }
-
   def "A Try objects transformation should work as correctly for successes"() {
     given:
     Try<String, Exception> success = new Try.Success<>("5")
+    SourceException exc = new SourceException("source exception")
 
     when:
-    Try<Integer, Exception> first = success.transformS(str -> Integer.parseInt(str) )
-    Try<Integer, Exception> second = success.transform(str -> Integer.parseInt(str), ex -> new Exception(ex) )
+    Try<Integer, Exception> transformS = success.transformS(str -> Integer.parseInt(str) )
+    Try<Integer, Exception> map = success.map(str -> Integer.parseInt(str) )
+    Try<String, Exception> transformF = success.transformF(ex -> new Exception(ex) )
+    Try<Integer, Exception> transform = success.transform(str -> Integer.parseInt(str), ex -> new Exception(ex) )
+    Try<Integer, Exception> flatMapS = success.flatMap(str -> new Try.Success(Integer.parseInt(str)) )
+    Try<Integer, Exception> flatMapF = success.flatMap(str -> new Try.Failure(exc) )
 
     then:
-    first.success
-    second.success
+    transformS.success
+    map.success
+    transformF.success
+    transform.success
+    flatMapS.success
+    flatMapF.failure
 
-    first.data() == 5
-    second.data() == 5
+    transformS.data.get() == 5
+    map.data.get() == 5
+    transformF.data.get() == "5"
+    transform.data.get() == 5
+    flatMapS.data.get() == 5
+    flatMapF.exception.get() == exc
   }
 
   def "A Try objects transformation should work as correctly for failures"() {
@@ -296,15 +287,27 @@ class TryTest extends Specification {
     Try<String, Exception> failure = new Try.Failure<>(new SourceException(""))
 
     when:
-    Try<Integer, Exception> first = failure.transformS(str -> Integer.parseInt(str) )
-    Try<Integer, Exception> second = failure.transform(str -> Integer.parseInt(str), ex -> new Exception(ex) )
+    Try<Integer, Exception> transformS = failure.transformS(str -> Integer.parseInt(str) )
+    Try<Integer, Exception> map = failure.map(str -> Integer.parseInt(str) )
+    Try<String, Exception> transformF = failure.transformF(ex -> new Exception(ex) )
+    Try<Integer, Exception> transform = failure.transform(str -> Integer.parseInt(str), ex -> new Exception(ex) )
+    Try<Integer, Exception> flatMapS = failure.flatMap(str -> new Try.Success(Integer.parseInt(str)) )
+    Try<Integer, Exception> flatMapF = failure.flatMap(str -> new Try.Failure(new SourceException("not returned")) )
 
     then:
-    first.failure
-    second.failure
+    transformS.failure
+    map.failure
+    transformF.failure
+    transform.failure
+    flatMapS.failure
+    flatMapF.failure
 
-    first.exception().class == SourceException
-    second.exception().class == Exception
+    transformS.exception.get().class == SourceException
+    map.exception.get().class == SourceException
+    transformF.exception.get().class == Exception
+    transform.exception.get().class == Exception
+    flatMapS.exception.get() == failure.get()
+    flatMapF.exception.get() == failure.get()
   }
 
   def "All exceptions of a collection of try objects should be returned"() {

@@ -75,7 +75,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception()
+    Exception ex = exceptions.get(0).exception.get()
     ex.class == expectedException.class
     ex.message == expectedException.message
 
@@ -117,7 +117,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception()
+    Exception ex = exceptions.get(0).exception.get()
     ex.class == expectedException.class
     ex.message == expectedException.message
 
@@ -189,7 +189,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception()
+    Exception ex = exceptions.get(0).exception.get()
     ex.message == expectedException.message
 
     where:
@@ -255,7 +255,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception()
+    Exception ex = exceptions.get(0).exception.get()
     ex.message == expectedException.message
 
     where:

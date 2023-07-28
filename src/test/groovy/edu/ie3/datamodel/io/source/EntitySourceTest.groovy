@@ -101,6 +101,6 @@ class EntitySourceTest extends Specification {
     then:
     noExceptionThrown() // no NPE should be thrown
     thermalBusInputEntity.success
-    thermalBusInputEntity.data().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
+    thermalBusInputEntity.data.get().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
   }
 }

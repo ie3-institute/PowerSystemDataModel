@@ -57,8 +57,8 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 
     then:
     result.success
-    result.data().getClass() == resultingModelClass
-    ((ConnectorResult) result.data()).with {
+    result.data.get().getClass() == resultingModelClass
+    ((ConnectorResult) result.data.get()).with {
       assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
       assert inputModel == UUID.fromString(parameter["inputModel"])
       assert iAAng == getQuant(parameter["iaang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
@@ -67,12 +67,12 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
       assert iBMag == getQuant(parameter["ibmag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     }
 
-    if (result.data().getClass() == Transformer2WResult) {
-      assert ((Transformer2WResult) result.data()).tapPos == Integer.parseInt(parameter["tappos"])
+    if (result.data.get().getClass() == Transformer2WResult) {
+      assert ((Transformer2WResult) result.data.get()).tapPos == Integer.parseInt(parameter["tappos"])
     }
 
-    if (result.data().getClass() == Transformer3WResult) {
-      Transformer3WResult transformer3WResult = ((Transformer3WResult) result.data())
+    if (result.data.get().getClass() == Transformer3WResult) {
+      Transformer3WResult transformer3WResult = ((Transformer3WResult) result.data.get())
       assert transformer3WResult.tapPos == Integer.parseInt(parameter["tappos"])
       assert transformer3WResult.iCAng == getQuant(parameter["icang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
       assert transformer3WResult.iCMag == getQuant(parameter["icmag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)

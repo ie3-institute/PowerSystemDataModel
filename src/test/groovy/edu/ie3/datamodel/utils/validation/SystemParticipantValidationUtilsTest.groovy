@@ -52,7 +52,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception()
+    Exception ex = exceptions.get(0).exception.get()
     ex.message == expectedException.message
 
     where:
@@ -250,7 +250,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception()
+    Exception ex = exceptions.get(0).exception.get()
     ex.message == expectedException.message
 
     where:
@@ -317,7 +317,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception()
+    Exception ex = exceptions.get(0).exception.get()
     ex.message == expectedException.message
 
     where:
@@ -346,7 +346,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     then:
     exceptions.size() == expectedSize
-    Exception ex = exceptions.get(0).exception()
+    Exception ex = exceptions.get(0).exception.get()
     ex.message == expectedException.message
 
     where:
@@ -452,7 +452,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidParticipant).stream().filter { it -> it.failure }.toList()
 
     then:
-    def e = exceptions.get(0).exception().cause
+    def e = exceptions.get(0).exception.get().cause
     e.message == "Cannot validate object of class 'InvalidSystemParticipantInput', as no routine is implemented."
   }
 
