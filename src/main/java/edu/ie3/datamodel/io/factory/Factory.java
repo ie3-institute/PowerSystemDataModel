@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -39,27 +41,40 @@ public abstract class Factory<C, D extends FactoryData, R> {
    * data
    *
    * @param data EntityData (or subclass) containing the data
-   * @return An entity wrapped in Option if successful, an empty option otherwise
+   * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a
+   *     {@link Failure}
    */
-  public Optional<R> get(D data) {
+  public Try<R, FactoryException> get(D data) {
     isSupportedClass(data.getTargetClass());
 
     // magic: case-insensitive get/set calls on set strings
     final List<Set<String>> allFields = getFields(data);
 
-    validateParameters(data, allFields.toArray((IntFunction<Set<String>[]>) Set[]::new));
-
     try {
+      validateParameters(data, allFields.toArray((IntFunction<Set<String>[]>) Set[]::new));
+
       // build the model
-      return Optional.of(buildModel(data));
+      return new Success<>(buildModel(data));
     } catch (FactoryException e) {
-      // only catch FactoryExceptions, as more serious exceptions should be handled elsewhere
-      log.error(
-          "An error occurred when creating instance of {}.class.",
-          data.getTargetClass().getSimpleName(),
-          e);
+      return new Failure<>(
+          new FactoryException(
+              "An error occurred when creating instance of "
+                  + data.getTargetClass().getSimpleName()
+                  + ".class.",
+              e));
     }
-    return Optional.empty();
+  }
+
+  /**
+   * Builds entity with data from given EntityData object after doing all kinds of checks on the
+   * data
+   *
+   * @param data EntityData (or subclass) containing the data wrapped in a {@link Try}
+   * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a
+   *     {@link Failure}
+   */
+  public Try<R, FactoryException> get(Try<D, ?> data) {
+    return data.transformF(FactoryException::new).flatMap(this::get);
   }
 
   /**

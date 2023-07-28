@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactor CSV data sources [#716](https://github.com/ie3-institute/PowerSystemDataModel/issues/716)
 - Deleted parameter initFiles, set parameter append to false by default [#791](https://github.com/ie3-institute/PowerSystemDataModel/issues/791)
 - Use nio paths instead of strings for file path [#723](https://github.com/ie3-institute/PowerSystemDataModel/issues/723)
+- Data source will throw an exceptions instead of returning an empty optionals [#707](https://github.com/ie3-institute/PowerSystemDataModel/issues/707)
 
 
 ## [3.0.0] - 2023-02-16

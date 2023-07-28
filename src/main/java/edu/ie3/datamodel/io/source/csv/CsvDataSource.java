@@ -296,9 +296,9 @@ public class CsvDataSource implements DataSource {
           allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
           """
-          '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
-          Affected primary keys:
-          {}""",
+              '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
+              Affected primary keys:
+              {}""",
           entityDescriptor,
           keyDescriptor,
           affectedCoordinateIds);

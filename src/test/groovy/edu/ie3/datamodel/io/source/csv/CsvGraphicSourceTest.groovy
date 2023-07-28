@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData
 import edu.ie3.datamodel.io.source.GraphicSource
@@ -13,6 +14,7 @@ import edu.ie3.datamodel.io.source.TypeSource
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData as gtd
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
@@ -28,63 +30,65 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     def csvGraphicSource = new GraphicSource(typeSource, rawGridSource, new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
     when:
-    def graphicElementsOpt = csvGraphicSource.getGraphicElements()
+    def graphicElements = csvGraphicSource.graphicElements
 
     then:
-    graphicElementsOpt.present
-    graphicElementsOpt.ifPresent({
-      assert (it.allEntitiesAsList().size() == 3)
-      assert (it.nodeGraphics.size() == 2)
-      assert (it.lineGraphics.size() == 1)
-    })
+    graphicElements.allEntitiesAsList().size() == 3
+    graphicElements.nodeGraphics.size() == 2
+    graphicElements.lineGraphics.size() == 1
   }
 
   def "A CsvGraphicSource should process invalid input data as expected when requested to provide an instance of GraphicElements"() {
     given:
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
     def rawGridSource =
-        new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
-          @Override
-          Set<NodeInput> getNodes() {
-            return Collections.emptySet()
-          }
+    new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
+      @Override
+      Set<NodeInput> getNodes() {
+        return Collections.emptySet()
+      }
 
-          @Override
-          Set<NodeInput> getNodes(Set<OperatorInput> operators) {
-            return Collections.emptySet()
-          }
-        }
+      @Override
+      Set<NodeInput> getNodes(Set<OperatorInput> operators) {
+        return Collections.emptySet()
+      }
+    }
 
     def csvGraphicSource = new GraphicSource(typeSource, rawGridSource, new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
     when:
-    def graphicElementsOpt = csvGraphicSource.getGraphicElements()
+    def graphicElements = Try.of(() -> csvGraphicSource.graphicElements, SourceException)
 
     then:
-    !graphicElementsOpt.present
+    graphicElements.failure
+    graphicElements.data == Optional.empty()
+
+    Exception ex = graphicElements.exception()
+    ex.class == SourceException
+    ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Failure due to: Skipping LineInput with uuid")
   }
 
 
   def "A CsvGraphicSource should read and handle a valid node graphics file as expected"() {
     given:
     def csvGraphicSource = new GraphicSource(
-        Mock(TypeSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     def expectedNodeGraphicD = new NodeGraphicInput(
-        gtd.nodeGraphicD.uuid,
-        gtd.nodeGraphicD.graphicLayer,
-        gtd.nodeGraphicD.path,
-        gtd.nodeD,
-        gtd.geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.4116482, 51.4843281] }") as Point
-        )
+    gtd.nodeGraphicD.uuid,
+    gtd.nodeGraphicD.graphicLayer,
+    gtd.nodeGraphicD.path,
+    gtd.nodeD,
+    gtd.geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.4116482, 51.4843281] }") as Point
+    )
     def expectedNodeGraphicC = new NodeGraphicInput(
-        gtd.nodeGraphicC.uuid,
-        gtd.nodeGraphicC.graphicLayer,
-        gtd.geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [7.4116482, 51.4843281]]}") as LineString,
-        gtd.nodeC,
-        gtd.nodeGraphicC.point
-        )
+    gtd.nodeGraphicC.uuid,
+    gtd.nodeGraphicC.graphicLayer,
+    gtd.geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [7.4116482, 51.4843281]]}") as LineString,
+    gtd.nodeC,
+    gtd.nodeGraphicC.point
+    )
 
     when:
     def nodeGraphics = csvGraphicSource.getNodeGraphicInput([gtd.nodeC, gtd.nodeD] as Set)
@@ -100,9 +104,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A CsvGraphicSource should read and handle a valid line graphics file as expected"() {
     given:
     def csvGraphicSource = new GraphicSource(
-        Mock(TypeSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
     when:
     def lineGraphics = csvGraphicSource.getLineGraphicInput([gtd.lineCtoD] as Set)
@@ -115,9 +119,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A CsvGraphicSource should build node graphic entity data from valid and invalid input data correctly"() {
     given:
     def csvGraphicSource = new GraphicSource(
-        Mock(TypeSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     def fieldsToAttributesMap = [
       "uuid"         : "09aec636-791b-45aa-b981-b14edf171c4c",
       "graphic_layer": "main",
@@ -128,9 +132,11 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
     expect:
     def res = csvGraphicSource.buildNodeGraphicEntityData(fieldsToAttributesMap, nodeCollection as Set)
-    res.present == isPresent
+    res.success == isPresent
 
-    res.ifPresent({ value ->
+    if (isPresent) {
+      def value = res.data()
+
       assert value == new NodeGraphicInputEntityData([
         "uuid"         : "09aec636-791b-45aa-b981-b14edf171c4c",
         "graphic_layer": "main",
@@ -138,8 +144,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
         "point"        : "{\"type\":\"Point\",\"coordinates\":[0.0,10],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}"
       ], gtd.nodeC)
       assert value.node == gtd.nodeC
-    })
-
+    }
 
     where:
     nodeCollection         || isPresent
@@ -151,9 +156,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A CsvGraphicSource should build line graphic entity data from valid and invalid input data correctly"() {
     given:
     def csvGraphicSource = new GraphicSource(
-        Mock(TypeSource),
-        Mock(RawGridSource),
-        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+    Mock(TypeSource),
+    Mock(RawGridSource),
+    new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     def fieldsToAttributesMap = [
       "uuid"         : "ece86139-3238-4a35-9361-457ecb4258b0",
       "graphic_layer": "main",
@@ -163,16 +168,18 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
     expect:
     def res = csvGraphicSource.buildLineGraphicEntityData(fieldsToAttributesMap, nodeCollection as Set)
-    res.present == isPresent
+    res.success == isPresent
 
-    res.ifPresent({ value ->
+    if (isPresent) {
+      def value = res.data()
+
       assert value == new LineGraphicInputEntityData(["uuid"         : "ece86139-3238-4a35-9361-457ecb4258b0",
         "graphic_layer": "main",
         "path"         : "{\"type\":\"LineString\",\"coordinates\":[[0.0,0.0],[0.0,10]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}"
       ]
       , gtd.lineAtoB)
       assert value.line == gtd.lineAtoB
-    })
+    }
 
 
     where:
