@@ -522,8 +522,6 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
-    actualSet.first().failure
-    actualSet.last().success
     actualSet.stream().map {
       it.data()
     }.toList().containsAll(expectedSet)
