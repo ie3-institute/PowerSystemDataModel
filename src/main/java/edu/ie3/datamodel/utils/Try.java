@@ -264,7 +264,7 @@ public abstract class Try<T, E extends Exception> {
 
     @Override
     public T getOrThrow() throws E {
-      return data;
+      return get();
     }
 
     @Override
