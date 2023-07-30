@@ -5,28 +5,23 @@
  */
 package edu.ie3.datamodel.utils.validation
 
-import edu.ie3.datamodel.exceptions.UnsafeEntityException
-import edu.ie3.datamodel.exceptions.ValidationException
-import edu.ie3.datamodel.models.input.AssetInput
-import edu.ie3.datamodel.utils.Try
-
-import static edu.ie3.datamodel.models.StandardUnits.CONDUCTANCE_PER_LENGTH
-import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
-import static edu.ie3.datamodel.models.StandardUnits.RATED_VOLTAGE_MAGNITUDE
-import static edu.ie3.datamodel.models.StandardUnits.SUSCEPTANCE_PER_LENGTH
+import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.datamodel.utils.validation.DummyAssetInput.invalid
 import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
 import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
-import edu.ie3.datamodel.exceptions.NotImplementedException
-
 import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.exceptions.NotImplementedException
+import edu.ie3.datamodel.exceptions.UnsafeEntityException
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.OperationTime
+import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.SpecificConductance
