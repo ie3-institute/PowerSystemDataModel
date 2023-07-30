@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class Try<T, E extends Exception> {
-
   // static utility methods
 
   /**
@@ -236,15 +235,12 @@ public abstract class Try<T, E extends Exception> {
 
   /** Implementation of {@link Try} class. This class is used to present a successful try. */
   public static final class Success<T, E extends Exception> extends Try<T, E> {
-
     private final T data;
-    private final boolean isEmpty;
 
     private static final Success<Void, ?> emptySuccess = new Success<>(null);
 
     public Success(T data) {
       this.data = data;
-      this.isEmpty = data == null;
     }
 
     @Override
@@ -257,9 +253,9 @@ public abstract class Try<T, E extends Exception> {
       return false;
     }
 
-    /** Returns true if this object is either a {@link Success} or a {@link Failure}. */
+    /** Returns true if this object is an empty {@link Success}. */
     public boolean isEmpty() {
-      return isEmpty;
+      return data == null;
     }
 
     @Override
@@ -269,7 +265,7 @@ public abstract class Try<T, E extends Exception> {
 
     @Override
     public Optional<T> getData() {
-      return data != null ? Optional.of(data) : Optional.empty();
+      return !isEmpty() ? Optional.of(data) : Optional.empty();
     }
 
     @Override
@@ -319,11 +315,9 @@ public abstract class Try<T, E extends Exception> {
 
   /** Implementation of {@link Try} class. This class is used to present a failed try. */
   public static final class Failure<T, E extends Exception> extends Try<T, E> {
-
     private final E exception;
 
     public Failure(E e) {
-      super();
       this.exception = e;
     }
 
