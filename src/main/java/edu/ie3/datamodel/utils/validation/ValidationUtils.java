@@ -85,7 +85,7 @@ public class ValidationUtils {
             .map(t -> ((Failure<?, ? extends ValidationException>) t).get())
             .toList();
 
-    Try.ofVoid(!list.isEmpty(), new FailedValidationException(list)).getOrThrow();
+    Try.ofVoid(!list.isEmpty(), () -> new FailedValidationException(list)).getOrThrow();
   }
 
   /**
@@ -112,7 +112,8 @@ public class ValidationUtils {
 
     exceptions.add(
         Try.ofVoid(
-            assetInput.getId() == null, new InvalidEntityException("No ID assigned", assetInput)));
+            assetInput.getId() == null,
+            () -> new InvalidEntityException("No ID assigned", assetInput)));
 
     if (assetInput.getOperationTime() == null) {
       exceptions.add(
@@ -187,11 +188,11 @@ public class ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             assetTypeInput.getUuid() == null,
-            new InvalidEntityException("No UUID assigned", assetTypeInput)));
+            () -> new InvalidEntityException("No UUID assigned", assetTypeInput)));
     exceptions.add(
         Try.ofVoid(
             assetTypeInput.getId() == null,
-            new InvalidEntityException("No ID assigned", assetTypeInput)));
+            () -> new InvalidEntityException("No ID assigned", assetTypeInput)));
 
     // Further checks for subclasses
     if (LineTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
@@ -256,11 +257,12 @@ public class ValidationUtils {
       Object obj, String expectedDescription) {
     return Try.ofVoid(
         obj == null,
-        new InvalidEntityException(
-            "Validation not possible because received object was null. Expected "
-                + expectedDescription
-                + ", but got nothing. :-(",
-            new NullPointerException()));
+        () ->
+            new InvalidEntityException(
+                "Validation not possible because received object was null. Expected "
+                    + expectedDescription
+                    + ", but got nothing. :-(",
+                new NullPointerException()));
   }
 
   /**

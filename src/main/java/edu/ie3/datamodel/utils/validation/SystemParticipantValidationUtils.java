@@ -56,9 +56,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             systemParticipant.getqCharacteristics() == null,
-            new InvalidEntityException(
-                "Reactive power characteristics of system participant is not defined",
-                systemParticipant)));
+            () ->
+                new InvalidEntityException(
+                    "Reactive power characteristics of system participant is not defined",
+                    systemParticipant)));
 
     // Further checks for subclasses
     if (BmInput.class.isAssignableFrom(systemParticipant.getClass())) {
@@ -124,8 +125,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
             (systemParticipantTypeInput.getCapex() == null)
                 || (systemParticipantTypeInput.getOpex() == null)
                 || (systemParticipantTypeInput.getsRated() == null),
-            new InvalidEntityException(
-                "At least one of capex, opex, or sRated is null", systemParticipantTypeInput)));
+            () ->
+                new InvalidEntityException(
+                    "At least one of capex, opex, or sRated is null", systemParticipantTypeInput)));
 
     try {
       exceptions.add(
@@ -340,7 +342,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             loadInput.getLoadProfile() == null,
-            new InvalidEntityException("No standard load profile defined for load", loadInput)));
+            () ->
+                new InvalidEntityException(
+                    "No standard load profile defined for load", loadInput)));
 
     exceptions.addAll(
         Try.ofVoid(
@@ -460,9 +464,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             storageTypeInput.getLifeCycle() < 0,
-            new InvalidEntityException(
-                "Permissible amount of life cycles of the storage type must be zero or positive",
-                storageTypeInput)));
+            () ->
+                new InvalidEntityException(
+                    "Permissible amount of life cycles of the storage type must be zero or positive",
+                    storageTypeInput)));
 
     exceptions.addAll(
         Try.ofVoid(

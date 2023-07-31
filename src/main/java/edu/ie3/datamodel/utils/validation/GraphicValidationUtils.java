@@ -44,8 +44,9 @@ public class GraphicValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             graphicInput.getGraphicLayer() == null,
-            new InvalidEntityException(
-                "Graphic Layer of graphic element is not defined", graphicInput)));
+            () ->
+                new InvalidEntityException(
+                    "Graphic Layer of graphic element is not defined", graphicInput)));
 
     // Further checks for subclasses
     if (LineGraphicInput.class.isAssignableFrom(graphicInput.getClass())) {
@@ -67,8 +68,9 @@ public class GraphicValidationUtils extends ValidationUtils {
       LineGraphicInput lineGraphicInput) {
     return Try.ofVoid(
         lineGraphicInput.getPath() == null,
-        new InvalidEntityException(
-            "Path of line graphic element is not defined", lineGraphicInput));
+        () ->
+            new InvalidEntityException(
+                "Path of line graphic element is not defined", lineGraphicInput));
   }
 
   /**
@@ -82,6 +84,6 @@ public class GraphicValidationUtils extends ValidationUtils {
       NodeGraphicInput nodeGraphicInput) {
     return Try.ofVoid(
         nodeGraphicInput.getPoint() == null,
-        new InvalidEntityException("Point of node graphic is not defined", nodeGraphicInput));
+        () -> new InvalidEntityException("Point of node graphic is not defined", nodeGraphicInput));
   }
 }

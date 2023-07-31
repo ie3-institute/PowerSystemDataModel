@@ -17,7 +17,9 @@ public class FailedValidationException extends ValidationException {
     super(message);
   }
 
+  /** @param exceptions List of exceptions, which must not be empty */
   public FailedValidationException(List<? extends Exception> exceptions) {
-    super("Validation failed due to: " + ExceptionUtils.getMessages(exceptions));
+    super(
+        "Validation failed due to: \n" + ExceptionUtils.getMessages(exceptions), exceptions.get(0));
   }
 }

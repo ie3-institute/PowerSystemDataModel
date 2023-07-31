@@ -72,9 +72,10 @@ public abstract class Try<T, E extends Exception> {
    * @return a {@link Try}
    * @param <E> type of exception
    */
-  public static <E extends Exception> Try<Void, E> ofVoid(boolean failure, E exception) {
+  public static <E extends Exception> Try<Void, E> ofVoid(
+      boolean failure, ExceptionSupplier<E> exception) {
     if (failure) {
-      return Failure.ofVoid(exception);
+      return Failure.ofVoid(exception.get());
     } else {
       return Success.empty();
     }
@@ -417,5 +418,15 @@ public abstract class Try<T, E extends Exception> {
   @FunctionalInterface
   public interface VoidSupplier<E extends Exception> {
     void get() throws E;
+  }
+
+  /**
+   * Supplier for exceptions.
+   *
+   * @param <E> type of exception that could be thrown
+   */
+  @FunctionalInterface
+  public interface ExceptionSupplier<E extends Exception> {
+    E get();
   }
 }

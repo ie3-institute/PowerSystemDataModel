@@ -21,7 +21,7 @@ public class ExceptionUtils {
   public static String getMessages(List<? extends Exception> exceptions) {
     return exceptions.stream()
         .map(Throwable::getMessage)
-        .reduce("", (a, b) -> a + ", " + b)
-        .replaceFirst(", ", "");
+        .reduce("", (a, b) -> a + "\n " + b)
+        .replaceFirst("\n ", "");
   }
 }

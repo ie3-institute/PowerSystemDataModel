@@ -58,20 +58,21 @@ public class NodeValidationUtils extends ValidationUtils {
             node.getvTarget()
                 .isLessThanOrEqualTo(
                     Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)),
-            new InvalidEntityException("Target voltage (p.u.) is not a positive value", node)));
+            () ->
+                new InvalidEntityException("Target voltage (p.u.) is not a positive value", node)));
     exceptions.add(
         Try.ofVoid(
             node.getvTarget()
                 .isGreaterThan(Quantities.getQuantity(2, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)),
-            new UnsafeEntityException("Target voltage (p.u.) might be too high", node)));
+            () -> new UnsafeEntityException("Target voltage (p.u.) might be too high", node)));
     exceptions.add(
         Try.ofVoid(
             node.getSubnet() <= 0,
-            new InvalidEntityException("Subnet can't be zero or negative", node)));
+            () -> new InvalidEntityException("Subnet can't be zero or negative", node)));
     exceptions.add(
         Try.ofVoid(
             node.getGeoPosition() == null,
-            new InvalidEntityException("GeoPosition of node is null", node)));
+            () -> new InvalidEntityException("GeoPosition of node is null", node)));
 
     return exceptions;
   }

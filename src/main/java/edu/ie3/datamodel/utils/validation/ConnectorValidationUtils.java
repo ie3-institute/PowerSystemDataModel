@@ -259,8 +259,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
             transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeB().getVoltLvl()
                 || transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeC().getVoltLvl()
                 || transformer3W.getNodeB().getVoltLvl() == transformer3W.getNodeC().getVoltLvl(),
-            new InvalidEntityException(
-                "Transformer connects nodes of the same voltage level", transformer3W)));
+            () ->
+                new InvalidEntityException(
+                    "Transformer connects nodes of the same voltage level", transformer3W)));
 
     // Check if transformer connects different subnets
     exceptions.add(
@@ -268,8 +269,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
             transformer3W.getNodeA().getSubnet() == transformer3W.getNodeB().getSubnet()
                 || transformer3W.getNodeA().getSubnet() == transformer3W.getNodeC().getSubnet()
                 || transformer3W.getNodeB().getSubnet() == transformer3W.getNodeC().getSubnet(),
-            new InvalidEntityException(
-                "Transformer connects nodes in the same subnet", transformer3W)));
+            () ->
+                new InvalidEntityException(
+                    "Transformer connects nodes in the same subnet", transformer3W)));
 
     exceptions.add(
         Try.ofVoid(
@@ -347,7 +349,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
   private static Try<Void, InvalidEntityException> checkSwitch(SwitchInput switchInput) {
     return Try.ofVoid(
         !switchInput.getNodeA().getVoltLvl().equals(switchInput.getNodeB().getVoltLvl()),
-        new InvalidEntityException("Switch connects two different voltage levels", switchInput));
+        () ->
+            new InvalidEntityException(
+                "Switch connects two different voltage levels", switchInput));
     /* Remark: Connecting two different "subnets" is fine, because as of our definition regarding a switchgear in
      * "upstream" direction of a transformer, all the nodes, that hare within the switch chain, belong to the lower
      * grid, whilst the "real" upper node is within the upper grid */
@@ -393,10 +397,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
 
     return Try.ofVoid(
         !inspector.isConnected(),
-        new InvalidGridException(
-            "The grid with subnetNo "
-                + subGridContainer.getSubnet()
-                + " is not connected! Please ensure that all elements are connected correctly!"));
+        () ->
+            new InvalidGridException(
+                "The grid with subnetNo "
+                    + subGridContainer.getSubnet()
+                    + " is not connected! Please ensure that all elements are connected correctly!"));
   }
 
   /**
@@ -408,9 +413,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
       ConnectorInput connectorInput) {
     return Try.ofVoid(
         connectorInput.getNodeA().equals(connectorInput.getNodeB()),
-        new InvalidEntityException(
-            connectorInput.getClass().getSimpleName() + " connects the same node, but shouldn't",
-            connectorInput));
+        () ->
+            new InvalidEntityException(
+                connectorInput.getClass().getSimpleName()
+                    + " connects the same node, but shouldn't",
+                connectorInput));
   }
 
   /**

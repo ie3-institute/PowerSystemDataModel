@@ -62,8 +62,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             exceptionString.isPresent(),
-            new InvalidGridException(
-                duplicateUuidsString(gridContainer.getClass().getSimpleName(), exceptionString))));
+            () ->
+                new InvalidGridException(
+                    duplicateUuidsString(
+                        gridContainer.getClass().getSimpleName(), exceptionString))));
 
     exceptions.addAll(checkRawGridElements(gridContainer.getRawGrid()));
     exceptions.addAll(
@@ -106,9 +108,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             exceptionString.isPresent(),
-            new InvalidGridException(
-                duplicateUuidsString(
-                    rawGridElements.getClass().getSimpleName(), exceptionString))));
+            () ->
+                new InvalidGridException(
+                    duplicateUuidsString(
+                        rawGridElements.getClass().getSimpleName(), exceptionString))));
 
     /* Checking nodes */
     Set<NodeInput> nodes = rawGridElements.getNodes();
@@ -225,9 +228,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             exceptionString.isPresent(),
-            new InvalidGridException(
-                duplicateUuidsString(
-                    systemParticipants.getClass().getSimpleName(), exceptionString))));
+            () ->
+                new InvalidGridException(
+                    duplicateUuidsString(
+                        systemParticipants.getClass().getSimpleName(), exceptionString))));
 
     exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
@@ -318,9 +322,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             exceptionString.isPresent(),
-            new InvalidGridException(
-                duplicateUuidsString(
-                    graphicElements.getClass().getSimpleName(), exceptionString))));
+            () ->
+                new InvalidGridException(
+                    duplicateUuidsString(
+                        graphicElements.getClass().getSimpleName(), exceptionString))));
 
     graphicElements
         .getNodeGraphics()
@@ -330,7 +335,9 @@ public class GridContainerValidationUtils extends ValidationUtils {
               exceptions.add(
                   Try.ofVoid(
                       !nodes.contains(graphic.getNode()),
-                      buildGraphicExceptionMessage(graphic, "node", graphic.getNode().getUuid())));
+                      () ->
+                          buildGraphicExceptionMessage(
+                              graphic, "node", graphic.getNode().getUuid())));
             });
 
     graphicElements
@@ -341,7 +348,9 @@ public class GridContainerValidationUtils extends ValidationUtils {
               exceptions.add(
                   Try.ofVoid(
                       !lines.contains(graphic.getLine()),
-                      buildGraphicExceptionMessage(graphic, "line", graphic.getLine().getUuid())));
+                      () ->
+                          buildGraphicExceptionMessage(
+                              graphic, "line", graphic.getLine().getUuid())));
             });
 
     return exceptions;
@@ -381,11 +390,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     return Try.ofVoid(
         available,
-        new InvalidGridException(
-            input.getClass().getSimpleName()
-                + " "
-                + input
-                + " is connected to a node that is not in the set of nodes."));
+        () ->
+            new InvalidGridException(
+                input.getClass().getSimpleName()
+                    + " "
+                    + input
+                    + " is connected to a node that is not in the set of nodes."));
   }
 
   /**

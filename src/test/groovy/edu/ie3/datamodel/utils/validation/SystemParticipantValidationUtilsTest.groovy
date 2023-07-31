@@ -53,6 +53,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     then:
     exceptions.size() == expectedSize
     Exception ex = exceptions.get(0).exception.get()
+    ex.class == expectedException.class
     ex.message == expectedException.message
 
     where:
@@ -100,8 +101,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidType)
 
     then:
-    Exception ex = thrown()
-    ex.message.contains(expectedException.message)
+    Throwable topEx = thrown()
+    Throwable ex = topEx.cause
+    ex.class == expectedException.class
+    ex.message == expectedException.message
 
     where:
     invalidType                                                                                                                                                                                           || expectedException
@@ -141,8 +144,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ValidationUtils.check(invalidBmType)
 
     then:
-    Exception ex = thrown()
-    ex.message.contains(expectedException.message)
+    Throwable topEx = thrown()
+    Throwable ex = topEx.cause
+    ex.class == expectedException.class
+    ex.message == expectedException.message
 
     where:
     invalidBmType                                                                                                             || expectedException
@@ -181,8 +186,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidChpType)
 
     then:
-    Exception ex = thrown()
-    ex.message.contains(expectedException.message)
+    Throwable topEx = thrown()
+    Throwable ex = topEx.cause
+    ex.class == expectedException.class
+    ex.message == expectedException.message
 
     where:
     invalidChpType                                                                                                                           || expectedException
@@ -223,8 +230,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidEvType)
 
     then:
-    Exception ex = thrown()
-    ex.message.contains(expectedException.message)
+    Throwable topEx = thrown()
+    Throwable ex = topEx.cause
+    ex.class == expectedException.class
+    ex.message == expectedException.message
 
     where:
     invalidEvType                                                                                                                                     || expectedException
@@ -251,6 +260,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     then:
     exceptions.size() == expectedSize
     Exception ex = exceptions.get(0).exception.get()
+    ex.class == expectedException.class
     ex.message == expectedException.message
 
     where:
@@ -290,8 +300,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidHpType)
 
     then:
-    Exception ex = thrown()
-    ex.message.contains(expectedException.message)
+    Throwable topEx = thrown()
+    Throwable ex = topEx.cause
+    ex.class == expectedException.class
+    ex.message == expectedException.message
 
     where:
     invalidHpType                                                                                           || expectedException
@@ -318,6 +330,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     then:
     exceptions.size() == expectedSize
     Exception ex = exceptions.get(0).exception.get()
+    ex.class == expectedException.class
     ex.message == expectedException.message
 
     where:
@@ -347,6 +360,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     then:
     exceptions.size() == expectedSize
     Exception ex = exceptions.get(0).exception.get()
+    ex.class == expectedException.class
     ex.message == expectedException.message
 
     where:
@@ -390,8 +404,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidStorageType)
 
     then:
-    Exception ex = thrown()
-    ex.message.contains(expectedException.message)
+    Throwable topEx = thrown()
+    Throwable ex = topEx.cause
+    ex.class == expectedException.class
+    ex.message == expectedException.message
 
     where:
     invalidStorageType                                                                                                                                                                                                                           || expectedException
@@ -433,8 +449,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidWecType)
 
     then:
-    Exception ex = thrown()
-    ex.message.contains(expectedException.message)
+    Throwable topEx = thrown()
+    Throwable ex = topEx.cause
+    ex.class == expectedException.class
+    ex.message == expectedException.message
 
     where:
     invalidWecType                                                                                                                                                              || expectedException
@@ -464,8 +482,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidParticipantInput)
 
     then:
-    Exception e = thrown()
-    e.message.contains("Cannot validate object of class 'InvalidSystemParticipantTypeInput', as no routine is implemented.")
+    Throwable topEx = thrown()
+    Throwable e = topEx.cause
+    e.message == "Cannot validate object of class 'InvalidSystemParticipantTypeInput', as no routine is implemented."
   }
 
   def "Checking electric vehicle charging stations leads to an exception"() {
