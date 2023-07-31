@@ -103,7 +103,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
    * @since 14.02.23
    */
   public static class GraphicElementsCopyBuilder
-      implements InputContainerCopyBuilder<GraphicElements> {
+      implements InputContainerCopyBuilder<GraphicInput> {
     private Set<NodeGraphicInput> nodeGraphics;
     private Set<LineGraphicInput> lineGraphics;
 

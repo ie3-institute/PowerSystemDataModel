@@ -17,7 +17,7 @@ public interface InputContainer<T extends InputEntity> extends Serializable {
   List<T> allEntitiesAsList();
 
   /** Returns an input container copy builder */
-  InputContainerCopyBuilder<? extends InputContainer<T>> copy();
+  InputContainerCopyBuilder<T> copy();
 
   /**
    * Abstract class for all builder that build child containers of interface {@link
@@ -26,9 +26,9 @@ public interface InputContainer<T extends InputEntity> extends Serializable {
    * @version 3.1
    * @since 14.02.23
    */
-  interface InputContainerCopyBuilder<C extends InputContainer<?>> {
+  interface InputContainerCopyBuilder<T extends InputEntity> {
 
-    /** Returns the altered {@link InputContainer} of type {@link C} */
-    C build() throws ValidationException;
+    /** Returns the altered {@link InputContainer} */
+    InputContainer<T> build() throws ValidationException;
   }
 }

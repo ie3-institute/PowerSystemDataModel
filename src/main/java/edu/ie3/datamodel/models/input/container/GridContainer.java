@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.*;
 
@@ -88,7 +87,7 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
    * @since 14.02.23
    */
   protected abstract static class GridContainerCopyBuilder<B extends GridContainerCopyBuilder<B>>
-      implements InputContainerCopyBuilder<GridContainer> {
+      implements InputContainerCopyBuilder<InputEntity> {
     private String gridName;
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
@@ -172,8 +171,5 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
 
     /** Returns the current instance of builder with the correct subclass type */
     protected abstract B thisInstance();
-
-    @Override
-    public abstract GridContainer build() throws InvalidGridException;
   }
 }

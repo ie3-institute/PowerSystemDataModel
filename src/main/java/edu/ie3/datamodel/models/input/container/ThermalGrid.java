@@ -59,7 +59,7 @@ public record ThermalGrid(
    * @version 3.1
    * @since 14.02.23
    */
-  public static class ThermalGridCopyBuilder implements InputContainerCopyBuilder<ThermalGrid> {
+  public static class ThermalGridCopyBuilder implements InputContainerCopyBuilder<ThermalInput> {
     private ThermalBusInput bus;
     private Set<ThermalHouseInput> houses;
     private Set<ThermalStorageInput> storages;
