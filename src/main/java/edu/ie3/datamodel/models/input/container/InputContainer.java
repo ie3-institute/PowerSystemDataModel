@@ -26,9 +26,9 @@ public interface InputContainer<T extends InputEntity> extends Serializable {
    * @version 3.1
    * @since 14.02.23
    */
-  abstract class InputContainerCopyBuilder<C extends InputContainer<?>> {
+  interface InputContainerCopyBuilder<C extends InputContainer<?>> {
 
     /** Returns the altered {@link InputContainer} of type {@link C} */
-    abstract C build() throws ValidationException;
+    C build() throws ValidationException;
   }
 }

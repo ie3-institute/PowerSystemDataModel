@@ -88,7 +88,7 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
    * @since 14.02.23
    */
   protected abstract static class GridContainerCopyBuilder<B extends GridContainerCopyBuilder<B>>
-      extends InputContainerCopyBuilder<GridContainer> {
+      implements InputContainerCopyBuilder<GridContainer> {
     private String gridName;
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
@@ -174,6 +174,6 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     protected abstract B thisInstance();
 
     @Override
-    abstract GridContainer build() throws InvalidGridException;
+    public abstract GridContainer build() throws InvalidGridException;
   }
 }

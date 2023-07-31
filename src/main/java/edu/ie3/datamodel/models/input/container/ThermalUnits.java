@@ -49,7 +49,7 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
    * @version 3.1
    * @since 14.02.23
    */
-  public static class ThermalUnitsCopyBuilder extends InputContainerCopyBuilder<ThermalUnits> {
+  public static class ThermalUnitsCopyBuilder implements InputContainerCopyBuilder<ThermalUnits> {
     private Set<ThermalHouseInput> houses;
     private Set<ThermalStorageInput> storages;
 
@@ -86,7 +86,7 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
     }
 
     @Override
-    ThermalUnits build() {
+    public ThermalUnits build() {
       return new ThermalUnits(houses, storages);
     }
   }

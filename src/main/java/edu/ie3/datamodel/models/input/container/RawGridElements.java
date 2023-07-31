@@ -188,7 +188,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
    * @since 14.02.23
    */
   public static class RawGridElementsCopyBuilder
-      extends InputContainerCopyBuilder<RawGridElements> {
+      implements InputContainerCopyBuilder<RawGridElements> {
     private Set<NodeInput> nodes;
     private Set<LineInput> lines;
     private Set<Transformer2WInput> transformer2Ws;
@@ -277,7 +277,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
     }
 
     @Override
-    RawGridElements build() {
+    public RawGridElements build() {
       return new RawGridElements(
           nodes, lines, transformer2Ws, transformer3Ws, switches, measurementUnits);
     }

@@ -112,7 +112,7 @@ public class JointGridContainer extends GridContainer {
     }
 
     @Override
-    JointGridContainer build() {
+    public JointGridContainer build() {
       return new JointGridContainer(
           getGridName(),
           getRawGrid(),

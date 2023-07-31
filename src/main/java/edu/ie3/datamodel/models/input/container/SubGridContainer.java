@@ -110,7 +110,7 @@ public class SubGridContainer extends GridContainer {
     }
 
     @Override
-    SubGridContainer build() throws InvalidGridException {
+    public SubGridContainer build() throws InvalidGridException {
       return new SubGridContainer(
           getGridName(), subnet, getRawGrid(), getSystemParticipants(), getGraphics());
     }

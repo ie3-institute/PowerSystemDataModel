@@ -103,7 +103,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
    * @since 14.02.23
    */
   public static class GraphicElementsCopyBuilder
-      extends InputContainerCopyBuilder<GraphicElements> {
+      implements InputContainerCopyBuilder<GraphicElements> {
     private Set<NodeGraphicInput> nodeGraphics;
     private Set<LineGraphicInput> lineGraphics;
 
@@ -140,7 +140,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     }
 
     @Override
-    GraphicElements build() {
+    public GraphicElements build() {
       return new GraphicElements(nodeGraphics, lineGraphics);
     }
   }
