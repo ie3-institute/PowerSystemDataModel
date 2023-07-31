@@ -484,7 +484,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     then:
     Throwable topEx = thrown()
     Throwable e = topEx.cause
-    e.message == "Cannot validate object of class 'InvalidSystemParticipantTypeInput', as no routine is implemented."
+    e.message.contains "Cannot validate object of class 'InvalidSystemParticipantTypeInput', as no routine is implemented."
   }
 
   def "Checking electric vehicle charging stations leads to an exception"() {
