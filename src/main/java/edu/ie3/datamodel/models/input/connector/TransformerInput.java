@@ -81,6 +81,9 @@ public abstract class TransformerInput extends ConnectorInput {
   }
 
   @Override
+  public abstract TransformerInputCopyBuilder<? extends TransformerInputCopyBuilder<?>> copy();
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof TransformerInput that)) return false;
@@ -124,7 +127,7 @@ public abstract class TransformerInput extends ConnectorInput {
    * @version 0.1
    * @since 05.06.20
    */
-  abstract static class TransformerInputCopyBuilder<B extends TransformerInputCopyBuilder<B>>
+  public abstract static class TransformerInputCopyBuilder<B extends TransformerInputCopyBuilder<B>>
       extends ConnectorInputCopyBuilder<B> {
 
     private int tapPos;
