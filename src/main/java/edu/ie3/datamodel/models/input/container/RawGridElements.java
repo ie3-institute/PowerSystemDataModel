@@ -188,7 +188,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
    * @since 14.02.23
    */
   public static class RawGridElementsCopyBuilder
-      extends InputContainerCopyBuilder<AssetInput, RawGridElements> {
+      extends InputContainerCopyBuilder<RawGridElements> {
     private Set<NodeInput> nodes;
     private Set<LineInput> lines;
     private Set<Transformer2WInput> transformer2Ws;
@@ -202,7 +202,6 @@ public class RawGridElements implements InputContainer<AssetInput> {
      * @param rawGridElements instance of {@link RawGridElementsCopyBuilder}
      */
     protected RawGridElementsCopyBuilder(RawGridElements rawGridElements) {
-      super();
       this.nodes = rawGridElements.getNodes();
       this.lines = rawGridElements.getLines();
       this.transformer2Ws = rawGridElements.getTransformer2Ws();
@@ -215,7 +214,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      * Method to alter {@link NodeInput}
      *
      * @param nodes set of altered nodes
-     * @return child instance of {@link RawGridElementsCopyBuilder}
+     * @return this instance of {@link RawGridElementsCopyBuilder}
      */
     public RawGridElementsCopyBuilder nodes(Set<NodeInput> nodes) {
       this.nodes = nodes;
@@ -226,7 +225,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      * Method to alter {@link LineInput}
      *
      * @param lines set of altered lines
-     * @return child instance of {@link RawGridElementsCopyBuilder}
+     * @return this instance of {@link RawGridElementsCopyBuilder}
      */
     public RawGridElementsCopyBuilder lines(Set<LineInput> lines) {
       this.lines = lines;
@@ -237,7 +236,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      * Method to alter {@link Transformer2WInput}
      *
      * @param transformer2Ws set of altered two winding transformers
-     * @return child instance of {@link RawGridElementsCopyBuilder}
+     * @return this instance of {@link RawGridElementsCopyBuilder}
      */
     public RawGridElementsCopyBuilder transformers2Ws(Set<Transformer2WInput> transformer2Ws) {
       this.transformer2Ws = transformer2Ws;
@@ -248,7 +247,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      * Method to alter {@link Transformer3WInput}
      *
      * @param transformer3Ws set of altered three winding trnasformers
-     * @return child instance of {@link RawGridElementsCopyBuilder}
+     * @return this instance of {@link RawGridElementsCopyBuilder}
      */
     public RawGridElementsCopyBuilder transformer3Ws(Set<Transformer3WInput> transformer3Ws) {
       this.transformer3Ws = transformer3Ws;
@@ -259,7 +258,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      * Method to alter {@link SwitchInput}
      *
      * @param switches set of altered switches
-     * @return child instance of {@link RawGridElementsCopyBuilder}
+     * @return this instance of {@link RawGridElementsCopyBuilder}
      */
     public RawGridElementsCopyBuilder switches(Set<SwitchInput> switches) {
       this.switches = switches;
@@ -270,7 +269,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      * Method to alter {@link MeasurementUnitInput}
      *
      * @param measurementUnits set of altered measurement units
-     * @return child instance of {@link RawGridElementsCopyBuilder}
+     * @return this instance of {@link RawGridElementsCopyBuilder}
      */
     public RawGridElementsCopyBuilder measurementUnits(Set<MeasurementUnitInput> measurementUnits) {
       this.measurementUnits = measurementUnits;

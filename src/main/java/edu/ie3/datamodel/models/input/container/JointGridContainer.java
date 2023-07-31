@@ -107,7 +107,7 @@ public class JointGridContainer extends GridContainer {
     }
 
     @Override
-    protected JointGridContainerCopyBuilder childInstance() {
+    protected JointGridContainerCopyBuilder thisInstance() {
       return this;
     }
 

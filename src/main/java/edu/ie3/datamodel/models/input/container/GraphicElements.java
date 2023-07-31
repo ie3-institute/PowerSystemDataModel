@@ -103,7 +103,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
    * @since 14.02.23
    */
   public static class GraphicElementsCopyBuilder
-      extends InputContainerCopyBuilder<GraphicInput, GraphicElements> {
+      extends InputContainerCopyBuilder<GraphicElements> {
     private Set<NodeGraphicInput> nodeGraphics;
     private Set<LineGraphicInput> lineGraphics;
 
@@ -113,7 +113,6 @@ public class GraphicElements implements InputContainer<GraphicInput> {
      * @param graphicElements instance of {@link GraphicElements}
      */
     protected GraphicElementsCopyBuilder(GraphicElements graphicElements) {
-      super();
       this.nodeGraphics = graphicElements.getNodeGraphics();
       this.lineGraphics = graphicElements.getLineGraphics();
     }
@@ -122,7 +121,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
      * Method to alter the {@link NodeGraphicInput}.
      *
      * @param nodeGraphics set of altered {@link NodeGraphicInput}'s
-     * @return child instance of {@link GraphicElementsCopyBuilder}
+     * @return this instance of {@link GraphicElementsCopyBuilder}
      */
     public GraphicElementsCopyBuilder nodeGraphics(Set<NodeGraphicInput> nodeGraphics) {
       this.nodeGraphics = nodeGraphics;
@@ -133,7 +132,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
      * Method to alter the {@link LineGraphicInput}.
      *
      * @param lineGraphics set of altered {@link LineGraphicInput}'s
-     * @return child instance of {@link GraphicElementsCopyBuilder}
+     * @return this instance of {@link GraphicElementsCopyBuilder}
      */
     public GraphicElementsCopyBuilder lineGraphics(Set<LineGraphicInput> lineGraphics) {
       this.lineGraphics = lineGraphics;

@@ -49,8 +49,7 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
    * @version 3.1
    * @since 14.02.23
    */
-  public static class ThermalUnitsCopyBuilder
-      extends InputContainerCopyBuilder<ThermalUnitInput, ThermalUnits> {
+  public static class ThermalUnitsCopyBuilder extends InputContainerCopyBuilder<ThermalUnits> {
     private Set<ThermalHouseInput> houses;
     private Set<ThermalStorageInput> storages;
 
@@ -60,7 +59,6 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
      * @param thermalUnits instance of {@link ThermalUnits}
      */
     protected ThermalUnitsCopyBuilder(ThermalUnits thermalUnits) {
-      super();
       this.houses = thermalUnits.houses();
       this.storages = thermalUnits.storages();
     }
@@ -69,7 +67,7 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
      * Method to alter {@link ThermalHouseInput}
      *
      * @param houses altered thermal houses
-     * @return child instance of {@link ThermalUnitsCopyBuilder}
+     * @return this instance of {@link ThermalUnitsCopyBuilder}
      */
     public ThermalUnitsCopyBuilder houses(Set<ThermalHouseInput> houses) {
       this.houses = houses;
@@ -80,7 +78,7 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
      * Method to alter {@link ThermalStorageInput}
      *
      * @param storages altered thermal storages
-     * @return child instance of {@link ThermalUnitsCopyBuilder}
+     * @return this instance of {@link ThermalUnitsCopyBuilder}
      */
     public ThermalUnitsCopyBuilder storages(Set<ThermalStorageInput> storages) {
       this.storages = storages;

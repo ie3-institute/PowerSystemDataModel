@@ -97,15 +97,15 @@ public class SubGridContainer extends GridContainer {
      * Method to alter the subnet number.
      *
      * @param subnet altered subnet number.
-     * @return child instance of {@link SubGridContainerCopyBuilder}
+     * @return this instance of {@link SubGridContainerCopyBuilder}
      */
     public SubGridContainerCopyBuilder subnet(int subnet) {
       this.subnet = subnet;
-      return childInstance();
+      return thisInstance();
     }
 
     @Override
-    protected SubGridContainerCopyBuilder childInstance() {
+    protected SubGridContainerCopyBuilder thisInstance() {
       return this;
     }
 

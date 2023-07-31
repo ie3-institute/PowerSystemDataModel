@@ -284,7 +284,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
    * @since 14.02.23
    */
   public static class SystemParticipantsCopyBuilder
-      extends InputContainerCopyBuilder<SystemParticipantInput, SystemParticipants> {
+      extends InputContainerCopyBuilder<SystemParticipants> {
     private Set<BmInput> bmPlants;
     private Set<ChpInput> chpPlants;
     private Set<EvcsInput> evCS;
@@ -303,7 +303,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * @param systemParticipants instance of {@link SystemParticipants}
      */
     protected SystemParticipantsCopyBuilder(SystemParticipants systemParticipants) {
-      super();
       this.bmPlants = systemParticipants.bmPlants;
       this.chpPlants = systemParticipants.chpPlants;
       this.evCS = systemParticipants.evCS;
@@ -321,7 +320,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link BmInput}
      *
      * @param bmPlants set of altered biomass plants
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder bmPlants(Set<BmInput> bmPlants) {
       this.bmPlants = bmPlants;
@@ -332,7 +331,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link ChpInput}
      *
      * @param chpPlants set of altered combined heat and power plants
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder chpPlants(Set<ChpInput> chpPlants) {
       this.chpPlants = chpPlants;
@@ -343,7 +342,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link EvcsInput}
      *
      * @param evCS set of altered biomass electric vehicle charging stations
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder evCS(Set<EvcsInput> evCS) {
       this.evCS = evCS;
@@ -354,7 +353,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link EvInput}
      *
      * @param evs set of altered electric vehicles
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder evs(Set<EvInput> evs) {
       this.evs = evs;
@@ -365,7 +364,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link FixedFeedInInput}
      *
      * @param fixedFeedIns set of altered fixed feed in facilities
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder fixedFeedIn(Set<FixedFeedInInput> fixedFeedIns) {
       this.fixedFeedIns = fixedFeedIns;
@@ -376,7 +375,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link HpInput}
      *
      * @param heatPumps set of altered heat pumps
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder heatPumps(Set<HpInput> heatPumps) {
       this.heatPumps = heatPumps;
@@ -387,7 +386,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link LoadInput}
      *
      * @param loads set of altered loads
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder loads(Set<LoadInput> loads) {
       this.loads = loads;
@@ -398,7 +397,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link PvInput}
      *
      * @param pvPlants set of altered photovoltaic power plants
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder pvPlants(Set<PvInput> pvPlants) {
       this.pvPlants = pvPlants;
@@ -409,7 +408,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link StorageInput}
      *
      * @param storages set of altered electric energy storages
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder storages(Set<StorageInput> storages) {
       this.storages = storages;
@@ -420,7 +419,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link WecInput}
      *
      * @param wecPlants set of altered wind energy converters
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder wecPlants(Set<WecInput> wecPlants) {
       this.wecPlants = wecPlants;
@@ -431,7 +430,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      * Method to alter {@link EmInput}
      *
      * @param emSystems set of altered energy management systems
-     * @return child instance of {@link SystemParticipantsCopyBuilder}
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
     public SystemParticipantsCopyBuilder emSystems(Set<EmInput> emSystems) {
       this.emSystems = emSystems;
