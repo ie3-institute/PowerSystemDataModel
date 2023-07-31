@@ -223,7 +223,7 @@ public class LineInput extends ConnectorInput implements HasType {
     }
 
     @Override
-    protected LineInputCopyBuilder childInstance() {
+    protected LineInputCopyBuilder thisInstance() {
       return this;
     }
   }

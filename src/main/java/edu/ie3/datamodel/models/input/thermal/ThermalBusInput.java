@@ -35,7 +35,6 @@ public class ThermalBusInput extends ThermalInput {
     super(uuid, id);
   }
 
-  @Override
   public ThermalBusInputCopyBuilder copy() {
     return new ThermalBusInputCopyBuilder(this);
   }
@@ -58,7 +57,7 @@ public class ThermalBusInput extends ThermalInput {
     }
 
     @Override
-    protected ThermalBusInputCopyBuilder childInstance() {
+    protected ThermalBusInputCopyBuilder thisInstance() {
       return this;
     }
   }

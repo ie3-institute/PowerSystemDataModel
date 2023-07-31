@@ -335,7 +335,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     }
 
     @Override
-    protected Transformer3WInputCopyBuilder childInstance() {
+    protected Transformer3WInputCopyBuilder thisInstance() {
       return this;
     }
   }

@@ -72,7 +72,6 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     return Collections.singletonList(node);
   }
 
-  @Override
   public abstract SystemParticipantInputCopyBuilder<?> copy();
 
   @Override
@@ -116,8 +115,8 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @since 05.06.20
    */
   public abstract static class SystemParticipantInputCopyBuilder<
-          T extends SystemParticipantInputCopyBuilder<T>>
-      extends AssetInputCopyBuilder<T> {
+          B extends SystemParticipantInputCopyBuilder<B>>
+      extends AssetInputCopyBuilder<B> {
 
     private NodeInput node;
     private ReactivePowerCharacteristic qCharacteristics;
@@ -128,14 +127,14 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       this.qCharacteristics = entity.getqCharacteristics();
     }
 
-    public T node(NodeInput node) {
+    public B node(NodeInput node) {
       this.node = node;
-      return childInstance();
+      return thisInstance();
     }
 
-    public T qCharacteristics(ReactivePowerCharacteristic qCharacteristics) {
+    public B qCharacteristics(ReactivePowerCharacteristic qCharacteristics) {
       this.qCharacteristics = qCharacteristics;
-      return childInstance();
+      return thisInstance();
     }
 
     protected NodeInput getNode() {
@@ -150,6 +149,6 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     public abstract SystemParticipantInput build();
 
     @Override
-    protected abstract T childInstance();
+    protected abstract B thisInstance();
   }
 }

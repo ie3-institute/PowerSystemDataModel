@@ -106,7 +106,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     return c;
   }
 
-  @Override
   public CylindricalStorageInputCopyBuilder copy() {
     return new CylindricalStorageInputCopyBuilder(this);
   }
@@ -222,7 +221,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     }
 
     @Override
-    protected CylindricalStorageInputCopyBuilder childInstance() {
+    protected CylindricalStorageInputCopyBuilder thisInstance() {
       return this;
     }
   }

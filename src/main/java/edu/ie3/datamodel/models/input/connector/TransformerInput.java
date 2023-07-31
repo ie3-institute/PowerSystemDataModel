@@ -81,9 +81,6 @@ public abstract class TransformerInput extends ConnectorInput {
   }
 
   @Override
-  public abstract TransformerInputCopyBuilder<?> copy();
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof TransformerInput that)) return false;
@@ -127,8 +124,8 @@ public abstract class TransformerInput extends ConnectorInput {
    * @version 0.1
    * @since 05.06.20
    */
-  abstract static class TransformerInputCopyBuilder<T extends TransformerInputCopyBuilder<T>>
-      extends ConnectorInputCopyBuilder<T> {
+  abstract static class TransformerInputCopyBuilder<B extends TransformerInputCopyBuilder<B>>
+      extends ConnectorInputCopyBuilder<B> {
 
     private int tapPos;
     private boolean autoTap;
@@ -139,14 +136,14 @@ public abstract class TransformerInput extends ConnectorInput {
       this.autoTap = entity.isAutoTap();
     }
 
-    public T tapPos(int tapPos) {
+    public B tapPos(int tapPos) {
       this.tapPos = tapPos;
-      return childInstance();
+      return thisInstance();
     }
 
-    public T autoTap(boolean autoTap) {
+    public B autoTap(boolean autoTap) {
       this.autoTap = autoTap;
-      return childInstance();
+      return thisInstance();
     }
 
     protected int getTapPos() {
@@ -161,6 +158,6 @@ public abstract class TransformerInput extends ConnectorInput {
     public abstract TransformerInput build();
 
     @Override
-    protected abstract T childInstance();
+    protected abstract B thisInstance();
   }
 }

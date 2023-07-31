@@ -305,12 +305,6 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     TestAssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
       super(uuid, id, operator, operationTime)
     }
-
-    @Override
-    UniqueEntityBuilder copy() {
-      throw new NotImplementedException(
-      "Copying of " + this.getClass().simpleName + " entities is not supported yet!")
-    }
   }
 
   private static class TestAssetInputFactory extends AssetInputEntityFactory<TestAssetInput, AssetInputEntityData> {

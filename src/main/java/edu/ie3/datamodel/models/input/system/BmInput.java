@@ -215,7 +215,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
     }
 
     @Override
-    protected BmInputCopyBuilder childInstance() {
+    protected BmInputCopyBuilder thisInstance() {
       return this;
     }
   }

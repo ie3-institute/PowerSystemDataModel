@@ -206,7 +206,7 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
     }
 
     @Override
-    protected MeasurementUnitInputCopyBuilder childInstance() {
+    protected MeasurementUnitInputCopyBuilder thisInstance() {
       return this;
     }
   }

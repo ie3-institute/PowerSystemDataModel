@@ -126,7 +126,7 @@ public class SwitchInput extends ConnectorInput {
     }
 
     @Override
-    protected SwitchInputCopyBuilder childInstance() {
+    protected SwitchInputCopyBuilder thisInstance() {
       return this;
     }
   }

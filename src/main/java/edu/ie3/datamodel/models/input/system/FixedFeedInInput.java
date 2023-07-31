@@ -162,7 +162,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
     }
 
     @Override
-    protected FixedFeedInInputCopyBuilder childInstance() {
+    protected FixedFeedInInputCopyBuilder thisInstance() {
       return this;
     }
   }

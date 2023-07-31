@@ -226,7 +226,7 @@ public class NodeInput extends AssetInput {
     }
 
     @Override
-    protected NodeInputCopyBuilder childInstance() {
+    protected NodeInputCopyBuilder thisInstance() {
       return this;
     }
   }
