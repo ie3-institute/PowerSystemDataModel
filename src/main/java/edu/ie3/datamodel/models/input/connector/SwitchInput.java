@@ -57,6 +57,7 @@ public class SwitchInput extends ConnectorInput {
     return closed;
   }
 
+  @Override
   public SwitchInputCopyBuilder copy() {
     return new SwitchInputCopyBuilder(this);
   }

@@ -26,4 +26,9 @@ class DummyAssetInput extends AssetInput {
   boolean inOperationOn(ZonedDateTime date) {
     throw new UnsupportedOperationException("This is a dummy class")
   }
+
+  @Override
+  AssetInputCopyBuilder copy() {
+    throw new UnsupportedOperationException("This is a dummy class")
+  }
 }

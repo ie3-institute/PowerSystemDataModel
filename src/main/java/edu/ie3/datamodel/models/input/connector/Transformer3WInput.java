@@ -232,6 +232,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     return nodeInternal;
   }
 
+  @Override
   public Transformer3WInputCopyBuilder copy() {
     return new Transformer3WInputCopyBuilder(this);
   }

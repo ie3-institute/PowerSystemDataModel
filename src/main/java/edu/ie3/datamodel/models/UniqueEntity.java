@@ -52,7 +52,7 @@ public abstract class UniqueEntity implements Serializable {
    * @version 0.1
    * @since 05.06.20
    */
-  protected abstract static class UniqueEntityCopyBuilder<B extends UniqueEntityBuilder>
+  public abstract static class UniqueEntityCopyBuilder<B extends UniqueEntityBuilder>
       implements UniqueEntityBuilder {
 
     private UUID uuid;

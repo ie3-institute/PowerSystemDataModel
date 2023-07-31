@@ -72,6 +72,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     return Collections.singletonList(node);
   }
 
+  @Override
   public abstract SystemParticipantInputCopyBuilder<?> copy();
 
   @Override

@@ -65,13 +65,15 @@ public abstract class GraphicInput extends InputEntity {
         + '}';
   }
 
+  public abstract GraphicInputCopyBuilder<? extends GraphicInputCopyBuilder<?>> copy();
+
   /**
    * Abstract class for all builder that build child entities of abstract class {@link GraphicInput}
    *
    * @version 0.1
    * @since 05.06.20
    */
-  protected abstract static class GraphicInputCopyBuilder<B extends GraphicInputCopyBuilder<B>>
+  public abstract static class GraphicInputCopyBuilder<B extends GraphicInputCopyBuilder<B>>
       extends UniqueEntityCopyBuilder<B> {
 
     private String graphicLayer;

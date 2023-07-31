@@ -187,8 +187,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
    * @version 3.1
    * @since 14.02.23
    */
-  public static class RawGridElementsCopyBuilder
-      implements InputContainerCopyBuilder<AssetInput> {
+  public static class RawGridElementsCopyBuilder implements InputContainerCopyBuilder<AssetInput> {
     private Set<NodeInput> nodes;
     private Set<LineInput> lines;
     private Set<Transformer2WInput> transformer2Ws;

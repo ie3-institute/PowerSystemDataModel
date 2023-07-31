@@ -74,6 +74,9 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
   }
 
   @Override
+  public abstract ConnectorInputCopyBuilder<?> copy();
+
+  @Override
   public List<NodeInput> allNodes() {
     return List.of(getNodeA(), getNodeB());
   }
@@ -124,7 +127,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @version 0.1
    * @since 05.06.20
    */
-  abstract static class ConnectorInputCopyBuilder<B extends ConnectorInputCopyBuilder<B>>
+  public abstract static class ConnectorInputCopyBuilder<B extends ConnectorInputCopyBuilder<B>>
       extends AssetInputCopyBuilder<B> {
 
     private NodeInput nodeA;

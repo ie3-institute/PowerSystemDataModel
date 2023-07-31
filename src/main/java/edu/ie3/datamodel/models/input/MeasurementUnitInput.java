@@ -98,6 +98,7 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
     return q;
   }
 
+  @Override
   public MeasurementUnitInputCopyBuilder copy() {
     return new MeasurementUnitInputCopyBuilder(this);
   }

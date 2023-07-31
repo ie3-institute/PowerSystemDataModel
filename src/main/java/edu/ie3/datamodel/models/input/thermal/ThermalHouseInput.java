@@ -106,6 +106,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
     return lowerTemperatureLimit;
   }
 
+  @Override
   public ThermalHouseInputCopyBuilder copy() {
     return new ThermalHouseInputCopyBuilder(this);
   }

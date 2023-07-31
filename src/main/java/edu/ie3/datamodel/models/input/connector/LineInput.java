@@ -117,6 +117,7 @@ public class LineInput extends ConnectorInput implements HasType {
     return olmCharacteristic;
   }
 
+  @Override
   public LineInputCopyBuilder copy() {
     return new LineInputCopyBuilder(this);
   }
