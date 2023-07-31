@@ -284,7 +284,7 @@ public class EvcsInput extends SystemParticipantInput {
     }
 
     @Override
-    protected EvcsInputCopyBuilder childInstance() {
+    protected EvcsInputCopyBuilder thisInstance() {
       return this;
     }
   }

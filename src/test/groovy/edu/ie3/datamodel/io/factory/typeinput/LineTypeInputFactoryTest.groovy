@@ -44,8 +44,8 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
 
     then:
     typeInput.success
-    typeInput.data().getClass() == typeInputClass
-    typeInput.data().with {
+    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert b == getQuant(parameter["b"], StandardUnits.SUSCEPTANCE_PER_LENGTH)

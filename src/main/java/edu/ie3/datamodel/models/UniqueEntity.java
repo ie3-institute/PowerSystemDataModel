@@ -52,7 +52,7 @@ public abstract class UniqueEntity implements Serializable {
    * @version 0.1
    * @since 05.06.20
    */
-  protected abstract static class UniqueEntityCopyBuilder<T extends UniqueEntityBuilder>
+  public abstract static class UniqueEntityCopyBuilder<B extends UniqueEntityBuilder>
       implements UniqueEntityBuilder {
 
     private UUID uuid;
@@ -61,16 +61,16 @@ public abstract class UniqueEntity implements Serializable {
       this.uuid = entity.getUuid();
     }
 
-    public T uuid(UUID uuid) {
+    public B uuid(UUID uuid) {
       this.uuid = uuid;
-      return childInstance();
+      return thisInstance();
     }
 
     protected UUID getUuid() {
       return uuid;
     }
 
-    protected abstract T childInstance();
+    protected abstract B thisInstance();
   }
 
   protected interface UniqueEntityBuilder {

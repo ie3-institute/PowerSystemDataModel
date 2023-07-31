@@ -45,8 +45,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime == OperationTime.notLimited()
       assert operator == operatorInput
@@ -71,8 +71,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime == OperationTime.notLimited()
       assert operator == operatorInput
@@ -104,8 +104,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -131,8 +131,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert !operationTime.startDate.present
       assert operationTime.endDate.present
@@ -159,8 +159,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -185,8 +185,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime == OperationTime.notLimited()
       assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
@@ -209,8 +209,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -235,8 +235,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert !operationTime.startDate.present
       assert operationTime.endDate.present
@@ -262,8 +262,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -289,7 +289,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.failure
-    input.exception().cause.message ==
+    input.exception.get().cause.message ==
         "The provided fields [operatesfrom, operatesuntil, uuid] with data \n" +
         "{operatesfrom -> 2019-01-01T00:00:00+01:00[Europe/Berlin],\n" +
         "operatesuntil -> 2019-12-31T00:00:00+01:00[Europe/Berlin],\n" +
@@ -307,7 +307,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     }
 
     @Override
-    UniqueEntityBuilder copy() {
+    AssetInputCopyBuilder copy() {
       throw new NotImplementedException(
       "Copying of " + this.getClass().simpleName + " entities is not supported yet!")
     }

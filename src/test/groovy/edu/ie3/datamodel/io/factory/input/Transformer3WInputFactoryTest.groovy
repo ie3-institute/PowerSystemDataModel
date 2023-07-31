@@ -46,8 +46,8 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime == OperationTime.notLimited()
       assert operator == OperatorInput.NO_OPERATOR_ASSIGNED

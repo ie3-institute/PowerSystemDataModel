@@ -228,7 +228,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
     }
 
     @Override
-    protected ThermalHouseInputCopyBuilder childInstance() {
+    protected ThermalHouseInputCopyBuilder thisInstance() {
       return this;
     }
   }

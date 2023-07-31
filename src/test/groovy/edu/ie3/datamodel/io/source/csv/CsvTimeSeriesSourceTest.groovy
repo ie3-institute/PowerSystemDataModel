@@ -47,7 +47,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     actual.success
-    actual.data() == expected
+    actual.data.get() == expected
   }
 
   def "The factory method in csv time series source refuses to build time series with unsupported column type"() {

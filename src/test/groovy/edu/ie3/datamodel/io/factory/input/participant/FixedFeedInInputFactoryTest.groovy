@@ -53,8 +53,8 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -90,7 +90,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.failure
-    input.exception().cause.message == "The provided fields [cosphirated, id, srated, uuid] with data \n" +
+    input.exception.get().cause.message == "The provided fields [cosphirated, id, srated, uuid] with data \n" +
         "{cosphirated -> 4,\n" +
         "id -> TestID,\n" +
         "srated -> 3,\n" +

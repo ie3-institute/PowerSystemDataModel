@@ -105,7 +105,7 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
     }
 
     @Override
-    protected NodeGraphicInputCopyBuilder childInstance() {
+    protected NodeGraphicInputCopyBuilder thisInstance() {
       return this;
     }
 

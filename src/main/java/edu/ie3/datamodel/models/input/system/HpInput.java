@@ -164,7 +164,7 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
     }
 
     @Override
-    protected HpInputCopyBuilder childInstance() {
+    protected HpInputCopyBuilder thisInstance() {
       return this;
     }
   }
