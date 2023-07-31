@@ -112,7 +112,8 @@ class TryTest extends Specification {
 
   def "A Try object can be creates by a boolean and an exception"() {
     when:
-    def actual = Try.ofVoid(bool, ex)
+    def ex = new FailureException("failure")
+    def actual = Try.ofVoid(bool, () -> ex)
 
     then:
     actual.failure == expected
@@ -122,9 +123,9 @@ class TryTest extends Specification {
     }
 
     where:
-    bool | ex | expected
-    true | new FailureException("failure") | true
-    false | new FailureException("no failure") | false
+    bool  || expected
+    true  || true
+    false || false
   }
 
   def "A list of Tries is returned when applying a multiple VoidSupplier to Try#ofVoid()"() {
