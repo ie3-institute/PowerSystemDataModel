@@ -15,32 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class Try<T, E extends Exception> {
-  private final T data;
-  private final E exception;
-  private final boolean isEmpty;
-
-  // constructor
-  /**
-   * Constructor for {@link Try} used when a {@link Success} is created.
-   *
-   * @param data that is stored
-   */
-  protected Try(T data) {
-    this.data = data;
-    this.exception = null;
-    this.isEmpty = data == null;
-  }
-
-  /**
-   * Constructor for {@link Try} used when a {@link Failure} is created.
-   *
-   * @param ex exception that was thrown
-   */
-  private Try(E ex) {
-    this.data = null;
-    this.exception = ex;
-    isEmpty = true;
-  }
+  // static utility methods
 
   /**
    * Method to create a {@link Try} object easily.
@@ -75,7 +50,7 @@ public abstract class Try<T, E extends Exception> {
    */
   @SuppressWarnings("unchecked")
   public static <E extends Exception> Try<Void, E> ofVoid(
-      TrySupplier<?, E> supplier, Class<E> clazz) {
+      VoidSupplier<E> supplier, Class<E> clazz) {
     try {
       supplier.get();
       return Success.empty();
@@ -90,137 +65,45 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
-   * Returns true if this object is a {@link Success} or false if this object is a {@link Failure}.
-   */
-  public abstract boolean isSuccess();
-
-  /**
-   * Returns true if this object is a {@link Failure} or false if this object is a {@link Success}.
-   */
-  public abstract boolean isFailure();
-
-  /** Returns true if this object is either a {@link Success} or a {@link Failure}. */
-  public boolean isEmpty() {
-    return isEmpty;
-  }
-
-  /**
-   * Method for getting the data. If this object is a {@link Failure} the exception is thrown.
+   * Method to create a {@link Try} object easily.
    *
-   * @return data id this object is a {@link Success}
-   * @throws E if this object is a {@link Failure}
+   * @param failure a {@link Failure} is returned.
+   * @param exception exception that should be wrapped by a {@link Failure}
+   * @return a {@link Try}
+   * @param <E> type of exception
    */
-  public T getOrThrow() throws E {
-    if (data != null) {
-      return data;
+  public static <E extends Exception> Try<Void, E> ofVoid(
+      boolean failure, ExceptionSupplier<E> exception) {
+    if (failure) {
+      return Failure.ofVoid(exception.get());
     } else {
-      assert exception != null;
-      throw exception;
+      return Success.empty();
     }
   }
 
   /**
-   * This method will return the stored data if this object is a {@link Success} or the given value.
+   * Utility method to check a list of {@link VoidSupplier}'s.
    *
-   * @param value that should be returned if this object is a {@link Failure}
-   * @return either the stored data or the given value
+   * @param supplier list of {@link VoidSupplier}
+   * @param clazz class of the exception
+   * @return a list of {@link Try}
+   * @param <E> type of the exception
    */
-  public T getOrElse(T value) {
-    return data != null ? data : value;
-  }
-
-  /** Returns an option for data. */
-  public Optional<T> getData() {
-    return data != null ? Optional.of(data) : Optional.empty();
-  }
-
-  /** Returns an option for an exception. */
-  public Optional<E> getException() {
-    return exception != null ? Optional.of(exception) : Optional.empty();
+  @SafeVarargs
+  public static <E extends Exception> List<Try<Void, E>> ofVoid(
+      Class<E> clazz, VoidSupplier<E>... supplier) {
+    return Arrays.stream(supplier).map(sup -> Try.ofVoid(sup, clazz)).toList();
   }
 
   /**
-   * Returns the data. WARNING: This method is for internal usage only and should therefore not be
-   * called for other purposes.
-   */
-  T data() {
-    return data;
-  }
-
-  /**
-   * Returns the exception. WARNING: This method is for internal usage only and should therefore not
-   * be called for other purposes.
-   */
-  E exception() {
-    return exception;
-  }
-
-  // functional methods
-
-  /**
-   * Method to transform the data if this object is a {@link Success}.
+   * Method to retrieve the exceptions from all {@link Failure} objects.
    *
-   * @param mapper that is used to map the data
-   * @return a new {@link Try} object
-   * @param <U> type of the data
+   * @param tries collection of {@link Try} objects
+   * @return a list of {@link Exception}'s
    */
-  public <U> Try<U, E> map(Function<? super T, ? extends U> mapper) {
-    return transformS(mapper);
-  }
-
-  /**
-   * Method to transform and flat the data.
-   *
-   * @param mapper that is used to map the data
-   * @return a new {@link Try} object
-   * @param <U> type of the data
-   */
-  @SuppressWarnings("unchecked")
-  public <U> Try<U, E> flatMap(Function<? super T, ? extends Try<U, E>> mapper) {
-    Try<Try<U, E>, E> t = transformS(mapper);
-    return t instanceof Success<Try<U, E>, ?> success ? success.data() : (Try<U, E>) t;
-  }
-
-  /**
-   * Method to transform a {@link Try} object. This method should be used, if processing the
-   * exception is not necessary.
-   *
-   * @param successFunc that will be used to transform the data
-   * @return a new {@link Try} object
-   * @param <U> type of data
-   */
-  public <U> Try<U, E> transformS(Function<? super T, ? extends U> successFunc) {
-    return isSuccess() ? new Success<>(successFunc.apply(data)) : Failure.of(this.exception);
-  }
-
-  /**
-   * Method to transform a {@link Try} object. This method should be used, if only exception should
-   * be processed.
-   *
-   * @param failureFunc that will be used to transform the exception
-   * @return a new {@link Try} object
-   * @param <R> type of new exception
-   */
-  public <R extends Exception> Try<T, R> transformF(Function<? super E, ? extends R> failureFunc) {
-    return isFailure() ? Failure.of(failureFunc.apply(exception)) : new Success<>(data);
-  }
-
-  /**
-   * Method to transform a {@link Try} object. This method should be used, if processing the
-   * exception is necessary.
-   *
-   * @param successFunc that will be used to transform the data
-   * @param failureFunc that will be used to transform the exception
-   * @return a new {@link Try} object
-   * @param <U> type of data
-   */
-  public <U, R extends Exception> Try<U, R> transform(
-      Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
-    if (isSuccess()) {
-      return new Success<>(successFunc.apply(data));
-    } else {
-      return new Failure<>(failureFunc.apply(exception));
-    }
+  public static <D, E extends Exception> List<E> getExceptions(
+      Collection<Try<? extends D, E>> tries) {
+    return tries.stream().filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
   }
 
   /**
@@ -255,7 +138,7 @@ public abstract class Try<T, E extends Exception> {
     assert successes != null && failures != null;
 
     if (!failures.isEmpty()) {
-      E first = failures.get(0).exception;
+      E first = ((Failure<U, E>) failures.get(0)).exception;
 
       return new Failure<>(
           new FailureException(
@@ -266,25 +149,99 @@ public abstract class Try<T, E extends Exception> {
                   + first,
               first.getCause()));
     } else {
-      return new Success<>(successes.stream().map(t -> t.data));
+      return new Success<>(successes.stream().map(t -> ((Success<U, E>) t).data));
     }
   }
 
+  // methods of try object
+
   /**
-   * Method to retrieve the exceptions from all {@link Failure} objects.
-   *
-   * @param tries collection of {@link Try} objects
-   * @return a list of {@link Exception}'s
+   * Returns true if this object is a {@link Success} or false if this object is a {@link Failure}.
    */
-  public static <D, E extends Exception> List<E> getExceptions(
-      Collection<Try<? extends D, E>> tries) {
-    return tries.stream().filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
+  public abstract boolean isSuccess();
+
+  /**
+   * Returns true if this object is a {@link Failure} or false if this object is a {@link Success}.
+   */
+  public abstract boolean isFailure();
+
+  /**
+   * Method for getting the data. If this object is a {@link Failure} the exception is thrown.
+   *
+   * @return data id this object is a {@link Success}
+   * @throws E if this object is a {@link Failure}
+   */
+  public abstract T getOrThrow() throws E;
+
+  /** Returns an option for data. */
+  public abstract Optional<T> getData();
+
+  /** Returns an option for an exception. */
+  public abstract Optional<E> getException();
+
+  // functional methods
+
+  /**
+   * Method to transform the data if this object is a {@link Success}.
+   *
+   * @param mapper that is used to map the data
+   * @return a new {@link Try} object
+   * @param <U> type of the data
+   */
+  public <U> Try<U, E> map(Function<? super T, ? extends U> mapper) {
+    return transformS(mapper);
   }
+
+  /**
+   * Method to transform and flat the data.
+   *
+   * @param mapper that is used to map the data
+   * @return a new {@link Try} object
+   * @param <U> type of the data
+   */
+  public abstract <U> Try<U, E> flatMap(Function<? super T, ? extends Try<U, E>> mapper);
+
+  /**
+   * Method to transform a {@link Try} object. This method should be used, if processing the
+   * exception is not necessary.
+   *
+   * @param successFunc that will be used to transform the data
+   * @return a new {@link Try} object
+   * @param <U> type of data
+   */
+  public abstract <U> Try<U, E> transformS(Function<? super T, ? extends U> successFunc);
+
+  /**
+   * Method to transform a {@link Try} object. This method should be used, if only exception should
+   * be processed.
+   *
+   * @param failureFunc that will be used to transform the exception
+   * @return a new {@link Try} object
+   * @param <R> type of new exception
+   */
+  public abstract <R extends Exception> Try<T, R> transformF(
+      Function<? super E, ? extends R> failureFunc);
+
+  /**
+   * Method to transform a {@link Try} object. This method should be used, if processing the
+   * exception is necessary.
+   *
+   * @param successFunc that will be used to transform the data
+   * @param failureFunc that will be used to transform the exception
+   * @return a new {@link Try} object
+   * @param <U> type of data
+   */
+  public abstract <U, R extends Exception> Try<U, R> transform(
+      Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc);
 
   /** Implementation of {@link Try} class. This class is used to present a successful try. */
   public static final class Success<T, E extends Exception> extends Try<T, E> {
+    private final T data;
+
+    private static final Success<Void, ?> emptySuccess = new Success<>(null);
+
     public Success(T data) {
-      super(data);
+      this.data = data;
     }
 
     @Override
@@ -297,9 +254,53 @@ public abstract class Try<T, E extends Exception> {
       return false;
     }
 
+    /** Returns true if this object is an empty {@link Success}. */
+    public boolean isEmpty() {
+      return data == null;
+    }
+
+    @Override
+    public T getOrThrow() throws E {
+      return get();
+    }
+
+    @Override
+    public Optional<T> getData() {
+      return !isEmpty() ? Optional.of(data) : Optional.empty();
+    }
+
+    @Override
+    public Optional<E> getException() {
+      return Optional.empty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <U> Try<U, E> flatMap(Function<? super T, ? extends Try<U, E>> mapper) {
+      Try<Try<U, E>, E> t = transformS(mapper);
+      return t instanceof Success<Try<U, E>, ?> success ? success.get() : (Try<U, E>) t;
+    }
+
+    @Override
+    public <U> Try<U, E> transformS(Function<? super T, ? extends U> successFunc) {
+      return new Success<>(successFunc.apply(data));
+    }
+
+    @Override
+    public <R extends Exception> Try<T, R> transformF(
+        Function<? super E, ? extends R> failureFunc) {
+      return new Success<>(data);
+    }
+
+    @Override
+    public <U, R extends Exception> Try<U, R> transform(
+        Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
+      return new Success<>(successFunc.apply(data));
+    }
+
     /** Returns the stored data. */
     public T get() {
-      return data();
+      return data;
     }
 
     /**
@@ -307,15 +308,18 @@ public abstract class Try<T, E extends Exception> {
      *
      * @param <E> type of exception
      */
+    @SuppressWarnings("unchecked")
     public static <E extends Exception> Success<Void, E> empty() {
-      return new Success<>(null);
+      return (Success<Void, E>) emptySuccess;
     }
   }
 
   /** Implementation of {@link Try} class. This class is used to present a failed try. */
   public static final class Failure<T, E extends Exception> extends Try<T, E> {
+    private final E exception;
+
     public Failure(E e) {
-      super(e);
+      this.exception = e;
     }
 
     @Override
@@ -328,9 +332,47 @@ public abstract class Try<T, E extends Exception> {
       return true;
     }
 
+    @Override
+    public T getOrThrow() throws E {
+      throw exception;
+    }
+
+    @Override
+    public Optional<T> getData() {
+      return Optional.empty();
+    }
+
+    @Override
+    public Optional<E> getException() {
+      return exception != null ? Optional.of(exception) : Optional.empty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <U> Try<U, E> flatMap(Function<? super T, ? extends Try<U, E>> mapper) {
+      return (Failure<U, E>) this;
+    }
+
+    @Override
+    public <U> Try<U, E> transformS(Function<? super T, ? extends U> successFunc) {
+      return Failure.of(this.exception);
+    }
+
+    @Override
+    public <R extends Exception> Try<T, R> transformF(
+        Function<? super E, ? extends R> failureFunc) {
+      return Failure.of(failureFunc.apply(exception));
+    }
+
+    @Override
+    public <U, R extends Exception> Try<U, R> transform(
+        Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
+      return Failure.of(failureFunc.apply(exception));
+    }
+
     /** Returns the thrown exception. */
     public E get() {
-      return exception();
+      return exception;
     }
 
     /**
@@ -355,18 +397,6 @@ public abstract class Try<T, E extends Exception> {
     public static <E extends Exception> Failure<Void, E> ofVoid(E exception) {
       return new Failure<>(exception);
     }
-
-    /**
-     * Method to transform a {@link Failure} into another {@link Failure}.
-     *
-     * @param failure given failure
-     * @return the transformed failure
-     * @param <T> type before transformation
-     * @param <U> type after transformation
-     */
-    public static <T, U, E extends Exception> Failure<U, E> of(Failure<T, E> failure) {
-      return new Failure<>(failure.exception());
-    }
   }
 
   /**
@@ -378,5 +408,25 @@ public abstract class Try<T, E extends Exception> {
   @FunctionalInterface
   public interface TrySupplier<T, E extends Exception> {
     T get() throws E;
+  }
+
+  /**
+   * Supplier for void methods to {@link Try} class.
+   *
+   * @param <E> type of exception that could be thrown
+   */
+  @FunctionalInterface
+  public interface VoidSupplier<E extends Exception> {
+    void get() throws E;
+  }
+
+  /**
+   * Supplier for exceptions.
+   *
+   * @param <E> type of exception that could be thrown
+   */
+  @FunctionalInterface
+  public interface ExceptionSupplier<E extends Exception> {
+    E get();
   }
 }

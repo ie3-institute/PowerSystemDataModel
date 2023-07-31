@@ -139,7 +139,7 @@ public class StorageInput extends SystemParticipantInput implements HasType {
     }
 
     @Override
-    protected StorageInputCopyBuilder childInstance() {
+    protected StorageInputCopyBuilder thisInstance() {
       return this;
     }
   }

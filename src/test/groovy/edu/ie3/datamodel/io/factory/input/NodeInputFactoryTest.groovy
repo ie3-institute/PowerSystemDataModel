@@ -51,8 +51,8 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    ((NodeInput) input.data()).with {
+    input.data.get().getClass() == inputClass
+    ((NodeInput) input.data.get()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])

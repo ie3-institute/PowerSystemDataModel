@@ -54,8 +54,8 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])

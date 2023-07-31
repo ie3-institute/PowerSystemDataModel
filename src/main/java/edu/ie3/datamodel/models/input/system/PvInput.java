@@ -336,7 +336,7 @@ public class PvInput extends SystemParticipantInput {
     }
 
     @Override
-    protected PvInputCopyBuilder childInstance() {
+    protected PvInputCopyBuilder thisInstance() {
       return this;
     }
   }

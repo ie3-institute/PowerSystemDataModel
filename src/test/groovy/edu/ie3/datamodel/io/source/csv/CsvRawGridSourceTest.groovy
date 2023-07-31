@@ -65,7 +65,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     connectorDataOption.success
-    connectorDataOption.data().with {
+    connectorDataOption.data.get().with {
       assert fieldsToValues == expectedFieldsToAttributes
       assert targetClass == SwitchInput
       assert nodeA == rgtd.nodeA
@@ -171,11 +171,11 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
-    actualSet.forEach {
+    actualSet.every {
       it.success
     }
 
-    actualSet.stream().map { it.data() }.toList().containsAll(expectedSet)
+    actualSet.stream().map { it.data.get() }.toList().containsAll(expectedSet)
   }
 
   def "The CsvRawGridSource is able to add a type to untyped ConnectorInputEntityData correctly"() {
@@ -264,7 +264,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actual.success
-    actual.data() == expectedTypedEntityData
+    actual.data.get() == expectedTypedEntityData
   }
 
   def "The CsvRawGridSource is able to identify ConnectorInputEntityData data with non matching type requirements correctly"() {
@@ -371,11 +371,11 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
-    actualSet.forEach {
+    actualSet.every {
       it.success
     }
     actualSet.stream().map {
-      it.data()
+      it.data.get()
     }.toList().containsAll(expectedSet)
   }
 
@@ -424,7 +424,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actual.success
-    actual.data() == expected
+    actual.data.get() == expected
   }
 
   def "The CsvRawGridSource is NOT able to add the third node for a three winding transformer, if it is not available"() {
@@ -497,36 +497,35 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       rgtd.nodeC
     ]
 
-    def expectedSet = [
-      new Transformer3WInputEntityData([
-        "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
-        "id"				: "3w_test",
-        "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-        "operatesFrom"		: "2020-03-24 15:11:31",
-        "operatesUntil"		: "2020-03-24 15:11:31",
-        "parallelDevices"	: "1",
-        "tapPos"			: "0",
-        "autoTap"			: "true"
-      ],
-      Transformer3WInput,
-      rgtd.nodeA,
-      rgtd.nodeB,
-      rgtd.nodeC,
-      rgtd.transformerTypeAtoBtoC),
-      null
-    ]
+    def expected = new Transformer3WInputEntityData([
+      "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
+      "id"				: "3w_test",
+      "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
+      "operatesFrom"		: "2020-03-24 15:11:31",
+      "operatesUntil"		: "2020-03-24 15:11:31",
+      "parallelDevices"	: "1",
+      "tapPos"			: "0",
+      "autoTap"			: "true"
+    ],
+    Transformer3WInput,
+    rgtd.nodeA,
+    rgtd.nodeB,
+    rgtd.nodeC,
+    rgtd.transformerTypeAtoBtoC)
 
     when: "the sources tries to add nodes"
     def actualSet = source.buildTransformer3WEntityData(inputStream, availableNodes).collect(Collectors.toSet())
+    def successes = actualSet.stream().filter {
+      it.success
+    }.toList()
+    def failures = actualSet.stream().filter {
+      it.failure
+    }.toList()
 
     then: "everything is fine"
-    actualSet.size() == expectedSet.size()
-    actualSet.forEach {
-      it.success
-    }
-    actualSet.stream().map {
-      it.data()
-    }.toList().containsAll(expectedSet)
+    actualSet.size() == 2
+    successes.get(0).data.get() == expected
+    failures.get(0).exception.get().class == SourceException
   }
 
   def "The CsvRawGridSource is able to load all nodes from file"() {

@@ -83,7 +83,7 @@ public class OperatorInput extends InputEntity {
     }
 
     @Override
-    protected OperatorInputCopyBuilder childInstance() {
+    protected OperatorInputCopyBuilder thisInstance() {
       return this;
     }
   }

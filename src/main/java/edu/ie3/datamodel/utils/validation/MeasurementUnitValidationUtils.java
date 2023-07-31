@@ -5,8 +5,11 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
+import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.UnsafeEntityException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
+import edu.ie3.datamodel.utils.Try;
 
 public class MeasurementUnitValidationUtils extends ValidationUtils {
 
@@ -21,14 +24,23 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
    * - any values are measured
    *
    * @param measurementUnit Measurement unit to validate
+   * @return a try object either containing an {@link ValidationException} or an empty Success
    */
-  protected static void check(MeasurementUnitInput measurementUnit) {
-    checkNonNull(measurementUnit, "a measurement unit");
-    if (!measurementUnit.getP()
-        && !measurementUnit.getQ()
-        && !measurementUnit.getVAng()
-        && !measurementUnit.getVMag())
-      throw new UnsafeEntityException(
-          "Measurement Unit does not measure any values", measurementUnit);
+  protected static Try<Void, ? extends ValidationException> check(
+      MeasurementUnitInput measurementUnit) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(measurementUnit, "a measurement unit");
+
+    if (isNull.isFailure()) {
+      return isNull;
+    }
+
+    return Try.ofVoid(
+        !measurementUnit.getP()
+            && !measurementUnit.getQ()
+            && !measurementUnit.getVAng()
+            && !measurementUnit.getVMag(),
+        () ->
+            new UnsafeEntityException(
+                "Measurement Unit does not measure any values", measurementUnit));
   }
 }

@@ -76,7 +76,7 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
     }
 
     @Override
-    protected LineGraphicInputCopyBuilder childInstance() {
+    protected LineGraphicInputCopyBuilder thisInstance() {
       return this;
     }
 

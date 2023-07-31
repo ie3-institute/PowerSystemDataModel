@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2023. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -9,10 +9,17 @@ import edu.ie3.datamodel.models.input.AssetInput
 
 import java.time.ZonedDateTime
 
-class InvalidAssetInput  extends AssetInput {
+class DummyAssetInput extends AssetInput {
+  DummyAssetInput(String id) {
+    super(UUID.randomUUID(), id)
+  }
 
-  InvalidAssetInput() {
-    super(UUID.randomUUID(), "invalid_asset")
+  static DummyAssetInput valid(String id) {
+    return new DummyAssetInput(id)
+  }
+
+  static DummyAssetInput invalid() {
+    return new DummyAssetInput("invalid_asset")
   }
 
   @Override
@@ -21,7 +28,7 @@ class InvalidAssetInput  extends AssetInput {
   }
 
   @Override
-  UniqueEntityBuilder copy() {
+  AssetInputCopyBuilder copy() {
     throw new UnsupportedOperationException("This is a dummy class")
   }
 }
