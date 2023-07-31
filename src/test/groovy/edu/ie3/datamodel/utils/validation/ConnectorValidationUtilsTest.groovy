@@ -5,32 +5,25 @@
  */
 package edu.ie3.datamodel.utils.validation
 
-import edu.ie3.datamodel.utils.Try
-
 import static edu.ie3.datamodel.models.StandardUnits.*
-import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static tech.units.indriya.unit.Units.METRE
 
+import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
-import org.locationtech.jts.geom.LineString
-import tech.units.indriya.ComparableQuantity
-
-import javax.measure.quantity.Angle
-import javax.measure.quantity.Dimensionless
-import javax.measure.quantity.ElectricConductance
-import javax.measure.quantity.ElectricPotential
-import javax.measure.quantity.ElectricResistance
-import javax.measure.quantity.Power
-
-import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
+import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
+
+import javax.measure.quantity.*
 
 class ConnectorValidationUtilsTest extends Specification {
 

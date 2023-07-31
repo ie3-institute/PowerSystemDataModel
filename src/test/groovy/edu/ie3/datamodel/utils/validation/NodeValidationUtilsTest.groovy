@@ -5,18 +5,16 @@
  */
 package edu.ie3.datamodel.utils.validation
 
-import edu.ie3.datamodel.exceptions.ValidationException
-import edu.ie3.datamodel.utils.Try
-
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
-import edu.ie3.datamodel.exceptions.UnsafeEntityException
-import edu.ie3.datamodel.models.voltagelevels.CommonVoltageLevel
-import edu.ie3.util.interval.RightOpenInterval
-
 import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.exceptions.UnsafeEntityException
+import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.models.voltagelevels.CommonVoltageLevel
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
+import edu.ie3.util.interval.RightOpenInterval
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 

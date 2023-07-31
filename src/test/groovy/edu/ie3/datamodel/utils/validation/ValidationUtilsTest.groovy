@@ -116,7 +116,7 @@ class ValidationUtilsTest extends Specification {
 
     where:
     invalidObject          || expectedException
-    new Coordinate(10, 10) || new FailedValidationException("Cannot validate object of class '" + invalidObject.getClass().getSimpleName() + "', as no routine is implemented.")
+    new Coordinate(10, 10) || new FailedValidationException("Cannot validate object of class '" + invalidObject.class.simpleName + "', as no routine is implemented.")
   }
 
   def "The validation check method recognizes all potential errors for an asset"() {
