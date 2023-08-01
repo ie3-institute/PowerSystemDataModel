@@ -79,7 +79,8 @@ node {
           // normally main pipeline is only triggered by merge of release or hotfixes OR manually triggered
           // if manually triggered for deploy, no PR should be created
           if (params.deploy != "true") {
-            handleDevPr(sshCredentialsId, orgName, projectName, currentBranchName)
+            // Disabled for now
+            // handleDevPr(sshCredentialsId, orgName, projectName, currentBranchName)
           }
         }
       }
