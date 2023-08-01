@@ -92,6 +92,10 @@ public class TimeSeriesProcessor<
     this.flattenedHeaderElements = fieldToSource.keySet().toArray(new String[0]);
   }
 
+  public TimeSeriesProcessorKey getRegisteredKey() {
+    return registeredKey;
+  }
+
   /**
    * Collects the mapping, where to find which information and how to get them (in terms of getter
    * method).

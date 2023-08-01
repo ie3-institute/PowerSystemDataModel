@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
+import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
@@ -19,6 +20,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.Try;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -275,21 +277,26 @@ public class ProcessorProvider {
           TimeSeriesProcessorKey,
           TimeSeriesProcessor<
               TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>
-      allTimeSeriesProcessors() {
-    return TimeSeriesProcessor.eligibleKeys.stream()
-        .collect(
-            Collectors.toMap(
-                key -> key,
-                key -> {
-                  try {
-                    return new TimeSeriesProcessor<>(
-                        (Class<TimeSeries<TimeSeriesEntry<Value>, Value>>) key.getTimeSeriesClass(),
-                        (Class<TimeSeriesEntry<Value>>) key.getEntryClass(),
-                        (Class<Value>) key.getValueClass());
-                  } catch (EntityProcessorException e) {
-                    throw new RuntimeException(e);
-                  }
-                }));
+      allTimeSeriesProcessors() throws EntityProcessorException {
+    try {
+      return Try.scanStream(
+              TimeSeriesProcessor.eligibleKeys.stream()
+                  .map(
+                      key ->
+                          Try.of(
+                              () ->
+                                  new TimeSeriesProcessor<>(
+                                      (Class<TimeSeries<TimeSeriesEntry<Value>, Value>>)
+                                          key.getTimeSeriesClass(),
+                                      (Class<TimeSeriesEntry<Value>>) key.getEntryClass(),
+                                      (Class<Value>) key.getValueClass()),
+                              EntityProcessorException.class)),
+              "list of processors")
+          .getOrThrow()
+          .collect(Collectors.toMap(TimeSeriesProcessor::getRegisteredKey, Function.identity()));
+    } catch (FailureException e) {
+      throw new EntityProcessorException(e.getCause());
+    }
   }
 
   @SuppressWarnings("unchecked cast")
