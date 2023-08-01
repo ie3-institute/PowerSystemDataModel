@@ -236,20 +236,20 @@ public abstract class Processor<T> {
           ((Optional<?>) methodReturnObject)
               .map(
                   o -> {
-                    try {
-                      if (o instanceof Quantity<?>) {
-                        return handleQuantity((Quantity<?>) o, fieldName);
-                      } else {
-                        throw new EntityProcessorException(
-                            "Handling of "
-                                + o.getClass().getSimpleName()
-                                + ".class instance wrapped into Optional is currently not supported by entity processors!");
-                      }
-                    } catch (EntityProcessorException e) {
-                      throw new RuntimeException(e);
+                    if (o instanceof Quantity<?>) {
+                      return Try.of(
+                          () -> handleQuantity((Quantity<?>) o, fieldName),
+                          EntityProcessorException.class);
+                    } else {
+                      return Failure.of(
+                          new EntityProcessorException(
+                              "Handling of "
+                                  + o.getClass().getSimpleName()
+                                  + ".class instance wrapped into Optional is currently not supported by entity processors!"));
                     }
                   })
-              .orElse(""));
+              .orElse(Success.of("")) // (in case of empty optional)
+              .getOrThrow());
       case "ZonedDateTime" -> resultStringBuilder.append(
           processZonedDateTime((ZonedDateTime) methodReturnObject));
       case "OperationTime" -> resultStringBuilder.append(
