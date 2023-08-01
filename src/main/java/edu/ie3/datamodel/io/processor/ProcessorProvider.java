@@ -108,19 +108,14 @@ public class ProcessorProvider {
    * @param <V> Type of the value inside the time series entries
    * @return A set of mappings from field name to value
    */
-  @SuppressWarnings("unchecked")
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Set<LinkedHashMap<String, String>> handleTimeSeries(T timeSeries)
           throws ProcessorProviderException {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
-    return Try.of(() -> getTimeSeriesProcessor(key), ProcessorProviderException.class)
+    return Try.of(() -> this.<T, E, V>getTimeSeriesProcessor(key), ProcessorProviderException.class)
         .flatMap(
             processor ->
-                Try.of(
-                        () ->
-                            processor.handleTimeSeries(
-                                (TimeSeries<TimeSeriesEntry<Value>, Value>) timeSeries),
-                        EntityProcessorException.class)
+                Try.of(() -> processor.handleTimeSeries(timeSeries), EntityProcessorException.class)
                     .transformF(ProcessorProviderException::new))
         .getOrThrow();
   }
