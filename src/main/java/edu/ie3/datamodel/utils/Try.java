@@ -304,6 +304,18 @@ public abstract class Try<T, E extends Exception> {
     }
 
     /**
+     * Method to create a {@link Success} by applying data.
+     *
+     * @param data that should be wrapped by the {@link Success}
+     * @return a new {@link Success}
+     * @param <D> type of data
+     * @param <E> type of exception
+     */
+    public static <D, E extends Exception> Success<D, E> of(D data) {
+      return new Success<>(data);
+    }
+
+    /**
      * Returns an empty {@link Success}.
      *
      * @param <E> type of exception
