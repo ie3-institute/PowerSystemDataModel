@@ -172,7 +172,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
             InvalidEntityException.class,
             () -> checkIfTapPositionIsWithinBounds(transformer2W),
             () -> connectsNodesWithDifferentVoltageLevels(transformer2W, true),
-            () -> connectsNodesToCorrectVoltageSides(transformer2W);
+            () -> connectsNodesToCorrectVoltageSides(transformer2W),
             () -> connectsNodesInDifferentSubnets(transformer2W, true),
             () -> ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(transformer2W)));
 
@@ -274,11 +274,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
                 new InvalidEntityException(
                     "Transformer connects nodes in the same subnet", transformer3W)));
 
-    exceptions.add(
+    exceptions.addAll(
         Try.ofVoid(
-            () -> connectNodesToCorrectVoltageSides(transformer3W);
-            () -> ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(transformer3W),
-            InvalidEntityException.class));
+            InvalidEntityException.class,
+            () -> connectNodesToCorrectVoltageSides(transformer3W),
+            () -> ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(transformer3W)));
 
     return exceptions;
   }
@@ -428,25 +428,23 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param connectorInput ConnectorInput to validate
    * @param shouldBeDifferent determines if subnets should be equal or not
    */
-  private static void connectsNodesInDifferentSubnets(ConnectorInput connectorInput, boolean shouldBeDifferent)
-      throws InvalidEntityException {
-      boolean isDifferent =
-              connectorInput.getNodeA().getSubnet() != connectorInput.getNodeB().getSubnet();
+  private static void connectsNodesInDifferentSubnets(
+      ConnectorInput connectorInput, boolean shouldBeDifferent) throws InvalidEntityException {
+    boolean isDifferent =
+        connectorInput.getNodeA().getSubnet() != connectorInput.getNodeB().getSubnet();
     if (shouldBeDifferent && !isDifferent) {
-        if (connectorInput.getNodeA().getSubnet() == connectorInput.getNodeB().getSubnet()) {
-            throw new InvalidEntityException(
-                    connectorInput.getClass().getSimpleName() + " connects the same subnet, but shouldn't",
-                    connectorInput);
-        }
-    }
-      if (!shouldBeDifferent && isDifferent) {
+      if (connectorInput.getNodeA().getSubnet() == connectorInput.getNodeB().getSubnet()) {
         throw new InvalidEntityException(
-            connectorInput.getClass().getSimpleName()
-                + " connects different subnets, but shouldn't",
+            connectorInput.getClass().getSimpleName() + " connects the same subnet, but shouldn't",
             connectorInput);
       }
     }
-
+    if (!shouldBeDifferent && isDifferent) {
+      throw new InvalidEntityException(
+          connectorInput.getClass().getSimpleName() + " connects different subnets, but shouldn't",
+          connectorInput);
+    }
+  }
 
   /**
    * Check if voltage levels of connector's nodes are correct depending on if they should be equal
@@ -481,7 +479,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer Transformer2WInput to validate
    */
-  private static void connectsNodesToCorrectVoltageSides(Transformer2WInput transformer) {
+  private static void connectsNodesToCorrectVoltageSides(Transformer2WInput transformer)
+      throws InvalidEntityException {
     try {
       connectsNodesToCorrectVoltageSides(transformer.getNodeA(), transformer.getNodeB());
     } catch (IllegalArgumentException e) {
@@ -513,7 +512,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer Transformer3WInput to validate
    */
-  private static void connectNodesToCorrectVoltageSides(Transformer3WInput transformer) {
+  private static void connectNodesToCorrectVoltageSides(Transformer3WInput transformer)
+      throws InvalidEntityException {
     try {
       connectsNodesToCorrectVoltageSides(
           transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC());
