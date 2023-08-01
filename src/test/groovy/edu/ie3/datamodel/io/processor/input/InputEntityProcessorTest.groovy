@@ -291,7 +291,7 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    LinkedHashMap<String, String> actual = processor.handleEntity(validNode)
+    Map<String, String> actual = processor.handleEntity(validNode)
 
     then:
     actual == expected
@@ -310,7 +310,7 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    LinkedHashMap<String, String> actual = processor.handleEntity(validNode)
+    Map<String, String> actual = processor.handleEntity(validNode)
 
     then:
     actual == expected
@@ -328,7 +328,7 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    LinkedHashMap<String, String> actual = processor.handleEntity(validNode)
+    Map<String, String> actual = processor.handleEntity(validNode)
 
     then:
     actual == expected
@@ -344,7 +344,7 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    LinkedHashMap<String, String> actual = processor.handleEntity(operator)
+    Map<String, String> actual = processor.handleEntity(operator)
 
     then:
     actual == expected
@@ -381,7 +381,7 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    LinkedHashMap<String, String> actual = processor.handleEntity(parameters)
+    Map<String, String> actual = processor.handleEntity(parameters)
 
     then:
     actual == expected

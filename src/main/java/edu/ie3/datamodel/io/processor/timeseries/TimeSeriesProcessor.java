@@ -66,7 +66,8 @@ public class TimeSeriesProcessor<
 
   private final String[] flattenedHeaderElements;
 
-  public TimeSeriesProcessor(Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass) {
+  public TimeSeriesProcessor(Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass)
+      throws EntityProcessorException {
     super(timeSeriesClass);
 
     /* Check, if this processor can handle the foreseen combination of time series, entry and value */
@@ -101,7 +102,8 @@ public class TimeSeriesProcessor<
    * @return A mapping from field name to a tuple of source information and equivalent getter method
    */
   private SortedMap<String, FieldSourceToMethod> buildFieldToSource(
-      Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass) {
+      Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass)
+      throws EntityProcessorException {
     /* Get the mapping from field name to getter method ignoring the getter for returning all entries */
     Map<String, FieldSourceToMethod> timeSeriesMapping =
         mapFieldNameToGetter(timeSeriesClass, Arrays.asList("entries", "uuid", "type"))
@@ -187,7 +189,8 @@ public class TimeSeriesProcessor<
    * @param timeSeries Time series to handle
    * @return A set of mappings from field name to value
    */
-  public Set<LinkedHashMap<String, String>> handleTimeSeries(T timeSeries) {
+  public Set<LinkedHashMap<String, String>> handleTimeSeries(T timeSeries)
+      throws EntityProcessorException {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
     if (!registeredKey.equals(key))
       throw new EntityProcessorException(
@@ -219,7 +222,7 @@ public class TimeSeriesProcessor<
    * @param entry Actual entry to handle
    * @return A sorted map from field name to value as String representation
    */
-  private Map<String, String> handleEntry(T timeSeries, E entry) {
+  private Map<String, String> handleEntry(T timeSeries, E entry) throws EntityProcessorException {
     /* Handle the information in the time series */
     Map<String, Method> timeSeriesFieldToMethod = extractFieldToMethod(TIMESERIES);
     LinkedHashMap<String, String> timeSeriesResults =

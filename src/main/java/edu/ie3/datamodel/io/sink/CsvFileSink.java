@@ -5,10 +5,7 @@
 */
 package edu.ie3.datamodel.io.sink;
 
-import edu.ie3.datamodel.exceptions.ConnectorException;
-import edu.ie3.datamodel.exceptions.ExtractorException;
-import edu.ie3.datamodel.exceptions.ProcessorProviderException;
-import edu.ie3.datamodel.exceptions.SinkException;
+import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
 import edu.ie3.datamodel.io.extractor.Extractor;
@@ -59,7 +56,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   private final String csvSep;
 
-  public CsvFileSink(Path baseFolderPath) {
+  public CsvFileSink(Path baseFolderPath) throws EntityProcessorException {
     this(baseFolderPath, new FileNamingStrategy(), ",");
   }
 
@@ -72,7 +69,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param fileNamingStrategy the data sink file naming strategy that should be used
    * @param csvSep the csv file separator that should be use
    */
-  public CsvFileSink(Path baseFolderPath, FileNamingStrategy fileNamingStrategy, String csvSep) {
+  public CsvFileSink(Path baseFolderPath, FileNamingStrategy fileNamingStrategy, String csvSep)
+      throws EntityProcessorException {
     this(baseFolderPath, new ProcessorProvider(), fileNamingStrategy, csvSep);
   }
 
@@ -292,9 +290,9 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param <C> bounded to be all unique entities
    */
   private <C extends UniqueEntity> void write(C entity) {
-    LinkedHashMap<String, String> entityFieldData;
     try {
-      entityFieldData = csvEntityFieldData(processorProvider.handleEntity(entity));
+      LinkedHashMap<String, String> entityFieldData =
+          processorProvider.handleEntity(entity).map(this::csvEntityFieldData).getOrThrow();
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
           connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);

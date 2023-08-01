@@ -17,6 +17,9 @@ import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.util.exceptions.QuantityException;
 import java.beans.Introspector;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -72,7 +75,7 @@ public abstract class Processor<T> {
    *
    * @param foreSeenClass Class and its children that are foreseen to be handled with this processor
    */
-  protected Processor(Class<? extends T> foreSeenClass) {
+  protected Processor(Class<? extends T> foreSeenClass) throws EntityProcessorException {
     if (!getEligibleEntityClasses().contains(foreSeenClass))
       throw new EntityProcessorException(
           "Cannot register class '"
@@ -104,9 +107,10 @@ public abstract class Processor<T> {
    * Maps the foreseen table fields to the objects getters
    *
    * @param cls class to use for mapping
-   * @return an array of strings of all field values of the class
+   * @return a map of all field values of the class
    */
-  protected SortedMap<String, Method> mapFieldNameToGetter(Class<?> cls) {
+  protected SortedMap<String, Method> mapFieldNameToGetter(Class<?> cls)
+      throws EntityProcessorException {
     return mapFieldNameToGetter(cls, Collections.emptyList());
   }
 
@@ -115,10 +119,10 @@ public abstract class Processor<T> {
    *
    * @param cls class to use for mapping
    * @param ignoreFields A collection of all field names to ignore during process
-   * @return an array of strings of all field values of the class
+   * @return a map of all field values of the class
    */
   protected SortedMap<String, Method> mapFieldNameToGetter(
-      Class<?> cls, Collection<String> ignoreFields) {
+      Class<?> cls, Collection<String> ignoreFields) throws EntityProcessorException {
     try {
       final LinkedHashMap<String, Method> resFieldNameToMethod = new LinkedHashMap<>();
       Arrays.stream(Introspector.getBeanInfo(cls, Object.class).getPropertyDescriptors())
@@ -178,7 +182,7 @@ public abstract class Processor<T> {
    * @return Mapping from field name to value as String representation
    */
   protected LinkedHashMap<String, String> processObject(
-      Object object, Map<String, Method> fieldNameToGetter) {
+      Object object, Map<String, Method> fieldNameToGetter) throws EntityProcessorException {
     try {
       LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
       for (Map.Entry<String, Method> entry : fieldNameToGetter.entrySet()) {
@@ -207,7 +211,8 @@ public abstract class Processor<T> {
    * @param fieldName Name of the foreseen field
    * @return A String representation of the result
    */
-  protected String processMethodResult(Object methodReturnObject, Method method, String fieldName) {
+  protected String processMethodResult(Object methodReturnObject, Method method, String fieldName)
+      throws EntityProcessorException {
 
     StringBuilder resultStringBuilder = new StringBuilder();
 
@@ -231,13 +236,17 @@ public abstract class Processor<T> {
           ((Optional<?>) methodReturnObject)
               .map(
                   o -> {
-                    if (o instanceof Quantity<?>) {
-                      return handleQuantity((Quantity<?>) o, fieldName);
-                    } else {
-                      throw new EntityProcessorException(
-                          "Handling of "
-                              + o.getClass().getSimpleName()
-                              + ".class instance wrapped into Optional is currently not supported by entity processors!");
+                    try {
+                      if (o instanceof Quantity<?>) {
+                        return handleQuantity((Quantity<?>) o, fieldName);
+                      } else {
+                        throw new EntityProcessorException(
+                            "Handling of "
+                                + o.getClass().getSimpleName()
+                                + ".class instance wrapped into Optional is currently not supported by entity processors!");
+                      }
+                    } catch (EntityProcessorException e) {
+                      throw new RuntimeException(e);
                     }
                   })
               .orElse(""));
@@ -306,7 +315,8 @@ public abstract class Processor<T> {
    * @return the resulting string of a VoltageLevel attribute value for the provided field or an
    *     empty string when an invalid field name is provided
    */
-  protected String processVoltageLevel(VoltageLevel voltageLevel, String fieldName) {
+  protected String processVoltageLevel(VoltageLevel voltageLevel, String fieldName)
+      throws EntityProcessorException {
 
     StringBuilder resultStringBuilder = new StringBuilder();
     if (fieldName.equalsIgnoreCase(VOLT_LVL)) resultStringBuilder.append(voltageLevel.getId());
@@ -324,21 +334,26 @@ public abstract class Processor<T> {
    * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
    *     or empty if an error occurred during processing
    */
-  protected String handleQuantity(Quantity<?> quantity, String fieldName) {
-    Optional<String> optQuant;
+  protected String handleQuantity(Quantity<?> quantity, String fieldName)
+      throws EntityProcessorException {
+    Try<String, QuantityException> optQuant;
     if (specificQuantityFieldNames.contains(fieldName)) {
       optQuant = handleProcessorSpecificQuantity(quantity, fieldName);
     } else {
-      optQuant = quantityValToOptionalString(quantity);
+      optQuant = Success.of(quantityValToOptionalString(quantity));
     }
-    return optQuant.orElseThrow(
-        () ->
-            new EntityProcessorException(
-                "Unable to process quantity value for attribute '"
-                    + fieldName
-                    + "' in entity "
-                    + getRegisteredClass().getSimpleName()
-                    + ".class."));
+
+    return optQuant
+        .transformF(
+            e ->
+                new EntityProcessorException(
+                    "Unable to process quantity value for attribute '"
+                        + fieldName
+                        + "' in entity "
+                        + getRegisteredClass().getSimpleName()
+                        + ".class.",
+                    e))
+        .getOrThrow();
   }
 
   /**
@@ -354,7 +369,7 @@ public abstract class Processor<T> {
    * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
    *     or empty if an error occurred during processing
    */
-  protected abstract Optional<String> handleProcessorSpecificQuantity(
+  protected abstract Try<String, QuantityException> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName);
 
   protected String processUUIDArray(UUID[] uuids) {
@@ -406,8 +421,8 @@ public abstract class Processor<T> {
    * @param quantity Quantity to convert
    * @return A string of the quantity's value
    */
-  protected Optional<String> quantityValToOptionalString(Quantity<?> quantity) {
-    return Optional.of(Double.toString(quantity.getValue().doubleValue()));
+  protected String quantityValToOptionalString(Quantity<?> quantity) {
+    return Double.toString(quantity.getValue().doubleValue());
   }
 
   /**
