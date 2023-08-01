@@ -46,8 +46,8 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert point == getGeometry(parameter["point"])
       assert path == getGeometry(parameter["path"])
@@ -75,8 +75,8 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert path == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["path"]) as LineString)
     }
     where:

@@ -322,7 +322,7 @@ public class LoadInput extends SystemParticipantInput {
     }
 
     @Override
-    protected LoadInputCopyBuilder childInstance() {
+    protected LoadInputCopyBuilder thisInstance() {
       return this;
     }
   }

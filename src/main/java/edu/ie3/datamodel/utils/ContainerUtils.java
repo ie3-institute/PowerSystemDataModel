@@ -426,7 +426,8 @@ public class ContainerUtils {
    * @return The predominant voltage level in this grid
    * @throws InvalidGridException If not a single, predominant voltage level can be determined
    */
-  public static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid, int subnet) {
+  public static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid, int subnet)
+      throws InvalidGridException {
     /* Exclude all nodes, that are at the high voltage side of the transformer */
     Set<NodeInput> gridNodes = new HashSet<>(rawGrid.getNodes());
     gridNodes.removeAll(
@@ -502,7 +503,8 @@ public class ContainerUtils {
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      GraphicElements graphics) {
+      GraphicElements graphics)
+      throws InvalidGridException {
     /* Collect the different sub nets. Through the validation of lines, it is ensured, that no galvanically connected
      * grid has more than one subnet number assigned */
     SortedSet<Integer> subnetNumbers = determineSubnetNumbers(rawGrid.getNodes());
@@ -540,7 +542,8 @@ public class ContainerUtils {
       SortedSet<Integer> subnetNumbers,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      GraphicElements graphics) {
+      GraphicElements graphics)
+      throws InvalidGridException {
     HashMap<Integer, SubGridContainer> subGrids = new HashMap<>(subnetNumbers.size());
     for (int subnetNumber : subnetNumbers) {
       RawGridElements rawGridElements = ContainerUtils.filterForSubnet(rawGrid, subnetNumber);
@@ -564,7 +567,8 @@ public class ContainerUtils {
    * @return An immutable graph of the sub grid topology
    */
   private static SubGridTopologyGraph buildSubGridTopologyGraph(
-      Map<Integer, SubGridContainer> subGrids, RawGridElements rawGridElements) {
+      Map<Integer, SubGridContainer> subGrids, RawGridElements rawGridElements)
+      throws InvalidGridException {
     /* Building a mutable graph, that is boxed as immutable later */
     DirectedMultigraph<SubGridContainer, SubGridGate> mutableGraph =
         new DirectedMultigraph<>(SubGridGate.class);
@@ -777,7 +781,7 @@ public class ContainerUtils {
    * @return A joint model
    */
   public static JointGridContainer combineToJointGrid(
-      Collection<SubGridContainer> subGridContainers) {
+      Collection<SubGridContainer> subGridContainers) throws InvalidGridException {
     if (subGridContainers.stream().map(SubGridContainer::getGridName).distinct().count() > 1)
       throw new InvalidGridException(
           "You are trying to combine sub grids of different grid models");
@@ -852,7 +856,8 @@ public class ContainerUtils {
    * @param subGridContainer the subgrid container to be altered
    * @return a copy of the given {@link SubGridContainer} with transformer nodes marked as slack
    */
-  public static SubGridContainer withTrafoNodeAsSlack(final SubGridContainer subGridContainer) {
+  public static SubGridContainer withTrafoNodeAsSlack(final SubGridContainer subGridContainer)
+      throws InvalidGridException {
 
     // transformer 3w
     Map<NodeInput, NodeInput> oldToNewTrafo3WANodes = new HashMap<>();

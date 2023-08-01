@@ -90,7 +90,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     systemParticipants.failure
     systemParticipants.data == Optional.empty()
 
-    Exception ex = systemParticipants.exception()
+    Exception ex = systemParticipants.exception.get()
     ex.class == SystemParticipantsException
     ex.message.startsWith("11 error(s) occurred while initializing system participants.  " +
     "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"FixedFeedInInput\" data, one is: " +
@@ -199,10 +199,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(nodes as Set, operators as Set, types as Set, thermalBuses as Set), SourceException)
 
     if (heatPumps.success) {
-      heatPumps.data().size() == resultingSize
-      heatPumps.data() == resultingSet as Set
+      heatPumps.data.get().size() == resultingSize
+      heatPumps.data.get() == resultingSet as Set
     } else {
-      heatPumps.exception().class == SourceException
+      heatPumps.exception.get().class == SourceException
     }
 
     where:
@@ -229,10 +229,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(nodes as Set, operators as Set, types as Set, thermalBuses as Set, thermalStorages as Set), SourceException)
 
     if (chpUnits.success) {
-      chpUnits.data().size() == resultingSize
-      chpUnits.data() == resultingSet as Set
+      chpUnits.data.get().size() == resultingSize
+      chpUnits.data.get() == resultingSet as Set
     } else {
-      chpUnits.exception().class == SourceException
+      chpUnits.exception.get().class == SourceException
     }
 
     where:
@@ -263,10 +263,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def sysParts = Try.of(() -> csvSystemParticipantSource.getEvs(nodes as Set, operators as Set, types as Set), SourceException)
 
     if (sysParts.success) {
-      sysParts.data().size() == resultingSize
-      sysParts.data() == resultingSet as Set
+      sysParts.data.get().size() == resultingSize
+      sysParts.data.get() == resultingSet as Set
     } else {
-      sysParts.exception().class == SourceException
+      sysParts.exception.get().class == SourceException
     }
 
     where:
@@ -292,10 +292,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def sysParts = Try.of(() -> csvSystemParticipantSource.getWecPlants(nodes as Set, operators as Set, types as Set), SourceException)
 
     if (sysParts.success) {
-      sysParts.data().size() == resultingSize
-      sysParts.data() == resultingSet as Set
+      sysParts.data.get().size() == resultingSize
+      sysParts.data.get() == resultingSet as Set
     } else {
-      sysParts.exception().class == SourceException
+      sysParts.exception.get().class == SourceException
     }
 
     where:
@@ -321,10 +321,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def sysParts = Try.of(() -> csvSystemParticipantSource.getStorages(nodes as Set, operators as Set, types as Set), SourceException)
 
     if (sysParts.success) {
-      sysParts.data().size() == resultingSize
-      sysParts.data() == resultingSet as Set
+      sysParts.data.get().size() == resultingSize
+      sysParts.data.get() == resultingSet as Set
     } else {
-      sysParts.exception().class == SourceException
+      sysParts.exception.get().class == SourceException
     }
 
     where:
@@ -350,10 +350,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def sysParts = Try.of(() -> csvSystemParticipantSource.getBmPlants(nodes as Set, operators as Set, types as Set), SourceException)
 
     if (sysParts.success) {
-      sysParts.data().size() == resultingSize
-      sysParts.data() == resultingSet as Set
+      sysParts.data.get().size() == resultingSize
+      sysParts.data.get() == resultingSet as Set
     } else {
-      sysParts.exception().class == SourceException
+      sysParts.exception.get().class == SourceException
     }
 
     where:
@@ -379,10 +379,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def sysParts = Try.of(() -> csvSystemParticipantSource.getEvCS(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
-      sysParts.data().size() == resultingSize
-      sysParts.data() == resultingSet as Set
+      sysParts.data.get().size() == resultingSize
+      sysParts.data.get() == resultingSet as Set
     } else {
-      sysParts.exception().class == SourceException
+      sysParts.exception.get().class == SourceException
     }
 
     where:
@@ -407,10 +407,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def sysParts = Try.of(() -> csvSystemParticipantSource.getLoads(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
-      sysParts.data().size() == resultingSize
-      sysParts.data() == resultingSet as Set
+      sysParts.data.get().size() == resultingSize
+      sysParts.data.get() == resultingSet as Set
     } else {
-      sysParts.exception().class == SourceException
+      sysParts.exception.get().class == SourceException
     }
 
     where:
@@ -435,10 +435,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def sysParts = Try.of(() -> csvSystemParticipantSource.getPvPlants(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
-      sysParts.data().size() == resultingSize
-      sysParts.data() == resultingSet as Set
+      sysParts.data.get().size() == resultingSize
+      sysParts.data.get() == resultingSet as Set
     } else {
-      sysParts.exception().class == SourceException
+      sysParts.exception.get().class == SourceException
     }
 
     where:
@@ -463,10 +463,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def sysParts = Try.of(() -> csvSystemParticipantSource.getFixedFeedIns(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
-      sysParts.data().size() == resultingSize
-      sysParts.data() == resultingSet as Set
+      sysParts.data.get().size() == resultingSize
+      sysParts.data.get() == resultingSet as Set
     } else {
-      sysParts.exception().class == SourceException
+      sysParts.exception.get().class == SourceException
     }
 
     where:
@@ -495,10 +495,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def sysParts = Try.of(() -> csvSystemParticipantSource.getEmSystems(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
-      sysParts.data().size() == resultingSize
-      sysParts.data() == resultingSet as Set
+      sysParts.data.get().size() == resultingSize
+      sysParts.data.get() == resultingSet as Set
     } else {
-      sysParts.exception().class == SourceException
+      sysParts.exception.get().class == SourceException
     }
 
     where:

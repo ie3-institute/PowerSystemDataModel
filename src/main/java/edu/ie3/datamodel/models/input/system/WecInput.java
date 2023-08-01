@@ -163,7 +163,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
     }
 
     @Override
-    protected WecInputCopyBuilder childInstance() {
+    protected WecInputCopyBuilder thisInstance() {
       return this;
     }
   }

@@ -62,8 +62,8 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.success
-    input.data().getClass() == inputClass
-    input.data().with {
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -111,7 +111,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.failure
-    input.exception().cause.message == "Exception while trying to parse field \"type\" with supposed int value \"-- invalid --\""
+    input.exception.get().cause.message == "Exception while trying to parse field \"type\" with supposed int value \"-- invalid --\""
   }
 
   def "A EvcsInputFactory should fail when passing an invalid EvcsLocationType"() {
@@ -139,6 +139,6 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.failure
-    input.exception().cause.message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
+    input.exception.get().cause.message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
   }
 }

@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FileException;
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
@@ -25,7 +26,7 @@ public class CsvJointGridContainerSource {
 
   public static JointGridContainer read(
       String gridName, String csvSep, Path directoryPath, boolean isHierarchic)
-      throws SourceException, FileException {
+      throws SourceException, FileException, InvalidGridException {
 
     /* Parameterization */
     FileNamingStrategy namingStrategy;

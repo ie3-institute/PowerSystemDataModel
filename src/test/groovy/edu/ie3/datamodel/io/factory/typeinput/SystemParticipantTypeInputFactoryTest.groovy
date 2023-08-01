@@ -60,9 +60,9 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
     then:
     typeInput.success
-    typeInput.data().getClass() == typeInputClass
+    typeInput.data.get().getClass() == typeInputClass
 
-    ((EvTypeInput) typeInput.data()).with {
+    ((EvTypeInput) typeInput.data.get()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -95,9 +95,9 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
     then:
     typeInput.success
-    typeInput.data().getClass() == typeInputClass
+    typeInput.data.get().getClass() == typeInputClass
 
-    ((HpTypeInput) typeInput.data()).with {
+    ((HpTypeInput) typeInput.data.get()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -129,9 +129,9 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
     then:
     typeInput.success
-    typeInput.data().getClass() == typeInputClass
+    typeInput.data.get().getClass() == typeInputClass
 
-    ((BmTypeInput) typeInput.data()).with {
+    ((BmTypeInput) typeInput.data.get()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -167,9 +167,9 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
     then:
     typeInput.success
-    typeInput.data().getClass() == typeInputClass
+    typeInput.data.get().getClass() == typeInputClass
 
-    ((WecTypeInput) typeInput.data()).with {
+    ((WecTypeInput) typeInput.data.get()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -214,9 +214,9 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
     then:
     typeInput.success
-    typeInput.data().getClass() == typeInputClass
+    typeInput.data.get().getClass() == typeInputClass
 
-    ((ChpTypeInput) typeInput.data()).with {
+    ((ChpTypeInput) typeInput.data.get()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -257,9 +257,9 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
     then:
     typeInput.success
-    typeInput.data().getClass() == typeInputClass
+    typeInput.data.get().getClass() == typeInputClass
 
-    ((StorageTypeInput) typeInput.data()).with {
+    ((StorageTypeInput) typeInput.data.get()).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
@@ -300,7 +300,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
     then:
     input.failure
-    input.exception().cause.message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
+    input.exception.get().cause.message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
         "{capex -> 3,\n" +
         "cosPhiRated -> 6,\n" +
         "dod -> 10,\n" +

@@ -20,15 +20,20 @@ import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Basic Sanity validation tools for entities */
 public class ValidationUtils {
+  protected static final Logger logger = LoggerFactory.getLogger(ValidationUtils.class);
 
   /** Private Constructor as this class is not meant to be instantiated */
   protected ValidationUtils() {
@@ -42,7 +47,7 @@ public class ValidationUtils {
    * @param obj Object, that cannot be checked
    * @return Exception with predefined error string
    */
-  protected static NotImplementedException checkNotImplementedException(Object obj) {
+  protected static NotImplementedException buildNotImplementedException(Object obj) {
     return new NotImplementedException(
         String.format(
             "Cannot validate object of class '%s', as no routine is implemented.",
@@ -54,18 +59,33 @@ public class ValidationUtils {
    * fulfill the checking task, based on the class of the given object.
    *
    * @param obj Object to check
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
-  public static void check(Object obj) {
-    checkNonNull(obj, "an object");
-    if (AssetInput.class.isAssignableFrom(obj.getClass())) checkAsset((AssetInput) obj);
-    else if (GridContainer.class.isAssignableFrom(obj.getClass()))
-      GridContainerValidationUtils.check((GridContainer) obj);
-    else if (GraphicInput.class.isAssignableFrom(obj.getClass()))
-      GraphicValidationUtils.check((GraphicInput) obj);
-    else if (AssetTypeInput.class.isAssignableFrom(obj.getClass()))
-      checkAssetType((AssetTypeInput) obj);
-    else throw checkNotImplementedException(obj);
+  public static void check(Object obj) throws ValidationException {
+    checkNonNull(obj, "an object").getOrThrow();
+
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+
+    if (AssetInput.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(checkAsset((AssetInput) obj));
+    } else if (GridContainer.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(GridContainerValidationUtils.check((GridContainer) obj));
+    } else if (GraphicInput.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(GraphicValidationUtils.check((GraphicInput) obj));
+    } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(checkAssetType((AssetTypeInput) obj));
+    } else {
+      exceptions.add(
+          new Failure<>(
+              new FailedValidationException(buildNotImplementedException(obj).getMessage())));
+    }
+
+    List<? extends ValidationException> list =
+        exceptions.stream()
+            .filter(Try::isFailure)
+            .map(t -> ((Failure<?, ? extends ValidationException>) t).get())
+            .toList();
+
+    Try.ofVoid(!list.isEmpty(), () -> new FailedValidationException(list)).getOrThrow();
   }
 
   /**
@@ -78,44 +98,71 @@ public class ValidationUtils {
    * the checking task, based on the class of the given object.
    *
    * @param assetInput AssetInput to check
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a list of try objects either containing a {@link ValidationException} or an empty
+   *     Success
    */
-  private static void checkAsset(AssetInput assetInput) {
-    checkNonNull(assetInput, "an asset");
-    if (assetInput.getId() == null) throw new InvalidEntityException("No ID assigned", assetInput);
-    if (assetInput.getOperationTime() == null)
-      throw new InvalidEntityException("Operation time of the asset is not defined", assetInput);
-    // Check if start time and end time are not null and start time is before end time
-    if (assetInput.getOperationTime().isLimited()) {
-      assetInput
-          .getOperationTime()
-          .getEndDate()
-          .ifPresent(
-              endDate ->
-                  assetInput
-                      .getOperationTime()
-                      .getStartDate()
-                      .ifPresent(
-                          startDate -> {
-                            if (endDate.isBefore(startDate))
-                              throw new InvalidEntityException(
-                                  "Operation start time of the asset has to be before end time",
-                                  assetInput);
-                          }));
+  private static List<Try<Void, ? extends ValidationException>> checkAsset(AssetInput assetInput) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(assetInput, "an asset");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+
+    exceptions.add(
+        Try.ofVoid(
+            assetInput.getId() == null,
+            () -> new InvalidEntityException("No ID assigned", assetInput)));
+
+    if (assetInput.getOperationTime() == null) {
+      exceptions.add(
+          Failure.ofVoid(
+              new InvalidEntityException(
+                  "Operation time of the asset is not defined", assetInput)));
+    } else {
+      // Check if start time and end time are not null and start time is before end time
+      if (assetInput.getOperationTime().isLimited()) {
+        assetInput
+            .getOperationTime()
+            .getEndDate()
+            .ifPresent(
+                endDate ->
+                    assetInput
+                        .getOperationTime()
+                        .getStartDate()
+                        .ifPresent(
+                            startDate -> {
+                              if (endDate.isBefore(startDate))
+                                exceptions.add(
+                                    new Failure<>(
+                                        new InvalidEntityException(
+                                            "Operation start time of the asset has to be before end time",
+                                            assetInput)));
+                            }));
+      }
     }
 
     // Further checks for subclasses
     if (NodeInput.class.isAssignableFrom(assetInput.getClass()))
-      NodeValidationUtils.check((NodeInput) assetInput);
+      exceptions.addAll(NodeValidationUtils.check((NodeInput) assetInput));
     else if (ConnectorInput.class.isAssignableFrom(assetInput.getClass()))
-      ConnectorValidationUtils.check((ConnectorInput) assetInput);
+      exceptions.addAll(ConnectorValidationUtils.check((ConnectorInput) assetInput));
     else if (MeasurementUnitInput.class.isAssignableFrom(assetInput.getClass()))
-      MeasurementUnitValidationUtils.check((MeasurementUnitInput) assetInput);
+      exceptions.add(MeasurementUnitValidationUtils.check((MeasurementUnitInput) assetInput));
     else if (SystemParticipantInput.class.isAssignableFrom(assetInput.getClass()))
-      SystemParticipantValidationUtils.check((SystemParticipantInput) assetInput);
+      exceptions.addAll(
+          SystemParticipantValidationUtils.check((SystemParticipantInput) assetInput));
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
-      ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput);
-    else throw checkNotImplementedException(assetInput);
+      exceptions.addAll(ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput));
+    else {
+      exceptions.add(
+          new Failure<>(
+              new FailedValidationException(
+                  buildNotImplementedException(assetInput).getMessage())));
+    }
+
+    return exceptions;
   }
 
   /**
@@ -125,39 +172,97 @@ public class ValidationUtils {
    * the checking task, based on the class of the given object.
    *
    * @param assetTypeInput AssetTypeInput to check
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a list of try objects either containing a {@link ValidationException} or an empty
+   *     Success
    */
-  private static void checkAssetType(AssetTypeInput assetTypeInput) {
-    checkNonNull(assetTypeInput, "an asset type");
-    if (assetTypeInput.getUuid() == null)
-      throw new InvalidEntityException("No UUID assigned", assetTypeInput);
-    if (assetTypeInput.getId() == null)
-      throw new InvalidEntityException("No ID assigned", assetTypeInput);
+  private static List<Try<Void, ? extends ValidationException>> checkAssetType(
+      AssetTypeInput assetTypeInput) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(assetTypeInput, "an asset type");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+
+    exceptions.add(
+        Try.ofVoid(
+            assetTypeInput.getUuid() == null,
+            () -> new InvalidEntityException("No UUID assigned", assetTypeInput)));
+    exceptions.add(
+        Try.ofVoid(
+            assetTypeInput.getId() == null,
+            () -> new InvalidEntityException("No ID assigned", assetTypeInput)));
 
     // Further checks for subclasses
     if (LineTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-      ConnectorValidationUtils.checkLineType((LineTypeInput) assetTypeInput);
+      exceptions.addAll(ConnectorValidationUtils.checkLineType((LineTypeInput) assetTypeInput));
     else if (Transformer2WTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-      ConnectorValidationUtils.checkTransformer2WType((Transformer2WTypeInput) assetTypeInput);
+      exceptions.addAll(
+          ConnectorValidationUtils.checkTransformer2WType((Transformer2WTypeInput) assetTypeInput));
     else if (Transformer3WTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-      ConnectorValidationUtils.checkTransformer3WType((Transformer3WTypeInput) assetTypeInput);
+      exceptions.addAll(
+          ConnectorValidationUtils.checkTransformer3WType((Transformer3WTypeInput) assetTypeInput));
     else if (SystemParticipantTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-      SystemParticipantValidationUtils.checkType((SystemParticipantTypeInput) assetTypeInput);
+      exceptions.addAll(
+          SystemParticipantValidationUtils.checkType((SystemParticipantTypeInput) assetTypeInput));
     else {
-      throw checkNotImplementedException(assetTypeInput);
+      exceptions.add(
+          new Failure<>(
+              new FailedValidationException(
+                  buildNotImplementedException(assetTypeInput).getMessage())));
     }
+
+    return exceptions;
   }
 
   /**
-   * Checks, if the given object is null. If so, an {@link InvalidEntityException} is thrown.
+   * Checks the validity of the ids for a given set of {@link AssetInput}.
+   *
+   * @param inputs a set of asset inputs
+   * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, UnsafeEntityException>> checkIds(
+      Set<? extends AssetInput> inputs) {
+    List<String> ids = new ArrayList<>();
+    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
+
+    inputs.forEach(
+        input -> {
+          String id = input.getId();
+          if (!ids.contains(id)) {
+            ids.add(id);
+          } else {
+            exceptions.add(
+                new Failure<>(
+                    new UnsafeEntityException(
+                        "There is already an entity with the id " + id, input)));
+          }
+        });
+
+    return exceptions;
+  }
+
+  /**
+   * Checks, if the given object is null. If so, an {@link InvalidEntityException} wrapped in a
+   * {@link Failure} is returned.
    *
    * @param obj Object to check
    * @param expectedDescription Further description, of what has been expected.
+   * @return either an {@link InvalidEntityException} wrapped in a {@link Failure} or an empty
+   *     {@link Success}
    */
-  protected static void checkNonNull(Object obj, String expectedDescription) {
-    if (obj == null)
-      throw new InvalidEntityException(
-          "Expected " + expectedDescription + ", but got nothing. :-(", new NullPointerException());
+  protected static Try<Void, InvalidEntityException> checkNonNull(
+      Object obj, String expectedDescription) {
+    return Try.ofVoid(
+        obj == null,
+        () ->
+            new InvalidEntityException(
+                "Validation not possible because received object was null. Expected "
+                    + expectedDescription
+                    + ", but got nothing. :-(",
+                new NullPointerException()));
   }
 
   /**
@@ -167,7 +272,8 @@ public class ValidationUtils {
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  protected static void detectNegativeQuantities(Quantity<?>[] quantities, UniqueEntity entity) {
+  protected static void detectNegativeQuantities(Quantity<?>[] quantities, UniqueEntity entity)
+      throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() < 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be zero or positive");
@@ -181,7 +287,7 @@ public class ValidationUtils {
    * @param entity Unique entity holding the malformed quantities
    */
   protected static void detectZeroOrNegativeQuantities(
-      Quantity<?>[] quantities, UniqueEntity entity) {
+      Quantity<?>[] quantities, UniqueEntity entity) throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() <= 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be positive");
@@ -192,7 +298,8 @@ public class ValidationUtils {
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  protected static void detectPositiveQuantities(Quantity<?>[] quantities, UniqueEntity entity) {
+  protected static void detectPositiveQuantities(Quantity<?>[] quantities, UniqueEntity entity)
+      throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() > 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be negative");
@@ -208,7 +315,8 @@ public class ValidationUtils {
    * @param msg Message prefix to use for the exception message: [msg]: [malformedQuantities]
    */
   protected static void detectMalformedQuantities(
-      Quantity<?>[] quantities, UniqueEntity entity, Predicate<Quantity<?>> predicate, String msg) {
+      Quantity<?>[] quantities, UniqueEntity entity, Predicate<Quantity<?>> predicate, String msg)
+      throws InvalidEntityException {
     String malformedQuantities =
         Arrays.stream(quantities)
             .filter(predicate)

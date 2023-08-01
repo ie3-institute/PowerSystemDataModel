@@ -5,21 +5,23 @@
  */
 package edu.ie3.datamodel.utils.validation
 
-import static edu.ie3.datamodel.models.StandardUnits.CONDUCTANCE_PER_LENGTH
-import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
-import static edu.ie3.datamodel.models.StandardUnits.RATED_VOLTAGE_MAGNITUDE
-import static edu.ie3.datamodel.models.StandardUnits.SUSCEPTANCE_PER_LENGTH
+import static edu.ie3.datamodel.models.StandardUnits.*
+import static edu.ie3.datamodel.utils.validation.DummyAssetInput.invalid
+import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
 import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
-import edu.ie3.datamodel.exceptions.NotImplementedException
-
+import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.exceptions.UnsafeEntityException
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.OperationTime
+import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.SpecificConductance
@@ -110,12 +112,11 @@ class ValidationUtilsTest extends Specification {
 
     then:
     Exception ex = thrown()
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    ex.message.contains(expectedException.message)
 
     where:
     invalidObject          || expectedException
-    new Coordinate(10, 10) || new NotImplementedException("Cannot validate object of class '" + invalidObject.getClass().getSimpleName() + "', as no routine is implemented.")
+    new Coordinate(10, 10) || new FailedValidationException("Cannot validate object of class '" + invalidObject.class.simpleName + "', as no routine is implemented.")
   }
 
   def "The validation check method recognizes all potential errors for an asset"() {
@@ -124,8 +125,7 @@ class ValidationUtilsTest extends Specification {
 
     then:
     Exception ex = thrown()
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    ex.message.contains(expectedException.message)
 
     where:
     invalidAsset                                                            	    || expectedException
@@ -171,7 +171,7 @@ class ValidationUtilsTest extends Specification {
 
     then:
     InvalidEntityException ex = thrown()
-    ex.message == "Entity is invalid because of: The following quantities have to be zero or positive: -1 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=-1 µS/km, g=0.0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
+    ex.message == "Entity is invalid because of: \nThe following quantities have to be zero or positive: -1 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=-1 µS/km, g=0.0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
   }
 
   def "The check for zero or negative entities should work as expected"() {
@@ -208,19 +208,20 @@ class ValidationUtilsTest extends Specification {
 
     then:
     InvalidEntityException ex = thrown()
-    ex.message == "Entity is invalid because of: The following quantities have to be positive: 0.0 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0.0 µS/km, g=0.0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
+    ex.message == "Entity is invalid because of: \nThe following quantities have to be positive: 0.0 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0.0 µS/km, g=0.0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
   }
 
   def "Checking an unsupported asset leads to an exception"() {
     given:
-    def invalidAsset = new InvalidAssetInput()
+    def invalidAsset = invalid()
 
     when:
-    ValidationUtils.checkAsset(invalidAsset)
+    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAsset(invalidAsset).stream().filter { it -> it.failure }.toList()
 
     then:
-    def e = thrown(NotImplementedException)
-    e.message == "Cannot validate object of class 'InvalidAssetInput', as no routine is implemented."
+    exceptions.size() == 1
+    def e = exceptions.get(0).exception.get()
+    e.message.contains("Cannot validate object of class 'DummyAssetInput', as no routine is implemented.")
   }
 
   def "Checking an unsupported asset type leads to an exception"() {
@@ -228,11 +229,12 @@ class ValidationUtilsTest extends Specification {
     def invalidAssetType = new InvalidAssetTypeInput()
 
     when:
-    ValidationUtils.checkAssetType(invalidAssetType)
+    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter { it -> it.failure }.toList()
 
     then:
-    def e = thrown(NotImplementedException)
-    e.message == "Cannot validate object of class 'InvalidAssetTypeInput', as no routine is implemented."
+    exceptions.size() == 1
+    def e = exceptions.get(0).exception.get()
+    e.message.contains("Cannot validate object of class 'InvalidAssetTypeInput', as no routine is implemented.")
   }
 
   def "Checking an asset type input without an id leads to an exception"() {
@@ -240,10 +242,42 @@ class ValidationUtilsTest extends Specification {
     def invalidAssetType = new InvalidAssetTypeInput(UUID.randomUUID(), null)
 
     when:
-    ValidationUtils.checkAssetType(invalidAssetType)
+    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter { it -> it.failure }.toList()
 
     then:
-    def e = thrown(InvalidEntityException)
-    e.message.startsWith("Entity is invalid because of: No ID assigned [AssetTypeInput")
+    exceptions.size() == 2
+    def e = exceptions.get(0).exception.get()
+    e.message.startsWith("Entity is invalid because of: \nNo ID assigned [AssetTypeInput")
+  }
+
+  def "Checking if asset input ids are unique"() {
+    given:
+    Set<AssetInput> validAssetIds = [
+      valid("first"),
+      valid("second"),
+      valid("third")
+    ]
+
+    when:
+    List<Try<Void, UnsafeEntityException>> exceptions = ValidationUtils.checkIds(validAssetIds)
+
+    then:
+    exceptions.every { ex -> ex.success }
+  }
+
+  def "Duplicate asset input ids leads to an exception"() {
+    given:
+    Set<AssetInput> invalidAssetIds = [
+      invalid(),
+      invalid()
+    ]
+
+    when:
+    List<Try<Void, UnsafeEntityException>> exceptions = ValidationUtils.checkIds(invalidAssetIds)
+
+    then:
+    exceptions.size() == 1
+    exceptions.get(0).failure
+    exceptions.get(0).exception.get().message.contains("Entity may be unsafe because of: There is already an entity with the id invalid_asset")
   }
 }

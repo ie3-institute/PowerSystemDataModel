@@ -115,6 +115,7 @@ public class NodeInput extends AssetInput {
     return subnet;
   }
 
+  @Override
   public NodeInputCopyBuilder copy() {
     return new NodeInputCopyBuilder(this);
   }
@@ -226,7 +227,7 @@ public class NodeInput extends AssetInput {
     }
 
     @Override
-    protected NodeInputCopyBuilder childInstance() {
+    protected NodeInputCopyBuilder thisInstance() {
       return this;
     }
   }
