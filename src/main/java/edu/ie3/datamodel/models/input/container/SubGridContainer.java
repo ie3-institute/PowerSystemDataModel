@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
@@ -23,7 +24,8 @@ public class SubGridContainer extends GridContainer {
       int subnet,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      GraphicElements graphics) {
+      GraphicElements graphics)
+      throws InvalidGridException {
     super(gridName, rawGrid, systemParticipants, graphics);
     this.subnet = subnet;
     this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet);
@@ -62,5 +64,55 @@ public class SubGridContainer extends GridContainer {
         + ", predominantVoltageLevel="
         + predominantVoltageLevel
         + '}';
+  }
+
+  @Override
+  public SubGridContainerCopyBuilder copy() {
+    return new SubGridContainerCopyBuilder(this);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link SubGridContainer} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * SubGridContainer}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
+  public static class SubGridContainerCopyBuilder
+      extends GridContainerCopyBuilder<SubGridContainerCopyBuilder> {
+    private int subnet;
+
+    /**
+     * Constructor for {@link SubGridContainerCopyBuilder}
+     *
+     * @param subGridContainer instance of {@link SubGridContainer}
+     */
+    protected SubGridContainerCopyBuilder(SubGridContainer subGridContainer) {
+      super(subGridContainer);
+      this.subnet = subGridContainer.getSubnet();
+    }
+
+    /**
+     * Method to alter the subnet number.
+     *
+     * @param subnet altered subnet number.
+     * @return this instance of {@link SubGridContainerCopyBuilder}
+     */
+    public SubGridContainerCopyBuilder subnet(int subnet) {
+      this.subnet = subnet;
+      return thisInstance();
+    }
+
+    @Override
+    protected SubGridContainerCopyBuilder thisInstance() {
+      return this;
+    }
+
+    @Override
+    public SubGridContainer build() throws InvalidGridException {
+      return new SubGridContainer(
+          getGridName(), subnet, getRawGrid(), getSystemParticipants(), getGraphics());
+    }
   }
 }

@@ -409,5 +409,4 @@ class SampleJointGrid extends SystemParticipantTestData {
   transformerType_MV_HV_110KV,
   0,
   false)
-
 }

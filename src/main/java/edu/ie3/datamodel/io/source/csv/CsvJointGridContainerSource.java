@@ -5,52 +5,75 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.FileException;
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.*;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
+import edu.ie3.datamodel.utils.Try;
+import java.nio.file.Path;
+import java.util.List;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
   private CsvJointGridContainerSource() {}
 
-  public static JointGridContainer read(String gridName, String csvSep, String directoryPath)
-      throws SourceException {
+  public static JointGridContainer read(
+      String gridName, String csvSep, Path directoryPath, boolean isHierarchic)
+      throws SourceException, FileException, InvalidGridException {
 
     /* Parameterization */
+    FileNamingStrategy namingStrategy;
 
-    FileNamingStrategy namingStrategy = new FileNamingStrategy(); // Default naming strategy
+    if (isHierarchic) {
+      // Hierarchic structure
+      DefaultDirectoryHierarchy fileHierarchy =
+          new DefaultDirectoryHierarchy(directoryPath, gridName);
+      namingStrategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy(), fileHierarchy);
+      fileHierarchy.validate();
+    } else {
+      // Flat structure
+      namingStrategy = new FileNamingStrategy();
+    }
+
+    CsvDataSource dataSource = new CsvDataSource(csvSep, directoryPath, namingStrategy);
 
     /* Instantiating sources */
-    TypeSource typeSource = new CsvTypeSource(csvSep, directoryPath, namingStrategy);
-    RawGridSource rawGridSource =
-        new CsvRawGridSource(csvSep, directoryPath, namingStrategy, typeSource);
-    ThermalSource thermalSource =
-        new CsvThermalSource(csvSep, directoryPath, namingStrategy, typeSource);
+    TypeSource typeSource = new TypeSource(dataSource);
+    RawGridSource rawGridSource = new RawGridSource(typeSource, dataSource);
+    ThermalSource thermalSource = new ThermalSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
-        new CsvSystemParticipantSource(
-            csvSep, directoryPath, namingStrategy, typeSource, thermalSource, rawGridSource);
-    GraphicSource graphicsSource =
-        new CsvGraphicSource(csvSep, directoryPath, namingStrategy, typeSource, rawGridSource);
+        new SystemParticipantSource(typeSource, thermalSource, rawGridSource, dataSource);
+    GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* Loading models */
-    RawGridElements rawGridElements =
-        rawGridSource
-            .getGridData()
-            .orElseThrow(() -> new SourceException("Error during reading of raw grid data."));
-    SystemParticipants systemParticipants =
-        systemParticipantSource
-            .getSystemParticipants()
-            .orElseThrow(
-                () -> new SourceException("Error during reading of system participant data."));
-    GraphicElements graphicElements =
-        graphicsSource
-            .getGraphicElements()
-            .orElseThrow(() -> new SourceException("Error during reading of graphic elements."));
+    Try<RawGridElements, SourceException> rawGridElements =
+        Try.of(rawGridSource::getGridData, SourceException.class);
+    Try<SystemParticipants, SourceException> systemParticipants =
+        Try.of(systemParticipantSource::getSystemParticipants, SourceException.class);
+    Try<GraphicElements, SourceException> graphicElements =
+        Try.of(graphicSource::getGraphicElements, SourceException.class);
 
-    return new JointGridContainer(gridName, rawGridElements, systemParticipants, graphicElements);
+    List<? extends Exception> exceptions =
+        Try.getExceptions(List.of(rawGridElements, systemParticipants, graphicElements));
+
+    if (!exceptions.isEmpty()) {
+      throw new SourceException(
+          exceptions.size() + " error(s) occurred while reading sources. ", exceptions);
+    } else {
+      // getOrThrow should not throw an exception in this context, because all exception are
+      // filtered and thrown before
+      return new JointGridContainer(
+          gridName,
+          rawGridElements.getOrThrow(),
+          systemParticipants.getOrThrow(),
+          graphicElements.getOrThrow());
+    }
   }
 }

@@ -7,25 +7,26 @@ package edu.ie3.datamodel.io.csv;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
 public class CsvIndividualTimeSeriesMetaInformation extends IndividualTimeSeriesMetaInformation {
-  private final String fullFilePath;
+  private final Path fullFilePath;
 
   public CsvIndividualTimeSeriesMetaInformation(
-      UUID uuid, ColumnScheme columnScheme, String fullFilePath) {
+      UUID uuid, ColumnScheme columnScheme, Path fullFilePath) {
     super(uuid, columnScheme);
     this.fullFilePath = fullFilePath;
   }
 
   public CsvIndividualTimeSeriesMetaInformation(
-      IndividualTimeSeriesMetaInformation metaInformation, String fullFilePath) {
+      IndividualTimeSeriesMetaInformation metaInformation, Path fullFilePath) {
     this(metaInformation.getUuid(), metaInformation.getColumnScheme(), fullFilePath);
   }
 
-  public String getFullFilePath() {
+  public Path getFullFilePath() {
     return fullFilePath;
   }
 

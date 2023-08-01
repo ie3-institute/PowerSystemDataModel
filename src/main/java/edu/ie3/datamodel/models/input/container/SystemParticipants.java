@@ -186,6 +186,10 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return Collections.unmodifiableList(allEntities);
   }
 
+  public SystemParticipantsCopyBuilder copy() {
+    return new SystemParticipantsCopyBuilder(this);
+  }
+
   /** @return unmodifiable Set of all biomass plants in this grid */
   public Set<BmInput> getBmPlants() {
     return Collections.unmodifiableSet(bmPlants);
@@ -269,5 +273,184 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
         pvPlants,
         storages,
         wecPlants);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link SystemParticipants} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * SystemParticipants}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
+  public static class SystemParticipantsCopyBuilder
+      implements InputContainerCopyBuilder<SystemParticipantInput> {
+    private Set<BmInput> bmPlants;
+    private Set<ChpInput> chpPlants;
+    private Set<EvcsInput> evCS;
+    private Set<EvInput> evs;
+    private Set<FixedFeedInInput> fixedFeedIns;
+    private Set<HpInput> heatPumps;
+    private Set<LoadInput> loads;
+    private Set<PvInput> pvPlants;
+    private Set<StorageInput> storages;
+    private Set<WecInput> wecPlants;
+    private Set<EmInput> emSystems;
+
+    /**
+     * Constructor for {@link SystemParticipantsCopyBuilder}
+     *
+     * @param systemParticipants instance of {@link SystemParticipants}
+     */
+    protected SystemParticipantsCopyBuilder(SystemParticipants systemParticipants) {
+      this.bmPlants = systemParticipants.bmPlants;
+      this.chpPlants = systemParticipants.chpPlants;
+      this.evCS = systemParticipants.evCS;
+      this.evs = systemParticipants.evs;
+      this.fixedFeedIns = systemParticipants.fixedFeedIns;
+      this.heatPumps = systemParticipants.heatPumps;
+      this.loads = systemParticipants.loads;
+      this.pvPlants = systemParticipants.pvPlants;
+      this.storages = systemParticipants.storages;
+      this.wecPlants = systemParticipants.wecPlants;
+      this.emSystems = systemParticipants.emSystems;
+    }
+
+    /**
+     * Method to alter {@link BmInput}
+     *
+     * @param bmPlants set of altered biomass plants
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder bmPlants(Set<BmInput> bmPlants) {
+      this.bmPlants = bmPlants;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link ChpInput}
+     *
+     * @param chpPlants set of altered combined heat and power plants
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder chpPlants(Set<ChpInput> chpPlants) {
+      this.chpPlants = chpPlants;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link EvcsInput}
+     *
+     * @param evCS set of altered biomass electric vehicle charging stations
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder evCS(Set<EvcsInput> evCS) {
+      this.evCS = evCS;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link EvInput}
+     *
+     * @param evs set of altered electric vehicles
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder evs(Set<EvInput> evs) {
+      this.evs = evs;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link FixedFeedInInput}
+     *
+     * @param fixedFeedIns set of altered fixed feed in facilities
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder fixedFeedIn(Set<FixedFeedInInput> fixedFeedIns) {
+      this.fixedFeedIns = fixedFeedIns;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link HpInput}
+     *
+     * @param heatPumps set of altered heat pumps
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder heatPumps(Set<HpInput> heatPumps) {
+      this.heatPumps = heatPumps;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link LoadInput}
+     *
+     * @param loads set of altered loads
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder loads(Set<LoadInput> loads) {
+      this.loads = loads;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link PvInput}
+     *
+     * @param pvPlants set of altered photovoltaic power plants
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder pvPlants(Set<PvInput> pvPlants) {
+      this.pvPlants = pvPlants;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link StorageInput}
+     *
+     * @param storages set of altered electric energy storages
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder storages(Set<StorageInput> storages) {
+      this.storages = storages;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link WecInput}
+     *
+     * @param wecPlants set of altered wind energy converters
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder wecPlants(Set<WecInput> wecPlants) {
+      this.wecPlants = wecPlants;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link EmInput}
+     *
+     * @param emSystems set of altered energy management systems
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder emSystems(Set<EmInput> emSystems) {
+      this.emSystems = emSystems;
+      return this;
+    }
+
+    @Override
+    public SystemParticipants build() {
+      return new SystemParticipants(
+          bmPlants,
+          chpPlants,
+          evCS,
+          evs,
+          fixedFeedIns,
+          heatPumps,
+          loads,
+          pvPlants,
+          storages,
+          wecPlants,
+          emSystems);
+    }
   }
 }

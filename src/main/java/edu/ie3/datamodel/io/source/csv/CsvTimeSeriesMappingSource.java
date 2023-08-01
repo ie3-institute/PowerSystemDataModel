@@ -5,51 +5,24 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
-import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
+import java.nio.file.Path;
 import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSeriesMappingSource {
-  /* Available factories */
-  private static final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
+public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
 
-  private final Map<UUID, UUID> mapping;
+  private final CsvDataSource dataSource;
 
   public CsvTimeSeriesMappingSource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
-    super(csvSep, folderPath, fileNamingStrategy);
-
-    /* Build the map */
-    mapping =
-        buildStreamWithFieldsToAttributesMap(MappingEntry.class, connector)
-            .map(
-                fieldToValues -> {
-                  SimpleEntityData entityData =
-                      new SimpleEntityData(fieldToValues, MappingEntry.class);
-                  return mappingFactory.get(entityData);
-                })
-            .flatMap(Optional::stream)
-            .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
+      String csvSep, Path gridFolderPath, FileNamingStrategy fileNamingStrategy) {
+    this.dataSource = new CsvDataSource(csvSep, gridFolderPath, fileNamingStrategy);
   }
 
   @Override
-  public Map<UUID, UUID> getMapping() {
-    return mapping;
-  }
-
-  /**
-   * @deprecated since 3.0. Use {@link
-   *     CsvTimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
-   */
-  @Override
-  @Deprecated(since = "3.0", forRemoval = true)
-  public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
-      getTimeSeriesMetaInformation(UUID timeSeriesUuid) {
-    return connector.getIndividualTimeSeriesMetaInformation(timeSeriesUuid);
+  public Stream<Map<String, String>> getMappingSourceData() {
+    return dataSource.buildStreamWithFieldsToAttributesMap(
+        MappingEntry.class, dataSource.connector);
   }
 }

@@ -7,22 +7,32 @@ package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
+import edu.ie3.datamodel.io.source.DataSource;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SqlDataSource<T> {
+/** Contains all functions that are needed to read a SQL data source. */
+public class SqlDataSource implements DataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
-  private final SqlConnector connector;
+  protected final SqlConnector connector;
+  protected final DatabaseNamingStrategy databaseNamingStrategy;
+  protected String schemaName;
 
-  protected SqlDataSource(SqlConnector connector) {
+  public SqlDataSource(
+      SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy) {
     this.connector = connector;
+    this.schemaName = schemaName;
+    this.databaseNamingStrategy = databaseNamingStrategy;
   }
 
   /**
@@ -34,7 +44,7 @@ public abstract class SqlDataSource<T> {
    * @return basic query string without semicolon
    */
   protected static String createBaseQueryString(String schemaName, String tableName) {
-    return "SELECT * FROM " + schemaName + ".\"" + tableName + "\"";
+    return "SELECT * FROM " + schemaName + "." + tableName;
   }
 
   /**
@@ -98,6 +108,12 @@ public abstract class SqlDataSource<T> {
     return tableNames;
   }
 
+  @Override
+  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
+    String explicitTableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
+    return buildStreamByTableName(explicitTableName);
+  }
+
   /**
    * Interface for anonymous functions that are used as a parameter for {@link #executeQuery}.
    *
@@ -117,34 +133,41 @@ public abstract class SqlDataSource<T> {
   }
 
   /**
-   * Executes the prepared statement after possibly adding parameters to the query using the given
-   * function. Finally, processes the results and creates a list of time based values via field map
-   * extraction.
-   *
-   * @param query the query to use
-   * @param addParams function that possibly adds parameters to query
-   * @return a list of resulting entities
+   * Creates a stream with maps representing a data point in the SQL data source using an entity
+   * class.
    */
-  protected List<T> executeQuery(String query, AddParams addParams) {
+  protected Stream<Map<String, String>> buildStreamByEntityClass(
+      Class<? extends UniqueEntity> entityClass, AddParams addParams) {
+    String query = createBaseQueryString(schemaName, entityClass.getSimpleName());
+    return executeQuery(query, addParams);
+  }
+
+  /**
+   * Creates a stream with maps representing a data point in the SQL data source using an explicit
+   * table name.
+   */
+  protected Stream<Map<String, String>> buildStreamByTableName(String tableName) {
+    String query = createBaseQueryString(schemaName, tableName);
+    return executeQuery(query);
+  }
+
+  /**
+   * Creates a stream with maps representing a data point in the SQL data source using an explicit
+   * table name.
+   */
+  protected Stream<Map<String, String>> executeQuery(String query, AddParams addParams) {
     try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
       addParams.addParams(ps);
 
       ResultSet resultSet = ps.executeQuery();
-      List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
-
-      return fieldMaps.stream().map(this::createEntity).flatMap(Optional::stream).toList();
+      return connector.extractFieldMaps(resultSet).stream();
     } catch (SQLException e) {
       log.error("Error during execution of query {}", query, e);
     }
-
-    return Collections.emptyList();
+    return Stream.empty();
   }
 
-  /**
-   * Instantiates an entity produced by this source given the required field value map.
-   *
-   * @param fieldToValues map of fields to their respective values
-   * @return the entity if instantiation succeeds
-   */
-  protected abstract Optional<T> createEntity(Map<String, String> fieldToValues);
+  protected Stream<Map<String, String>> executeQuery(String query) {
+    return executeQuery(query, x -> {});
+  }
 }

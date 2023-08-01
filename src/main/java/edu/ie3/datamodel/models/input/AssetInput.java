@@ -58,7 +58,7 @@ public abstract class AssetInput extends InputEntity implements Operable {
     return id;
   }
 
-  public abstract UniqueEntityBuilder copy();
+  public abstract AssetInputCopyBuilder<?> copy();
 
   @Override
   public boolean equals(Object o) {
@@ -95,8 +95,8 @@ public abstract class AssetInput extends InputEntity implements Operable {
    * @version 0.1
    * @since 05.06.20
    */
-  protected abstract static class AssetInputCopyBuilder<T extends AssetInputCopyBuilder<T>>
-      extends UniqueEntityCopyBuilder<T> {
+  public abstract static class AssetInputCopyBuilder<B extends AssetInputCopyBuilder<B>>
+      extends UniqueEntityCopyBuilder<B> {
 
     private String id;
     private OperatorInput operator;
@@ -109,19 +109,19 @@ public abstract class AssetInput extends InputEntity implements Operable {
       this.operationTime = entity.getOperationTime();
     }
 
-    public T id(String id) {
+    public B id(String id) {
       this.id = id;
-      return childInstance();
+      return thisInstance();
     }
 
-    public T operator(OperatorInput operator) {
+    public B operator(OperatorInput operator) {
       this.operator = operator;
-      return childInstance();
+      return thisInstance();
     }
 
-    public T operationTime(OperationTime operationTime) {
+    public B operationTime(OperationTime operationTime) {
       this.operationTime = operationTime;
-      return childInstance();
+      return thisInstance();
     }
 
     protected String getId() {
@@ -140,6 +140,6 @@ public abstract class AssetInput extends InputEntity implements Operable {
     public abstract AssetInput build();
 
     @Override
-    protected abstract T childInstance();
+    protected abstract B thisInstance();
   }
 }

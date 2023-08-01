@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.*
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.unit.Units
@@ -55,12 +56,12 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     when:
-    Optional<? extends SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
 
     then:
-    result.present
-    result.get().getClass() == resultingModelClass
-    ((SystemParticipantResult) result.get()).with {
+    result.success
+    result.data.get().getClass() == resultingModelClass
+    ((SystemParticipantResult) result.data.get()).with {
       assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
       assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
       assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
@@ -68,19 +69,19 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     if (modelClass == EvResult) {
-      assert (((EvResult) result.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
+      assert (((EvResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
     }
 
     if (modelClass == StorageResult) {
-      assert (((StorageResult) result.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
+      assert (((StorageResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
     }
 
     if (modelClass == HpResult) {
-      assert(((HpResult)result.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+      assert(((HpResult) result.data.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
     }
 
     if (modelClass == ChpResult) {
-      assert(((ChpResult)result.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+      assert(((ChpResult) result.data.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
     }
 
     where:
@@ -109,12 +110,12 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "q"         : "2"
     ]
     when:
-    Optional<? extends SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(parameter, StorageResult))
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, StorageResult))
 
     then:
-    result.present
-    result.get().getClass() == StorageResult
-    ((StorageResult) result.get()).with {
+    result.success
+    result.data.get().getClass() == StorageResult
+    ((StorageResult) result.data.get()).with {
       assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
       assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
       assert soc == getQuant(parameter["soc"], Units.PERCENT)
@@ -132,11 +133,11 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "q"         : "2"
     ]
     when:
-    resultFactory.get(new SimpleEntityData(parameter, WecResult))
+    Try<SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, WecResult))
 
     then:
-    FactoryException ex = thrown()
-    ex.message == "The provided fields [inputModel, q, time] with data \n" +
+    result.failure
+    result.exception.get().cause.message == "The provided fields [inputModel, q, time] with data \n" +
         "{inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,\n" +
         "q -> 2,\n" +
         "time -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +

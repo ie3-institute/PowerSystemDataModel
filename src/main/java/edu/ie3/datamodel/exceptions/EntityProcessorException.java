@@ -9,7 +9,7 @@ package edu.ie3.datamodel.exceptions;
  * Is thrown, when an something went wrong during entity field mapping creation in a {@link
  * edu.ie3.datamodel.io.processor.EntityProcessor}
  */
-public class EntityProcessorException extends RuntimeException {
+public class EntityProcessorException extends Exception {
   public EntityProcessorException(final String message, final Throwable cause) {
     super(message, cause);
   }

@@ -127,6 +127,11 @@ public class RawGridElements implements InputContainer<AssetInput> {
     return Collections.unmodifiableList(allEntities);
   }
 
+  @Override
+  public RawGridElementsCopyBuilder copy() {
+    return new RawGridElementsCopyBuilder(this);
+  }
+
   /** @return unmodifiable ; of all three winding transformers in this grid */
   public Set<NodeInput> getNodes() {
     return Collections.unmodifiableSet(nodes);
@@ -172,5 +177,108 @@ public class RawGridElements implements InputContainer<AssetInput> {
   @Override
   public int hashCode() {
     return Objects.hash(nodes, lines, transformer2Ws, transformer3Ws, switches, measurementUnits);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link RawGridElements} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * RawGridElements}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
+  public static class RawGridElementsCopyBuilder implements InputContainerCopyBuilder<AssetInput> {
+    private Set<NodeInput> nodes;
+    private Set<LineInput> lines;
+    private Set<Transformer2WInput> transformer2Ws;
+    private Set<Transformer3WInput> transformer3Ws;
+    private Set<SwitchInput> switches;
+    private Set<MeasurementUnitInput> measurementUnits;
+
+    /**
+     * Constructor for {@link RawGridElementsCopyBuilder}
+     *
+     * @param rawGridElements instance of {@link RawGridElementsCopyBuilder}
+     */
+    protected RawGridElementsCopyBuilder(RawGridElements rawGridElements) {
+      this.nodes = rawGridElements.getNodes();
+      this.lines = rawGridElements.getLines();
+      this.transformer2Ws = rawGridElements.getTransformer2Ws();
+      this.transformer3Ws = rawGridElements.getTransformer3Ws();
+      this.switches = rawGridElements.getSwitches();
+      this.measurementUnits = rawGridElements.getMeasurementUnits();
+    }
+
+    /**
+     * Method to alter {@link NodeInput}
+     *
+     * @param nodes set of altered nodes
+     * @return this instance of {@link RawGridElementsCopyBuilder}
+     */
+    public RawGridElementsCopyBuilder nodes(Set<NodeInput> nodes) {
+      this.nodes = nodes;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link LineInput}
+     *
+     * @param lines set of altered lines
+     * @return this instance of {@link RawGridElementsCopyBuilder}
+     */
+    public RawGridElementsCopyBuilder lines(Set<LineInput> lines) {
+      this.lines = lines;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link Transformer2WInput}
+     *
+     * @param transformer2Ws set of altered two winding transformers
+     * @return this instance of {@link RawGridElementsCopyBuilder}
+     */
+    public RawGridElementsCopyBuilder transformers2Ws(Set<Transformer2WInput> transformer2Ws) {
+      this.transformer2Ws = transformer2Ws;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link Transformer3WInput}
+     *
+     * @param transformer3Ws set of altered three winding trnasformers
+     * @return this instance of {@link RawGridElementsCopyBuilder}
+     */
+    public RawGridElementsCopyBuilder transformer3Ws(Set<Transformer3WInput> transformer3Ws) {
+      this.transformer3Ws = transformer3Ws;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link SwitchInput}
+     *
+     * @param switches set of altered switches
+     * @return this instance of {@link RawGridElementsCopyBuilder}
+     */
+    public RawGridElementsCopyBuilder switches(Set<SwitchInput> switches) {
+      this.switches = switches;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link MeasurementUnitInput}
+     *
+     * @param measurementUnits set of altered measurement units
+     * @return this instance of {@link RawGridElementsCopyBuilder}
+     */
+    public RawGridElementsCopyBuilder measurementUnits(Set<MeasurementUnitInput> measurementUnits) {
+      this.measurementUnits = measurementUnits;
+      return this;
+    }
+
+    @Override
+    public RawGridElements build() {
+      return new RawGridElements(
+          nodes, lines, transformer2Ws, transformer3Ws, switches, measurementUnits);
+    }
   }
 }

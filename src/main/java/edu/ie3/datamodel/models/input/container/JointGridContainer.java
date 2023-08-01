@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.graph.SubGridTopologyGraph;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
@@ -22,7 +23,8 @@ public class JointGridContainer extends GridContainer {
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      GraphicElements graphics) {
+      GraphicElements graphics)
+      throws InvalidGridException {
     super(gridName, rawGrid, systemParticipants, graphics);
 
     /* Build sub grid dependency */
@@ -75,5 +77,48 @@ public class JointGridContainer extends GridContainer {
   @Override
   public String toString() {
     return "JointGridContainer{" + "gridName='" + gridName + '\'' + '}';
+  }
+
+  @Override
+  public JointGridContainerCopyBuilder copy() {
+    return new JointGridContainerCopyBuilder(this);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link JointGridContainer} containers with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * JointGridContainer}
+   *
+   * @version 3.1
+   * @since 14.02.23
+   */
+  public static class JointGridContainerCopyBuilder
+      extends GridContainerCopyBuilder<JointGridContainerCopyBuilder> {
+    private final SubGridTopologyGraph subGridTopologyGraph;
+
+    /**
+     * Constructor for {@link JointGridContainerCopyBuilder}
+     *
+     * @param jointGridContainer instance of {@link JointGridContainer}
+     */
+    protected JointGridContainerCopyBuilder(JointGridContainer jointGridContainer) {
+      super(jointGridContainer);
+      this.subGridTopologyGraph = jointGridContainer.getSubGridTopologyGraph();
+    }
+
+    @Override
+    protected JointGridContainerCopyBuilder thisInstance() {
+      return this;
+    }
+
+    @Override
+    public JointGridContainer build() {
+      return new JointGridContainer(
+          getGridName(),
+          getRawGrid(),
+          getSystemParticipants(),
+          getGraphics(),
+          subGridTopologyGraph);
+    }
   }
 }

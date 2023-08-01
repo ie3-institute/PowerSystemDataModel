@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -35,12 +36,12 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     ]
 
     when:
-    Optional<? extends FlexOptionsResult> result = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
+    Try<? extends FlexOptionsResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
 
     then:
-    result.present
-    result.get().getClass() == FlexOptionsResult
-    ((FlexOptionsResult) result.get()).with {
+    result.success
+    result.data.get().getClass() == FlexOptionsResult
+    ((FlexOptionsResult) result.data.get()).with {
       assert pRef == getQuant(parameter["pref"], StandardUnits.ACTIVE_POWER_RESULT)
       assert pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_RESULT)
       assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_RESULT)
@@ -60,11 +61,11 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     ]
 
     when:
-    resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
+    Try<FlexOptionsResult, FactoryException> input = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
 
     then:
-    FactoryException ex = thrown()
-    ex.message == "The provided fields [inputModel, pmin, pref, time] with data \n" +
+    input.failure
+    input.exception.get().cause.message == "The provided fields [inputModel, pmin, pref, time] with data \n" +
         "{inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,\n" +
         "pmin -> -1,\n" +
         "pref -> 2,\n" +

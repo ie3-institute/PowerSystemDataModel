@@ -63,8 +63,7 @@ class InputEntityProcessorTest extends Specification {
     def processingResult = processor.handleEntity(validResult)
 
     then: "make sure that the result is as expected "
-    processingResult.present
-    processingResult.get() == expectedResults
+    processingResult == expectedResults
   }
 
   def "A InputEntityProcessor should serialize a provided ConnectorInput correctly"() {
@@ -76,9 +75,7 @@ class InputEntityProcessorTest extends Specification {
     def processingResult = processor.handleEntity(validInput)
 
     then: "make sure that the result is as expected "
-    processingResult.present
-
-    processingResult.get() == expectedResult
+    processingResult == expectedResult
 
     where:
     modelClass         | modelInstance                   || expectedResult
@@ -146,9 +143,7 @@ class InputEntityProcessorTest extends Specification {
     def processingResult = processor.handleEntity(validInput)
 
     then: "make sure that the result is as expected "
-    processingResult.present
-
-    processingResult.get().forEach { k, v ->
+    processingResult.forEach { k, v ->
       if (k != "nodeInternal")     // the internal 3w node is always randomly generated, hence we can skip to test on this
         assert (v == expectedResult.get(k))
     }
@@ -296,11 +291,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(validNode)
+    Map<String, String> actual = processor.handleEntity(validNode)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided NodeGraphicInput with path correctly"() {
@@ -316,11 +310,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(validNode)
+    Map<String, String> actual = processor.handleEntity(validNode)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided LineGraphicInput correctly"() {
@@ -335,11 +328,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(validNode)
+    Map<String, String> actual = processor.handleEntity(validNode)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided OperatorInput correctly"() {
@@ -352,11 +344,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(operator)
+    Map<String, String> actual = processor.handleEntity(operator)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided RandomLoadParameters correctly"() {
@@ -390,11 +381,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(parameters)
+    Map<String, String> actual = processor.handleEntity(parameters)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided WecTypeInput correctly"() {
@@ -415,11 +405,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<Map<String, String>> actual = processor.handleEntity(type)
+    Map<String, String> actual = processor.handleEntity(type)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided Transformer2WTypeInput correctly"() {
@@ -445,11 +434,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<Map<String, String>> actual = processor.handleEntity(type)
+    Map<String, String> actual = processor.handleEntity(type)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided Transformer3WTypeInput correctly"() {
@@ -481,11 +469,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<Map<String, String>> actual = processor.handleEntity(type)
+    Map<String, String> actual = processor.handleEntity(type)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided LineTypeInput correctly"() {
@@ -504,11 +491,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<Map<String, String>> actual = processor.handleEntity(type)
+    Map<String, String> actual = processor.handleEntity(type)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided EvTypeInput correctly"() {
@@ -527,11 +513,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<Map<String, String>> actual = processor.handleEntity(type)
+    Map<String, String> actual = processor.handleEntity(type)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided ChpTypeInput correctly"() {
@@ -552,11 +537,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<Map<String, String>> actual = processor.handleEntity(type)
+    Map<String, String> actual = processor.handleEntity(type)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided HpTypeInput correctly"() {
@@ -574,11 +558,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<Map<String, String>> actual = processor.handleEntity(type)
+    Map<String, String> actual = processor.handleEntity(type)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided BmTypeInput correctly"() {
@@ -597,11 +580,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<Map<String, String>> actual = processor.handleEntity(type)
+    Map<String, String> actual = processor.handleEntity(type)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided StorageTypeInput correctly"() {
@@ -625,11 +607,10 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<Map<String, String>> actual = processor.handleEntity(type)
+    Map<String, String> actual = processor.handleEntity(type)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 
   def "The InputEntityProcessor should serialize an entity but ignore the operator field when OperatorInput is equal to NO_OPERATOR_ASSIGNED"() {
@@ -660,10 +641,9 @@ class InputEntityProcessorTest extends Specification {
     ]
 
     when:
-    Optional<Map<String, String>> actual = processor.handleEntity(nodeWithOutOperator)
+    Map<String, String> actual = processor.handleEntity(nodeWithOutOperator)
 
     then:
-    actual.present
-    actual.get() == expected
+    actual == expected
   }
 }
