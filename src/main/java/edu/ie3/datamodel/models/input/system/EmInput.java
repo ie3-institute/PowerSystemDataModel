@@ -206,7 +206,7 @@ public class EmInput extends SystemParticipantInput {
     }
 
     @Override
-    protected EmInputCopyBuilder childInstance() {
+    protected EmInputCopyBuilder thisInstance() {
       return this;
     }
   }

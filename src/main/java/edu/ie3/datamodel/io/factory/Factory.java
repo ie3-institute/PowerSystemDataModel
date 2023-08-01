@@ -28,6 +28,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
 
   private final List<Class<? extends C>> supportedClasses;
 
+  @SafeVarargs
   protected Factory(Class<? extends C>... supportedClasses) {
     this.supportedClasses = Arrays.asList(supportedClasses);
   }
@@ -54,9 +55,9 @@ public abstract class Factory<C, D extends FactoryData, R> {
       validateParameters(data, allFields.toArray((IntFunction<Set<String>[]>) Set[]::new));
 
       // build the model
-      return new Success<>(buildModel(data));
+      return Success.of(buildModel(data));
     } catch (FactoryException e) {
-      return new Failure<>(
+      return Failure.of(
           new FactoryException(
               "An error occurred when creating instance of "
                   + data.getTargetClass().getSimpleName()

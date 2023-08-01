@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.processor.input;
 
+import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.input.*;
@@ -73,7 +74,8 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           StorageTypeInput.class,
           WecTypeInput.class);
 
-  public InputEntityProcessor(Class<? extends InputEntity> registeredClass) {
+  public InputEntityProcessor(Class<? extends InputEntity> registeredClass)
+      throws EntityProcessorException {
     super(registeredClass);
   }
 

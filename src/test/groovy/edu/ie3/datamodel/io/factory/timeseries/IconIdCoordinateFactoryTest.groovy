@@ -58,7 +58,7 @@ class IconIdCoordinateFactoryTest extends Specification {
 
     then:
     actual.failure
-    actual.exception().cause.message.startsWith("The provided fields [coordinatetype, id, latitude] with data \n{coordinatetype -> " +
+    actual.exception.get().cause.message.startsWith("The provided fields [coordinatetype, id, latitude] with data \n{coordinatetype -> " +
         "ICON,\nid -> 477295,\nlatitude -> 52.312} are invalid for instance of Pair. ")
   }
 
@@ -77,7 +77,7 @@ class IconIdCoordinateFactoryTest extends Specification {
 
     then:
     actual.success
-    actual.data().with {
+    actual.data.get().with {
       assert it.key == expectedPair.key
       assert it.value.equalsExact(expectedPair.value, 1E-6)
     }

@@ -22,7 +22,7 @@ class InvalidSystemParticipantInput extends SystemParticipantInput {
   }
 
   @Override
-  SystemParticipantInputCopyBuilder<?> copy() {
+  SystemParticipantInputCopyBuilder copy() {
     throw new UnsupportedOperationException("This is a dummy class")
   }
 }

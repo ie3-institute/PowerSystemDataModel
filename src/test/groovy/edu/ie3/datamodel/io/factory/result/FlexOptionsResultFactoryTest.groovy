@@ -40,8 +40,8 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
 
     then:
     result.success
-    result.data().getClass() == FlexOptionsResult
-    ((FlexOptionsResult) result.data()).with {
+    result.data.get().getClass() == FlexOptionsResult
+    ((FlexOptionsResult) result.data.get()).with {
       assert pRef == getQuant(parameter["pref"], StandardUnits.ACTIVE_POWER_RESULT)
       assert pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_RESULT)
       assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_RESULT)
@@ -65,7 +65,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
 
     then:
     input.failure
-    input.exception().cause.message == "The provided fields [inputModel, pmin, pref, time] with data \n" +
+    input.exception.get().cause.message == "The provided fields [inputModel, pmin, pref, time] with data \n" +
         "{inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,\n" +
         "pmin -> -1,\n" +
         "pref -> 2,\n" +

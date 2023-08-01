@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.utils;
 
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
@@ -40,7 +41,7 @@ public class ContainerNodeUpdateUtil {
    * @return a copy of the provided grid with updated nodes as provided
    */
   public static GridContainer updateGridWithNodes(
-      GridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) {
+      GridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {
     if (grid instanceof JointGridContainer jointGridContainer) {
       return updateGridWithNodes(jointGridContainer, oldToNewNodes);
     } else {
@@ -66,7 +67,8 @@ public class ContainerNodeUpdateUtil {
    * @return a copy of the provided grid with updated nodes as provided
    */
   public static JointGridContainer updateGridWithNodes(
-      JointGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) {
+      JointGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes)
+      throws InvalidGridException {
     UpdatedEntities updatedEntities =
         updateEntities(
             grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
@@ -99,7 +101,7 @@ public class ContainerNodeUpdateUtil {
    * @return a copy of the provided grid with updated nodes as provided
    */
   public static SubGridContainer updateGridWithNodes(
-      SubGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) {
+      SubGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {
 
     UpdatedEntities updatedEntities =
         updateEntities(

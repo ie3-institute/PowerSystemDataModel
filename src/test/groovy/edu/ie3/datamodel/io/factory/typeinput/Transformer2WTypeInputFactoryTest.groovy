@@ -51,9 +51,9 @@ class Transformer2WTypeInputFactoryTest extends Specification implements Factory
 
     then:
     typeInput.success
-    typeInput.data().getClass() == typeInputClass
+    typeInput.data.get().getClass() == typeInputClass
 
-    typeInput.data().with {
+    typeInput.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert id == parameter["id"]
       assert rSc == getQuant(parameter["rsc"], StandardUnits.RESISTANCE)

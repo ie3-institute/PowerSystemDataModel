@@ -60,8 +60,8 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 
     then:
     result.success
-    result.data().getClass() == resultingModelClass
-    ((SystemParticipantResult) result.data()).with {
+    result.data.get().getClass() == resultingModelClass
+    ((SystemParticipantResult) result.data.get()).with {
       assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
       assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
       assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
@@ -69,19 +69,19 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     if (modelClass == EvResult) {
-      assert (((EvResult) result.data()).soc == getQuant(parameter["soc"], Units.PERCENT))
+      assert (((EvResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
     }
 
     if (modelClass == StorageResult) {
-      assert (((StorageResult) result.data()).soc == getQuant(parameter["soc"], Units.PERCENT))
+      assert (((StorageResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
     }
 
     if (modelClass == HpResult) {
-      assert(((HpResult) result.data()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+      assert(((HpResult) result.data.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
     }
 
     if (modelClass == ChpResult) {
-      assert(((ChpResult) result.data()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+      assert(((ChpResult) result.data.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
     }
 
     where:
@@ -114,8 +114,8 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 
     then:
     result.success
-    result.data().getClass() == StorageResult
-    ((StorageResult) result.data()).with {
+    result.data.get().getClass() == StorageResult
+    ((StorageResult) result.data.get()).with {
       assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
       assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
       assert soc == getQuant(parameter["soc"], Units.PERCENT)
@@ -137,7 +137,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 
     then:
     result.failure
-    result.exception().cause.message == "The provided fields [inputModel, q, time] with data \n" +
+    result.exception.get().cause.message == "The provided fields [inputModel, q, time] with data \n" +
         "{inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,\n" +
         "q -> 2,\n" +
         "time -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +

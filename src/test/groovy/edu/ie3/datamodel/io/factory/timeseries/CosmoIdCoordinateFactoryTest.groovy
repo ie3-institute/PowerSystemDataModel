@@ -68,7 +68,7 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 
     then:
     actual.failure
-    actual.exception().cause.message.startsWith("The provided fields [id, latrot, longrot, tid] with data \n{id -> 106580,\nlatrot" +
+    actual.exception.get().cause.message.startsWith("The provided fields [id, latrot, longrot, tid] with data \n{id -> 106580,\nlatrot" +
         " -> -10,\nlongrot -> -6.8125,\ntid -> 1} are invalid for instance of Pair.")
   }
 
@@ -91,7 +91,7 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 
     then:
     actual.success
-    actual.data().with {
+    actual.data.get().with {
       assert it.key == expectedPair.key
       assert it.value.equalsExact(expectedPair.value, 1E-6)
     }

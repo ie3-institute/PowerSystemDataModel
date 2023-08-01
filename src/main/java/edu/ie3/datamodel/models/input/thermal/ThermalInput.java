@@ -34,4 +34,7 @@ public abstract class ThermalInput extends AssetInput {
   protected ThermalInput(UUID uuid, String id) {
     super(uuid, id);
   }
+
+  @Override
+  public abstract AssetInputCopyBuilder<?> copy();
 }

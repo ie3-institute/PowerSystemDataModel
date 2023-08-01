@@ -17,6 +17,11 @@ class GraphicInputTest extends Specification {
     DummyGraphicObject(UUID uuid, String graphicLayer, LineString path) {
       super(uuid, graphicLayer, path)
     }
+
+    @Override
+    GraphicInputCopyBuilder copy() {
+      throw new UnsupportedOperationException("This is a dummy class")
+    }
   }
 
 

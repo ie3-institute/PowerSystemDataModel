@@ -8,6 +8,9 @@ package edu.ie3.datamodel.io.processor;
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.util.exceptions.QuantityException;
 import java.lang.reflect.Method;
 import java.util.*;
 import javax.measure.Quantity;
@@ -37,7 +40,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
    *
    * @param registeredClass the class the entity processor should be able to handle
    */
-  protected EntityProcessor(Class<? extends T> registeredClass) {
+  protected EntityProcessor(Class<? extends T> registeredClass) throws EntityProcessorException {
     super(registeredClass);
     this.fieldNameToMethod =
         mapFieldNameToGetter(registeredClass, Collections.singleton(NODE_INTERNAL));
@@ -51,7 +54,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
    * @return an optional Map with fieldName to fieldValue or an empty optional if an error occurred
    *     during processing
    */
-  public Optional<LinkedHashMap<String, String>> handleEntity(T entity) {
+  public LinkedHashMap<String, String> handleEntity(T entity) throws EntityProcessorException {
     if (!registeredClass.equals(entity.getClass()))
       throw new EntityProcessorException(
           "Cannot process "
@@ -62,33 +65,32 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
               + entity.getClass().getSimpleName()
               + ".class!");
 
-    try {
-      return Optional.of(processObject(entity, fieldNameToMethod));
-    } catch (EntityProcessorException e) {
-      logger.error("Cannot process the entity{}.", entity, e);
-      return Optional.empty();
-    }
+    return processObject(entity, fieldNameToMethod);
   }
 
   @Override
-  protected Optional<String> handleProcessorSpecificQuantity(
+  protected Try<String, QuantityException> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
     return switch (fieldName) {
       case "energy", "eConsAnnual", "eStorage":
-        yield quantityValToOptionalString(
-            quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
+        yield Success.of(
+            quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN)));
       case "q":
-        yield quantityValToOptionalString(
-            quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
+        yield Success.of(
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN)));
       case "p", "pMax", "pOwn", "pThermal":
-        yield quantityValToOptionalString(
-            quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
+        yield Success.of(
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN)));
       default:
-        log.error(
-            "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
-            quantity,
-            fieldName);
-        yield Optional.empty();
+        yield Failure.of(
+            new QuantityException(
+                "Cannot process quantity with value '"
+                    + quantity
+                    + "' for field with name "
+                    + fieldName
+                    + " in input entity processing!"));
     };
   }
 
