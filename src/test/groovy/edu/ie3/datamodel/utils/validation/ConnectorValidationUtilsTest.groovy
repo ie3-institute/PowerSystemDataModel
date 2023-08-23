@@ -190,7 +190,7 @@ class ConnectorValidationUtilsTest extends Specification {
     GridTestData.transformerAtoBtoC.copy().tapPos(100).build()                                                                  		|| 1            || new InvalidEntityException("Tap position of Transformer3WInput is outside of bounds", invalidTransformer3W)
     GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() 		|| 2            || new InvalidEntityException("Transformer connects nodes of the same voltage level", invalidTransformer3W)
     GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().subnet(2).build()).build()                           		|| 1            || new InvalidEntityException("Transformer connects nodes in the same subnet", invalidTransformer3W)
-    GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().voltLvl(GermanVoltageLevelUtils.MV_30KV).build()).build() 	|| 1            || new InvalidEntityException("Rated voltages of Transformer3WInput do not equal voltage levels at the nodes", invalidTransformer3W)
+    GridTestData.transformerAtoBtoC.copy().nodeC(GridTestData.nodeC.copy().voltLvl(GermanVoltageLevelUtils.MV_30KV).build()).build() 	|| 1            || new InvalidEntityException("Rated voltages of Transformer3WInput do not equal voltage levels at the nodes", invalidTransformer3W)
   }
 
   def "Smoke Test: Correct transformer3W type throws no exception"() {

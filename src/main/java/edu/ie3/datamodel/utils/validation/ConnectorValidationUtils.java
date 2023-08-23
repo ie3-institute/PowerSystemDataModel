@@ -172,6 +172,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
             InvalidEntityException.class,
             () -> checkIfTapPositionIsWithinBounds(transformer2W),
             () -> connectsNodesWithDifferentVoltageLevels(transformer2W, true),
+            () -> connectsNodesToCorrectVoltageSides(transformer2W),
             () -> connectsNodesInDifferentSubnets(transformer2W, true),
             () -> ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(transformer2W)));
 
@@ -273,10 +274,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
                 new InvalidEntityException(
                     "Transformer connects nodes in the same subnet", transformer3W)));
 
-    exceptions.add(
+    exceptions.addAll(
         Try.ofVoid(
-            () -> ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(transformer3W),
-            InvalidEntityException.class));
+            InvalidEntityException.class,
+            () -> connectNodesToCorrectVoltageSides(transformer3W),
+            () -> ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(transformer3W)));
 
     return exceptions;
   }
@@ -424,23 +426,23 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * Check if subnets of connector's nodes are correct depending on if they should be equal or not
    *
    * @param connectorInput ConnectorInput to validate
-   * @param yes determines if subnets should be equal or not
+   * @param shouldBeDifferent determines if subnets should be equal or not
    */
-  private static void connectsNodesInDifferentSubnets(ConnectorInput connectorInput, boolean yes)
-      throws InvalidEntityException {
-    if (yes) {
+  private static void connectsNodesInDifferentSubnets(
+      ConnectorInput connectorInput, boolean shouldBeDifferent) throws InvalidEntityException {
+    boolean isDifferent =
+        connectorInput.getNodeA().getSubnet() != connectorInput.getNodeB().getSubnet();
+    if (shouldBeDifferent && !isDifferent) {
       if (connectorInput.getNodeA().getSubnet() == connectorInput.getNodeB().getSubnet()) {
         throw new InvalidEntityException(
             connectorInput.getClass().getSimpleName() + " connects the same subnet, but shouldn't",
             connectorInput);
       }
-    } else {
-      if (connectorInput.getNodeA().getSubnet() != connectorInput.getNodeB().getSubnet()) {
-        throw new InvalidEntityException(
-            connectorInput.getClass().getSimpleName()
-                + " connects different subnets, but shouldn't",
-            connectorInput);
-      }
+    }
+    if (!shouldBeDifferent && isDifferent) {
+      throw new InvalidEntityException(
+          connectorInput.getClass().getSimpleName() + " connects different subnets, but shouldn't",
+          connectorInput);
     }
   }
 
@@ -449,24 +451,104 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * or not
    *
    * @param connectorInput ConnectorInput to validate
-   * @param yes determines if voltage levels should be equal or not
+   * @param shouldBeDifferent determines if voltage levels should be different or not
    */
   private static void connectsNodesWithDifferentVoltageLevels(
-      ConnectorInput connectorInput, boolean yes) throws InvalidEntityException {
-    if (yes) {
-      if (connectorInput.getNodeA().getVoltLvl().equals(connectorInput.getNodeB().getVoltLvl())) {
-        throw new InvalidEntityException(
-            connectorInput.getClass().getSimpleName()
-                + " connects the same voltage level, but shouldn't",
-            connectorInput);
-      }
-    } else {
-      if (!connectorInput.getNodeA().getVoltLvl().equals(connectorInput.getNodeB().getVoltLvl())) {
-        throw new InvalidEntityException(
-            connectorInput.getClass().getSimpleName()
-                + " connects different voltage levels, but shouldn't",
-            connectorInput);
-      }
+      ConnectorInput connectorInput, boolean shouldBeDifferent) throws InvalidEntityException {
+
+    boolean vltLvlsAreEqual =
+        connectorInput.getNodeA().getVoltLvl().equals(connectorInput.getNodeB().getVoltLvl());
+
+    if (vltLvlsAreEqual && shouldBeDifferent) {
+      throw new InvalidEntityException(
+          connectorInput.getClass().getSimpleName()
+              + " connects the same voltage level, but shouldn't",
+          connectorInput);
+    }
+
+    if (!vltLvlsAreEqual && !shouldBeDifferent) {
+      throw new InvalidEntityException(
+          connectorInput.getClass().getSimpleName()
+              + " connects different voltage levels, but shouldn't",
+          connectorInput);
+    }
+  }
+
+  /**
+   * Check if voltage level of node a is higher than voltage level of node b.
+   *
+   * @param transformer Transformer2WInput to validate
+   */
+  private static void connectsNodesToCorrectVoltageSides(Transformer2WInput transformer)
+      throws InvalidEntityException {
+    try {
+      connectsNodesToCorrectVoltageSides(transformer.getNodeA(), transformer.getNodeB());
+    } catch (IllegalArgumentException e) {
+      throw new InvalidEntityException(
+          transformer.getClass().getSimpleName() + " has nodeA on the lower voltage side.",
+          transformer);
+    }
+  }
+
+  /**
+   * Checks whether the voltage level of node a exceeds the voltage level of node b
+   *
+   * @param nodeA Node a
+   * @param nodeB Node b
+   */
+  public static void connectsNodesToCorrectVoltageSides(NodeInput nodeA, NodeInput nodeB) {
+    if (nodeB
+        .getVoltLvl()
+        .getNominalVoltage()
+        .isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())) {
+      throw new IllegalArgumentException(
+          "nodeA must be on the higher voltage side of the transformer");
+    }
+  }
+
+  /**
+   * Checks, if nodeA is greater than nodeB and nodeB is greater than nodeC of the {@link
+   * Transformer3WInput}
+   *
+   * @param transformer Transformer3WInput to validate
+   */
+  private static void connectNodesToCorrectVoltageSides(Transformer3WInput transformer)
+      throws InvalidEntityException {
+    try {
+      connectsNodesToCorrectVoltageSides(
+          transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC());
+    } catch (IllegalArgumentException e) {
+      throw new InvalidEntityException(
+          transformer.getClass().getSimpleName()
+              + " has an invalid node voltage side configuration.",
+          e,
+          transformer);
+    }
+  }
+
+  /**
+   * Checks whether the voltage level sides are correctly assigned. (nodeA > nodeB > nodeC)
+   *
+   * @param nodeA NodeInput a of the transformer
+   * @param nodeB NodeInput b of the transformer
+   * @param nodeC NodeInput c of the transformer
+   */
+  public static void connectsNodesToCorrectVoltageSides(
+      NodeInput nodeA, NodeInput nodeB, NodeInput nodeC) {
+    String errorMessage =
+        "Voltage level of node a must be greater than voltage level of node b and voltage level of node b must be greater than voltage level of node c";
+    if (nodeC
+        .getVoltLvl()
+        .getNominalVoltage()
+        .isGreaterThan(nodeB.getVoltLvl().getNominalVoltage())) {
+      throw new IllegalArgumentException(errorMessage);
+    }
+
+    if (nodeB
+        .getVoltLvl()
+        .getNominalVoltage()
+        .isGreaterThan(nodeA.getVoltLvl().getNominalVoltage())) {
+      throw new IllegalArgumentException(errorMessage);
     }
   }
 

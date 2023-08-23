@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.utils.Try
+import edu.ie3.test.common.GridTestData
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -36,9 +37,9 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
       "autotap"        : "true"
     ]
     def inputClass = Transformer3WInput
-    def nodeInputA = Mock(NodeInput)
-    def nodeInputB = Mock(NodeInput)
-    def nodeInputC = Mock(NodeInput)
+    def nodeInputA = GridTestData.nodeA
+    def nodeInputB = GridTestData.nodeB
+    def nodeInputC = GridTestData.nodeC
     def typeInput = Mock(Transformer3WTypeInput)
 
     when:
@@ -61,4 +62,28 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
       assert autoTap
     }
   }
+  def "A Transformer3WInputFactory should throw an IllegalArgumentException if nodeB is greater than nodeA or nodeC is greater than nodeB"() {
+    given: "a system participant input type factory and model data"
+    def inputFactory = new Transformer3WInputFactory()
+    Map<String, String> parameter = [
+      "uuid"           : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id"             : "TestID",
+      "paralleldevices": "2",
+      "tappos"         : "3",
+      "autotap"        : "true"
+    ]
+    def inputClass = Transformer3WInput
+    def nodeInputA = GridTestData.nodeC
+    def nodeInputB = GridTestData.nodeB
+    def nodeInputC = GridTestData.nodeA
+    def typeInput = Mock(Transformer3WTypeInput)
+
+    when:
+    inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
+
+    then:
+    def e = thrown(IllegalArgumentException)
+    e.message == "Voltage level of node a must be greater than voltage level of node b and voltage level of node b must be greater than voltage level of node c"
+  }
 }
+
