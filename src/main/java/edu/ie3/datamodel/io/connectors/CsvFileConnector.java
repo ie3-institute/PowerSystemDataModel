@@ -20,10 +20,12 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,7 +236,10 @@ public class CsvFileConnector implements DataConnector {
    * @return A set of relative paths to time series files, with respect to the base folder path
    */
   private Set<Path> getIndividualTimeSeriesFilePaths() {
-    Path baseDirectoryPath = baseDirectoryName.resolve(baseDirectoryName);
+    Path baseDirectoryPath =
+        Paths.get(
+            FilenameUtils.getFullPath(baseDirectoryName.toString())
+                + FilenameUtils.getName(baseDirectoryName.toString()));
     try (Stream<Path> pathStream = Files.walk(baseDirectoryPath)) {
       return pathStream
           .map(baseDirectoryPath::relativize)
