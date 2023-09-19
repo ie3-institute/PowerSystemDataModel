@@ -4,11 +4,10 @@
 // general configuration
 jacoco {
   toolVersion = "0.8.10"
-  reportsDirectory = file("$rootDir/reports/jacoco")
+  reportsDirectory = layout.buildDirectory.dir("$rootDir/reports/jacoco")
 }
 
 jacocoTestReport {
-  executionData tasks.withType(Test)
   reports {
     xml.required = true
     csv.required = false
