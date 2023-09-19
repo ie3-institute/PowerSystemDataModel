@@ -8,10 +8,11 @@ jacoco {
 }
 
 jacocoTestReport {
+  executionData tasks.withType(Test)
   reports {
-    xml.required == true
-    csv.required == false
-    html.required == true
+    xml.required = true
+    csv.required = false
+    html.required = true
     html.destination file("${rootDir}/reports/jacoco")
   }
 
