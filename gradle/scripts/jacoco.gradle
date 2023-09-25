@@ -4,7 +4,7 @@
 // general configuration
 jacoco {
   toolVersion = "0.8.10"
-  reportsDirectory = layout.buildDirectory.dir("$rootDir/build/reports/jacoco")
+  reportsDirectory = layout.projectDirectory.dir("$rootDir/build/reports/jacoco")
 }
 
 jacocoTestReport {
