@@ -4,7 +4,7 @@
 // general configuration
 jacoco {
   toolVersion = "0.8.10"
-  reportsDirectory = layout.buildDirectory.dir("$rootDir/reports/jacoco")
+  reportsDirectory = layout.buildDirectory.dir("$rootDir/build/reports/jacoco")
 }
 
 jacocoTestReport {
@@ -12,7 +12,7 @@ jacocoTestReport {
     xml.required = true
     csv.required = false
     html.required = true
-    html.destination file("${rootDir}/reports/jacoco")
+    html.destination file("${rootDir}/build/reports/jacoco")
   }
 
   // what to exclude from coverage report (files that should not be analyzed!)
@@ -28,7 +28,7 @@ jacocoTestReport {
   ]
 
   getClassDirectories().setFrom(fileTree(
-      dir: "$rootDir/classes/",
+      dir: "$rootDir/build/classes/",
       excludes: excludes
       ))
 
