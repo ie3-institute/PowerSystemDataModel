@@ -26,7 +26,6 @@ class BufferedCsvWriterTest extends Specification {
     try {
       FileIOUtils.deleteRecursively(tmpDirectory)
     } catch (IOException e) {
-
     }
   }
   def "The convenience constructor of the BufferedCsvWriter class works as expected."() {
