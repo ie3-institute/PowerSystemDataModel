@@ -7,12 +7,23 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.timeseries.TimeSeries;
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.value.Value;
+
 import java.util.Optional;
+
+import static edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy.logger;
 
 /** A naming strategy for database entities */
 public class DatabaseNamingStrategy {
 
   private static final String TIME_SERIES_PREFIX = "time_series_";
+
+  private static final String LOAD_PROFILE_PREFIX = "load_profile_";
+
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
 
   public DatabaseNamingStrategy(EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
@@ -42,7 +53,47 @@ public class DatabaseNamingStrategy {
     return TIME_SERIES_PREFIX + columnScheme.getScheme();
   }
 
+  /**
+   * Provides the name of a load profile given by the load profile key
+   * @param lpKey Load profile key
+   * @return the table name
+   */
+  private String getLoadProfileEntityName(String lpKey) {
+    return LOAD_PROFILE_PREFIX + lpKey;
+  }
+
+  /**
+   * Provides the name of a unique entity class.
+   * @param cls Class extends UniqueEntity
+   * @return the table name
+   */
   public Optional<String> getEntityName(Class<? extends UniqueEntity> cls) {
     return entityPersistenceNamingStrategy.getEntityName(cls);
+  }
+
+  /**
+   * Provides the name of a time series. Used to determine the table name in SQL database.
+   * @param timeSeries
+   * @return the table name
+   */
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  Optional<String> getEntityName(T timeSeries) {
+    if (timeSeries instanceof IndividualTimeSeries individualTimeSeries) {
+      Optional<E> maybeFirstElement = individualTimeSeries.getEntries().stream().findFirst();
+      if (maybeFirstElement.isPresent()) {
+        Class<? extends Value> valueClass = maybeFirstElement.get().getValue().getClass();
+        return Optional.of(getTimeSeriesEntityName(ColumnScheme.parse(valueClass).orElseThrow()));
+      } else {
+        logger.error("Unable to determine content of time series {}", timeSeries);
+        return Optional.empty();
+      }
+    } else if (timeSeries instanceof LoadProfileInput loadProfileInput) {
+      return Optional.of(
+        getLoadProfileEntityName(loadProfileInput.getType().getKey())
+      );
+    } else {
+      logger.error("There is no naming strategy defined for {}", timeSeries);
+      return Optional.empty();
+    }
   }
 }

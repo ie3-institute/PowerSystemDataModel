@@ -381,8 +381,8 @@ class SampleJointGrid extends SystemParticipantTestData {
 
   public static final Transformer2WTypeInput transformerType_MV_HV_110KV =
   new Transformer2WTypeInput(
-  UUID.fromString("08559390-d7c0-4427-a2dc-97ba312ae0ac"),
-  "MS-NS_1",
+  UUID.fromString("deecabd2-5ddb-11ee-8c99-0242ac120002"),
+  "HS-MS_1",
   Quantities.getQuantity(10.078, OHM),
   Quantities.getQuantity(23.312, OHM),
   Quantities.getQuantity(800d, KILOVOLTAMPERE),

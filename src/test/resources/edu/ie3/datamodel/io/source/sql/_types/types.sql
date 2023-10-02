@@ -1,6 +1,6 @@
 CREATE TABLE public.line_type_input
 (
-    uuid uuid NOT NULL,
+    uuid BINARY(16) NOT NULL,
     id varchar NOT NULL,
     v_rated double precision NOT NULL,
     i_max double precision NOT NULL,

@@ -64,13 +64,8 @@ public class SqlConnector implements DataConnector {
    * @param updateQuery the query to execute
    * @return The number of updates or a negative number if the execution failed
    */
-  public int executeUpdate(String updateQuery) {
-    try (Statement stmt = getConnection().createStatement()) {
-      return stmt.executeUpdate(updateQuery);
-    } catch (SQLException e) {
-      log.error(String.format("Error at execution of query \"%1.127s\": ", updateQuery), e);
-      return -1;
-    }
+  public int executeUpdate(String updateQuery) throws SQLException {
+      return getConnection().createStatement().executeUpdate(updateQuery);
   }
 
   /**
@@ -159,5 +154,12 @@ public class SqlConnector implements DataConnector {
       log.error("Exception at extracting ResultSet: ", e);
     }
     return insensitiveFieldsToAttributes;
+  }
+
+  public boolean tableExists(Connection connection, String tableName) throws SQLException {
+    DatabaseMetaData meta = connection.getMetaData();
+    ResultSet resultSet = meta.getTables(null, null, tableName, new String[] {"TABLE"});
+
+    return resultSet.next();
   }
 }
