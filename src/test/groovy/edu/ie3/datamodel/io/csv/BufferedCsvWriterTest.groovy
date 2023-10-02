@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.csv
 import edu.ie3.datamodel.exceptions.FileException
 import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.util.io.FileIOUtils
-import org.apache.commons.io.FilenameUtils
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -27,7 +26,7 @@ class BufferedCsvWriterTest extends Specification {
     try {
       FileIOUtils.deleteRecursively(tmpDirectory)
     } catch (IOException e) {
-      e.printStackTrace()
+
     }
   }
   def "The convenience constructor of the BufferedCsvWriter class works as expected."() {
