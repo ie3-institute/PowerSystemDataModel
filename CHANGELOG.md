@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed wrong rated power unit hint [#804](https://github.com/ie3-institute/PowerSystemDataModel/issues/804)
 - Fixed wrong hash code generation of ConnectorResult [#817](https://github.com/ie3-institute/PowerSystemDataModel/issues/817) 
+- Fixed wrong path for timeSeriesMapping [#886](https://github.com/ie3-institute/PowerSystemDataModel/issues/886)
 
 ### Changed
 - Removing deprecated classes and methods [#540](https://github.com/ie3-institute/PowerSystemDataModel/issues/540)
