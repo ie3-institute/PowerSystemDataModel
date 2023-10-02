@@ -24,9 +24,12 @@ class BufferedCsvWriterTest extends Specification {
   }
 
   def cleanup() {
-    FileIOUtils.deleteRecursively(tmpDirectory)
+    try {
+      FileIOUtils.deleteRecursively(tmpDirectory)
+    } catch (IOException e) {
+      e.printStackTrace()
+    }
   }
-
   def "The convenience constructor of the BufferedCsvWriter class works as expected."() {
     given:
     def baseDirectory = tmpDirectory
