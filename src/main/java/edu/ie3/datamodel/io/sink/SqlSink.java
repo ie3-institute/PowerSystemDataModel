@@ -1,5 +1,6 @@
 package edu.ie3.datamodel.io.sink;
 
+import com.couchbase.client.core.deps.io.perfmark.Link;
 import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.DatabaseIdentifier;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
@@ -207,7 +208,7 @@ public class SqlSink {
      */
     private <C extends UniqueEntity> void insertListIgnoreNested(List<C> entities, Class<C> cls, DatabaseIdentifier identifier) throws SQLException {
         try {
-            String[] headerElements = StringUtils.camelCaseToSnakeCase(processorProvider.getHeaderElements(cls));
+            String[] headerElements = processorProvider.getHeaderElements(cls);
             String query = basicInsertQueryValuesGrid(schemaName, databaseNamingStrategy.getEntityName(cls).orElseThrow(), headerElements);
             query = query + createInsertQueryBodyIgnoreConflict(entities, headerElements, identifier);
             connector.executeUpdate(query);
@@ -248,7 +249,6 @@ public class SqlSink {
             Set<LinkedHashMap<String, String>> entityFieldData =
                     processorProvider.handleTimeSeries(timeSeries);
             query = query + entityFieldData.stream().map(
-                    //data -> createTimeSeriesQueryLine(sqlEntityFieldData(data), headerElements, identifier, timeSeries.getUuid().toString())).collect(Collectors.joining(",\n", "", "ON CONFLICT (uuid) DO NOTHING;"));
                     data -> queryTimeSeriesValueLine(sqlEntityFieldData(data), headerElements, identifier, timeSeries.getUuid().toString())).collect(Collectors.joining(",\n", "", ";"));
             try {
                 connector.executeUpdate(query);
@@ -348,7 +348,7 @@ public class SqlSink {
     }
     private <C extends UniqueEntity> void insert(C entity, DatabaseIdentifier identifier) throws SQLException {
         try {
-            String[] headerElements = StringUtils.camelCaseToSnakeCase(processorProvider.getHeaderElements(entity.getClass()));
+            String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
             String query = basicInsertQueryValuesGrid(schemaName, databaseNamingStrategy.getEntityName(entity.getClass()).orElseThrow(), headerElements) + queryValueLine(entity, headerElements, identifier) + ";";
             connector.executeUpdate(query);
         } catch (ProcessorProviderException e) {
@@ -369,7 +369,9 @@ public class SqlSink {
                         .handleEntities(entities);
         String queryBody = "";
         queryBody = queryBody + entityFieldData.stream().map(
-                data -> queryValueLine(sqlEntityFieldData(data), headerElements, identifier)).collect(Collectors.joining(",\n", "", "\nON CONFLICT (uuid) DO NOTHING;"));
+                data ->
+                    queryValueLine(sqlEntityFieldData(data), headerElements, identifier)
+                ).collect(Collectors.joining(",\n", "", "\nON CONFLICT (uuid) DO NOTHING;"));
         return queryBody;
     }
 
@@ -411,30 +413,16 @@ public class SqlSink {
         return writeOneLine(Stream.concat(Stream.concat(Arrays.stream(headerElements).map(entityFieldData::get), identifier.getStreamForQuery()), Stream.of(quote(TSuuid,"'"))));
     }
 
-    /**
-     * Quote a given entity field
-     */
-    private LinkedHashMap<String, String> sqlEntityFieldData(
-            LinkedHashMap<String, String> entityFieldData) {
 
-        return entityFieldData.entrySet().stream()
-                .map(
-                        mapEntry ->
-                                new AbstractMap.SimpleEntry<>(
-                                        mapEntry.getKey(),
-                                        quote(mapEntry.getValue(), "'")))
-                .collect(
-                        Collectors.toMap(
-                                AbstractMap.SimpleEntry::getKey,
-                                AbstractMap.SimpleEntry::getValue,
-                                (v1, v2) -> {
-                                    throw new IllegalStateException(
-                                            "Converting entity data to RFC 4180 compliant strings has lead to duplicate keys. Initial input:\n\t"
-                                                    + entityFieldData.entrySet().stream()
-                                                    .map(entry -> entry.getKey() + " = " + entry.getValue())
-                                                    .collect(Collectors.joining(",\n\t")));
-                                },
-                                LinkedHashMap::new));
+    private LinkedHashMap<String, String> sqlEntityFieldData(
+            LinkedHashMap<String, String> entityFieldData
+    ) {
+        LinkedHashMap<String, String> quotedEntityFieldData = new LinkedHashMap<>(entityFieldData);
+        quotedEntityFieldData.replaceAll(
+                (key, ent) -> quote(ent, "'")
+        );
+
+        return quotedEntityFieldData;
     }
 
 
@@ -450,7 +438,7 @@ public class SqlSink {
      */
     private String basicInsertQueryValuesGrid(String schemaName, String tableName, String[] headerElements) {
         String[] addParams = {GRID_NAME, GRID_UUID};
-        return basicInsertQuery(schemaName, tableName) + " " + writeOneLine(headerElements, addParams) + "\nVALUES\n";
+        return basicInsertQuery(schemaName, tableName) + " " + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams) + "\nVALUES\n";
     }
 
     /**
@@ -458,7 +446,7 @@ public class SqlSink {
      */
     private String basicInsertQueryValuesITS(String schemaName, String tableName, String[] headerElements) {
         String[] addParams = {GRID_NAME, GRID_UUID, TIME_SERIES};
-        return basicInsertQuery(schemaName, tableName) + " " + writeOneLine(headerElements, addParams) + "\nVALUES\n";
+        return basicInsertQuery(schemaName, tableName) + " " + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams) + "\nVALUES\n";
     }
 
     /**

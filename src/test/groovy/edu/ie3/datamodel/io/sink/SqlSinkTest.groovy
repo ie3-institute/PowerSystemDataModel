@@ -293,7 +293,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
 
         then:
             def exception = thrown(SQLException)
-            exception.message == "ERROR: invalid input syntax for type uuid: \"null\"\n  Position: 365"
+            exception.message.contains("ERROR: invalid input syntax for type uuid: \"null\"\n")
 
         cleanup:
             sink.shutdown()

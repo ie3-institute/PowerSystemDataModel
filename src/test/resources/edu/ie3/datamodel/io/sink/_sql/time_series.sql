@@ -55,7 +55,7 @@ CREATE TABLE public.time_series_h
     uuid uuid PRIMARY KEY,
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
-    heatDemand double precision,
+    heat_demand double precision,
     grid_name TEXT NOT NULL,
     grid_uuid uuid NOT NULL
 )
@@ -72,7 +72,7 @@ CREATE TABLE public.time_series_ph
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
     p double precision,
-    heatDemand double precision,
+    heat_demand double precision,
     grid_name TEXT NOT NULL,
     grid_uuid uuid NOT NULL
 )
@@ -90,7 +90,7 @@ CREATE TABLE public.time_series_pqh
     time timestamp with time zone NOT NULL,
     p double precision,
     q double precision,
-    heatDemand double precision,
+    heat_demand double precision,
     grid_name TEXT NOT NULL,
     grid_uuid uuid NOT NULL
 )
@@ -107,8 +107,8 @@ CREATE TABLE public.time_series_weather
     time_series uuid NOT NULL,
     coordinate TEXT NOT NULL,
     time timestamp with time zone NOT NULL,
-    diffuseIrradiance double precision,
-    directIrradiance double precision,
+    diffuse_irradiance double precision,
+    direct_irradiance double precision,
     direction double precision,
     temperature double precision,
     velocity double precision,
