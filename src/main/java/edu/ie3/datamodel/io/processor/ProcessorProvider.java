@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
+import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
@@ -17,10 +18,10 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.utils.Try;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Wrapper providing the class specific processor to convert an instance of a {@link UniqueEntity}
@@ -34,8 +35,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessorProvider {
 
-  private static final Logger log = LoggerFactory.getLogger(ProcessorProvider.class);
-
   /** unmodifiable map of all processors that has been provided on construction */
   private final Map<Class<? extends UniqueEntity>, EntityProcessor<? extends UniqueEntity>>
       entityProcessors;
@@ -47,7 +46,7 @@ public class ProcessorProvider {
       timeSeriesProcessors;
 
   /** Get an instance of this class with all existing entity processors */
-  public ProcessorProvider() {
+  public ProcessorProvider() throws EntityProcessorException {
     this.entityProcessors = init(allEntityProcessors());
     this.timeSeriesProcessors = allTimeSeriesProcessors();
   }
@@ -70,14 +69,14 @@ public class ProcessorProvider {
     this.timeSeriesProcessors = timeSeriesProcessors;
   }
 
-  public <T extends UniqueEntity> Optional<LinkedHashMap<String, String>> handleEntity(T entity) {
-    try {
-      EntityProcessor<? extends UniqueEntity> processor = getEntityProcessor(entity.getClass());
-      return castProcessor(processor).handleEntity(entity);
-    } catch (ProcessorProviderException e) {
-      log.error("Exception occurred during entity handling.", e);
-      return Optional.empty();
-    }
+  public <T extends UniqueEntity>
+      Try<LinkedHashMap<String, String>, ProcessorProviderException> handleEntity(T entity) {
+    return Try.of(() -> getEntityProcessor(entity.getClass()), ProcessorProviderException.class)
+        .flatMap(ProcessorProvider::castProcessor)
+        .flatMap(
+            processor ->
+                Try.of(() -> processor.handleEntity(entity), EntityProcessorException.class)
+                    .transformF(ProcessorProviderException::new));
   }
 
   /**
@@ -112,18 +111,15 @@ public class ProcessorProvider {
    * @return A set of mappings from field name to value
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      Optional<Set<LinkedHashMap<String, String>>> handleTimeSeries(T timeSeries) {
+      Set<LinkedHashMap<String, String>> handleTimeSeries(T timeSeries)
+          throws ProcessorProviderException {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
-    try {
-      TimeSeriesProcessor<T, E, V> processor = getTimeSeriesProcessor(key);
-      return Optional.of(processor.handleTimeSeries(timeSeries));
-    } catch (ProcessorProviderException e) {
-      log.error("Cannot handle the time series '{}'.", timeSeries, e);
-      return Optional.empty();
-    } catch (EntityProcessorException e) {
-      log.error("Error during processing of time series.", e);
-      return Optional.empty();
-    }
+    return Try.of(() -> this.<T, E, V>getTimeSeriesProcessor(key), ProcessorProviderException.class)
+        .flatMap(
+            processor ->
+                Try.of(() -> processor.handleTimeSeries(timeSeries), EntityProcessorException.class)
+                    .transformF(ProcessorProviderException::new))
+        .getOrThrow();
   }
 
   /**
@@ -235,7 +231,8 @@ public class ProcessorProvider {
    *
    * @return a collection of all existing processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors() {
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors()
+      throws EntityProcessorException {
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
     resultingProcessors.addAll(allInputEntityProcessors());
     resultingProcessors.addAll(allResultEntityProcessors());
@@ -247,7 +244,8 @@ public class ProcessorProvider {
    *
    * @return a collection of all input processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allInputEntityProcessors() {
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allInputEntityProcessors()
+      throws EntityProcessorException {
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
     for (Class<? extends InputEntity> cls : InputEntityProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new InputEntityProcessor(cls));
@@ -260,7 +258,8 @@ public class ProcessorProvider {
    *
    * @return a collection of all result processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allResultEntityProcessors() {
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allResultEntityProcessors()
+      throws EntityProcessorException {
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
     for (Class<? extends ResultEntity> cls : ResultEntityProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new ResultEntityProcessor(cls));
@@ -273,32 +272,43 @@ public class ProcessorProvider {
    *
    * @return A mapping from eligible combinations to processors
    */
+  @SuppressWarnings("unchecked")
   public static Map<
           TimeSeriesProcessorKey,
           TimeSeriesProcessor<
               TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>
-      allTimeSeriesProcessors() {
-    return TimeSeriesProcessor.eligibleKeys.stream()
-        .collect(
-            Collectors.toMap(
-                key -> key,
-                key ->
-                    new TimeSeriesProcessor<>(
-                        (Class<TimeSeries<TimeSeriesEntry<Value>, Value>>) key.getTimeSeriesClass(),
-                        (Class<TimeSeriesEntry<Value>>) key.getEntryClass(),
-                        (Class<Value>) key.getValueClass())));
+      allTimeSeriesProcessors() throws EntityProcessorException {
+    try {
+      return Try.scanStream(
+              TimeSeriesProcessor.eligibleKeys.stream()
+                  .map(
+                      key ->
+                          Try.of(
+                              () ->
+                                  new TimeSeriesProcessor<>(
+                                      (Class<TimeSeries<TimeSeriesEntry<Value>, Value>>)
+                                          key.getTimeSeriesClass(),
+                                      (Class<TimeSeriesEntry<Value>>) key.getEntryClass(),
+                                      (Class<Value>) key.getValueClass()),
+                              EntityProcessorException.class)),
+              "list of processors")
+          .getOrThrow()
+          .collect(Collectors.toMap(TimeSeriesProcessor::getRegisteredKey, Function.identity()));
+    } catch (FailureException e) {
+      throw new EntityProcessorException(e.getCause());
+    }
   }
 
   @SuppressWarnings("unchecked cast")
-  private static <T extends UniqueEntity> EntityProcessor<T> castProcessor(
-      EntityProcessor<? extends UniqueEntity> processor) throws ProcessorProviderException {
-    try {
-      return (EntityProcessor<T>) processor;
-    } catch (ClassCastException ex) {
-      throw new ProcessorProviderException(
-          "Cannot cast processor with registered class '"
-              + processor.getRegisteredClass().getSimpleName()
-              + "'. This indicates a fatal problem with the processor mapping!");
-    }
+  private static <T extends UniqueEntity>
+      Try<EntityProcessor<T>, ProcessorProviderException> castProcessor(
+          EntityProcessor<? extends UniqueEntity> processor) {
+    return Try.of(() -> (EntityProcessor<T>) processor, ClassCastException.class)
+        .transformF(
+            e ->
+                new ProcessorProviderException(
+                    "Cannot cast processor with registered class '"
+                        + processor.getRegisteredClass().getSimpleName()
+                        + "'. This indicates a fatal problem with the processor mapping!"));
   }
 }

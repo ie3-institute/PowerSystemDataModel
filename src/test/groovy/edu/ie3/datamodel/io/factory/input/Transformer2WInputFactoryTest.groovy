@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
+import edu.ie3.test.common.GridTestData
 
 import java.time.ZonedDateTime
 
@@ -40,8 +41,8 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
     ]
     def inputClass = Transformer2WInput
     def operatorInput = Mock(OperatorInput)
-    def nodeInputA = Mock(NodeInput)
-    def nodeInputB = Mock(NodeInput)
+    def nodeInputA = GridTestData.nodeA
+    def nodeInputB = GridTestData.nodeB
     def typeInput = Mock(Transformer2WTypeInput)
 
     when:
@@ -64,5 +65,30 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
       assert tapPos == Integer.parseInt(parameter["tappos"])
       assert autoTap
     }
+  }
+  def "A Transformer2WInputFactory should throw an IllegalArgumentException if nodeA is on the lower voltage side"() {
+    given: "a system participant input type factory and model data"
+    def inputFactory = new Transformer2WInputFactory()
+    Map<String, String> parameter = [
+      "uuid"           : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom"   : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil"  : "",
+      "id"             : "TestID",
+      "paralleldevices": "2",
+      "tappos"         : "3",
+      "autotap"        : "true"
+    ]
+    def inputClass = Transformer2WInput
+    def operatorInput = Mock(OperatorInput)
+    def nodeInputA = GridTestData.nodeB
+    def nodeInputB = GridTestData.nodeA
+    def typeInput = Mock(Transformer2WTypeInput)
+
+    when:
+    inputFactory.get(new TypedConnectorInputEntityData<Transformer2WTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+
+    then:
+    def e = thrown(IllegalArgumentException)
+    e.message == "nodeA must be on the higher voltage side of the transformer"
   }
 }
