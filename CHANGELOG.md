@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use nio paths instead of strings for file path [#723](https://github.com/ie3-institute/PowerSystemDataModel/issues/723)
 - Data source will throw an exceptions instead of returning an empty optionals [#707](https://github.com/ie3-institute/PowerSystemDataModel/issues/707)
 - Improving `ValidationUtils` [#758](https://github.com/ie3-institute/PowerSystemDataModel/issues/758)
-- Update gradle to version 8.3 [#891](https://github.com/ie3-institute/PowerSystemDataModel/issues/891)
+- Update gradle to version 8.4 [#891](https://github.com/ie3-institute/PowerSystemDataModel/issues/891)
 
 
 ## [3.0.0] - 2023-02-16
