@@ -9,7 +9,7 @@ plugins {
   id 'de.undercouch.download' version '5.5.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "4.3.1.3277" // sonarqube
+  id "org.sonarqube" version "4.4.0.3356" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
@@ -17,8 +17,8 @@ ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
-  groovyBinaryVersion = "4.0.14"
-  testcontainersVersion = '1.19.0'
+  groovyBinaryVersion = "4.0.15"
+  testcontainersVersion = '1.19.1'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -70,7 +70,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.14.7' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.14.9' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
@@ -90,7 +90,7 @@ dependencies {
   implementation 'com.couchbase.client:java-client:3.4.10'
   runtimeOnly 'org.postgresql:postgresql:42.6.0' // postgresql jdbc driver required during runtime
 
-  implementation 'commons-io:commons-io:2.13.0' // I/O functionalities
+  implementation 'commons-io:commons-io:2.14.0' // I/O functionalities
   implementation 'org.apache.commons:commons-compress:1.24.0' // I/O functionalities
   implementation 'org.apache.commons:commons-lang3:3.13.0'
 }
