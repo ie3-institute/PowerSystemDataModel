@@ -1,12 +1,12 @@
 package edu.ie3.datamodel.io.sink;
 
-import com.couchbase.client.core.deps.io.perfmark.Link;
 import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.DatabaseIdentifier;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
+import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -78,23 +78,32 @@ public class SqlSink {
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+    /**
+     * Entry point of a data sink to persist multiple entities in a collection.
+     * @param entities a collection of entities that should be persisted
+     * @param identifier identifier of the grid
+     * @param <C> bounded to be all unique entities. Handling of specific entities is normally then
+     *     executed by a specific {@link EntityProcessor}
+     * @throws SQLException
+     */
     public <C extends UniqueEntity> void persistAll(Collection<C> entities, DatabaseIdentifier identifier) throws SQLException {
         // Extract nested entities and add them to the set of entities
         Set<C> entitiesToAdd = new HashSet<>(entities);             // entities to persist
-        entities.stream().filter(
-                entity -> entity instanceof NestedEntity
-        ).forEach(
+        entities.stream().forEach(
                 entity -> {
-                    try {
-                        entitiesToAdd.addAll((List<C>) Extractor.extractElements((NestedEntity) entity).stream().toList());
-                    } catch (ExtractorException e) {
-                        log.error(
-                                String.format(
-                                        "An error occurred during extraction of nested entity'%s': ",
-                                        entity.getClass()),
-                                e);
+                    if (entity instanceof NestedEntity nestedEntity) {
+                        try {
+                            entitiesToAdd.addAll((List<C>) Extractor.extractElements(nestedEntity).stream().toList());
+                        } catch (ExtractorException e) {
+                            log.error(
+                                    String.format(
+                                            "An error occurred during extraction of nested entity'%s': ",
+                                            entity.getClass()),
+                                    e);
+                        }
                     }
-                });
+                }
+        );
 
         // Persist the entities in hierarchic order to avoid failure because of foreign keys
         for (Class<?> cls : hierarchicInsert()) {
@@ -107,10 +116,21 @@ public class SqlSink {
         persistMixedList(new ArrayList<>(entitiesToAdd), identifier);                       // persist left entities
     }
 
-    public <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities, DatabaseIdentifier identifier) {
+    /**
+     * Persist multiple input entities in a collection. In contrast to {@link SqlSink#persistAll} this function does not extract nested entities.
+     * @param entities a collection of entities that should be persisted
+     * @param identifier identifier of the grid
+     */
+    public <C extends InputEntity> void persistAllIgnoreNested(Collection<C> entities, DatabaseIdentifier identifier) {
         persistMixedList(new ArrayList<>(entities), identifier);
     }
 
+    /**
+     * Persist an entity. By default this method take care about the extraction process of nested entities (if any)
+     * @param entity the entity that should be persisted
+     * @param identifier identifier of the grid
+     * @throws SQLException
+     */
     public <C extends UniqueEntity> void persist(C entity, DatabaseIdentifier identifier) throws SQLException {
         if (entity instanceof InputEntity inputEntity) {
             persistIncludeNested(inputEntity, identifier);
@@ -123,6 +143,12 @@ public class SqlSink {
         }
     }
 
+    /**
+     * Persist an entity. In contrast to {@link SqlSink#persist} this function doe not extract nested entities.
+     * @param entity the entity that should be persisted
+     * @param identifier identifier of the grid
+     * @throws SQLException
+     */
     public <C extends InputEntity> void persistIgnoreNested(C entity, DatabaseIdentifier identifier) throws SQLException {
         insert(entity, identifier);
     }
