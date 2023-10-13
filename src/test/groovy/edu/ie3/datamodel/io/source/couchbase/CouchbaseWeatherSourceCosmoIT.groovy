@@ -61,7 +61,8 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         "--password", couchbaseContainer.password,
         "--format", "list",
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
-        "--dataset", "file:///home/weather_cosmo.json")
+        "--dataset", "file:///home/weather_cosmo.json",
+        System.setProperty("com.couchbase.env.timeout.kvTimeout", "10s"),)
 
     def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
