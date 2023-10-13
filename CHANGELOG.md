@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use nio paths instead of strings for file path [#723](https://github.com/ie3-institute/PowerSystemDataModel/issues/723)
 - Data source will throw an exceptions instead of returning an empty optionals [#707](https://github.com/ie3-institute/PowerSystemDataModel/issues/707)
 - Improving `ValidationUtils` [#758](https://github.com/ie3-institute/PowerSystemDataModel/issues/758)
+- CleanUp `BufferedCsvWriterTest` only after all tests are completed [#809](https://github.com/ie3-institute/PowerSystemDataModel/issues/809)
 
 
 ## [3.0.0] - 2023-02-16
