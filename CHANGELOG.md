@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+
+### Fixed
+
+### Changed
+- `SqlIdCoordinateSource.createCooridinateValue` now throws an exception when the coordinate can not be built [#911](https://github.com/ie3-institute/PowerSystemDataModel/issues/911)
+
 ## [4.0.0] - 2023-08-01
 
 ### Added

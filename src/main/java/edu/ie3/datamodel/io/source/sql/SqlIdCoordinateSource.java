@@ -173,27 +173,18 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  private Optional<CoordinateValue> createCoordinateValue(Map<String, String> fieldToValues) {
+  private CoordinateValue createCoordinateValue(Map<String, String> fieldToValues) {
     fieldToValues.remove("distance");
 
     SimpleFactoryData simpleFactoryData = new SimpleFactoryData(fieldToValues, Pair.class);
-    Optional<Pair<Integer, Point>> pair = factory.get(simpleFactoryData).getData();
 
-    if (pair.isEmpty()) {
-      return Optional.empty();
-    } else {
-      Pair<Integer, Point> data = pair.get();
-      return Optional.of(new CoordinateValue(data.getKey(), data.getValue()));
-    }
+    Pair<Integer, Point> pair = factory.get(simpleFactoryData).getOrThrow();
+    return new CoordinateValue(pair.getKey(), pair.getValue());
   }
 
   private List<CoordinateValue> executeQueryToList(
       String query, SqlDataSource.AddParams addParams) {
-    return dataSource
-        .executeQuery(query, addParams)
-        .map(this::createCoordinateValue)
-        .flatMap(Optional::stream)
-        .toList();
+    return dataSource.executeQuery(query, addParams).map(this::createCoordinateValue).toList();
   }
 
   /**
