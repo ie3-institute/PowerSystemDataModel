@@ -62,11 +62,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         "--format", "list",
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
         "--dataset", "file:///home/weather_cosmo.json")
-    //Start the Couchbase container and wait until it is running.
 
-    ArrayList exposedPorts = couchbaseContainer.getExposedPorts()
-
-    System.out.println(exposedPorts)
     def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))

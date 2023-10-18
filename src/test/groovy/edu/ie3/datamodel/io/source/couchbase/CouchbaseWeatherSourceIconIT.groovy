@@ -57,8 +57,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
         "--password", couchbaseContainer.password,
         "--format", "list",
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
-        "--dataset", "file:///home/weather_icon.json"
-        )
+        "--dataset", "file:///home/weather_icon.json")
 
     def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
