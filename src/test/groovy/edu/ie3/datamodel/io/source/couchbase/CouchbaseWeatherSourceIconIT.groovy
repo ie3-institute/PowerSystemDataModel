@@ -30,7 +30,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
 
   @Shared
   CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.0.2").withBucket(bucketDefinition)
-  .withExposedPorts(8091)
+  .withExposedPorts(8091, 8092, 8093, 8094, 11210, 18091, 11207, 18092, 18093, 18094)
 
   @Shared
   CouchbaseWeatherSource source
@@ -44,7 +44,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
 
     // create an index for the document keys
     couchbaseContainer.execInContainer("cbq",
-        "-e", "http://localhost:8091",
+        "-e", "http://localhost:8093",
         "-u", couchbaseContainer.username,
         "-p", couchbaseContainer.password,
         "-s", "CREATE index id_idx ON `" + bucketDefinition.name + "` (META().id);")
