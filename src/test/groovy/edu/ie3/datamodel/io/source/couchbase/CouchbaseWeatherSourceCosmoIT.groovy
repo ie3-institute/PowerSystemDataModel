@@ -34,7 +34,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
   @Shared
   CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.0.2")
   .withBucket(bucketDefinition)
-  .withExposedPorts(8091, 8092, 8093, 8094, 11210)
+  .withExposedPorts(8091)
 
   @Shared
   CouchbaseWeatherSource source
@@ -46,9 +46,10 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     MountableFile couchbaseWeatherJsonsFile = getMountableFile("_weather/cosmo/weather.json")
     couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather_cosmo.json")
 
+
     // create an index for the document keys
     couchbaseContainer.execInContainer("cbq",
-        "-e", "http://localhost:8093",
+        "-e", "http://localhost:8091",
         "-u", couchbaseContainer.username,
         "-p", couchbaseContainer.password,
         "-s", "CREATE index id_idx ON `" + bucketDefinition.name + "` (META().id);")
@@ -62,7 +63,8 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         "--format", "list",
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
         "--dataset", "file:///home/weather_cosmo.json",
-        System.setProperty("com.couchbase.env.timeout.kvTimeout", "10s"),)
+        )
+    // System.setProperty("com.couchbase.env.timeout.kvTimeout", "10s")
 
     def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
