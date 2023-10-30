@@ -13,12 +13,13 @@ public class InvalidEntityException extends ValidationException {
   private static final long serialVersionUID = 809496087520306374L;
 
   public InvalidEntityException(String faultDescription, UniqueEntity invalidEntity) {
-    super("Entity is invalid because of: " + faultDescription + " [" + invalidEntity + "]");
+    super("Entity is invalid because of: \n" + faultDescription + " [" + invalidEntity + "]");
   }
 
   public InvalidEntityException(
       String faultDescription, Throwable cause, UniqueEntity invalidEntity) {
-    super("Entity is invalid because of: " + faultDescription + " [" + invalidEntity + "]", cause);
+    super(
+        "Entity is invalid because of: \n" + faultDescription + " [" + invalidEntity + "]", cause);
   }
 
   public InvalidEntityException(String message, Throwable cause) {

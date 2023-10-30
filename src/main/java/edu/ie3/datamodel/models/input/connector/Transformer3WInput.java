@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import static edu.ie3.datamodel.utils.validation.ConnectorValidationUtils.connectsNodesToCorrectVoltageSides;
 import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 
 import edu.ie3.datamodel.io.extractor.HasType;
@@ -68,6 +69,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
         tapPos,
         autoTap,
         false);
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
   }
 
   /**
@@ -128,6 +130,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             null,
             nodeA.getVoltLvl(),
             nodeA.getSubnet()));
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
   }
 
   /**
@@ -155,6 +158,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       int tapPos,
       boolean autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
     this.type = type;
     this.nodeC = nodeC;
     this.nodeInternal =
@@ -200,6 +204,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       boolean autoTap,
       NodeInput internalNode) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
     this.type = type;
     this.nodeC = nodeC;
     this.nodeInternal = internalNode;
@@ -232,6 +237,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     return nodeInternal;
   }
 
+  @Override
   public Transformer3WInputCopyBuilder copy() {
     return new Transformer3WInputCopyBuilder(this);
   }
@@ -304,6 +310,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
 
     @Override
     public Transformer3WInput build() {
+
       return new Transformer3WInput(
           getUuid(),
           getId(),
@@ -335,7 +342,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     }
 
     @Override
-    protected Transformer3WInputCopyBuilder childInstance() {
+    protected Transformer3WInputCopyBuilder thisInstance() {
       return this;
     }
   }

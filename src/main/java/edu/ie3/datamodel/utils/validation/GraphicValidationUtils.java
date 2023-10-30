@@ -9,6 +9,9 @@ import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
+import edu.ie3.datamodel.utils.Try;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GraphicValidationUtils extends ValidationUtils {
 
@@ -26,19 +29,33 @@ public class GraphicValidationUtils extends ValidationUtils {
    * fulfill the checking task, based on the class of the given object.
    *
    * @param graphicInput GraphicInput to validate
-   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
+   * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
+   *     Success
    */
-  protected static void check(GraphicInput graphicInput) {
-    checkNonNull(graphicInput, "a graphic input");
-    if (graphicInput.getGraphicLayer() == null)
-      throw new InvalidEntityException(
-          "Graphic Layer of graphic element is not defined", graphicInput);
+  protected static List<Try<Void, InvalidEntityException>> check(GraphicInput graphicInput) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(graphicInput, "a graphic input");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
+
+    exceptions.add(
+        Try.ofVoid(
+            graphicInput.getGraphicLayer() == null,
+            () ->
+                new InvalidEntityException(
+                    "Graphic Layer of graphic element is not defined", graphicInput)));
 
     // Further checks for subclasses
-    if (LineGraphicInput.class.isAssignableFrom(graphicInput.getClass()))
-      checkLineGraphicInput((LineGraphicInput) graphicInput);
-    if (NodeGraphicInput.class.isAssignableFrom(graphicInput.getClass()))
-      checkNodeGraphicInput((NodeGraphicInput) graphicInput);
+    if (LineGraphicInput.class.isAssignableFrom(graphicInput.getClass())) {
+      exceptions.add(checkLineGraphicInput((LineGraphicInput) graphicInput));
+    } else if (NodeGraphicInput.class.isAssignableFrom(graphicInput.getClass())) {
+      exceptions.add(checkNodeGraphicInput((NodeGraphicInput) graphicInput));
+    }
+
+    return exceptions;
   }
 
   /**
@@ -47,10 +64,13 @@ public class GraphicValidationUtils extends ValidationUtils {
    *
    * @param lineGraphicInput LineGraphicInput to validate
    */
-  private static void checkLineGraphicInput(LineGraphicInput lineGraphicInput) {
-    if (lineGraphicInput.getPath() == null)
-      throw new InvalidEntityException(
-          "Path of line graphic element is not defined", lineGraphicInput);
+  private static Try<Void, InvalidEntityException> checkLineGraphicInput(
+      LineGraphicInput lineGraphicInput) {
+    return Try.ofVoid(
+        lineGraphicInput.getPath() == null,
+        () ->
+            new InvalidEntityException(
+                "Path of line graphic element is not defined", lineGraphicInput));
   }
 
   /**
@@ -60,8 +80,10 @@ public class GraphicValidationUtils extends ValidationUtils {
    *
    * @param nodeGraphicInput NodeGraphicInput to validate
    */
-  private static void checkNodeGraphicInput(NodeGraphicInput nodeGraphicInput) {
-    if (nodeGraphicInput.getPoint() == null)
-      throw new InvalidEntityException("Point of node graphic is not defined", nodeGraphicInput);
+  private static Try<Void, InvalidEntityException> checkNodeGraphicInput(
+      NodeGraphicInput nodeGraphicInput) {
+    return Try.ofVoid(
+        nodeGraphicInput.getPoint() == null,
+        () -> new InvalidEntityException("Point of node graphic is not defined", nodeGraphicInput));
   }
 }

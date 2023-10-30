@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.ControlStrategy
 import edu.ie3.datamodel.models.EmControlStrategy
@@ -12,6 +13,7 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.EmInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -47,13 +49,13 @@ class EmInputFactoryTest extends Specification {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Optional<EmInput> input = inputFactory.get(
+    Try<EmInput, FactoryException> input = inputFactory.get(
         new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
-    input.present
-    input.get().getClass() == inputClass
-    ((EmInput) input.get()).with {
+    input.success
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -92,13 +94,13 @@ class EmInputFactoryTest extends Specification {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Optional<EmInput> input = inputFactory.get(
+    Try<EmInput, FactoryException> input = inputFactory.get(
         new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
-    input.present
-    input.get().getClass() == inputClass
-    ((EmInput) input.get()).with {
+    input.success
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -132,13 +134,13 @@ class EmInputFactoryTest extends Specification {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Optional<EmInput> input = inputFactory.get(
+    Try<EmInput, FactoryException> input = inputFactory.get(
         new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
-    input.present
-    input.get().getClass() == inputClass
-    ((EmInput) input.get()).with {
+    input.success
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.empty
       assert operationTime.endDate.empty

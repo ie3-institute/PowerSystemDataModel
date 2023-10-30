@@ -82,8 +82,8 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
    * ThermalUnitInput}
    */
   protected abstract static class ThermalUnitInputCopyBuilder<
-          T extends ThermalUnitInput.ThermalUnitInputCopyBuilder<T>>
-      extends AssetInputCopyBuilder<T> {
+          B extends ThermalUnitInput.ThermalUnitInputCopyBuilder<B>>
+      extends AssetInputCopyBuilder<B> {
 
     private ThermalBusInput thermalBus;
 
@@ -92,9 +92,9 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
       this.thermalBus = entity.getThermalBus();
     }
 
-    public T thermalBus(ThermalBusInput thermalBus) {
+    public B thermalBus(ThermalBusInput thermalBus) {
       this.thermalBus = thermalBus;
-      return childInstance();
+      return thisInstance();
     }
 
     protected ThermalBusInput getThermalBus() {
@@ -105,6 +105,6 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
     public abstract ThermalUnitInput build();
 
     @Override
-    protected abstract T childInstance();
+    protected abstract B thisInstance();
   }
 }

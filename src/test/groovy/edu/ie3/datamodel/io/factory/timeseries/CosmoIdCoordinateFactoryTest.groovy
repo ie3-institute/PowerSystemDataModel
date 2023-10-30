@@ -32,14 +32,18 @@ class CosmoIdCoordinateFactoryTest extends Specification {
       "latgeo",
       "longgeo"
     ] as Set
-    def validSimpleFactoryData = new SimpleFactoryData([
+
+    Map<String, String> parameter = [
       "tid": "1",
       "id": "106580",
       "latgeo": "39.602772",
       "longgeo": "1.279336",
       "latrot": "-10",
       "longrot": "-6.8125"
-    ] as Map<String, String>, Pair)
+    ]
+
+
+    def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
 
 
     when:
@@ -52,40 +56,44 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 
   def "A COSMO id to coordinate factory refuses to build from invalid data"() {
     given:
-    def invalidSimpleFactoryData = new SimpleFactoryData([
+    Map<String, String> parameter  =  [
       "tid": "1",
       "id": "106580",
       "latrot": "-10",
       "longrot": "-6.8125"
-    ] as Map<String, String>, Pair)
+    ]
+
+    def invalidSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
 
     when:
-    factory.get(invalidSimpleFactoryData)
+    def actual = factory.get(invalidSimpleFactoryData)
 
     then:
-    def e = thrown(FactoryException)
-    e.message.startsWith("The provided fields [id, latrot, longrot, tid] with data \n{id -> 106580,\nlatrot" +
+    actual.failure
+    actual.exception.get().cause.message.startsWith("The provided fields [id, latrot, longrot, tid] with data \n{id -> 106580,\nlatrot" +
         " -> -10,\nlongrot -> -6.8125,\ntid -> 1} are invalid for instance of Pair.")
   }
 
   def "A COSMO id to coordinate factory builds model from valid data"() {
     given:
-    def validSimpleFactoryData = new SimpleFactoryData([
+    Map<String, String> parameter = [
       "tid": "1",
       "id": "106580",
       "latgeo": "39.602772",
       "longgeo": "1.279336",
       "latrot": "-10",
       "longrot": "-6.8125"
-    ] as Map<String, String>, Pair)
+    ]
+
+    def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
     Pair<Integer, Point> expectedPair = Pair.of(106580, GeoUtils.buildPoint(39.602772, 1.279336))
 
     when:
     def actual = factory.get(validSimpleFactoryData)
 
     then:
-    actual.present
-    actual.get().with {
+    actual.success
+    actual.data.get().with {
       assert it.key == expectedPair.key
       assert it.value.equalsExact(expectedPair.value, 1E-6)
     }

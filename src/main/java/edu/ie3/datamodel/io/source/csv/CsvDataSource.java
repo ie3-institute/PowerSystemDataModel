@@ -53,7 +53,7 @@ public class CsvDataSource implements DataSource {
   @Deprecated(since = "1.1.0", forRemoval = true)
   private boolean notYetLoggedWarning = true;
 
-  protected CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
@@ -373,9 +373,9 @@ public class CsvDataSource implements DataSource {
           allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
           """
-          '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
-          Affected primary keys:
-          {}""",
+              '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
+              Affected primary keys:
+              {}""",
           entityDescriptor,
           keyDescriptor,
           affectedCoordinateIds);

@@ -232,7 +232,6 @@ public class CouchbaseWeatherSource extends WeatherSource {
       logger.debug("The following json could not be parsed:\n{}", jsonObj);
       return Optional.empty();
     }
-    TimeBasedValue<WeatherValue> timeBasedValue = weatherFactory.get(data.get()).orElse(null);
-    return Optional.ofNullable(timeBasedValue);
+    return weatherFactory.get(data.get()).getData();
   }
 }

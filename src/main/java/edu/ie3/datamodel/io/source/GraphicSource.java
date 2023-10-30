@@ -5,30 +5,29 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.GraphicSourceException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputFactory;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.LongAdder;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Interface that provides the capability to build entities of type {@link
- * edu.ie3.datamodel.models.input.graphics.GraphicInput} from different data sources e.g. .csv files
- * or databases
+ * Implementation that provides the capability to build entities of type {@link GraphicInput} from
+ * different data sources e.g. .csv files or databases
  *
  * @version 0.1
  * @since 08.04.20
@@ -51,8 +50,8 @@ public class GraphicSource extends EntitySource {
     this.nodeGraphicInputFactory = new NodeGraphicInputFactory();
   }
 
-  /** Returns the graphic elements of the grid as a option */
-  public Optional<GraphicElements> getGraphicElements() {
+  /** Returns the graphic elements of the grid or throws a {@link SourceException} */
+  public GraphicElements getGraphicElements() throws SourceException {
 
     // read all needed entities
     /// start with types and operators
@@ -62,68 +61,64 @@ public class GraphicSource extends EntitySource {
     Set<NodeInput> nodes = rawGridSource.getNodes(operators);
     Set<LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
 
-    // start with the entities needed for a GraphicElements entity
-    /// as we want to return a working grid, keep an eye on empty optionals
-    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
-        new ConcurrentHashMap<>();
+    Try<Set<NodeGraphicInput>, SourceException> nodeGraphics =
+        Try.of(() -> getNodeGraphicInput(nodes), SourceException.class);
+    Try<Set<LineGraphicInput>, SourceException> lineGraphics =
+        Try.of(() -> getLineGraphicInput(lines), SourceException.class);
 
-    Set<NodeGraphicInput> nodeGraphics =
-        buildNodeGraphicEntityData(nodes)
-            .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get))
-            .filter(isPresentCollectIfNot(NodeGraphicInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
+    List<SourceException> exceptions = Try.getExceptions(List.of(nodeGraphics, lineGraphics));
 
-    Set<LineGraphicInput> lineGraphics =
-        buildLineGraphicEntityData(lines)
-            .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get))
-            .filter(isPresentCollectIfNot(LineGraphicInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-
-    // if we found invalid elements return an empty optional and log the problems
-    if (!nonBuildEntities.isEmpty()) {
-      nonBuildEntities.forEach(this::printInvalidElementInformation);
-      return Optional.empty();
+    if (!exceptions.isEmpty()) {
+      throw new GraphicSourceException(
+          exceptions.size() + "error(s) occurred while initializing graphic elements. ",
+          exceptions);
+    } else {
+      // if everything is fine, return a GraphicElements instance
+      // getOrThrow should not throw an exception in this context, because all exception are
+      // filtered and thrown before
+      return new GraphicElements(nodeGraphics.getOrThrow(), lineGraphics.getOrThrow());
     }
-
-    // if everything is fine, return a GraphicElements instance
-    return Optional.of(new GraphicElements(nodeGraphics, lineGraphics));
   }
 
   /**
    * If the set of {@link NodeInput} entities is not exhaustive for all available {@link
-   * NodeGraphicInput} entities or if an error during the building process occurs, all entities that
-   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
+   * NodeGraphicInput} entities or if an error during the building process occurs a {@link
+   * SourceException} is thrown, else all entities that has been able to be built are returned.
    */
-  public Set<NodeGraphicInput> getNodeGraphicInput() {
+  public Set<NodeGraphicInput> getNodeGraphicInput() throws SourceException {
     return getNodeGraphicInput(rawGridSource.getNodes(typeSource.getOperators()));
   }
 
-  public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
-    return buildNodeGraphicEntityData(nodes)
-        .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+  public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) throws SourceException {
+    return Try.scanCollection(
+            buildNodeGraphicEntityData(nodes)
+                .map(nodeGraphicInputFactory::get)
+                .collect(Collectors.toSet()),
+            NodeGraphicInput.class)
+        .transformF(SourceException::new)
+        .getOrThrow();
   }
 
   /**
    * If the set of {@link LineInput} entities is not exhaustive for all available {@link
-   * LineGraphicInput} entities or if an error during the building process occurs, all entities that
-   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
+   * LineGraphicInput} entities or if an error during the building process occurs a {@link
+   * SourceException} is thrown, else all entities that has been able to be built are returned.
    */
-  public Set<LineGraphicInput> getLineGraphicInput() {
+  public Set<LineGraphicInput> getLineGraphicInput() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLineGraphicInput(
         rawGridSource.getLines(
             rawGridSource.getNodes(operators), typeSource.getLineTypes(), operators));
   }
 
-  public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) {
-    return buildLineGraphicEntityData(lines)
-        .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+  public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) throws SourceException {
+    return Try.scanCollection(
+            buildLineGraphicEntityData(lines)
+                .map(lineGraphicInputFactory::get)
+                .collect(Collectors.toSet()),
+            LineGraphicInput.class)
+        .transformF(SourceException::new)
+        .getOrThrow();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -138,41 +133,42 @@ public class GraphicSource extends EntitySource {
    * NodeInput} entity. Hence it is crucial to only pass over collections that are pre-checked for
    * the uniqueness of the UUIDs of the nodes they contain. No further sanity checks are included in
    * this method. If no UUID of a {@link NodeInput} entity can be found for a {@link
-   * NodeGraphicInputEntityData} instance, an empty optional is included in the stream and warning
+   * NodeGraphicInputEntityData} instance, a {@link Failure} is included in the stream and warning
    * is logged.
    *
    * @param nodes a set of nodes with unique uuids
-   * @return a stream of optional {@link NodeGraphicInput} entities
+   * @return a stream of tries of {@link NodeGraphicInput} entities
    */
-  protected Stream<Optional<NodeGraphicInputEntityData>> buildNodeGraphicEntityData(
+  protected Stream<Try<NodeGraphicInputEntityData, SourceException>> buildNodeGraphicEntityData(
       Set<NodeInput> nodes) {
     return dataSource
         .getSourceData(NodeGraphicInput.class)
         .map(fieldsToAttributes -> buildNodeGraphicEntityData(fieldsToAttributes, nodes));
   }
 
-  protected Optional<NodeGraphicInputEntityData> buildNodeGraphicEntityData(
+  protected Try<NodeGraphicInputEntityData, SourceException> buildNodeGraphicEntityData(
       Map<String, String> fieldsToAttributes, Set<NodeInput> nodes) {
 
     // get the node of the entity
     String nodeUuid = fieldsToAttributes.get(NODE);
     Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
 
-    // if the node is not present we return an empty element and
+    // if the node is not present we return a failure
     // log a warning
     if (node.isEmpty()) {
-      logSkippingWarning(
-          NodeGraphicInput.class.getSimpleName(),
-          fieldsToAttributes.get("uuid"),
-          "no id (graphic entities don't have one)",
-          NODE + ": " + nodeUuid);
-      return Optional.empty();
+      String skippingMessage =
+          buildSkippingMessage(
+              NodeGraphicInput.class.getSimpleName(),
+              fieldsToAttributes.get("uuid"),
+              "no id (graphic entities don't have one)",
+              NODE + ": " + nodeUuid);
+      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
     }
 
     // remove fields that are passed as objects to constructor
     fieldsToAttributes.keySet().remove(NODE);
 
-    return Optional.of(new NodeGraphicInputEntityData(fieldsToAttributes, node.get()));
+    return new Success<>(new NodeGraphicInputEntityData(fieldsToAttributes, node.get()));
   }
 
   /**
@@ -184,20 +180,20 @@ public class GraphicSource extends EntitySource {
    * LineInput} entity. Hence it is crucial to only pass over collections that are pre-checked for
    * the uniqueness of the UUIDs of the nodes they contain. No further sanity checks are included in
    * this method. If no UUID of a {@link LineInput} entity can be found for a {@link
-   * LineGraphicInputEntityData} instance, an empty optional is included in the stream and warning
+   * LineGraphicInputEntityData} instance, a {@link Failure} is included in the stream and warning
    * is logged.
    *
    * @param lines a set of lines with unique uuids
-   * @return a stream of optional {@link LineGraphicInput} entities
+   * @return a stream of tries of {@link LineGraphicInput} entities
    */
-  protected Stream<Optional<LineGraphicInputEntityData>> buildLineGraphicEntityData(
+  protected Stream<Try<LineGraphicInputEntityData, SourceException>> buildLineGraphicEntityData(
       Set<LineInput> lines) {
     return dataSource
         .getSourceData(LineGraphicInput.class)
         .map(fieldsToAttributes -> buildLineGraphicEntityData(fieldsToAttributes, lines));
   }
 
-  protected Optional<LineGraphicInputEntityData> buildLineGraphicEntityData(
+  protected Try<LineGraphicInputEntityData, SourceException> buildLineGraphicEntityData(
       Map<String, String> fieldsToAttributes, Set<LineInput> lines) {
 
     // get the node of the entity
@@ -207,17 +203,18 @@ public class GraphicSource extends EntitySource {
     // if the node is not present we return an empty element and
     // log a warning
     if (line.isEmpty()) {
-      logSkippingWarning(
-          LineGraphicInput.class.getSimpleName(),
-          fieldsToAttributes.get("uuid"),
-          "no id (graphic entities don't have one)",
-          "line: " + lineUuid);
-      return Optional.empty();
+      String skippingMessage =
+          buildSkippingMessage(
+              LineGraphicInput.class.getSimpleName(),
+              fieldsToAttributes.get("uuid"),
+              "no id (graphic entities don't have one)",
+              "line: " + lineUuid);
+      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
     }
 
     // remove fields that are passed as objects to constructor
     fieldsToAttributes.keySet().remove("line");
 
-    return Optional.of(new LineGraphicInputEntityData(fieldsToAttributes, line.get()));
+    return new Success<>(new LineGraphicInputEntityData(fieldsToAttributes, line.get()));
   }
 }

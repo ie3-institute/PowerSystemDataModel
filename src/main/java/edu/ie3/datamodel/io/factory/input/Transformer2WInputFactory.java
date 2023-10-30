@@ -37,6 +37,7 @@ public class Transformer2WInputFactory
       NodeInput nodeB,
       OperatorInput operator,
       OperationTime operationTime) {
+
     final int parallelDevices = data.getInt(PARALLEL_DEVICES);
     final Transformer2WTypeInput type = data.getType();
     final int tapPos = data.getInt(TAP_POS);
