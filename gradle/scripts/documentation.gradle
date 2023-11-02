@@ -1,5 +1,3 @@
-def docBaseDirPath = project.projectDir.toString() + File.separator + project.docsDirName.toString() + File.separator
-
 /*
  * Additional tasks, that are defined by default:
  *   - sphinx -> Generate HTML output of *.rst files in <projectDir>/docs/readthedocs
@@ -12,8 +10,8 @@ sphinx {
   description 'Generate high level HTML documentation output.'
   group 'Documentation'
 
-  sourceDirectory = "${docBaseDirPath}/readthedocs"
-  outputDirectory = "${project.buildDir}/docs/readthedocs"
+  sourceDirectory = "${project.projectDir}/docs/readthedocs"
+  outputDirectory = "${project.rootDir}/build/docs/readthedocs"
 }
 
 /**
@@ -54,8 +52,8 @@ task puml2png() {
         "build/plantuml.jar",
         "-psvg",
         "-o",
-        "${docBaseDirPath}readthedocs/_static/figures/uml/",
-        "${docBaseDirPath}uml/**/*.puml"
+        "${project.projectDir}/docs/readthedocs/_static/figures/uml/",
+        "${project.projectDir}/docs/uml/**/*.puml"
       ]
     }
   }

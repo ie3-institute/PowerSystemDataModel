@@ -25,8 +25,11 @@ ext {
 
 group = 'com.github.ie3-institute'
 description = 'PowerSystemDataModel'
-sourceCompatibility = javaVersion
-targetCompatibility = javaVersion
+
+java {
+  sourceCompatibility = javaVersion
+  targetCompatibility = javaVersion
+}
 
 apply from: scriptsLocation + 'tests.gradle'
 apply from: scriptsLocation + 'pmd.gradle'

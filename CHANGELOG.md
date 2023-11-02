@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Changed
+
+## [4.1.0] - 2023-11-02
+
+### Fixed
+- Making constructor of `CsvDataSource` public [#894](https://github.com/ie3-institute/PowerSystemDataModel/issues/894)
+- Fixing spotless groovy [#918](https://github.com/ie3-institute/PowerSystemDataModel/issues/918)
+
+### Changed
 - `SqlIdCoordinateSource.createCooridinateValue` now throws an exception when the coordinate can not be built [#911](https://github.com/ie3-institute/PowerSystemDataModel/issues/911)
 - CleanUp `BufferedCsvWriterTest` only after all tests are completed [#809](https://github.com/ie3-institute/PowerSystemDataModel/issues/809)
 - Update gradle to version 8.4 [#891](https://github.com/ie3-institute/PowerSystemDataModel/issues/891)
@@ -228,7 +236,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.0.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.1.0...HEAD
+[4.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/3.0.0...4.0.0
 [3.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...3.0.0
 [2.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.1...2.1.0
