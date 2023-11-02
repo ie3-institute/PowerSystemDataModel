@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Fixed
+- Making constructor of `CsvDataSource` public [#894](https://github.com/ie3-institute/PowerSystemDataModel/issues/894)
+- Fixing spotless groovy [#918](https://github.com/ie3-institute/PowerSystemDataModel/issues/918)
 
 ### Changed
 - `SqlIdCoordinateSource.createCooridinateValue` now throws an exception when the coordinate can not be built [#911](https://github.com/ie3-institute/PowerSystemDataModel/issues/911)
