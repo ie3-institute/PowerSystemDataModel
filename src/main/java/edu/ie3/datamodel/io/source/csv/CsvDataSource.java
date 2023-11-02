@@ -53,7 +53,7 @@ public class CsvDataSource implements DataSource {
   @Deprecated(since = "1.1.0", forRemoval = true)
   private boolean notYetLoggedWarning = true;
 
-  protected CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }

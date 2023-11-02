@@ -17,7 +17,7 @@ class Transformer3WInputTest extends Specification {
 
     when:
     def alteredUnit = trafo3w.copy().id("trafo3w").nodeA(GridTestData.nodeC).nodeB(GridTestData.nodeD)
-        .nodeC(GridTestData.nodeB).type(GridTestData.transformerTypeAtoBtoC).tapPos(10).autoTap(false).build()
+        .nodeC(GridTestData.nodeE).type(GridTestData.transformerTypeAtoBtoC).tapPos(10).autoTap(false).build()
 
     then:
     alteredUnit.with {
@@ -27,7 +27,7 @@ class Transformer3WInputTest extends Specification {
       assert id == "trafo3w"
       assert nodeA == GridTestData.nodeC
       assert nodeB == GridTestData.nodeD
-      assert nodeC == GridTestData.nodeB
+      assert nodeC == GridTestData.nodeE
       assert type == GridTestData.transformerTypeAtoBtoC
       assert tapPos == 10
       assert !autoTap
