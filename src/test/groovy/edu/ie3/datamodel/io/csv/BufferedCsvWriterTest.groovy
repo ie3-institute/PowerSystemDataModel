@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.csv
 import edu.ie3.datamodel.exceptions.FileException
 import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.util.io.FileIOUtils
-import org.apache.commons.io.FilenameUtils
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -23,7 +22,7 @@ class BufferedCsvWriterTest extends Specification {
     tmpDirectory = Files.createTempDirectory("psdm_csv_buffered_writer_")
   }
 
-  def cleanup() {
+  def cleanupSpec() {
     FileIOUtils.deleteRecursively(tmpDirectory)
   }
 
