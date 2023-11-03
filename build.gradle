@@ -4,7 +4,7 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '6.22.0'//code format
+  id 'com.diffplug.spotless' version '6.22.0' //code format
   id 'com.github.spotbugs' version '5.2.1' // code check, working on byte code
   id 'de.undercouch.download' version '5.5.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
@@ -25,8 +25,11 @@ ext {
 
 group = 'com.github.ie3-institute'
 description = 'PowerSystemDataModel'
-sourceCompatibility = javaVersion
-targetCompatibility = javaVersion
+
+java {
+  sourceCompatibility = javaVersion
+  targetCompatibility = javaVersion
+}
 
 apply from: scriptsLocation + 'tests.gradle'
 apply from: scriptsLocation + 'pmd.gradle'
