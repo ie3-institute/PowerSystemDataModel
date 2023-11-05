@@ -22,7 +22,7 @@ class BufferedCsvWriterTest extends Specification {
     tmpDirectory = Files.createTempDirectory("psdm_csv_buffered_writer_")
   }
 
-  def cleanup() {
+  def cleanupSpec() {
     try {
       FileIOUtils.deleteRecursively(tmpDirectory)
     } catch (IOException e) {

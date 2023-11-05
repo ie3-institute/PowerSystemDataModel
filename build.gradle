@@ -4,7 +4,7 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '6.22.0'//code format
+  id 'com.diffplug.spotless' version '6.22.0' //code format
   id 'com.github.spotbugs' version '5.2.1' // code check, working on byte code
   id 'de.undercouch.download' version '5.5.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
@@ -25,8 +25,11 @@ ext {
 
 group = 'com.github.ie3-institute'
 description = 'PowerSystemDataModel'
-sourceCompatibility = javaVersion
-targetCompatibility = javaVersion
+
+java {
+  sourceCompatibility = javaVersion
+  targetCompatibility = javaVersion
+}
 
 apply from: scriptsLocation + 'tests.gradle'
 apply from: scriptsLocation + 'pmd.gradle'
@@ -80,7 +83,7 @@ dependencies {
   testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
 
   // logging
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.21.0')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.21.1')
   implementation 'org.apache.logging.log4j:log4j-api' // log4j
   implementation 'org.apache.logging.log4j:log4j-core' // log4j
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
@@ -90,7 +93,7 @@ dependencies {
   implementation 'com.couchbase.client:java-client:3.4.11'
   runtimeOnly 'org.postgresql:postgresql:42.6.0' // postgresql jdbc driver required during runtime
 
-  implementation 'commons-io:commons-io:2.14.0' // I/O functionalities
+  implementation 'commons-io:commons-io:2.15.0' // I/O functionalities
   implementation 'org.apache.commons:commons-compress:1.24.0' // I/O functionalities
   implementation 'org.apache.commons:commons-lang3:3.13.0'
 }
