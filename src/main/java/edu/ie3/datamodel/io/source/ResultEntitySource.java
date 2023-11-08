@@ -318,7 +318,7 @@ public class ResultEntitySource extends EntitySource {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   private <T extends ResultEntity> Set<T> getResultEntities(
       Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
-    return simpleEntityDataStream(entityClass)
+    return simpleEntityDataStream(entityClass, factory)
         .map(
             entityData ->
                 factory

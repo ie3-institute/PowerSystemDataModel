@@ -159,8 +159,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
                   fieldToValue.entrySet().stream()
                       .collect(
                           Collectors.toMap(
-                              entry ->
-                                  StringUtils.snakeCaseToCamelCase(entry.getKey()).toLowerCase(),
+                              entry -> StringUtils.snakeCaseToCamelCase(entry.getKey()),
                               Map.Entry::getValue));
 
               /* Add a random UUID if necessary */

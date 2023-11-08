@@ -17,6 +17,7 @@ import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 import javax.measure.quantity.Length;
 import org.apache.commons.lang3.tuple.Pair;
@@ -45,13 +46,17 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
   private final SqlIdCoordinateFactory factory;
 
   public SqlIdCoordinateSource(
-      SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource) {
+      SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource)
+      throws SQLException {
     this.factory = factory;
     this.dataSource = dataSource;
 
     String dbIdColumnName = dataSource.getDbColumnName(factory.getIdField(), coordinateTableName);
     String dbPointColumnName =
         dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
+
+    // validating table
+    dataSource.validateDBTable(coordinateTableName, Pair.class, factory);
 
     // setup queries
     this.basicQuery = createBaseQueryString(dataSource.schemaName, coordinateTableName);
@@ -76,7 +81,8 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
       SqlConnector connector,
       String schemaName,
       String coordinateTableName,
-      SqlIdCoordinateFactory factory) {
+      SqlIdCoordinateFactory factory)
+      throws SQLException {
     this(
         factory,
         coordinateTableName,

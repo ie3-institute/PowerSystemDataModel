@@ -179,6 +179,9 @@ public class CsvWeatherSource extends WeatherSource {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
+      // validating read file
+      weatherFactory.validate(Set.of(headline), WeatherValue.class);
+
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of

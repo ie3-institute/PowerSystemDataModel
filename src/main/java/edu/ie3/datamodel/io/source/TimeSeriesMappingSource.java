@@ -36,7 +36,7 @@ public abstract class TimeSeriesMappingSource {
    * @return That mapping
    */
   public Map<UUID, UUID> getMapping() {
-    return getMappingSourceData()
+    return getMappingSourceData(mappingFactory)
         .map(this::createMappingEntry)
         .filter(Try::isSuccess)
         .map(t -> (Success<MappingEntry, FactoryException>) t)
@@ -59,7 +59,7 @@ public abstract class TimeSeriesMappingSource {
    *
    * @return Stream of maps
    */
-  public abstract Stream<Map<String, String>> getMappingSourceData();
+  public abstract Stream<Map<String, String>> getMappingSourceData(SourceValidator validator);
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

@@ -34,7 +34,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     data.targetClass >> valueClass
 
     expect:
-    factory.getFields(data) == expectedFields
+    factory.getFields(data.targetClass) == expectedFields
 
     where:
     valueClass       || expectedFields
@@ -93,7 +93,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     data.targetClass >> NodeInput
 
     when:
-    factory.getFields(data)
+    factory.getFields(data.targetClass)
 
     then:
     def e = thrown(FactoryException)

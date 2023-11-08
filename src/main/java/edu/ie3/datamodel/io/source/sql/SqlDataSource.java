@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
@@ -33,6 +34,28 @@ public class SqlDataSource implements DataSource {
     this.connector = connector;
     this.schemaName = schemaName;
     this.databaseNamingStrategy = databaseNamingStrategy;
+  }
+
+  /**
+   * This method should be used to validate a given table.
+   *
+   * @param tableName name of the table
+   * @param entityClass class of the entity
+   * @param validator for validation
+   * @throws SQLException – if the connection could not be established
+   */
+  protected void validateDBTable(String tableName, Class<?> entityClass, SourceValidator validator)
+      throws SQLException {
+    ResultSet rs = connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
+
+    Set<String> columnNames = new HashSet<>();
+
+    while (rs.next()) {
+      String name = rs.getString("COLUMN_NAME");
+      columnNames.add(StringUtils.snakeCaseToCamelCase(name));
+    }
+
+    validator.validate(columnNames, entityClass);
   }
 
   /**
@@ -109,7 +132,8 @@ public class SqlDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
+  public Stream<Map<String, String>> getSourceData(
+      Class<? extends UniqueEntity> entityClass, SourceValidator validator) {
     String explicitTableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
     return buildStreamByTableName(explicitTableName);
   }

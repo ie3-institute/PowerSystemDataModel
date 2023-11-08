@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.utils.Try
@@ -79,11 +80,13 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
     def typeInput = Mock(Transformer3WTypeInput)
 
     when:
-    inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
+    Try<Transformer2WInput, FactoryException> input = inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
 
     then:
-    def e = thrown(IllegalArgumentException)
-    e.message == "Voltage level of node a must be greater than voltage level of node b and voltage level of node b must be greater than voltage level of node c"
+    input.failure
+    def e = input.exception.get()
+    e.cause.class == IllegalArgumentException
+    e.cause.message == "Voltage level of node a must be greater than voltage level of node b and voltage level of node b must be greater than voltage level of node c"
   }
 }
 

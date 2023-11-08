@@ -6,10 +6,11 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.util.StringUtils;
 import java.util.*;
-import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * @param <R> Type of the intended return type (might differ slightly from target class (cf. {@link
  *     edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueFactory})).
  */
-public abstract class Factory<C, D extends FactoryData, R> {
+public abstract class Factory<C, D extends FactoryData, R> implements SourceValidator {
   public static final Logger log = LoggerFactory.getLogger(Factory.class);
 
   private final List<Class<? extends C>> supportedClasses;
@@ -48,15 +49,10 @@ public abstract class Factory<C, D extends FactoryData, R> {
   public Try<R, FactoryException> get(D data) {
     isSupportedClass(data.getTargetClass());
 
-    // magic: case-insensitive get/set calls on set strings
-    final List<Set<String>> allFields = getFields(data);
-
     try {
-      validateParameters(data, allFields.toArray((IntFunction<Set<String>[]>) Set[]::new));
-
       // build the model
       return Success.of(buildModel(data));
-    } catch (FactoryException e) {
+    } catch (Exception e) {
       return Failure.of(
           new FactoryException(
               "An error occurred when creating instance of "
@@ -108,10 +104,47 @@ public abstract class Factory<C, D extends FactoryData, R> {
    * Returns list of sets of attribute names that the entity requires to be built. At least one of
    * these sets needs to be delivered for entity creation to be successful.
    *
-   * @param data EntityData (or subclass) containing the data
    * @return list of possible attribute sets
    */
-  protected abstract List<Set<String>> getFields(D data);
+  protected abstract List<Set<String>> getFields(Class<?> entityClass);
+
+  /**
+   * Method for validating the found fields.
+   *
+   * @param foundFields that were found
+   * @param entityClass of the build data
+   */
+  public void validate(Set<String> foundFields, Class<?> entityClass) {
+    List<Set<String>> fieldSets =
+        getFields(entityClass).stream().map(Factory::toSnakeCase).toList();
+    Set<String> harmonizedFoundFields = toSnakeCase(foundFields);
+
+    // comparing the found fields to a list of possible fields (allows additional fields)
+    // if not all fields were found in a set, this set is filtered out
+    // all other fields are saved as a list
+    // allows snake, camel and mixed cases
+    List<Set<String>> validFieldSets =
+        fieldSets.stream()
+            .filter(s -> foundFields.containsAll(s) || harmonizedFoundFields.containsAll(s))
+            .toList();
+
+    if (validFieldSets.isEmpty()) {
+      // build the exception string with extensive debug information
+      String providedKeysString = "[" + String.join(", ", foundFields) + "]";
+
+      String possibleOptions = getFieldsString(fieldSets).toString();
+
+      throw new FactoryException(
+          "The provided fields "
+              + providedKeysString
+              + " are invalid for instance of "
+              + entityClass.getSimpleName()
+              + ". \nThe following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of '"
+              + entityClass.getSimpleName()
+              + "' are possible (NOT case-sensitive!):\n"
+              + possibleOptions);
+    }
+  }
 
   /**
    * Validates the factory specific constructor parameters in two ways. 1) the biggest set of the
@@ -148,7 +181,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
 
       String providedKeysString = "[" + String.join(", ", fieldsToValues.keySet()) + "]";
 
-      String possibleOptions = getFieldsString(fieldSets).toString();
+      String possibleOptions = getFieldsString(List.of(fieldSets)).toString();
 
       throw new FactoryException(
           "The provided fields "
@@ -165,11 +198,17 @@ public abstract class Factory<C, D extends FactoryData, R> {
     }
   }
 
-  protected static StringBuilder getFieldsString(Set<String>... fieldSets) {
+  protected static StringBuilder getFieldsString(List<Set<String>> fieldSets) {
     StringBuilder possibleOptions = new StringBuilder();
-    for (int i = 0; i < fieldSets.length; i++) {
-      Set<String> fieldSet = fieldSets[i];
-      String option = i + ": [" + String.join(", ", fieldSet) + "]\n";
+    for (int i = 0; i < fieldSets.size(); i++) {
+      Set<String> fieldSet = fieldSets.get(i);
+      String option =
+          i
+              + ": ["
+              + String.join(", ", fieldSet)
+              + "] or ["
+              + String.join(", ", toCamelCase(fieldSet))
+              + "]\n";
       possibleOptions.append(option);
     }
     return possibleOptions;
@@ -177,7 +216,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
 
   /**
    * Creates a new set of attribute names from given list of attributes. This method should always
-   * be used when returning attribute sets, i.e. through {@link #getFields(FactoryData)}.
+   * be used when returning attribute sets, i.e. through {@link #getFields(Class)}.
    *
    * @param attributes attribute names
    * @return new set exactly containing attribute names
@@ -201,6 +240,18 @@ public abstract class Factory<C, D extends FactoryData, R> {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     newSet.addAll(attributeSet);
     newSet.addAll(Arrays.asList(more));
+    return newSet;
+  }
+
+  private static Set<String> toSnakeCase(Set<String> set) {
+    TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    newSet.addAll(set.stream().map(StringUtils::camelCaseToSnakeCase).toList());
+    return newSet;
+  }
+
+  private static Set<String> toCamelCase(Set<String> set) {
+    TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    newSet.addAll(set.stream().map(StringUtils::snakeCaseToCamelCase).toList());
     return newSet;
   }
 }

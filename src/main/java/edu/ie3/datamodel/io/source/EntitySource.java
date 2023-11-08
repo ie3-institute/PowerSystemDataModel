@@ -251,9 +251,9 @@ public abstract class EntitySource {
    * @return stream of the entity data wrapped in a {@link Try}
    */
   protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
-      Class<T> entityClass, Collection<OperatorInput> operators) {
+      Class<T> entityClass, SourceValidator validator, Collection<OperatorInput> operators) {
     return dataSource
-        .getSourceData(entityClass)
+        .getSourceData(entityClass, validator)
         .map(
             fieldsToAttributes ->
                 assetInputEntityDataStream(entityClass, fieldsToAttributes, operators));
@@ -288,17 +288,10 @@ public abstract class EntitySource {
    * @return stream of {@link SimpleEntityData}
    */
   protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
-      Class<T> entityClass) {
+      Class<T> entityClass, SourceValidator validator) {
     return dataSource
-        .getSourceData(entityClass)
+        .getSourceData(entityClass, validator)
         .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
-  }
-
-  protected <T extends AssetInput> Stream<Try<T, FactoryException>> assetInputEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, AssetInputEntityData> factory,
-      Collection<OperatorInput> operators) {
-    return assetInputEntityDataStream(entityClass, operators).map(factory::get);
   }
 
   /**
@@ -319,7 +312,8 @@ public abstract class EntitySource {
       EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
-    return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
+    return nodeAssetInputEntityDataStream(
+            assetInputEntityDataStream(entityClass, factory, operators), nodes)
         .map(factory::get);
   }
 
@@ -338,14 +332,16 @@ public abstract class EntitySource {
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
       Collection<OperatorInput> operators) {
-    return assetInputEntityStream(entityClass, factory, operators).collect(Collectors.toSet());
+    return assetInputEntityDataStream(entityClass, factory, operators)
+        .map(factory::get)
+        .collect(Collectors.toSet());
   }
 
   @SuppressWarnings("unchecked")
   public <T extends InputEntity> Set<Try<T, FactoryException>> buildEntities(
       Class<T> entityClass, EntityFactory<? extends InputEntity, SimpleEntityData> factory) {
     return dataSource
-        .getSourceData(entityClass)
+        .getSourceData(entityClass, factory)
         .map(
             fieldsToAttributes -> {
               SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);

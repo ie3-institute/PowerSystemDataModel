@@ -166,7 +166,7 @@ public class RawGridSource extends EntitySource {
    */
   public Set<NodeInput> getNodes(Set<OperatorInput> operators) throws SourceException {
     return Try.scanCollection(
-            assetInputEntityDataStream(NodeInput.class, operators)
+            assetInputEntityDataStream(NodeInput.class, nodeInputFactory, operators)
                 .map(nodeInputFactory::get)
                 .collect(Collectors.toSet()),
             NodeInput.class)
@@ -414,7 +414,7 @@ public class RawGridSource extends EntitySource {
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
       Collection<OperatorInput> operators) {
-    return assetInputEntityDataStream(entityClass, operators)
+    return assetInputEntityDataStream(entityClass, factory, operators)
         .map(factory::get)
         .collect(Collectors.toSet());
   }
@@ -441,7 +441,9 @@ public class RawGridSource extends EntitySource {
     return buildTransformer3WEntityData(
             buildTypedConnectorEntityData(
                 buildUntypedConnectorInputEntityData(
-                    assetInputEntityDataStream(Transformer3WInput.class, operators), nodes),
+                    assetInputEntityDataStream(
+                        Transformer3WInput.class, transformer3WInputFactory, operators),
+                    nodes),
                 transformer3WTypeInputs),
             nodes)
         .map(transformer3WInputFactory::get)
@@ -560,7 +562,7 @@ public class RawGridSource extends EntitySource {
           Collection<A> types) {
     return buildTypedConnectorEntityData(
             buildUntypedConnectorInputEntityData(
-                assetInputEntityDataStream(entityClass, operators), nodes),
+                assetInputEntityDataStream(entityClass, factory, operators), nodes),
             types)
         .map(factory::get);
   }
@@ -572,7 +574,7 @@ public class RawGridSource extends EntitySource {
           Set<NodeInput> nodes,
           Set<OperatorInput> operators) {
     return buildUntypedConnectorInputEntityData(
-            assetInputEntityDataStream(entityClass, operators), nodes)
+            assetInputEntityDataStream(entityClass, factory, operators), nodes)
         .map(factory::get);
   }
 

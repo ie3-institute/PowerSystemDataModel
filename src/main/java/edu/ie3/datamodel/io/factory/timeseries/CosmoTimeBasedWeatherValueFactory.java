@@ -26,11 +26,11 @@ import tech.units.indriya.ComparableQuantity;
  * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
  */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
-  private static final String DIFFUSE_IRRADIANCE = "diffuseirradiance";
-  private static final String DIRECT_IRRADIANCE = "directirradiance";
+  private static final String DIFFUSE_IRRADIANCE = "diffuseIrradiance";
+  private static final String DIRECT_IRRADIANCE = "directIrradiance";
   private static final String TEMPERATURE = "temperature";
-  private static final String WIND_DIRECTION = "winddirection";
-  private static final String WIND_VELOCITY = "windvelocity";
+  private static final String WIND_DIRECTION = "windDirection";
+  private static final String WIND_VELOCITY = "windVelocity";
 
   public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
@@ -50,7 +50,7 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   }
 
   @Override
-  protected List<Set<String>> getFields(TimeBasedWeatherValueData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams =
         newSet(
             UUID,

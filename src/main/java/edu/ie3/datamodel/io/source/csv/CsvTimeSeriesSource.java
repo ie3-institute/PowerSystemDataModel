@@ -12,6 +12,7 @@ import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
@@ -99,7 +100,11 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     /* Read in the full time series */
     try {
       this.timeSeries =
-          buildIndividualTimeSeries(timeSeriesUuid, filePath, this::createTimeBasedValue);
+          buildIndividualTimeSeries(
+              timeSeriesUuid,
+              filePath,
+              this::createTimeBasedValue,
+              (Class<? extends UniqueEntity>) valueClass);
     } catch (SourceException e) {
       throw new IllegalArgumentException(
           "Unable to obtain time series with UUID '"
@@ -140,13 +145,14 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   protected IndividualTimeSeries<V> buildIndividualTimeSeries(
       UUID timeSeriesUuid,
       Path filePath,
-      Function<Map<String, String>, Try<TimeBasedValue<V>, FactoryException>> fieldToValueFunction)
+      Function<Map<String, String>, Try<TimeBasedValue<V>, FactoryException>> fieldToValueFunction,
+      Class<? extends UniqueEntity> entityClass)
       throws SourceException {
     try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
       Try<Stream<TimeBasedValue<V>>, FailureException> timeBasedValues =
           Try.scanStream(
               dataSource
-                  .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+                  .buildStreamWithFieldsToAttributesMap(entityClass, reader, valueFactory)
                   .map(fieldToValueFunction),
               "TimeBasedValue<V>");
       return new IndividualTimeSeries<>(

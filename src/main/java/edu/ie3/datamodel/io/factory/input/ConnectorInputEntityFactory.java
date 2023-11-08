@@ -29,7 +29,7 @@ abstract class ConnectorInputEntityFactory<
    * ConnectorInput}s. Thus, this attribute name declaration can be used in subclasses of {@link
    * ConnectorInputEntityFactory}
    */
-  protected static final String PARALLEL_DEVICES = "paralleldevices";
+  protected static final String PARALLEL_DEVICES = "parallelDevices";
 
   protected ConnectorInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);

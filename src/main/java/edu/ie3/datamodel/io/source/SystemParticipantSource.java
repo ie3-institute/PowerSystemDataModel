@@ -693,7 +693,7 @@ public class SystemParticipantSource extends EntitySource {
           Collection<A> types) {
     return buildTypedSystemParticipantEntityData(
             nodeAssetInputEntityDataStream(
-                assetInputEntityDataStream(entityClass, operators), nodes),
+                assetInputEntityDataStream(entityClass, factory, operators), nodes),
             types)
         .map(factory::get);
   }
@@ -708,7 +708,7 @@ public class SystemParticipantSource extends EntitySource {
     return buildChpEntityData(
             buildTypedEntityData(
                 nodeAssetInputEntityDataStream(
-                    assetInputEntityDataStream(ChpInput.class, operators), nodes),
+                    assetInputEntityDataStream(ChpInput.class, factory, operators), nodes),
                 types),
             thermalStorages,
             thermalBuses)
@@ -724,7 +724,7 @@ public class SystemParticipantSource extends EntitySource {
     return buildHpEntityData(
             buildTypedEntityData(
                 nodeAssetInputEntityDataStream(
-                    assetInputEntityDataStream(HpInput.class, operators), nodes),
+                    assetInputEntityDataStream(HpInput.class, factory, operators), nodes),
                 types),
             thermalBuses)
         .map(factory::get);

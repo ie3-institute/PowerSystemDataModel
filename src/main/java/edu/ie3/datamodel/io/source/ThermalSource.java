@@ -262,7 +262,7 @@ public class ThermalSource extends EntitySource {
     Set<ThermalBusInput> thermalBuses = getThermalBuses();
 
     return Try.scanCollection(
-        assetInputEntityDataStream(ThermalHouseInput.class, typeSource.getOperators())
+        assetInputEntityDataStream(ThermalHouseInput.class, factory, typeSource.getOperators())
             .flatMap(
                 assetInputEntityData ->
                     buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
@@ -276,7 +276,7 @@ public class ThermalSource extends EntitySource {
       Collection<OperatorInput> operators,
       Collection<ThermalBusInput> thermalBuses) {
     return Try.scanCollection(
-        assetInputEntityDataStream(ThermalHouseInput.class, operators)
+        assetInputEntityDataStream(ThermalHouseInput.class, factory, operators)
             .flatMap(
                 assetInputEntityData ->
                     buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
@@ -290,7 +290,8 @@ public class ThermalSource extends EntitySource {
     Set<ThermalBusInput> thermalBuses = getThermalBuses();
 
     return Try.scanCollection(
-        assetInputEntityDataStream(CylindricalStorageInput.class, typeSource.getOperators())
+        assetInputEntityDataStream(
+                CylindricalStorageInput.class, factory, typeSource.getOperators())
             .flatMap(
                 assetInputEntityData ->
                     buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
@@ -303,7 +304,7 @@ public class ThermalSource extends EntitySource {
       CylindricalStorageInputFactory factory,
       Collection<OperatorInput> operators,
       Collection<ThermalBusInput> thermalBuses) {
-    return assetInputEntityDataStream(CylindricalStorageInput.class, operators)
+    return assetInputEntityDataStream(CylindricalStorageInput.class, factory, operators)
         .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)

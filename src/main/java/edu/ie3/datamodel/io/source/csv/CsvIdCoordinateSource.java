@@ -162,6 +162,9 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
     try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
+      // validating read file
+      factory.validate(Set.of(headline), Pair.class);
+
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of

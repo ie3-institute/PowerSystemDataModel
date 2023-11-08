@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.exceptions;
 
-/** Is thrown, when an something went wrong during entity creation process in a EntityFactory */
+/** Is thrown, when something went wrong during entity creation process in a EntityFactory */
 public class FactoryException extends RuntimeException {
   public FactoryException(final String message, final Throwable cause) {
     super(message, cause);

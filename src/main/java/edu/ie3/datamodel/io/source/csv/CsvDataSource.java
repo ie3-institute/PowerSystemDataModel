@@ -10,6 +10,7 @@ import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
@@ -59,8 +60,9 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector);
+  public Stream<Map<String, String>> getSourceData(
+      Class<? extends UniqueEntity> entityClass, SourceValidator validator) {
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector, validator);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -266,9 +268,12 @@ public class CsvDataSource implements DataSource {
    *     mapping (fieldName to fieldValue)
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+      Class<? extends UniqueEntity> entityClass,
+      CsvFileConnector connector,
+      SourceValidator validator) {
     try {
-      return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
+      return buildStreamWithFieldsToAttributesMap(
+          entityClass, connector.initReader(entityClass), validator);
     } catch (FileNotFoundException | ConnectorException e) {
       log.warn(
           "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
@@ -287,9 +292,14 @@ public class CsvDataSource implements DataSource {
    *     mapping (fieldName to fieldValue)
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+      Class<? extends UniqueEntity> entityClass,
+      BufferedReader bufferedReader,
+      SourceValidator validator) {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
+
+      // validating read file
+      validator.validate(Set.of(headline), entityClass);
 
       // sanity check for headline
       if (!Arrays.asList(headline).contains("uuid")) {
