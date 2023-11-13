@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.connectors;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ public class InfluxDbConnector implements DataConnector {
         return maps;
       };
 
+  private final String databaseName;
   private final String scenarioName;
   private final InfluxDB session;
 
@@ -77,6 +79,7 @@ public class InfluxDbConnector implements DataConnector {
    */
   public InfluxDbConnector(
       InfluxDB session, String scenarioName, String databaseName, boolean createDb) {
+    this.databaseName = databaseName;
     this.scenarioName = scenarioName;
     this.session = session;
 
@@ -105,6 +108,26 @@ public class InfluxDbConnector implements DataConnector {
    */
   public InfluxDbConnector(String url, String databaseName) {
     this(url, databaseName, NO_SCENARIO, true, InfluxDB.LogLevel.NONE, BatchOptions.DEFAULTS);
+  }
+
+  /**
+   * This method should be used to validate a given {@link InfluxDB}.
+   *
+   * @param entityClass class of the entity
+   * @param validator for validation
+   */
+  public final void validateDb(Class<?> entityClass, SourceValidator validator) {
+    QueryResult tagKeys = session.query(new Query("SHOW TAG KEYS ON " + databaseName));
+    Map<String, Set<Map<String, String>>> tagResults = parseQueryResult(tagKeys);
+
+    QueryResult fieldKeys = session.query(new Query("SHOW FIELD KEYS ON " + databaseName));
+    Map<String, Set<Map<String, String>>> fieldResults = parseQueryResult(fieldKeys);
+
+    Set<String> set = new HashSet<>();
+    tagResults.values().forEach(v -> v.stream().map(m -> m.get("tagKey")).forEach(set::add));
+    fieldResults.values().forEach(v -> v.stream().map(m -> m.get("fieldKey")).forEach(set::add));
+
+    validator.validate(set, entityClass);
   }
 
   /**

@@ -56,12 +56,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minParameters =
         newSet(
-            TIME,
-            DIFFUSE_IRRADIANCE,
-            DIRECT_IRRADIANCE,
-            TEMPERATURE,
-            WIND_VELOCITY_U,
-            WIND_VELOCITY_V);
+            DIFFUSE_IRRADIANCE, DIRECT_IRRADIANCE, TEMPERATURE, WIND_VELOCITY_U, WIND_VELOCITY_V);
     Set<String> allParameters =
         expandSet(
             minParameters,
@@ -92,7 +87,12 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     Set<String> allParametersWithUuid = expandSet(allParameters, UUID);
 
     return Arrays.asList(
-        minParameters, allParameters, minParametersWithUuid, allParametersWithUuid);
+        minParameters,
+        allParameters,
+        minParametersWithUuid,
+        allParametersWithUuid,
+        toLowerCase(minParameters),
+        toLowerCase(allParameters));
   }
 
   @Override

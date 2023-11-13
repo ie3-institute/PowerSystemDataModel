@@ -65,7 +65,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     final String tableName =
         sqlDataSource.databaseNamingStrategy.getTimeSeriesEntityName(columnScheme);
 
-    dataSource.validateDBTable(tableName, valueClass, factory);
+    dataSource.connector.validateDBTable(tableName, valueClass, factory);
 
     String dbTimeColumnName =
         sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);

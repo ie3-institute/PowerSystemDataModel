@@ -56,7 +56,7 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
         dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
 
     // validating table
-    dataSource.validateDBTable(coordinateTableName, Pair.class, factory);
+    dataSource.connector.validateDBTable(coordinateTableName, Pair.class, factory);
 
     // setup queries
     this.basicQuery = createBaseQueryString(dataSource.schemaName, coordinateTableName);

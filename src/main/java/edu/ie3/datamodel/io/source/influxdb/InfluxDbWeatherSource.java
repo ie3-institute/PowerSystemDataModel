@@ -50,6 +50,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
       TimeBasedWeatherValueFactory weatherValueFactory) {
     super(idCoordinateSource, weatherValueFactory);
     this.connector = connector;
+
+    connector.validateDb(WeatherValue.class, weatherValueFactory);
   }
 
   @Override
@@ -224,6 +226,6 @@ public class InfluxDbWeatherSource extends WeatherSource {
    */
   protected Stream<TimeBasedValue<WeatherValue>> filterEmptyOptionals(
       Stream<Optional<TimeBasedValue<WeatherValue>>> elements) {
-    return elements.flatMap(Optional::stream).map(TimeBasedValue.class::cast);
+    return elements.flatMap(Optional::stream);
   }
 }

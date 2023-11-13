@@ -12,7 +12,6 @@ import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.measure.quantity.Angle;
@@ -53,14 +52,13 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams =
         newSet(
-            UUID,
-            TIME,
+            COORDINATE_ID,
             DIFFUSE_IRRADIANCE,
             DIRECT_IRRADIANCE,
             TEMPERATURE,
             WIND_DIRECTION,
             WIND_VELOCITY);
-    return Collections.singletonList(minConstructorParams);
+    return List.of(minConstructorParams, toLowerCase(minConstructorParams));
   }
 
   @Override

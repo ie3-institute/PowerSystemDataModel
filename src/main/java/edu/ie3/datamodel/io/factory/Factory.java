@@ -109,7 +109,9 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
   protected abstract List<Set<String>> getFields(Class<?> entityClass);
 
   /**
-   * Method for validating the found fields.
+   * Method for validating the found fields. The found fields needs to fully contain at least one of the sets returned by {@link #getFields(Class)}.
+   * If the found fields don't contain all necessary fields, an {@link FactoryException} with a detail message is thrown.
+   * If the found fields contain more fields than necessary, these fields are ignored.
    *
    * @param foundFields that were found
    * @param entityClass of the build data
@@ -141,58 +143,6 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
               + entityClass.getSimpleName()
               + ". \nThe following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of '"
               + entityClass.getSimpleName()
-              + "' are possible (NOT case-sensitive!):\n"
-              + possibleOptions);
-    }
-  }
-
-  /**
-   * Validates the factory specific constructor parameters in two ways. 1) the biggest set of the
-   * provided field sets is compared against fields the class implements. If this test passes then
-   * we know for sure that the field names at least in the biggest constructor are equal to the
-   * provided factory strings 2) if 1) passes, the provided entity data (which is equal to the data
-   * e.g. read from the outside) is compared to all available constructor parameters provided by the
-   * fieldSets Array. If we find exactly one constructor, that matches the field names we can
-   * proceed. Otherwise a detailed exception message is thrown.
-   *
-   * @param data the entity containing at least the entity class as well a mapping of the provided
-   *     field name strings to its value (e.g. a headline of a csv to column values)
-   * @param fieldSets a set containing all available constructor combinations as field names
-   * @return the index of the set in the fieldSets array that fits the provided entity data
-   */
-  protected int validateParameters(D data, Set<String>... fieldSets) {
-    Map<String, String> fieldsToValues = data.getFieldsToValues();
-
-    // get all sets that match the fields to attributes
-    List<Set<String>> validFieldSets =
-        Arrays.stream(fieldSets).filter(x -> x.equals(fieldsToValues.keySet())).toList();
-
-    if (validFieldSets.size() == 1) {
-      // if we can identify a unique parameter set for a constructor, we take it and return the
-      // index
-      Set<String> validFieldSet = validFieldSets.get(0);
-      return Arrays.asList(fieldSets).indexOf(validFieldSet);
-    } else {
-      // build the exception string with extensive debug information
-      String providedFieldMapString =
-          fieldsToValues.keySet().stream()
-              .map(key -> key + " -> " + fieldsToValues.get(key))
-              .collect(Collectors.joining(",\n"));
-
-      String providedKeysString = "[" + String.join(", ", fieldsToValues.keySet()) + "]";
-
-      String possibleOptions = getFieldsString(List.of(fieldSets)).toString();
-
-      throw new FactoryException(
-          "The provided fields "
-              + providedKeysString
-              + " with data \n{"
-              + providedFieldMapString
-              + "}"
-              + " are invalid for instance of "
-              + data.getTargetClass().getSimpleName()
-              + ". \nThe following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of '"
-              + data.getTargetClass().getSimpleName()
               + "' are possible (NOT case-sensitive!):\n"
               + possibleOptions);
     }
@@ -243,15 +193,21 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
     return newSet;
   }
 
-  private static Set<String> toSnakeCase(Set<String> set) {
+  protected static Set<String> toSnakeCase(Set<String> set) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     newSet.addAll(set.stream().map(StringUtils::camelCaseToSnakeCase).toList());
     return newSet;
   }
 
-  private static Set<String> toCamelCase(Set<String> set) {
+  protected static Set<String> toCamelCase(Set<String> set) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     newSet.addAll(set.stream().map(StringUtils::snakeCaseToCamelCase).toList());
+    return newSet;
+  }
+
+  protected static Set<String> toLowerCase(Set<String> set) {
+    TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    newSet.addAll(set.stream().map(String::toLowerCase).toList());
     return newSet;
   }
 }

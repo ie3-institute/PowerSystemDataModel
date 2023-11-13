@@ -40,7 +40,7 @@ public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
   @Override
   public Stream<Map<String, String>> getMappingSourceData(SourceValidator validator) {
     try {
-      dataSource.validateDBTable(tableName, TimeSeriesMappingSource.class, validator);
+      dataSource.connector.validateDBTable(tableName, TimeSeriesMappingSource.class, validator);
     } catch (SQLException e) {
       throw new FactoryException(e);
     }

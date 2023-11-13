@@ -9,10 +9,15 @@ import com.couchbase.client.core.diagnostics.PingResult;
 import com.couchbase.client.java.AsyncCollection;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.Collection;
+import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.kv.MutationResult;
 import com.couchbase.client.java.query.QueryResult;
+import edu.ie3.datamodel.io.source.SourceValidator;
+import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -34,6 +39,33 @@ public class CouchbaseConnector implements DataConnector {
   public CouchbaseConnector(String url, String bucketName, String username, String password) {
     this.bucketName = bucketName;
     cluster = Cluster.connect(url, username, password);
+  }
+
+  /**
+   * This method should be used to validate a given couchbaseDb.
+   *
+   * @param entityClass class of the entity
+   * @param validator for validation
+   */
+  @SuppressWarnings("unchecked")
+  public final void validateDb(Class<?> entityClass, SourceValidator validator) {
+    String query =
+        "SELECT ARRAY_DISTINCT(ARRAY_AGG(v)) AS column FROM "
+            + bucketName
+            + " b UNNEST OBJECT_NAMES(b) AS v";
+    cluster.bucket(bucketName).waitUntilReady(Duration.ofSeconds(30));
+
+    QueryResult queryResult = query(query).join();
+    JsonObject jsonObject = queryResult.rowsAsObject().get(0);
+    Object columns = jsonObject.toMap().get("column");
+
+    Set<String> set = new HashSet<>();
+
+    if (columns != null) {
+      set.addAll((List<String>) columns);
+    }
+
+    validator.validate(set, entityClass);
   }
 
   /**

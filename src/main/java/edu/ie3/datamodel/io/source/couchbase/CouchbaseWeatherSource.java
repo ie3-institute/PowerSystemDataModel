@@ -94,6 +94,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
     this.coordinateIdColumnName = coordinateIdColumnName;
     this.keyPrefix = keyPrefix;
     this.timeStampPattern = timeStampPattern;
+
+    connector.validateDb(WeatherValue.class, weatherFactory);
   }
 
   @Override

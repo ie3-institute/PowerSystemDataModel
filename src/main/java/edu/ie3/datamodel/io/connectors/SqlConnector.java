@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.connectors;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.util.StringUtils;
 import edu.ie3.util.TimeUtil;
 import java.sql.*;
@@ -39,6 +40,28 @@ public class SqlConnector implements DataConnector {
     this.connectionProps = new Properties();
     connectionProps.put("user", userName);
     connectionProps.put("password", password);
+  }
+
+  /**
+   * This method should be used to validate a given sql table.
+   *
+   * @param tableName name of the table
+   * @param entityClass class of the entity
+   * @param validator for validation
+   * @throws SQLException – if the connection could not be established
+   */
+  public void validateDBTable(String tableName, Class<?> entityClass, SourceValidator validator)
+      throws SQLException {
+    ResultSet rs = getConnection().getMetaData().getColumns(null, null, tableName, null);
+
+    Set<String> columnNames = new HashSet<>();
+
+    while (rs.next()) {
+      String name = rs.getString("COLUMN_NAME");
+      columnNames.add(StringUtils.snakeCaseToCamelCase(name));
+    }
+
+    validator.validate(columnNames, entityClass);
   }
 
   /**

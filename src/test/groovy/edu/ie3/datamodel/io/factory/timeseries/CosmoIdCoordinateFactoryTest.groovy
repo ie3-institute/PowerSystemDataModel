@@ -60,10 +60,10 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     Map<String, String> parameter = [
       "tid": "1",
       "id": "106580",
-      "latgeo": "39.602772",
-      "longgeo": "1.279336",
-      "latrot": "-10",
-      "longrot": "-6.8125"
+      "latGeo": "39.602772",
+      "longGeo": "1.279336",
+      "latRot": "-10",
+      "longRot": "-6.8125"
     ]
 
     def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)

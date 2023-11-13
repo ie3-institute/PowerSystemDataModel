@@ -37,28 +37,6 @@ public class SqlDataSource implements DataSource {
   }
 
   /**
-   * This method should be used to validate a given table.
-   *
-   * @param tableName name of the table
-   * @param entityClass class of the entity
-   * @param validator for validation
-   * @throws SQLException – if the connection could not be established
-   */
-  protected void validateDBTable(String tableName, Class<?> entityClass, SourceValidator validator)
-      throws SQLException {
-    ResultSet rs = connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
-
-    Set<String> columnNames = new HashSet<>();
-
-    while (rs.next()) {
-      String name = rs.getString("COLUMN_NAME");
-      columnNames.add(StringUtils.snakeCaseToCamelCase(name));
-    }
-
-    validator.validate(columnNames, entityClass);
-  }
-
-  /**
    * Creates a base query string without closing semicolon of the following pattern: <br>
    * {@code SELECT * FROM <schema>.<table>}
    *
@@ -146,7 +124,7 @@ public class SqlDataSource implements DataSource {
    * <p>(We cannot use {@link java.util.function.Function} here because it throws SQLException).
    */
   @FunctionalInterface
-  interface AddParams {
+  protected interface AddParams {
     /**
      * Enhance a PreparedStatement by inserting parameters for wildcards
      *

@@ -128,7 +128,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "q": "165.0",
-      "heatdemand": "8.0"
+      "heatDemand": "8.0"
     ], HeatAndSValue)
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
@@ -148,7 +148,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
-      "heatdemand": "8.0"
+      "heatDemand": "8.0"
     ], HeatAndPValue)
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
@@ -167,7 +167,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def data = new SimpleTimeBasedValueData([
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
-      "heatdemand": "8.0"
+      "heatDemand": "8.0"
     ], HeatDemandValue)
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),

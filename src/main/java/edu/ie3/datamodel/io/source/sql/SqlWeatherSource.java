@@ -54,10 +54,13 @@ public class SqlWeatherSource extends WeatherSource {
       IdCoordinateSource idCoordinateSource,
       String schemaName,
       String weatherTableName,
-      TimeBasedWeatherValueFactory weatherFactory) {
+      TimeBasedWeatherValueFactory weatherFactory)
+      throws SQLException {
     super(idCoordinateSource, weatherFactory);
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
     this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy());
+
+    dataSource.connector.validateDBTable(weatherTableName, WeatherValue.class, weatherFactory);
 
     String dbTimeColumnName =
         dataSource.getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);

@@ -59,7 +59,7 @@ class IconIdCoordinateFactoryTest extends Specification {
       "id":"477295",
       "latitude":"52.312",
       "longitude":"12.812",
-      "coordinatetype":"ICON"]
+      "coordinateType":"ICON"]
     def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
     Pair<Integer, Point> expectedPair = Pair.of(477295, GeoUtils.buildPoint(52.312, 12.812))
 
