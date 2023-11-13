@@ -109,9 +109,10 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
   protected abstract List<Set<String>> getFields(Class<?> entityClass);
 
   /**
-   * Method for validating the found fields. The found fields needs to fully contain at least one of the sets returned by {@link #getFields(Class)}.
-   * If the found fields don't contain all necessary fields, an {@link FactoryException} with a detail message is thrown.
-   * If the found fields contain more fields than necessary, these fields are ignored.
+   * Method for validating the found fields. The found fields needs to fully contain at least one of
+   * the sets returned by {@link #getFields(Class)}. If the found fields don't contain all necessary
+   * fields, an {@link FactoryException} with a detail message is thrown. If the found fields
+   * contain more fields than necessary, these fields are ignored.
    *
    * @param foundFields that were found
    * @param entityClass of the build data
