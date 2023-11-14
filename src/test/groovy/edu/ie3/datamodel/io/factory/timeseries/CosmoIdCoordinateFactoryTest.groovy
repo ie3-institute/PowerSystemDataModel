@@ -50,7 +50,7 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 
     then:
     actual.failure
-    actual.exception.get().message == "The provided fields [id, latrot, longrot, tid] are invalid for instance of Pair. \n" +
+    actual.exception.get().message == "The provided fields [id, latrot, longrot, tid] are invalid for instance of 'Pair'. \n" +
     "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'Pair' are possible (NOT case-sensitive!):\n" +
     "0: [id, lat_geo, lat_rot, long_geo, long_rot, tid] or [id, latGeo, latRot, longGeo, longRot, tid]\n"
   }

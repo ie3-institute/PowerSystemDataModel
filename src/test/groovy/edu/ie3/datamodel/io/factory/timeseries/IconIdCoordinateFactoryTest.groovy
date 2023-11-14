@@ -48,7 +48,7 @@ class IconIdCoordinateFactoryTest extends Specification {
 
     then:
     actual.failure
-    actual.exception.get().message == "The provided fields [coordinatetype, id, latitude] are invalid for instance of Pair. \n" +
+    actual.exception.get().message == "The provided fields [coordinatetype, id, latitude] are invalid for instance of 'Pair'. \n" +
     "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'Pair' are possible (NOT case-sensitive!):\n" +
     "0: [coordinate_type, id, latitude, longitude] or [coordinateType, id, latitude, longitude]\n"
   }

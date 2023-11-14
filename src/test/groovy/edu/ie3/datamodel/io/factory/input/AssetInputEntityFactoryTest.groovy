@@ -280,11 +280,11 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def foundFields = inputFactory.newSet("uuid", "operates_from", "operates_until")
 
     when:
-    Try<Void, FactoryException> input = Try.of(() -> inputFactory.validate(foundFields, TestAssetInput), FactoryException)
+    Try<Void, FactoryException> input = Try.ofVoid(() -> inputFactory.validate(foundFields, TestAssetInput), FactoryException)
 
     then:
     input.failure
-    input.exception.get().message == "The provided fields [operates_from, operates_until, uuid] are invalid for instance of TestAssetInput. \n" +
+    input.exception.get().message == "The provided fields [operates_from, operates_until, uuid] are invalid for instance of 'TestAssetInput'. \n" +
     "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'TestAssetInput' are possible (NOT case-sensitive!):\n" +
     "0: [id, uuid] or [id, uuid]\n" +
     "1: [id, operates_from, uuid] or [id, operatesFrom, uuid]\n" +
@@ -298,7 +298,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def foundFields = inputFactory.newSet("uuid", "operates_from", "operates_until", "id", "additional_field")
 
     when:
-    Try<Void, FactoryException> input = Try.of(() -> inputFactory.validate(foundFields, TestAssetInput), FactoryException)
+    Try<Void, FactoryException> input = Try.ofVoid(() -> inputFactory.validate(foundFields, TestAssetInput), FactoryException)
 
     then:
     input.success

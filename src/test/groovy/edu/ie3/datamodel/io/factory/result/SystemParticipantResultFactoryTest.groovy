@@ -130,11 +130,11 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     def foundFields = resultFactory.newSet("time", "input_model", "q")
 
     when:
-    Try<SystemParticipantResult, FactoryException> result = Try.of(() -> resultFactory.validate(foundFields, WecResult), FactoryException)
+    Try<SystemParticipantResult, FactoryException> result = Try.ofVoid(() -> resultFactory.validate(foundFields, WecResult), FactoryException)
 
     then:
     result.failure
-    result.exception.get().message == "The provided fields [input_model, q, time] are invalid for instance of WecResult. \n" +
+    result.exception.get().message == "The provided fields [input_model, q, time] are invalid for instance of 'WecResult'. \n" +
     "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'WecResult' are possible (NOT case-sensitive!):\n" +
     "0: [input_model, p, q, time] or [inputModel, p, q, time]\n" +
     "1: [input_model, p, q, time, uuid] or [inputModel, p, q, time, uuid]\n"

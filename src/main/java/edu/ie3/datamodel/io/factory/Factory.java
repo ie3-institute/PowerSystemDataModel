@@ -140,12 +140,29 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
       throw new FactoryException(
           "The provided fields "
               + providedKeysString
-              + " are invalid for instance of "
+              + " are invalid for instance of '"
               + entityClass.getSimpleName()
-              + ". \nThe following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of '"
+              + "'. \nThe following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of '"
               + entityClass.getSimpleName()
               + "' are possible (NOT case-sensitive!):\n"
               + possibleOptions);
+    } else {
+      // checking for additional fields
+      Set<String> additionalFields = new HashSet<>();
+      Set<String> allFields =
+          validFieldSets.stream().flatMap(Collection::stream).collect(Collectors.toSet());
+
+      foundFields.stream().filter(e -> !allFields.contains(e)).forEach(additionalFields::add);
+      harmonizedFoundFields.stream()
+          .filter(e -> !allFields.contains(e))
+          .forEach(additionalFields::add);
+
+      if (!additionalFields.isEmpty()) {
+        log.debug(
+            "The following additional fields were found for instance of '{}': {}",
+            entityClass.getSimpleName(),
+            additionalFields);
+      }
     }
   }
 
