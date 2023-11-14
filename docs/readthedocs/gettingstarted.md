@@ -62,7 +62,7 @@ the following guide will provide a fast and easy way to convert old format into 
     Path folderPath = Path.of("PATH_TO_THE_FOLDER");
     boolean isHierarchic = false;
     Path output = Path.of("PATH_OF_THE_OUTPUT_FOLDER");
-    EntityPersistenceNamingStrategy namingStrategy = new EntityPersistenceNamingStrategy(); // Default naming strategy
+    FileNamingStrategy namingStrategy = new FileNamingStrategy();
     
     /* Reading the old format */
     JointGridContainer container = CsvJointGridContainerSource.read(gridName, csvSep, folderPath, isHierarchic);
