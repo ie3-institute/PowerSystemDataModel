@@ -51,9 +51,9 @@ With the release of `PowerSystemDataModel` version `5.0` the support for the old
 It was already marked as `deprecated` back in version `1.1.0`. For those who are still using a model in the old csv format
 the following guide will provide a fast and easy way to convert old format into the new one.
 
-#### NOTICE: 
-Since the support is removed in version `5.0`, the `PowerSystemDataModel` version `3.x` or `4.x` must be used to read the old format.
-The `PSDM` will automatically write the output model in the new csv format.
+- Since the support is removed in version `5.0`, the `PowerSystemDataModel` version `3.x` or `4.x` must be 
+  used to read the old format. The `PSDM` will automatically write the output model in the new csv format.
+
 
 ``` java
     /* Parameterization */
