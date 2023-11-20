@@ -889,13 +889,17 @@ public class SystemParticipantSource extends EntitySource {
     // if the requested entity is not present we return an empty element and
     // log a warning
     if (hpInputEntityDataOpt.isEmpty()) {
-      String skippingMessage =
-          buildSkippingMessage(
-              typedEntityData.getTargetClass().getSimpleName(),
-              safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-              safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-              "thermalBus: " + safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
-      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
+      return Try.of(
+              () ->
+                  buildSkippingMessage(
+                      typedEntityData.getTargetClass().getSimpleName(),
+                      getOrThrow(fieldsToAttributes, "uuid"),
+                      getOrThrow(fieldsToAttributes, "id"),
+                      "thermalBus: " + getOrThrow(fieldsToAttributes, THERMAL_BUS)),
+              SourceException.class)
+          .flatMap(
+              skippingMessage ->
+                  Failure.of(new SourceException("Failure due to: " + skippingMessage)));
     }
 
     return new Success<>(hpInputEntityDataOpt.get());
@@ -941,20 +945,29 @@ public class SystemParticipantSource extends EntitySource {
       StringBuilder sB = new StringBuilder();
       if (thermalStorage.isEmpty()) {
         sB.append("thermalStorage: ")
-            .append(safeMapGet(fieldsToAttributes, THERMAL_STORAGE, FIELDS_TO_VALUES_MAP));
+            .append(
+                fieldsToAttributes.getOrDefault(
+                    THERMAL_STORAGE,
+                    "No 'thermalStorage' found in map " + fieldsToAttributes + "!"));
       }
       if (thermalBus.isEmpty()) {
         sB.append("\nthermalBus: ")
-            .append(safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
+            .append(
+                fieldsToAttributes.getOrDefault(
+                    THERMAL_BUS, "No 'thermalBus' found in map " + fieldsToAttributes + "!"));
       }
 
-      String skippingMessage =
-          buildSkippingMessage(
-              typedEntityData.getTargetClass().getSimpleName(),
-              safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-              safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-              sB.toString());
-      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
+      return Try.of(
+              () ->
+                  buildSkippingMessage(
+                      typedEntityData.getTargetClass().getSimpleName(),
+                      getOrThrow(fieldsToAttributes, "uuid"),
+                      getOrThrow(fieldsToAttributes, "id"),
+                      sB.toString()),
+              SourceException.class)
+          .flatMap(
+              skippingMessage ->
+                  Failure.of(new SourceException("Failure due to: " + skippingMessage)));
     }
 
     // remove fields that are passed as objects to constructor

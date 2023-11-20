@@ -33,7 +33,6 @@ public abstract class EntitySource {
   protected static final String OPERATOR = "operator";
   protected static final String NODE = "node";
   protected static final String TYPE = "type";
-  protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
   DataSource dataSource;
 
@@ -51,13 +50,10 @@ public abstract class EntitySource {
         + missingElementsString;
   }
 
-  protected String safeMapGet(Map<String, String> map, String key, String mapName) {
-    return Optional.ofNullable(map.get(key))
-        .orElse(
-            "Key '"
-                + key
-                + "' not found"
-                + (mapName.isEmpty() ? "!" : " in map '" + mapName + "'!"));
+  protected String getOrThrow(Map<String, String> map, String field) throws SourceException {
+    return Optional.ofNullable(map.get(field))
+        .orElseThrow(
+            () -> new SourceException("Field " + field + " was not found in map " + map + "."));
   }
 
   /**
@@ -101,13 +97,15 @@ public abstract class EntitySource {
     // if the type is not present we return an empty element and
     // log a warning
     if (assetType.isEmpty()) {
-      String skippingMessage =
-          buildSkippingMessage(
-              skippedClassString,
-              safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-              safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-              TYPE + ": " + safeMapGet(fieldsToAttributes, TYPE, FIELDS_TO_VALUES_MAP));
-      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
+      return Try.of(
+              () ->
+                  buildSkippingMessage(
+                      skippedClassString,
+                      getOrThrow(fieldsToAttributes, "uuid"),
+                      getOrThrow(fieldsToAttributes, "id"),
+                      TYPE + ": " + getOrThrow(fieldsToAttributes, TYPE)),
+              SourceException.class)
+          .flatMap(message -> Failure.of(new SourceException("Failure due to: " + message)));
     }
     return new Success<>(assetType.get());
   }
@@ -271,7 +269,8 @@ public abstract class EntitySource {
             operators,
             operatorUuid,
             entityClass.getSimpleName(),
-            safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
+            fieldsToAttributes.getOrDefault(
+                "uuid", "No 'uuid' found in map " + fieldsToAttributes + "!"));
 
     // remove fields that are passed as objects to constructor
     fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
