@@ -22,15 +22,6 @@ import java.util.stream.Stream;
 
 public class GridContainerValidationUtils extends ValidationUtils {
 
-  @Deprecated
-  private static String duplicateUuidsString(String simpleName, Optional<String> exceptionString) {
-    return "The provided entities in '"
-        + simpleName
-        + "' contains duplicate UUIDs. "
-        + "This is not allowed!\nDuplicated uuids:\n\n"
-        + exceptionString;
-  }
-
   /** Private Constructor as this class is not meant to be instantiated */
   private GridContainerValidationUtils() {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");

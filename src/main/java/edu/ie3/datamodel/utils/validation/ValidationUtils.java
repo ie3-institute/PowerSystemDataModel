@@ -217,37 +217,6 @@ public class ValidationUtils {
   }
 
   /**
-   * Checks the validity of the ids for a given set of {@link AssetInput}.
-   *
-   * @param inputs a set of asset inputs
-   * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
-   *     Success
-   * @deprecated use {@link #checkForDuplicate(Collection, FieldSupplier)} with {@link
-   *     AssetInput#getId()} as {@link FieldSupplier} instead
-   */
-  @Deprecated
-  protected static List<Try<Void, UnsafeEntityException>> checkIds(
-      Set<? extends AssetInput> inputs) {
-    List<String> ids = new ArrayList<>();
-    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
-
-    inputs.forEach(
-        input -> {
-          String id = input.getId();
-          if (!ids.contains(id)) {
-            ids.add(id);
-          } else {
-            exceptions.add(
-                new Failure<>(
-                    new UnsafeEntityException(
-                        "There is already an entity with the id " + id, input)));
-          }
-        });
-
-    return exceptions;
-  }
-
-  /**
    * Checks, if the given object is null. If so, an {@link InvalidEntityException} wrapped in a
    * {@link Failure} is returned.
    *
@@ -354,45 +323,6 @@ public class ValidationUtils {
   public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
     Set<Object> seen = ConcurrentHashMap.newKeySet();
     return t -> seen.add(keyExtractor.apply(t));
-  }
-
-  /**
-   * Checks if the provided set of unique entities only contains elements with distinct UUIDs and
-   * either returns a string with duplicated UUIDs or an empty optional otherwise.
-   *
-   * @param entities the entities that should be checkd for UUID uniqueness
-   * @return either a string wrapped in an optional with duplicate UUIDs or an empty optional
-   * @deprecated use {@link #checkForDuplicate(Collection, FieldSupplier)} with {@link
-   *     UniqueEntity#getUuid()} as {@link FieldSupplier} instead
-   */
-  @Deprecated
-  protected static Optional<String> checkForDuplicateUuids(Set<UniqueEntity> entities) {
-    if (distinctUuids(entities)) {
-      return Optional.empty();
-    }
-    String duplicationsString =
-        entities.stream()
-            .collect(Collectors.groupingBy(UniqueEntity::getUuid, Collectors.counting()))
-            .entrySet()
-            .stream()
-            .filter(entry -> entry.getValue() > 1)
-            .map(
-                entry -> {
-                  String duplicateEntitiesString =
-                      entities.stream()
-                          .filter(entity -> entity.getUuid().equals(entry.getKey()))
-                          .map(UniqueEntity::toString)
-                          .collect(Collectors.joining("\n - "));
-
-                  return entry.getKey()
-                      + ": "
-                      + entry.getValue()
-                      + "\n - "
-                      + duplicateEntitiesString;
-                })
-            .collect(Collectors.joining("\n\n"));
-
-    return Optional.of(duplicationsString);
   }
 
   /**
