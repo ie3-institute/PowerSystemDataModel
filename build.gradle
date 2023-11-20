@@ -18,7 +18,7 @@ ext {
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
   groovyBinaryVersion = "4.0.15"
-  testcontainersVersion = '1.19.1'
+  testcontainersVersion = '1.19.2'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -94,7 +94,7 @@ dependencies {
   runtimeOnly 'org.postgresql:postgresql:42.6.0' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.15.0' // I/O functionalities
-  implementation 'org.apache.commons:commons-compress:1.24.0' // I/O functionalities
+  implementation 'org.apache.commons:commons-compress:1.25.0' // I/O functionalities
   implementation 'org.apache.commons:commons-lang3:3.13.0'
 }
 
