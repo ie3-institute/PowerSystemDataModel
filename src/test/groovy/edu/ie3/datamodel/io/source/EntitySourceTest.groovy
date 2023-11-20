@@ -48,7 +48,7 @@ class EntitySourceTest extends Specification {
         )
 
     when:
-    def actual = dummyEntitySource.findFirstEntityByUuid(uuid.toString(), entities)
+    def actual = dummyEntitySource.findFirstEntityByUuid(uuid, entities)
 
     then:
     actual.present
@@ -62,9 +62,9 @@ class EntitySourceTest extends Specification {
 
     where:
     operatorUuid                           | operators                | entityClassName   | requestEntityUuid                      || expectedOperator
-    "8f9682df-0744-4b58-a122-f0dc730f6510" | [sptd.hpInput.operator]  | "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || sptd.hpInput.operator
-    "8f9682df-0744-4b58-a122-f0dc730f6520" | [sptd.hpInput.operator]  | "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
-    "8f9682df-0744-4b58-a122-f0dc730f6510" | []                       | "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
+    Optional.of(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510")) | [sptd.hpInput.operator]  | "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || sptd.hpInput.operator
+    Optional.of(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6520")) | [sptd.hpInput.operator]  | "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
+    Optional.of(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510")) | []                       | "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
   }
 
   def "A CsvDataSource should be able to handle the extraction process of an asset type correctly"() {
