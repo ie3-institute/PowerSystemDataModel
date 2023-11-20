@@ -5,7 +5,10 @@
 */
 package edu.ie3.datamodel.utils;
 
+import edu.ie3.datamodel.models.UniqueEntity;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExceptionUtils {
   private ExceptionUtils() {
@@ -23,5 +26,15 @@ public class ExceptionUtils {
         .map(Throwable::getMessage)
         .reduce("", (a, b) -> a + "\n " + b)
         .replaceFirst("\n ", "");
+  }
+
+  /**
+   * Combines multiple {@link UniqueEntity} into a string.
+   *
+   * @param entities to be combined
+   * @return a string
+   */
+  public static String combine(Collection<? extends UniqueEntity> entities) {
+    return entities.stream().map(UniqueEntity::toString).collect(Collectors.joining("\n - "));
   }
 }

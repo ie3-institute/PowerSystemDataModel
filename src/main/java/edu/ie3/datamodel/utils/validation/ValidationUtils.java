@@ -222,7 +222,10 @@ public class ValidationUtils {
    * @param inputs a set of asset inputs
    * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
    *     Success
+   * @deprecated use {@link #checkForDuplicate(Collection, FieldSupplier)} with {@link
+   *     AssetInput#getId()} as {@link FieldSupplier} instead
    */
+  @Deprecated
   protected static List<Try<Void, UnsafeEntityException>> checkIds(
       Set<? extends AssetInput> inputs) {
     List<String> ids = new ArrayList<>();
@@ -359,7 +362,10 @@ public class ValidationUtils {
    *
    * @param entities the entities that should be checkd for UUID uniqueness
    * @return either a string wrapped in an optional with duplicate UUIDs or an empty optional
+   * @deprecated use {@link #checkForDuplicate(Collection, FieldSupplier)} with {@link
+   *     UniqueEntity#getUuid()} as {@link FieldSupplier} instead
    */
+  @Deprecated
   protected static Optional<String> checkForDuplicateUuids(Set<UniqueEntity> entities) {
     if (distinctUuids(entities)) {
       return Optional.empty();
@@ -387,5 +393,47 @@ public class ValidationUtils {
             .collect(Collectors.joining("\n\n"));
 
     return Optional.of(duplicationsString);
+  }
+
+  /**
+   * Method to check for duplicate fields in a set of {@link UniqueEntity}.
+   *
+   * @param entities to be checked
+   * @param supplier for the field
+   * @return a list of {@link Try}.
+   * @param <A> type of the field
+   * @param <B> type of the {@link UniqueEntity}
+   */
+  protected static <A, B extends UniqueEntity>
+      List<Try<Void, DuplicateEntitiesException>> checkForDuplicate(
+          Collection<B> entities, FieldSupplier<A, B> supplier) {
+    Map<A, List<B>> duplicates =
+        entities.stream().collect(Collectors.groupingBy(supplier::getField));
+
+    List<Try<Void, DuplicateEntitiesException>> exceptions = new ArrayList<>();
+
+    duplicates.entrySet().stream()
+        .filter(e -> e.getValue().size() > 1)
+        .forEach(
+            duplicate -> {
+              A key = duplicate.getKey();
+              exceptions.add(
+                  Failure.ofVoid(
+                      new DuplicateEntitiesException(
+                          key.getClass().getSimpleName(), duplicates.get(key))));
+            });
+
+    return exceptions;
+  }
+
+  /**
+   * Supplier for unique entity fields.
+   *
+   * @param <A> type of field
+   * @param <B> type of unique entity
+   */
+  @FunctionalInterface
+  protected interface FieldSupplier<A, B extends UniqueEntity> {
+    A getField(B entity);
   }
 }

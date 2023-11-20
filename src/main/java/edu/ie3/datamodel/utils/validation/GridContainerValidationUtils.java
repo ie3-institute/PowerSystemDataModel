@@ -5,10 +5,8 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import edu.ie3.datamodel.exceptions.InvalidEntityException;
-import edu.ie3.datamodel.exceptions.InvalidGridException;
-import edu.ie3.datamodel.exceptions.UnsafeEntityException;
-import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.exceptions.*;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -24,6 +22,7 @@ import java.util.stream.Stream;
 
 public class GridContainerValidationUtils extends ValidationUtils {
 
+  @Deprecated
   private static String duplicateUuidsString(String simpleName, Optional<String> exceptionString) {
     return "The provided entities in '"
         + simpleName
@@ -52,18 +51,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
       return List.of(isNull);
     }
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-
     /* sanity check to ensure distinct UUIDs */
-    Optional<String> exceptionString =
-        checkForDuplicateUuids(new HashSet<>(gridContainer.allEntitiesAsList()));
-    exceptions.add(
-        Try.ofVoid(
-            exceptionString.isPresent(),
-            () ->
-                new InvalidGridException(
-                    duplicateUuidsString(
-                        gridContainer.getClass().getSimpleName(), exceptionString))));
+    List<Try<Void, ? extends ValidationException>> exceptions =
+        new ArrayList<>(
+            checkForDuplicate(gridContainer.allEntitiesAsList(), UniqueEntity::getUuid));
 
     exceptions.addAll(checkRawGridElements(gridContainer.getRawGrid()));
     exceptions.addAll(
@@ -98,18 +89,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
       return List.of(isNull);
     }
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-
     /* sanity check to ensure distinct UUIDs */
-    Optional<String> exceptionString =
-        checkForDuplicateUuids(new HashSet<>(rawGridElements.allEntitiesAsList()));
-    exceptions.add(
-        Try.ofVoid(
-            exceptionString.isPresent(),
-            () ->
-                new InvalidGridException(
-                    duplicateUuidsString(
-                        rawGridElements.getClass().getSimpleName(), exceptionString))));
+    List<Try<Void, ? extends ValidationException>> exceptions =
+        new ArrayList<>(
+            checkForDuplicate(rawGridElements.allEntitiesAsList(), UniqueEntity::getUuid));
 
     /* Checking nodes */
     Set<NodeInput> nodes = rawGridElements.getNodes();
@@ -183,18 +166,18 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * Checks the validity of type ids of every entity.
    *
    * @param rawGridElements the raw grid elements
-   * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
-   *     Success
+   * @return a list of try objects either containing an {@link DuplicateEntitiesException} or an
+   *     empty Success
    */
-  protected static List<Try<Void, UnsafeEntityException>> checkRawGridTypeIds(
+  protected static List<Try<Void, DuplicateEntitiesException>> checkRawGridTypeIds(
       RawGridElements rawGridElements) {
-    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
-    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getNodes()));
-    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getLines()));
-    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getTransformer2Ws()));
-    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getTransformer3Ws()));
-    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getSwitches()));
-    exceptions.addAll(ValidationUtils.checkIds(rawGridElements.getMeasurementUnits()));
+    List<Try<Void, DuplicateEntitiesException>> exceptions = new ArrayList<>();
+    exceptions.addAll(checkForDuplicate(rawGridElements.getNodes(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(rawGridElements.getLines(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(rawGridElements.getTransformer2Ws(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(rawGridElements.getTransformer3Ws(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(rawGridElements.getSwitches(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(rawGridElements.getMeasurementUnits(), AssetInput::getId));
 
     return exceptions;
   }
@@ -217,19 +200,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
       return List.of(isNull);
     }
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-
     // sanity check for distinct uuids
-    Optional<String> exceptionString =
-        ValidationUtils.checkForDuplicateUuids(
-            new HashSet<>(systemParticipants.allEntitiesAsList()));
-    exceptions.add(
-        Try.ofVoid(
-            exceptionString.isPresent(),
-            () ->
-                new InvalidGridException(
-                    duplicateUuidsString(
-                        systemParticipants.getClass().getSimpleName(), exceptionString))));
+    List<Try<Void, ? extends ValidationException>> exceptions =
+        new ArrayList<>(
+            checkForDuplicate(systemParticipants.allEntitiesAsList(), UniqueEntity::getUuid));
 
     exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
@@ -274,23 +248,23 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * Checks the validity of type ids of every entity.
    *
    * @param systemParticipants the system participants
-   * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
-   *     Success
+   * @return a list of try objects either containing an {@link DuplicateEntitiesException} or an
+   *     empty Success
    */
-  protected static List<Try<Void, UnsafeEntityException>> checkSystemParticipantsTypeIds(
+  protected static List<Try<Void, DuplicateEntitiesException>> checkSystemParticipantsTypeIds(
       SystemParticipants systemParticipants) {
-    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getBmPlants()));
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getChpPlants()));
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getEvCS()));
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getEvs()));
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getFixedFeedIns()));
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getHeatPumps()));
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getLoads()));
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getPvPlants()));
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getStorages()));
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getWecPlants()));
-    exceptions.addAll(ValidationUtils.checkIds(systemParticipants.getEmSystems()));
+    List<Try<Void, DuplicateEntitiesException>> exceptions = new ArrayList<>();
+    exceptions.addAll(checkForDuplicate(systemParticipants.getBmPlants(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(systemParticipants.getChpPlants(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(systemParticipants.getEvCS(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(systemParticipants.getEvs(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(systemParticipants.getFixedFeedIns(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(systemParticipants.getHeatPumps(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(systemParticipants.getLoads(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(systemParticipants.getPvPlants(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(systemParticipants.getStorages(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(systemParticipants.getWecPlants(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicate(systemParticipants.getEmSystems(), AssetInput::getId));
 
     return exceptions;
   }
@@ -312,18 +286,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
       return List.of(isNull);
     }
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-
     // sanity check for distinct uuids
-    Optional<String> exceptionString =
-        checkForDuplicateUuids(new HashSet<>(graphicElements.allEntitiesAsList()));
-    exceptions.add(
-        Try.ofVoid(
-            exceptionString.isPresent(),
-            () ->
-                new InvalidGridException(
-                    duplicateUuidsString(
-                        graphicElements.getClass().getSimpleName(), exceptionString))));
+    List<Try<Void, ? extends ValidationException>> exceptions =
+        new ArrayList<>(
+            checkForDuplicate(graphicElements.allEntitiesAsList(), UniqueEntity::getUuid));
 
     graphicElements
         .getNodeGraphics()
