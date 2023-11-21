@@ -15,8 +15,7 @@ CREATE TABLE public.transformer_2_w_type_input
     v_rated_a double precision NOT NULL,
     v_rated_b double precision NOT NULL,
     x_sc double precision NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -31,8 +30,8 @@ CREATE TABLE public.line_type_input
     r double precision NOT NULL,
     v_rated double precision NOT NULL,
     x double precision NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -52,8 +51,8 @@ CREATE TABLE public.storage_type_input
     opex double precision NOT NULL,
     p_max double precision NOT NULL,
     s_rated double precision NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;

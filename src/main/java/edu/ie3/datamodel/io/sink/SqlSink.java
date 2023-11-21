@@ -1,7 +1,7 @@
 package edu.ie3.datamodel.io.sink;
 
 import edu.ie3.datamodel.exceptions.*;
-import edu.ie3.datamodel.io.DatabaseIdentifier;
+import edu.ie3.datamodel.io.DbGridMetadata;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
@@ -24,6 +24,7 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+
 import edu.ie3.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static edu.ie3.datamodel.io.SqlUtils.quote;
-import static java.util.UUID.randomUUID;
+import static edu.ie3.datamodel.io.SqlUtils.*;
 import static java.util.stream.Collectors.groupingBy;
 
 
@@ -48,8 +48,6 @@ public class SqlSink {
     private final ProcessorProvider processorProvider;
     private final String schemaName;
 
-    private static final String GRID_NAME = "grid_name";
-    private static final String GRID_UUID = "grid_uuid";
     private static final String TIME_SERIES = "time_series";
 
     public SqlSink(
@@ -86,7 +84,7 @@ public class SqlSink {
      *     executed by a specific {@link EntityProcessor}
      * @throws SQLException
      */
-    public <C extends UniqueEntity> void persistAll(Collection<C> entities, DatabaseIdentifier identifier) throws SQLException {
+    public <C extends UniqueEntity> void persistAll(Collection<C> entities, DbGridMetadata identifier) throws SQLException {
         // Extract nested entities and add them to the set of entities
         Set<C> entitiesToAdd = new HashSet<>(entities);             // entities to persist
         entities.stream().forEach(
@@ -121,7 +119,7 @@ public class SqlSink {
      * @param entities a collection of entities that should be persisted
      * @param identifier identifier of the grid
      */
-    public <C extends InputEntity> void persistAllIgnoreNested(Collection<C> entities, DatabaseIdentifier identifier) {
+    public <C extends InputEntity> void persistAllIgnoreNested(Collection<C> entities, DbGridMetadata identifier) {
         persistMixedList(new ArrayList<>(entities), identifier);
     }
 
@@ -131,7 +129,7 @@ public class SqlSink {
      * @param identifier identifier of the grid
      * @throws SQLException
      */
-    public <C extends UniqueEntity> void persist(C entity, DatabaseIdentifier identifier) throws SQLException {
+    public <C extends UniqueEntity> void persist(C entity, DbGridMetadata identifier) throws SQLException {
         if (entity instanceof InputEntity inputEntity) {
             persistIncludeNested(inputEntity, identifier);
         } else if (entity instanceof ResultEntity resultEntity) {
@@ -144,18 +142,18 @@ public class SqlSink {
     }
 
     /**
-     * Persist an entity. In contrast to {@link SqlSink#persist} this function doe not extract nested entities.
+     * Persist an entity. In contrast to {@link SqlSink#persist} this function does not extract nested entities.
      * @param entity the entity that should be persisted
      * @param identifier identifier of the grid
      * @throws SQLException
      */
-    public <C extends InputEntity> void persistIgnoreNested(C entity, DatabaseIdentifier identifier) throws SQLException {
+    public <C extends InputEntity> void persistIgnoreNested(C entity, DbGridMetadata identifier) throws SQLException {
         insert(entity, identifier);
     }
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    protected <C extends UniqueEntity> void persistListIncludeNested(List<C> entities, Class<C> cls, DatabaseIdentifier identifier) throws SQLException {
+    protected <C extends UniqueEntity> void persistListIncludeNested(List<C> entities, Class<C> cls, DbGridMetadata identifier) throws SQLException {
         if (NestedEntity.class.isAssignableFrom(cls)) {
             entities.forEach(
                     entity -> {
@@ -177,13 +175,13 @@ public class SqlSink {
         }
     }
 
-    public <C extends UniqueEntity> void persistIncludeNested(C entity, DatabaseIdentifier identifier) throws SQLException {
+    public <C extends UniqueEntity> void persistIncludeNested(C entity, DbGridMetadata identifier) throws SQLException {
         Set<C> entitiesToAdd = new HashSet<>();
         entitiesToAdd.add(entity);
         persistAll(entitiesToAdd, identifier);
     }
 
-    private <C extends UniqueEntity> void persistMixedList(List<C> entities, DatabaseIdentifier identifier) {
+    private <C extends UniqueEntity> void persistMixedList(List<C> entities, DbGridMetadata identifier) {
         Map<Class<C>, List<C>> entitiesPerClass = entities.stream()
                 .collect(groupingBy(entity -> (Class<C>) entity.getClass()));
         entitiesPerClass.forEach(
@@ -191,10 +189,6 @@ public class SqlSink {
                     try {
                         persistList(ent, cls, identifier);
                     } catch (SQLException e) {
-                        log.error(String.format(
-                                        "An error occurred during extraction of entity'%s': ",
-                                        cls.getSimpleName()),
-                                e);
                         throw new RuntimeException(String.format(
                                 "An error occurred during extraction of entity '%s', SQLReason: '%s'",
                                 cls.getSimpleName(), e.getMessage()), e);
@@ -203,16 +197,10 @@ public class SqlSink {
         );
     }
 
-    private <C extends UniqueEntity, E extends TimeSeriesEntry<V>, V extends Value> void persistList(List<C> entities, Class<C> cls, DatabaseIdentifier identifier) throws SQLException {
+    private <C extends UniqueEntity, E extends TimeSeriesEntry<V>, V extends Value> void persistList(List<C> entities, Class<C> cls, DbGridMetadata identifier) throws SQLException {
         // Check if there are only elements of the same class
         Class<?> firstClass = entities.get(0).getClass();
-        boolean allSameClass = true;
-        for (Object obj : entities) {
-            if (obj.getClass() != firstClass) {
-                allSameClass = false;
-                break;
-            }
-        }
+        boolean allSameClass = entities.stream().allMatch(e -> e.getClass() == firstClass);
 
         if (allSameClass) {
             if (InputEntity.class.isAssignableFrom(cls)) {
@@ -220,7 +208,15 @@ public class SqlSink {
             } else if (ResultEntity.class.isAssignableFrom(cls)) {
                 insertListIgnoreNested(entities, cls, identifier);
             } else if (TimeSeries.class.isAssignableFrom(cls)) {
-                persistListOfTimeSeries((List<TimeSeries<E, V>>) entities, identifier);
+                entities.forEach(ts -> {
+                    try {
+                        persistTimeSeries((TimeSeries<E, V>) ts, identifier);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(String.format(
+                                "An error occurred during extraction of entity '%s', SQLReason: '%s'",
+                                cls.getSimpleName(), e.getMessage()), e);
+                    }
+                });
             } else {
                 log.error("I don't know how to handle an entity of class {}", cls.getSimpleName());
             }
@@ -232,30 +228,18 @@ public class SqlSink {
     /**
      * Writes a list of entities into a sql table. It's necessary that all entities have the same class.
      */
-    private <C extends UniqueEntity> void insertListIgnoreNested(List<C> entities, Class<C> cls, DatabaseIdentifier identifier) throws SQLException {
+    private <C extends UniqueEntity> void insertListIgnoreNested(List<C> entities, Class<C> cls, DbGridMetadata identifier) throws SQLException {
         try {
             String[] headerElements = processorProvider.getHeaderElements(cls);
             String query = basicInsertQueryValuesGrid(schemaName, databaseNamingStrategy.getEntityName(cls).orElseThrow(), headerElements);
             query = query + createInsertQueryBodyIgnoreConflict(entities, headerElements, identifier);
             connector.executeUpdate(query);
-            //int expectedElements = entities.size();
-            //int addedElements = connector.executeUpdate(query);
-            //System.out.println("Insert " + cls.getSimpleName() + ": " + " expected " + expectedElements + ", added " + addedElements);
         } catch (ProcessorProviderException e) {
             log.error("Exception occurred during processor request: ", e);
         }
     }
 
-    private <E extends TimeSeriesEntry<V>, V extends Value> void persistListOfTimeSeries(
-            List<TimeSeries<E, V>> list, DatabaseIdentifier identifier
-    ) throws SQLException {
-        for (TimeSeries<E, V> ts : list) {
-            persistTimeSeries(ts, identifier);
-        }
-    }
-
-
-    protected <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(TimeSeries<E, V> timeSeries, DatabaseIdentifier identifier) throws SQLException {
+    protected <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(TimeSeries<E, V> timeSeries, DbGridMetadata identifier) throws SQLException {
         try {
             TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
             String[] headerElements = processorProvider.getHeaderElements(key);
@@ -269,7 +253,7 @@ public class SqlSink {
     }
 
     private <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
-            TimeSeries<E, V> timeSeries, String[] headerElements, DatabaseIdentifier identifier) throws ProcessorProviderException, IOException, SQLException {
+            TimeSeries<E, V> timeSeries, String[] headerElements, DbGridMetadata identifier) throws ProcessorProviderException, IOException, SQLException {
         try {
             String query = basicInsertQueryValuesITS(schemaName, databaseNamingStrategy.getEntityName(timeSeries).orElseThrow(), headerElements);
             Set<LinkedHashMap<String, String>> entityFieldData =
@@ -278,20 +262,19 @@ public class SqlSink {
                     data -> queryTimeSeriesValueLine(sqlEntityFieldData(data), headerElements, identifier, timeSeries.getUuid().toString())).collect(Collectors.joining(",\n", "", ";"));
             try {
                 connector.executeUpdate(query);
-                //int expectedElements = timeSeries.getEntries().size();
-                //int addedElements = connector.executeUpdate(query);
-                //System.out.println("Insert " + "TimeSeries" + ": " + " expected " + expectedElements + ", added " + addedElements);
             } catch (SQLException e) {
-                throw new SQLException(String.format("Error at execution of query \"%1.127s\": ", query), e);
+                throw new RuntimeException(String.format(
+                        "An error occurred during extraction of the time series, SQLReason: '%s'",
+                        e.getMessage()), e);
             }
         } catch (ProcessorProviderException e) {
             throw new ProcessorProviderException("Exception occurred during processor request: ", e);
         }
     }
 
-    public void persistJointGrid(JointGridContainer jointGridContainer) throws SQLException {
-        DatabaseIdentifier identifier = new DatabaseIdentifier(
-                jointGridContainer.getGridName(), randomUUID()
+    public void persistJointGrid(JointGridContainer jointGridContainer, UUID gridUUID) throws SQLException {
+        DbGridMetadata identifier = new DbGridMetadata(
+                jointGridContainer.getGridName(), gridUUID
         );
 
         // get raw grid entities with types or operators
@@ -372,7 +355,7 @@ public class SqlSink {
         // persist all entities
         persistAll(toAdd, identifier);
     }
-    private <C extends UniqueEntity> void insert(C entity, DatabaseIdentifier identifier) throws SQLException {
+    private <C extends UniqueEntity> void insert(C entity, DbGridMetadata identifier) throws SQLException {
         try {
             String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
             String query = basicInsertQueryValuesGrid(schemaName, databaseNamingStrategy.getEntityName(entity.getClass()).orElseThrow(), headerElements) + queryValueLine(entity, headerElements, identifier) + ";";
@@ -385,11 +368,10 @@ public class SqlSink {
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     /**
-     * Provides the value lists for an insertion query. Conflicts because of the primary key uuid will be ignored.
-     *
+     * Provides the value lists for an insertion query. Conflicts because of the primary key 'uuid' will be ignored. Conflicts can occur if an entity (e.g. node) already exist.
      * WARNING: It's assumed that all entities are from the same class C.
      */
-    private <C extends UniqueEntity> String createInsertQueryBodyIgnoreConflict(List<C> entities, String[] headerElements, DatabaseIdentifier identifier) throws ProcessorProviderException {
+    private <C extends UniqueEntity> String createInsertQueryBodyIgnoreConflict(List<C> entities, String[] headerElements, DbGridMetadata identifier) throws ProcessorProviderException {
         Set<LinkedHashMap<String, String>> entityFieldData =
                 processorProvider
                         .handleEntities(entities);
@@ -406,7 +388,7 @@ public class SqlSink {
      *
      * WARNING: It's assumed that all entities are from the same class C.
      */
-    private <C extends UniqueEntity> String createInsertQueryBody(List<C> entities, String[] headerElements, DatabaseIdentifier identifier) throws ProcessorProviderException {
+    private <C extends UniqueEntity> String createInsertQueryBody(List<C> entities, String[] headerElements, DbGridMetadata identifier) throws ProcessorProviderException {
         Set<LinkedHashMap<String, String>> entityFieldData =
                 processorProvider
                         .handleEntities(entities);
@@ -419,26 +401,20 @@ public class SqlSink {
     /**
      * Creates a line with the values of one entity for an insertion query using the entityFieldData.
      */
-    private String queryValueLine(LinkedHashMap<String, String> entityFieldData, String[] headerElements, DatabaseIdentifier identifier) {
+    private String queryValueLine(LinkedHashMap<String, String> entityFieldData, String[] headerElements, DbGridMetadata identifier) {
         return writeOneLine(Stream.concat(Arrays.stream(headerElements).map(entityFieldData::get), identifier.getStreamForQuery()));
     }
 
     /**
      * Creates a line with the values of one entity for an insertion query.
      */
-    private <C extends UniqueEntity> String queryValueLine(C entity, String[] headerElements, DatabaseIdentifier identifier) throws ProcessorProviderException {
-        LinkedHashMap<String, String> entityFieldData =
-                processorProvider
-                        .handleEntity(entity)
-                        .map(this::sqlEntityFieldData)
-                        .getOrThrow();
-        return writeOneLine(Stream.concat(Arrays.stream(headerElements).map(entityFieldData::get), identifier.getStreamForQuery()));
+    private <C extends UniqueEntity> String queryValueLine(C entity, String[] headerElements, DbGridMetadata identifier) throws ProcessorProviderException {
+        return queryValueLine(processorProvider.handleEntity(entity).map(this::sqlEntityFieldData).getOrThrow(), headerElements, identifier);
     }
 
-    private String queryTimeSeriesValueLine(Map<String, String> entityFieldData, String[] headerElements, DatabaseIdentifier identifier, String TSuuid) {
+    private String queryTimeSeriesValueLine(Map<String, String> entityFieldData, String[] headerElements, DbGridMetadata identifier, String TSuuid) {
         return writeOneLine(Stream.concat(Stream.concat(Arrays.stream(headerElements).map(entityFieldData::get), identifier.getStreamForQuery()), Stream.of(quote(TSuuid,"'"))));
     }
-
 
     private LinkedHashMap<String, String> sqlEntityFieldData(
             LinkedHashMap<String, String> entityFieldData
@@ -451,7 +427,6 @@ public class SqlSink {
         return quotedEntityFieldData;
     }
 
-
     /**
      * "INSERT INTO" line with schemaName.tableName
      */
@@ -463,7 +438,7 @@ public class SqlSink {
      * Provides the insert, column names, grid identifier and the VALUES statement for a query.
      */
     private String basicInsertQueryValuesGrid(String schemaName, String tableName, String[] headerElements) {
-        String[] addParams = {GRID_NAME, GRID_UUID};
+        String[] addParams = {DbGridMetadata.GRID_UUID};
         return basicInsertQuery(schemaName, tableName) + " " + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams) + "\nVALUES\n";
     }
 
@@ -471,7 +446,9 @@ public class SqlSink {
      * Provides the insert, column names, grid identifier, time_series uuid and the VALUES statement for a query.
      */
     private String basicInsertQueryValuesITS(String schemaName, String tableName, String[] headerElements) {
-        String[] addParams = {GRID_NAME, GRID_UUID, TIME_SERIES};
+        String[] addParams = {
+                DbGridMetadata.GRID_UUID,
+                TIME_SERIES};
         return basicInsertQuery(schemaName, tableName) + " " + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams) + "\nVALUES\n";
     }
 
@@ -489,6 +466,21 @@ public class SqlSink {
         return writeOneLine(Stream.concat(Arrays.stream(entries), Arrays.stream(addParams)));
     }
 
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+    public void createClassTable(
+        Class<? extends UniqueEntity> cls
+    ) throws SQLException, ProcessorProviderException, EntityProcessorException {
+        String query = getDataTypes(cls);
+        connector.executeUpdate(query);
+    }
+
+    public void createGridTable(
+        String schemaName, String tableName
+    ) throws SQLException {
+        String query = queryForGridTable(schemaName, tableName);
+        connector.executeUpdate(query);
+    }
 
     /**
      * @return insertion order for unique entities
@@ -505,17 +497,5 @@ public class SqlSink {
         sortedInsert.add(GraphicInput.class);               //7. GraphicInput
         //8. Rest
         return sortedInsert;
-    }
-
-    private <C extends UniqueEntity> String entitiesToString(Collection<C> entities) {
-        String res = "[\n";
-        int no = 0;
-        Iterator<C> iterator = entities.iterator();
-        while (iterator.hasNext()) {
-            res = res + "\t (" + no + ") " + iterator.next().toString() + "\n";
-            no++;
-        }
-        res = res + "]";
-        return res;
     }
 }

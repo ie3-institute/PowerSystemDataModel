@@ -4,17 +4,22 @@ import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
+import edu.ie3.datamodel.io.sink.SqlSink;
 import edu.ie3.datamodel.models.UniqueEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static edu.ie3.util.StringUtils.camelCaseToSnakeCase;
 
 public class SqlUtils {
+    protected static final Logger log = LoggerFactory.getLogger(SqlUtils.class);
     private static final String endQueryCreateTable = ")\n" + "\t WITHOUT OIDS\n" + "\t TABLESPACE pg_default;";
 
     private SqlUtils() {
@@ -43,31 +48,29 @@ public class SqlUtils {
         return "CREATE TABLE " + schemaName + "." + tableName + "\n(\n";
     }
 
-    public static String getDataTypes(Class<? extends UniqueEntity> cls) {
-        try {
-            ProcessorProvider processorProvider = new ProcessorProvider();
-            DatabaseNamingStrategy namingStrategy = new DatabaseNamingStrategy();
-            String body = "";
-            Stream<String> dataTypes;
-            String[] headerElements = processorProvider.getHeaderElements(cls);
-            Stream<String> strHeader = Stream.concat(Arrays.stream(headerElements), Stream.of("grid_name", "grid_uuid")) ;
-            Stream<String> dtHeader = strHeader.map(
-                    element -> {
-                        return camelCaseToSnakeCase(element) + " " + classToDataType().get(camelCaseToSnakeCase(element));
-                    }
-            );
-            return "CREATE TABLE public." + namingStrategy.getEntityName(cls).orElseThrow() + "\n(\n\t" + String.valueOf(dtHeader.collect(Collectors.joining(",\n\t"))) + "\n)\n\t" +
-                    "WITHOUT OIDS\n" +
-                    "\t" + "TABLESPACE pg_default;\n";
-        } catch (EntityProcessorException e) {
-            return "";
-        } catch (ProcessorProviderException e) {
-            return "";
-        }
+    public static String queryForGridTable(
+            String schemaName,
+            String tableName
+    ) {
+        return beginQueryCreateTable(schemaName, tableName) + "\tuuid uuid PRIMARY KEY,\n\tname TEXT NOT NULL\n" + endQueryCreateTable;
+    }
+
+    public static String getDataTypes(Class<? extends UniqueEntity> cls) throws EntityProcessorException, ProcessorProviderException {
+        ProcessorProvider processorProvider = new ProcessorProvider();
+        DatabaseNamingStrategy namingStrategy = new DatabaseNamingStrategy();
+        String[] headerElements = processorProvider.getHeaderElements(cls);
+        Stream<String> strHeader = Stream.concat(Arrays.stream(headerElements), Stream.of("grid_uuid")) ;
+        Stream<String> dtHeader = strHeader.map(
+                element -> camelCaseToSnakeCase(element) + " " + classToDataType().get(camelCaseToSnakeCase(element))
+        );
+        return "CREATE TABLE public." + namingStrategy.getEntityName(cls).orElseThrow() + "\n(\n\t" + String.valueOf(dtHeader.collect(Collectors.joining(",\n\t"))) + "\n)\n\t" +
+                "WITHOUT OIDS\n" +
+                "\t" + "TABLESPACE pg_default;\n";
     }
 
     public static Map<String, String> classToDataType() {
         HashMap map = new HashMap();
+
         map.put("uuid", "uuid PRIMARY KEY");
         map.put("time_series", "uuid NOT NULL");
         map.put("time", "timestamp with time zone NOT NULL");
@@ -81,9 +84,7 @@ public class SqlUtils {
         map.put("id", "TEXT NOT NULL");
         map.put("market_reaction", "bool NOT NULL");
         map.put("node", "uuid NOT NULL");
-        //map.put("operatesFrom", "timestamp with time zone");
         map.put("operates_from", "timestamp with time zone");
-        //map.put("operatesUntil", "timestamp with time zone");
         map.put("operates_until", "timestamp with time zone");
         map.put("operator", "uuid");
         map.put("q_characteristics", "TEXT NOT NULL");
@@ -94,7 +95,6 @@ public class SqlUtils {
         map.put("type", "uuid NOT NULL");       //EVCS
         map.put("olm_characteristic", "TEXT NOT NULL");
         map.put("parallel_devices", "int NOT NULL");
-        //map.put("parallelDevices", "int NOT NULL");
         map.put("cos_phi_rated", "TEXT NOT NULL");
         map.put("dsm", "bool NOT NULL");
         map.put("e_cons_annual", "double precision NOT NULL");
@@ -108,15 +108,12 @@ public class SqlUtils {
         map.put("v_mag", "bool NOT NULL");
         map.put("slack", "bool NOT NULL");
         map.put("subnet", "int NOT NULL");
-        //map.put("vRated", "double precision NOT NULL");
         map.put("v_rated", "double precision NOT NULL");
         map.put("v_target", "double precision NOT NULL");
-        //map.put("vTarget", "double precision NOT NULL");
         map.put("volt_lvl", "TEXT NOT NULL");
         map.put("charging_points", "int NOT NULL");
         map.put("location_type", "TEXT NOT NULL");
         map.put("v_2g_support", "bool NOT NULL");
-        //map.put("voltLvl", "TEXT NOT NULL");
 
         map.put("albedo", "double precision NOT NULL");
         map.put("azimuth", "double precision NOT NULL");
@@ -178,6 +175,8 @@ public class SqlUtils {
         map.put("life_time", "double precision NOT NULL");
         map.put("opex", "double precision NOT NULL");
         map.put("active_power_gradient", "double precision NOT NULL");
+
+        // not all data types are implemented
 
         return map;
     }

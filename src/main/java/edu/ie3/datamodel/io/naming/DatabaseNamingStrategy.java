@@ -73,7 +73,7 @@ public class DatabaseNamingStrategy {
 
   /**
    * Provides the name of a time series. Used to determine the table name in SQL database.
-   * @param timeSeries
+   * @param timeSeries to be named TimeSeries
    * @return the table name
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>

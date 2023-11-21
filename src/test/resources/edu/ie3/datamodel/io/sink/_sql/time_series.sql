@@ -4,8 +4,7 @@ CREATE TABLE public.time_series_c
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
     price double precision,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -23,8 +22,7 @@ CREATE TABLE public.time_series_p
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
     p double precision,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -40,8 +38,7 @@ CREATE TABLE public.time_series_pq
     time timestamp with time zone NOT NULL,
     p double precision,
     q double precision,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -56,8 +53,7 @@ CREATE TABLE public.time_series_h
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
     heat_demand double precision,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -73,8 +69,7 @@ CREATE TABLE public.time_series_ph
     time timestamp with time zone NOT NULL,
     p double precision,
     heat_demand double precision,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -91,8 +86,7 @@ CREATE TABLE public.time_series_pqh
     p double precision,
     q double precision,
     heat_demand double precision,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -112,8 +106,7 @@ CREATE TABLE public.time_series_weather
     direction double precision,
     temperature double precision,
     velocity double precision,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;

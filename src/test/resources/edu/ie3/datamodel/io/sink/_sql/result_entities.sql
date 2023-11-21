@@ -5,7 +5,6 @@ CREATE TABLE public.pv_res
     p double precision NOT NULL,
     q double precision NOT NULL,
     time timestamp with time zone NOT NULL,
-    grid_name TEXT NOT NULL,
     grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
@@ -18,7 +17,6 @@ CREATE TABLE public.wec_res
     p double precision NOT NULL,
     q double precision NOT NULL,
     time timestamp with time zone NOT NULL,
-    grid_name TEXT NOT NULL,
     grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
@@ -32,7 +30,6 @@ CREATE TABLE public.ev_res
     q double precision NOT NULL,
     soc double precision NOT NULL,
     time timestamp with time zone NOT NULL,
-    grid_name TEXT NOT NULL,
     grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
@@ -45,7 +42,6 @@ CREATE TABLE public.evcs_res
     p double precision NOT NULL,
     q double precision NOT NULL,
     time timestamp with time zone NOT NULL,
-    grid_name TEXT NOT NULL,
     grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
@@ -58,7 +54,6 @@ CREATE TABLE public.em_res
     p double precision NOT NULL,
     q double precision NOT NULL,
     time timestamp with time zone NOT NULL,
-    grid_name TEXT NOT NULL,
     grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
@@ -72,7 +67,6 @@ CREATE TABLE public.flex_options_res
     p_min double precision NOT NULL,
     p_ref double precision NOT NULL,
     time timestamp with time zone NOT NULL,
-    grid_name TEXT NOT NULL,
     grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS

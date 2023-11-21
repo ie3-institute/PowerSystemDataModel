@@ -1,21 +1,14 @@
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.io.DatabaseIdentifier
-import edu.ie3.datamodel.io.SqlUtils
+import edu.ie3.datamodel.io.DbGridMetadata
 import edu.ie3.datamodel.io.connectors.SqlConnector
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
-import edu.ie3.datamodel.io.naming.FileNamingStrategy
-import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
-import edu.ie3.datamodel.io.source.csv.CsvTimeSeriesSource
 import edu.ie3.datamodel.io.source.sql.SqlDataSource
-import edu.ie3.datamodel.io.source.sql.SqlTimeSeriesSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -30,10 +23,7 @@ import edu.ie3.datamodel.models.input.system.EmInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
-import edu.ie3.datamodel.models.input.system.StorageInput
-import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
-import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
@@ -47,7 +37,6 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
 import edu.ie3.test.common.GridTestData
@@ -56,8 +45,6 @@ import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.TimeUtil
-import edu.ie3.util.io.FileIOUtils
-import org.jetbrains.annotations.NotNull
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.MountableFile
@@ -68,17 +55,11 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Power
-import java.nio.file.Path
 
 import edu.ie3.test.common.SystemParticipantTestData
 
 import java.sql.SQLException
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
-import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
@@ -99,7 +80,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     DatabaseNamingStrategy namingStrategy
 
     @Shared
-    DatabaseIdentifier identifier
+    DbGridMetadata identifier
 
     static String schemaName = "public"
 
@@ -113,7 +94,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
 
         namingStrategy = new DatabaseNamingStrategy()
 
-        identifier = new DatabaseIdentifier("vn_simona", UUID.fromString("8e6bd444-4580-11ee-be56-0242ac120002"))
+        identifier = new DbGridMetadata("vn_simona", UUID.fromString("8e6bd444-4580-11ee-be56-0242ac120002"))
 
         sqlSource = new SqlDataSource(connector, schemaName, namingStrategy)
     }
@@ -121,6 +102,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     def setup() {
         // Execute import script
         Iterable<String> importFiles = Arrays.asList(
+                "grids.sql",
                 "types.sql",
                 "result_entities.sql",
                 "input_entities.sql",
@@ -336,13 +318,41 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
             sink.shutdown()
     }
 
+    def "A valid SqlSink can create a table for class."() {
+        given:
+            def sink = new SqlSink(schemaName, namingStrategy, connector)
+            def wec = SystemParticipantTestData.wecInput
+
+        when:
+            sink.createClassTable(wec.getClass())
+
+        then:
+            sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "wec_input", ps -> {}).count() == 0
+    }
+
+    def "A valid SqlSink throws an exception if a grid does not exist."() {
+        given:
+        def sink = new SqlSink(schemaName, namingStrategy, connector)
+
+        when:
+        def failIdentifier = new DbGridMetadata("fail_grid", UUID.fromString("8e6bd444-4580-11ee-be56-0242ac120003"))
+
+        sink.persist(individualEnergyPriceTimeSeries, failIdentifier)
+
+        then:
+        def exception = thrown(RuntimeException)
+        exception.message.contains("Detail: Key (grid_uuid)=(8e6bd444-4580-11ee-be56-0242ac120003) is not present in table \"grids\".")
+
+        cleanup:
+        sink.shutdown()
+    }
 
     def "A valid SqlSink should persist a valid joint grid container correctly"() {
         given:
             def sink = new SqlSink(schemaName, namingStrategy, connector)
 
         when:
-            sink.persistJointGrid(SampleJointGrid.grid())
+            sink.persistJointGrid(SampleJointGrid.grid(), UUID.fromString("297dfac8-83cc-11ee-b962-0242ac120002"))
 
         then:
             sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "line_input", ps -> {}).count() == 6
@@ -360,43 +370,4 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
             sink.shutdown()
     }
 
-    /*
-    def "Ausgabe"() {
-        given:
-            System.out.println(SqlUtils.getDataTypes(StorageTypeInput.class))
-            //System.out.println(SqlUtils.getDataTypes(StorageInput.class))
-        //System.out.println(SqlUtils.getDataTypes(NodeInput.class))
-
-        System.out.println(SqlUtils.getDataTypes(PvResult.class))
-        System.out.println(SqlUtils.getDataTypes(WecResult.class))
-        System.out.println(SqlUtils.getDataTypes(EvResult.class))
-        System.out.println(SqlUtils.getDataTypes(EvcsResult.class))
-        System.out.println(SqlUtils.getDataTypes(EmResult.class))
-        System.out.println(SqlUtils.getDataTypes(FlexOptionsResult.class))
-
-
-        System.out.println(SqlUtils.getDataTypes(Transformer2WInput.class))
-        System.out.println(SqlUtils.getDataTypes(NodeInput.class))
-        System.out.println(SqlUtils.getDataTypes(EvcsInput.class))
-        System.out.println(SqlUtils.getDataTypes(LineGraphicInput.class))
-        System.out.println(SqlUtils.getDataTypes(NodeGraphicInput.class))
-        System.out.println(SqlUtils.getDataTypes(CylindricalStorageInput.class))
-        System.out.println(SqlUtils.getDataTypes(ThermalHouseInput.class))
-        System.out.println(SqlUtils.getDataTypes(OperatorInput.class))
-        System.out.println(SqlUtils.getDataTypes(LineInput.class))
-        System.out.println(SqlUtils.getDataTypes(ThermalBusInput.class))
-        System.out.println(SqlUtils.getDataTypes(LineTypeInput.class))
-        System.out.println(SqlUtils.getDataTypes(LoadInput.class))
-        System.out.println(SqlUtils.getDataTypes(EmInput.class))
-
-        System.out.println(SqlUtils.getDataTypes(Transformer2WTypeInput.class))
-
-
-        when:
-        def nummer = 1
-
-        then:
-        nummer == 1
-    }
-    */
 }

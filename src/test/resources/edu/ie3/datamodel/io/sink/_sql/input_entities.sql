@@ -11,8 +11,7 @@ CREATE TABLE public.node_input
     v_rated double precision NOT NULL,
     v_target double precision NOT NULL,
     volt_lvl TEXT NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -30,8 +29,7 @@ CREATE TABLE public.transformer_2_w_input
     parallel_devices int NOT NULL,
     tap_pos int NOT NULL,
     type uuid NOT NULL REFERENCES transformer_2_w_type_input(uuid),
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -50,8 +48,7 @@ CREATE TABLE public.evcs_input
     q_characteristics TEXT NOT NULL,
     type TEXT NOT NULL,
     v_2g_support bool NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -62,8 +59,7 @@ CREATE TABLE public.line_graphic_input
     graphic_layer TEXT NOT NULL,
     line uuid NOT NULL,
     path TEXT,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -75,8 +71,7 @@ CREATE TABLE public.node_graphic_input
     node uuid NOT NULL,
     path TEXT,
     point TEXT NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -94,8 +89,7 @@ CREATE TABLE public.cylindrical_storage_input
     storage_volume_lvl double precision NOT NULL,
     storage_volume_lvl_min double precision NOT NULL,
     thermal_bus uuid NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -113,8 +107,7 @@ CREATE TABLE public.thermal_house_input
     target_temperature double precision NOT NULL,
     thermal_bus uuid NOT NULL,
     upper_temperature_limit double precision NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -123,8 +116,7 @@ CREATE TABLE public.operator_input
 (
     uuid uuid PRIMARY KEY,
     id TEXT NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -143,8 +135,7 @@ CREATE TABLE public.line_input
     operator uuid,
     parallel_devices int NOT NULL,
     type uuid NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -156,8 +147,7 @@ CREATE TABLE public.thermal_bus_input
     operates_from timestamp with time zone,
     operates_until timestamp with time zone,
     operator uuid,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -176,8 +166,7 @@ CREATE TABLE public.load_input
     operator uuid,
     q_characteristics TEXT NOT NULL,
     s_rated double precision NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -193,8 +182,7 @@ CREATE TABLE public.em_input
     operates_until timestamp with time zone,
     operator uuid,
     q_characteristics TEXT NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -217,8 +205,7 @@ CREATE TABLE public.pv_input
     operator uuid,
     q_characteristics TEXT NOT NULL,
     s_rated double precision NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -233,8 +220,7 @@ CREATE TABLE public.storage_input
     operator uuid,
     q_characteristics TEXT NOT NULL,
     type uuid NOT NULL,
-    grid_name TEXT NOT NULL,
-    grid_uuid uuid NOT NULL
+    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
