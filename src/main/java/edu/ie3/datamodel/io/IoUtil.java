@@ -63,5 +63,4 @@ public class IoUtil {
       return input.matches("^\".*\"$") ? input : quoteSymbol + input + quoteSymbol;
     }
   }
-
 }

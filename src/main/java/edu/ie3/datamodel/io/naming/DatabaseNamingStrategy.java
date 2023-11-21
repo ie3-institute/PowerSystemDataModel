@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.naming;
 
+import static edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy.logger;
+
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -12,10 +14,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
-
 import java.util.Optional;
-
-import static edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy.logger;
 
 /** A naming strategy for database entities */
 public class DatabaseNamingStrategy {
@@ -55,6 +54,7 @@ public class DatabaseNamingStrategy {
 
   /**
    * Provides the name of a load profile given by the load profile key
+   *
    * @param lpKey Load profile key
    * @return the table name
    */
@@ -64,6 +64,7 @@ public class DatabaseNamingStrategy {
 
   /**
    * Provides the name of a unique entity class.
+   *
    * @param cls Class extends UniqueEntity
    * @return the table name
    */
@@ -73,11 +74,12 @@ public class DatabaseNamingStrategy {
 
   /**
    * Provides the name of a time series. Used to determine the table name in SQL database.
+   *
    * @param timeSeries to be named TimeSeries
    * @return the table name
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-  Optional<String> getEntityName(T timeSeries) {
+      Optional<String> getEntityName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries individualTimeSeries) {
       Optional<E> maybeFirstElement = individualTimeSeries.getEntries().stream().findFirst();
       if (maybeFirstElement.isPresent()) {
@@ -88,9 +90,7 @@ public class DatabaseNamingStrategy {
         return Optional.empty();
       }
     } else if (timeSeries instanceof LoadProfileInput loadProfileInput) {
-      return Optional.of(
-        getLoadProfileEntityName(loadProfileInput.getType().getKey())
-      );
+      return Optional.of(getLoadProfileEntityName(loadProfileInput.getType().getKey()));
     } else {
       logger.error("There is no naming strategy defined for {}", timeSeries);
       return Optional.empty();

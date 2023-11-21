@@ -55,8 +55,8 @@ trait TimeSeriesTestData {
   )
 
   IndividualTimeSeriesMetaInformation individualEnergyPriceTimeSeriesMeta = new IndividualTimeSeriesMetaInformation(
-          UUID.fromString("a4bbcb77-b9d0-4b88-92be-b9a14a3e332b"),
-          ColumnScheme.ENERGY_PRICE
+  UUID.fromString("a4bbcb77-b9d0-4b88-92be-b9a14a3e332b"),
+  ColumnScheme.ENERGY_PRICE
   )
 
   Set<LinkedHashMap<String, String>>  individualEnergyPriceTimeSeriesProcessed = [

@@ -65,7 +65,7 @@ public class SqlConnector implements DataConnector {
    * @return The number of updates or a negative number if the execution failed
    */
   public int executeUpdate(String updateQuery) throws SQLException {
-      return getConnection().createStatement().executeUpdate(updateQuery);
+    return getConnection().createStatement().executeUpdate(updateQuery);
   }
 
   /**
