@@ -79,11 +79,11 @@ public abstract class EntitySource {
   }
 
   /**
-   * Checks if the requested type of an asset can be found in the provided collection of types based
-   * on the provided fields to values mapping. The provided fields to values mapping needs to have
-   * one and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can
-   * be found in the provided collection based on the UUID it is returned wrapped in a {@link
-   * Success}. Otherwise a {@link Failure} is returned and a warning is logged.
+   * Checks if the requested type of asset can be found in the provided collection of types based on
+   * the provided fields to values mapping. The provided fields to values mapping needs to have one
+   * and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can be
+   * found in the provided collection based on the UUID it is returned wrapped in a {@link Success}.
+   * Otherwise a {@link Failure} is returned and a warning is logged.
    *
    * @param types a collection of types that should be used for searching
    * @param fieldsToAttributes the field name to value mapping incl. the key {@link #TYPE}
@@ -265,7 +265,7 @@ public abstract class EntitySource {
     // get the operator of the entity
     Optional<UUID> operatorUuid =
         Optional.ofNullable(fieldsToAttributes.get(OPERATOR))
-            .filter(s -> !s.isEmpty() && !s.isBlank())
+            .filter(s -> !s.isBlank())
             .map(UUID::fromString);
     OperatorInput operator =
         getFirstOrDefaultOperator(
