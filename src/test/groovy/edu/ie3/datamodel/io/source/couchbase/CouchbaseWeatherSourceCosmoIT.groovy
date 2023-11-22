@@ -23,6 +23,7 @@ import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.time.Duration
 import java.time.ZoneId
 
 @Testcontainers
@@ -64,7 +65,13 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
         "--dataset", "file:///home/weather_cosmo.json")
 
-    def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
+    // increased timeout to deal with CI under high load
+    def connector = new CouchbaseConnector(
+        couchbaseContainer.connectionString,
+        bucketDefinition.name,
+        couchbaseContainer.username,
+        couchbaseContainer.password,
+        Duration.ofSeconds(20))
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
     source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)

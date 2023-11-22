@@ -20,6 +20,7 @@ import org.testcontainers.spock.Testcontainers
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.time.Duration
 import java.time.ZoneId
 
 @Testcontainers
@@ -61,7 +62,13 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
         "--dataset", "file:///home/weather_icon.json")
 
-    def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
+    // increased timeout to deal with CI under high load
+    def connector = new CouchbaseConnector(
+        couchbaseContainer.connectionString,
+        bucketDefinition.name,
+        couchbaseContainer.username,
+        couchbaseContainer.password,
+        Duration.ofSeconds(20))
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
     def weatherFactory = new IconTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
     source = new CouchbaseWeatherSource(connector, IconWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
