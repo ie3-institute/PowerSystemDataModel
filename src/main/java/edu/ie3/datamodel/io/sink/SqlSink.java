@@ -262,6 +262,7 @@ public class SqlSink {
           basicInsertQueryValuesGrid(
               schemaName, databaseNamingStrategy.getEntityName(cls).orElseThrow(), headerElements);
       query = query + createInsertQueryBodyIgnoreConflict(entities, headerElements, identifier);
+      System.out.println(query);
       connector.executeUpdate(query);
     } catch (ProcessorProviderException e) {
       log.error("Exception occurred during processor request: ", e);
