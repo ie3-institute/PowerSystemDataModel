@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 /** Class for identification of entities and results from grids in SQL databases. */
 public record DbGridMetadata(String gridName, UUID uuid) {
 
+  public static final String GRID_TABLE = "grids";
   public static final String GRID_NAME = "grid_name";
   public static final String GRID_UUID = "grid_uuid";
 

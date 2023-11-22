@@ -544,14 +544,14 @@ public class SqlSink {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  public void createClassTable(Class<? extends UniqueEntity> cls)
+  public void createClassTable(Class<? extends UniqueEntity> cls, String schemaName)
       throws SQLException, ProcessorProviderException, EntityProcessorException {
-    String query = getDataTypes(cls);
+    String query = queryCreateTableUniqueEntity(cls, schemaName);
     connector.executeUpdate(query);
   }
 
-  public void createGridTable(String schemaName, String tableName) throws SQLException {
-    String query = queryForGridTable(schemaName, tableName);
+  public void createGridTable(String schemaName) throws SQLException {
+    String query = queryCreateGridTable(schemaName);
     connector.executeUpdate(query);
   }
 

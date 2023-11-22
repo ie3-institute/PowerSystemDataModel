@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SqlUtils {
+
   protected static final Logger log = LoggerFactory.getLogger(SqlUtils.class);
   private static final String endQueryCreateTable =
       ")\n" + "\t WITHOUT OIDS\n" + "\t TABLESPACE pg_default;";
@@ -29,38 +30,35 @@ public class SqlUtils {
     throw new IllegalStateException("Utility classes cannot be instantiated");
   }
 
-  public static String queryForCreation(
-      String schemaName, String tableName, Stream<Map<String, String>> columnsWithDataTypes) {
-    return beginQueryCreateTable(schemaName, tableName) + " " + endQueryCreateTable;
-  }
-
-  public static String getEndQueryCreateTable() {
-    return endQueryCreateTable;
-  }
-
   private static String beginQueryCreateTable(String schemaName, String tableName) {
     return "CREATE TABLE " + schemaName + "." + tableName + "\n(\n";
   }
 
-  public static String queryForGridTable(String schemaName, String tableName) {
-    return beginQueryCreateTable(schemaName, tableName)
+  /** @return query to create a SQL table for a grid */
+  public static String queryCreateGridTable(String schemaName) {
+    return beginQueryCreateTable(schemaName, DbGridMetadata.GRID_TABLE)
         + "\tuuid uuid PRIMARY KEY,\n\tname TEXT NOT NULL\n"
         + endQueryCreateTable;
   }
 
-  public static String getDataTypes(Class<? extends UniqueEntity> cls)
+  /** @return query to create a SQL table for an unique entity */
+  public static String queryCreateTableUniqueEntity(
+      Class<? extends UniqueEntity> cls, String schemaName)
       throws EntityProcessorException, ProcessorProviderException {
     ProcessorProvider processorProvider = new ProcessorProvider();
     DatabaseNamingStrategy namingStrategy = new DatabaseNamingStrategy();
     String[] headerElements = processorProvider.getHeaderElements(cls);
-    Stream<String> strHeader = Stream.concat(Arrays.stream(headerElements), Stream.of("grid_uuid"));
+    Stream<String> strHeader =
+        Stream.concat(Arrays.stream(headerElements), Stream.of(DbGridMetadata.GRID_UUID));
     Stream<String> dtHeader =
         strHeader.map(
             element ->
                 camelCaseToSnakeCase(element)
                     + " "
-                    + classToDataType().get(camelCaseToSnakeCase(element)));
-    return "CREATE TABLE public."
+                    + columnToSqlDataType().get(camelCaseToSnakeCase(element)));
+    return "CREATE TABLE "
+        + schemaName
+        + "."
         + namingStrategy.getEntityName(cls).orElseThrow()
         + "\n(\n\t"
         + String.valueOf(dtHeader.collect(Collectors.joining(",\n\t")))
@@ -70,7 +68,12 @@ public class SqlUtils {
         + "TABLESPACE pg_default;\n";
   }
 
-  public static Map<String, String> classToDataType() {
+  /**
+   * Map to create a SQL table for an entity with the right data types.
+   *
+   * @return Map column name -> data type
+   */
+  public static Map<String, String> columnToSqlDataType() {
     HashMap map = new HashMap();
 
     map.put("uuid", "uuid PRIMARY KEY");
@@ -94,7 +97,6 @@ public class SqlUtils {
     map.put("length", "double precision NOT NULL");
     map.put("node_a", "uuid NOT NULL");
     map.put("node_b", "uuid NOT NULL");
-    map.put("type", "uuid NOT NULL"); // EVCS
     map.put("olm_characteristic", "TEXT NOT NULL");
     map.put("parallel_devices", "int NOT NULL");
     map.put("cos_phi_rated", "TEXT NOT NULL");
@@ -182,6 +184,11 @@ public class SqlUtils {
     return map;
   }
 
+  /**
+   * To avoid data type conflicts while insertion into a SQL table all columns should be quoted.
+   *
+   * @return input with quoteSymbol
+   */
   public static String quote(String input, String quoteSymbol) {
     if (input == "") {
       return "NULL";

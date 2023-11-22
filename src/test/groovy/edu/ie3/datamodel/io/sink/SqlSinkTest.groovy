@@ -323,7 +323,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     sink.shutdown()
   }
 
-  def "A valid SqlSink can create a table for class."() {
+  def "A valid SqlSink can create a table for entity class."() {
     given:
     def sink = new SqlSink(schemaName, namingStrategy, connector)
     def wec = SystemParticipantTestData.wecInput
