@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
@@ -76,7 +77,7 @@ public class SqlWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
+      ClosedInterval<ZonedDateTime> timeInterval) throws SourceException {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         buildTimeBasedValues(
             weatherFactory,
@@ -91,7 +92,8 @@ public class SqlWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+      throws SourceException {
     Set<Integer> coordinateIds =
         coordinates.stream()
             .map(idCoordinateSource::getId)
@@ -119,7 +121,8 @@ public class SqlWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate)
+      throws SourceException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);

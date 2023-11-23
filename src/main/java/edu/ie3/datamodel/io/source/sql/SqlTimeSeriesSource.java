@@ -188,7 +188,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    */
   private Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
-    return createTimeBasedValue(fieldToValues);
+    return createTimeBasedValue(fieldToValues).getData();
   }
 
   /**

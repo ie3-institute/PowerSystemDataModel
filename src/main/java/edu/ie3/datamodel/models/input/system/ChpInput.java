@@ -216,7 +216,7 @@ public class ChpInput extends SystemParticipantInput
     }
 
     @Override
-    protected ChpInputCopyBuilder childInstance() {
+    protected ChpInputCopyBuilder thisInstance() {
       return this;
     }
   }

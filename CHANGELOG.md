@@ -7,9 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+
+### Fixed
+- Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
+
+### Changed
+- Changing from comparing strings to comparing uuids in `EntitySource.findFirstEntityByUuid` [#829](https://github.com/ie3-institute/PowerSystemDataModel/issues/829)
+
+
+## [4.1.0] - 2023-11-02
+
+### Fixed
+- Making constructor of `CsvDataSource` public [#894](https://github.com/ie3-institute/PowerSystemDataModel/issues/894)
+- Fixing spotless groovy [#918](https://github.com/ie3-institute/PowerSystemDataModel/issues/918)
+
+### Changed
+- `SqlIdCoordinateSource.createCooridinateValue` now throws an exception when the coordinate can not be built [#911](https://github.com/ie3-institute/PowerSystemDataModel/issues/911)
+- CleanUp `BufferedCsvWriterTest` only after all tests are completed [#809](https://github.com/ie3-institute/PowerSystemDataModel/issues/809)
+- Update gradle to version 8.4 [#891](https://github.com/ie3-institute/PowerSystemDataModel/issues/891)
+
+## [4.0.0] - 2023-08-01
+
+### Added
 - Copy methods for container classes [#726](https://github.com/ie3-institute/PowerSystemDataModel/issues/726)
 - Allow hierarchic grid structure for JointGridContainer [#768](https://github.com/ie3-institute/PowerSystemDataModel/issues/768)
 - Adding SQL id coordinate sources (``IdCoordinateSource``) [#689](https://github.com/ie3-institute/PowerSystemDataModel/issues/689)
+- Added some standard asset types to documentation [#642](https://github.com/ie3-institute/PowerSystemDataModel/issues/642)
 
 ### Fixed
 - Fixed wrong rated power unit hint [#804](https://github.com/ie3-institute/PowerSystemDataModel/issues/804)
@@ -19,7 +42,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removing deprecated classes and methods [#540](https://github.com/ie3-institute/PowerSystemDataModel/issues/540)
 - Refactor CSV data sources [#716](https://github.com/ie3-institute/PowerSystemDataModel/issues/716)
 - Added dateTimeFormatter field to the processors [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766)
-
+- Deleted parameter initFiles, set parameter append to false by default [#791](https://github.com/ie3-institute/PowerSystemDataModel/issues/791)
+- Use nio paths instead of strings for file path [#723](https://github.com/ie3-institute/PowerSystemDataModel/issues/723)
+- Data source will throw an exceptions instead of returning an empty optionals [#707](https://github.com/ie3-institute/PowerSystemDataModel/issues/707)
+- Improving `ValidationUtils` [#758](https://github.com/ie3-institute/PowerSystemDataModel/issues/758)
 
 ## [3.0.0] - 2023-02-16
 
@@ -110,6 +136,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Deleted parameter decimalPlaces and changed naming of serialization method [#710](https://github.com/ie3-institute/PowerSystemDataModel/issues/710)
 - Changed switch result documentation according to the implementation [#757](https://github.com/ie3-institute/PowerSystemDataModel/issues/757)
 - Added documentation for EmResult and FlexOptionResult [#656](https://github.com/ie3-institute/PowerSystemDataModel/issues/656)
+- Added method that checks if the transformer nodes are located on the correct voltage side [#803](https://github.com/ie3-institute/PowerSystemDataModel/issues/803)
 
 ## [2.0.1] - 2021-07-08
 
@@ -213,7 +240,9 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/3.0.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.1.0...HEAD
+[4.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.0.0...4.1.0
+[4.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/3.0.0...4.0.0
 [3.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...3.0.0
 [2.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.1...2.1.0
 [2.0.1]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.0...2.0.1

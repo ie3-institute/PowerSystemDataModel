@@ -13,6 +13,7 @@ import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.LongAdder
 import java.util.function.Function
@@ -28,7 +29,7 @@ class CsvDataSourceTest extends Specification {
   // methods in a public or protected method makes them available for testing
   private final class DummyCsvSource extends CsvDataSource {
 
-    DummyCsvSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+    DummyCsvSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
       super(csvSep, folderPath, fileNamingStrategy)
     }
 
@@ -56,7 +57,7 @@ class CsvDataSourceTest extends Specification {
   @Shared
   String csvSep = ","
   @Shared
-  String testBaseFolderPath = "testBaseFolderPath" // does not have to exist for this test
+  Path testBaseFolderPath = Path.of("testBaseFolderPath") // does not have to exist for this test
   @Shared
   FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 

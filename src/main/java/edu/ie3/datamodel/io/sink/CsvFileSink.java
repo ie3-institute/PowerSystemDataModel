@@ -5,10 +5,7 @@
 */
 package edu.ie3.datamodel.io.sink;
 
-import edu.ie3.datamodel.exceptions.ConnectorException;
-import edu.ie3.datamodel.exceptions.ExtractorException;
-import edu.ie3.datamodel.exceptions.ProcessorProviderException;
-import edu.ie3.datamodel.exceptions.SinkException;
+import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
 import edu.ie3.datamodel.io.extractor.Extractor;
@@ -33,6 +30,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,12 +60,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   private final String csvSep;
 
-  public CsvFileSink(String baseFolderPath) {
-    this(baseFolderPath, TimeUtil.withDefaults.getDateTimeFormatter());
+  public CsvFileSink(Path baseFolderPath) throws EntityProcessorException {
+    this(baseFolderPath, new FileNamingStrategy(), TimeUtil.withDefaults.getDateTimeFormatter(), ",");
   }
 
-  public CsvFileSink(String baseFolderPath, DateTimeFormatter dateTimeFormatter) {
-    this(baseFolderPath, new FileNamingStrategy(), dateTimeFormatter, false, ",");
+  public CsvFileSink(Path baseFolderPath, DateTimeFormatter dateTimeFormatter) throws EntityProcessorException {
+    this(baseFolderPath, new FileNamingStrategy(), dateTimeFormatter, ",");
   }
 
   /**
@@ -78,23 +76,19 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param baseFolderPath the base folder path where the files should be put into
    * @param fileNamingStrategy the data sink file naming strategy that should be used
    * @param dateTimeFormatter the formatter to use for processing date time fields
-   * @param initFiles true if the files should be created during initialization (might create files,
-   *     that only consist of a headline, because no data will be written into them), false
-   *     otherwise
    * @param csvSep the csv file separator that should be use
    */
   public CsvFileSink(
-      String baseFolderPath,
-      FileNamingStrategy fileNamingStrategy,
-      DateTimeFormatter dateTimeFormatter,
-      boolean initFiles,
-      String csvSep) {
+          Path baseFolderPath,
+          FileNamingStrategy fileNamingStrategy,
+          DateTimeFormatter dateTimeFormatter,
+          String csvSep)
+      throws EntityProcessorException {
     this(
-        baseFolderPath,
-        new ProcessorProvider(dateTimeFormatter),
-        fileNamingStrategy,
-        initFiles,
-        csvSep);
+            baseFolderPath,
+            new ProcessorProvider(),
+            fileNamingStrategy,
+            csvSep);
   }
 
   /**
@@ -109,22 +103,16 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param baseFolderPath the base folder path where the files should be put into
    * @param processorProvider the processor provided that should be used for entity serialization
    * @param fileNamingStrategy the data sink file naming strategy that should be used
-   * @param initFiles true if the files should be created during initialization (might create files,
-   *     that only consist of a headline, because no data will be written into them), false
-   *     otherwise
    * @param csvSep the csv file separator that should be use
    */
   public CsvFileSink(
-      String baseFolderPath,
+      Path baseFolderPath,
       ProcessorProvider processorProvider,
       FileNamingStrategy fileNamingStrategy,
-      boolean initFiles,
       String csvSep) {
     this.csvSep = csvSep;
     this.processorProvider = processorProvider;
     this.connector = new CsvFileConnector(baseFolderPath, fileNamingStrategy);
-
-    if (initFiles) initFiles(processorProvider, connector);
   }
 
   @Override
@@ -291,23 +279,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   }
 
   private <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
-      TimeSeries<E, V> timeSeries, BufferedCsvWriter writer) {
-    TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
-
+      TimeSeries<E, V> timeSeries, BufferedCsvWriter writer) throws ProcessorProviderException {
     try {
       Set<LinkedHashMap<String, String>> entityFieldData =
-          processorProvider
-              .handleTimeSeries(timeSeries)
-              .orElseThrow(
-                  () ->
-                      new SinkException(
-                          "Cannot persist time series of combination '"
-                              + key
-                              + "'. This sink can only process the following combinations: ["
-                              + processorProvider.getRegisteredTimeSeriesCombinations().stream()
-                                  .map(TimeSeriesProcessorKey::toString)
-                                  .collect(Collectors.joining(","))
-                              + "]"));
+          processorProvider.handleTimeSeries(timeSeries);
       entityFieldData.forEach(
           data -> {
             try {
@@ -318,8 +293,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
               log.error("Exception occurred during processing the provided data fields: ", e);
             }
           });
-    } catch (SinkException e) {
-      log.error("Exception occurred during processor request: ", e);
+    } catch (ProcessorProviderException e) {
+      throw new ProcessorProviderException("Exception occurred during processor request: ", e);
     }
   }
 
@@ -331,23 +306,9 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param <C> bounded to be all unique entities
    */
   private <C extends UniqueEntity> void write(C entity) {
-    LinkedHashMap<String, String> entityFieldData;
     try {
-      entityFieldData =
-          processorProvider
-              .handleEntity(entity)
-              .map(this::csvEntityFieldData)
-              .orElseThrow(
-                  () ->
-                      new SinkException(
-                          "Cannot persist entity of type '"
-                              + entity.getClass().getSimpleName()
-                              + "'. This sink can only process the following entities: ["
-                              + processorProvider.getRegisteredClasses().stream()
-                                  .map(Class::getSimpleName)
-                                  .collect(Collectors.joining(","))
-                              + "]"));
-
+      LinkedHashMap<String, String> entityFieldData =
+          processorProvider.handleEntity(entity).map(this::csvEntityFieldData).getOrThrow();
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
           connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
@@ -365,40 +326,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
           entity.getClass().getSimpleName(),
           e);
     }
-  }
-
-  /**
-   * Initialize files, hence create a file for each expected class that will be processed in the
-   * future. Please note, that files for time series can only be create on presence of a concrete
-   * time series, as their file name depends on the individual uuid of the time series.
-   *
-   * @param processorProvider the processor provider all files that will be processed is derived
-   *     from
-   * @param connector the connector to the files
-   */
-  private void initFiles(
-      final ProcessorProvider processorProvider, final CsvFileConnector connector) {
-    processorProvider
-        .getRegisteredClasses()
-        .forEach(
-            clz -> {
-              try {
-                String[] headerElements =
-                    csvHeaderElements(processorProvider.getHeaderElements(clz));
-
-                connector.getOrInitWriter(clz, headerElements, csvSep);
-              } catch (ProcessorProviderException e) {
-                log.error(
-                    "Error during receiving of head line elements. Cannot prepare writer for class {}.",
-                    clz,
-                    e);
-              } catch (ConnectorException e) {
-                log.error(
-                    "Error during instantiation files. Cannot get or init writer for class {}.",
-                    clz,
-                    e);
-              }
-            });
   }
 
   /**

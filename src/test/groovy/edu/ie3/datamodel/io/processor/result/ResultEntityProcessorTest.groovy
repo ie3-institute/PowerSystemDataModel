@@ -75,8 +75,7 @@ class ResultEntityProcessorTest extends Specification {
     def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
 
     then:
-    validProcessedElement.present
-    validProcessedElement.get() == expectedResults
+    validProcessedElement == expectedResults
 
     where:
     modelClass        | validSystemParticipantResult                                                                     || expectedResults
@@ -127,8 +126,7 @@ class ResultEntityProcessorTest extends Specification {
     def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
 
     then:
-    validProcessedElement.present
-    validProcessedElement.get() == expectedResults
+    validProcessedElement == expectedResults
   }
 
   def "A ResultEntityProcessor should serialize a FlexOptionsResult correctly"() {
@@ -156,8 +154,7 @@ class ResultEntityProcessorTest extends Specification {
     def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
 
     then:
-    validProcessedElement.present
-    validProcessedElement.get() == expectedResults
+    validProcessedElement == expectedResults
   }
 
   @Shared
@@ -232,8 +229,7 @@ class ResultEntityProcessorTest extends Specification {
     def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
 
     then:
-    validProcessedElement.present
-    validProcessedElement.get() == expectedResults
+    validProcessedElement == expectedResults
 
     where:
     modelClass          | validConnectorResult                                                                                                                          || expectedResults
@@ -265,8 +261,7 @@ class ResultEntityProcessorTest extends Specification {
     def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
 
     then:
-    validProcessedElement.present
-    validProcessedElement.get() == expectedResults
+    validProcessedElement == expectedResults
   }
 
   def "A ResultEntityProcessor should throw an EntityProcessorException when it receives an entity result that is not eligible"() {

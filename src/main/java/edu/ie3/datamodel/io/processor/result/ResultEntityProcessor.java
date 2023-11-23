@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.processor.result;
 
+import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.factory.result.SystemParticipantResultFactory;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -19,6 +20,9 @@ import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.util.TimeUtil;
 import java.time.format.DateTimeFormatter;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.util.exceptions.QuantityException;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
@@ -58,34 +62,39 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
           EmResult.class,
           FlexOptionsResult.class);
 
-  public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass) {
+  public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass) throws EntityProcessorException {
     super(registeredClass, TimeUtil.withDefaults.getDateTimeFormatter());
   }
 
   public ResultEntityProcessor(
-      Class<? extends ResultEntity> registeredClass, DateTimeFormatter dateTimeFormatter) {
+      Class<? extends ResultEntity> registeredClass, DateTimeFormatter dateTimeFormatter) throws EntityProcessorException {
     super(registeredClass, dateTimeFormatter);
   }
 
   @Override
-  protected Optional<String> handleProcessorSpecificQuantity(
+  protected Try<String, QuantityException> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
     return switch (fieldName) {
       case "energy", "eConsAnnual", "eStorage":
-        yield quantityValToOptionalString(
-            quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
+        yield Success.of(
+            quantityValToOptionalString(
+                quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT)));
       case "q":
-        yield quantityValToOptionalString(
-            quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
+        yield Success.of(
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT)));
       case "p", "pMax", "pOwn", "pThermal", "pRef", "pMin":
-        yield quantityValToOptionalString(
-            quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
+        yield Success.of(
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT)));
       default:
-        log.error(
-            "Cannot process quantity with value '{}' for field with name {} in result entity processing!",
-            quantity,
-            fieldName);
-        yield Optional.empty();
+        yield Failure.of(
+            new QuantityException(
+                "Cannot process quantity with value '"
+                    + quantity
+                    + "' for field with name "
+                    + fieldName
+                    + " in result entity processing!"));
     };
   }
 

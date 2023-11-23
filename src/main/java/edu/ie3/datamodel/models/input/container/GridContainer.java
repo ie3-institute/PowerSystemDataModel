@@ -86,8 +86,8 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
    * @version 3.1
    * @since 14.02.23
    */
-  protected abstract static class GridContainerCopyBuilder<T extends GridContainerCopyBuilder<T>>
-      extends InputContainerCopyBuilder<InputEntity, GridContainer> {
+  protected abstract static class GridContainerCopyBuilder<B extends GridContainerCopyBuilder<B>>
+      implements InputContainerCopyBuilder<InputEntity> {
     private String gridName;
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
@@ -99,7 +99,6 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
      * @param gridContainer instance of {@link GridContainerCopyBuilder}
      */
     protected GridContainerCopyBuilder(GridContainer gridContainer) {
-      super();
       this.gridName = gridContainer.getGridName();
       this.rawGrid = gridContainer.getRawGrid();
       this.systemParticipants = gridContainer.getSystemParticipants();
@@ -130,50 +129,47 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
      * Method to alter the grid name.
      *
      * @param gridName altered grid name
-     * @return child instance of {@link GridContainerCopyBuilder}
+     * @return this instance of {@link GridContainerCopyBuilder}
      */
-    public T gridName(String gridName) {
+    public B gridName(String gridName) {
       this.gridName = gridName;
-      return childInstance();
+      return thisInstance();
     }
 
     /**
      * Method to alter the {@link RawGridElements}
      *
      * @param rawGrid altered raw grid
-     * @return child instance of {@link GridContainerCopyBuilder}
+     * @return this instance of {@link GridContainerCopyBuilder}
      */
-    public T rawGrid(RawGridElements rawGrid) {
+    public B rawGrid(RawGridElements rawGrid) {
       this.rawGrid = rawGrid;
-      return childInstance();
+      return thisInstance();
     }
 
     /**
      * Method to alter the {@link SystemParticipants}.
      *
      * @param systemParticipants altered systemParticipants
-     * @return child instance of {@link GridContainerCopyBuilder}
+     * @return this instance of {@link GridContainerCopyBuilder}
      */
-    public T systemParticipants(SystemParticipants systemParticipants) {
+    public B systemParticipants(SystemParticipants systemParticipants) {
       this.systemParticipants = systemParticipants;
-      return childInstance();
+      return thisInstance();
     }
 
     /**
      * Method to alter the {@link GraphicElements}.
      *
      * @param graphics altered graphics
-     * @return child instance of {@link GridContainerCopyBuilder}
+     * @return this instance of {@link GridContainerCopyBuilder}
      */
-    public T graphics(GraphicElements graphics) {
+    public B graphics(GraphicElements graphics) {
       this.graphics = graphics;
-      return childInstance();
+      return thisInstance();
     }
 
-    @Override
-    protected abstract T childInstance();
-
-    @Override
-    abstract GridContainer build();
+    /** Returns the current instance of builder with the correct subclass type */
+    protected abstract B thisInstance();
   }
 }

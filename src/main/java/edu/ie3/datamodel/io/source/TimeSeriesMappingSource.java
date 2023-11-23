@@ -5,9 +5,12 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,7 +38,9 @@ public abstract class TimeSeriesMappingSource {
   public Map<UUID, UUID> getMapping() {
     return getMappingSourceData()
         .map(this::createMappingEntry)
-        .flatMap(Optional::stream)
+        .filter(Try::isSuccess)
+        .map(t -> (Success<MappingEntry, FactoryException>) t)
+        .map(Success::get)
         .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 
@@ -58,7 +63,8 @@ public abstract class TimeSeriesMappingSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  private Optional<MappingEntry> createMappingEntry(Map<String, String> fieldToValues) {
+  private Try<MappingEntry, FactoryException> createMappingEntry(
+      Map<String, String> fieldToValues) {
     SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
     return mappingFactory.get(entityData);
   }

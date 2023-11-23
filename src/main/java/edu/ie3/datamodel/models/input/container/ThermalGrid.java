@@ -59,8 +59,7 @@ public record ThermalGrid(
    * @version 3.1
    * @since 14.02.23
    */
-  public static class ThermalGridCopyBuilder
-      extends InputContainerCopyBuilder<ThermalInput, ThermalGrid> {
+  public static class ThermalGridCopyBuilder implements InputContainerCopyBuilder<ThermalInput> {
     private ThermalBusInput bus;
     private Set<ThermalHouseInput> houses;
     private Set<ThermalStorageInput> storages;
@@ -71,7 +70,6 @@ public record ThermalGrid(
      * @param thermalGrid instance of {@link ThermalGrid}
      */
     protected ThermalGridCopyBuilder(ThermalGrid thermalGrid) {
-      super();
       this.bus = thermalGrid.bus();
       this.houses = thermalGrid.houses();
       this.storages = thermalGrid.storages();
@@ -81,42 +79,37 @@ public record ThermalGrid(
      * Method to alter {@link ThermalBusInput}
      *
      * @param bus altered thermal bus
-     * @return child instance of {@link ThermalGridCopyBuilder}
+     * @return this instance of {@link ThermalGridCopyBuilder}
      */
     public ThermalGridCopyBuilder bus(ThermalBusInput bus) {
       this.bus = bus;
-      return childInstance();
+      return this;
     }
 
     /**
      * Method to alter {@link ThermalHouseInput}
      *
      * @param houses altered thermal houses
-     * @return child instance of {@link ThermalGridCopyBuilder}
+     * @return this instance of {@link ThermalGridCopyBuilder}
      */
     public ThermalGridCopyBuilder houses(Set<ThermalHouseInput> houses) {
       this.houses = houses;
-      return childInstance();
+      return this;
     }
 
     /**
      * Method to alter {@link ThermalStorageInput}
      *
      * @param storages altered thermal storages
-     * @return child instance of {@link ThermalGridCopyBuilder}
+     * @return this instance of {@link ThermalGridCopyBuilder}
      */
     public ThermalGridCopyBuilder storages(Set<ThermalStorageInput> storages) {
       this.storages = storages;
-      return childInstance();
-    }
-
-    @Override
-    protected ThermalGridCopyBuilder childInstance() {
       return this;
     }
 
     @Override
-    ThermalGrid build() {
+    public ThermalGrid build() {
       return new ThermalGrid(bus, houses, storages);
     }
   }

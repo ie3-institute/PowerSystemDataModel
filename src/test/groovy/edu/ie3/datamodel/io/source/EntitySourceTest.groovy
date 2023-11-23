@@ -16,6 +16,8 @@ import edu.ie3.test.common.GridTestData as gtd
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Path
+
 class EntitySourceTest extends Specification {
 
   private final class DummyEntitySource extends EntitySource {
@@ -27,7 +29,7 @@ class EntitySourceTest extends Specification {
   @Shared
   String csvSep = ","
   @Shared
-  String testBaseFolderPath = "testBaseFolderPath" // does not have to exist for this test
+  Path testBaseFolderPath = Path.of("testBaseFolderPath") // does not have to exist for this test
   @Shared
   FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 
@@ -46,7 +48,7 @@ class EntitySourceTest extends Specification {
         )
 
     when:
-    def actual = dummyEntitySource.findFirstEntityByUuid(uuid.toString(), entities)
+    def actual = dummyEntitySource.findFirstEntityByUuid(uuid, entities)
 
     then:
     actual.present
@@ -56,7 +58,7 @@ class EntitySourceTest extends Specification {
   def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
 
     expect:
-    dummyEntitySource.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid) == expectedOperator
+    dummyEntitySource.getFirstOrDefaultOperator(operators, Optional.of(UUID.fromString(operatorUuid)), entityClassName, requestEntityUuid) == expectedOperator
 
     where:
     operatorUuid                           | operators                | entityClassName   | requestEntityUuid                      || expectedOperator
@@ -70,8 +72,8 @@ class EntitySourceTest extends Specification {
     def assetTypeOpt = dummyEntitySource.getAssetType(types, fieldsToAttributes, "TestClassName")
 
     then:
-    assetTypeOpt.present == resultIsPresent
-    assetTypeOpt.ifPresent({ assetType ->
+    assetTypeOpt.data.present == resultIsPresent
+    assetTypeOpt.data.ifPresent({ assetType ->
       assert (assetType == resultData)
     })
 
@@ -98,7 +100,7 @@ class EntitySourceTest extends Specification {
 
     then:
     noExceptionThrown() // no NPE should be thrown
-    thermalBusInputEntity.present
-    thermalBusInputEntity.get().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
+    thermalBusInputEntity.success
+    thermalBusInputEntity.data.get().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
   }
 }

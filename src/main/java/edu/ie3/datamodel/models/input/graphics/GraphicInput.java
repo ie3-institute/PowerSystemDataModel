@@ -65,14 +65,16 @@ public abstract class GraphicInput extends InputEntity {
         + '}';
   }
 
+  public abstract GraphicInputCopyBuilder<? extends GraphicInputCopyBuilder<?>> copy();
+
   /**
    * Abstract class for all builder that build child entities of abstract class {@link GraphicInput}
    *
    * @version 0.1
    * @since 05.06.20
    */
-  protected abstract static class GraphicInputCopyBuilder<T extends GraphicInputCopyBuilder<T>>
-      extends UniqueEntityCopyBuilder<T> {
+  public abstract static class GraphicInputCopyBuilder<B extends GraphicInputCopyBuilder<B>>
+      extends UniqueEntityCopyBuilder<B> {
 
     private String graphicLayer;
     private LineString path;
@@ -83,14 +85,14 @@ public abstract class GraphicInput extends InputEntity {
       this.path = entity.getPath();
     }
 
-    public T graphicLayer(String graphicLayer) {
+    public B graphicLayer(String graphicLayer) {
       this.graphicLayer = graphicLayer;
-      return childInstance();
+      return thisInstance();
     }
 
-    public T path(LineString path) {
+    public B path(LineString path) {
       this.path = path;
-      return childInstance();
+      return thisInstance();
     }
 
     protected String getGraphicLayer() {
@@ -105,6 +107,6 @@ public abstract class GraphicInput extends InputEntity {
     public abstract GraphicInput build();
 
     @Override
-    protected abstract T childInstance();
+    protected abstract B thisInstance();
   }
 }

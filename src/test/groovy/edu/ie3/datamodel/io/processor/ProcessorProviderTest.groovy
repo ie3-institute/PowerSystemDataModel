@@ -45,6 +45,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.value.*
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.util.TimeUtil
 import spock.lang.Specification
@@ -230,19 +231,27 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 
     and:
-    Optional processorResult = provider.handleEntity(pvResult)
+    Try<Map<String, String>, ProcessorProviderException> result = provider.handleEntity(pvResult)
 
     then:
-    processorResult.present
-    Map resultMap = processorResult.get()
+    result.success
+    Map<String, String> resultMap = result.data.get()
+
     resultMap.size() == 5
     resultMap == expectedMap
 
     when:
-    Optional result = provider.handleEntity(new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
+    Try<Map<String, String>, ProcessorProviderException> entityTry = provider.handleEntity(new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
 
     then:
-    !result.present
+    entityTry.failure
+    ProcessorProviderException ex = entityTry.exception.get()
+    [
+      "Cannot find a suitable processor for provided class with name 'WecResult'. This provider's processors can process: ",
+      "PvResult",
+      "EvResult"
+    ]
+    .every { str -> ex.message.contains(str) }
   }
 
   def "A ProcessorProvider returns an empty Optional, if none of the assigned processors is able to handle a time series"() {
@@ -255,10 +264,12 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)
 
     when:
-    Optional<Set<LinkedHashMap<String, String>>> actual = provider.handleTimeSeries(individualIntTimeSeries)
+    provider.handleTimeSeries(individualIntTimeSeries)
 
     then:
-    !actual.present
+    Exception ex = thrown()
+    ex.class == ProcessorProviderException
+    ex.message == "Cannot find processor for time series combination 'TimeSeriesProcessorKey{timeSeriesClass=class edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries, entryClass=class edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue, valueClass=class edu.ie3.datamodel.models.timeseries.IntValue}'. Either your provider is not properly initialized or there is no implementation to process this entity class!)"
   }
 
   def "A ProcessorProvider handles a time series correctly"() {
@@ -271,10 +282,9 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)
 
     when:
-    Optional<Set<LinkedHashMap<String, String>>> actual = provider.handleTimeSeries(individualEnergyPriceTimeSeries)
+    Set<Map<String, String>> actual = provider.handleTimeSeries(individualEnergyPriceTimeSeries)
 
     then:
-    actual.present
-    actual.get() == individualEnergyPriceTimeSeriesProcessed
+    actual == individualEnergyPriceTimeSeriesProcessed
   }
 }

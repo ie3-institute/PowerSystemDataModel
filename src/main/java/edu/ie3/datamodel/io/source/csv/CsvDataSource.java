@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -15,6 +16,7 @@ import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,7 +53,7 @@ public class CsvDataSource implements DataSource {
   @Deprecated(since = "1.1.0", forRemoval = true)
   private boolean notYetLoggedWarning = true;
 
-  protected CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
@@ -63,7 +65,7 @@ public class CsvDataSource implements DataSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  public BufferedReader createReader(String filePath) throws FileNotFoundException {
+  public BufferedReader createReader(Path filePath) throws FileNotFoundException {
     return connector.initReader(filePath);
   }
 
@@ -267,7 +269,7 @@ public class CsvDataSource implements DataSource {
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
     try {
       return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
-    } catch (FileNotFoundException e) {
+    } catch (FileNotFoundException | ConnectorException e) {
       log.warn(
           "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
@@ -371,9 +373,9 @@ public class CsvDataSource implements DataSource {
           allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
           """
-          '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
-          Affected primary keys:
-          {}""",
+              '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
+              Affected primary keys:
+              {}""",
           entityDescriptor,
           keyDescriptor,
           affectedCoordinateIds);
