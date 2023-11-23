@@ -21,7 +21,6 @@ class ExtractorTest extends Specification {
   def "An Extractor should be able to extract an entity with nested elements correctly"() {
 
     expect:
-    println(nestedEntity)
     def result = Extractor.extractElements(nestedEntity) as Set
     result == expectedExtractedEntities as Set
 

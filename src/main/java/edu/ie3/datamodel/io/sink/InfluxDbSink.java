@@ -10,19 +10,16 @@ import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
-import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import edu.ie3.util.TimeUtil;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
@@ -45,8 +42,21 @@ public class InfluxDbSink implements OutputDataSink {
    *
    * @param connector needed for database connection
    */
-  public InfluxDbSink(InfluxDbConnector connector) {
-    this(connector, new EntityPersistenceNamingStrategy(), TimeUtil.withDefaults.getDateTimeFormatter());
+  public InfluxDbSink(InfluxDbConnector connector) throws EntityProcessorException {
+    this(
+        connector,
+        new EntityPersistenceNamingStrategy(),
+        TimeUtil.withDefaults.getDateTimeFormatter());
+  }
+  /**
+   * Initializes a new InfluxDbWeatherSource
+   *
+   * @param connector needed for database connection
+   * @param entityPersistenceNamingStrategy needed to create measurement names for entities
+   */
+  public InfluxDbSink(InfluxDbConnector connector, DateTimeFormatter dateTimeFormatter)
+      throws EntityProcessorException {
+    this(connector, new EntityPersistenceNamingStrategy(), dateTimeFormatter);
   }
 
   /**
@@ -61,7 +71,6 @@ public class InfluxDbSink implements OutputDataSink {
     this(connector, entityPersistenceNamingStrategy, TimeUtil.withDefaults.getDateTimeFormatter());
   }
 
-
   /**
    * Initializes a new InfluxDbWeatherSource
    *
@@ -72,7 +81,8 @@ public class InfluxDbSink implements OutputDataSink {
   public InfluxDbSink(
       InfluxDbConnector connector,
       EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
-      DateTimeFormatter dateTimeFormatter) throws EntityProcessorException {
+      DateTimeFormatter dateTimeFormatter)
+      throws EntityProcessorException {
     this.connector = connector;
     this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
     this.processorProvider =
@@ -80,16 +90,6 @@ public class InfluxDbSink implements OutputDataSink {
             ProcessorProvider.allResultEntityProcessors(dateTimeFormatter),
             ProcessorProvider.allTimeSeriesProcessors(dateTimeFormatter));
   }
-
-  /**
-   * Initializes a new InfluxDbWeatherSource with a default EntityPersistenceNamingStrategy
-   *
-   * @param connector needed for database connection
-   */
-  public InfluxDbSink(InfluxDbConnector connector) throws EntityProcessorException {
-    this(connector, new EntityPersistenceNamingStrategy(), TimeUtil.withDefaults.getDateTimeFormatter());
-  }
-
 
   @Override
   public void shutdown() {

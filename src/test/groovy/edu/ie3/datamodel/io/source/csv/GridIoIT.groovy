@@ -43,9 +43,8 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
         new EntityPersistenceNamingStrategy(),
         new DefaultDirectoryHierarchy(Path.of("output"), "vn_simona"))
     tempDirectory = Files.createTempDirectory("GridIoIT")
-    sinkFlat = new CsvFileSink(tempDirectory.toAbsolutePath())
-    sinkHierarchic = new CsvFileSink(tempDirectory.toAbsolutePath(), hierarchicNamingStrategy, false, ",")
-    sink = new CsvFileSink(tempDirectory.toAbsolutePath(), dateTimeFormatter)
+    sinkFlat = new CsvFileSink(tempDirectory.toAbsolutePath(), dateTimeFormatter)
+    sinkHierarchic = new CsvFileSink(tempDirectory.toAbsolutePath(), hierarchicNamingStrategy, dateTimeFormatter, ",")
   }
 
   def cleanupSpec() {

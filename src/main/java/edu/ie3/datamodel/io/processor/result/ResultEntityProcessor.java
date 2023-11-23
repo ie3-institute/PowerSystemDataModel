@@ -18,11 +18,11 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
-import edu.ie3.util.TimeUtil;
-import java.time.format.DateTimeFormatter;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.util.TimeUtil;
 import edu.ie3.util.exceptions.QuantityException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
@@ -62,12 +62,14 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
           EmResult.class,
           FlexOptionsResult.class);
 
-  public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass) throws EntityProcessorException {
+  public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass)
+      throws EntityProcessorException {
     super(registeredClass, TimeUtil.withDefaults.getDateTimeFormatter());
   }
 
   public ResultEntityProcessor(
-      Class<? extends ResultEntity> registeredClass, DateTimeFormatter dateTimeFormatter) throws EntityProcessorException {
+      Class<? extends ResultEntity> registeredClass, DateTimeFormatter dateTimeFormatter)
+      throws EntityProcessorException {
     super(registeredClass, dateTimeFormatter);
   }
 

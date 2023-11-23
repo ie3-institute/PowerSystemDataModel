@@ -68,7 +68,8 @@ public class TimeSeriesProcessor<
 
   private final String[] flattenedHeaderElements;
 
-  public TimeSeriesProcessor(Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass) throws EntityProcessorException {
+  public TimeSeriesProcessor(Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass)
+      throws EntityProcessorException {
     this(timeSeriesClass, entryClass, valueClass, TimeUtil.withDefaults.getDateTimeFormatter());
   }
 
@@ -76,7 +77,8 @@ public class TimeSeriesProcessor<
       Class<T> timeSeriesClass,
       Class<E> entryClass,
       Class<V> valueClass,
-      DateTimeFormatter dateTimeFormatter) throws EntityProcessorException {
+      DateTimeFormatter dateTimeFormatter)
+      throws EntityProcessorException {
     super(timeSeriesClass, dateTimeFormatter);
 
     /* Check, if this processor can handle the foreseen combination of time series, entry and value */

@@ -76,12 +76,14 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           StorageTypeInput.class,
           WecTypeInput.class);
 
-  public InputEntityProcessor(Class<? extends InputEntity> registeredClass) throws EntityProcessorException {
+  public InputEntityProcessor(Class<? extends InputEntity> registeredClass)
+      throws EntityProcessorException {
     super(registeredClass, TimeUtil.withDefaults.getDateTimeFormatter());
   }
 
   public InputEntityProcessor(
-      Class<? extends InputEntity> registeredClass, DateTimeFormatter dateTimeFormatter) throws EntityProcessorException {
+      Class<? extends InputEntity> registeredClass, DateTimeFormatter dateTimeFormatter)
+      throws EntityProcessorException {
     super(registeredClass, dateTimeFormatter);
   }
 

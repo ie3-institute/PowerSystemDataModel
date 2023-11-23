@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
-import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
@@ -22,7 +21,6 @@ import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.TimeUtil;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -237,7 +235,8 @@ public class ProcessorProvider {
    *
    * @return a collection of all existing processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors() throws EntityProcessorException {
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors()
+      throws EntityProcessorException {
     DateTimeFormatter dateTimeFormatter = TimeUtil.withDefaults.getDateTimeFormatter();
     return allEntityProcessors(dateTimeFormatter);
   }
@@ -261,7 +260,8 @@ public class ProcessorProvider {
    *
    * @return a collection of all input processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allInputEntityProcessors() throws EntityProcessorException {
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allInputEntityProcessors()
+      throws EntityProcessorException {
     DateTimeFormatter dateTimeFormatter = TimeUtil.withDefaults.getDateTimeFormatter();
     return allInputEntityProcessors(dateTimeFormatter);
   }
@@ -286,7 +286,8 @@ public class ProcessorProvider {
    *
    * @return a collection of all result processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allResultEntityProcessors() throws EntityProcessorException {
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allResultEntityProcessors()
+      throws EntityProcessorException {
     DateTimeFormatter dateTimeFormatter = TimeUtil.withDefaults.getDateTimeFormatter();
     return allResultEntityProcessors(dateTimeFormatter);
   }
@@ -337,12 +338,17 @@ public class ProcessorProvider {
         .collect(
             Collectors.toMap(
                 key -> key,
-                key ->
-                    new TimeSeriesProcessor<>(
+                key -> {
+                  try {
+                    return new TimeSeriesProcessor<>(
                         (Class<TimeSeries<TimeSeriesEntry<Value>, Value>>) key.getTimeSeriesClass(),
                         (Class<TimeSeriesEntry<Value>>) key.getEntryClass(),
                         (Class<Value>) key.getValueClass(),
-                        dateTimeFormatter)));
+                        dateTimeFormatter);
+                  } catch (EntityProcessorException e) {
+                    throw new RuntimeException(e);
+                  }
+                }));
   }
 
   @SuppressWarnings("unchecked cast")

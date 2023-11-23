@@ -29,14 +29,13 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
+import edu.ie3.util.TimeUtil;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import edu.ie3.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,10 +60,15 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   private final String csvSep;
 
   public CsvFileSink(Path baseFolderPath) throws EntityProcessorException {
-    this(baseFolderPath, new FileNamingStrategy(), TimeUtil.withDefaults.getDateTimeFormatter(), ",");
+    this(
+        baseFolderPath,
+        new FileNamingStrategy(),
+        TimeUtil.withDefaults.getDateTimeFormatter(),
+        ",");
   }
 
-  public CsvFileSink(Path baseFolderPath, DateTimeFormatter dateTimeFormatter) throws EntityProcessorException {
+  public CsvFileSink(Path baseFolderPath, DateTimeFormatter dateTimeFormatter)
+      throws EntityProcessorException {
     this(baseFolderPath, new FileNamingStrategy(), dateTimeFormatter, ",");
   }
 
@@ -79,16 +83,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param csvSep the csv file separator that should be use
    */
   public CsvFileSink(
-          Path baseFolderPath,
-          FileNamingStrategy fileNamingStrategy,
-          DateTimeFormatter dateTimeFormatter,
-          String csvSep)
+      Path baseFolderPath,
+      FileNamingStrategy fileNamingStrategy,
+      DateTimeFormatter dateTimeFormatter,
+      String csvSep)
       throws EntityProcessorException {
-    this(
-            baseFolderPath,
-            new ProcessorProvider(),
-            fileNamingStrategy,
-            csvSep);
+    this(baseFolderPath, new ProcessorProvider(dateTimeFormatter), fileNamingStrategy, csvSep);
   }
 
   /**

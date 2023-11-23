@@ -42,8 +42,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
    * @param registeredClass the class the entity processor should be able to handle
    * @param dateTimeFormatter the formatter to use for date time fields
    */
-  protected EntityProcessor(
-      Class<? extends T> registeredClass, DateTimeFormatter dateTimeFormatter) {
+  protected EntityProcessor(Class<? extends T> registeredClass, DateTimeFormatter dateTimeFormatter)
+      throws EntityProcessorException {
     super(registeredClass, dateTimeFormatter);
     this.fieldNameToMethod =
         mapFieldNameToGetter(registeredClass, Collections.singleton(NODE_INTERNAL));

@@ -79,7 +79,8 @@ public abstract class Processor<T> {
    * @param foreSeenClass Class and its children that are foreseen to be handled with this processor
    * @param dateTimeFormatter Formatter to use for date time processing
    */
-  protected Processor(Class<? extends T> foreSeenClass, DateTimeFormatter dateTimeFormatter) throws EntityProcessorException {
+  protected Processor(Class<? extends T> foreSeenClass, DateTimeFormatter dateTimeFormatter)
+      throws EntityProcessorException {
     this.dateTimeFormatter = dateTimeFormatter;
     if (!getEligibleEntityClasses().contains(foreSeenClass))
       throw new EntityProcessorException(
@@ -416,7 +417,7 @@ public abstract class Processor<T> {
    * @return string representation of the ZonedDateTime
    */
   protected String processZonedDateTime(ZonedDateTime zonedDateTime) {
-    return zonedDateTime.toString();
+    return dateTimeFormatter.format(zonedDateTime);
   }
 
   /**

@@ -39,7 +39,6 @@ class FlatDirectoryHierarchyTest extends Specification {
     def fdh = new FlatDirectoryHierarchy()
 
     then:
-    println(basePath)
     Files.exists(basePath)
     Files.isDirectory(basePath)
 
