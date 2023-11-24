@@ -39,6 +39,9 @@ public abstract class EntitySource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
+  /** Returns a map: class to {@link SourceValidator}. */
+  public abstract Map<Class<?>, SourceValidator<?>> getValidationMapping();
+
   protected String buildSkippingMessage(
       String entityDesc, String entityUuid, String entityId, String missingElementsString) {
     return "Skipping "
@@ -249,9 +252,9 @@ public abstract class EntitySource {
    * @return stream of the entity data wrapped in a {@link Try}
    */
   protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
-      Class<T> entityClass, SourceValidator validator, Collection<OperatorInput> operators) {
+      Class<T> entityClass, Collection<OperatorInput> operators) {
     return dataSource
-        .getSourceData(entityClass, validator)
+        .getSourceData(entityClass)
         .map(
             fieldsToAttributes ->
                 assetInputEntityDataStream(entityClass, fieldsToAttributes, operators));
@@ -289,9 +292,9 @@ public abstract class EntitySource {
    * @return stream of {@link SimpleEntityData}
    */
   protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
-      Class<T> entityClass, SourceValidator validator) {
+      Class<T> entityClass) {
     return dataSource
-        .getSourceData(entityClass, validator)
+        .getSourceData(entityClass)
         .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
 
@@ -313,8 +316,7 @@ public abstract class EntitySource {
       EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
-    return nodeAssetInputEntityDataStream(
-            assetInputEntityDataStream(entityClass, factory, operators), nodes)
+    return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
         .map(factory::get);
   }
 
@@ -333,7 +335,7 @@ public abstract class EntitySource {
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
       Collection<OperatorInput> operators) {
-    return assetInputEntityDataStream(entityClass, factory, operators)
+    return assetInputEntityDataStream(entityClass, operators)
         .map(factory::get)
         .collect(Collectors.toSet());
   }
@@ -342,7 +344,7 @@ public abstract class EntitySource {
   public <T extends InputEntity> Set<Try<T, FactoryException>> buildEntities(
       Class<T> entityClass, EntityFactory<? extends InputEntity, SimpleEntityData> factory) {
     return dataSource
-        .getSourceData(entityClass, factory)
+        .getSourceData(entityClass)
         .map(
             fieldsToAttributes -> {
               SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);

@@ -9,7 +9,6 @@ import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
-import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
@@ -110,8 +109,7 @@ public class SqlDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(
-      Class<? extends UniqueEntity> entityClass, SourceValidator validator) {
+  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
     String explicitTableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
     return buildStreamByTableName(explicitTableName);
   }

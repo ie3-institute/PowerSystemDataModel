@@ -14,8 +14,8 @@ import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.kv.MutationResult;
 import com.couchbase.client.java.query.QueryResult;
-import java.time.Duration;
 import edu.ie3.datamodel.io.source.SourceValidator;
+import edu.ie3.datamodel.models.value.WeatherValue;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
@@ -68,7 +68,8 @@ public class CouchbaseConnector implements DataConnector {
    * @param validator for validation
    */
   @SuppressWarnings("unchecked")
-  public final void validateDb(Class<?> entityClass, SourceValidator validator) {
+  public final void validateDb(
+      Class<WeatherValue> entityClass, SourceValidator<WeatherValue> validator) {
     String query =
         "SELECT ARRAY_DISTINCT(ARRAY_AGG(v)) AS column FROM "
             + bucketName

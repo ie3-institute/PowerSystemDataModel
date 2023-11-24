@@ -136,8 +136,8 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     result.failure
     result.exception.get().message == "The provided fields [input_model, q, time] are invalid for instance of 'WecResult'. \n" +
     "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'WecResult' are possible (NOT case-sensitive!):\n" +
-    "0: [input_model, p, q, time] or [inputModel, p, q, time]\n" +
-    "1: [input_model, p, q, time, uuid] or [inputModel, p, q, time, uuid]\n"
+    "0: [inputModel, p, q, time] or [input_model, p, q, time]\n" +
+    "1: [inputModel, p, q, time, uuid] or [input_model, p, q, time, uuid]\n"
   }
 
   def "A SystemParticipantResultFactory should be performant"() {
@@ -156,7 +156,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       resultFactory.get(new SimpleEntityData(parameter, StorageResult))
     }
     BigDecimal elapsedTime = (System
-        .currentTimeMillis() - startTime) / 1000.0
+    .currentTimeMillis() - startTime) / 1000.0
     elapsedTime < 3
   }
 }

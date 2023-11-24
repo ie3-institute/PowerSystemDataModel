@@ -12,6 +12,7 @@ import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.measure.quantity.Angle;
@@ -58,7 +59,7 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             TEMPERATURE,
             WIND_DIRECTION,
             WIND_VELOCITY);
-    return List.of(minConstructorParams, toLowerCase(minConstructorParams));
+    return Collections.singletonList(minConstructorParams);
   }
 
   @Override

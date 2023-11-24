@@ -52,7 +52,7 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     actual.failure
     actual.exception.get().message == "The provided fields [id, latrot, longrot, tid] are invalid for instance of 'Pair'. \n" +
     "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'Pair' are possible (NOT case-sensitive!):\n" +
-    "0: [id, lat_geo, lat_rot, long_geo, long_rot, tid] or [id, latGeo, latRot, longGeo, longRot, tid]\n"
+    "0: [id, latGeo, latRot, longGeo, longRot, tid] or [id, lat_geo, lat_rot, long_geo, long_rot, tid]\n"
   }
 
   def "A COSMO id to coordinate factory builds model from valid data"() {

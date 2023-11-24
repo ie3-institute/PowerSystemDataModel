@@ -62,7 +62,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     input.failure
     input.exception.get().message == "The provided fields [input_model, p_min, p_ref, time] are invalid for instance of 'FlexOptionsResult'. \n" +
     "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'FlexOptionsResult' are possible (NOT case-sensitive!):\n" +
-    "0: [input_model, p_max, p_min, p_ref, time] or [inputModel, pMax, pMin, pRef, time]\n" +
-    "1: [input_model, p_max, p_min, p_ref, time, uuid] or [inputModel, pMax, pMin, pRef, time, uuid]\n"
+    "0: [inputModel, pMax, pMin, pRef, time] or [input_model, p_max, p_min, p_ref, time]\n" +
+    "1: [inputModel, pMax, pMin, pRef, time, uuid] or [input_model, p_max, p_min, p_ref, time, uuid]\n"
   }
 }

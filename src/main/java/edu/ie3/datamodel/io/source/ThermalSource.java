@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static java.util.Map.entry;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.SourceException;
@@ -44,6 +46,14 @@ public class ThermalSource extends EntitySource {
     this.thermalBusInputFactory = new ThermalBusInputFactory();
     this.cylindricalStorageInputFactory = new CylindricalStorageInputFactory();
     this.thermalHouseInputFactory = new ThermalHouseInputFactory();
+  }
+
+  @Override
+  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
+    return Map.ofEntries(
+        entry(ThermalBusInput.class, thermalBusInputFactory),
+        entry(CylindricalStorageInput.class, cylindricalStorageInputFactory),
+        entry(ThermalHouseInput.class, thermalHouseInputFactory));
   }
 
   /**
@@ -262,7 +272,7 @@ public class ThermalSource extends EntitySource {
     Set<ThermalBusInput> thermalBuses = getThermalBuses();
 
     return Try.scanCollection(
-        assetInputEntityDataStream(ThermalHouseInput.class, factory, typeSource.getOperators())
+        assetInputEntityDataStream(ThermalHouseInput.class, typeSource.getOperators())
             .flatMap(
                 assetInputEntityData ->
                     buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
@@ -276,7 +286,7 @@ public class ThermalSource extends EntitySource {
       Collection<OperatorInput> operators,
       Collection<ThermalBusInput> thermalBuses) {
     return Try.scanCollection(
-        assetInputEntityDataStream(ThermalHouseInput.class, factory, operators)
+        assetInputEntityDataStream(ThermalHouseInput.class, operators)
             .flatMap(
                 assetInputEntityData ->
                     buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
@@ -290,8 +300,7 @@ public class ThermalSource extends EntitySource {
     Set<ThermalBusInput> thermalBuses = getThermalBuses();
 
     return Try.scanCollection(
-        assetInputEntityDataStream(
-                CylindricalStorageInput.class, factory, typeSource.getOperators())
+        assetInputEntityDataStream(CylindricalStorageInput.class, typeSource.getOperators())
             .flatMap(
                 assetInputEntityData ->
                     buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
@@ -304,7 +313,7 @@ public class ThermalSource extends EntitySource {
       CylindricalStorageInputFactory factory,
       Collection<OperatorInput> operators,
       Collection<ThermalBusInput> thermalBuses) {
-    return assetInputEntityDataStream(CylindricalStorageInput.class, factory, operators)
+    return assetInputEntityDataStream(CylindricalStorageInput.class, operators)
         .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)

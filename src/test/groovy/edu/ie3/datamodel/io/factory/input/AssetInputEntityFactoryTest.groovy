@@ -287,21 +287,9 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     input.exception.get().message == "The provided fields [operates_from, operates_until, uuid] are invalid for instance of 'TestAssetInput'. \n" +
     "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'TestAssetInput' are possible (NOT case-sensitive!):\n" +
     "0: [id, uuid] or [id, uuid]\n" +
-    "1: [id, operates_from, uuid] or [id, operatesFrom, uuid]\n" +
-    "2: [id, operates_until, uuid] or [id, operatesUntil, uuid]\n" +
-    "3: [id, operates_from, operates_until, uuid] or [id, operatesFrom, operatesUntil, uuid]\n"
-  }
-
-  def "An AssetInputFactory should allow additional fields"() {
-    given:
-    def inputFactory = new TestAssetInputFactory()
-    def foundFields = inputFactory.newSet("uuid", "operates_from", "operates_until", "id", "additional_field")
-
-    when:
-    Try<Void, FactoryException> input = Try.ofVoid(() -> inputFactory.validate(foundFields, TestAssetInput), FactoryException)
-
-    then:
-    input.success
+    "1: [id, operatesFrom, uuid] or [id, operates_from, uuid]\n" +
+    "2: [id, operatesUntil, uuid] or [id, operates_until, uuid]\n" +
+    "3: [id, operatesFrom, operatesUntil, uuid] or [id, operates_from, operates_until, uuid]\n"
   }
 
   private static class TestAssetInput extends AssetInput {

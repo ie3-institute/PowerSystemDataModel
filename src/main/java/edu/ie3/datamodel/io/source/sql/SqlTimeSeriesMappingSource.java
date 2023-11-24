@@ -7,11 +7,9 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
-import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.sql.SQLException;
 import java.util.Map;
@@ -26,7 +24,8 @@ public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
   public SqlTimeSeriesMappingSource(
       SqlConnector connector,
       String schemaName,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy)
+      throws SQLException {
     this.dataSource =
         new SqlDataSource(
             connector, schemaName, new DatabaseNamingStrategy(entityPersistenceNamingStrategy));
@@ -35,16 +34,12 @@ public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
     this.tableName =
         entityPersistenceNamingStrategy.getEntityName(MappingEntry.class).orElseThrow();
     this.queryFull = createBaseQueryString(schemaName, tableName);
+
+    dataSource.connector.validateDBTable(tableName, TimeSeriesMappingSource.class, mappingFactory);
   }
 
   @Override
-  public Stream<Map<String, String>> getMappingSourceData(SourceValidator validator) {
-    try {
-      dataSource.connector.validateDBTable(tableName, TimeSeriesMappingSource.class, validator);
-    } catch (SQLException e) {
-      throw new FactoryException(e);
-    }
-
+  public Stream<Map<String, String>> getMappingSourceData() {
     return dataSource.executeQuery(queryFull);
   }
 }

@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * @param <R> Type of the intended return type (might differ slightly from target class (cf. {@link
  *     edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueFactory})).
  */
-public abstract class Factory<C, D extends FactoryData, R> implements SourceValidator {
+public abstract class Factory<C, D extends FactoryData, R> implements SourceValidator<C> {
   public static final Logger log = LoggerFactory.getLogger(Factory.class);
 
   private final List<Class<? extends C>> supportedClasses;
@@ -52,7 +52,7 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
     try {
       // build the model
       return Success.of(buildModel(data));
-    } catch (Exception e) {
+    } catch (FactoryException | IllegalArgumentException e) {
       return Failure.of(
           new FactoryException(
               "An error occurred when creating instance of "
@@ -104,9 +104,33 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
    * Returns list of sets of attribute names that the entity requires to be built. At least one of
    * these sets needs to be delivered for entity creation to be successful.
    *
+   * @param entityClass class that can be used to specify the fields that are returned
    * @return list of possible attribute sets
    */
   protected abstract List<Set<String>> getFields(Class<?> entityClass);
+
+  /**
+   * Method to find and return additional fields that were found in a source. This method will
+   * return the additional fields that were found in the valid set with the least additional fields.
+   *
+   * @param actualFields found in the source
+   * @param validFieldSets that contains at least all fields found in the source
+   * @return a set of additional fields
+   */
+  protected Set<String> getAdditionalFields(
+      Set<String> actualFields, List<Set<String>> validFieldSets) {
+    // checking for additional fields
+    // and returning the set with the least additional fields
+    return validFieldSets.stream()
+        .map(
+            s -> {
+              Set<String> set = new HashSet<>(actualFields);
+              set.removeAll(s);
+              return set;
+            })
+        .min(Comparator.comparing(Collection::size))
+        .orElse(Collections.emptySet());
+  }
 
   /**
    * Method for validating the found fields. The found fields needs to fully contain at least one of
@@ -114,26 +138,23 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
    * fields, an {@link FactoryException} with a detail message is thrown. If the found fields
    * contain more fields than necessary, these fields are ignored.
    *
-   * @param foundFields that were found
+   * @param actualFields that were found
    * @param entityClass of the build data
    */
-  public void validate(Set<String> foundFields, Class<?> entityClass) {
-    List<Set<String>> fieldSets =
-        getFields(entityClass).stream().map(Factory::toSnakeCase).toList();
-    Set<String> harmonizedFoundFields = toSnakeCase(foundFields);
+  public void validate(Set<String> actualFields, Class<? extends C> entityClass) {
+    List<Set<String>> fieldSets = getFields(entityClass);
+    Set<String> harmonizedFoundFields = toCamelCase(actualFields);
 
     // comparing the found fields to a list of possible fields (allows additional fields)
     // if not all fields were found in a set, this set is filtered out
     // all other fields are saved as a list
     // allows snake, camel and mixed cases
     List<Set<String>> validFieldSets =
-        fieldSets.stream()
-            .filter(s -> foundFields.containsAll(s) || harmonizedFoundFields.containsAll(s))
-            .toList();
+        fieldSets.stream().filter(harmonizedFoundFields::containsAll).toList();
 
     if (validFieldSets.isEmpty()) {
       // build the exception string with extensive debug information
-      String providedKeysString = "[" + String.join(", ", foundFields) + "]";
+      String providedKeysString = "[" + String.join(", ", actualFields) + "]";
 
       String possibleOptions = getFieldsString(fieldSets).toString();
 
@@ -147,19 +168,11 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
               + "' are possible (NOT case-sensitive!):\n"
               + possibleOptions);
     } else {
-      // checking for additional fields
-      Set<String> additionalFields = new HashSet<>();
-      Set<String> allFields =
-          validFieldSets.stream().flatMap(Collection::stream).collect(Collectors.toSet());
-
-      foundFields.stream().filter(e -> !allFields.contains(e)).forEach(additionalFields::add);
-      harmonizedFoundFields.stream()
-          .filter(e -> !allFields.contains(e))
-          .forEach(additionalFields::add);
+      Set<String> additionalFields = getAdditionalFields(harmonizedFoundFields, validFieldSets);
 
       if (!additionalFields.isEmpty()) {
         log.debug(
-            "The following additional fields were found for instance of '{}': {}",
+            "The following additional fields were found for entity class of '{}': {}",
             entityClass.getSimpleName(),
             additionalFields);
       }
@@ -175,7 +188,7 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
               + ": ["
               + String.join(", ", fieldSet)
               + "] or ["
-              + String.join(", ", toCamelCase(fieldSet))
+              + String.join(", ", toSnakeCase(fieldSet))
               + "]\n";
       possibleOptions.append(option);
     }

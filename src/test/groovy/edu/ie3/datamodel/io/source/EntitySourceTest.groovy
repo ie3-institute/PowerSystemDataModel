@@ -24,6 +24,11 @@ class EntitySourceTest extends Specification {
     DummyEntitySource(CsvDataSource dataSource) {
       this.dataSource = dataSource
     }
+
+    @Override
+    Map<Class<?>, SourceValidator<?>> getValidationMapping() {
+      return null
+    }
   }
 
   @Shared

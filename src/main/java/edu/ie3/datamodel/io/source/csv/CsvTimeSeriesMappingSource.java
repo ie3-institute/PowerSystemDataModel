@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
-import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.nio.file.Path;
 import java.util.Map;
@@ -19,11 +18,14 @@ public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
   public CsvTimeSeriesMappingSource(
       String csvSep, Path gridFolderPath, FileNamingStrategy fileNamingStrategy) {
     this.dataSource = new CsvDataSource(csvSep, gridFolderPath, fileNamingStrategy);
+
+    // validating
+    dataSource.connector.validate(Map.of(MappingEntry.class, mappingFactory), dataSource.csvSep);
   }
 
   @Override
-  public Stream<Map<String, String>> getMappingSourceData(SourceValidator validator) {
+  public Stream<Map<String, String>> getMappingSourceData() {
     return dataSource.buildStreamWithFieldsToAttributesMap(
-        MappingEntry.class, dataSource.connector, validator);
+        MappingEntry.class, dataSource.connector);
   }
 }

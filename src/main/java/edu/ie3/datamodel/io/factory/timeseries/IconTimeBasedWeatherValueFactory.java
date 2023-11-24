@@ -62,7 +62,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             minParameters,
             "albrad",
             "asobs",
-            "aswdifus",
+            "aswdifuS",
             "tG",
             "u10m",
             "u20m",
@@ -87,12 +87,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     Set<String> allParametersWithUuid = expandSet(allParameters, UUID);
 
     return Arrays.asList(
-        minParameters,
-        allParameters,
-        minParametersWithUuid,
-        allParametersWithUuid,
-        toLowerCase(minParameters),
-        toLowerCase(allParameters));
+        minParameters, allParameters, minParametersWithUuid, allParametersWithUuid);
   }
 
   @Override

@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static java.util.Map.entry;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.SystemParticipantsException;
@@ -75,6 +77,22 @@ public class SystemParticipantSource extends EntitySource {
     this.wecInputFactory = new WecInputFactory();
     this.evcsInputFactory = new EvcsInputFactory();
     this.emInputFactory = new EmInputFactory();
+  }
+
+  @Override
+  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
+    return Map.ofEntries(
+        entry(BmInput.class, bmInputFactory),
+        entry(ChpTypeInput.class, chpInputFactory),
+        entry(EvInput.class, evcsInputFactory),
+        entry(FixedFeedInInput.class, fixedFeedInInputFactory),
+        entry(HpInput.class, hpInputFactory),
+        entry(LoadInput.class, loadInputFactory),
+        entry(PvInput.class, pvInputFactory),
+        entry(StorageInput.class, storageInputFactory),
+        entry(WecInput.class, wecInputFactory),
+        entry(EvcsInput.class, evcsInputFactory),
+        entry(EmInput.class, emInputFactory));
   }
 
   /**
@@ -693,7 +711,7 @@ public class SystemParticipantSource extends EntitySource {
           Collection<A> types) {
     return buildTypedSystemParticipantEntityData(
             nodeAssetInputEntityDataStream(
-                assetInputEntityDataStream(entityClass, factory, operators), nodes),
+                assetInputEntityDataStream(entityClass, operators), nodes),
             types)
         .map(factory::get);
   }
@@ -708,7 +726,7 @@ public class SystemParticipantSource extends EntitySource {
     return buildChpEntityData(
             buildTypedEntityData(
                 nodeAssetInputEntityDataStream(
-                    assetInputEntityDataStream(ChpInput.class, factory, operators), nodes),
+                    assetInputEntityDataStream(ChpInput.class, operators), nodes),
                 types),
             thermalStorages,
             thermalBuses)
@@ -724,7 +742,7 @@ public class SystemParticipantSource extends EntitySource {
     return buildHpEntityData(
             buildTypedEntityData(
                 nodeAssetInputEntityDataStream(
-                    assetInputEntityDataStream(HpInput.class, factory, operators), nodes),
+                    assetInputEntityDataStream(HpInput.class, operators), nodes),
                 types),
             thermalBuses)
         .map(factory::get);

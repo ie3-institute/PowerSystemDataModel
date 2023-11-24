@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static java.util.Map.entry;
+
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
@@ -17,6 +19,7 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.utils.Try;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -43,6 +46,21 @@ public class TypeSource extends EntitySource {
     this.lineTypeInputFactory = new LineTypeInputFactory();
     this.transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
     this.systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
+  }
+
+  @Override
+  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
+    return Map.ofEntries(
+        entry(OperatorInput.class, operatorInputFactory),
+        entry(LineTypeInput.class, lineTypeInputFactory),
+        entry(Transformer2WTypeInput.class, transformer2WTypeInputFactory),
+        entry(Transformer3WTypeInput.class, transformer3WTypeInputFactory),
+        entry(BmTypeInput.class, systemParticipantTypeInputFactory),
+        entry(ChpTypeInput.class, systemParticipantTypeInputFactory),
+        entry(EvTypeInput.class, systemParticipantTypeInputFactory),
+        entry(HpTypeInput.class, systemParticipantTypeInputFactory),
+        entry(StorageTypeInput.class, systemParticipantTypeInputFactory),
+        entry(WecTypeInput.class, systemParticipantTypeInputFactory));
   }
 
   /**

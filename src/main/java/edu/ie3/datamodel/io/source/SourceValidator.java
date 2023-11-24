@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.source;
 
 import java.util.Set;
 
-public interface SourceValidator {
+public interface SourceValidator<C> {
 
   /**
    * Method for validating a data source.
@@ -15,5 +15,5 @@ public interface SourceValidator {
    * @param foundFields fields that were found in the source data
    * @param entityClass that should be buildable from the source data
    */
-  void validate(Set<String> foundFields, Class<?> entityClass);
+  void validate(Set<String> foundFields, Class<? extends C> entityClass);
 }

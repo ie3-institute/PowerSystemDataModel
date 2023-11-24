@@ -13,6 +13,5 @@ import java.util.stream.Stream;
 public interface DataSource {
 
   /** Creates a stream of maps that represent the rows in the database */
-  Stream<Map<String, String>> getSourceData(
-      Class<? extends UniqueEntity> entityClass, SourceValidator validateSource);
+  Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass);
 }

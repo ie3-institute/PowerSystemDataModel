@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static java.util.Map.entry;
+
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
@@ -50,6 +52,13 @@ public class GraphicSource extends EntitySource {
     this.nodeGraphicInputFactory = new NodeGraphicInputFactory();
   }
 
+  @Override
+  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
+    return Map.ofEntries(
+        entry(NodeGraphicInput.class, nodeGraphicInputFactory),
+        entry(LineGraphicInput.class, lineGraphicInputFactory));
+  }
+
   /** Returns the graphic elements of the grid or throws a {@link SourceException} */
   public GraphicElements getGraphicElements() throws SourceException {
 
@@ -91,7 +100,7 @@ public class GraphicSource extends EntitySource {
 
   public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) throws SourceException {
     return Try.scanCollection(
-            buildNodeGraphicEntityData(nodes, nodeGraphicInputFactory)
+            buildNodeGraphicEntityData(nodes)
                 .map(nodeGraphicInputFactory::get)
                 .collect(Collectors.toSet()),
             NodeGraphicInput.class)
@@ -113,7 +122,7 @@ public class GraphicSource extends EntitySource {
 
   public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) throws SourceException {
     return Try.scanCollection(
-            buildLineGraphicEntityData(lines, lineGraphicInputFactory)
+            buildLineGraphicEntityData(lines)
                 .map(lineGraphicInputFactory::get)
                 .collect(Collectors.toSet()),
             LineGraphicInput.class)
@@ -140,9 +149,9 @@ public class GraphicSource extends EntitySource {
    * @return a stream of tries of {@link NodeGraphicInput} entities
    */
   protected Stream<Try<NodeGraphicInputEntityData, SourceException>> buildNodeGraphicEntityData(
-      Set<NodeInput> nodes, SourceValidator validator) {
+      Set<NodeInput> nodes) {
     return dataSource
-        .getSourceData(NodeGraphicInput.class, validator)
+        .getSourceData(NodeGraphicInput.class)
         .map(fieldsToAttributes -> buildNodeGraphicEntityData(fieldsToAttributes, nodes));
   }
 
@@ -187,9 +196,9 @@ public class GraphicSource extends EntitySource {
    * @return a stream of tries of {@link LineGraphicInput} entities
    */
   protected Stream<Try<LineGraphicInputEntityData, SourceException>> buildLineGraphicEntityData(
-      Set<LineInput> lines, SourceValidator validator) {
+      Set<LineInput> lines) {
     return dataSource
-        .getSourceData(LineGraphicInput.class, validator)
+        .getSourceData(LineGraphicInput.class)
         .map(fieldsToAttributes -> buildLineGraphicEntityData(fieldsToAttributes, lines));
   }
 

@@ -50,7 +50,7 @@ class IconIdCoordinateFactoryTest extends Specification {
     actual.failure
     actual.exception.get().message == "The provided fields [coordinatetype, id, latitude] are invalid for instance of 'Pair'. \n" +
     "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'Pair' are possible (NOT case-sensitive!):\n" +
-    "0: [coordinate_type, id, latitude, longitude] or [coordinateType, id, latitude, longitude]\n"
+    "0: [coordinateType, id, latitude, longitude] or [coordinate_type, id, latitude, longitude]\n"
   }
 
   def "A COSMO id to coordinate factory builds model from valid data"() {

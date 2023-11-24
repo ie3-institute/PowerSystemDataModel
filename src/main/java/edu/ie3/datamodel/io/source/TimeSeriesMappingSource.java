@@ -24,7 +24,7 @@ import java.util.stream.Stream;
  */
 public abstract class TimeSeriesMappingSource {
 
-  private final TimeSeriesMappingFactory mappingFactory;
+  protected final TimeSeriesMappingFactory mappingFactory;
 
   protected TimeSeriesMappingSource() {
     this.mappingFactory = new TimeSeriesMappingFactory();
@@ -36,7 +36,7 @@ public abstract class TimeSeriesMappingSource {
    * @return That mapping
    */
   public Map<UUID, UUID> getMapping() {
-    return getMappingSourceData(mappingFactory)
+    return getMappingSourceData()
         .map(this::createMappingEntry)
         .filter(Try::isSuccess)
         .map(t -> (Success<MappingEntry, FactoryException>) t)
@@ -59,7 +59,7 @@ public abstract class TimeSeriesMappingSource {
    *
    * @return Stream of maps
    */
-  public abstract Stream<Map<String, String>> getMappingSourceData(SourceValidator validator);
+  public abstract Stream<Map<String, String>> getMappingSourceData();
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static java.util.Map.entry;
+
 import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
 import edu.ie3.datamodel.models.result.NodeResult;
@@ -16,6 +18,7 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,6 +61,31 @@ public class ResultEntitySource extends EntitySource {
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
+  }
+
+  @Override
+  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
+    return Map.ofEntries(
+        entry(LoadResult.class, systemParticipantResultFactory),
+        entry(FixedFeedInResult.class, systemParticipantResultFactory),
+        entry(BmResult.class, systemParticipantResultFactory),
+        entry(PvResult.class, systemParticipantResultFactory),
+        entry(ChpResult.class, systemParticipantResultFactory),
+        entry(WecResult.class, systemParticipantResultFactory),
+        entry(StorageResult.class, systemParticipantResultFactory),
+        entry(EvcsResult.class, systemParticipantResultFactory),
+        entry(EvResult.class, systemParticipantResultFactory),
+        entry(HpResult.class, systemParticipantResultFactory),
+        entry(EmResult.class, systemParticipantResultFactory),
+        entry(ThermalHouseResult.class, thermalResultFactory),
+        entry(CylindricalStorageResult.class, thermalResultFactory),
+        entry(SwitchResult.class, switchResultFactory),
+        entry(NodeResult.class, nodeResultFactory),
+        entry(SystemParticipantResult.class, connectorResultFactory),
+        entry(LineResult.class, connectorResultFactory),
+        entry(Transformer2WResult.class, connectorResultFactory),
+        entry(Transformer3WResult.class, connectorResultFactory),
+        entry(FlexOptionsResult.class, flexOptionsResultFactory));
   }
 
   /**
@@ -318,7 +346,7 @@ public class ResultEntitySource extends EntitySource {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   private <T extends ResultEntity> Set<T> getResultEntities(
       Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
-    return simpleEntityDataStream(entityClass, factory)
+    return simpleEntityDataStream(entityClass)
         .map(
             entityData ->
                 factory

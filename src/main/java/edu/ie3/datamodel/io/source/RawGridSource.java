@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static java.util.Map.entry;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.RawGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
@@ -67,6 +69,16 @@ public class RawGridSource extends EntitySource {
     this.transformer3WInputFactory = new Transformer3WInputFactory();
     this.switchInputFactory = new SwitchInputFactory();
     this.measurementUnitInputFactory = new MeasurementUnitInputFactory();
+  }
+
+  @Override
+  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
+    return Map.ofEntries(
+        entry(NodeInput.class, nodeInputFactory),
+        entry(LineInput.class, lineInputFactory),
+        entry(Transformer2WInput.class, transformer2WInputFactory),
+        entry(SwitchInput.class, switchInputFactory),
+        entry(MeasurementUnitInput.class, measurementUnitInputFactory));
   }
 
   /**
@@ -166,7 +178,7 @@ public class RawGridSource extends EntitySource {
    */
   public Set<NodeInput> getNodes(Set<OperatorInput> operators) throws SourceException {
     return Try.scanCollection(
-            assetInputEntityDataStream(NodeInput.class, nodeInputFactory, operators)
+            assetInputEntityDataStream(NodeInput.class, operators)
                 .map(nodeInputFactory::get)
                 .collect(Collectors.toSet()),
             NodeInput.class)
@@ -414,7 +426,7 @@ public class RawGridSource extends EntitySource {
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
       Collection<OperatorInput> operators) {
-    return assetInputEntityDataStream(entityClass, factory, operators)
+    return assetInputEntityDataStream(entityClass, operators)
         .map(factory::get)
         .collect(Collectors.toSet());
   }
@@ -441,9 +453,7 @@ public class RawGridSource extends EntitySource {
     return buildTransformer3WEntityData(
             buildTypedConnectorEntityData(
                 buildUntypedConnectorInputEntityData(
-                    assetInputEntityDataStream(
-                        Transformer3WInput.class, transformer3WInputFactory, operators),
-                    nodes),
+                    assetInputEntityDataStream(Transformer3WInput.class, operators), nodes),
                 transformer3WTypeInputs),
             nodes)
         .map(transformer3WInputFactory::get)
@@ -562,7 +572,7 @@ public class RawGridSource extends EntitySource {
           Collection<A> types) {
     return buildTypedConnectorEntityData(
             buildUntypedConnectorInputEntityData(
-                assetInputEntityDataStream(entityClass, factory, operators), nodes),
+                assetInputEntityDataStream(entityClass, operators), nodes),
             types)
         .map(factory::get);
   }
@@ -574,7 +584,7 @@ public class RawGridSource extends EntitySource {
           Set<NodeInput> nodes,
           Set<OperatorInput> operators) {
     return buildUntypedConnectorInputEntityData(
-            assetInputEntityDataStream(entityClass, factory, operators), nodes)
+            assetInputEntityDataStream(entityClass, operators), nodes)
         .map(factory::get);
   }
 

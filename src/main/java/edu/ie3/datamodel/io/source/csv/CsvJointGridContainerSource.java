@@ -18,7 +18,9 @@ import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
@@ -51,6 +53,15 @@ public class CsvJointGridContainerSource {
     SystemParticipantSource systemParticipantSource =
         new SystemParticipantSource(typeSource, thermalSource, rawGridSource, dataSource);
     GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
+
+    /* validating sources */
+    Map<Class<?>, SourceValidator<?>> validationMapping =
+        new HashMap<>(typeSource.getValidationMapping());
+    validationMapping.putAll(rawGridSource.getValidationMapping());
+    validationMapping.putAll(thermalSource.getValidationMapping());
+    validationMapping.putAll(systemParticipantSource.getValidationMapping());
+    validationMapping.putAll(graphicSource.getValidationMapping());
+    dataSource.connector.validate(validationMapping, csvSep);
 
     /* Loading models */
     Try<RawGridElements, SourceException> rawGridElements =

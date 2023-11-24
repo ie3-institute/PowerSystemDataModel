@@ -6,16 +6,22 @@
 package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.datamodel.exceptions.ConnectorException;
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.utils.ExceptionUtils;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.util.StringUtils;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -49,6 +55,59 @@ public class CsvFileConnector implements DataConnector {
   public CsvFileConnector(Path baseDirectoryName, FileNamingStrategy fileNamingStrategy) {
     this.baseDirectoryName = baseDirectoryName;
     this.fileNamingStrategy = fileNamingStrategy;
+  }
+
+  @SuppressWarnings("unchecked")
+  public void validate(Map<Class<?>, SourceValidator<?>> pairs, String csvSep) {
+    List<FactoryException> exceptions = new ArrayList<>();
+
+    pairs.forEach(
+        ((clz, validator) -> {
+          Class<? extends UniqueEntity> c = (Class<? extends UniqueEntity>) clz;
+          SourceValidator<UniqueEntity> v = (SourceValidator<UniqueEntity>) validator;
+
+          Try.of(() -> getHeadlineFields(c, csvSep), SourceException.class)
+              .getData()
+              .flatMap(
+                  headline ->
+                      Try.ofVoid(() -> v.validate(headline, c), FactoryException.class)
+                          .getException())
+              .ifPresent(exceptions::add);
+        }));
+
+    if (!exceptions.isEmpty()) {
+      throw new FactoryException(
+          "The following exception(s) occurred during validation: "
+              + ExceptionUtils.getMessages(exceptions));
+    }
+  }
+
+  /**
+   * Method for extracting the headline fields of a csv file.
+   *
+   * @param entityClass that should be buildable from the source data
+   * @param csvSep separator for headline
+   * @return a set of headline fields
+   * @throws SourceException if the file could not be read
+   */
+  public Set<String> getHeadlineFields(Class<? extends UniqueEntity> entityClass, String csvSep)
+      throws SourceException {
+    try (BufferedReader reader = initReader(entityClass)) {
+      // extracting headline fields
+      return Arrays.stream(reader.readLine().split(csvSep + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1))
+          .map(
+              maybeStartEndQuotedString ->
+                  StringUtils.unquoteStartEnd(maybeStartEndQuotedString.trim())
+                      .replaceAll("\"{2}", "\"")
+                      .trim())
+          .collect(Collectors.toSet());
+    } catch (ConnectorException | IOException e) {
+      throw new SourceException(
+          "Unable to find file for entity '"
+              + entityClass.getSimpleName()
+              + "': "
+              + e.getMessage());
+    }
   }
 
   public synchronized BufferedCsvWriter getOrInitWriter(

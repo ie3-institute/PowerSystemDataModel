@@ -35,7 +35,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
     def filePath = Path.of("file/not/found.csv")
 
     when:
-    source.buildIndividualTimeSeries(UUID.fromString("fbc59b5b-9307-4fb4-a406-c1f08f26fee5"), filePath, { null }, null)
+    source.buildIndividualTimeSeries(UUID.fromString("fbc59b5b-9307-4fb4-a406-c1f08f26fee5"), filePath, { null })
 
     then:
     def ex = thrown(SourceException)
@@ -49,7 +49,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
     def tsUuid = UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7")
 
     when:
-    def actual = source.buildIndividualTimeSeries(tsUuid, filePath, { source.createTimeBasedValue(it) }, HeatAndPValue)
+    def actual = source.buildIndividualTimeSeries(tsUuid, filePath, { source.createTimeBasedValue(it) })
 
     then:
     noExceptionThrown()
