@@ -150,7 +150,7 @@ public class GraphicSource extends EntitySource {
       Map<String, String> fieldsToAttributes, Set<NodeInput> nodes) {
 
     // get the node of the entity
-    String nodeUuid = fieldsToAttributes.get(NODE);
+    UUID nodeUuid = UUID.fromString(fieldsToAttributes.get(NODE));
     Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
 
     // if the node is not present we return a failure
@@ -197,7 +197,7 @@ public class GraphicSource extends EntitySource {
       Map<String, String> fieldsToAttributes, Set<LineInput> lines) {
 
     // get the node of the entity
-    String lineUuid = fieldsToAttributes.get("line");
+    UUID lineUuid = UUID.fromString(fieldsToAttributes.get("line"));
     Optional<LineInput> line = findFirstEntityByUuid(lineUuid, lines);
 
     // if the node is not present we return an empty element and
