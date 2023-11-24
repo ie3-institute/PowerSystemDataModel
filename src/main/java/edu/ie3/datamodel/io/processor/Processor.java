@@ -400,7 +400,6 @@ public abstract class Processor<T> {
       operationTime
           .getEndDate()
           .ifPresent(endDate -> resultStringBuilder.append(processZonedDateTime(endDate)));
-
     return resultStringBuilder.toString();
   }
 
