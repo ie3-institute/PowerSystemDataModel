@@ -22,8 +22,6 @@ import edu.ie3.util.TimeUtil;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Wrapper providing the class specific processor to convert an instance of a {@link UniqueEntity}
