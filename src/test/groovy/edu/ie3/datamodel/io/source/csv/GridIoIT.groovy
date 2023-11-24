@@ -10,8 +10,6 @@ import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.sink.CsvFileSink
-import edu.ie3.datamodel.io.source.csv.CsvJointGridContainerSource
-import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
 import spock.lang.Specification

@@ -37,8 +37,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessorProvider {
 
-  private static final Logger log = LoggerFactory.getLogger(ProcessorProvider.class);
-
   /** unmodifiable map of all processors that has been provided on construction */
   private final Map<Class<? extends UniqueEntity>, EntityProcessor<? extends UniqueEntity>>
       entityProcessors;
