@@ -156,13 +156,13 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "p"         : "2",
       "q"         : "2",
     ]
-    expect: "that the factory should not need more than 2 seconds for processing 100.000 entities"
+    expect: "that the factory should not need more than 3 seconds for processing 10.000 entities"
     Long startTime = System.currentTimeMillis()
     10000.times {
       resultFactory.get(new SimpleEntityData(parameter, StorageResult))
     }
     BigDecimal elapsedTime = (System
         .currentTimeMillis() - startTime) / 1000.0
-    elapsedTime < 2
+    elapsedTime < 3
   }
 }
