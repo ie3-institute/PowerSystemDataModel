@@ -45,36 +45,12 @@ class ValidationUtilsTest extends Specification {
     noExceptionThrown()
   }
 
-  def "The validation utils should determine if a collection with UniqueEntity's is distinct by their uuid"() {
-
-    expect:
-    ValidationUtils.distinctUuids(collection) == distinct
-
-    where:
-    collection                         || distinct
-    [
-      GridTestData.nodeF,
-      new NodeInput(
-      UUID.fromString("9e37ce48-9650-44ec-b888-c2fd182aff01"), "node_g", OperatorInput.NO_OPERATOR_ASSIGNED,
-      OperationTime.notLimited()
-      ,
-      Quantities.getQuantity(1d, PU),
-      false,
-      null,
-      GermanVoltageLevelUtils.LV,
-      6)
-    ] as Set         || false
-    [
-      GridTestData.nodeD,
-      GridTestData.nodeE
-    ] as Set || true
-    [] as Set                          || true
-  }
-
   def "The validation utils should check for duplicates as expected"() {
     expect:
-    ValidationUtils.checkForDuplicate(collection, UniqueEntity::getUuid).every {
-      it.exception.map {
+    def tries = ValidationUtils.checkForDuplicates(collection, UniqueEntity::getUuid)
+
+    if (!tries.isEmpty()) {
+      tries.get(0).exception.map {
         it.message
       } == checkResult
     }
@@ -100,8 +76,9 @@ class ValidationUtilsTest extends Specification {
       null,
       GermanVoltageLevelUtils.LV,
       6)
-    ] as Set         || Optional.of("The following entities have duplicate 'UUID':NodeInput{uuid=9e37ce48-9650-44ec-b888-c2fd182aff01, id='node_f', operator=f15105c4-a2de-4ab8-a621-4bc98e372d92, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=1 p.u., slack=false, geoPosition=null, voltLvl=CommonVoltageLevel{id='Niederspannung', nominalVoltage=0.4 kV, synonymousIds=[Niederspannung, lv, ns], voltageRange=Interval [0.0 kV, 10 kV)}, subnet=6}\n" +
-    " - NodeInput{uuid=9e37ce48-9650-44ec-b888-c2fd182aff01, id='node_g', operator=f15105c4-a2de-4ab8-a621-4bc98e372d92, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=1 p.u., slack=false, geoPosition=null, voltLvl=CommonVoltageLevel{id='Niederspannung', nominalVoltage=0.4 kV, synonymousIds=[Niederspannung, lv, ns], voltageRange=Interval [0.0 kV, 10 kV)}, subnet=6}")
+    ] as Set         || Optional.of("The following entities have duplicate 'UUID': " +
+    "{NodeInput{uuid=9e37ce48-9650-44ec-b888-c2fd182aff01, id='node_f', operator=f15105c4-a2de-4ab8-a621-4bc98e372d92, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=1 p.u., slack=false, geoPosition=null, voltLvl=CommonVoltageLevel{id='Niederspannung', nominalVoltage=0.4 kV, synonymousIds=[Niederspannung, lv, ns], voltageRange=Interval [0.0 kV, 10 kV)}, subnet=6}, " +
+    "NodeInput{uuid=9e37ce48-9650-44ec-b888-c2fd182aff01, id='node_g', operator=f15105c4-a2de-4ab8-a621-4bc98e372d92, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=1 p.u., slack=false, geoPosition=null, voltLvl=CommonVoltageLevel{id='Niederspannung', nominalVoltage=0.4 kV, synonymousIds=[Niederspannung, lv, ns], voltageRange=Interval [0.0 kV, 10 kV)}, subnet=6}}")
     [
       GridTestData.nodeD,
       GridTestData.nodeE
@@ -262,7 +239,7 @@ class ValidationUtilsTest extends Specification {
     ]
 
     when:
-    List<Try<Void, DuplicateEntitiesException>> exceptions = ValidationUtils.checkForDuplicate(validAssetIds, AssetInput::getId)
+    List<Try<Void, DuplicateEntitiesException>> exceptions = ValidationUtils.checkForDuplicates(validAssetIds, AssetInput::getId)
 
     then:
     exceptions.every {
@@ -278,11 +255,11 @@ class ValidationUtilsTest extends Specification {
     ]
 
     when:
-    List<Try<Void, DuplicateEntitiesException>> exceptions = ValidationUtils.checkForDuplicate(invalidAssetIds, AssetInput::getId)
+    List<Try<Void, DuplicateEntitiesException>> exceptions = ValidationUtils.checkForDuplicates(invalidAssetIds, AssetInput::getId)
 
     then:
     exceptions.size() == 1
     exceptions.get(0).failure
-    exceptions.get(0).exception.get().message.contains("The following entities have duplicate 'String':AssetInput")
+    exceptions.get(0).exception.get().message.startsWith("The following entities have duplicate 'String': {AssetInput{uuid=")
   }
 }

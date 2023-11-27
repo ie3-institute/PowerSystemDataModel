@@ -21,7 +21,7 @@ public class DuplicateEntitiesException extends ValidationException {
 
   public DuplicateEntitiesException(String fieldName, Collection<? extends UniqueEntity> entities) {
     this(
-        "The following entities have duplicate '" + fieldName + "':",
+        "The following entities have duplicate '" + fieldName + "': ",
         ExceptionUtils.combine(entities));
   }
 }

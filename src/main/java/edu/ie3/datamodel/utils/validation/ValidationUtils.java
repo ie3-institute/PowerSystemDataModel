@@ -300,20 +300,6 @@ public class ValidationUtils {
   }
 
   /**
-   * Determines if the provided set only contains elements with distinct UUIDs
-   *
-   * @param entities the set that should be checked
-   * @return true if all UUIDs of the provided entities are unique, false otherwise
-   */
-  private static boolean distinctUuids(Set<? extends UniqueEntity> entities) {
-    return entities.stream()
-            .filter(distinctByKey(UniqueEntity::getUuid))
-            .collect(Collectors.toSet())
-            .size()
-        == entities.size();
-  }
-
-  /**
    * Predicate that can be used to filter elements based on a given Function
    *
    * @param keyExtractor the function that should be used for the filter operations
@@ -331,39 +317,34 @@ public class ValidationUtils {
    * @param entities to be checked
    * @param supplier for the field
    * @return a list of {@link Try}.
-   * @param <A> type of the field
-   * @param <B> type of the {@link UniqueEntity}
+   * @param <E> type of the {@link UniqueEntity}
+   * @param <F> type of the field
    */
-  protected static <A, B extends UniqueEntity>
-      List<Try<Void, DuplicateEntitiesException>> checkForDuplicate(
-          Collection<B> entities, FieldSupplier<A, B> supplier) {
-    Map<A, List<B>> duplicates =
+  protected static <E extends UniqueEntity, F>
+      List<Try<Void, DuplicateEntitiesException>> checkForDuplicates(
+          Collection<E> entities, FieldSupplier<E, F> supplier) {
+    Map<F, List<E>> duplicates =
         entities.stream().collect(Collectors.groupingBy(supplier::getField));
 
-    List<Try<Void, DuplicateEntitiesException>> exceptions = new ArrayList<>();
-
-    duplicates.entrySet().stream()
+    return duplicates.entrySet().stream()
         .filter(e -> e.getValue().size() > 1)
-        .forEach(
-            duplicate -> {
-              A key = duplicate.getKey();
-              exceptions.add(
-                  Failure.ofVoid(
-                      new DuplicateEntitiesException(
-                          key.getClass().getSimpleName(), duplicates.get(key))));
-            });
-
-    return exceptions;
+        .map(
+            duplicate ->
+                (Try<Void, DuplicateEntitiesException>)
+                    Failure.ofVoid(
+                        new DuplicateEntitiesException(
+                            duplicate.getKey().getClass().getSimpleName(), duplicate.getValue())))
+        .toList();
   }
 
   /**
-   * Supplier for unique entity fields.
+   * Supplier for unique entity fields that returns a field of type F given an entity of type E.
    *
-   * @param <A> type of field
-   * @param <B> type of unique entity
+   * @param <E> type of unique entity
+   * @param <F> type of field
    */
   @FunctionalInterface
-  protected interface FieldSupplier<A, B extends UniqueEntity> {
-    A getField(B entity);
+  protected interface FieldSupplier<E extends UniqueEntity, F> {
+    F getField(E entity);
   }
 }

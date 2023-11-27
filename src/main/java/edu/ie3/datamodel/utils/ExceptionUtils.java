@@ -35,6 +35,8 @@ public class ExceptionUtils {
    * @return a string
    */
   public static String combine(Collection<? extends UniqueEntity> entities) {
-    return entities.stream().map(UniqueEntity::toString).collect(Collectors.joining("\n - "));
+    return "{"
+        + entities.stream().map(UniqueEntity::toString).collect(Collectors.joining(", "))
+        + "}";
   }
 }
