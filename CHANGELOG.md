@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Fixed
+- Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
 
 ### Changed
+- Changing from comparing strings to comparing uuids in `EntitySource.findFirstEntityByUuid` [#829](https://github.com/ie3-institute/PowerSystemDataModel/issues/829)
 - Abstracting some methods in `ValidationUtils` [#852](https://github.com/ie3-institute/PowerSystemDataModel/issues/852)
 
 ## [4.1.0] - 2023-11-02
