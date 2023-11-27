@@ -513,8 +513,8 @@ public class RawGridSource extends EntitySource {
     Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
 
     // get the two connector nodes
-    String nodeAUuid = fieldsToAttributes.get(NODE_A);
-    String nodeBUuid = fieldsToAttributes.get(NODE_B);
+    UUID nodeAUuid = UUID.fromString(fieldsToAttributes.get(NODE_A));
+    UUID nodeBUuid = UUID.fromString(fieldsToAttributes.get(NODE_B));
     Optional<NodeInput> nodeA = findFirstEntityByUuid(nodeAUuid, nodes);
     Optional<NodeInput> nodeB = findFirstEntityByUuid(nodeBUuid, nodes);
 
@@ -621,7 +621,7 @@ public class RawGridSource extends EntitySource {
     Map<String, String> fieldsToAttributes = typeEntityData.getFieldsToValues();
 
     // get nodeC of the transformer
-    String nodeCUuid = fieldsToAttributes.get("nodeC");
+    UUID nodeCUuid = UUID.fromString(fieldsToAttributes.get("nodeC"));
     Optional<NodeInput> nodeC = findFirstEntityByUuid(nodeCUuid, nodes);
 
     // if nodeC is not present we return a failure
