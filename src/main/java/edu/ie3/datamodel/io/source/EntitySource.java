@@ -33,6 +33,7 @@ public abstract class EntitySource {
   protected static final String OPERATOR = "operator";
   protected static final String NODE = "node";
   protected static final String TYPE = "type";
+  protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
   DataSource dataSource;
 
@@ -50,10 +51,24 @@ public abstract class EntitySource {
         + missingElementsString;
   }
 
-  protected String getOrThrow(Map<String, String> map, String field) throws SourceException {
-    return Optional.ofNullable(map.get(field))
-        .orElseThrow(
-            () -> new SourceException("Field " + field + " was not found in map " + map + "."));
+  /**
+   * Method for retrieving an element from a map. If the map doesn't contain the key an error
+   * message is build and returned instead.
+   *
+   * <p>Should not be used for other purposes than creating error messages.
+   *
+   * @param map with value
+   * @param key for the value
+   * @param mapName name of the map used for the error message
+   * @return either the value or an error message
+   */
+  protected String safeMapGet(Map<String, String> map, String key, String mapName) {
+    return Optional.ofNullable(map.get(key))
+        .orElse(
+            "Key '"
+                + key
+                + "' not found"
+                + (mapName.isEmpty() ? "!" : " in map '" + mapName + "'!"));
   }
 
   /**
@@ -79,7 +94,7 @@ public abstract class EntitySource {
    * the provided fields to values mapping. The provided fields to values mapping needs to have one
    * and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can be
    * found in the provided collection based on the UUID it is returned wrapped in a {@link Success}.
-   * Otherwise a {@link Failure} is returned and a warning is logged.
+   * Otherwise, a {@link Failure} is returned and a warning is logged.
    *
    * @param types a collection of types that should be used for searching
    * @param fieldsToAttributes the field name to value mapping incl. the key {@link #TYPE}
@@ -97,15 +112,13 @@ public abstract class EntitySource {
     // if the type is not present we return an empty element and
     // log a warning
     if (assetType.isEmpty()) {
-      return Try.of(
-              () ->
-                  buildSkippingMessage(
-                      skippedClassString,
-                      getOrThrow(fieldsToAttributes, "uuid"),
-                      getOrThrow(fieldsToAttributes, "id"),
-                      TYPE + ": " + getOrThrow(fieldsToAttributes, TYPE)),
-              SourceException.class)
-          .flatMap(message -> Failure.of(new SourceException("Failure due to: " + message)));
+      String skippingMessage =
+          buildSkippingMessage(
+              skippedClassString,
+              safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
+              safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
+              TYPE + ": " + safeMapGet(fieldsToAttributes, TYPE, FIELDS_TO_VALUES_MAP));
+      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
     }
     return new Success<>(assetType.get());
   }
@@ -270,8 +283,7 @@ public abstract class EntitySource {
             operators,
             operatorUuid,
             entityClass.getSimpleName(),
-            fieldsToAttributes.getOrDefault(
-                "uuid", "No 'uuid' found in map " + fieldsToAttributes + "!"));
+            safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
 
     // remove fields that are passed as objects to constructor
     fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
