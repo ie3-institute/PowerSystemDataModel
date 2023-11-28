@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.Time;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -45,11 +44,17 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @return The source
    */
   public static CsvTimeSeriesSource<? extends Value> getSource(
-          String csvSep,
-          String folderPath,
-          FileNamingStrategy fileNamingStrategy,
-          CsvIndividualTimeSeriesMetaInformation metaInformation) throws SourceException {
-          return getSource(csvSep, folderPath, fileNamingStrategy, metaInformation, TimeUtil.withDefaults.getDtfPattern());
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      CsvIndividualTimeSeriesMetaInformation metaInformation)
+      throws SourceException {
+    return getSource(
+        csvSep,
+        folderPath,
+        fileNamingStrategy,
+        metaInformation,
+        TimeUtil.withDefaults.getDtfPattern());
   }
 
   /**
@@ -86,7 +91,8 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       CsvIndividualTimeSeriesMetaInformation metaInformation,
       Class<T> valClass,
       String dtfPattern) {
-    TimeBasedSimpleValueFactory<T> valueFactory = new TimeBasedSimpleValueFactory<>(valClass, dtfPattern);
+    TimeBasedSimpleValueFactory<T> valueFactory =
+        new TimeBasedSimpleValueFactory<>(valClass, dtfPattern);
     return new CsvTimeSeriesSource<>(
         csvSep,
         folderPath,
