@@ -330,11 +330,10 @@ public class ValidationUtils {
         .filter(e -> e.getValue().size() > 1)
         .map(
             duplicate ->
-                (Try<Void, DuplicateEntitiesException>)
-                    Failure.ofVoid(
-                        new DuplicateEntitiesException(
-                            duplicate.getKey().getClass().getSimpleName(), duplicate.getValue())))
-        .toList();
+                Failure.ofVoid(
+                    new DuplicateEntitiesException(
+                        duplicate.getKey().getClass().getSimpleName(), duplicate.getValue())))
+        .collect(Collectors.toList());
   }
 
   /**
