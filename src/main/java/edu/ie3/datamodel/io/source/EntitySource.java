@@ -51,6 +51,17 @@ public abstract class EntitySource {
         + missingElementsString;
   }
 
+  /**
+   * Method for retrieving an element from a map. If the map doesn't contain the key an error
+   * message is build and returned instead.
+   *
+   * <p>Should not be used for other purposes than creating error messages.
+   *
+   * @param map with value
+   * @param key for the value
+   * @param mapName name of the map used for the error message
+   * @return either the value or an error message
+   */
   protected String safeMapGet(Map<String, String> map, String key, String mapName) {
     return Optional.ofNullable(map.get(key))
         .orElse(
@@ -83,7 +94,7 @@ public abstract class EntitySource {
    * the provided fields to values mapping. The provided fields to values mapping needs to have one
    * and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can be
    * found in the provided collection based on the UUID it is returned wrapped in a {@link Success}.
-   * Otherwise a {@link Failure} is returned and a warning is logged.
+   * Otherwise, a {@link Failure} is returned and a warning is logged.
    *
    * @param types a collection of types that should be used for searching
    * @param fieldsToAttributes the field name to value mapping incl. the key {@link #TYPE}
