@@ -45,7 +45,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    */
   public static CsvTimeSeriesSource<? extends Value> getSource(
       String csvSep,
-      String folderPath,
+      Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
