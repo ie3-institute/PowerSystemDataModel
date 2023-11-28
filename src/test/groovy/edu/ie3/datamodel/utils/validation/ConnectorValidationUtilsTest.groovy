@@ -6,29 +6,24 @@
 package edu.ie3.datamodel.utils.validation
 
 import static edu.ie3.datamodel.models.StandardUnits.*
-import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static tech.units.indriya.unit.Units.METRE
 
+import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
-import org.locationtech.jts.geom.LineString
-import tech.units.indriya.ComparableQuantity
-
-import javax.measure.quantity.Angle
-import javax.measure.quantity.Dimensionless
-import javax.measure.quantity.ElectricConductance
-import javax.measure.quantity.ElectricPotential
-import javax.measure.quantity.ElectricResistance
-import javax.measure.quantity.Power
-
-import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
+import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
+
+import javax.measure.quantity.*
 
 class ConnectorValidationUtilsTest extends Specification {
 
@@ -69,22 +64,20 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkLine() recognizes all potential errors for a line"() {
     when:
-    ConnectorValidationUtils.check(invalidLine)
+    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidLine).stream().filter { it -> it.failure }.toList()
 
     then:
-    Exception ex = thrown()
+    exceptions.size() == expectedSize
+    Exception ex = exceptions.get(0).exception.get()
     ex.class == expectedException.class
     ex.message == expectedException.message
 
     where:
-    invalidLine                                                                                                                                                                                   || expectedException
-    GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeG).build()                                                                                                                                || new InvalidEntityException("LineInput connects the same node, but shouldn't", invalidLine)
-    GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().subnet(5).build()).build()                                                                                                       || new InvalidEntityException("LineInput connects different subnets, but shouldn't", invalidLine)
-    GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()).build()                                                                        || new InvalidEntityException("LineInput connects different voltage levels, but shouldn't", invalidLine)
-    GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build()                                                                                                                || new InvalidEntityException("The following quantities have to be positive: 0.0 km", invalidLine)
-    GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().geoPosition(testCoordinate).build()).build()                              														  || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
-    GridTestData.lineFtoG.copy().nodeB(GridTestData.nodeG.copy().geoPosition(testCoordinate).build()).build()                              														  || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
-    invalidLineLengthNotMatchingCoordinateDistances 																																			  || new InvalidEntityException("Line length does not equal calculated distances between points building the line", invalidLine)
+    invalidLine                                                                                                              || expectedSize || expectedException
+    GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeG).build()                                                           || 1            || new InvalidEntityException("LineInput connects the same node, but shouldn't", invalidLine)
+    GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().subnet(5).build()).build()                                  || 1            || new InvalidEntityException("LineInput connects different subnets, but shouldn't", invalidLine)
+    GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()).build()   || 1            || new InvalidEntityException("LineInput connects different voltage levels, but shouldn't", invalidLine)
+    GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build()                                           || 1            || new InvalidEntityException("The following quantities have to be positive: 0.0 km", invalidLine)
   }
 
   def "Smoke Test: Correct line type throws no exception"() {
@@ -113,19 +106,20 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer2W recognizes all potential errors for a transformer2W"() {
     when:
-    ConnectorValidationUtils.check(invalidTransformer2W)
+    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidTransformer2W).stream().filter { it -> it.failure }.toList()
 
     then:
-    Exception ex = thrown()
+    exceptions.size() == expectedSize
+    Exception ex = exceptions.get(0).exception.get()
     ex.class == expectedException.class
     ex.message == expectedException.message
 
     where:
-    invalidTransformer2W                                                                                                     		|| expectedException
-    GridTestData.transformerBtoD.copy().tapPos(100).build()                                                                  		|| new InvalidEntityException("Tap position of Transformer2WInput is outside of bounds", invalidTransformer2W)
-    GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() 		|| new InvalidEntityException("Transformer2WInput connects the same voltage level, but shouldn't", invalidTransformer2W)
-    GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().subnet(2).build()).build()                           		|| new InvalidEntityException("Transformer2WInput connects the same subnet, but shouldn't", invalidTransformer2W)
-    GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().voltLvl(GermanVoltageLevelUtils.MV_30KV).build()).build() 	|| new InvalidEntityException("Rated voltages of Transformer2WInput do not equal voltage levels at the nodes", invalidTransformer2W)
+    invalidTransformer2W                                                                                                     		|| expectedSize || expectedException
+    GridTestData.transformerBtoD.copy().tapPos(100).build()                                                                  		|| 1            || new InvalidEntityException("Tap position of Transformer2WInput is outside of bounds", invalidTransformer2W)
+    GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() 		|| 2            || new InvalidEntityException("Transformer2WInput connects the same voltage level, but shouldn't", invalidTransformer2W)
+    GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().subnet(2).build()).build()                           		|| 1            || new InvalidEntityException("Transformer2WInput connects the same subnet, but shouldn't", invalidTransformer2W)
+    GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().voltLvl(GermanVoltageLevelUtils.MV_30KV).build()).build() 	|| 1            || new InvalidEntityException("Rated voltages of Transformer2WInput do not equal voltage levels at the nodes", invalidTransformer2W)
   }
 
   def "Smoke Test: Correct transformer2W type throws no exception"() {
@@ -162,8 +156,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
     then:
     Exception ex = thrown()
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    ex.message.contains(expectedException.message)
 
     where:
     invalidTransformer2WType || expectedException
@@ -185,19 +178,19 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkTransformer3W recognizes all potential errors for a transformer3W"() {
     when:
-    ConnectorValidationUtils.check(invalidTransformer3W)
+    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidTransformer3W).stream().filter { it -> it.failure }.toList()
 
     then:
-    Exception ex = thrown()
-    ex.class == expectedException.class
+    exceptions.size() == expectedSize
+    Exception ex = exceptions.get(0).exception.get()
     ex.message == expectedException.message
 
     where:
-    invalidTransformer3W             	                                                                                        		|| expectedException
-    GridTestData.transformerAtoBtoC.copy().tapPos(100).build()                                                                  		|| new InvalidEntityException("Tap position of Transformer3WInput is outside of bounds", invalidTransformer3W)
-    GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() 		|| new InvalidEntityException("Transformer connects nodes of the same voltage level", invalidTransformer3W)
-    GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().subnet(2).build()).build()                           		|| new InvalidEntityException("Transformer connects nodes in the same subnet", invalidTransformer3W)
-    GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().voltLvl(GermanVoltageLevelUtils.MV_30KV).build()).build() 	|| new InvalidEntityException("Rated voltages of Transformer3WInput do not equal voltage levels at the nodes", invalidTransformer3W)
+    invalidTransformer3W             	                                                                                        		|| expectedSize || expectedException
+    GridTestData.transformerAtoBtoC.copy().tapPos(100).build()                                                                  		|| 1            || new InvalidEntityException("Tap position of Transformer3WInput is outside of bounds", invalidTransformer3W)
+    GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() 		|| 2            || new InvalidEntityException("Transformer connects nodes of the same voltage level", invalidTransformer3W)
+    GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().subnet(2).build()).build()                           		|| 1            || new InvalidEntityException("Transformer connects nodes in the same subnet", invalidTransformer3W)
+    GridTestData.transformerAtoBtoC.copy().nodeC(GridTestData.nodeC.copy().voltLvl(GermanVoltageLevelUtils.MV_30KV).build()).build() 	|| 1            || new InvalidEntityException("Rated voltages of Transformer3WInput do not equal voltage levels at the nodes", invalidTransformer3W)
   }
 
   def "Smoke Test: Correct transformer3W type throws no exception"() {
@@ -229,8 +222,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
     then:
     Exception ex = thrown()
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    ex.message.contains(expectedException.message)
 
     where:
     invalidTransformer3WType || expectedException
@@ -252,15 +244,15 @@ class ConnectorValidationUtilsTest extends Specification {
 
   def "ConnectorValidationUtils.checkSwitch recognizes all potential errors for a switch"() {
     when:
-    ConnectorValidationUtils.check(invalidSwitch)
+    List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidSwitch).stream().filter { it -> it.failure }.toList()
 
     then:
-    Exception ex = thrown()
-    ex.class == expectedException.class
+    exceptions.size() == expectedSize
+    Exception ex = exceptions.get(0).exception.get()
     ex.message == expectedException.message
 
     where:
-    invalidSwitch           || expectedException
-    GridTestData.switchAtoB || new InvalidEntityException("Switch connects two different voltage levels", invalidSwitch)
+    invalidSwitch           || expectedSize || expectedException
+    GridTestData.switchAtoB || 1            || new InvalidEntityException("Switch connects two different voltage levels", invalidSwitch)
   }
 }

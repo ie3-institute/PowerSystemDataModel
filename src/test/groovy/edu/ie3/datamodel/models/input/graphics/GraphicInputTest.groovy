@@ -17,6 +17,11 @@ class GraphicInputTest extends Specification {
     DummyGraphicObject(UUID uuid, String graphicLayer, LineString path) {
       super(uuid, graphicLayer, path)
     }
+
+    @Override
+    GraphicInputCopyBuilder copy() {
+      throw new UnsupportedOperationException("This is a dummy class")
+    }
   }
 
 
@@ -36,6 +41,5 @@ class GraphicInputTest extends Specification {
     "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228]]}"                                           | _
     "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | _
     "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | _
-
   }
 }

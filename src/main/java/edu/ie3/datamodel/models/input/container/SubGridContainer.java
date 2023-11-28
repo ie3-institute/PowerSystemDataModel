@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
@@ -23,7 +24,8 @@ public class SubGridContainer extends GridContainer {
       int subnet,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      GraphicElements graphics) {
+      GraphicElements graphics)
+      throws InvalidGridException {
     super(gridName, rawGrid, systemParticipants, graphics);
     this.subnet = subnet;
     this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet);
@@ -95,20 +97,20 @@ public class SubGridContainer extends GridContainer {
      * Method to alter the subnet number.
      *
      * @param subnet altered subnet number.
-     * @return child instance of {@link SubGridContainerCopyBuilder}
+     * @return this instance of {@link SubGridContainerCopyBuilder}
      */
     public SubGridContainerCopyBuilder subnet(int subnet) {
       this.subnet = subnet;
-      return childInstance();
+      return thisInstance();
     }
 
     @Override
-    protected SubGridContainerCopyBuilder childInstance() {
+    protected SubGridContainerCopyBuilder thisInstance() {
       return this;
     }
 
     @Override
-    SubGridContainer build() {
+    public SubGridContainer build() throws InvalidGridException {
       return new SubGridContainer(
           getGridName(), subnet, getRawGrid(), getSystemParticipants(), getGraphics());
     }

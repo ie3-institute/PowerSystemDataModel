@@ -313,7 +313,9 @@ class SystemParticipantTestData {
   )
 
   // Energy Management
-  public static final UUID[] connectedAssets = new UUID[]{loadInput.getUuid(), pvInput.getUuid()}
+  public static final UUID[] connectedAssets = new UUID[]{
+    loadInput.getUuid(), pvInput.getUuid()
+  }
   public static final String emControlStrategy = "self_optimization"
   public static final emInput = new EmInput(
   UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
@@ -353,5 +355,4 @@ class SystemParticipantTestData {
     [] as Set,
     [] as Set)
   }
-
 }

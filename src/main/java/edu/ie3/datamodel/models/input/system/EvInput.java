@@ -139,7 +139,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
     }
 
     @Override
-    protected EvInputCopyBuilder childInstance() {
+    protected EvInputCopyBuilder thisInstance() {
       return this;
     }
   }

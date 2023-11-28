@@ -10,6 +10,8 @@ import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import spock.lang.Shared
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -20,7 +22,7 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
   CsvIdCoordinateSource source
 
   def setupSpec() {
-    source = new CsvIdCoordinateSource(csvSep, coordinatesIconFolderPath, fileNamingStrategy, new IconIdCoordinateFactory())
+    source = new CsvIdCoordinateSource(new IconIdCoordinateFactory(), new CsvDataSource(csvSep, coordinatesIconFolderPath, fileNamingStrategy))
   }
 
   def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {
@@ -133,23 +135,59 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
     ].sort()
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 2, allCoordinates)
+    def actualDistances = source.calculateCoordinateDistances(basePoint, 2, allCoordinates)
 
     then:
     actualDistances == expectedDistances
   }
 
-  def "If no collection is given, the CsvIdCoordinateSource is able to return the nearest n coordinates of all available coordinates" () {
+  def "The CsvIdCoordinateSource will return the nearest n coordinates" () {
     given:
-    def n = 2
-    def allCoordinates = source.allCoordinates
+    def n = 5
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
-    def expectedDistances = source.getNearestCoordinates(basePoint, n, allCoordinates)
+    def expectedDistances = source.calculateCoordinateDistances(basePoint, n, source.allCoordinates)
 
     when:
     def actualDistances = source.getNearestCoordinates(basePoint, n)
 
     then:
     actualDistances == expectedDistances
+  }
+
+  def "The CsvIdCoordinateSource will return no coordinates if no coordinates are in the given radius" () {
+    given:
+    def n = 5
+    def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+    def distance = Quantities.getQuantity(10000, Units.METRE)
+
+    when:
+    def actualDistances = source.getClosestCoordinates(basePoint, n, distance)
+
+    then:
+    actualDistances.empty
+  }
+
+  def "The CsvIdCoordinateSource will return the nearest n coordinates if n coordinates are in the search radius"() {
+    given:
+    def basePoint = GeoUtils.buildPoint(51.5, 7.38)
+    def distance = Quantities.getQuantity(10000, Units.METRE)
+
+    when:
+    def actualDistances = source.getClosestCoordinates(basePoint, 3, distance)
+
+    then:
+    actualDistances.size() == 3
+  }
+
+  def "The CsvIdCoordinateSource will return the nearest m coordinates if less than n coordinates are in the given radius"() {
+    given:
+    def basePoint = GeoUtils.buildPoint(51.5, 7.38)
+    def distance = Quantities.getQuantity(1000, Units.METRE)
+
+    when:
+    def actualDistances = source.getClosestCoordinates(basePoint, 3, distance)
+
+    then:
+    actualDistances.size() == 1
   }
 }

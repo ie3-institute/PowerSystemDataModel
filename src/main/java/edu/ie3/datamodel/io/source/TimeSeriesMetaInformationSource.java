@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /** Source for all available time series with their {@link UUID} and {@link ColumnScheme} */
-public interface TimeSeriesMetaInformationSource extends DataSource {
+public interface TimeSeriesMetaInformationSource {
 
   /**
    * Get a mapping from time series {@link UUID} to its meta information {@link

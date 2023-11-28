@@ -5,61 +5,51 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
-import java.util.EnumSet;
+import java.util.*;
 import java.util.Optional;
 
 /**
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
  */
-public interface TimeSeriesSource<V extends Value> extends DataSource {
+public abstract class TimeSeriesSource<V extends Value> {
 
-  /**
-   * Checks whether the given column scheme can be used with time series.
-   *
-   * @param scheme the column scheme to check
-   * @return whether the scheme is accepted or not
-   * @deprecated since 3.0. Use {@link
-   *     TimeSeriesUtils#isSchemeAccepted(edu.ie3.datamodel.io.naming.timeseries.ColumnScheme)}
-   *     instead.
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  static boolean isSchemeAccepted(edu.ie3.datamodel.io.csv.timeseries.ColumnScheme scheme) {
-    return EnumSet.of(
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER,
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.APPARENT_POWER,
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ENERGY_PRICE,
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND,
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND,
-            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.HEAT_DEMAND)
-        .contains(scheme);
+  protected Class<V> valueClass;
+  protected TimeBasedSimpleValueFactory<V> valueFactory;
+
+  protected TimeSeriesSource(Class<V> valueClass, TimeBasedSimpleValueFactory<V> factory) {
+    this.valueFactory = factory;
+    this.valueClass = valueClass;
   }
 
   /**
-   * Obtain the full time series
+   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
+   * need any additional information.
    *
-   * @return the time series
+   * @param fieldToValues Mapping from field id to values
+   * @return {@link Try} of simple time based value
    */
-  IndividualTimeSeries<V> getTimeSeries();
+  protected Try<TimeBasedValue<V>, FactoryException> createTimeBasedValue(
+      Map<String, String> fieldToValues) {
+    SimpleTimeBasedValueData<V> factoryData =
+        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+    return valueFactory.get(factoryData);
+  }
 
-  /**
-   * Get the time series for the given time interval. If the interval is bigger than the time series
-   * itself, only the parts of the time series within the interval are handed back.
-   *
-   * @param timeInterval Desired time interval to cover
-   * @return The parts of of interest of the time series
-   */
-  IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval);
+  public abstract IndividualTimeSeries<V> getTimeSeries();
 
-  /**
-   * Get the time series value for a specific time
-   *
-   * @param time The queried time
-   * @return Option on a value for that time
-   */
-  Optional<V> getValue(ZonedDateTime time);
+  public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
+      throws SourceException;
+
+  public abstract Optional<V> getValue(ZonedDateTime time) throws SourceException;
 }
