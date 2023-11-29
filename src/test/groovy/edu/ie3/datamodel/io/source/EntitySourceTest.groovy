@@ -48,7 +48,7 @@ class EntitySourceTest extends Specification {
         )
 
     when:
-    def actual = dummyEntitySource.findFirstEntityByUuid(uuid.toString(), entities)
+    def actual = dummyEntitySource.findFirstEntityByUuid(uuid, entities)
 
     then:
     actual.present
@@ -58,7 +58,7 @@ class EntitySourceTest extends Specification {
   def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
 
     expect:
-    dummyEntitySource.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid) == expectedOperator
+    dummyEntitySource.getFirstOrDefaultOperator(operators, Optional.of(UUID.fromString(operatorUuid)), entityClassName, requestEntityUuid) == expectedOperator
 
     where:
     operatorUuid                           | operators                | entityClassName   | requestEntityUuid                      || expectedOperator

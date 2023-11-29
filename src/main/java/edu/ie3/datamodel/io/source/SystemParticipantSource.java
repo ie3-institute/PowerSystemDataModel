@@ -928,12 +928,15 @@ public class SystemParticipantSource extends EntitySource {
     Optional<ThermalStorageInput> thermalStorage =
         Optional.ofNullable(fieldsToAttributes.get(THERMAL_STORAGE))
             .flatMap(
-                thermalStorageUuid -> findFirstEntityByUuid(thermalStorageUuid, thermalStorages));
+                thermalStorageUuid ->
+                    findFirstEntityByUuid(UUID.fromString(thermalStorageUuid), thermalStorages));
 
     // get the thermal bus input for this chp unit
     Optional<ThermalBusInput> thermalBus =
         Optional.ofNullable(fieldsToAttributes.get("thermalBus"))
-            .flatMap(thermalBusUuid -> findFirstEntityByUuid(thermalBusUuid, thermalBuses));
+            .flatMap(
+                thermalBusUuid ->
+                    findFirstEntityByUuid(UUID.fromString(thermalBusUuid), thermalBuses));
 
     // if the thermal storage or the thermal bus are not present we return an
     // empty element and log a warning
