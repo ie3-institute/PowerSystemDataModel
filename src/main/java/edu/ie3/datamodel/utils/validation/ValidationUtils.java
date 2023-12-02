@@ -217,34 +217,6 @@ public class ValidationUtils {
   }
 
   /**
-   * Checks the validity of the ids for a given set of {@link AssetInput}.
-   *
-   * @param inputs a set of asset inputs
-   * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
-   *     Success
-   */
-  protected static List<Try<Void, UnsafeEntityException>> checkIds(
-      Set<? extends AssetInput> inputs) {
-    List<String> ids = new ArrayList<>();
-    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
-
-    inputs.forEach(
-        input -> {
-          String id = input.getId();
-          if (!ids.contains(id)) {
-            ids.add(id);
-          } else {
-            exceptions.add(
-                new Failure<>(
-                    new UnsafeEntityException(
-                        "There is already an entity with the id " + id, input)));
-          }
-        });
-
-    return exceptions;
-  }
-
-  /**
    * Checks, if the given object is null. If so, an {@link InvalidEntityException} wrapped in a
    * {@link Failure} is returned.
    *
@@ -328,20 +300,6 @@ public class ValidationUtils {
   }
 
   /**
-   * Determines if the provided set only contains elements with distinct UUIDs
-   *
-   * @param entities the set that should be checked
-   * @return true if all UUIDs of the provided entities are unique, false otherwise
-   */
-  private static boolean distinctUuids(Set<? extends UniqueEntity> entities) {
-    return entities.stream()
-            .filter(distinctByKey(UniqueEntity::getUuid))
-            .collect(Collectors.toSet())
-            .size()
-        == entities.size();
-  }
-
-  /**
    * Predicate that can be used to filter elements based on a given Function
    *
    * @param keyExtractor the function that should be used for the filter operations
@@ -354,38 +312,38 @@ public class ValidationUtils {
   }
 
   /**
-   * Checks if the provided set of unique entities only contains elements with distinct UUIDs and
-   * either returns a string with duplicated UUIDs or an empty optional otherwise.
+   * Method to check for duplicate fields in a set of {@link UniqueEntity}.
    *
-   * @param entities the entities that should be checkd for UUID uniqueness
-   * @return either a string wrapped in an optional with duplicate UUIDs or an empty optional
+   * @param entities to be checked
+   * @param supplier for the field
+   * @return a list of {@link Try}.
+   * @param <E> type of the {@link UniqueEntity}
+   * @param <F> type of the field
    */
-  protected static Optional<String> checkForDuplicateUuids(Set<UniqueEntity> entities) {
-    if (distinctUuids(entities)) {
-      return Optional.empty();
-    }
-    String duplicationsString =
-        entities.stream()
-            .collect(Collectors.groupingBy(UniqueEntity::getUuid, Collectors.counting()))
-            .entrySet()
-            .stream()
-            .filter(entry -> entry.getValue() > 1)
-            .map(
-                entry -> {
-                  String duplicateEntitiesString =
-                      entities.stream()
-                          .filter(entity -> entity.getUuid().equals(entry.getKey()))
-                          .map(UniqueEntity::toString)
-                          .collect(Collectors.joining("\n - "));
+  protected static <E extends UniqueEntity, F>
+      List<Try<Void, DuplicateEntitiesException>> checkForDuplicates(
+          Collection<E> entities, FieldSupplier<E, F> supplier) {
+    Map<F, List<E>> duplicates =
+        entities.stream().collect(Collectors.groupingBy(supplier::getField));
 
-                  return entry.getKey()
-                      + ": "
-                      + entry.getValue()
-                      + "\n - "
-                      + duplicateEntitiesString;
-                })
-            .collect(Collectors.joining("\n\n"));
+    return duplicates.entrySet().stream()
+        .filter(e -> e.getValue().size() > 1)
+        .map(
+            duplicate ->
+                Failure.ofVoid(
+                    new DuplicateEntitiesException(
+                        duplicate.getKey().getClass().getSimpleName(), duplicate.getValue())))
+        .collect(Collectors.toList());
+  }
 
-    return Optional.of(duplicationsString);
+  /**
+   * Supplier for unique entity fields that returns a field of type F given an entity of type E.
+   *
+   * @param <E> type of unique entity
+   * @param <F> type of field
+   */
+  @FunctionalInterface
+  protected interface FieldSupplier<E extends UniqueEntity, F> {
+    F getField(E entity);
   }
 }
