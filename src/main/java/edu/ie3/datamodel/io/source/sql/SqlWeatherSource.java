@@ -55,14 +55,14 @@ public class SqlWeatherSource extends WeatherSource {
       IdCoordinateSource idCoordinateSource,
       String schemaName,
       String weatherTableName,
-      TimeBasedWeatherValueFactory weatherFactory)
-      throws SourceException {
+      TimeBasedWeatherValueFactory weatherFactory) {
     super(idCoordinateSource, weatherFactory);
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
     this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy());
     this.tableName = weatherTableName;
 
-    weatherFactory.validate(getSourceFields(WeatherValue.class), WeatherValue.class);
+    getSourceFields(WeatherValue.class)
+        .ifPresent(s -> weatherFactory.validate(s, WeatherValue.class).getOrThrow());
 
     String dbTimeColumnName =
         dataSource.getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
@@ -81,8 +81,7 @@ public class SqlWeatherSource extends WeatherSource {
   }
 
   @Override
-  public <C extends WeatherValue> Set<String> getSourceFields(Class<C> entityClass)
-      throws SourceException {
+  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
     return dataSource.getSourceFields(tableName);
   }
 

@@ -46,17 +46,13 @@ public abstract class EntitySource {
    *
    * @param entityClass class to be validated
    * @param validator used to validate
-   * @return either a {@link FactoryException} wrapped by a failure or an empty success
    * @param <C> type of the class
    */
-  protected final <C extends UniqueEntity> Try<Void, FactoryException> validate(
+  protected final <C extends UniqueEntity> void validate(
       Class<? extends C> entityClass, SourceValidator<C> validator) {
-    try {
-      Set<String> actualFields = dataSource.getSourceFields(entityClass);
-      return validator.validate(actualFields, entityClass);
-    } catch (SourceException e) {
-      return Failure.of(new FactoryException(e.getCause()));
-    }
+    dataSource
+        .getSourceFields(entityClass)
+        .ifPresent(s -> validator.validate(s, entityClass).getOrThrow());
   }
 
   protected String buildSkippingMessage(

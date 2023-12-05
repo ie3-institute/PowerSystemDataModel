@@ -50,8 +50,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       SqlDataSource sqlDataSource,
       UUID timeSeriesUuid,
       Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory)
-      throws SourceException {
+      TimeBasedSimpleValueFactory<V> factory) {
     super(valueClass, factory);
     this.dataSource = sqlDataSource;
 
@@ -64,7 +63,9 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     final String tableName =
         sqlDataSource.databaseNamingStrategy.getTimeSeriesEntityName(columnScheme);
 
-    factory.validate(dataSource.getSourceFields(tableName), valueClass);
+    dataSource
+        .getSourceFields(tableName)
+        .ifPresent(s -> factory.validate(s, valueClass).getOrThrow());
 
     String dbTimeColumnName =
         sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
@@ -91,8 +92,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       DatabaseNamingStrategy namingStrategy,
       UUID timeSeriesUuid,
       Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory)
-      throws SourceException {
+      TimeBasedSimpleValueFactory<V> factory) {
     this(
         new SqlDataSource(connector, schemaName, namingStrategy),
         timeSeriesUuid,
@@ -134,8 +134,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       DatabaseNamingStrategy namingStrategy,
       UUID timeSeriesUuid,
       Class<T> valClass,
-      String timePattern)
-      throws SourceException {
+      String timePattern) {
     TimeBasedSimpleValueFactory<T> valueFactory =
         new TimeBasedSimpleValueFactory<>(valClass, timePattern);
     return new SqlTimeSeriesSource<>(

@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
@@ -53,12 +52,8 @@ public class GraphicSource extends EntitySource {
 
   @Override
   public void validate() {
-    List<FactoryException> exceptions =
-        Try.getExceptions(
-            validate(NodeGraphicInput.class, nodeGraphicInputFactory),
-            validate(LineGraphicInput.class, lineGraphicInputFactory));
-
-    exceptions.forEach(e -> log.warn("The following exception was thrown while validating: ", e));
+    validate(NodeGraphicInput.class, nodeGraphicInputFactory);
+    validate(LineGraphicInput.class, lineGraphicInputFactory);
   }
 
   /** Returns the graphic elements of the grid or throws a {@link SourceException} */

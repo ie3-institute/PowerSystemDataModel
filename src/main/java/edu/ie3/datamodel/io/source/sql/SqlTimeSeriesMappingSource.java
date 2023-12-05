@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -36,7 +37,7 @@ public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
         entityPersistenceNamingStrategy.getEntityName(MappingEntry.class).orElseThrow();
     this.queryFull = createBaseQueryString(schemaName, tableName);
 
-    mappingFactory.validate(getSourceFields(), MappingEntry.class);
+    getSourceFields().ifPresent(s -> mappingFactory.validate(s, MappingEntry.class).getOrThrow());
   }
 
   @Override
@@ -45,7 +46,7 @@ public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
   }
 
   @Override
-  public Set<String> getSourceFields() throws SourceException {
+  public Optional<Set<String>> getSourceFields() throws SourceException {
     return dataSource.getSourceFields(tableName);
   }
 }

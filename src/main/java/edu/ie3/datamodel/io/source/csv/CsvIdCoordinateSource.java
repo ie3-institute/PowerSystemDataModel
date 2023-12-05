@@ -87,12 +87,17 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
   }
 
   @Override
-  public Set<String> getSourceFields(Class<?> entityClass) throws SourceException {
+  public Optional<Set<String>> getSourceFields(Class<?> entityClass) {
     try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
-      return Arrays.stream(dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep))
-          .collect(Collectors.toSet());
+      return Optional.of(
+          Arrays.stream(dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep))
+              .collect(Collectors.toSet()));
     } catch (IOException e) {
-      throw new SourceException("The following exception was thrown while reading a source: ", e);
+      log.warn(
+          "The source for the entity '{}' couldn't be read and therefore not be validated!",
+          entityClass,
+          e);
+      return Optional.empty();
     }
   }
 
@@ -173,7 +178,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
       // validating read file
-      factory.validate(Set.of(headline), Pair.class);
+      factory.validate(Set.of(headline), Pair.class).getOrThrow();
 
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.

@@ -109,8 +109,8 @@ public class InfluxDbConnector implements DataConnector {
     this(url, databaseName, NO_SCENARIO, true, InfluxDB.LogLevel.NONE, BatchOptions.DEFAULTS);
   }
 
-  /** Returns the fields found in the source. */
-  public <C> Set<String> getSourceFields(Class<C> entityClass) {
+  /** Returns the option for fields found in the source. */
+  public <C> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
     QueryResult tagKeys = session.query(new Query("SHOW TAG KEYS ON " + databaseName));
     Map<String, Set<Map<String, String>>> tagResults = parseQueryResult(tagKeys);
 
@@ -121,7 +121,7 @@ public class InfluxDbConnector implements DataConnector {
     tagResults.values().forEach(v -> v.stream().map(m -> m.get("tagKey")).forEach(set::add));
     fieldResults.values().forEach(v -> v.stream().map(m -> m.get("fieldKey")).forEach(set::add));
 
-    return set;
+    return Optional.of(set);
   }
 
   /**

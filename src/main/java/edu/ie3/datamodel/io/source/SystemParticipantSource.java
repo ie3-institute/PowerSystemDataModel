@@ -79,21 +79,17 @@ public class SystemParticipantSource extends EntitySource {
 
   @Override
   public void validate() {
-    List<FactoryException> exceptions =
-        Try.getExceptions(
-            validate(BmInput.class, bmInputFactory),
-            validate(ChpInput.class, chpInputFactory),
-            validate(EvInput.class, evInputFactory),
-            validate(FixedFeedInInput.class, fixedFeedInInputFactory),
-            validate(HpInput.class, hpInputFactory),
-            validate(LoadInput.class, loadInputFactory),
-            validate(PvInput.class, pvInputFactory),
-            validate(StorageInput.class, storageInputFactory),
-            validate(WecInput.class, wecInputFactory),
-            validate(EvcsInput.class, evcsInputFactory),
-            validate(EmInput.class, emInputFactory));
-
-    exceptions.forEach(e -> log.warn("The following exception was thrown while validating: ", e));
+    validate(BmInput.class, bmInputFactory);
+    validate(ChpInput.class, chpInputFactory);
+    validate(EvInput.class, evInputFactory);
+    validate(FixedFeedInInput.class, fixedFeedInInputFactory);
+    validate(HpInput.class, hpInputFactory);
+    validate(LoadInput.class, loadInputFactory);
+    validate(PvInput.class, pvInputFactory);
+    validate(StorageInput.class, storageInputFactory);
+    validate(WecInput.class, wecInputFactory);
+    validate(EvcsInput.class, evcsInputFactory);
+    validate(EmInput.class, emInputFactory);
   }
 
   /**

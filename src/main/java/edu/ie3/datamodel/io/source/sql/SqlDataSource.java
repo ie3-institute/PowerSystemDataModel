@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
@@ -110,8 +109,7 @@ public class SqlDataSource implements DataSource {
   }
 
   @Override
-  public Set<String> getSourceFields(Class<? extends UniqueEntity> entityClass)
-      throws SourceException {
+  public Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass) {
     try {
       String tableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
       ResultSet rs =
@@ -123,9 +121,13 @@ public class SqlDataSource implements DataSource {
         columnNames.add(StringUtils.snakeCaseToCamelCase(name));
       }
 
-      return columnNames;
+      return Optional.of(columnNames);
     } catch (NoSuchElementException | SQLException e) {
-      throw new SourceException("The following exception was thrown while reading a source: ", e);
+      log.warn(
+          "The source for the entity '{}' couldn't be read and therefore not be validated! Cause: {}",
+          entityClass,
+          e.getMessage());
+      return Optional.empty();
     }
   }
 
@@ -133,10 +135,9 @@ public class SqlDataSource implements DataSource {
    * Method that uses the table name to retrieve all field names.
    *
    * @param tableName to be used
-   * @return a set of found fields
-   * @throws SourceException - if an error occurred
+   * @return an option for a set of found fields
    */
-  public Set<String> getSourceFields(String tableName) throws SourceException {
+  public Optional<Set<String>> getSourceFields(String tableName) {
     try {
       ResultSet rs =
           connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
@@ -147,9 +148,10 @@ public class SqlDataSource implements DataSource {
         columnNames.add(StringUtils.snakeCaseToCamelCase(name));
       }
 
-      return columnNames;
+      return Optional.of(columnNames);
     } catch (NoSuchElementException | SQLException e) {
-      throw new SourceException("The following exception was thrown while reading a source: ", e);
+      log.warn("The table '{}' couldn't be read and therefore not be validated!", tableName, e);
+      return Optional.empty();
     }
   }
 

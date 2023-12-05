@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
@@ -61,11 +60,10 @@ public class CsvWeatherSource extends WeatherSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  /** Returns an empty set for now. */
+  /** Returns an empty optional for now. */
   @Override
-  public <C extends WeatherValue> Set<String> getSourceFields(Class<C> entityClass)
-      throws SourceException {
-    return Collections.emptySet();
+  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
+    return Optional.empty();
   }
 
   @Override
@@ -188,7 +186,7 @@ public class CsvWeatherSource extends WeatherSource {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
       // validating read file
-      weatherFactory.validate(Set.of(headline), WeatherValue.class);
+      weatherFactory.validate(Set.of(headline), WeatherValue.class).getOrThrow();
 
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.

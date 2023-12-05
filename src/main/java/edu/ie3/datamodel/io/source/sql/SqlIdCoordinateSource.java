@@ -47,8 +47,7 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
   private final SqlIdCoordinateFactory factory;
 
   public SqlIdCoordinateSource(
-      SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource)
-      throws SourceException {
+      SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource) {
     this.factory = factory;
     this.dataSource = dataSource;
     this.coordinateTableName = coordinateTableName;
@@ -58,7 +57,7 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
         dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
 
     // validating table
-    factory.validate(getSourceFields(Pair.class), Pair.class);
+    getSourceFields(Pair.class).ifPresent(s -> factory.validate(s, Pair.class).getOrThrow());
 
     // setup queries
     this.basicQuery = createBaseQueryString(dataSource.schemaName, coordinateTableName);
@@ -83,8 +82,7 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
       SqlConnector connector,
       String schemaName,
       String coordinateTableName,
-      SqlIdCoordinateFactory factory)
-      throws SourceException {
+      SqlIdCoordinateFactory factory) {
     this(
         factory,
         coordinateTableName,
@@ -92,7 +90,7 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
   }
 
   @Override
-  public Set<String> getSourceFields(Class<?> entityClass) throws SourceException {
+  public Optional<Set<String>> getSourceFields(Class<?> entityClass) {
     return dataSource.getSourceFields(coordinateTableName);
   }
 

@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.influxdb;
 
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -48,17 +47,16 @@ public class InfluxDbWeatherSource extends WeatherSource {
   public InfluxDbWeatherSource(
       InfluxDbConnector connector,
       IdCoordinateSource idCoordinateSource,
-      TimeBasedWeatherValueFactory weatherValueFactory)
-      throws SourceException {
+      TimeBasedWeatherValueFactory weatherValueFactory) {
     super(idCoordinateSource, weatherValueFactory);
     this.connector = connector;
 
-    weatherValueFactory.validate(getSourceFields(WeatherValue.class), WeatherValue.class);
+    getSourceFields(WeatherValue.class)
+        .ifPresent(s -> weatherValueFactory.validate(s, WeatherValue.class).getOrThrow());
   }
 
   @Override
-  public <C extends WeatherValue> Set<String> getSourceFields(Class<C> entityClass)
-      throws SourceException {
+  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
     return connector.getSourceFields(entityClass);
   }
 

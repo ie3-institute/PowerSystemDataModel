@@ -44,10 +44,10 @@ public abstract class WeatherSource {
    * Method to retrieve the fields found in the source.
    *
    * @param entityClass class of the source
-   * @return the found fields
+   * @return an option for fields found in the source
    */
-  public abstract <C extends WeatherValue> Set<String> getSourceFields(Class<C> entityClass)
-      throws SourceException;
+  public abstract <C extends WeatherValue> Optional<Set<String>> getSourceFields(
+      Class<C> entityClass);
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

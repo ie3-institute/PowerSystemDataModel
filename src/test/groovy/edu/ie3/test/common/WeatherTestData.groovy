@@ -22,8 +22,8 @@ abstract class WeatherTestData {
   static final class DummyIdCoordinateSource implements CsvTestDataMeta, IdCoordinateSource {
 
     @Override
-    Set<String> getSourceFields(Class<?> entityClass) throws SourceException {
-      return [] as Set<String>
+    Optional<Set<String>> getSourceFields(Class<?> entityClass) throws SourceException {
+      return Optional.empty()
     }
 
     Optional<Point> getCoordinate(int id) {

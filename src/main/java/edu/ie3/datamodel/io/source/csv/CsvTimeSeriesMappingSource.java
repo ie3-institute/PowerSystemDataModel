@@ -10,6 +10,7 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -23,7 +24,7 @@ public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
     this.dataSource = new CsvDataSource(csvSep, gridFolderPath, fileNamingStrategy);
 
     // validating
-    mappingFactory.validate(getSourceFields(), MappingEntry.class);
+    getSourceFields().ifPresent(s -> mappingFactory.validate(s, MappingEntry.class).getOrThrow());
   }
 
   @Override
@@ -33,7 +34,7 @@ public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
   }
 
   @Override
-  public Set<String> getSourceFields() throws SourceException {
+  public Optional<Set<String>> getSourceFields() throws SourceException {
     return dataSource.getSourceFields(MappingEntry.class);
   }
 }

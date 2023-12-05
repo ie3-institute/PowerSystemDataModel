@@ -48,13 +48,9 @@ public class ThermalSource extends EntitySource {
 
   @Override
   public void validate() {
-    List<FactoryException> exceptions =
-        Try.getExceptions(
-            validate(ThermalBusInput.class, thermalBusInputFactory),
-            validate(CylindricalStorageInput.class, cylindricalStorageInputFactory),
-            validate(ThermalHouseInput.class, thermalHouseInputFactory));
-
-    exceptions.forEach(e -> log.warn("The following exception was thrown while validating: ", e));
+    validate(ThermalBusInput.class, thermalBusInputFactory);
+    validate(CylindricalStorageInput.class, cylindricalStorageInputFactory);
+    validate(ThermalHouseInput.class, thermalHouseInputFactory);
   }
 
   /**

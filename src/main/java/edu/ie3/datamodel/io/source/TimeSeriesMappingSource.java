@@ -59,8 +59,8 @@ public abstract class TimeSeriesMappingSource {
    */
   public abstract Stream<Map<String, String>> getMappingSourceData();
 
-  /** Returns the fields found in the source */
-  public abstract Set<String> getSourceFields() throws SourceException;
+  /** Returns the option for fields found in the source */
+  public abstract Optional<Set<String>> getSourceFields() throws SourceException;
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

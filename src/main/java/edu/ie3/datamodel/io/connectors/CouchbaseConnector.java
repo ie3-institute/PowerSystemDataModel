@@ -17,6 +17,7 @@ import com.couchbase.client.java.query.QueryResult;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -59,9 +60,9 @@ public class CouchbaseConnector implements DataConnector {
     cluster = Cluster.connect(url, clusterOptions);
   }
 
-  /** Returns a set of found fields. */
+  /** Returns the option for a set of found fields. */
   @SuppressWarnings("unchecked")
-  public <C> Set<String> getSourceFields(Class<C> entityClass) {
+  public <C> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
     String query =
         "SELECT ARRAY_DISTINCT(ARRAY_AGG(v)) AS column FROM "
             + bucketName
@@ -78,7 +79,7 @@ public class CouchbaseConnector implements DataConnector {
       set.addAll((List<String>) columns);
     }
 
-    return set;
+    return Optional.of(set);
   }
 
   /**

@@ -64,16 +64,12 @@ public class RawGridSource extends EntitySource {
 
   @Override
   public void validate() {
-    List<FactoryException> exceptions =
-        Try.getExceptions(
-            validate(NodeInput.class, nodeInputFactory),
-            validate(LineInput.class, lineInputFactory),
-            validate(Transformer2WInput.class, transformer2WInputFactory),
-            validate(Transformer3WInput.class, transformer3WInputFactory),
-            validate(SwitchInput.class, switchInputFactory),
-            validate(MeasurementUnitInput.class, measurementUnitInputFactory));
-
-    exceptions.forEach(e -> log.warn("The following exception was thrown while validating: ", e));
+    validate(NodeInput.class, nodeInputFactory);
+    validate(LineInput.class, lineInputFactory);
+    validate(Transformer2WInput.class, transformer2WInputFactory);
+    validate(Transformer3WInput.class, transformer3WInputFactory);
+    validate(SwitchInput.class, switchInputFactory);
+    validate(MeasurementUnitInput.class, measurementUnitInputFactory);
   }
 
   /**
