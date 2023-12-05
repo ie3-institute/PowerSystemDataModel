@@ -10,6 +10,7 @@ import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -59,7 +60,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
       IdCoordinateSource coordinateSource,
       String coordinateIdColumnName,
       TimeBasedWeatherValueFactory weatherFactory,
-      String timeStampPattern) {
+      String timeStampPattern)
+      throws SourceException {
     this(
         connector,
         coordinateSource,
@@ -88,14 +90,21 @@ public class CouchbaseWeatherSource extends WeatherSource {
       String coordinateIdColumnName,
       String keyPrefix,
       TimeBasedWeatherValueFactory weatherFactory,
-      String timeStampPattern) {
+      String timeStampPattern)
+      throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.connector = connector;
     this.coordinateIdColumnName = coordinateIdColumnName;
     this.keyPrefix = keyPrefix;
     this.timeStampPattern = timeStampPattern;
 
-    connector.validateDb(WeatherValue.class, weatherFactory);
+    weatherFactory.validate(getSourceFields(WeatherValue.class), WeatherValue.class);
+  }
+
+  @Override
+  public <C extends WeatherValue> Set<String> getSourceFields(Class<C> entityClass)
+      throws SourceException {
+    return connector.getSourceFields(entityClass);
   }
 
   @Override

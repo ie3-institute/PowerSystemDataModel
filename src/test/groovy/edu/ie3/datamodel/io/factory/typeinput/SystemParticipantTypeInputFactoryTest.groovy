@@ -283,12 +283,12 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def foundFields = typeInputFactory.newSet("uuid", "id", "capex", "opex", "srated", "cosPhiRated", "estorage", "pmin", "pmax", "eta", "dod", "lifetime",)
 
     when:
-    def input = Try.of(() -> typeInputFactory.validate(foundFields, StorageTypeInput), FactoryException)
+    def input = typeInputFactory.validate(foundFields, StorageTypeInput)
 
     then:
     input.failure
     input.exception.get().message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] are invalid for instance of 'StorageTypeInput'. \n" +
-    "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
-    "0: [activePowerGradient, capex, cosPhiRated, dod, eStorage, eta, id, lifeCycle, lifeTime, opex, pMax, sRated, uuid] or [active_power_gradient, capex, cos_phi_rated, dod, e_storage, eta, id, life_cycle, life_time, opex, p_max, s_rated, uuid]\n"
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
+        "0: [activePowerGradient, capex, cosPhiRated, dod, eStorage, eta, id, lifeCycle, lifeTime, opex, pMax, sRated, uuid] or [active_power_gradient, capex, cos_phi_rated, dod, e_storage, eta, id, life_cycle, life_time, opex, p_max, s_rated, uuid]\n"
   }
 }

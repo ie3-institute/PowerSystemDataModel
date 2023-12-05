@@ -40,6 +40,15 @@ public abstract class WeatherSource {
     this.weatherFactory = weatherFactory;
   }
 
+  /**
+   * Method to retrieve the fields found in the source.
+   *
+   * @param entityClass class of the source
+   * @return the found fields
+   */
+  public abstract <C extends WeatherValue> Set<String> getSourceFields(Class<C> entityClass)
+      throws SourceException;
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(

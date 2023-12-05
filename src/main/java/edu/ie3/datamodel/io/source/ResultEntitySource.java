@@ -5,8 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static java.util.Map.entry;
-
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
 import edu.ie3.datamodel.models.result.NodeResult;
@@ -18,10 +17,12 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link ResultEntity} container
@@ -64,28 +65,45 @@ public class ResultEntitySource extends EntitySource {
   }
 
   @Override
-  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
-    return Map.ofEntries(
-        entry(LoadResult.class, systemParticipantResultFactory),
-        entry(FixedFeedInResult.class, systemParticipantResultFactory),
-        entry(BmResult.class, systemParticipantResultFactory),
-        entry(PvResult.class, systemParticipantResultFactory),
-        entry(ChpResult.class, systemParticipantResultFactory),
-        entry(WecResult.class, systemParticipantResultFactory),
-        entry(StorageResult.class, systemParticipantResultFactory),
-        entry(EvcsResult.class, systemParticipantResultFactory),
-        entry(EvResult.class, systemParticipantResultFactory),
-        entry(HpResult.class, systemParticipantResultFactory),
-        entry(EmResult.class, systemParticipantResultFactory),
-        entry(ThermalHouseResult.class, thermalResultFactory),
-        entry(CylindricalStorageResult.class, thermalResultFactory),
-        entry(SwitchResult.class, switchResultFactory),
-        entry(NodeResult.class, nodeResultFactory),
-        entry(SystemParticipantResult.class, connectorResultFactory),
-        entry(LineResult.class, connectorResultFactory),
-        entry(Transformer2WResult.class, connectorResultFactory),
-        entry(Transformer3WResult.class, connectorResultFactory),
-        entry(FlexOptionsResult.class, flexOptionsResultFactory));
+  public void validate() {
+    List<FactoryException> exceptions =
+        new ArrayList<>(
+            Stream.of(
+                    LoadResult.class,
+                    FixedFeedInResult.class,
+                    BmResult.class,
+                    PvResult.class,
+                    ChpResult.class,
+                    WecResult.class,
+                    StorageResult.class,
+                    EvcsResult.class,
+                    EvResult.class,
+                    HpResult.class,
+                    EmResult.class)
+                .map(c -> validate(c, systemParticipantResultFactory).getException())
+                .flatMap(Optional::stream)
+                .toList());
+
+    validate(ThermalHouseResult.class, thermalResultFactory)
+        .getException()
+        .ifPresent(exceptions::add);
+    validate(CylindricalStorageResult.class, thermalResultFactory)
+        .getException()
+        .ifPresent(exceptions::add);
+    validate(SwitchResult.class, switchResultFactory).getException().ifPresent(exceptions::add);
+    validate(NodeResult.class, nodeResultFactory).getException().ifPresent(exceptions::add);
+    validate(LineResult.class, connectorResultFactory).getException().ifPresent(exceptions::add);
+    validate(Transformer2WResult.class, connectorResultFactory)
+        .getException()
+        .ifPresent(exceptions::add);
+    validate(Transformer3WResult.class, connectorResultFactory)
+        .getException()
+        .ifPresent(exceptions::add);
+    validate(FlexOptionsResult.class, flexOptionsResultFactory)
+        .getException()
+        .ifPresent(exceptions::add);
+
+    exceptions.forEach(e -> log.warn("The following exception was thrown while validating: ", e));
   }
 
   /**

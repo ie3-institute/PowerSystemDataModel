@@ -5,30 +5,21 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static java.util.Map.entry;
-
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.RawGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.MeasurementUnitInput;
-import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
 import java.util.*;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -72,13 +63,17 @@ public class RawGridSource extends EntitySource {
   }
 
   @Override
-  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
-    return Map.ofEntries(
-        entry(NodeInput.class, nodeInputFactory),
-        entry(LineInput.class, lineInputFactory),
-        entry(Transformer2WInput.class, transformer2WInputFactory),
-        entry(SwitchInput.class, switchInputFactory),
-        entry(MeasurementUnitInput.class, measurementUnitInputFactory));
+  public void validate() {
+    List<FactoryException> exceptions =
+        Try.getExceptions(
+            validate(NodeInput.class, nodeInputFactory),
+            validate(LineInput.class, lineInputFactory),
+            validate(Transformer2WInput.class, transformer2WInputFactory),
+            validate(Transformer3WInput.class, transformer3WInputFactory),
+            validate(SwitchInput.class, switchInputFactory),
+            validate(MeasurementUnitInput.class, measurementUnitInputFactory));
+
+    exceptions.forEach(e -> log.warn("The following exception was thrown while validating: ", e));
   }
 
   /**

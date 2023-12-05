@@ -5,8 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static java.util.Map.entry;
-
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
@@ -53,10 +52,13 @@ public class GraphicSource extends EntitySource {
   }
 
   @Override
-  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
-    return Map.ofEntries(
-        entry(NodeGraphicInput.class, nodeGraphicInputFactory),
-        entry(LineGraphicInput.class, lineGraphicInputFactory));
+  public void validate() {
+    List<FactoryException> exceptions =
+        Try.getExceptions(
+            validate(NodeGraphicInput.class, nodeGraphicInputFactory),
+            validate(LineGraphicInput.class, lineGraphicInputFactory));
+
+    exceptions.forEach(e -> log.warn("The following exception was thrown while validating: ", e));
   }
 
   /** Returns the graphic elements of the grid or throws a {@link SourceException} */

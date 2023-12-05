@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
@@ -59,6 +60,13 @@ public class CsvWeatherSource extends WeatherSource {
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  /** Returns an empty set for now. */
+  @Override
+  public <C extends WeatherValue> Set<String> getSourceFields(Class<C> entityClass)
+      throws SourceException {
+    return Collections.emptySet();
+  }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(

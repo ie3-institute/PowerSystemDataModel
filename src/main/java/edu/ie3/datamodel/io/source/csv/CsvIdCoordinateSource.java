@@ -87,6 +87,16 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
   }
 
   @Override
+  public Set<String> getSourceFields(Class<?> entityClass) throws SourceException {
+    try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
+      return Arrays.stream(dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep))
+          .collect(Collectors.toSet());
+    } catch (IOException e) {
+      throw new SourceException("The following exception was thrown while reading a source: ", e);
+    }
+  }
+
+  @Override
   public Optional<Point> getCoordinate(int id) {
     return Optional.ofNullable(idToCoordinate.get(id));
   }

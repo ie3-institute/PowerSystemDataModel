@@ -19,7 +19,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -52,7 +51,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       UUID timeSeriesUuid,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory)
-      throws SQLException {
+      throws SourceException {
     super(valueClass, factory);
     this.dataSource = sqlDataSource;
 
@@ -65,7 +64,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     final String tableName =
         sqlDataSource.databaseNamingStrategy.getTimeSeriesEntityName(columnScheme);
 
-    dataSource.connector.validateDBTable(tableName, valueClass, factory);
+    factory.validate(dataSource.getSourceFields(tableName), valueClass);
 
     String dbTimeColumnName =
         sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
@@ -93,7 +92,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       UUID timeSeriesUuid,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory)
-      throws SQLException {
+      throws SourceException {
     this(
         new SqlDataSource(connector, schemaName, namingStrategy),
         timeSeriesUuid,
@@ -118,7 +117,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       DatabaseNamingStrategy namingStrategy,
       IndividualTimeSeriesMetaInformation metaInformation,
       String timePattern)
-      throws SourceException, SQLException {
+      throws SourceException {
     if (!TimeSeriesUtils.isSchemeAccepted(metaInformation.getColumnScheme()))
       throw new SourceException(
           "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
@@ -136,7 +135,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       UUID timeSeriesUuid,
       Class<T> valClass,
       String timePattern)
-      throws SQLException {
+      throws SourceException {
     TimeBasedSimpleValueFactory<T> valueFactory =
         new TimeBasedSimpleValueFactory<>(valClass, timePattern);
     return new SqlTimeSeriesSource<>(

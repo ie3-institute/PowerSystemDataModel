@@ -59,6 +59,16 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
+  public Set<String> getSourceFields(Class<? extends UniqueEntity> entityClass)
+      throws SourceException {
+    try (BufferedReader reader = connector.initReader(entityClass)) {
+      return Arrays.stream(parseCsvRow(reader.readLine(), csvSep)).collect(Collectors.toSet());
+    } catch (ConnectorException | IOException e) {
+      throw new SourceException("The following exception was thrown while reading a source: ", e);
+    }
+  }
+
+  @Override
   public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }

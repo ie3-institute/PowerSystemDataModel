@@ -5,6 +5,7 @@
  */
 package edu.ie3.test.common
 
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
 import edu.ie3.util.geo.CoordinateDistance
@@ -19,6 +20,11 @@ import java.util.stream.Stream
 abstract class WeatherTestData {
 
   static final class DummyIdCoordinateSource implements CsvTestDataMeta, IdCoordinateSource {
+
+    @Override
+    Set<String> getSourceFields(Class<?> entityClass) throws SourceException {
+      return [] as Set<String>
+    }
 
     Optional<Point> getCoordinate(int id) {
       switch (id) {

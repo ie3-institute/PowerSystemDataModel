@@ -30,6 +30,7 @@ public class SqlWeatherSource extends WeatherSource {
 
   private static final String WHERE = " WHERE ";
   private final String factoryCoordinateFieldName;
+  private final String tableName;
 
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
@@ -55,12 +56,13 @@ public class SqlWeatherSource extends WeatherSource {
       String schemaName,
       String weatherTableName,
       TimeBasedWeatherValueFactory weatherFactory)
-      throws SQLException {
+      throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
     this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy());
+    this.tableName = weatherTableName;
 
-    dataSource.connector.validateDBTable(weatherTableName, WeatherValue.class, weatherFactory);
+    weatherFactory.validate(getSourceFields(WeatherValue.class), WeatherValue.class);
 
     String dbTimeColumnName =
         dataSource.getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
@@ -76,6 +78,12 @@ public class SqlWeatherSource extends WeatherSource {
     this.queryTimeIntervalAndCoordinates =
         createQueryStringForTimeIntervalAndCoordinates(
             schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
+  }
+
+  @Override
+  public <C extends WeatherValue> Set<String> getSourceFields(Class<C> entityClass)
+      throws SourceException {
+    return dataSource.getSourceFields(tableName);
   }
 
   @Override

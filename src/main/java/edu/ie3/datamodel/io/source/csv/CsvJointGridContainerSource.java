@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
@@ -16,11 +17,10 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
+import edu.ie3.datamodel.utils.ExceptionUtils;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
@@ -55,13 +55,17 @@ public class CsvJointGridContainerSource {
     GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* validating sources */
-    Map<Class<?>, SourceValidator<?>> validationMapping =
-        new HashMap<>(typeSource.getValidationMapping());
-    validationMapping.putAll(rawGridSource.getValidationMapping());
-    validationMapping.putAll(thermalSource.getValidationMapping());
-    validationMapping.putAll(systemParticipantSource.getValidationMapping());
-    validationMapping.putAll(graphicSource.getValidationMapping());
-    dataSource.connector.validate(validationMapping, csvSep);
+    List<FactoryException> validationException =
+        Try.getExceptions(
+            Try.ofVoid(typeSource::validate, FactoryException.class),
+            Try.ofVoid(rawGridSource::validate, FactoryException.class),
+            Try.ofVoid(systemParticipantSource::validate, FactoryException.class),
+            Try.ofVoid(graphicSource::validate, FactoryException.class));
+
+    if (!validationException.isEmpty()) {
+      throw new FactoryException(
+          "Validation failed due to: " + ExceptionUtils.getFullMessages(validationException));
+    }
 
     /* Loading models */
     Try<RawGridElements, SourceException> rawGridElements =

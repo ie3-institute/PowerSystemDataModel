@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static java.util.Map.entry;
-
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.SourceException;
@@ -49,11 +47,14 @@ public class ThermalSource extends EntitySource {
   }
 
   @Override
-  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
-    return Map.ofEntries(
-        entry(ThermalBusInput.class, thermalBusInputFactory),
-        entry(CylindricalStorageInput.class, cylindricalStorageInputFactory),
-        entry(ThermalHouseInput.class, thermalHouseInputFactory));
+  public void validate() {
+    List<FactoryException> exceptions =
+        Try.getExceptions(
+            validate(ThermalBusInput.class, thermalBusInputFactory),
+            validate(CylindricalStorageInput.class, cylindricalStorageInputFactory),
+            validate(ThermalHouseInput.class, thermalHouseInputFactory));
+
+    exceptions.forEach(e -> log.warn("The following exception was thrown while validating: ", e));
   }
 
   /**

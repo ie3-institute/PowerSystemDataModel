@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source
 import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
+import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.test.common.SystemParticipantTestData as sptd
@@ -17,6 +18,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Path
+import java.util.function.Function
 
 class EntitySourceTest extends Specification {
 
@@ -26,8 +28,7 @@ class EntitySourceTest extends Specification {
     }
 
     @Override
-    Map<Class<?>, SourceValidator<?>> getValidationMapping() {
-      return null
+    void validate() {
     }
   }
 

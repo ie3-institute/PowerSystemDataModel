@@ -79,15 +79,15 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
     def foundFields = inputFactory.newSet("uuid", "id", "s_rated", "cosphi_rated")
 
     when:
-    Try<Void, FactoryException> input = Try.ofVoid(() -> inputFactory.validate(foundFields, FixedFeedInInput), FactoryException)
+    Try<Void, FactoryException> input = inputFactory.validate(foundFields, FixedFeedInInput)
 
     then:
     input.failure
     input.exception.get().message == "The provided fields [cosphi_rated, id, s_rated, uuid] are invalid for instance of 'FixedFeedInInput'. \n" +
-    "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'FixedFeedInInput' are possible (NOT case-sensitive!):\n" +
-    "0: [cosPhiRated, id, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, q_characteristics, s_rated, uuid]\n" +
-    "1: [cosPhiRated, id, operatesFrom, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_from, q_characteristics, s_rated, uuid]\n" +
-    "2: [cosPhiRated, id, operatesUntil, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_until, q_characteristics, s_rated, uuid]\n" +
-    "3: [cosPhiRated, id, operatesFrom, operatesUntil, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_from, operates_until, q_characteristics, s_rated, uuid]\n"
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'FixedFeedInInput' are possible (NOT case-sensitive!):\n" +
+        "0: [cosPhiRated, id, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, q_characteristics, s_rated, uuid]\n" +
+        "1: [cosPhiRated, id, operatesFrom, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_from, q_characteristics, s_rated, uuid]\n" +
+        "2: [cosPhiRated, id, operatesUntil, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_until, q_characteristics, s_rated, uuid]\n" +
+        "3: [cosPhiRated, id, operatesFrom, operatesUntil, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_from, operates_until, q_characteristics, s_rated, uuid]\n"
   }
 }

@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.Set;
 
 public interface SourceValidator<C> {
@@ -14,6 +17,7 @@ public interface SourceValidator<C> {
    *
    * @param foundFields fields that were found in the source data
    * @param entityClass that should be buildable from the source data
+   * @return either an exception wrapped by a {@link Failure} or an empty success
    */
-  void validate(Set<String> foundFields, Class<? extends C> entityClass);
+  Try<Void, FactoryException> validate(Set<String> foundFields, Class<? extends C> entityClass);
 }

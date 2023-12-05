@@ -280,16 +280,16 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def foundFields = inputFactory.newSet("uuid", "operates_from", "operates_until")
 
     when:
-    Try<Void, FactoryException> input = Try.ofVoid(() -> inputFactory.validate(foundFields, TestAssetInput), FactoryException)
+    Try<Void, FactoryException> input = inputFactory.validate(foundFields, TestAssetInput)
 
     then:
     input.failure
     input.exception.get().message == "The provided fields [operates_from, operates_until, uuid] are invalid for instance of 'TestAssetInput'. \n" +
-    "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'TestAssetInput' are possible (NOT case-sensitive!):\n" +
-    "0: [id, uuid] or [id, uuid]\n" +
-    "1: [id, operatesFrom, uuid] or [id, operates_from, uuid]\n" +
-    "2: [id, operatesUntil, uuid] or [id, operates_until, uuid]\n" +
-    "3: [id, operatesFrom, operatesUntil, uuid] or [id, operates_from, operates_until, uuid]\n"
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'TestAssetInput' are possible (NOT case-sensitive!):\n" +
+        "0: [id, uuid] or [id, uuid]\n" +
+        "1: [id, operatesFrom, uuid] or [id, operates_from, uuid]\n" +
+        "2: [id, operatesUntil, uuid] or [id, operates_until, uuid]\n" +
+        "3: [id, operatesFrom, operatesUntil, uuid] or [id, operates_from, operates_until, uuid]\n"
   }
 
   private static class TestAssetInput extends AssetInput {

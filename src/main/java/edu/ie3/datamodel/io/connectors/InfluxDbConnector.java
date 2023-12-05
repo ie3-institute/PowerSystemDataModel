@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.connectors;
 
-import edu.ie3.datamodel.io.source.SourceValidator;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
@@ -110,13 +109,8 @@ public class InfluxDbConnector implements DataConnector {
     this(url, databaseName, NO_SCENARIO, true, InfluxDB.LogLevel.NONE, BatchOptions.DEFAULTS);
   }
 
-  /**
-   * This method should be used to validate a given {@link InfluxDB}.
-   *
-   * @param entityClass class of the entity
-   * @param validator for validation
-   */
-  public final void validateDb(Class<?> entityClass, SourceValidator validator) {
+  /** Returns the fields found in the source. */
+  public <C> Set<String> getSourceFields(Class<C> entityClass) {
     QueryResult tagKeys = session.query(new Query("SHOW TAG KEYS ON " + databaseName));
     Map<String, Set<Map<String, String>>> tagResults = parseQueryResult(tagKeys);
 
@@ -127,7 +121,7 @@ public class InfluxDbConnector implements DataConnector {
     tagResults.values().forEach(v -> v.stream().map(m -> m.get("tagKey")).forEach(set::add));
     fieldResults.values().forEach(v -> v.stream().map(m -> m.get("fieldKey")).forEach(set::add));
 
-    validator.validate(set, entityClass);
+    return set;
   }
 
   /**

@@ -46,13 +46,13 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     def foundFields = factory.newSet("tid", "id", "latrot", "longrot")
 
     when:
-    def actual = Try.of(() -> factory.validate(foundFields, Pair), FactoryException)
+    def actual = factory.validate(foundFields, Pair)
 
     then:
     actual.failure
     actual.exception.get().message == "The provided fields [id, latrot, longrot, tid] are invalid for instance of 'Pair'. \n" +
-    "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'Pair' are possible (NOT case-sensitive!):\n" +
-    "0: [id, latGeo, latRot, longGeo, longRot, tid] or [id, lat_geo, lat_rot, long_geo, long_rot, tid]\n"
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'Pair' are possible (NOT case-sensitive!):\n" +
+        "0: [id, latGeo, latRot, longGeo, longRot, tid] or [id, lat_geo, lat_rot, long_geo, long_rot, tid]\n"
   }
 
   def "A COSMO id to coordinate factory builds model from valid data"() {

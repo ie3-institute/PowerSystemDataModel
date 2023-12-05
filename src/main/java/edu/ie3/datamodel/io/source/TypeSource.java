@@ -5,8 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static java.util.Map.entry;
-
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
@@ -19,8 +18,11 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.utils.Try;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link
@@ -49,18 +51,35 @@ public class TypeSource extends EntitySource {
   }
 
   @Override
-  public Map<Class<?>, SourceValidator<?>> getValidationMapping() {
-    return Map.ofEntries(
-        entry(OperatorInput.class, operatorInputFactory),
-        entry(LineTypeInput.class, lineTypeInputFactory),
-        entry(Transformer2WTypeInput.class, transformer2WTypeInputFactory),
-        entry(Transformer3WTypeInput.class, transformer3WTypeInputFactory),
-        entry(BmTypeInput.class, systemParticipantTypeInputFactory),
-        entry(ChpTypeInput.class, systemParticipantTypeInputFactory),
-        entry(EvTypeInput.class, systemParticipantTypeInputFactory),
-        entry(HpTypeInput.class, systemParticipantTypeInputFactory),
-        entry(StorageTypeInput.class, systemParticipantTypeInputFactory),
-        entry(WecTypeInput.class, systemParticipantTypeInputFactory));
+  public void validate() {
+    validate(OperatorInput.class, operatorInputFactory)
+        .ifFailure(
+            e ->
+                log.warn(
+                    "The source for '{}' could not be validated due to: {}",
+                    OperatorInput.class,
+                    e));
+
+    List<FactoryException> exceptions =
+        new ArrayList<>(
+            Try.getExceptions(
+                validate(LineTypeInput.class, lineTypeInputFactory),
+                validate(Transformer2WTypeInput.class, transformer2WTypeInputFactory),
+                validate(Transformer3WTypeInput.class, transformer3WTypeInputFactory)));
+
+    exceptions.addAll(
+        Stream.of(
+                EvTypeInput.class,
+                HpTypeInput.class,
+                BmTypeInput.class,
+                WecTypeInput.class,
+                ChpTypeInput.class,
+                StorageTypeInput.class)
+            .map(c -> validate(c, systemParticipantTypeInputFactory).getException())
+            .flatMap(Optional::stream)
+            .toList());
+
+    exceptions.forEach(e -> log.warn("The following exception was thrown while validating: ", e));
   }
 
   /**

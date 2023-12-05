@@ -140,8 +140,10 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
    *
    * @param actualFields that were found
    * @param entityClass of the build data
+   * @return either an exception wrapped by a {@link Failure} or an empty success
    */
-  public void validate(Set<String> actualFields, Class<? extends C> entityClass) {
+  public Try<Void, FactoryException> validate(
+      Set<String> actualFields, Class<? extends C> entityClass) {
     List<Set<String>> fieldSets = getFields(entityClass);
     Set<String> harmonizedFoundFields = toCamelCase(actualFields);
 
@@ -158,15 +160,16 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
 
       String possibleOptions = getFieldsString(fieldSets).toString();
 
-      throw new FactoryException(
-          "The provided fields "
-              + providedKeysString
-              + " are invalid for instance of '"
-              + entityClass.getSimpleName()
-              + "'. \nThe following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of '"
-              + entityClass.getSimpleName()
-              + "' are possible (NOT case-sensitive!):\n"
-              + possibleOptions);
+      return Failure.of(
+          new FactoryException(
+              "The provided fields "
+                  + providedKeysString
+                  + " are invalid for instance of '"
+                  + entityClass.getSimpleName()
+                  + "'. \nThe following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of '"
+                  + entityClass.getSimpleName()
+                  + "' are possible (NOT case-sensitive!):\n"
+                  + possibleOptions));
     } else {
       Set<String> additionalFields = getAdditionalFields(harmonizedFoundFields, validFieldSets);
 
@@ -176,6 +179,8 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
             entityClass.getSimpleName(),
             additionalFields);
       }
+
+      return Success.empty();
     }
   }
 

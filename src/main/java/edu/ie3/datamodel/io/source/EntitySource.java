@@ -39,8 +39,25 @@ public abstract class EntitySource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-  /** Returns a map: class to {@link SourceValidator}. */
-  public abstract Map<Class<?>, SourceValidator<?>> getValidationMapping();
+  public abstract void validate();
+
+  /**
+   * Method for validating a single source.
+   *
+   * @param entityClass class to be validated
+   * @param validator used to validate
+   * @return either a {@link FactoryException} wrapped by a failure or an empty success
+   * @param <C> type of the class
+   */
+  protected final <C extends UniqueEntity> Try<Void, FactoryException> validate(
+      Class<? extends C> entityClass, SourceValidator<C> validator) {
+    try {
+      Set<String> actualFields = dataSource.getSourceFields(entityClass);
+      return validator.validate(actualFields, entityClass);
+    } catch (SourceException e) {
+      return Failure.of(new FactoryException(e.getCause()));
+    }
+  }
 
   protected String buildSkippingMessage(
       String entityDesc, String entityUuid, String entityId, String missingElementsString) {

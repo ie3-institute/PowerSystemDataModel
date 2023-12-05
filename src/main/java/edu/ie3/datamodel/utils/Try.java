@@ -10,6 +10,7 @@ import static java.util.stream.Collectors.partitioningBy;
 import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.TryException;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -107,6 +108,17 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
+   * Method to retrieve the exceptions from all {@link Failure} objects.
+   *
+   * @param tries array of {@link Try} objects
+   * @return a list of {@link Exception}'s
+   */
+  @SafeVarargs
+  public static <D, E extends Exception> List<E> getExceptions(Try<? extends D, E>... tries) {
+    return Arrays.stream(tries).filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
+  }
+
+  /**
    * Method to scan a collection of {@link Try} objects for {@link Failure}'s.
    *
    * @param c collection of {@link Try} objects
@@ -180,6 +192,20 @@ public abstract class Try<T, E extends Exception> {
   public abstract Optional<E> getException();
 
   // functional methods
+
+  /**
+   * Method to consume the contained data.
+   *
+   * @param consumer operation to compute
+   */
+  public abstract void ifSuccess(Consumer<T> consumer);
+
+  /**
+   * Method to consume the exception
+   *
+   * @param consumer operation to compute
+   */
+  public abstract void ifFailure(Consumer<E> consumer);
 
   /**
    * Method to transform the data if this object is a {@link Success}.
@@ -274,6 +300,16 @@ public abstract class Try<T, E extends Exception> {
       return Optional.empty();
     }
 
+    @Override
+    public void ifSuccess(Consumer<T> consumer) {
+      consumer.accept(data);
+    }
+
+    @Override
+    public void ifFailure(Consumer<E> consumer) {
+      // does nothing
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <U> Try<U, E> flatMap(Function<? super T, ? extends Try<U, E>> mapper) {
@@ -357,6 +393,16 @@ public abstract class Try<T, E extends Exception> {
     @Override
     public Optional<E> getException() {
       return exception != null ? Optional.of(exception) : Optional.empty();
+    }
+
+    @Override
+    public void ifSuccess(Consumer<T> consumer) {
+      // does nothing
+    }
+
+    @Override
+    public void ifFailure(Consumer<E> consumer) {
+      consumer.accept(exception);
     }
 
     @SuppressWarnings("unchecked")

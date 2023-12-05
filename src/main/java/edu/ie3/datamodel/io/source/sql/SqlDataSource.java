@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
@@ -106,6 +107,50 @@ public class SqlDataSource implements DataSource {
       log.error("Cannot connect to database to retrieve tables meta information", ex);
     }
     return tableNames;
+  }
+
+  @Override
+  public Set<String> getSourceFields(Class<? extends UniqueEntity> entityClass)
+      throws SourceException {
+    try {
+      String tableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
+      ResultSet rs =
+          connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
+      Set<String> columnNames = new HashSet<>();
+
+      while (rs.next()) {
+        String name = rs.getString("COLUMN_NAME");
+        columnNames.add(StringUtils.snakeCaseToCamelCase(name));
+      }
+
+      return columnNames;
+    } catch (NoSuchElementException | SQLException e) {
+      throw new SourceException("The following exception was thrown while reading a source: ", e);
+    }
+  }
+
+  /**
+   * Method that uses the table name to retrieve all field names.
+   *
+   * @param tableName to be used
+   * @return a set of found fields
+   * @throws SourceException - if an error occurred
+   */
+  public Set<String> getSourceFields(String tableName) throws SourceException {
+    try {
+      ResultSet rs =
+          connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
+      Set<String> columnNames = new HashSet<>();
+
+      while (rs.next()) {
+        String name = rs.getString("COLUMN_NAME");
+        columnNames.add(StringUtils.snakeCaseToCamelCase(name));
+      }
+
+      return columnNames;
+    } catch (NoSuchElementException | SQLException e) {
+      throw new SourceException("The following exception was thrown while reading a source: ", e);
+    }
   }
 
   @Override
