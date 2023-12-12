@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.sink
 
 import edu.ie3.datamodel.models.result.system.EmResult
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
+import edu.ie3.test.common.EnergyManagementTestData
 
 import java.nio.file.Path
 
@@ -171,7 +172,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
       ThermalUnitInputTestData.thermalHouseInput,
       SystemParticipantTestData.evcsInput,
       SystemParticipantTestData.loadInput,
-      SystemParticipantTestData.emInput
+      EnergyManagementTestData.emInput
     ])
     csvFileSink.shutdown()
 
