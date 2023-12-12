@@ -39,7 +39,7 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     List<InputEntity> allEntities = new LinkedList<>();
     allEntities.addAll(rawGrid.allEntitiesAsList());
     allEntities.addAll(systemParticipants.allEntitiesAsList());
-    allEntities.addAll(emUnits.getEmUnits());
+    allEntities.addAll(emUnits.allEntitiesAsList());
     allEntities.addAll(graphics.allEntitiesAsList());
     return Collections.unmodifiableList(allEntities);
   }

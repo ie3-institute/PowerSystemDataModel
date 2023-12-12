@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** Represents the accumulation of energy management units */
-public class EnergyManagementUnits {
+public class EnergyManagementUnits implements InputContainer<EmInput> {
 
   protected final Map<UUID, EmInput> emUnits;
 
@@ -36,6 +36,11 @@ public class EnergyManagementUnits {
     return new HashSet<>(emUnits.values());
   }
 
+  @Override
+  public List<EmInput> allEntitiesAsList() {
+    return emUnits.values().stream().toList();
+  }
+
   // TODO useful once #957 is implemented
   public Map<UUID, EmInput> getEmUnitsMap() {
     return emUnits;
@@ -51,5 +56,45 @@ public class EnergyManagementUnits {
   @Override
   public int hashCode() {
     return Objects.hash(emUnits);
+  }
+
+  @Override
+  public EnergyManagementUnitsCopyBuilder copy() {
+    return new EnergyManagementUnitsCopyBuilder(this);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link EnergyManagementUnits} containers
+   * with altered field values. For detailed field descriptions refer to java docs of {@link
+   * EnergyManagementUnits}
+   */
+  public static class EnergyManagementUnitsCopyBuilder
+      implements InputContainerCopyBuilder<EmInput> {
+    protected Set<EmInput> emUnits;
+
+    /**
+     * Constructor for {@link EnergyManagementUnits.EnergyManagementUnitsCopyBuilder}
+     *
+     * @param energyManagementUnits instance of {@link EnergyManagementUnits}
+     */
+    protected EnergyManagementUnitsCopyBuilder(EnergyManagementUnits energyManagementUnits) {
+      this.emUnits = energyManagementUnits.getEmUnits();
+    }
+
+    /**
+     * Method to alter the {@link EmInput}s
+     *
+     * @param emUnits set of altered {@link EmInput}s
+     * @return this instance of {@link EnergyManagementUnits.EnergyManagementUnitsCopyBuilder}
+     */
+    public EnergyManagementUnits.EnergyManagementUnitsCopyBuilder emUnits(Set<EmInput> emUnits) {
+      this.emUnits = emUnits;
+      return this;
+    }
+
+    @Override
+    public EnergyManagementUnits build() {
+      return new EnergyManagementUnits(emUnits);
+    }
   }
 }
