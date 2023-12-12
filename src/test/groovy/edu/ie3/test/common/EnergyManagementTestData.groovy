@@ -11,8 +11,8 @@ import edu.ie3.datamodel.models.input.system.EmInput
 class EnergyManagementTestData {
 
   public static final UUID[] connectedAssets = new UUID[]{
-    SystemParticipantTestData.loadInput.getUuid(),
-    SystemParticipantTestData.pvInput.getUuid()
+    SystemParticipantTestData.loadInput.uuid,
+    SystemParticipantTestData.pvInput.uuid
   }
   public static final String emControlStrategy = "self_optimization"
 
