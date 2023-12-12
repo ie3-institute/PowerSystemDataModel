@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.input.system.characteristic.*
 import spock.lang.Shared
@@ -12,8 +14,6 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
-
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ReactivePowerCharacteristicTest extends Specification {
   @Shared

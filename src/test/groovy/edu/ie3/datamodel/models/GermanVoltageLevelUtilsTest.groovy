@@ -5,12 +5,12 @@
  */
 package edu.ie3.datamodel.models
 
+import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
+
 import edu.ie3.datamodel.models.voltagelevels.CommonVoltageLevel
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
 
 class GermanVoltageLevelUtilsTest extends Specification {
 

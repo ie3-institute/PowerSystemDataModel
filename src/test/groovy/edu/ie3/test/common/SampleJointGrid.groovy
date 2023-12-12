@@ -5,6 +5,8 @@
  */
 package edu.ie3.test.common
 
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
@@ -29,8 +31,6 @@ import org.locationtech.jts.io.geojson.GeoJsonReader
 import tech.units.indriya.quantity.Quantities
 
 import java.util.stream.Collectors
-
-import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 /**
  * //ToDo: Class Description

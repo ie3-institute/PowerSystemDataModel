@@ -8,9 +8,9 @@ package edu.ie3.datamodel.io.source.csv
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.TypeSource
 import edu.ie3.datamodel.models.input.OperatorInput
-import spock.lang.Specification
 import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
+import spock.lang.Specification
 
 
 class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {

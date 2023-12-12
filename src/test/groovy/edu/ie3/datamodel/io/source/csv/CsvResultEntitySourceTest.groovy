@@ -6,9 +6,8 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.source.ResultEntitySource
-import spock.lang.Specification
-
 import edu.ie3.test.common.ResultEntityTestData as retd
+import spock.lang.Specification
 
 class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta {
 
