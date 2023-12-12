@@ -198,7 +198,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getEvCS(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getEvcs(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getFixedFeedIns(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getHeatPumps(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getLoads(), nodes));
@@ -247,7 +247,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
     List<Try<Void, DuplicateEntitiesException>> exceptions = new ArrayList<>();
     exceptions.addAll(checkForDuplicates(systemParticipants.getBmPlants(), AssetInput::getId));
     exceptions.addAll(checkForDuplicates(systemParticipants.getChpPlants(), AssetInput::getId));
-    exceptions.addAll(checkForDuplicates(systemParticipants.getEvCS(), AssetInput::getId));
+    exceptions.addAll(checkForDuplicates(systemParticipants.getEvcs(), AssetInput::getId));
     exceptions.addAll(checkForDuplicates(systemParticipants.getEvs(), AssetInput::getId));
     exceptions.addAll(checkForDuplicates(systemParticipants.getFixedFeedIns(), AssetInput::getId));
     exceptions.addAll(checkForDuplicates(systemParticipants.getHeatPumps(), AssetInput::getId));
@@ -255,7 +255,6 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.addAll(checkForDuplicates(systemParticipants.getPvPlants(), AssetInput::getId));
     exceptions.addAll(checkForDuplicates(systemParticipants.getStorages(), AssetInput::getId));
     exceptions.addAll(checkForDuplicates(systemParticipants.getWecPlants(), AssetInput::getId));
-    exceptions.addAll(checkForDuplicates(systemParticipants.getEmSystems(), AssetInput::getId));
 
     return exceptions;
   }

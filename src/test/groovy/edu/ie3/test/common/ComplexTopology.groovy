@@ -5,6 +5,7 @@
  */
 package edu.ie3.test.common
 
+import static edu.ie3.test.common.EnergyManagementTestData.emptyEnergyManagementUnits
 import static edu.ie3.test.common.SystemParticipantTestData.emptySystemParticipants
 import edu.ie3.datamodel.graph.SubGridGate
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
@@ -13,7 +14,6 @@ import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
-import edu.ie3.datamodel.models.input.container.SystemParticipants
 import org.jgrapht.graph.DirectedMultigraph
 
 class ComplexTopology extends GridTestData {
@@ -45,6 +45,7 @@ class ComplexTopology extends GridTestData {
   gridName,
   rawGrid,
   emptySystemParticipants,
+  emptyEnergyManagementUnits,
   new GraphicElements(
   [] as Set,
   [] as Set))
@@ -64,18 +65,8 @@ class ComplexTopology extends GridTestData {
         [transformerAtoBtoC] as Set,
         [] as Set,
         [] as Set),
-        new SystemParticipants(
-        [] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set),
+        emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)
@@ -92,6 +83,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)
@@ -108,6 +100,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)
@@ -124,6 +117,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)
@@ -143,6 +137,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)
@@ -162,6 +157,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)

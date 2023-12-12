@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class SystemParticipants implements InputContainer<SystemParticipantInput> {
   private final Set<BmInput> bmPlants;
   private final Set<ChpInput> chpPlants;
-  private final Set<EvcsInput> evCS;
+  private final Set<EvcsInput> evcs;
   private final Set<EvInput> evs;
   private final Set<FixedFeedInInput> fixedFeedIns;
   private final Set<HpInput> heatPumps;
@@ -24,23 +24,21 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   private final Set<PvInput> pvPlants;
   private final Set<StorageInput> storages;
   private final Set<WecInput> wecPlants;
-  private final Set<EmInput> emSystems;
 
   public SystemParticipants(
       Set<BmInput> bmPlants,
       Set<ChpInput> chpPlants,
-      Set<EvcsInput> evCS,
+      Set<EvcsInput> evcs,
       Set<EvInput> evs,
       Set<FixedFeedInInput> fixedFeedIns,
       Set<HpInput> heatPumps,
       Set<LoadInput> loads,
       Set<PvInput> pvPlants,
       Set<StorageInput> storages,
-      Set<WecInput> wecPlants,
-      Set<EmInput> emSystems) {
+      Set<WecInput> wecPlants) {
     this.bmPlants = bmPlants;
     this.chpPlants = chpPlants;
-    this.evCS = evCS;
+    this.evcs = evcs;
     this.evs = evs;
     this.fixedFeedIns = fixedFeedIns;
     this.heatPumps = heatPumps;
@@ -48,7 +46,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     this.pvPlants = pvPlants;
     this.storages = storages;
     this.wecPlants = wecPlants;
-    this.emSystems = emSystems;
   }
 
   /**
@@ -65,9 +62,9 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
         systemParticipants.stream()
             .flatMap(participants -> participants.chpPlants.stream())
             .collect(Collectors.toSet());
-    this.evCS =
+    this.evcs =
         systemParticipants.stream()
-            .flatMap(participants -> participants.evCS.stream())
+            .flatMap(participants -> participants.evcs.stream())
             .collect(Collectors.toSet());
     this.evs =
         systemParticipants.stream()
@@ -97,10 +94,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
         systemParticipants.stream()
             .flatMap(participants -> participants.wecPlants.stream())
             .collect(Collectors.toSet());
-    this.emSystems =
-        systemParticipants.stream()
-            .flatMap(participants -> participants.emSystems.stream())
-            .collect(Collectors.toSet());
   }
 
   /**
@@ -122,7 +115,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
             .filter(ChpInput.class::isInstance)
             .map(ChpInput.class::cast)
             .collect(Collectors.toSet());
-    this.evCS =
+    this.evcs =
         systemParticipants.parallelStream()
             .filter(EvcsInput.class::isInstance)
             .map(EvcsInput.class::cast)
@@ -162,11 +155,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
             .filter(WecInput.class::isInstance)
             .map(WecInput.class::cast)
             .collect(Collectors.toSet());
-    this.emSystems =
-        systemParticipants.parallelStream()
-            .filter(EmInput.class::isInstance)
-            .map(EmInput.class::cast)
-            .collect(Collectors.toSet());
   }
 
   @Override
@@ -174,7 +162,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     List<SystemParticipantInput> allEntities = new ArrayList<>();
     allEntities.addAll(bmPlants);
     allEntities.addAll(chpPlants);
-    allEntities.addAll(evCS);
+    allEntities.addAll(evcs);
     allEntities.addAll(evs);
     allEntities.addAll(fixedFeedIns);
     allEntities.addAll(heatPumps);
@@ -182,7 +170,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     allEntities.addAll(pvPlants);
     allEntities.addAll(storages);
     allEntities.addAll(wecPlants);
-    allEntities.addAll(emSystems);
     return Collections.unmodifiableList(allEntities);
   }
 
@@ -201,8 +188,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /** @return unmodifiable Set of all ev charging stations in this grid */
-  public Set<EvcsInput> getEvCS() {
-    return Collections.unmodifiableSet(evCS);
+  public Set<EvcsInput> getEvcs() {
+    return Collections.unmodifiableSet(evcs);
   }
 
   /** @return unmodifiable Set of all electric vehicles in this grid */
@@ -240,17 +227,13 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return Collections.unmodifiableSet(wecPlants);
   }
 
-  public Set<EmInput> getEmSystems() {
-    return Collections.unmodifiableSet(emSystems);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof SystemParticipants that)) return false;
     return Objects.equals(bmPlants, that.bmPlants)
         && Objects.equals(chpPlants, that.chpPlants)
-        && Objects.equals(evCS, that.evCS)
+        && Objects.equals(evcs, that.evcs)
         && Objects.equals(evs, that.evs)
         && Objects.equals(fixedFeedIns, that.fixedFeedIns)
         && Objects.equals(heatPumps, that.heatPumps)
@@ -265,7 +248,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return Objects.hash(
         bmPlants,
         chpPlants,
-        evCS,
+        evcs,
         evs,
         fixedFeedIns,
         heatPumps,
@@ -287,7 +270,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
       implements InputContainerCopyBuilder<SystemParticipantInput> {
     private Set<BmInput> bmPlants;
     private Set<ChpInput> chpPlants;
-    private Set<EvcsInput> evCS;
+    private Set<EvcsInput> evcs;
     private Set<EvInput> evs;
     private Set<FixedFeedInInput> fixedFeedIns;
     private Set<HpInput> heatPumps;
@@ -295,7 +278,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     private Set<PvInput> pvPlants;
     private Set<StorageInput> storages;
     private Set<WecInput> wecPlants;
-    private Set<EmInput> emSystems;
 
     /**
      * Constructor for {@link SystemParticipantsCopyBuilder}
@@ -305,7 +287,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     protected SystemParticipantsCopyBuilder(SystemParticipants systemParticipants) {
       this.bmPlants = systemParticipants.bmPlants;
       this.chpPlants = systemParticipants.chpPlants;
-      this.evCS = systemParticipants.evCS;
+      this.evcs = systemParticipants.evcs;
       this.evs = systemParticipants.evs;
       this.fixedFeedIns = systemParticipants.fixedFeedIns;
       this.heatPumps = systemParticipants.heatPumps;
@@ -313,7 +295,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
       this.pvPlants = systemParticipants.pvPlants;
       this.storages = systemParticipants.storages;
       this.wecPlants = systemParticipants.wecPlants;
-      this.emSystems = systemParticipants.emSystems;
     }
 
     /**
@@ -341,11 +322,11 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     /**
      * Method to alter {@link EvcsInput}
      *
-     * @param evCS set of altered biomass electric vehicle charging stations
+     * @param evcs set of altered biomass electric vehicle charging stations
      * @return this instance of {@link SystemParticipantsCopyBuilder}
      */
-    public SystemParticipantsCopyBuilder evCS(Set<EvcsInput> evCS) {
-      this.evCS = evCS;
+    public SystemParticipantsCopyBuilder evcs(Set<EvcsInput> evcs) {
+      this.evcs = evcs;
       return this;
     }
 
@@ -426,31 +407,19 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
       return this;
     }
 
-    /**
-     * Method to alter {@link EmInput}
-     *
-     * @param emSystems set of altered energy management systems
-     * @return this instance of {@link SystemParticipantsCopyBuilder}
-     */
-    public SystemParticipantsCopyBuilder emSystems(Set<EmInput> emSystems) {
-      this.emSystems = emSystems;
-      return this;
-    }
-
     @Override
     public SystemParticipants build() {
       return new SystemParticipants(
           bmPlants,
           chpPlants,
-          evCS,
+          evcs,
           evs,
           fixedFeedIns,
           heatPumps,
           loads,
           pvPlants,
           storages,
-          wecPlants,
-          emSystems);
+          wecPlants);
     }
   }
 }
