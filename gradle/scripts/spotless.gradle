@@ -17,6 +17,7 @@ spotless {
 
   /* cf. https://github.com/diffplug/spotless/tree/master/plugin-gradle */
   groovy {
+    importOrder('\\#', '', 'java')
     licenseHeader ie3LicHead
     // the Groovy Eclipse formatter extends the Java Eclipse formatter,
     // so it formats Java files by default (unless `excludeJava` is used).
