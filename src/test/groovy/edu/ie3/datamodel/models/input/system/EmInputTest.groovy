@@ -8,9 +8,8 @@ package edu.ie3.datamodel.models.input.system
 import static edu.ie3.datamodel.models.ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY
 
 import edu.ie3.datamodel.models.ControlStrategy
-import edu.ie3.test.common.SystemParticipantTestData
+import edu.ie3.test.common.EnergyManagementTestData
 import spock.lang.Specification
-
 
 class EmInputTest extends Specification {
 
@@ -19,66 +18,59 @@ class EmInputTest extends Specification {
     def emInput = new EmInput(
         UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
         "test_emInput",
-        SystemParticipantTestData.participantNode,
-        SystemParticipantTestData.cosPhiFixed,
-        SystemParticipantTestData.connectedAssets,
-        SystemParticipantTestData.emControlStrategy
+        EnergyManagementTestData.connectedAssets,
+        EnergyManagementTestData.emControlStrategy
         )
 
     then:
     emInput.with {
       assert uuid == UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792")
       assert id == "test_emInput"
-      assert qCharacteristics == SystemParticipantTestData.cosPhiFixed
-      assert connectedAssets ==  SystemParticipantTestData.connectedAssets
-      assert controlStrategy.key == SystemParticipantTestData.emControlStrategy
+      assert connectedAssets ==  EnergyManagementTestData.connectedAssets
+      assert controlStrategy.key == EnergyManagementTestData.emControlStrategy
     }
   }
 
   def "EmInputs are comparable"() {
 
     given:
-    def emInputA = SystemParticipantTestData.emInput
+    def emInputA = EnergyManagementTestData.emInput
 
     expect:
     (emInputA == emInputB) == isEqual
 
     where:
-    emInputB                                                       || isEqual
-    SystemParticipantTestData.emInput                              || true
-    SystemParticipantTestData.emInput.copy().build()               || true
-    SystemParticipantTestData.emInput.copy().id("otherId").build() || false
+    emInputB                                                      || isEqual
+    EnergyManagementTestData.emInput                              || true
+    EnergyManagementTestData.emInput.copy().build()               || true
+    EnergyManagementTestData.emInput.copy().id("otherId").build() || false
   }
 
   def "The EmInput to String method work as expected"() {
 
     given:
-    def emInputToString = SystemParticipantTestData.emInput.toString()
+    def emInputToString = EnergyManagementTestData.emInput.toString()
 
     expect:
     emInputToString == "EmInput{" +
         "uuid=" +
-        SystemParticipantTestData.emInput.uuid +
+        EnergyManagementTestData.emInput.uuid +
         ", id='" +
-        SystemParticipantTestData.emInput.id +
+        EnergyManagementTestData.emInput.id +
         ", operator=" +
-        SystemParticipantTestData.emInput.operator.uuid +
+        EnergyManagementTestData.emInput.operator.uuid +
         ", operationTime=" +
-        SystemParticipantTestData.emInput.operationTime +
-        ", node=" +
-        SystemParticipantTestData.emInput.node.uuid +
-        ", qCharacteristics='" +
-        SystemParticipantTestData.emInput.qCharacteristics +
+        EnergyManagementTestData.emInput.operationTime +
         ", connectedAssets=" +
-        Arrays.toString(SystemParticipantTestData.emInput.connectedAssets) +
+        Arrays.toString(EnergyManagementTestData.emInput.connectedAssets) +
         ", controlStrategy=" +
-        SystemParticipantTestData.emInput.controlStrategy +
+        EnergyManagementTestData.emInput.controlStrategy +
         '}'
   }
 
   def "A EmInput copy method should work as expected"() {
     given:
-    def emInput = SystemParticipantTestData.emInput
+    def emInput = EnergyManagementTestData.emInput
     def newConnectedAssets = [
       UUID.randomUUID(),
       UUID.randomUUID()
@@ -94,7 +86,6 @@ class EmInputTest extends Specification {
       assert operationTime == emInput.operationTime
       assert operator == emInput.operator
       assert id == emInput.id
-      assert qCharacteristics == emInput.qCharacteristics
       assert connectedAssets == newConnectedAssets
       assert controlStrategy == NO_CONTROL_STRATEGY
     }

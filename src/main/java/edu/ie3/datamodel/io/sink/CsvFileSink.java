@@ -170,7 +170,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     SystemParticipants systemParticipants = jointGridContainer.getSystemParticipants();
     Set<BmInput> bmPlants = systemParticipants.getBmPlants();
     Set<ChpInput> chpPlants = systemParticipants.getChpPlants();
-    Set<EvcsInput> evCS = systemParticipants.getEvCS();
+    Set<EvcsInput> evcs = systemParticipants.getEvcs();
     Set<EvInput> evs = systemParticipants.getEvs();
     Set<FixedFeedInInput> fixedFeedIns = systemParticipants.getFixedFeedIns();
     Set<HpInput> heatPumps = systemParticipants.getHeatPumps();
@@ -178,7 +178,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     Set<PvInput> pvPlants = systemParticipants.getPvPlants();
     Set<StorageInput> storages = systemParticipants.getStorages();
     Set<WecInput> wecPlants = systemParticipants.getWecPlants();
-    Set<EmInput> emSystems = systemParticipants.getEmSystems();
 
     // get graphic elements (just for better readability, we could also just get them directly
     // below)
@@ -211,15 +210,14 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 measurementUnits,
                 bmPlants,
                 chpPlants,
-                evCS,
+                evcs,
                 evs,
                 fixedFeedIns,
                 heatPumps,
                 loads,
                 pvPlants,
                 storages,
-                wecPlants,
-                emSystems)
+                wecPlants)
             .flatMap(Collection::stream)
             .map(Extractor::extractOperator)
             .flatMap(Optional::stream)

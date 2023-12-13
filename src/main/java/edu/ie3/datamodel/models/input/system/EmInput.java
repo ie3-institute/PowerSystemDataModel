@@ -8,14 +8,13 @@ package edu.ie3.datamodel.models.input.system;
 import edu.ie3.datamodel.models.ControlStrategy;
 import edu.ie3.datamodel.models.EmControlStrategy;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
-public class EmInput extends SystemParticipantInput {
+public class EmInput extends AssetInput {
 
   /** Reference via UUID to all SystemParticipantInputs connected to this model */
   private final UUID[] connectedAssets;
@@ -29,8 +28,6 @@ public class EmInput extends SystemParticipantInput {
    * @param id of the asset
    * @param operator of the asset
    * @param operationTime time for which the entity is operated
-   * @param node the asset is connected to
-   * @param qCharacteristics description of a reactive power characteristic
    * @param connectedAssets array of all connected assets
    * @param controlStrategy control strategy used for this model
    */
@@ -39,11 +36,9 @@ public class EmInput extends SystemParticipantInput {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
       UUID[] connectedAssets,
       ControlStrategy controlStrategy) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics);
+    super(uuid, id, operator, operationTime);
     this.connectedAssets = connectedAssets;
     this.controlStrategy = controlStrategy;
   }
@@ -55,8 +50,6 @@ public class EmInput extends SystemParticipantInput {
    * @param id of the asset
    * @param operator of the asset
    * @param operationTime time for which the entity is operated
-   * @param node the asset is connected to
-   * @param qCharacteristics description of a reactive power characteristic
    * @param connectedAssets array of all connected assets
    * @param emControlStrategy {@link edu.ie3.datamodel.models.EmControlStrategy} control strategy
    *     key
@@ -66,11 +59,9 @@ public class EmInput extends SystemParticipantInput {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
       UUID[] connectedAssets,
       String emControlStrategy) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics);
+    super(uuid, id, operator, operationTime);
     this.connectedAssets = connectedAssets;
     this.controlStrategy = EmControlStrategy.get(emControlStrategy);
   }
@@ -80,19 +71,11 @@ public class EmInput extends SystemParticipantInput {
    *
    * @param uuid of the input entity
    * @param id of the asset
-   * @param node the asset is connected to
-   * @param qCharacteristics description of a reactive power characteristic
    * @param connectedAssets array of all connected assets
    * @param controlStrategy control strategy used for this model
    */
-  public EmInput(
-      UUID uuid,
-      String id,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
-      UUID[] connectedAssets,
-      ControlStrategy controlStrategy) {
-    super(uuid, id, node, qCharacteristics);
+  public EmInput(UUID uuid, String id, UUID[] connectedAssets, ControlStrategy controlStrategy) {
+    super(uuid, id);
     this.connectedAssets = connectedAssets;
     this.controlStrategy = controlStrategy;
   }
@@ -102,20 +85,12 @@ public class EmInput extends SystemParticipantInput {
    *
    * @param uuid of the input entity
    * @param id of the asset
-   * @param node the asset is connected to
-   * @param qCharacteristics description of a reactive power characteristic
    * @param connectedAssets array of all connected assets
    * @param emControlStrategy {@link edu.ie3.datamodel.models.EmControlStrategy} control strategy
    *     key
    */
-  public EmInput(
-      UUID uuid,
-      String id,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
-      UUID[] connectedAssets,
-      String emControlStrategy) {
-    super(uuid, id, node, qCharacteristics);
+  public EmInput(UUID uuid, String id, UUID[] connectedAssets, String emControlStrategy) {
+    super(uuid, id);
     this.connectedAssets = connectedAssets;
     this.controlStrategy = EmControlStrategy.get(emControlStrategy);
   }
@@ -158,10 +133,6 @@ public class EmInput extends SystemParticipantInput {
         + getOperator().getUuid()
         + ", operationTime="
         + getOperationTime()
-        + ", node="
-        + getNode().getUuid()
-        + ", qCharacteristics='"
-        + getqCharacteristics()
         + ", connectedAssets="
         + Arrays.toString(connectedAssets)
         + ", controlStrategy="
@@ -169,8 +140,7 @@ public class EmInput extends SystemParticipantInput {
         + '}';
   }
 
-  public static class EmInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<EmInputCopyBuilder> {
+  public static class EmInputCopyBuilder extends AssetInputCopyBuilder<EmInputCopyBuilder> {
 
     private UUID[] connectedAssets;
 
@@ -195,14 +165,7 @@ public class EmInput extends SystemParticipantInput {
     @Override
     public EmInput build() {
       return new EmInput(
-          getUuid(),
-          getId(),
-          getOperator(),
-          getOperationTime(),
-          getNode(),
-          getqCharacteristics(),
-          connectedAssets,
-          controlStrategy);
+          getUuid(), getId(), getOperator(), getOperationTime(), connectedAssets, controlStrategy);
     }
 
     @Override
