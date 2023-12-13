@@ -45,6 +45,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
+import edu.ie3.test.common.EnergyManagementTestData
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SampleJointGrid
 import edu.ie3.test.common.SystemParticipantTestData
