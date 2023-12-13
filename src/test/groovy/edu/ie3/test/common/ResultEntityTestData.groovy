@@ -10,8 +10,8 @@ import edu.ie3.util.quantities.PowerSystemUnits
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
-import javax.measure.quantity.Power
 import java.time.ZonedDateTime
+import javax.measure.quantity.Power
 
 class ResultEntityTestData {
 

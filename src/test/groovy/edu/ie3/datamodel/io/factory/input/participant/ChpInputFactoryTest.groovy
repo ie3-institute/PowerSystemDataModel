@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -18,10 +20,8 @@ import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
-
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import javax.measure.quantity.Dimensionless
 
 class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
   def "A ChpInputFactory should contain exactly the expected class for parsing"() {
@@ -78,4 +78,3 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
     }
   }
 }
-

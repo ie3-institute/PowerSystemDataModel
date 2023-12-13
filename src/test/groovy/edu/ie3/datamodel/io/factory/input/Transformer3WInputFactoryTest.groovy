@@ -86,4 +86,3 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
     e.message == "Voltage level of node a must be greater than voltage level of node b and voltage level of node b must be greater than voltage level of node c"
   }
 }
-

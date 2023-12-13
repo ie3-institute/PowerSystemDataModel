@@ -12,9 +12,9 @@ import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
 import tech.units.indriya.ComparableQuantity
 
-import javax.measure.quantity.Length
 import java.util.stream.Collectors
 import java.util.stream.Stream
+import javax.measure.quantity.Length
 
 abstract class WeatherTestData {
 

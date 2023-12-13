@@ -9,7 +9,6 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.test.common.SystemParticipantTestData as sptd
-
 import spock.lang.Shared
 import spock.lang.Specification
 

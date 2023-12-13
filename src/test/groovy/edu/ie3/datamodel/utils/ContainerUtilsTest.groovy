@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.utils
 
+import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.graph.DistanceWeightedGraph
 import edu.ie3.datamodel.graph.ImpedanceWeightedGraph
@@ -23,9 +26,6 @@ import edu.ie3.test.helper.DoubleTestHelper
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ContainerUtilsTest extends Specification {
 

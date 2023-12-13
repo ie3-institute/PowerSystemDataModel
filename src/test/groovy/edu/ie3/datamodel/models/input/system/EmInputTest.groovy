@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system
 
 import static edu.ie3.datamodel.models.ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY
+
 import edu.ie3.datamodel.models.ControlStrategy
 import edu.ie3.test.common.EnergyManagementTestData
 import spock.lang.Specification

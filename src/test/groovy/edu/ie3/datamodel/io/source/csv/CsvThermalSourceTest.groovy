@@ -5,9 +5,9 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ThermalUnitInputEntityData
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.ThermalSource
 import edu.ie3.datamodel.io.source.TypeSource
 import edu.ie3.datamodel.models.input.OperatorInput

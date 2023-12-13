@@ -5,17 +5,10 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.models.result.system.EmResult
-import edu.ie3.datamodel.models.result.system.FlexOptionsResult
-import edu.ie3.test.common.EnergyManagementTestData
-
-import java.nio.file.Path
-
+import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import edu.ie3.datamodel.models.input.system.EmInput
-import edu.ie3.datamodel.models.input.system.LoadInput
+
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
@@ -32,14 +25,18 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
+import edu.ie3.datamodel.models.input.system.EmInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
+import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
+import edu.ie3.datamodel.models.result.system.EmResult
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.EvcsResult
+import edu.ie3.datamodel.models.result.system.FlexOptionsResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.WecResult
 import edu.ie3.datamodel.models.timeseries.TimeSeries
@@ -49,8 +46,8 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
 import edu.ie3.test.common.GridTestData
-import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.SampleJointGrid
+import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.util.TimeUtil
@@ -59,6 +56,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
+import java.nio.file.Path
 import javax.measure.Quantity
 import javax.measure.quantity.Power
 
