@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.processor;
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.factory.input.NodeInputFactory;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
-import edu.ie3.datamodel.models.ControlStrategy;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -290,8 +289,6 @@ public abstract class Processor<T> {
           "CharacteristicInput" -> resultStringBuilder.append(
           ((CharacteristicInput<?, ?>) methodReturnObject).serialize());
       case "UUID[]" -> resultStringBuilder.append(processUUIDArray((UUID[]) methodReturnObject));
-      case "ControlStrategy" -> resultStringBuilder.append(
-          ((ControlStrategy) methodReturnObject).getKey());
       default -> throw new EntityProcessorException(
           "Unable to process value for attribute/field '"
               + fieldName

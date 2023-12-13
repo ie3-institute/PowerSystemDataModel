@@ -5,9 +5,6 @@
  */
 package edu.ie3.datamodel.models.input.system
 
-import static edu.ie3.datamodel.models.ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY
-
-import edu.ie3.datamodel.models.ControlStrategy
 import edu.ie3.test.common.EnergyManagementTestData
 import spock.lang.Specification
 
@@ -18,7 +15,6 @@ class EmInputTest extends Specification {
     def emInput = new EmInput(
         UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
         "test_emInput",
-        EnergyManagementTestData.connectedAssets,
         EnergyManagementTestData.emControlStrategy
         )
 
@@ -26,8 +22,7 @@ class EmInputTest extends Specification {
     emInput.with {
       assert uuid == UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792")
       assert id == "test_emInput"
-      assert connectedAssets ==  EnergyManagementTestData.connectedAssets
-      assert controlStrategy.key == EnergyManagementTestData.emControlStrategy
+      assert controlStrategy == EnergyManagementTestData.emControlStrategy
     }
   }
 
@@ -61,8 +56,6 @@ class EmInputTest extends Specification {
         EnergyManagementTestData.emInput.operator.uuid +
         ", operationTime=" +
         EnergyManagementTestData.emInput.operationTime +
-        ", connectedAssets=" +
-        Arrays.toString(EnergyManagementTestData.emInput.connectedAssets) +
         ", controlStrategy=" +
         EnergyManagementTestData.emInput.controlStrategy +
         '}'
@@ -71,14 +64,10 @@ class EmInputTest extends Specification {
   def "A EmInput copy method should work as expected"() {
     given:
     def emInput = EnergyManagementTestData.emInput
-    def newConnectedAssets = [
-      UUID.randomUUID(),
-      UUID.randomUUID()
-    ] as UUID[]
-
+    def newStrat = "new_strat"
 
     when:
-    def alteredUnit = emInput.copy().connectedAssets(newConnectedAssets).controlStrategy(ControlStrategy.parse("")).build()
+    def alteredUnit = emInput.copy().controlStrategy(newStrat).build()
 
     then:
     alteredUnit.with {
@@ -86,8 +75,7 @@ class EmInputTest extends Specification {
       assert operationTime == emInput.operationTime
       assert operator == emInput.operator
       assert id == emInput.id
-      assert connectedAssets == newConnectedAssets
-      assert controlStrategy == NO_CONTROL_STRATEGY
+      assert controlStrategy == newStrat
     }
   }
 }

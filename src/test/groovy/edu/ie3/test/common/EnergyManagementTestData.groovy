@@ -21,7 +21,6 @@ class EnergyManagementTestData {
   "test_emInput",
   SystemParticipantTestData.operator,
   SystemParticipantTestData.operationTime,
-  connectedAssets,
   emControlStrategy
   )
 
