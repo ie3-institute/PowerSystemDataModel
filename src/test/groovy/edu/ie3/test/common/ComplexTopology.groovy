@@ -6,6 +6,7 @@
 package edu.ie3.test.common
 
 import static edu.ie3.test.common.SystemParticipantTestData.emptySystemParticipants
+
 import edu.ie3.datamodel.graph.SubGridGate
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.input.connector.ConnectorPort

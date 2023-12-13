@@ -21,9 +21,9 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 import tech.units.indriya.unit.Units
 
+import java.time.ZonedDateTime
 import javax.measure.Quantity
 import javax.measure.quantity.*
-import java.time.ZonedDateTime
 
 class ResultEntityProcessorTest extends Specification {
 
@@ -301,4 +301,3 @@ class ResultEntityProcessorTest extends Specification {
     }
   }
 }
-

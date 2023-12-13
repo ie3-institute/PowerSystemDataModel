@@ -5,11 +5,11 @@
  */
 package edu.ie3.datamodel.models.input.system
 
+import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
+
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 
 class BmInputTest extends Specification {
 

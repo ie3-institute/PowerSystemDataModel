@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -19,12 +22,9 @@ import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
+import java.time.ZonedDateTime
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Speed
-import java.time.ZonedDateTime
-
-import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class LineInputFactoryTest extends Specification implements FactoryTestHelper {
   def "A LineInputFactory should contain exactly the expected class for parsing"() {

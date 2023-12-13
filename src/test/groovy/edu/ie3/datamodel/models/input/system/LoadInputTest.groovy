@@ -5,15 +5,15 @@
  */
 package edu.ie3.datamodel.models.input.system
 
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR
+
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR
 
 
 class LoadInputTest extends Specification {

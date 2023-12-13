@@ -5,6 +5,12 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.datamodel.models.StandardUnits.*
+import static edu.ie3.datamodel.utils.validation.DummyAssetInput.invalid
+import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
+import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException
 import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.InvalidEntityException
@@ -25,12 +31,6 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Quantity
-
-import static edu.ie3.datamodel.models.StandardUnits.*
-import static edu.ie3.datamodel.utils.validation.DummyAssetInput.invalid
-import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
-import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ValidationUtilsTest extends Specification {
 

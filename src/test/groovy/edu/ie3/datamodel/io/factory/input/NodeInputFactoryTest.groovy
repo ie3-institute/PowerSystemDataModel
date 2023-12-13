@@ -15,8 +15,8 @@ import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.ComparableQuantity
 
-import javax.measure.quantity.ElectricPotential
 import java.time.ZonedDateTime
+import javax.measure.quantity.ElectricPotential
 
 class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
   def "A NodeInputFactory should contain exactly the expected class for parsing"() {

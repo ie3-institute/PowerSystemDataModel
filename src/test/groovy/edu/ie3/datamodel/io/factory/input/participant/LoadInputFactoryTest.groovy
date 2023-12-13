@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.OperationTime
@@ -21,8 +23,6 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
-
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
   def "A LoadInputFactory should contain exactly the expected class for parsing"() {
