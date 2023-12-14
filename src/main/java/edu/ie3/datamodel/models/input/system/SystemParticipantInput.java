@@ -5,12 +5,18 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.extractor.HasNodes;
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
+import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantEntityData;
+import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantInputEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import edu.ie3.datamodel.utils.Try;
+
 import java.util.*;
 
 /** Describes a system asset that is connected to a node */
@@ -23,6 +29,12 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
   private final ReactivePowerCharacteristic qCharacteristics;
 
   /**
+   * Optional UUID of the {@link EmInput} that is controlling this system participant. If null, this
+   * system participant is not em-controlled.
+   */
+  private final UUID em;
+
+  /**
    * Constructor for an operated system participant
    *
    * @param uuid of the input entity
@@ -31,6 +43,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @param operationTime Time for which the entity is operated
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    */
   protected SystemParticipantInput(
       UUID uuid,
@@ -38,10 +51,12 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics) {
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em) {
     super(uuid, id, operator, operationTime);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
+    this.em = em;
   }
 
   /**
@@ -51,20 +66,26 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @param id of the asset
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    */
   protected SystemParticipantInput(
-      UUID uuid, String id, NodeInput node, ReactivePowerCharacteristic qCharacteristics) {
+      UUID uuid, String id, NodeInput node, ReactivePowerCharacteristic qCharacteristics, UUID em) {
     super(uuid, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
+    this.em = em;
+  }
+
+  public NodeInput getNode() {
+    return node;
   }
 
   public ReactivePowerCharacteristic getqCharacteristics() {
     return qCharacteristics;
   }
 
-  public NodeInput getNode() {
-    return node;
+  public Optional<UUID> getEm() {
+    return Optional.ofNullable(em);
   }
 
   @Override
@@ -104,7 +125,8 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
         + node.getUuid()
         + ", qCharacteristics='"
         + qCharacteristics
-        + '\''
+        + "', em="
+        + em
         + '}';
   }
 
@@ -121,6 +143,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
 
     private NodeInput node;
     private ReactivePowerCharacteristic qCharacteristics;
+    private UUID em;
 
     protected SystemParticipantInputCopyBuilder(SystemParticipantInput entity) {
       super(entity);
@@ -138,12 +161,22 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       return thisInstance();
     }
 
+    public B em(UUID em) {
+      this.em = em;
+      return thisInstance();
+    }
+
     protected NodeInput getNode() {
       return node;
     }
 
     protected ReactivePowerCharacteristic getqCharacteristics() {
       return qCharacteristics;
+    }
+
+    /** @return The {@link EmInput} controlling this system participant. CAN BE NULL. */
+    public UUID getEm() {
+      return em;
     }
 
     @Override

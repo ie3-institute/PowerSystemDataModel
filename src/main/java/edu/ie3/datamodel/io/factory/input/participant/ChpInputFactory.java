@@ -32,6 +32,7 @@ public class ChpInputFactory
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       OperatorInput operator,
       OperationTime operationTime) {
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
@@ -44,6 +45,7 @@ public class ChpInputFactory
         node,
         data.getThermalBusInput(),
         qCharacteristics,
+        em,
         data.getTypeInput(),
         data.getThermalStorageInput(),
         marketReaction);

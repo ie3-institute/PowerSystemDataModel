@@ -47,6 +47,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param loadProfile Load profile to use for this model
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
@@ -60,12 +61,13 @@ public class LoadInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       LoadProfile loadProfile,
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.loadProfile = loadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
@@ -82,6 +84,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param loadProfileKey Load profile key corresponding to {@link
    *     edu.ie3.datamodel.models.profile.BdewStandardLoadProfile} or {@link
    *     edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
@@ -97,6 +100,7 @@ public class LoadInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       String loadProfileKey,
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
@@ -111,6 +115,7 @@ public class LoadInput extends SystemParticipantInput {
         operationTime,
         node,
         qCharacteristics,
+        em,
         LoadProfile.parse(loadProfileKey),
         dsm,
         eConsAnnual,
@@ -125,6 +130,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param loadProfile Standard load profile to use for this model
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
@@ -136,12 +142,13 @@ public class LoadInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       LoadProfile loadProfile,
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
-    super(uuid, id, node, qCharacteristics);
+    super(uuid, id, node, qCharacteristics, em);
     this.loadProfile = loadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
@@ -156,6 +163,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param loadProfileKey load profile key corresponding to {@link
    *     edu.ie3.datamodel.models.profile.BdewStandardLoadProfile} or {@link
    *     edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
@@ -169,6 +177,7 @@ public class LoadInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       String loadProfileKey,
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
@@ -180,6 +189,7 @@ public class LoadInput extends SystemParticipantInput {
         id,
         node,
         qCharacteristics,
+        em,
         LoadProfile.parse(loadProfileKey),
         dsm,
         eConsAnnual,
@@ -243,7 +253,8 @@ public class LoadInput extends SystemParticipantInput {
         + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + '\''
+        + "', em="
+        + getEm()
         + ", dsm="
         + dsm
         + ", eConsAnnual="
@@ -314,6 +325,7 @@ public class LoadInput extends SystemParticipantInput {
           getOperationTime(),
           getNode(),
           getqCharacteristics(),
+          getEm(),
           loadProfile,
           dsm,
           eConsAnnual,

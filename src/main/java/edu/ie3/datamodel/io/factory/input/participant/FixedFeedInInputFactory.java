@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -33,16 +34,17 @@ public class FixedFeedInInputFactory
   @Override
   protected FixedFeedInInput buildModel(
       NodeAssetInputEntityData data,
-      java.util.UUID uuid,
+      UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       OperatorInput operator,
       OperationTime operationTime) {
     final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     final double cosPhiRated = data.getDouble(COSPHI_RATED);
 
     return new FixedFeedInInput(
-        uuid, id, operator, operationTime, node, qCharacteristics, sRated, cosPhiRated);
+        uuid, id, operator, operationTime, node, qCharacteristics, em, sRated, cosPhiRated);
   }
 }

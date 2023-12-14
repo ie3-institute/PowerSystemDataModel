@@ -35,7 +35,11 @@ public abstract class EntitySource {
   protected static final String TYPE = "type";
   protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
-  DataSource dataSource;
+  protected final DataSource dataSource;
+
+  protected EntitySource(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -109,8 +113,7 @@ public abstract class EntitySource {
         Optional.ofNullable(fieldsToAttributes.get(TYPE))
             .flatMap(typeUuid -> findFirstEntityByUuid(UUID.fromString(typeUuid), types));
 
-    // if the type is not present we return an empty element and
-    // log a warning
+    // if the type is not present we return a failure
     if (assetType.isEmpty()) {
       String skippingMessage =
           buildSkippingMessage(
@@ -239,12 +242,7 @@ public abstract class EntitySource {
               // remove fields that are passed as objects to constructor
               fieldsToAttributes.keySet().remove(NODE);
 
-              return new Success<>(
-                  new NodeAssetInputEntityData(
-                      fieldsToAttributes,
-                      assetInputEntityData.getTargetClass(),
-                      assetInputEntityData.getOperatorInput(),
-                      node.get()));
+              return new Success<>(new NodeAssetInputEntityData(assetInputEntityData, node.get()));
             });
   }
 
@@ -313,6 +311,17 @@ public abstract class EntitySource {
     return assetInputEntityDataStream(entityClass, operators).map(factory::get);
   }
 
+  protected <T extends AssetInput> Stream<Try<T, FactoryException>> nodeAssetEntityStream(
+      Class<T> entityClass,
+      EntityFactory<T, NodeAssetInputEntityData> factory,
+      Collection<NodeInput> nodes,
+      Collection<OperatorInput> operators) {
+    return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
+        .map(factory::get);
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
   /**
    * Returns a stream of {@link Try} entities that can be build by using {@link
    * NodeAssetInputEntityData} and their corresponding factory.
@@ -326,17 +335,6 @@ public abstract class EntitySource {
    * @param <T> Type of the {@link AssetInput} to expect
    * @return stream of tries of the entities that has been built by the factory
    */
-  protected <T extends AssetInput> Stream<Try<T, FactoryException>> nodeAssetEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, NodeAssetInputEntityData> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators) {
-    return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-        .map(factory::get);
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
   public <T extends AssetInput> Set<Try<T, FactoryException>> buildNodeAssetEntities(
       Class<T> entityClass,
       EntityFactory<T, NodeAssetInputEntityData> factory,

@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.extractor
 
 import edu.ie3.datamodel.exceptions.ExtractorException
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
@@ -146,7 +145,7 @@ class ExtractorTest extends Specification {
     given:
     def sampleFixedFeedInput = new FixedFeedInInput(UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a"), "test_fixedFeedInInput",
         OperatorInput.NO_OPERATOR_ASSIGNED,
-        sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics,
+        sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics, sptd.fixedFeedInInput.em.orElse(null),
         sptd.fixedFeedInInput.sRated,sptd.fixedFeedInInput.cosPhiRated)
     expect:
     Extractor.extractElements(sampleFixedFeedInput) as Set == [

@@ -33,9 +33,11 @@ public class StorageInputFactory
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       OperatorInput operator,
       OperationTime operationTime) {
     final StorageTypeInput typeInput = data.getTypeInput();
-    return new StorageInput(uuid, id, operator, operationTime, node, qCharacteristics, typeInput);
+    return new StorageInput(
+        uuid, id, operator, operationTime, node, qCharacteristics, em, typeInput);
   }
 }

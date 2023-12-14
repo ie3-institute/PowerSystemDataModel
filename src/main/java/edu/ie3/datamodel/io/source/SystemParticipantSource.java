@@ -38,6 +38,7 @@ public class SystemParticipantSource extends EntitySource {
   private final TypeSource typeSource;
   private final RawGridSource rawGridSource;
   private final ThermalSource thermalSource;
+  private final EnergyManagementSource energyManagementSource;
 
   // factories
   private final BmInputFactory bmInputFactory;
@@ -55,12 +56,14 @@ public class SystemParticipantSource extends EntitySource {
       TypeSource typeSource,
       ThermalSource thermalSource,
       RawGridSource rawGridSource,
+      EnergyManagementSource energyManagementSource,
       DataSource dataSource) {
+    super(dataSource);
 
     this.typeSource = typeSource;
     this.rawGridSource = rawGridSource;
     this.thermalSource = thermalSource;
-    this.dataSource = dataSource;
+    this.energyManagementSource = energyManagementSource;
 
     // init factories
     this.bmInputFactory = new BmInputFactory();
@@ -104,6 +107,7 @@ public class SystemParticipantSource extends EntitySource {
     Set<HpTypeInput> hpTypes = typeSource.getHpTypes();
     Set<StorageTypeInput> storageTypes = typeSource.getStorageTypes();
     Set<WecTypeInput> wecTypes = typeSource.getWecTypes();
+    Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits();
 
     /// go on with the thermal assets
     Set<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
@@ -127,7 +131,7 @@ public class SystemParticipantSource extends EntitySource {
     Try<Set<EvInput>, SourceException> evs =
         Try.of(() -> getEvs(nodes, operators, evTypes), SourceException.class);
     Try<Set<EvcsInput>, SourceException> evcs =
-        Try.of(() -> getEvCS(nodes, operators), SourceException.class);
+        Try.of(() -> getEvcs(nodes, operators), SourceException.class);
     Try<Set<ChpInput>, SourceException> chpInputs =
         Try.of(
             () -> getChpPlants(nodes, operators, chpTypes, thermalBuses, thermalStorages),
@@ -307,9 +311,9 @@ public class SystemParticipantSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link EvcsInput} entities
    */
-  public Set<EvcsInput> getEvCS() throws SourceException {
+  public Set<EvcsInput> getEvcs() throws SourceException {
     Set<OperatorInput> operators = typeSource.getOperators();
-    return getEvCS(rawGridSource.getNodes(operators), operators);
+    return getEvcs(rawGridSource.getNodes(operators), operators);
   }
 
   /**
@@ -318,7 +322,7 @@ public class SystemParticipantSource extends EntitySource {
    * EvcsInput} which has to be checked manually, as {@link EvcsInput#equals(Object)} is NOT
    * restricted on the uuid of {@link EvcsInput}.
    *
-   * <p>In contrast to {@link #getEvCS()} this method provides the ability to pass in an already
+   * <p>In contrast to {@link #getEvcs()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link EvcsInput}
    * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
    * prevent unnecessary loading operations.
@@ -331,7 +335,7 @@ public class SystemParticipantSource extends EntitySource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link EvcsInput} entities
    */
-  public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators)
+  public Set<EvcsInput> getEvcs(Set<NodeInput> nodes, Set<OperatorInput> operators)
       throws SourceException {
     return Try.scanCollection(
             buildNodeAssetEntities(EvcsInput.class, evcsInputFactory, nodes, operators),
@@ -550,8 +554,8 @@ public class SystemParticipantSource extends EntitySource {
       Set<ThermalStorageInput> thermalStorages)
       throws SourceException {
     return Try.scanCollection(
-            buildChpInputEntities(
-                chpInputFactory, nodes, operators, types, thermalBuses, thermalStorages),
+            chpInputStream(chpInputFactory, nodes, operators, types, thermalBuses, thermalStorages)
+                .collect(Collectors.toSet()),
             ChpInput.class)
         .transformF(SourceException::new)
         .getOrThrow();
@@ -583,44 +587,11 @@ public class SystemParticipantSource extends EntitySource {
       Set<ThermalBusInput> thermalBuses)
       throws SourceException {
     return Try.scanCollection(
-            buildHpInputEntities(hpInputFactory, nodes, operators, types, thermalBuses),
+            hpInputStream(hpInputFactory, nodes, operators, types, thermalBuses)
+                .collect(Collectors.toSet()),
             HpInput.class)
         .transformF(SourceException::new)
         .getOrThrow();
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-  private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
-      Set<Try<T, FactoryException>> buildTypedSystemParticipantEntities(
-          Class<T> entityClass,
-          EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
-          Collection<NodeInput> nodes,
-          Collection<OperatorInput> operators,
-          Collection<A> types) {
-    return typedSystemParticipantEntityStream(entityClass, factory, nodes, operators, types)
-        .collect(Collectors.toSet());
-  }
-
-  private Set<Try<ChpInput, FactoryException>> buildChpInputEntities(
-      ChpInputFactory factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<ChpTypeInput> chpTypes,
-      Collection<ThermalBusInput> thermalBuses,
-      Collection<ThermalStorageInput> thermalStorages) {
-    return chpInputStream(factory, nodes, operators, chpTypes, thermalBuses, thermalStorages)
-        .collect(Collectors.toSet());
-  }
-
-  private Set<Try<HpInput, FactoryException>> buildHpInputEntities(
-      HpInputFactory factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<HpTypeInput> types,
-      Collection<ThermalBusInput> thermalBuses) {
-    return hpInputStream(factory, nodes, operators, types, thermalBuses)
-        .collect(Collectors.toSet());
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -633,24 +604,27 @@ public class SystemParticipantSource extends EntitySource {
    * @param nodes the nodes that should be considered for these entities
    * @param operators the operators that should be considered for these entities
    * @param types the types that should be considered for these entities
-   * @param <T> the type of the resulting entity
-   * @param <A> the type of the type model of the resulting entity
+   * @param <S> the type of the resulting entity
+   * @param <T> the type of the type model of the resulting entity
    * @return a stream of tries being either empty or holding an instance of a {@link
    *     SystemParticipantInput} of the requested entity class
    */
-  private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
-      Stream<Try<T, FactoryException>> typedSystemParticipantEntityStream(
-          Class<T> entityClass,
-          EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
+  private <S extends SystemParticipantInput, T extends SystemParticipantTypeInput>
+      Set<Try<S, FactoryException>> buildTypedSystemParticipantEntities(
+          Class<S> entityClass,
+          EntityFactory<S, SystemParticipantTypedEntityData<T>> factory,
           Collection<NodeInput> nodes,
           Collection<OperatorInput> operators,
-          Collection<A> types) {
+          Collection<T> types) {
     return buildTypedSystemParticipantEntityData(
             nodeAssetInputEntityDataStream(
                 assetInputEntityDataStream(entityClass, operators), nodes),
             types)
-        .map(factory::get);
+        .map(factory::get)
+        .collect(Collectors.toSet());
   }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   private Stream<Try<ChpInput, FactoryException>> chpInputStream(
       ChpInputFactory factory,
@@ -660,13 +634,87 @@ public class SystemParticipantSource extends EntitySource {
       Collection<ThermalBusInput> thermalBuses,
       Collection<ThermalStorageInput> thermalStorages) {
     return buildChpEntityData(
-            buildTypedEntityData(
+            buildTypedSystemParticipantEntityData(
                 nodeAssetInputEntityDataStream(
                     assetInputEntityDataStream(ChpInput.class, operators), nodes),
                 types),
             thermalStorages,
             thermalBuses)
         .map(factory::get);
+  }
+
+  private Stream<Try<ChpInputEntityData, SourceException>> buildChpEntityData(
+      Stream<Try<SystemParticipantTypedEntityData<ChpTypeInput>, SourceException>>
+          typedEntityDataStream,
+      Collection<ThermalStorageInput> thermalStorages,
+      Collection<ThermalBusInput> thermalBuses) {
+
+    return typedEntityDataStream
+        .parallel()
+        .map(
+            typedEntityDataOpt ->
+                typedEntityDataOpt.flatMap(
+                    typedEntityData ->
+                        buildChpEntityData(typedEntityData, thermalStorages, thermalBuses)));
+  }
+
+  private Try<ChpInputEntityData, SourceException> buildChpEntityData(
+      SystemParticipantTypedEntityData<ChpTypeInput> typedEntityData,
+      Collection<ThermalStorageInput> thermalStorages,
+      Collection<ThermalBusInput> thermalBuses) {
+
+    // get the raw data
+    Map<String, String> fieldsToAttributes = typedEntityData.getFieldsToValues();
+
+    // get the thermal storage input for this chp unit
+    Optional<ThermalStorageInput> thermalStorage =
+        Optional.ofNullable(fieldsToAttributes.get(THERMAL_STORAGE))
+            .flatMap(
+                thermalStorageUuid ->
+                    findFirstEntityByUuid(UUID.fromString(thermalStorageUuid), thermalStorages));
+
+    // get the thermal bus input for this chp unit
+    Optional<ThermalBusInput> thermalBus =
+        Optional.ofNullable(fieldsToAttributes.get("thermalBus"))
+            .flatMap(
+                thermalBusUuid ->
+                    findFirstEntityByUuid(UUID.fromString(thermalBusUuid), thermalBuses));
+
+    // if the thermal storage or the thermal bus are not present we return an
+    // empty element and log a warning
+    if (thermalStorage.isEmpty() || thermalBus.isEmpty()) {
+      StringBuilder sB = new StringBuilder();
+      if (thermalStorage.isEmpty()) {
+        sB.append("thermalStorage: ")
+            .append(safeMapGet(fieldsToAttributes, THERMAL_STORAGE, FIELDS_TO_VALUES_MAP));
+      }
+      if (thermalBus.isEmpty()) {
+        sB.append("\nthermalBus: ")
+            .append(safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
+      }
+
+      String skippingMessage =
+          buildSkippingMessage(
+              typedEntityData.getTargetClass().getSimpleName(),
+              safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
+              safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
+              sB.toString());
+      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
+    }
+
+    // remove fields that are passed as objects to constructor
+    fieldsToAttributes
+        .keySet()
+        .removeAll(new HashSet<>(Arrays.asList("thermalBus", "thermalStorage")));
+
+    return new Success<>(
+        new ChpInputEntityData(
+            fieldsToAttributes,
+            typedEntityData.getOperatorInput(),
+            typedEntityData.getNode(),
+            typedEntityData.getTypeInput(),
+            thermalBus.get(),
+            thermalStorage.get()));
   }
 
   private Stream<Try<HpInput, FactoryException>> hpInputStream(
@@ -676,115 +724,14 @@ public class SystemParticipantSource extends EntitySource {
       Collection<HpTypeInput> types,
       Collection<ThermalBusInput> thermalBuses) {
     return buildHpEntityData(
-            buildTypedEntityData(
+            buildTypedSystemParticipantEntityData(
+                    buildSystemParticipantEntityData(
                 nodeAssetInputEntityDataStream(
                     assetInputEntityDataStream(HpInput.class, operators), nodes),
-                types),
+                ems),
+                    types),
             thermalBuses)
         .map(factory::get);
-  }
-
-  /**
-   * Enriches a given stream of {@link NodeAssetInputEntityData} {@link Try} objects with a type of
-   * {@link SystemParticipantTypeInput} based on the provided collection of types and the fields to
-   * values mapping that inside the already provided {@link NodeAssetInputEntityData} instance.
-   *
-   * @param nodeAssetEntityDataStream the data stream of {@link NodeAssetInputEntityData} {@link
-   *     Try} objects
-   * @param types the types that should be used for enrichment and to build {@link
-   *     SystemParticipantTypedEntityData} from
-   * @param <T> the type of the provided entity types as well as the type parameter of the resulting
-   *     {@link SystemParticipantTypedEntityData}
-   * @return a stream of tries of {@link SystemParticipantTypedEntityData} instances
-   */
-  private <T extends SystemParticipantTypeInput>
-      Stream<Try<SystemParticipantTypedEntityData<T>, SourceException>>
-          buildTypedSystemParticipantEntityData(
-              Stream<Try<NodeAssetInputEntityData, SourceException>> nodeAssetEntityDataStream,
-              Collection<T> types) {
-    return nodeAssetEntityDataStream
-        .parallel()
-        .map(
-            nodeAssetInputEntityDataOpt ->
-                nodeAssetInputEntityDataOpt.flatMap(
-                    nodeAssetInputEntityData ->
-                        buildTypedSystemParticipantEntityData(nodeAssetInputEntityData, types)));
-  }
-
-  protected <T extends SystemParticipantTypeInput>
-      Try<SystemParticipantTypedEntityData<T>, SourceException>
-          buildTypedSystemParticipantEntityData(
-              NodeAssetInputEntityData nodeAssetInputEntityData, Collection<T> types) {
-    return getAssetType(
-            types,
-            nodeAssetInputEntityData.getFieldsToValues(),
-            nodeAssetInputEntityData.getClass().getSimpleName())
-        .map(
-            // if the optional is present, transform and return to the data,
-            // otherwise return an empty optional
-            assetType -> {
-              Map<String, String> fieldsToAttributes = nodeAssetInputEntityData.getFieldsToValues();
-
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove(TYPE);
-
-              return new SystemParticipantTypedEntityData<>(
-                  fieldsToAttributes,
-                  nodeAssetInputEntityData.getTargetClass(),
-                  nodeAssetInputEntityData.getOperatorInput(),
-                  nodeAssetInputEntityData.getNode(),
-                  assetType);
-            });
-  }
-
-  /**
-   * Enriches a given stream of {@link NodeAssetInputEntityData} tries with a type of {@link
-   * SystemParticipantTypeInput} based on the provided collection of types and the fields to values
-   * mapping that inside the already provided {@link NodeAssetInputEntityData} instance.
-   *
-   * @param nodeAssetEntityDataStream the data stream of {@link NodeAssetInputEntityData} tries
-   * @param types the types that should be used for enrichment and to build {@link
-   *     SystemParticipantTypedEntityData} from
-   * @param <T> the type of the provided entity types as well as the type parameter of the resulting
-   *     {@link SystemParticipantTypedEntityData}
-   * @return a stream of tries of {@link SystemParticipantTypedEntityData} instances
-   */
-  private <T extends SystemParticipantTypeInput>
-      Stream<Try<SystemParticipantTypedEntityData<T>, SourceException>> buildTypedEntityData(
-          Stream<Try<NodeAssetInputEntityData, SourceException>> nodeAssetEntityDataStream,
-          Collection<T> types) {
-    return nodeAssetEntityDataStream
-        .parallel()
-        .map(
-            nodeAssetInputEntityDataOpt ->
-                nodeAssetInputEntityDataOpt.flatMap(
-                    nodeAssetInputEntityData ->
-                        buildTypedEntityData(nodeAssetInputEntityData, types)));
-  }
-
-  protected <T extends SystemParticipantTypeInput>
-      Try<SystemParticipantTypedEntityData<T>, SourceException> buildTypedEntityData(
-          NodeAssetInputEntityData nodeAssetInputEntityData, Collection<T> types) {
-    return getAssetType(
-            types,
-            nodeAssetInputEntityData.getFieldsToValues(),
-            nodeAssetInputEntityData.getClass().getSimpleName())
-        .map(
-            // if the optional is present, transform and return to the data,
-            // otherwise return an empty optional
-            assetType -> {
-              Map<String, String> fieldsToAttributes = nodeAssetInputEntityData.getFieldsToValues();
-
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove(TYPE);
-
-              return new SystemParticipantTypedEntityData<>(
-                  fieldsToAttributes,
-                  nodeAssetInputEntityData.getTargetClass(),
-                  nodeAssetInputEntityData.getOperatorInput(),
-                  nodeAssetInputEntityData.getNode(),
-                  assetType);
-            });
   }
 
   /**
@@ -855,77 +802,85 @@ public class SystemParticipantSource extends EntitySource {
     return new Success<>(hpInputEntityDataOpt.get());
   }
 
-  private Stream<Try<ChpInputEntityData, SourceException>> buildChpEntityData(
-      Stream<Try<SystemParticipantTypedEntityData<ChpTypeInput>, SourceException>>
-          typedEntityDataStream,
-      Collection<ThermalStorageInput> thermalStorages,
-      Collection<ThermalBusInput> thermalBuses) {
-
-    return typedEntityDataStream
+  /**
+   * Enriches a given stream of {@link SystemParticipantEntityData} {@link Try} objects with a type
+   * of {@link SystemParticipantTypeInput} based on the provided collection of types and the fields
+   * to values mapping that inside the already provided {@link SystemParticipantEntityData}
+   * instance.
+   *
+   * @param systemParticipantEntityDataStream the data stream of {@link SystemParticipantEntityData}
+   *     {@link Try} objects
+   * @param types the types that should be used for enrichment and to build {@link
+   *     SystemParticipantTypedEntityData} from
+   * @param <T> the type of the provided entity types as well as the type parameter of the resulting
+   *     {@link SystemParticipantTypedEntityData}
+   * @return a stream of tries of {@link SystemParticipantTypedEntityData} instances
+   */
+  private <T extends SystemParticipantTypeInput>
+      Stream<Try<SystemParticipantTypedEntityData<T>, SourceException>>
+          buildTypedSystemParticipantEntityData(
+              Stream<Try<SystemParticipantEntityData, SourceException>>
+                  systemParticipantEntityDataStream,
+              Collection<T> types) {
+    return systemParticipantEntityDataStream
         .parallel()
         .map(
-            typedEntityDataOpt ->
-                typedEntityDataOpt.flatMap(
-                    typedEntityData ->
-                        buildChpEntityData(typedEntityData, thermalStorages, thermalBuses)));
+            participantEntityDataTry ->
+                participantEntityDataTry.flatMap(
+                    participantEntityData ->
+                        buildTypedSystemParticipantEntityData(participantEntityData, types)));
   }
 
-  protected Try<ChpInputEntityData, SourceException> buildChpEntityData(
-      SystemParticipantTypedEntityData<ChpTypeInput> typedEntityData,
-      Collection<ThermalStorageInput> thermalStorages,
-      Collection<ThermalBusInput> thermalBuses) {
+  private <T extends SystemParticipantTypeInput>
+      Try<SystemParticipantTypedEntityData<T>, SourceException>
+          buildTypedSystemParticipantEntityData(
+              SystemParticipantEntityData systemParticipantEntityDataStream, Collection<T> types) {
+    return getAssetType(
+            types,
+            systemParticipantEntityDataStream.getFieldsToValues(),
+            systemParticipantEntityDataStream.getClass().getSimpleName())
+        .map(
+            // if the operation was successful, transform and return to the data
+            assetType -> {
+              Map<String, String> fieldsToAttributes =
+                  systemParticipantEntityDataStream.getFieldsToValues();
 
-    // get the raw data
-    Map<String, String> fieldsToAttributes = typedEntityData.getFieldsToValues();
+              // remove fields that are passed as objects to constructor
+              fieldsToAttributes.keySet().remove(TYPE);
 
-    // get the thermal storage input for this chp unit
-    Optional<ThermalStorageInput> thermalStorage =
-        Optional.ofNullable(fieldsToAttributes.get(THERMAL_STORAGE))
-            .flatMap(
-                thermalStorageUuid ->
-                    findFirstEntityByUuid(UUID.fromString(thermalStorageUuid), thermalStorages));
-
-    // get the thermal bus input for this chp unit
-    Optional<ThermalBusInput> thermalBus =
-        Optional.ofNullable(fieldsToAttributes.get("thermalBus"))
-            .flatMap(
-                thermalBusUuid ->
-                    findFirstEntityByUuid(UUID.fromString(thermalBusUuid), thermalBuses));
-
-    // if the thermal storage or the thermal bus are not present we return an
-    // empty element and log a warning
-    if (thermalStorage.isEmpty() || thermalBus.isEmpty()) {
-      StringBuilder sB = new StringBuilder();
-      if (thermalStorage.isEmpty()) {
-        sB.append("thermalStorage: ")
-            .append(safeMapGet(fieldsToAttributes, THERMAL_STORAGE, FIELDS_TO_VALUES_MAP));
-      }
-      if (thermalBus.isEmpty()) {
-        sB.append("\nthermalBus: ")
-            .append(safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
-      }
-
-      String skippingMessage =
-          buildSkippingMessage(
-              typedEntityData.getTargetClass().getSimpleName(),
-              safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-              safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-              sB.toString());
-      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
-    }
-
-    // remove fields that are passed as objects to constructor
-    fieldsToAttributes
-        .keySet()
-        .removeAll(new HashSet<>(Arrays.asList("thermalBus", "thermalStorage")));
-
-    return new Success<>(
-        new ChpInputEntityData(
-            fieldsToAttributes,
-            typedEntityData.getOperatorInput(),
-            typedEntityData.getNode(),
-            typedEntityData.getTypeInput(),
-            thermalBus.get(),
-            thermalStorage.get()));
+              return new SystemParticipantTypedEntityData<>(
+                  fieldsToAttributes,
+                  systemParticipantEntityDataStream.getTargetClass(),
+                  systemParticipantEntityDataStream.getOperatorInput(),
+                  systemParticipantEntityDataStream.getNode(),
+                  systemParticipantEntityDataStream.getEm().orElse(null),
+                  assetType);
+            });
   }
+
+  /**
+   * Enriches a given stream of {@link NodeAssetInputEntityData} {@link Try} objects with a type of
+   * {@link EmInput} based on the provided collection of EMs and the fields to
+   * values mapping that inside the already provided {@link NodeAssetInputEntityData} instance.
+   *
+   * @param nodeAssetEntityDataStream the data stream of {@link NodeAssetInputEntityData} {@link
+   *     Try} objects
+   * @param ems the energy management units that should be used for enrichment and to build {@link
+   *     SystemParticipantEntityData} from
+   * @return a stream of tries of {@link SystemParticipantEntityData} instances
+   */
+  private
+      Stream<Try<SystemParticipantEntityData, SourceException>>
+          buildSystemParticipantEntityData(
+              Stream<Try<NodeAssetInputEntityData, SourceException>> nodeAssetEntityDataStream,
+              Map<UUID, EmInput> ems) {
+    return nodeAssetEntityDataStream
+        .parallel()
+        .map(
+            nodeAssetInputEntityDataOpt ->
+                nodeAssetInputEntityDataOpt.flatMap(
+                    nodeAssetInputEntityData ->
+                        SystemParticipantEntityData.build(nodeAssetInputEntityData, ems)));
+  }
+
 }

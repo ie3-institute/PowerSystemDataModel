@@ -57,8 +57,8 @@ public class RawGridSource extends EntitySource {
   private final MeasurementUnitInputFactory measurementUnitInputFactory;
 
   public RawGridSource(TypeSource typeSource, DataSource dataSource) {
+    super(dataSource);
     this.typeSource = typeSource;
-    this.dataSource = dataSource;
 
     // init factories
     this.nodeInputFactory = new NodeInputFactory();

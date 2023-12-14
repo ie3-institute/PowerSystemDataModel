@@ -28,6 +28,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of EV
    */
   public EvInput(
@@ -37,8 +38,9 @@ public class EvInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       EvTypeInput type) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.type = type;
   }
 
@@ -49,6 +51,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of EV
    */
   public EvInput(
@@ -56,8 +59,9 @@ public class EvInput extends SystemParticipantInput implements HasType {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       EvTypeInput type) {
-    super(uuid, id, node, qCharacteristics);
+    super(uuid, id, node, qCharacteristics, em);
     this.type = type;
   }
 
@@ -98,7 +102,8 @@ public class EvInput extends SystemParticipantInput implements HasType {
         + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + '\''
+        + "', em="
+        + getEm()
         + ", type="
         + type.getUuid()
         + '}';
@@ -130,6 +135,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
           getOperationTime(),
           getNode(),
           getqCharacteristics(),
+          getEm(),
           type);
     }
 

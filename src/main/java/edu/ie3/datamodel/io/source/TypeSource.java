@@ -36,7 +36,7 @@ public class TypeSource extends EntitySource {
   private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
 
   public TypeSource(DataSource dataSource) {
-    this.dataSource = dataSource;
+    super(dataSource);
 
     this.operatorInputFactory = new OperatorInputFactory();
     this.transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();

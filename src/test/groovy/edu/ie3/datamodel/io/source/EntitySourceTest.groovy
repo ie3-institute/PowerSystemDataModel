@@ -21,7 +21,7 @@ class EntitySourceTest extends Specification {
 
   private final class DummyEntitySource extends EntitySource {
     DummyEntitySource(CsvDataSource dataSource) {
-      this.dataSource = dataSource
+      super(dataSource);
     }
   }
 

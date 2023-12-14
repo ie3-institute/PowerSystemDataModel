@@ -5,20 +5,20 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.PvInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 public class PvInputFactory
-    extends SystemParticipantInputEntityFactory<PvInput, NodeAssetInputEntityData> {
+    extends SystemParticipantInputEntityFactory<PvInput, SystemParticipantEntityData> {
   private static final String ALBEDO = "albedo";
   private static final String AZIMUTH = "azimuth";
   private static final String ETA_CONV = "etaconv";
@@ -42,11 +42,12 @@ public class PvInputFactory
 
   @Override
   protected PvInput buildModel(
-      NodeAssetInputEntityData data,
-      java.util.UUID uuid,
+      SystemParticipantEntityData data,
+      UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       OperatorInput operator,
       OperationTime operationTime) {
     final double albedo = data.getDouble(ALBEDO);
@@ -68,6 +69,7 @@ public class PvInputFactory
         operationTime,
         node,
         qCharacteristics,
+        em,
         albedo,
         azimuth,
         etaConv,

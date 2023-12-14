@@ -15,13 +15,16 @@ class EnergyManagementTestData {
     SystemParticipantTestData.pvInput.uuid
   }
   public static final String emControlStrategy = "self_optimization"
+  public static final UUID parentEm = UUID.fromString("897bfc17-8e54-43d0-8d98-740786fd94dd")
+
 
   public static final emInput = new EmInput(
   UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
   "test_emInput",
   SystemParticipantTestData.operator,
   SystemParticipantTestData.operationTime,
-  emControlStrategy
+  emControlStrategy,
+  parentEm
   )
 
   public static EnergyManagementUnits emptyEnergyManagementUnits =

@@ -99,6 +99,10 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
         "0: [cosphirated, id, qcharacteristics, srated, uuid]\n" +
         "1: [cosphirated, id, operatesfrom, qcharacteristics, srated, uuid]\n" +
         "2: [cosphirated, id, operatesuntil, qcharacteristics, srated, uuid]\n" +
-        "3: [cosphirated, id, operatesfrom, operatesuntil, qcharacteristics, srated, uuid]\n"
+        "3: [cosphirated, id, operatesfrom, operatesuntil, qcharacteristics, srated, uuid]\n" +
+        "4: [cosphirated, em, id, qcharacteristics, srated, uuid]\n" +
+        "5: [cosphirated, em, id, operatesfrom, qcharacteristics, srated, uuid]\n" +
+        "6: [cosphirated, em, id, operatesuntil, qcharacteristics, srated, uuid]\n" +
+        "7: [cosphirated, em, id, operatesfrom, operatesuntil, qcharacteristics, srated, uuid]\n"
   }
 }

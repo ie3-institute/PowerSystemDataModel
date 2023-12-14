@@ -17,6 +17,12 @@ public class EmInput extends AssetInput {
   private final String controlStrategy;
 
   /**
+   * Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
+   * unit is not em-controlled.
+   */
+  private final UUID parentEm;
+
+  /**
    * Constructor for an operated energy management system
    *
    * @param uuid of the input entity
@@ -24,15 +30,18 @@ public class EmInput extends AssetInput {
    * @param operator of the asset
    * @param operationTime time for which the entity is operated
    * @param emControlStrategy the control strategy
+   * @param parentEm The {@link EmInput} controlling this em unit. Null, if not applicable.
    */
   public EmInput(
       UUID uuid,
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      String emControlStrategy) {
+      String emControlStrategy,
+      UUID parentEm) {
     super(uuid, id, operator, operationTime);
     this.controlStrategy = emControlStrategy;
+    this.parentEm = parentEm;
   }
 
   /**
@@ -41,14 +50,20 @@ public class EmInput extends AssetInput {
    * @param uuid of the input entity
    * @param id of the asset
    * @param emControlStrategy the control strategy
+   * @param parentEm The {@link EmInput} controlling this em unit. Null, if not applicable.
    */
-  public EmInput(UUID uuid, String id, String emControlStrategy) {
+  public EmInput(UUID uuid, String id, String emControlStrategy, UUID parentEm) {
     super(uuid, id);
     this.controlStrategy = emControlStrategy;
+    this.parentEm = parentEm;
   }
 
   public String getControlStrategy() {
     return controlStrategy;
+  }
+
+  public UUID getParentEm() {
+    return parentEm;
   }
 
   @Override
@@ -82,12 +97,16 @@ public class EmInput extends AssetInput {
         + getOperationTime()
         + ", controlStrategy="
         + getControlStrategy()
+        + ", parentEm="
+        + getParentEm()
         + '}';
   }
 
   public static class EmInputCopyBuilder extends AssetInputCopyBuilder<EmInputCopyBuilder> {
 
     private String controlStrategy;
+
+    private UUID parentEm;
 
     protected EmInputCopyBuilder(EmInput entity) {
       super(entity);
@@ -99,9 +118,15 @@ public class EmInput extends AssetInput {
       return this;
     }
 
+    public EmInputCopyBuilder parentEm(UUID parentEm) {
+      this.parentEm = parentEm;
+      return thisInstance();
+    }
+
     @Override
     public EmInput build() {
-      return new EmInput(getUuid(), getId(), getOperator(), getOperationTime(), controlStrategy);
+      return new EmInput(
+          getUuid(), getId(), getOperator(), getOperationTime(), controlStrategy, parentEm);
     }
 
     @Override

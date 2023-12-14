@@ -44,6 +44,15 @@ public abstract class EntityData extends FactoryData {
     super(fieldsToAttributes, entityClass);
   }
 
+  /**
+   * Creates a new EntityData object based on a given {@link FactoryData} object
+   *
+   * @param factoryData The factory data object to use attributes of
+   */
+  protected EntityData(FactoryData factoryData) {
+    super(factoryData.getFieldsToValues(), factoryData.getTargetClass());
+  }
+
   @Override
   @SuppressWarnings("unchecked cast")
   public Class<? extends UniqueEntity> getTargetClass() {

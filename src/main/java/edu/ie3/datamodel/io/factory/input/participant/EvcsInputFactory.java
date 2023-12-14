@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.input.participant;
 import edu.ie3.datamodel.exceptions.ChargingPointTypeException;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -18,16 +17,17 @@ import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTyp
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationTypeUtils;
+import java.util.UUID;
 
 /**
- * Factory to create instances of {@link EvcsInput}s based on {@link NodeAssetInputEntityData} and
- * additional fields.
+ * Factory to create instances of {@link EvcsInput}s based on {@link SystemParticipantEntityData}
+ * and additional fields.
  *
  * @version 0.1
  * @since 26.07.20
  */
 public class EvcsInputFactory
-    extends SystemParticipantInputEntityFactory<EvcsInput, NodeAssetInputEntityData> {
+    extends SystemParticipantInputEntityFactory<EvcsInput, SystemParticipantEntityData> {
 
   private static final String TYPE = "type";
   private static final String CHARGING_POINTS = "chargingpoints";
@@ -46,8 +46,8 @@ public class EvcsInputFactory
 
   @Override
   protected EvcsInput buildModel(
-      NodeAssetInputEntityData data,
-      java.util.UUID uuid,
+      SystemParticipantEntityData data,
+      UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
@@ -87,6 +87,7 @@ public class EvcsInputFactory
         operationTime,
         node,
         qCharacteristics,
+        em,
         type,
         chargingPoints,
         cosPhi,

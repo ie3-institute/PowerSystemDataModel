@@ -38,8 +38,8 @@ public class ThermalSource extends EntitySource {
   private final ThermalHouseInputFactory thermalHouseInputFactory;
 
   public ThermalSource(TypeSource typeSource, DataSource dataSource) {
+    super(dataSource);
     this.typeSource = typeSource;
-    this.dataSource = dataSource;
 
     this.thermalBusInputFactory = new ThermalBusInputFactory();
     this.cylindricalStorageInputFactory = new CylindricalStorageInputFactory();

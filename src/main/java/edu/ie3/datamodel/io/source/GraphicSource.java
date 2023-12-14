@@ -42,9 +42,9 @@ public class GraphicSource extends EntitySource {
   private final NodeGraphicInputFactory nodeGraphicInputFactory;
 
   public GraphicSource(TypeSource typeSource, RawGridSource rawGridSource, DataSource dataSource) {
+    super(dataSource);
     this.typeSource = typeSource;
     this.rawGridSource = rawGridSource;
-    this.dataSource = dataSource;
 
     this.lineGraphicInputFactory = new LineGraphicInputFactory();
     this.nodeGraphicInputFactory = new NodeGraphicInputFactory();

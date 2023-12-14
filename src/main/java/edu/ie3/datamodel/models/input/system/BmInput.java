@@ -39,6 +39,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of BM
    * @param marketReaction Is this asset market oriented?
    * @param costControlled Does this plant increase the output power if the revenues exceed the
@@ -52,11 +53,12 @@ public class BmInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
       ComparableQuantity<EnergyPrice> feedInTariff) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.type = type;
     this.marketReaction = marketReaction;
     this.costControlled = costControlled;
@@ -70,6 +72,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of BM
    * @param marketReaction Is this asset market oriented?
    * @param costControlled Does this plant increase the output power if the revenues exceed the
@@ -81,11 +84,12 @@ public class BmInput extends SystemParticipantInput implements HasType {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
       ComparableQuantity<EnergyPrice> feedInTariff) {
-    super(uuid, id, node, qCharacteristics);
+    super(uuid, id, node, qCharacteristics, em);
     this.type = type;
     this.marketReaction = marketReaction;
     this.costControlled = costControlled;
@@ -144,8 +148,9 @@ public class BmInput extends SystemParticipantInput implements HasType {
         + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + '\''
-        + "type="
+        + "', em="
+        + getEm()
+        + ", type="
         + type.getUuid()
         + ", marketReaction="
         + marketReaction
@@ -208,6 +213,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
           getOperationTime(),
           getNode(),
           getqCharacteristics(),
+          getEm(),
           type,
           marketReaction,
           costControlled,

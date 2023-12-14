@@ -375,7 +375,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvCS(nodes as Set, operators as Set), SourceException)
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvcs(nodes as Set, operators as Set), SourceException)
 
     if (sysParts.success) {
       sysParts.data.get().size() == resultingSize

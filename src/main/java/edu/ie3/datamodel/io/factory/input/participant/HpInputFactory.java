@@ -31,6 +31,7 @@ public class HpInputFactory
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      UUID em,
       OperatorInput operator,
       OperationTime operationTime) {
     return new HpInput(
@@ -41,6 +42,7 @@ public class HpInputFactory
         node,
         data.getThermalBusInput(),
         qCharacteristics,
+        em,
         data.getTypeInput());
   }
 }

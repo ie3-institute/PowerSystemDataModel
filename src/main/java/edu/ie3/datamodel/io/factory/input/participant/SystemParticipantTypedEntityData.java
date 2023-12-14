@@ -5,10 +5,10 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.EmInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import java.util.Map;
 import java.util.Objects;
@@ -22,7 +22,7 @@ import java.util.Objects;
  *     of the SystemParticipantInput
  */
 public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
-    extends NodeAssetInputEntityData {
+    extends SystemParticipantEntityData {
 
   private final T typeInput;
 
@@ -33,14 +33,17 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param node input node
+   * @param em The energy management unit that is managing the system participant. Null, if the
+   *     system participant is not managed.
    * @param typeInput type input
    */
   public SystemParticipantTypedEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       NodeInput node,
+      EmInput em,
       T typeInput) {
-    super(fieldsToAttributes, entityClass, node);
+    super(fieldsToAttributes, entityClass, node, em);
     this.typeInput = typeInput;
   }
 
@@ -52,6 +55,8 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
    * @param entityClass class of the entity to be created with this data
    * @param operator operator input
    * @param node input node
+   * @param em The energy management unit that is managing the system participant. Null, if the
+   *     system participant is not managed.
    * @param typeInput type input
    */
   public SystemParticipantTypedEntityData(
@@ -59,9 +64,28 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator,
       NodeInput node,
+      EmInput em,
       T typeInput) {
-    super(fieldsToAttributes, entityClass, operator, node);
+    super(fieldsToAttributes, entityClass, operator, node, em);
     this.typeInput = typeInput;
+  }
+
+  /**
+   * Creates a new SystemParticipantTypedEntityData object based on a given {@link
+   * SystemParticipantEntityData} object and given type input
+   *
+   * @param systemParticipantEntityData The system participant entity data object to use attributes
+   *     of
+   * @param typeInput type input
+   */
+  public SystemParticipantTypedEntityData(
+      SystemParticipantEntityData systemParticipantEntityData, T typeInput) {
+    super(systemParticipantEntityData, systemParticipantEntityData.getEm().orElse(null));
+    this.typeInput = typeInput;
+  }
+
+  public T getTypeInput() {
+    return typeInput;
   }
 
   @Override
@@ -69,6 +93,8 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
     return "SystemParticipantTypedEntityData{"
         + "typeInput="
         + typeInput.getUuid()
+        + ", em="
+        + getEm().map(EmInput::toString).orElse("")
         + ", node="
         + getNode().getUuid()
         + ", operatorInput="
@@ -92,9 +118,5 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), getTypeInput());
-  }
-
-  public T getTypeInput() {
-    return typeInput;
   }
 }

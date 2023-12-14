@@ -40,6 +40,7 @@ class SystemParticipantTestData {
   static final OperatorInput operator = new OperatorInput(
   UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
   public static final NodeInput participantNode = GridTestData.nodeA
+  static final UUID em = UUID.fromString("897bfc17-8e54-43d0-8d98-740786fd94dd")
 
   // general type data
   static final CosPhiFixed cosPhiFixed = new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}")
@@ -64,6 +65,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  em,
   sRated,
   cosPhiRated
   )
@@ -81,6 +83,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  em,
   albedo,
   azimuth,
   etaConv,
@@ -117,6 +120,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiP,
+  em,
   wecType,
   false
   )
@@ -170,6 +174,7 @@ class SystemParticipantTestData {
   participantNode,
   thermalBus,
   cosPhiFixed,
+  em,
   chpTypeInput,
   thermalStorage,
   false
@@ -196,6 +201,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   qV,
+  em,
   bmTypeInput,
   false,
   false,
@@ -221,6 +227,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  em,
   evTypeInput
   )
 
@@ -234,6 +241,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  em,
   standardLoadProfile,
   false,
   eConsAnnual,
@@ -267,10 +275,10 @@ class SystemParticipantTestData {
   UUID.fromString("06b58276-8350-40fb-86c0-2414aa4a0452"),
   "test_storageInput",
   operator,
-  operationTime
-  ,
+  operationTime,
   participantNode,
   cosPhiFixed,
+  em,
   storageTypeInput
   )
 
@@ -293,6 +301,7 @@ class SystemParticipantTestData {
   participantNode,
   thermalBus,
   cosPhiFixed,
+  em,
   hpTypeInput
   )
 
@@ -305,6 +314,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  em,
   ChargingPointTypeUtils.HouseholdSocket,
   4,
   cosPhiRated,
