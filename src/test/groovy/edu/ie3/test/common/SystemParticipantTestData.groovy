@@ -5,6 +5,8 @@
  */
 package edu.ie3.test.common
 
+import static edu.ie3.datamodel.models.StandardUnits.*
+
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -28,8 +30,6 @@ import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.*
-
-import static edu.ie3.datamodel.models.StandardUnits.*
 
 class SystemParticipantTestData {
 
@@ -312,22 +312,6 @@ class SystemParticipantTestData {
   v2gSupport
   )
 
-  // Energy Management
-  public static final UUID[] connectedAssets = new UUID[]{
-    loadInput.getUuid(), pvInput.getUuid()
-  }
-  public static final String emControlStrategy = "self_optimization"
-  public static final emInput = new EmInput(
-  UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
-  "test_emInput",
-  operator,
-  operationTime,
-  participantNode,
-  cosPhiFixed,
-  connectedAssets,
-  emControlStrategy
-  )
-
   public static allParticipants = [
     fixedFeedInInput,
     pvInput,
@@ -337,22 +321,19 @@ class SystemParticipantTestData {
     wecInput,
     evInput,
     chpInput,
-    hpInput,
-    emInput
+    hpInput
   ]
 
-  static SystemParticipants getEmptySystemParticipants() {
-    return new SystemParticipants(
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set)
-  }
+  public static SystemParticipants emptySystemParticipants =
+  new SystemParticipants(
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set)
 }

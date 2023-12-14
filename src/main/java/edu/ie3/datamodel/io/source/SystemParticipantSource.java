@@ -50,7 +50,6 @@ public class SystemParticipantSource extends EntitySource {
   private final StorageInputFactory storageInputFactory;
   private final WecInputFactory wecInputFactory;
   private final EvcsInputFactory evcsInputFactory;
-  private final EmInputFactory emInputFactory;
 
   public SystemParticipantSource(
       TypeSource typeSource,
@@ -74,7 +73,6 @@ public class SystemParticipantSource extends EntitySource {
     this.storageInputFactory = new StorageInputFactory();
     this.wecInputFactory = new WecInputFactory();
     this.evcsInputFactory = new EvcsInputFactory();
-    this.emInputFactory = new EmInputFactory();
   }
 
   @Override
@@ -151,8 +149,6 @@ public class SystemParticipantSource extends EntitySource {
             SourceException.class);
     Try<Set<HpInput>, SourceException> hpInputs =
         Try.of(() -> getHeatPumps(nodes, operators, hpTypes, thermalBuses), SourceException.class);
-    Try<Set<EmInput>, SourceException> emInputs =
-        Try.of(() -> getEmSystems(nodes, operators), SourceException.class);
 
     List<SourceException> exceptions =
         Try.getExceptions(
@@ -166,8 +162,7 @@ public class SystemParticipantSource extends EntitySource {
                 evs,
                 evcs,
                 chpInputs,
-                hpInputs,
-                emInputs));
+                hpInputs));
 
     if (!exceptions.isEmpty()) {
       throw new SystemParticipantsException(
@@ -187,8 +182,7 @@ public class SystemParticipantSource extends EntitySource {
           loads.getOrThrow(),
           pvInputs.getOrThrow(),
           storages.getOrThrow(),
-          wecInputs.getOrThrow(),
-          emInputs.getOrThrow());
+          wecInputs.getOrThrow());
     }
   }
 
@@ -538,46 +532,6 @@ public class SystemParticipantSource extends EntitySource {
             buildTypedSystemParticipantEntities(
                 EvInput.class, evInputFactory, nodes, operators, types),
             EvInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
-  }
-
-  /**
-   * Returns a unique set of {@link EmInput} instances.
-   *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EmInput} which has to be checked manually, as
-   * {@link EmInput#equals(Object)} is NOT restricted on the uuid of {@link EmInput}.
-   *
-   * @return a set of object and uuid unique {@link EmInput} entities
-   */
-  public Set<EmInput> getEmSystems() throws SourceException {
-    Set<OperatorInput> operators = typeSource.getOperators();
-    return getEmSystems(rawGridSource.getNodes(operators), operators);
-  }
-
-  /**
-   * This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EmInput} which has to be checked manually, as
-   * {@link EmInput#equals(Object)} is NOT restricted on the uuid of {@link EmInput}.
-   *
-   * <p>In contrast to {@link #getHeatPumps()} this method provides the ability to pass in an
-   * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
-   * EmInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
-   * performance and prevent unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
-   * set with all entities that has been able to be build is returned.
-   *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @return a set of object and uuid unique {@link EmInput} entities
-   */
-  public Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators)
-      throws SourceException {
-    return Try.scanCollection(
-            buildNodeAssetEntities(EmInput.class, emInputFactory, nodes, operators), EmInput.class)
         .transformF(SourceException::new)
         .getOrThrow();
   }

@@ -19,8 +19,8 @@ import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
+import javax.measure.quantity.Dimensionless
 /**
  * Testing EvcsInputFactory
  *

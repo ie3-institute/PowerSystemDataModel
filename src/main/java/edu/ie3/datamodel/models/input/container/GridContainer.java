@@ -15,6 +15,8 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
   protected final RawGridElements rawGrid;
   /** Accumulated system participant elements */
   protected final SystemParticipants systemParticipants;
+  /** Accumulated energy management units */
+  protected final EnergyManagementUnits emUnits;
   /** Accumulated graphic data entities (node graphics, line graphics) */
   protected final GraphicElements graphics;
 
@@ -22,11 +24,13 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      EnergyManagementUnits emUnits,
       GraphicElements graphics) {
     this.gridName = gridName;
 
     this.rawGrid = rawGrid;
     this.systemParticipants = systemParticipants;
+    this.emUnits = emUnits;
     this.graphics = graphics;
   }
 
@@ -35,6 +39,7 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     List<InputEntity> allEntities = new LinkedList<>();
     allEntities.addAll(rawGrid.allEntitiesAsList());
     allEntities.addAll(systemParticipants.allEntitiesAsList());
+    allEntities.addAll(emUnits.allEntitiesAsList());
     allEntities.addAll(graphics.allEntitiesAsList());
     return Collections.unmodifiableList(allEntities);
   }
@@ -55,6 +60,10 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     return systemParticipants;
   }
 
+  public EnergyManagementUnits getEmUnits() {
+    return emUnits;
+  }
+
   public GraphicElements getGraphics() {
     return graphics;
   }
@@ -66,12 +75,13 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     return gridName.equals(that.gridName)
         && rawGrid.equals(that.rawGrid)
         && systemParticipants.equals(that.systemParticipants)
+        && emUnits.equals(that.emUnits)
         && graphics.equals(that.graphics);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(gridName, rawGrid, systemParticipants, graphics);
+    return Objects.hash(gridName, rawGrid, systemParticipants, emUnits, graphics);
   }
 
   @Override
@@ -91,6 +101,7 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     private String gridName;
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
+    private EnergyManagementUnits emUnits;
     private GraphicElements graphics;
 
     /**
@@ -102,6 +113,7 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
       this.gridName = gridContainer.getGridName();
       this.rawGrid = gridContainer.getRawGrid();
       this.systemParticipants = gridContainer.getSystemParticipants();
+      this.emUnits = gridContainer.getEmUnits();
       this.graphics = gridContainer.getGraphics();
     }
 
@@ -118,6 +130,11 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     /** Returns {@link SystemParticipants} */
     protected SystemParticipants getSystemParticipants() {
       return systemParticipants;
+    }
+
+    /** Returns {@link EnergyManagementUnits} */
+    public EnergyManagementUnits getEmUnits() {
+      return emUnits;
     }
 
     /** Returns {@link GraphicElements} */
@@ -155,6 +172,17 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
      */
     public B systemParticipants(SystemParticipants systemParticipants) {
       this.systemParticipants = systemParticipants;
+      return thisInstance();
+    }
+
+    /**
+     * Method to alter the {@link EnergyManagementUnits}s.
+     *
+     * @param emUnits altered em units
+     * @return this instance of {@link GridContainerCopyBuilder}
+     */
+    public B emUnits(EnergyManagementUnits emUnits) {
+      this.emUnits = emUnits;
       return thisInstance();
     }
 

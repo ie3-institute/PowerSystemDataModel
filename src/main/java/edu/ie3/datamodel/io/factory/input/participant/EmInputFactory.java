@@ -6,19 +6,17 @@
 package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
+import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
+import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
 import edu.ie3.datamodel.models.ControlStrategy;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.EmInput;
-import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EmInputFactory
-    extends SystemParticipantInputEntityFactory<EmInput, NodeAssetInputEntityData> {
+public class EmInputFactory extends AssetInputEntityFactory<EmInput, AssetInputEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(EmInputFactory.class);
 
   private static final String CONNECTED_ASSETS = "connectedAssets";
@@ -36,11 +34,9 @@ public class EmInputFactory
 
   @Override
   protected EmInput buildModel(
-      NodeAssetInputEntityData data,
+      AssetInputEntityData data,
       UUID uuid,
       String id,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
     ControlStrategy controlStrategy;
@@ -58,14 +54,6 @@ public class EmInputFactory
     if (connectedAssets.length == 0)
       logger.warn("There are no connected assets for energy management system \"{}\".", id);
 
-    return new EmInput(
-        uuid,
-        id,
-        operator,
-        operationTime,
-        node,
-        qCharacteristics,
-        connectedAssets,
-        controlStrategy);
+    return new EmInput(uuid, id, operator, operationTime, connectedAssets, controlStrategy);
   }
 }
