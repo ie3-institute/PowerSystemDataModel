@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.EmInput;
 import edu.ie3.datamodel.models.input.system.HpInput;
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -19,9 +20,10 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
   public HpInputEntityData(
       Map<String, String> fieldsToAttributes,
       NodeInput node,
+      EmInput em,
       HpTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(fieldsToAttributes, HpInput.class, node, typeInput);
+    super(fieldsToAttributes, HpInput.class, node, em, typeInput);
     this.thermalBusInput = thermalBusInput;
   }
 
@@ -29,9 +31,10 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
       Map<String, String> fieldsToAttributes,
       OperatorInput operator,
       NodeInput node,
+      EmInput em,
       HpTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(fieldsToAttributes, HpInput.class, operator, node, typeInput);
+    super(fieldsToAttributes, HpInput.class, operator, node, em, typeInput);
     this.thermalBusInput = thermalBusInput;
   }
 

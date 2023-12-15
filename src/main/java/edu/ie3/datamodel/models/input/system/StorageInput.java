@@ -38,7 +38,7 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      UUID em,
+      EmInput em,
       StorageTypeInput type) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.type = type;
@@ -59,7 +59,7 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      UUID em,
+      EmInput em,
       StorageTypeInput type) {
     super(uuid, id, node, qCharacteristics, em);
     this.type = type;

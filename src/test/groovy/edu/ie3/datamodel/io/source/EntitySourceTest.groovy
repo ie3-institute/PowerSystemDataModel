@@ -95,7 +95,7 @@ class EntitySourceTest extends Specification {
     ]
 
     when:
-    def thermalBusInputEntity = new ThermalBusInputFactory().get(dummyEntitySource.assetInputEntityDataStream(ThermalBusInput, thermalBusInputFieldsToAttributesMap, Collections.emptyList()))
+    def thermalBusInputEntity = new ThermalBusInputFactory().get(dummyEntitySource.createAssetInputEntityData(ThermalBusInput, thermalBusInputFieldsToAttributesMap, Collections.emptyList()))
 
     then:
     noExceptionThrown() // no NPE should be thrown

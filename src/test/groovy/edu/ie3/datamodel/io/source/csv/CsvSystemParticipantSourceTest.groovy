@@ -136,7 +136,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def sysPartTypedEntityData = new SystemParticipantTypedEntityData<>(fieldsToAttributes, HpInput, sptd.hpInput.operator, sptd.hpInput.node, sptd.hpTypeInput)
 
     when:
-    def hpInputEntityDataOpt = csvSystemParticipantSource.buildHpEntityData(sysPartTypedEntityData, thermalBuses)
+    def hpInputEntityDataOpt = csvSystemParticipantSource.createHpEntityData(sysPartTypedEntityData, thermalBuses)
 
     then:
     hpInputEntityDataOpt.success == resultIsPresent

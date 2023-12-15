@@ -403,7 +403,7 @@ public class RawGridSource extends EntitySource {
       Set<NodeInput> nodes, Set<OperatorInput> operators) throws SourceException {
     return Try.scanCollection(
             buildNodeAssetEntities(
-                MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators),
+                MeasurementUnitInput.class, measurementUnitInputFactory, operators, nodes),
             MeasurementUnitInput.class)
         .transformF(SourceException::new)
         .getOrThrow();

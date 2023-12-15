@@ -5,18 +5,12 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.extractor.HasNodes;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantEntityData;
-import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantInputEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
-import edu.ie3.datamodel.utils.Try;
-
 import java.util.*;
 
 /** Describes a system asset that is connected to a node */
@@ -29,10 +23,10 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
   private final ReactivePowerCharacteristic qCharacteristics;
 
   /**
-   * Optional UUID of the {@link EmInput} that is controlling this system participant. If null, this
-   * system participant is not em-controlled.
+   * Optional {@link EmInput} that is controlling this system participant. If null, this system
+   * participant is not em-controlled.
    */
-  private final UUID em;
+  private final EmInput em;
 
   /**
    * Constructor for an operated system participant
@@ -69,7 +63,11 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    */
   protected SystemParticipantInput(
-      UUID uuid, String id, NodeInput node, ReactivePowerCharacteristic qCharacteristics, UUID em) {
+      UUID uuid,
+      String id,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em) {
     super(uuid, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
@@ -84,7 +82,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     return qCharacteristics;
   }
 
-  public Optional<UUID> getEm() {
+  public Optional<EmInput> getEm() {
     return Optional.ofNullable(em);
   }
 
@@ -143,7 +141,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
 
     private NodeInput node;
     private ReactivePowerCharacteristic qCharacteristics;
-    private UUID em;
+    private EmInput em;
 
     protected SystemParticipantInputCopyBuilder(SystemParticipantInput entity) {
       super(entity);
@@ -161,7 +159,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       return thisInstance();
     }
 
-    public B em(UUID em) {
+    public B em(EmInput em) {
       this.em = em;
       return thisInstance();
     }
@@ -175,7 +173,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     }
 
     /** @return The {@link EmInput} controlling this system participant. CAN BE NULL. */
-    public UUID getEm() {
+    public EmInput getEm() {
       return em;
     }
 

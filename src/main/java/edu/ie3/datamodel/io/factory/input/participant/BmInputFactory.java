@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.BmInput;
+import edu.ie3.datamodel.models.input.system.EmInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -39,9 +40,9 @@ public class BmInputFactory
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      UUID em,
       OperatorInput operator,
       OperationTime operationTime) {
+    final EmInput em = data.getEm().orElse(null);
     final BmTypeInput typeInput = data.getTypeInput();
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
     final boolean costControlled = data.getBoolean(COST_CONTROLLED);

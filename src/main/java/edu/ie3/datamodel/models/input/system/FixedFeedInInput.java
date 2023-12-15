@@ -42,7 +42,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      UUID em,
+      EmInput em,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
@@ -66,7 +66,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      UUID em,
+      EmInput em,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
     super(uuid, id, node, qCharacteristics, em);

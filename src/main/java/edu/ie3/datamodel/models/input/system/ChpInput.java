@@ -54,7 +54,7 @@ public class ChpInput extends SystemParticipantInput
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
-      UUID em,
+      EmInput em,
       ChpTypeInput type,
       ThermalStorageInput thermalStorage,
       boolean marketReaction) {
@@ -85,7 +85,7 @@ public class ChpInput extends SystemParticipantInput
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
-      UUID em,
+      EmInput em,
       ChpTypeInput type,
       ThermalStorageInput thermalStorage,
       boolean marketReaction) {

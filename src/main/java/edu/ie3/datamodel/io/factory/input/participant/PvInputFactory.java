@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.EmInput;
 import edu.ie3.datamodel.models.input.system.PvInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.UUID;
@@ -47,9 +48,9 @@ public class PvInputFactory
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      UUID em,
       OperatorInput operator,
       OperationTime operationTime) {
+    final EmInput em = data.getEm().orElse(null);
     final double albedo = data.getDouble(ALBEDO);
     final ComparableQuantity<Angle> azimuth = data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH);
     final ComparableQuantity<Dimensionless> etaConv =

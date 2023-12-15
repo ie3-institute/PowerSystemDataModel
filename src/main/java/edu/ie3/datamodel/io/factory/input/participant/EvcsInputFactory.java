@@ -11,6 +11,7 @@ import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.EmInput;
 import edu.ie3.datamodel.models.input.system.EvcsInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
@@ -53,7 +54,7 @@ public class EvcsInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-
+    final EmInput em = data.getEm().orElse(null);
     final ChargingPointType type;
     try {
       type = ChargingPointTypeUtils.parse(data.getField(TYPE));

@@ -5,18 +5,14 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.EmInput;
-import edu.ie3.datamodel.utils.Try;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Data used for those classes of {@link
@@ -113,40 +109,5 @@ public class SystemParticipantEntityData extends NodeAssetInputEntityData {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), getEm());
-  }
-
-  public static Try<SystemParticipantEntityData, SourceException> build(
-          NodeAssetInputEntityData nodeAssetInputEntityData, Map<UUID, EmInput> ems) {
-
-    Map<String, String> fieldsToAttributes = nodeAssetInputEntityData.getFieldsToValues();
-
-    Try<Optional<EmInput>, SourceException> tryEm =
-            Optional.ofNullable(
-                            nodeAssetInputEntityData.getUUID(SystemParticipantInputEntityFactory.EM))
-                    .map(
-                            // System participant has been given a proper UUID. This means we either...
-                            emUuid ->
-                                    Optional.ofNullable(ems.get(emUuid))
-                                            // ... find a matching EmInput for given UUID, thus return a success with
-                                            // the EM
-                                            .map(
-                                                    emInput ->
-                                                            (Try<Optional<EmInput>, SourceException>)
-                                                                    new Try.Success<Optional<EmInput>, SourceException>(
-                                                                            Optional.of(emInput)))
-                                            // ... or find no matching EmInput, returning a failure.
-                                            .orElse(new Try.Failure<>(new SourceException(""))))
-                    // If, on the other hand, no UUID was given (column does not exist, or field is empty),
-                    // this is totally fine - we return an "empty success"
-                    .orElse(new Try.Success<>(Optional.empty()));
-
-    return tryEm.map(
-            // if the operation was successful, transform and return to the data
-            optionalEm -> {
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove(SystemParticipantInputEntityFactory.EM);
-
-              return new SystemParticipantEntityData(nodeAssetInputEntityData, optionalEm.orElse(null));
-            });
   }
 }
