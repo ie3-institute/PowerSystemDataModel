@@ -329,7 +329,7 @@ public class ResultEntitySource extends EntitySource {
   private <T extends ResultEntity> Set<T> getResultEntities(
       Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory)
       throws SourceException {
-    return unpack(
+    return unpackSet(
         simpleEntityDataStream(entityClass)
             .map(entityData -> factory.get(entityData).map(data -> (T) data)),
         entityClass);

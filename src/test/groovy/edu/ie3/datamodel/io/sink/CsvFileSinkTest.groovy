@@ -45,7 +45,6 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
-import edu.ie3.test.common.EnergyManagementTestData
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SampleJointGrid
 import edu.ie3.test.common.SystemParticipantTestData
@@ -252,6 +251,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         OperationTime.notLimited(),
         Mock(NodeInput),
         new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
+        Mock(EmInput),
         0.2,
         Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
         Quantities.getQuantity(95d, PERCENT),

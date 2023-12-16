@@ -55,11 +55,11 @@ public class GraphicSource extends EntitySource {
 
     // read all needed entities
     /// start with types and operators
-    Set<OperatorInput> operators = typeSource.getOperators();
-    Set<LineTypeInput> lineTypes = typeSource.getLineTypes();
+    Map<UUID, OperatorInput> operators = typeSource.getOperators();
+    Map<UUID, LineTypeInput> lineTypes = typeSource.getLineTypes();
 
-    Set<NodeInput> nodes = rawGridSource.getNodes(operators);
-    Set<LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
+    Map<UUID, NodeInput> nodes = rawGridSource.getNodes(operators);
+    Map<UUID, LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
 
     Try<Set<NodeGraphicInput>, SourceException> nodeGraphics =
         Try.of(() -> getNodeGraphicInput(nodes), SourceException.class);
@@ -89,7 +89,8 @@ public class GraphicSource extends EntitySource {
     return getNodeGraphicInput(rawGridSource.getNodes(typeSource.getOperators()));
   }
 
-  public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) throws SourceException {
+  public Set<NodeGraphicInput> getNodeGraphicInput(Map<UUID, NodeInput> nodes)
+      throws SourceException {
     return Try.scanCollection(
             buildNodeGraphicEntityData(nodes)
                 .map(nodeGraphicInputFactory::get)
@@ -105,13 +106,14 @@ public class GraphicSource extends EntitySource {
    * SourceException} is thrown, else all entities that has been able to be built are returned.
    */
   public Set<LineGraphicInput> getLineGraphicInput() throws SourceException {
-    Set<OperatorInput> operators = typeSource.getOperators();
+    Map<UUID, OperatorInput> operators = typeSource.getOperators();
     return getLineGraphicInput(
         rawGridSource.getLines(
             rawGridSource.getNodes(operators), typeSource.getLineTypes(), operators));
   }
 
-  public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) throws SourceException {
+  public Set<LineGraphicInput> getLineGraphicInput(Map<UUID, LineInput> lines)
+      throws SourceException {
     return Try.scanCollection(
             buildLineGraphicEntityData(lines)
                 .map(lineGraphicInputFactory::get)
@@ -140,18 +142,18 @@ public class GraphicSource extends EntitySource {
    * @return a stream of tries of {@link NodeGraphicInput} entities
    */
   protected Stream<Try<NodeGraphicInputEntityData, SourceException>> buildNodeGraphicEntityData(
-      Set<NodeInput> nodes) {
+      Map<UUID, NodeInput> nodes) {
     return dataSource
         .getSourceData(NodeGraphicInput.class)
         .map(fieldsToAttributes -> buildNodeGraphicEntityData(fieldsToAttributes, nodes));
   }
 
   protected Try<NodeGraphicInputEntityData, SourceException> buildNodeGraphicEntityData(
-      Map<String, String> fieldsToAttributes, Set<NodeInput> nodes) {
+      Map<String, String> fieldsToAttributes, Map<UUID, NodeInput> nodes) {
 
     // get the node of the entity
     UUID nodeUuid = UUID.fromString(fieldsToAttributes.get(NODE));
-    Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
+    Optional<NodeInput> node = Optional.ofNullable(nodes.get(nodeUuid));
 
     // if the node is not present we return a failure
     // log a warning
@@ -187,18 +189,18 @@ public class GraphicSource extends EntitySource {
    * @return a stream of tries of {@link LineGraphicInput} entities
    */
   protected Stream<Try<LineGraphicInputEntityData, SourceException>> buildLineGraphicEntityData(
-      Set<LineInput> lines) {
+      Map<UUID, LineInput> lines) {
     return dataSource
         .getSourceData(LineGraphicInput.class)
         .map(fieldsToAttributes -> buildLineGraphicEntityData(fieldsToAttributes, lines));
   }
 
   protected Try<LineGraphicInputEntityData, SourceException> buildLineGraphicEntityData(
-      Map<String, String> fieldsToAttributes, Set<LineInput> lines) {
+      Map<String, String> fieldsToAttributes, Map<UUID, LineInput> lines) {
 
     // get the node of the entity
     UUID lineUuid = UUID.fromString(fieldsToAttributes.get("line"));
-    Optional<LineInput> line = findFirstEntityByUuid(lineUuid, lines);
+    Optional<LineInput> line = Optional.ofNullable(lines.get(lineUuid));
 
     // if the node is not present we return an empty element and
     // log a warning

@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -75,24 +76,6 @@ public abstract class EntitySource {
   }
 
   /**
-   * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
-   * matching the provided UUID or an empty {@code Optional} if no matching entity can be found.
-   *
-   * @param entityUuid uuid of the entity that should be looked for
-   * @param entities collection of entities that should be
-   * @param <T> type of the entity that will be returned, derived from the provided collection
-   * @return either an optional containing the first entity that has the provided uuid or an empty
-   *     optional if no matching entity with the provided uuid can be found
-   */
-  protected static <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
-      UUID entityUuid, Collection<T> entities) {
-    return entities.stream()
-        .parallel()
-        .filter(uniqueEntity -> uniqueEntity.getUuid().equals(entityUuid))
-        .findFirst();
-  }
-
-  /**
    * Checks if the requested type of asset can be found in the provided collection of types based on
    * the provided fields to values mapping. The provided fields to values mapping needs to have one
    * and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can be
@@ -106,11 +89,11 @@ public abstract class EntitySource {
    * @return a {@link Success} containing the type or a {@link Failure} if the type cannot be found
    */
   protected static <T extends AssetTypeInput> Try<T, SourceException> getAssetType(
-      Collection<T> types, Map<String, String> fieldsToAttributes, String skippedClassString) {
+      Map<UUID, T> types, Map<String, String> fieldsToAttributes, String skippedClassString) {
 
     Optional<T> assetType =
         Optional.ofNullable(fieldsToAttributes.get(TYPE))
-            .flatMap(typeUuid -> findFirstEntityByUuid(UUID.fromString(typeUuid), types));
+            .flatMap(typeUuid -> Optional.ofNullable(types.get(UUID.fromString(typeUuid))));
 
     // if the type is not present we return a failure
     if (assetType.isEmpty()) {
@@ -125,6 +108,7 @@ public abstract class EntitySource {
     return new Success<>(assetType.get());
   }
 
+  // TODO
   /**
    * Finds the required asset type and if present, adds it to the untyped entity data
    *
@@ -135,7 +119,7 @@ public abstract class EntitySource {
    */
   protected <T extends AssetTypeInput>
       Try<TypedConnectorInputEntityData<T>, SourceException> findAndAddType(
-          ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
+          ConnectorInputEntityData untypedEntityData, Map<UUID, T> availableTypes) {
     Try<T, SourceException> assetTypeOption =
         getAssetType(
             availableTypes,
@@ -179,7 +163,7 @@ public abstract class EntitySource {
    *     OperatorInput#NO_OPERATOR_ASSIGNED}
    */
   protected OperatorInput getFirstOrDefaultOperator(
-      Collection<OperatorInput> operators,
+      Map<UUID, OperatorInput> operators,
       Optional<UUID> operatorUuid,
       String entityClassName,
       String requestEntityUuid) {
@@ -191,7 +175,7 @@ public abstract class EntitySource {
           entityClassName);
       return OperatorInput.NO_OPERATOR_ASSIGNED;
     } else {
-      return findFirstEntityByUuid(operatorUuid.get(), operators)
+      return Optional.ofNullable(operators.get(operatorUuid.get()))
           .orElseGet(
               () -> {
                 log.debug(
@@ -215,7 +199,7 @@ public abstract class EntitySource {
    * @return stream of the entity data wrapped in a {@link Try}
    */
   protected Stream<Try<NodeAssetInputEntityData, SourceException>> nodeAssetInputEntityDataStream(
-      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
+      Stream<AssetInputEntityData> assetInputEntityDataStream, Map<UUID, NodeInput> nodes) {
     return assetInputEntityDataStream
         .parallel()
         .map(
@@ -224,7 +208,7 @@ public abstract class EntitySource {
               Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
               // get the node of the entity
               UUID nodeUuid = UUID.fromString(fieldsToAttributes.get(NODE));
-              Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
+              Optional<NodeInput> node = Optional.ofNullable(nodes.get(nodeUuid));
 
               // if the node is not present we return an empty element and
               // log a warning
@@ -263,8 +247,8 @@ public abstract class EntitySource {
   public <T extends AssetInput> Set<Try<T, FactoryException>> buildNodeAssetEntities(
       Class<T> entityClass,
       EntityFactory<T, NodeAssetInputEntityData> factory,
-      Collection<OperatorInput> operators,
-      Collection<NodeInput> nodes) {
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes) {
     return nodeAssetEntityStream(entityClass, factory, operators, nodes)
         .collect(Collectors.toSet());
   }
@@ -272,8 +256,8 @@ public abstract class EntitySource {
   protected <T extends AssetInput> Stream<Try<T, FactoryException>> nodeAssetEntityStream(
       Class<T> entityClass,
       EntityFactory<T, NodeAssetInputEntityData> factory,
-      Collection<OperatorInput> operators,
-      Collection<NodeInput> nodes) {
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes) {
     return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
         .map(factory::get);
   }
@@ -281,14 +265,14 @@ public abstract class EntitySource {
   public <T extends AssetInput> Set<Try<T, FactoryException>> buildAssetInputEntities(
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
-      Collection<OperatorInput> operators) {
+      Map<UUID, OperatorInput> operators) {
     return assetInputEntityStream(entityClass, factory, operators).collect(Collectors.toSet());
   }
 
   protected <T extends AssetInput> Stream<Try<T, FactoryException>> assetInputEntityStream(
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
-      Collection<OperatorInput> operators) {
+      Map<UUID, OperatorInput> operators) {
     return assetInputEntityDataStream(entityClass, operators).map(factory::get);
   }
 
@@ -304,7 +288,7 @@ public abstract class EntitySource {
    * @return stream of the entity data wrapped in a {@link Try}
    */
   protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
-      Class<T> entityClass, Collection<OperatorInput> operators) {
+      Class<T> entityClass, Map<UUID, OperatorInput> operators) {
     return dataSource
         .getSourceData(entityClass)
         .map(
@@ -315,7 +299,7 @@ public abstract class EntitySource {
   protected <T extends AssetInput> AssetInputEntityData createAssetInputEntityData(
       Class<T> entityClass,
       Map<String, String> fieldsToAttributes,
-      Collection<OperatorInput> operators) {
+      Map<UUID, OperatorInput> operators) {
 
     // get the operator of the entity
     Optional<UUID> operatorUuid =
@@ -350,11 +334,21 @@ public abstract class EntitySource {
         .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
 
-  protected static <S> Set<S> unpack(
+  protected static <S extends UniqueEntity> Map<UUID, S> unpackMap(
+      Stream<Try<S, FactoryException>> inputStream, Class<S> entityClass) throws SourceException {
+    return unpack(inputStream, entityClass)
+        .collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
+  }
+
+  protected static <S extends UniqueEntity> Set<S> unpackSet(
+      Stream<Try<S, FactoryException>> inputStream, Class<S> entityClass) throws SourceException {
+    return unpack(inputStream, entityClass).collect(Collectors.toSet());
+  }
+
+  private static <S> Stream<S> unpack(
       Stream<Try<S, FactoryException>> inputStream, Class<S> entityClass) throws SourceException {
     return Try.scanStream(inputStream, entityClass.getSimpleName())
         .transformF(SourceException::new)
-        .getOrThrow()
-        .collect(Collectors.toSet());
+        .getOrThrow();
   }
 }

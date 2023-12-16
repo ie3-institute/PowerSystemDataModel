@@ -59,7 +59,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
     //test method when operators and thermal buses are not provided as constructor parameters
     when:
-    def resultingCylindricalStorageWoOperator = csvThermalSource.getCylindricStorages()
+    def resultingCylindricalStorageWoOperator = csvThermalSource.getCylindricalStorages()
 
     then:
     resultingCylindricalStorageWoOperator.size() == 1
@@ -76,7 +76,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
     //test method when operators and thermal buses are provided as constructor parameters
     when:
-    def resultingCylindricalStorage = csvThermalSource.getCylindricStorages(operators, thermalBuses)
+    def resultingCylindricalStorage = csvThermalSource.getCylindricalStorages(operators, thermalBuses)
 
     then:
     resultingCylindricalStorage.size() == 1

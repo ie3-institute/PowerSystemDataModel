@@ -36,24 +36,6 @@ class EntitySourceTest extends Specification {
 
   DummyEntitySource dummyEntitySource = new DummyEntitySource(csvDataSource)
 
-  def "A csv data source is able to find the correct first entity by uuid"() {
-    given:
-    def uuid = UUID.randomUUID()
-    def queriedOperator = new OperatorInput(uuid, "b")
-    def entities = Arrays.asList(
-        new OperatorInput(UUID.randomUUID(), "a"),
-        queriedOperator,
-        new OperatorInput(UUID.randomUUID(), "c")
-        )
-
-    when:
-    def actual = dummyEntitySource.findFirstEntityByUuid(uuid, entities)
-
-    then:
-    actual.present
-    actual.get() == queriedOperator
-  }
-
   def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
 
     expect:

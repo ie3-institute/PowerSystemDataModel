@@ -22,7 +22,6 @@ import spock.lang.Specification
 
 class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
-
   def "A CsvGraphicSource should provide an instance of GraphicElements based on valid input data correctly"() {
     given:
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
@@ -44,13 +43,13 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     def rawGridSource =
     new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
       @Override
-      Set<NodeInput> getNodes() {
-        return Collections.emptySet()
+      Map<UUID, NodeInput> getNodes() {
+        return Collections.emptyMap()
       }
 
       @Override
-      Set<NodeInput> getNodes(Set<OperatorInput> operators) {
-        return Collections.emptySet()
+      Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) {
+        return Collections.emptyMap()
       }
     }
 

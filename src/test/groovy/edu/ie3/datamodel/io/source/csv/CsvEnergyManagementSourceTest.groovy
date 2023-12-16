@@ -10,7 +10,7 @@ import edu.ie3.datamodel.io.source.EnergyManagementSource
 import edu.ie3.datamodel.io.source.TypeSource
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.utils.Try
-import edu.ie3.test.common.EnergyManagementTestData
+import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 
 class CsvEnergyManagementSourceTest extends Specification implements CsvTestDataMeta {
@@ -29,8 +29,8 @@ class CsvEnergyManagementSourceTest extends Specification implements CsvTestData
     emUnits.data.get().emUnits == resultingSet as Set
 
     where:
-    operators                                   || resultingSet
-    [EnergyManagementTestData.emInput.operator] || [EnergyManagementTestData.emInput]
-    []					                        || [EnergyManagementTestData.emInput.copy().operator(OperatorInput.NO_OPERATOR_ASSIGNED).build()]
+    operators                                    || resultingSet
+    [SystemParticipantTestData.emInput.operator] || [SystemParticipantTestData.emInput]
+    []					                         || [SystemParticipantTestData.emInput.copy().operator(OperatorInput.NO_OPERATOR_ASSIGNED).build()]
   }
 }

@@ -22,7 +22,8 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.utils.Try;
-import java.util.Set;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
@@ -60,8 +61,8 @@ public class TypeSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link Transformer2WTypeInput} entities
    */
-  public Set<Transformer2WTypeInput> getTransformer2WTypes() throws SourceException {
-    return unpack(
+  public Map<UUID, Transformer2WTypeInput> getTransformer2WTypes() throws SourceException {
+    return unpackMap(
         simpleEntityDataStream(Transformer2WTypeInput.class)
             .map(transformer2WTypeInputFactory::get),
         Transformer2WTypeInput.class);
@@ -75,8 +76,8 @@ public class TypeSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link OperatorInput} entities
    */
-  public Set<OperatorInput> getOperators() throws SourceException {
-    return unpack(
+  public Map<UUID, OperatorInput> getOperators() throws SourceException {
+    return unpackMap(
         simpleEntityDataStream(OperatorInput.class).map(operatorInputFactory::get),
         OperatorInput.class);
   }
@@ -89,8 +90,8 @@ public class TypeSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link LineTypeInput} entities
    */
-  public Set<LineTypeInput> getLineTypes() throws SourceException {
-    return unpack(
+  public Map<UUID, LineTypeInput> getLineTypes() throws SourceException {
+    return unpackMap(
         simpleEntityDataStream(LineTypeInput.class).map(lineTypeInputFactory::get),
         LineTypeInput.class);
   }
@@ -104,8 +105,8 @@ public class TypeSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link Transformer3WTypeInput} entities
    */
-  public Set<Transformer3WTypeInput> getTransformer3WTypes() throws SourceException {
-    return unpack(
+  public Map<UUID, Transformer3WTypeInput> getTransformer3WTypes() throws SourceException {
+    return unpackMap(
         simpleEntityDataStream(Transformer3WTypeInput.class)
             .map(transformer3WTypeInputFactory::get),
         Transformer3WTypeInput.class);
@@ -119,8 +120,8 @@ public class TypeSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link BmTypeInput} entities
    */
-  public Set<BmTypeInput> getBmTypes() throws SourceException {
-    return unpack(
+  public Map<UUID, BmTypeInput> getBmTypes() throws SourceException {
+    return unpackMap(
         buildEntities(BmTypeInput.class, systemParticipantTypeInputFactory), BmTypeInput.class);
   }
 
@@ -132,8 +133,8 @@ public class TypeSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link ChpTypeInput} entities
    */
-  public Set<ChpTypeInput> getChpTypes() throws SourceException {
-    return unpack(
+  public Map<UUID, ChpTypeInput> getChpTypes() throws SourceException {
+    return unpackMap(
         buildEntities(ChpTypeInput.class, systemParticipantTypeInputFactory), ChpTypeInput.class);
   }
 
@@ -145,8 +146,8 @@ public class TypeSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link HpTypeInput} entities
    */
-  public Set<HpTypeInput> getHpTypes() throws SourceException {
-    return unpack(
+  public Map<UUID, HpTypeInput> getHpTypes() throws SourceException {
+    return unpackMap(
         buildEntities(HpTypeInput.class, systemParticipantTypeInputFactory), HpTypeInput.class);
   }
 
@@ -158,8 +159,8 @@ public class TypeSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link StorageTypeInput} entities
    */
-  public Set<StorageTypeInput> getStorageTypes() throws SourceException {
-    return unpack(
+  public Map<UUID, StorageTypeInput> getStorageTypes() throws SourceException {
+    return unpackMap(
         buildEntities(StorageTypeInput.class, systemParticipantTypeInputFactory),
         StorageTypeInput.class);
   }
@@ -172,8 +173,8 @@ public class TypeSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link WecTypeInput} entities
    */
-  public Set<WecTypeInput> getWecTypes() throws SourceException {
-    return unpack(
+  public Map<UUID, WecTypeInput> getWecTypes() throws SourceException {
+    return unpackMap(
         buildEntities(WecTypeInput.class, systemParticipantTypeInputFactory), WecTypeInput.class);
   }
 
@@ -185,8 +186,8 @@ public class TypeSource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link EvTypeInput} entities
    */
-  public Set<EvTypeInput> getEvTypes() throws SourceException {
-    return unpack(
+  public Map<UUID, EvTypeInput> getEvTypes() throws SourceException {
+    return unpackMap(
         buildEntities(EvTypeInput.class, systemParticipantTypeInputFactory), EvTypeInput.class);
   }
 
