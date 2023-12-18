@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.*;
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;

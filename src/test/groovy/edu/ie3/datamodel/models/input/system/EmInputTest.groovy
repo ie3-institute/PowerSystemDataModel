@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.models.input.system
 
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 

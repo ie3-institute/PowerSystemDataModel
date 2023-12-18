@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
@@ -22,7 +23,6 @@ import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -83,7 +83,7 @@ public class GraphicSource extends EntitySource {
   /**
    * If the set of {@link NodeInput} entities is not exhaustive for all available {@link
    * NodeGraphicInput} entities or if an error during the building process occurs a {@link
-   * SourceException} is thrown, else all entities that has been able to be built are returned.
+   * SourceException} is thrown, else all entities that have been able to be built, are returned.
    */
   public Set<NodeGraphicInput> getNodeGraphicInput() throws SourceException {
     return getNodeGraphicInput(rawGridSource.getNodes(typeSource.getOperators()));
@@ -91,19 +91,15 @@ public class GraphicSource extends EntitySource {
 
   public Set<NodeGraphicInput> getNodeGraphicInput(Map<UUID, NodeInput> nodes)
       throws SourceException {
-    return Try.scanCollection(
-            buildNodeGraphicEntityData(nodes)
-                .map(nodeGraphicInputFactory::get)
-                .collect(Collectors.toSet()),
-            NodeGraphicInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+    return unpackSet(
+        buildNodeGraphicEntityData(nodes).map(nodeGraphicInputFactory::get),
+        NodeGraphicInput.class);
   }
 
   /**
    * If the set of {@link LineInput} entities is not exhaustive for all available {@link
    * LineGraphicInput} entities or if an error during the building process occurs a {@link
-   * SourceException} is thrown, else all entities that has been able to be built are returned.
+   * SourceException} is thrown, else all entities that have been able to be built are returned.
    */
   public Set<LineGraphicInput> getLineGraphicInput() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -114,13 +110,9 @@ public class GraphicSource extends EntitySource {
 
   public Set<LineGraphicInput> getLineGraphicInput(Map<UUID, LineInput> lines)
       throws SourceException {
-    return Try.scanCollection(
-            buildLineGraphicEntityData(lines)
-                .map(lineGraphicInputFactory::get)
-                .collect(Collectors.toSet()),
-            LineGraphicInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+    return unpackSet(
+        buildLineGraphicEntityData(lines).map(lineGraphicInputFactory::get),
+        LineGraphicInput.class);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -145,32 +137,13 @@ public class GraphicSource extends EntitySource {
       Map<UUID, NodeInput> nodes) {
     return dataSource
         .getSourceData(NodeGraphicInput.class)
-        .map(fieldsToAttributes -> buildNodeGraphicEntityData(fieldsToAttributes, nodes));
-  }
-
-  protected Try<NodeGraphicInputEntityData, SourceException> buildNodeGraphicEntityData(
-      Map<String, String> fieldsToAttributes, Map<UUID, NodeInput> nodes) {
-
-    // get the node of the entity
-    UUID nodeUuid = UUID.fromString(fieldsToAttributes.get(NODE));
-    Optional<NodeInput> node = Optional.ofNullable(nodes.get(nodeUuid));
-
-    // if the node is not present we return a failure
-    // log a warning
-    if (node.isEmpty()) {
-      String skippingMessage =
-          buildSkippingMessage(
-              NodeGraphicInput.class.getSimpleName(),
-              fieldsToAttributes.get("uuid"),
-              "no id (graphic entities don't have one)",
-              NODE + ": " + nodeUuid);
-      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
-    }
-
-    // remove fields that are passed as objects to constructor
-    fieldsToAttributes.keySet().remove(NODE);
-
-    return new Success<>(new NodeGraphicInputEntityData(fieldsToAttributes, node.get()));
+        .map(
+            fieldsToAttributes ->
+                enrichEntityData(
+                    new EntityData(fieldsToAttributes, NodeGraphicInput.class),
+                    NODE,
+                    nodes,
+                    NodeGraphicInputEntityData::new));
   }
 
   /**
@@ -192,31 +165,12 @@ public class GraphicSource extends EntitySource {
       Map<UUID, LineInput> lines) {
     return dataSource
         .getSourceData(LineGraphicInput.class)
-        .map(fieldsToAttributes -> buildLineGraphicEntityData(fieldsToAttributes, lines));
-  }
-
-  protected Try<LineGraphicInputEntityData, SourceException> buildLineGraphicEntityData(
-      Map<String, String> fieldsToAttributes, Map<UUID, LineInput> lines) {
-
-    // get the node of the entity
-    UUID lineUuid = UUID.fromString(fieldsToAttributes.get("line"));
-    Optional<LineInput> line = Optional.ofNullable(lines.get(lineUuid));
-
-    // if the node is not present we return an empty element and
-    // log a warning
-    if (line.isEmpty()) {
-      String skippingMessage =
-          buildSkippingMessage(
-              LineGraphicInput.class.getSimpleName(),
-              fieldsToAttributes.get("uuid"),
-              "no id (graphic entities don't have one)",
-              "line: " + lineUuid);
-      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
-    }
-
-    // remove fields that are passed as objects to constructor
-    fieldsToAttributes.keySet().remove("line");
-
-    return new Success<>(new LineGraphicInputEntityData(fieldsToAttributes, line.get()));
+        .map(
+            fieldsToAttributes ->
+                enrichEntityData(
+                    new EntityData(fieldsToAttributes, LineGraphicInput.class),
+                    "line",
+                    lines,
+                    LineGraphicInputEntityData::new));
   }
 }

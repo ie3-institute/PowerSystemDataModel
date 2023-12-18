@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.SystemParticipantsException;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
@@ -17,8 +18,6 @@ import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.Failure;
-import edu.ie3.datamodel.utils.Try.Success;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -571,7 +570,7 @@ public class SystemParticipantSource extends EntitySource {
       Map<UUID, ThermalStorageInput> thermalStorages)
       throws SourceException {
     return unpackSet(
-        buildChpEntityData(
+        chpEntityStream(
                 buildTypedSystemParticipantEntityData(
                     ChpInput.class, operators, nodes, emUnits, types),
                 thermalStorages,
@@ -609,7 +608,7 @@ public class SystemParticipantSource extends EntitySource {
       Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
     return unpackSet(
-        buildHpEntityData(
+        hpEntityStream(
                 buildTypedSystemParticipantEntityData(
                     HpInput.class, operators, nodes, emUnits, types),
                 thermalBuses)
@@ -619,7 +618,7 @@ public class SystemParticipantSource extends EntitySource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  private static Stream<Try<ChpInputEntityData, SourceException>> buildChpEntityData(
+  private static Stream<Try<ChpInputEntityData, SourceException>> chpEntityStream(
       Stream<Try<SystemParticipantTypedEntityData<ChpTypeInput>, SourceException>>
           typedEntityDataStream,
       Map<UUID, ThermalStorageInput> thermalStorages,
@@ -631,67 +630,13 @@ public class SystemParticipantSource extends EntitySource {
             typedEntityDataOpt ->
                 typedEntityDataOpt.flatMap(
                     typedEntityData ->
-                        createChpEntityData(typedEntityData, thermalStorages, thermalBuses)));
-  }
-
-  private static Try<ChpInputEntityData, SourceException> createChpEntityData(
-      SystemParticipantTypedEntityData<ChpTypeInput> typedEntityData,
-      Map<UUID, ThermalStorageInput> thermalStorages,
-      Map<UUID, ThermalBusInput> thermalBuses) {
-
-    // get the raw data
-    Map<String, String> fieldsToAttributes = typedEntityData.getFieldsToValues();
-
-    // get the thermal storage input for this chp unit
-    Optional<ThermalStorageInput> thermalStorage =
-        Optional.ofNullable(fieldsToAttributes.get(THERMAL_STORAGE))
-            .flatMap(
-                thermalStorageUuid ->
-                    Optional.ofNullable(thermalStorages.get(UUID.fromString(thermalStorageUuid))));
-
-    // get the thermal bus input for this chp unit
-    Optional<ThermalBusInput> thermalBus =
-        Optional.ofNullable(fieldsToAttributes.get("thermalBus"))
-            .flatMap(
-                thermalBusUuid ->
-                    Optional.ofNullable(thermalBuses.get(UUID.fromString(thermalBusUuid))));
-
-    // if the thermal storage or the thermal bus are not present we return an
-    // empty element and log a warning
-    if (thermalStorage.isEmpty() || thermalBus.isEmpty()) {
-      StringBuilder sB = new StringBuilder();
-      if (thermalStorage.isEmpty()) {
-        sB.append("thermalStorage: ")
-            .append(safeMapGet(fieldsToAttributes, THERMAL_STORAGE, FIELDS_TO_VALUES_MAP));
-      }
-      if (thermalBus.isEmpty()) {
-        sB.append("\nthermalBus: ")
-            .append(safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
-      }
-
-      String skippingMessage =
-          buildSkippingMessage(
-              typedEntityData.getTargetClass().getSimpleName(),
-              safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-              safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-              sB.toString());
-      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
-    }
-
-    // remove fields that are passed as objects to constructor
-    fieldsToAttributes
-        .keySet()
-        .removeAll(new HashSet<>(Arrays.asList("thermalBus", "thermalStorage")));
-
-    return new Success<>(
-        new ChpInputEntityData(
-            fieldsToAttributes,
-            typedEntityData.getOperatorInput(),
-            typedEntityData.getNode(),
-            typedEntityData.getEm().orElse(null),
-            typedEntityData.getTypeInput(),
-            thermalBus.get(),
-            thermalStorage.get()));
+                        enrichEntityData(
+                            typedEntityData,
+                            THERMAL_BUS,
+                            thermalBuses,
+                            THERMAL_STORAGE,
+                            thermalStorages,
+                            ChpInputEntityData::new)));
   }
 
   /**
@@ -704,7 +649,7 @@ public class SystemParticipantSource extends EntitySource {
    *     HpInputEntityData}
    * @return stream of tries of {@link HpInputEntityData} instances
    */
-  private static Stream<Try<HpInputEntityData, SourceException>> buildHpEntityData(
+  private static Stream<Try<HpInputEntityData, SourceException>> hpEntityStream(
       Stream<Try<SystemParticipantTypedEntityData<HpTypeInput>, SourceException>>
           typedEntityDataStream,
       Map<UUID, ThermalBusInput> thermalBuses) {
@@ -714,49 +659,9 @@ public class SystemParticipantSource extends EntitySource {
         .map(
             typedEntityDataOpt ->
                 typedEntityDataOpt.flatMap(
-                    typedEntityData -> createHpEntityData(typedEntityData, thermalBuses)));
-  }
-
-  private static Try<HpInputEntityData, SourceException> createHpEntityData(
-      SystemParticipantTypedEntityData<HpTypeInput> typedEntityData,
-      Map<UUID, ThermalBusInput> thermalBuses) {
-    // get the raw data
-    Map<String, String> fieldsToAttributes = typedEntityData.getFieldsToValues();
-
-    // get the thermal bus input for this chp unit and try to build the entity data
-    Optional<HpInputEntityData> hpInputEntityDataOpt =
-        Optional.ofNullable(fieldsToAttributes.get(THERMAL_BUS))
-            .flatMap(
-                thermalBusUuid ->
-                    Optional.ofNullable(thermalBuses.get(UUID.fromString(thermalBusUuid)))
-                        .map(
-                            thermalBus -> {
-
-                              // remove fields that are passed as objects to constructor
-                              fieldsToAttributes.keySet().remove(THERMAL_BUS);
-
-                              return new HpInputEntityData(
-                                  fieldsToAttributes,
-                                  typedEntityData.getOperatorInput(),
-                                  typedEntityData.getNode(),
-                                  typedEntityData.getEm().orElse(null),
-                                  typedEntityData.getTypeInput(),
-                                  thermalBus);
-                            }));
-
-    // if the requested entity is not present we return an empty element and
-    // log a warning
-    if (hpInputEntityDataOpt.isEmpty()) {
-      String failureMessage =
-          buildSkippingMessage(
-              typedEntityData.getTargetClass().getSimpleName(),
-              safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-              safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-              "thermalBus: " + safeMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
-      return new Failure<>(new SourceException("Failure due to: " + failureMessage));
-    }
-
-    return new Success<>(hpInputEntityDataOpt.get());
+                    typedEntityData ->
+                        enrichEntityData(
+                            typedEntityData, THERMAL_BUS, thermalBuses, HpInputEntityData::new)));
   }
 
   /**
@@ -777,7 +682,7 @@ public class SystemParticipantSource extends EntitySource {
               Map<UUID, NodeInput> nodes,
               Map<UUID, EmInput> emUnits,
               Map<UUID, T> types) {
-    return buildTypedSystemParticipantEntityData(
+    return typedSystemParticipantEntityStream(
         buildSystemParticipantEntityData(entityClass, operators, nodes, emUnits), types);
   }
 
@@ -797,7 +702,7 @@ public class SystemParticipantSource extends EntitySource {
    */
   private static <T extends SystemParticipantTypeInput>
       Stream<Try<SystemParticipantTypedEntityData<T>, SourceException>>
-          buildTypedSystemParticipantEntityData(
+          typedSystemParticipantEntityStream(
               Stream<Try<SystemParticipantEntityData, SourceException>>
                   systemParticipantEntityDataStream,
               Map<UUID, T> types) {
@@ -807,39 +712,21 @@ public class SystemParticipantSource extends EntitySource {
             participantEntityDataTry ->
                 participantEntityDataTry.flatMap(
                     participantEntityData ->
-                        createTypedSystemParticipantEntityData(participantEntityData, types)));
+                        enrichEntityData(
+                            participantEntityData,
+                            TYPE,
+                            types,
+                            SystemParticipantTypedEntityData<T>::new)));
   }
 
-  private static <T extends SystemParticipantTypeInput>
-      Try<SystemParticipantTypedEntityData<T>, SourceException>
-          createTypedSystemParticipantEntityData(
-              SystemParticipantEntityData systemParticipantEntityData, Map<UUID, T> types) {
-    return getAssetType(
-            types,
-            systemParticipantEntityData.getFieldsToValues(),
-            systemParticipantEntityData.getClass().getSimpleName())
-        .map(
-            // if the operation was successful, transform and return to the data
-            assetType -> {
-              Map<String, String> fieldsToAttributes =
-                  systemParticipantEntityData.getFieldsToValues();
-
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove(TYPE);
-
-              return new SystemParticipantTypedEntityData<>(systemParticipantEntityData, assetType);
-            });
-  }
-
-  private <S extends SystemParticipantInput>
-      Stream<Try<SystemParticipantEntityData, SourceException>> buildSystemParticipantEntityData(
-          Class<S> entityClass,
+  private Stream<Try<SystemParticipantEntityData, SourceException>>
+      buildSystemParticipantEntityData(
+          Class<? extends SystemParticipantInput> entityClass,
           Map<UUID, OperatorInput> operators,
           Map<UUID, NodeInput> nodes,
           Map<UUID, EmInput> emUnits) {
-    return buildSystemParticipantEntityData(
-        nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes),
-        emUnits);
+    return systemParticipantEntityStream(
+        buildNodeAssetEntityData(entityClass, operators, nodes), emUnits);
   }
 
   /**
@@ -854,52 +741,20 @@ public class SystemParticipantSource extends EntitySource {
    * @return a stream of tries of {@link SystemParticipantEntityData} instances
    */
   private static Stream<Try<SystemParticipantEntityData, SourceException>>
-      buildSystemParticipantEntityData(
+      systemParticipantEntityStream(
           Stream<Try<NodeAssetInputEntityData, SourceException>> nodeAssetEntityDataStream,
           Map<UUID, EmInput> emUnits) {
     return nodeAssetEntityDataStream
         .parallel()
         .map(
-            nodeAssetInputEntityDataOpt ->
-                nodeAssetInputEntityDataOpt.flatMap(
+            nodeAssetInputEntityDataTry ->
+                nodeAssetInputEntityDataTry.flatMap(
                     nodeAssetInputEntityData ->
-                        createSystemParticipantEntityData(nodeAssetInputEntityData, emUnits)));
-  }
-
-  private static Try<SystemParticipantEntityData, SourceException>
-      createSystemParticipantEntityData(
-          NodeAssetInputEntityData nodeAssetInputEntityData, Map<UUID, EmInput> emUnits) {
-
-    Map<String, String> fieldsToAttributes = nodeAssetInputEntityData.getFieldsToValues();
-
-    Try<Optional<EmInput>, SourceException> tryEm =
-        Optional.ofNullable(
-                nodeAssetInputEntityData.getUUID(SystemParticipantInputEntityFactory.EM))
-            .map(
-                // System participant has given a proper UUID for EM. In case of success, we wrap in
-                // Optional
-                emUuid -> getEntity(emUuid, emUnits).map(Optional::of))
-            // No UUID was given (column does not exist, or field is empty),
-            // this is totally fine - we return an "empty success"
-            .orElse(new Try.Success<>(Optional.empty()));
-
-    return tryEm.map(
-        // if the operation was successful, transform and return to the data
-        optionalEm -> {
-          // remove fields that are passed as objects to constructor
-          fieldsToAttributes.keySet().remove(SystemParticipantInputEntityFactory.EM);
-
-          return new SystemParticipantEntityData(nodeAssetInputEntityData, optionalEm.orElse(null));
-        });
-  }
-
-  private static <T> Try<T, SourceException> getEntity(UUID uuid, Map<UUID, T> entityMap) {
-    return Optional.ofNullable(entityMap.get(uuid))
-        // We either find a matching entity for given UUID, thus return a success
-        .map(entity -> (Try<T, SourceException>) new Try.Success<T, SourceException>(entity))
-        // ... or find no matching entity, returning a failure.
-        .orElse(
-            new Try.Failure<>(
-                new SourceException("Entity with uuid " + uuid + " was not provided.")));
+                        optionallyEnrichEntityData(
+                            nodeAssetInputEntityData,
+                            SystemParticipantInputEntityFactory.EM,
+                            emUnits,
+                            null,
+                            SystemParticipantEntityData::new)));
   }
 }

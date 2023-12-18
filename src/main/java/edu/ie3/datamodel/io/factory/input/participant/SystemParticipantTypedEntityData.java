@@ -6,9 +6,9 @@
 package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.EmInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import java.util.Map;
 import java.util.Objects;

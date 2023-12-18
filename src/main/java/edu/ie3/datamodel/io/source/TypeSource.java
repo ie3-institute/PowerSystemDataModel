@@ -63,8 +63,7 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, Transformer2WTypeInput> getTransformer2WTypes() throws SourceException {
     return unpackMap(
-        simpleEntityDataStream(Transformer2WTypeInput.class)
-            .map(transformer2WTypeInputFactory::get),
+        buildSimpleEntityData(Transformer2WTypeInput.class).map(transformer2WTypeInputFactory::get),
         Transformer2WTypeInput.class);
   }
 
@@ -78,7 +77,7 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, OperatorInput> getOperators() throws SourceException {
     return unpackMap(
-        simpleEntityDataStream(OperatorInput.class).map(operatorInputFactory::get),
+        buildSimpleEntityData(OperatorInput.class).map(operatorInputFactory::get),
         OperatorInput.class);
   }
 
@@ -92,7 +91,7 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, LineTypeInput> getLineTypes() throws SourceException {
     return unpackMap(
-        simpleEntityDataStream(LineTypeInput.class).map(lineTypeInputFactory::get),
+        buildSimpleEntityData(LineTypeInput.class).map(lineTypeInputFactory::get),
         LineTypeInput.class);
   }
 
@@ -107,8 +106,7 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, Transformer3WTypeInput> getTransformer3WTypes() throws SourceException {
     return unpackMap(
-        simpleEntityDataStream(Transformer3WTypeInput.class)
-            .map(transformer3WTypeInputFactory::get),
+        buildSimpleEntityData(Transformer3WTypeInput.class).map(transformer3WTypeInputFactory::get),
         Transformer3WTypeInput.class);
   }
 
@@ -203,7 +201,7 @@ public class TypeSource extends EntitySource {
   @SuppressWarnings("unchecked")
   private <T extends AssetTypeInput> Stream<Try<T, FactoryException>> buildEntities(
       Class<T> entityClass, EntityFactory<? extends InputEntity, SimpleEntityData> factory) {
-    return simpleEntityDataStream(entityClass)
+    return buildSimpleEntityData(entityClass)
         .map(data -> (Try<T, FactoryException>) factory.get(data));
   }
 }

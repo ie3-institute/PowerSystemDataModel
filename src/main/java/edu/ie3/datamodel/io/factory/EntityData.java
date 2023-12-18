@@ -29,7 +29,7 @@ import tech.units.indriya.ComparableQuantity;
  * @version 0.1
  * @since 28.01.20
  */
-public abstract class EntityData extends FactoryData {
+public class EntityData extends FactoryData {
   private static final Logger logger = LoggerFactory.getLogger(EntityData.class);
   private static final GeoJsonReader geoJsonReader = new GeoJsonReader();
 
@@ -39,7 +39,7 @@ public abstract class EntityData extends FactoryData {
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    */
-  protected EntityData(
+  public EntityData(
       Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
     super(fieldsToAttributes, entityClass);
   }

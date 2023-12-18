@@ -7,13 +7,10 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.input.participant.EmInputFactory;
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.EmInput;
-import edu.ie3.datamodel.utils.Try;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class EnergyManagementSource extends EntitySource {
 
@@ -60,11 +57,8 @@ public class EnergyManagementSource extends EntitySource {
    * @return a map of uuid to {@link EmInput} entities
    */
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
-    return Try.scanCollection(
-            buildAssetInputEntities(EmInput.class, emInputFactory, operators), EmInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow()
-        .stream()
-        .collect(Collectors.toMap(EmInput::getUuid, Function.identity()));
+    return unpackMap(
+        buildAssetInputEntityData(EmInput.class, operators).map(emInputFactory::get),
+        EmInput.class);
   }
 }

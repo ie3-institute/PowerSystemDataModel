@@ -5,10 +5,10 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.ChpInput;
-import edu.ie3.datamodel.models.input.system.EmInput;
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
@@ -40,6 +40,23 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
       ThermalBusInput thermalBusInput,
       ThermalStorageInput thermalStorageInput) {
     super(fieldsToAttributes, ChpInput.class, operator, node, em, typeInput);
+    this.thermalBusInput = thermalBusInput;
+    this.thermalStorageInput = thermalStorageInput;
+  }
+
+  /**
+   * Creates a new ChpInputEntityData object based on a given {@link
+   * SystemParticipantTypedEntityData} object and a thermal bus and storage input
+   *
+   * @param entityData The SystemParticipantTypedEntityData object to enhance
+   * @param thermalBusInput The thermal bus input
+   * @param thermalStorageInput The thermal storage input
+   */
+  public ChpInputEntityData(
+      SystemParticipantTypedEntityData<ChpTypeInput> entityData,
+      ThermalBusInput thermalBusInput,
+      ThermalStorageInput thermalStorageInput) {
+    super(entityData, entityData.getTypeInput());
     this.thermalBusInput = thermalBusInput;
     this.thermalStorageInput = thermalStorageInput;
   }

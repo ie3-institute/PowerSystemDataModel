@@ -7,8 +7,8 @@ package edu.ie3.datamodel.io.factory.input.participant
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.system.EmInput
 import edu.ie3.datamodel.utils.Try
 import spock.lang.Specification
 

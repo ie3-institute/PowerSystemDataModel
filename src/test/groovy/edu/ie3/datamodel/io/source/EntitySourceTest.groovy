@@ -50,7 +50,7 @@ class EntitySourceTest extends Specification {
 
   def "A CsvDataSource should be able to handle the extraction process of an asset type correctly"() {
     when:
-    def assetTypeOpt = dummyEntitySource.getAssetType(types, fieldsToAttributes, "TestClassName")
+    def assetTypeOpt = dummyEntitySource.getLinkedEntity(types, fieldsToAttributes, "TestClassName")
 
     then:
     assetTypeOpt.data.present == resultIsPresent
