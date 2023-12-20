@@ -89,7 +89,7 @@ dependencies {
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
   // Databases
-  implementation 'org.influxdb:influxdb-java:2.23'
+  implementation 'org.influxdb:influxdb-java:2.24'
   implementation 'com.couchbase.client:java-client:3.5.1'
   runtimeOnly 'org.postgresql:postgresql:42.7.1' // postgresql jdbc driver required during runtime
 
