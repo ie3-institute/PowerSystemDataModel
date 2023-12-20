@@ -60,14 +60,24 @@ public class EnergyManagementSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
+   * @param operators a map of uuid to {@link OperatorInput} that should be used for the returning
+   *     instances
    * @return a map of uuid to {@link EmInput} entities
    */
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
     return buildHierarchicalEmInputs(operators);
   }
 
+  /**
+   * Since each EM can itself be controlled by another EM, it does not suffice to link {@link
+   * EmInput}s via {@link EntitySource#optionallyEnrichEntityData} as we do for system participants
+   * in {@link SystemParticipantSource}. Instead, we use a recursive approach, starting with EMs at
+   * root level (which are not EM-controlled themselves).
+   *
+   * @param operators a map of uuid to {@link OperatorInput} that should be used for the returning
+   *     instances
+   * @return a map of uuid to {@link EmInput} entities
+   */
   private Map<UUID, EmInput> buildHierarchicalEmInputs(Map<UUID, OperatorInput> operators)
       throws SourceException {
     Stream<Try<AssetInputEntityData, SourceException>> assetEntityDataStream =
