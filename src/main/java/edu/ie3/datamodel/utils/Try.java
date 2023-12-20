@@ -364,6 +364,37 @@ public abstract class Try<T, E extends Exception> {
     public static <E extends Exception> Success<Void, E> empty() {
       return (Success<Void, E>) emptySuccess;
     }
+
+    /**
+     * Indicates whether some other object is "equal to" this {@code Success}. The other object is
+     * considered equal if:
+     *
+     * <ul>
+     *   <li>it is also a {@code Success} and;
+     *   <li>the values are "equal to" each other via {@code equals()}.
+     * </ul>
+     *
+     * @param obj an object to be tested for equality
+     * @return {@code true} if the other object is "equal to" this object otherwise {@code false}
+     */
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+
+      return obj instanceof Success<?, ?> other && Objects.equals(data, other.data);
+    }
+
+    /**
+     * Returns the hash code of the value.
+     *
+     * @return hash code value of the value
+     */
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(data);
+    }
   }
 
   /** Implementation of {@link Try} class. This class is used to present a failed try. */
@@ -463,6 +494,37 @@ public abstract class Try<T, E extends Exception> {
      */
     public static <E extends Exception> Failure<Void, E> ofVoid(E exception) {
       return new Failure<>(exception);
+    }
+
+    /**
+     * Indicates whether some other object is "equal to" this {@code Failure}. The other object is
+     * considered equal if:
+     *
+     * <ul>
+     *   <li>it is also a {@code Failure} and;
+     *   <li>the exceptions are "equal to" each other via {@code equals()}.
+     * </ul>
+     *
+     * @param obj an object to be tested for equality
+     * @return {@code true} if the other object is "equal to" this object otherwise {@code false}
+     */
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+
+      return obj instanceof Failure<?, ?> other && Objects.equals(exception, other.exception);
+    }
+
+    /**
+     * Returns the hash code of the exception.
+     *
+     * @return hash code value of the exception
+     */
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(exception);
     }
   }
 
