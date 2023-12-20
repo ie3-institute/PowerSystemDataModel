@@ -11,6 +11,7 @@ import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.TryException;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -234,6 +235,30 @@ public abstract class Try<T, E extends Exception> {
   public abstract <U, R extends Exception> Try<U, R> transform(
       Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc);
 
+  /**
+   * If this is a Success, the value is returned, otherwise given default is returned.
+   *
+   * @param defaultData the value to be returned, if this is a failure.
+   * @return the value of a success, otherwise {@code defaultData}
+   */
+  public abstract T getOrElse(Supplier<T> defaultData);
+
+  /**
+   * If this is a Success, it is returned, otherwise given default Try is returned.
+   *
+   * @param defaultTry the Try to be returned, if this is a failure.
+   * @return this try object if it is a Success, otherwise {@code defaultTry}
+   */
+  public abstract Try<T, E> orElse(Supplier<Try<T, E>> defaultTry);
+
+  /**
+   * Turns this Try into an {@link Optional} by returning the wrapped value if this is a success,
+   * and an empty optional if this is a failure.
+   *
+   * @return an optional of the value
+   */
+  public abstract Optional<T> toOptional();
+
   /** Implementation of {@link Try} class. This class is used to present a successful try. */
   public static final class Success<T, E extends Exception> extends Try<T, E> {
     private final T data;
@@ -296,6 +321,21 @@ public abstract class Try<T, E extends Exception> {
     public <U, R extends Exception> Try<U, R> transform(
         Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
       return new Success<>(successFunc.apply(data));
+    }
+
+    @Override
+    public T getOrElse(Supplier<T> defaultData) {
+      return data;
+    }
+
+    @Override
+    public Try<T, E> orElse(Supplier<Try<T, E>> defaultTry) {
+      return this;
+    }
+
+    @Override
+    public Optional<T> toOptional() {
+      return Optional.of(data);
     }
 
     /** Returns the stored data. */
@@ -380,6 +420,21 @@ public abstract class Try<T, E extends Exception> {
     public <U, R extends Exception> Try<U, R> transform(
         Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
       return Failure.of(failureFunc.apply(exception));
+    }
+
+    @Override
+    public T getOrElse(Supplier<T> defaultData) {
+      return defaultData.get();
+    }
+
+    @Override
+    public Try<T, E> orElse(Supplier<Try<T, E>> defaultTry) {
+      return defaultTry.get();
+    }
+
+    @Override
+    public Optional<T> toOptional() {
+      return Optional.empty();
     }
 
     /** Returns the thrown exception. */
