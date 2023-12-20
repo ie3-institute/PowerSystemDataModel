@@ -394,6 +394,31 @@ class TryTest extends Specification {
     result == Optional.empty()
   }
 
+  def "The equals and hashCode method should work as expected on a success"() {
+    given:
+    def value = "some value"
+    Try<String, SourceException> success1 = new Try.Success<>(value)
+    Try<String, SourceException> success2 = new Try.Success<>(value)
+    Try<String, SourceException> success3 = new Try.Success<>("other value")
+
+    expect:
+    success1 == success2
+    success1.hashCode() == success2.hashCode()
+    success1 != success3
+    success1.hashCode() != success3.hashCode()
+  }
+
+  def "The equals and hashCode method should work as expected on a failure"() {
+    given:
+    // exceptions usually do not implement #equals, this is difficult to test
+    Try<String, SourceException> failure1 = new Try.Failure<>(new SourceException("some failure"))
+    Try<String, SourceException> failure2 = new Try.Failure<>(new SourceException("other failure"))
+
+    expect:
+    failure1 != failure2
+    failure1.hashCode() != failure2.hashCode()
+  }
+
   def "All exceptions of a collection of try objects should be returned"() {
     given:
     List<Try<String, Exception>> tries = List.of(
