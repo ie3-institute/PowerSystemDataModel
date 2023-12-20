@@ -67,7 +67,7 @@ class SystemParticipantTestData {
   null
   )
 
-  public static final emInput = new EmInput(
+  public static final EmInput emInput = new EmInput(
   UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
   "test_emInput",
   SystemParticipantTestData.operator,
