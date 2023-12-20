@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
@@ -41,13 +41,13 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
+  protected List<Set<String>> getFields(EntityData entityData) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
-    if (simpleEntityData.getTargetClass().equals(ThermalHouseResult.class)) {
+    if (entityData.getTargetClass().equals(ThermalHouseResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, INDOOR_TEMPERATURE);
-    } else if (simpleEntityData.getTargetClass().equals(CylindricalStorageResult.class)) {
+    } else if (entityData.getTargetClass().equals(CylindricalStorageResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
     }
 
@@ -55,7 +55,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   }
 
   @Override
-  protected ThermalUnitResult buildModel(SimpleEntityData data) {
+  protected ThermalUnitResult buildModel(EntityData data) {
     Class<? extends UniqueEntity> clazz = data.getTargetClass();
 
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));

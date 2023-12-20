@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.SimpleEntityData
+import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
 import edu.ie3.datamodel.utils.Try
@@ -36,7 +36,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     ]
 
     when:
-    Try<? extends FlexOptionsResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
+    Try<? extends FlexOptionsResult, FactoryException> result = resultFactory.get(new EntityData(parameter, FlexOptionsResult))
 
     then:
     result.success
@@ -61,7 +61,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     ]
 
     when:
-    Try<FlexOptionsResult, FactoryException> input = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
+    Try<FlexOptionsResult, FactoryException> input = resultFactory.get(new EntityData(parameter, FlexOptionsResult))
 
     then:
     input.failure

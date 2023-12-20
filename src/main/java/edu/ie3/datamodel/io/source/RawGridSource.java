@@ -209,7 +209,7 @@ public class RawGridSource extends EntitySource {
       Map<UUID, OperatorInput> operators)
       throws SourceException {
     return unpackMap(
-        typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs),
+        buildTypedEntityData(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs),
         LineInput.class);
   }
 
@@ -256,7 +256,7 @@ public class RawGridSource extends EntitySource {
       Map<UUID, OperatorInput> operators)
       throws SourceException {
     return unpackSet(
-        typedEntityStream(
+        buildTypedEntityData(
             Transformer2WInput.class,
             transformer2WInputFactory,
             nodes,
@@ -398,6 +398,22 @@ public class RawGridSource extends EntitySource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+  // todo refactoring
+
+  private <T extends ConnectorInput, A extends AssetTypeInput>
+      Stream<Try<T, FactoryException>> buildTypedEntityData(
+          Class<T> entityClass,
+          EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
+          Map<UUID, NodeInput> nodes,
+          Map<UUID, OperatorInput> operators,
+          Map<UUID, A> types) {
+    return buildTypedConnectorEntityData(
+            buildUntypedConnectorInputEntityData(
+                buildAssetInputEntityData(entityClass, operators), nodes),
+            types)
+        .map(factory::get);
+  }
+
   public <T extends ConnectorInput> Set<T> buildUntypedConnectorInputEntities(
       Class<T> entityClass,
       EntityFactory<T, ConnectorInputEntityData> factory,
@@ -476,21 +492,6 @@ public class RawGridSource extends EntitySource {
                             NODE_B,
                             nodes,
                             ConnectorInputEntityData::new)));
-  }
-
-  // todo needed?
-  private <T extends ConnectorInput, A extends AssetTypeInput>
-      Stream<Try<T, FactoryException>> typedEntityStream(
-          Class<T> entityClass,
-          EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
-          Map<UUID, NodeInput> nodes,
-          Map<UUID, OperatorInput> operators,
-          Map<UUID, A> types) {
-    return buildTypedConnectorEntityData(
-            buildUntypedConnectorInputEntityData(
-                buildAssetInputEntityData(entityClass, operators), nodes),
-            types)
-        .map(factory::get);
   }
 
   /**

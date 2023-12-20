@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.SimpleEntityData
+import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.utils.Try
@@ -35,7 +35,7 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<? extends NodeResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, NodeResult))
+    Try<? extends NodeResult, FactoryException> result = resultFactory.get(new EntityData(parameter, NodeResult))
 
     then:
     result.success
@@ -58,7 +58,7 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<NodeResult, FactoryException> input = resultFactory.get(new SimpleEntityData(parameter, NodeResult))
+    Try<NodeResult, FactoryException> input = resultFactory.get(new EntityData(parameter, NodeResult))
 
     then:
     input.failure

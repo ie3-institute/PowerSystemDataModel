@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import java.util.Collections;
@@ -36,7 +36,7 @@ public class Transformer2WTypeInputFactory
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData data) {
+  protected List<Set<String>> getFields(EntityData data) {
     Set<String> constructorParams =
         newSet(
             ENTITY_UUID,
@@ -59,7 +59,7 @@ public class Transformer2WTypeInputFactory
   }
 
   @Override
-  protected Transformer2WTypeInput buildModel(SimpleEntityData data) {
+  protected Transformer2WTypeInput buildModel(EntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
     ComparableQuantity<ElectricResistance> rSc = data.getQuantity(R_SC, StandardUnits.RESISTANCE);

@@ -1,5 +1,6 @@
 @startuml
 
+' todo apapt
 note "Assuming all classes to implement \nthe abstract methods of their interfaces\n\n" as generalNotes
 
 abstract class EntitySource {
@@ -7,7 +8,7 @@ abstract class EntitySource {
     - <T extends AssetInput> Set<T> buildNodeAssetEntities(Class<T>, EntityFactory<T, NodeAssetInputEntityData>, Collection<NodeInput>, Collection<OperatorInput>, ConcurrentMap<Class<? extends UniqueEntity>, LongAdder>)
     - <T extends AssetInput> Set<T> buildNodeAssetEntities(Class<T>, EntityFactory<T, NodeAssetInputEntityData>, Collection<NodeInput>, Collection<OperatorInput>)
     - <T extends AssetInput> Set<T> buildAssetInputEntities(Class<T>, EntityFactory<T, AssetInputEntityData>, Collection<OperatorInput>)
-    - <T extends AssetInput> Set<T> buildAssetInputEntities(Class<T>, EntityFactory<? extends InputEntity, SimpleEntityData>)
+    - <T extends AssetInput> Set<T> buildAssetInputEntities(Class<T>, EntityFactory<? extends InputEntity, EntityData>)
 }
 EntitySource <|-- GraphicSource
 EntitySource <|-- RawGridSource

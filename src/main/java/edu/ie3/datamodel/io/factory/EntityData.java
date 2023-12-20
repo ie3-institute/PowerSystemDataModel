@@ -24,7 +24,9 @@ import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * Internal API Contains data that is needed by an {@link EntityFactory} to generate an entity
+ * Data used by {@link EntityFactory} to create an instance of an entity than can be created based
+ * only on a mapping of fieldName to value. This class can be used whenever no additional data is
+ * needed, but also functions as a parent class for extensions.
  *
  * @version 0.1
  * @since 28.01.20

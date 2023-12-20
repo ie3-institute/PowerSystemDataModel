@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.utils.Try;
@@ -65,7 +65,7 @@ public abstract class TimeSeriesMappingSource {
 
   private Try<MappingEntry, FactoryException> createMappingEntry(
       Map<String, String> fieldToValues) {
-    SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
+    EntityData entityData = new EntityData(fieldToValues, MappingEntry.class);
     return mappingFactory.get(entityData);
   }
 

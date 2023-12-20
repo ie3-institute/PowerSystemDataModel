@@ -22,7 +22,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * todo javadoc Interface that provides the capability to build thermal {@link
+ * todo javadoc
+ *
+ * <p>Interface that provides the capability to build thermal {@link
  * edu.ie3.datamodel.models.input.AssetInput} entities from persistent data e.g. .csv files or
  * databases
  *

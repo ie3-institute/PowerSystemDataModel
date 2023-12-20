@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.SimpleEntityData
+import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.utils.Try
@@ -56,7 +56,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     when:
-    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new EntityData(parameter, modelClass))
 
     then:
     result.success
@@ -110,7 +110,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "q"         : "2"
     ]
     when:
-    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, StorageResult))
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new EntityData(parameter, StorageResult))
 
     then:
     result.success
@@ -133,7 +133,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "q"         : "2"
     ]
     when:
-    Try<SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, WecResult))
+    Try<SystemParticipantResult, FactoryException> result = resultFactory.get(new EntityData(parameter, WecResult))
 
     then:
     result.failure
@@ -159,7 +159,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     expect: "that the factory should not need more than 3 seconds for processing 10.000 entities"
     Long startTime = System.currentTimeMillis()
     10000.times {
-      resultFactory.get(new SimpleEntityData(parameter, StorageResult))
+      resultFactory.get(new EntityData(parameter, StorageResult))
     }
     BigDecimal elapsedTime = (System
         .currentTimeMillis() - startTime) / 1000.0

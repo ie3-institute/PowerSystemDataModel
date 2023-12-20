@@ -36,7 +36,7 @@ class EntitySourceTest extends Specification {
 
   DummyEntitySource dummyEntitySource = new DummyEntitySource(csvDataSource)
 
-  def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
+  def "An EntitySource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
 
     expect:
     dummyEntitySource.getFirstOrDefaultOperator(operators, Optional.of(UUID.fromString(operatorUuid)), entityClassName, requestEntityUuid) == expectedOperator

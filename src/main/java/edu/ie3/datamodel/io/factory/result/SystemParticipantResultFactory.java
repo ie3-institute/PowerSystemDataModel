@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.factory.result;
 import static tech.units.indriya.unit.Units.PERCENT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.system.*;
@@ -20,7 +20,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Factory class for creating {@link SystemParticipantResult} entities from provided {@link
- * SimpleEntityData} data objects.
+ * EntityData} data objects.
  */
 public class SystemParticipantResultFactory extends ResultEntityFactory<SystemParticipantResult> {
 
@@ -67,7 +67,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData data) {
+  protected List<Set<String>> getFields(EntityData data) {
     /// all result models have the same constructor except StorageResult
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, POWER, REACTIVE_POWER);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
@@ -87,7 +87,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   }
 
   @Override
-  protected SystemParticipantResult buildModel(SimpleEntityData data) {
+  protected SystemParticipantResult buildModel(EntityData data) {
     Class<? extends UniqueEntity> entityClass = data.getTargetClass();
 
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));

@@ -5,8 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
+import edu.ie3.datamodel.io.factory.input.EmAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -15,18 +15,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class EmInputFactory extends AssetInputEntityFactory<EmInput, AssetInputEntityData> {
+public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInputEntityData> {
 
   private static final String CONTROL_STRATEGY = "controlstrategy";
 
-  private static final String PARENT_EM = "parentem";
+  public static final String PARENT_EM = "parentem";
 
   public EmInputFactory() {
     super(EmInput.class);
   }
 
   @Override
-  protected List<Set<String>> getFields(AssetInputEntityData data) {
+  protected List<Set<String>> getFields(EmAssetInputEntityData data) {
     List<Set<String>> fields = new ArrayList<>(super.getFields(data));
 
     List<Set<String>> withEm =
@@ -44,15 +44,14 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput, AssetInputE
 
   @Override
   protected EmInput buildModel(
-      AssetInputEntityData data,
+      EmAssetInputEntityData data,
       UUID uuid,
       String id,
       OperatorInput operator,
       OperationTime operationTime) {
     String controlStrategy = data.getField(CONTROL_STRATEGY);
 
-    UUID parentEm = null;
-    if (data.containsKey(PARENT_EM)) parentEm = data.getUUID(PARENT_EM);
+    EmInput parentEm = data.getEmUnit();
 
     return new EmInput(uuid, id, operator, operationTime, controlStrategy, parentEm);
   }

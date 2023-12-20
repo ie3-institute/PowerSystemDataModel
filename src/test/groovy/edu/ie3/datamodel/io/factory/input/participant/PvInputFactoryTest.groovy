@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.input.participant
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -59,7 +58,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 
     when:
     Try<PvInput, FactoryException> input = inputFactory.get(
-        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput, emUnit))
+        new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput, emUnit))
 
     then:
     input.success

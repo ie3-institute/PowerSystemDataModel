@@ -7,8 +7,8 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
@@ -63,7 +63,7 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, Transformer2WTypeInput> getTransformer2WTypes() throws SourceException {
     return unpackMap(
-        buildSimpleEntityData(Transformer2WTypeInput.class).map(transformer2WTypeInputFactory::get),
+        buildEntityData(Transformer2WTypeInput.class).map(transformer2WTypeInputFactory::get),
         Transformer2WTypeInput.class);
   }
 
@@ -77,8 +77,7 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, OperatorInput> getOperators() throws SourceException {
     return unpackMap(
-        buildSimpleEntityData(OperatorInput.class).map(operatorInputFactory::get),
-        OperatorInput.class);
+        buildEntityData(OperatorInput.class).map(operatorInputFactory::get), OperatorInput.class);
   }
 
   /**
@@ -91,8 +90,7 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, LineTypeInput> getLineTypes() throws SourceException {
     return unpackMap(
-        buildSimpleEntityData(LineTypeInput.class).map(lineTypeInputFactory::get),
-        LineTypeInput.class);
+        buildEntityData(LineTypeInput.class).map(lineTypeInputFactory::get), LineTypeInput.class);
   }
 
   /**
@@ -106,7 +104,7 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, Transformer3WTypeInput> getTransformer3WTypes() throws SourceException {
     return unpackMap(
-        buildSimpleEntityData(Transformer3WTypeInput.class).map(transformer3WTypeInputFactory::get),
+        buildEntityData(Transformer3WTypeInput.class).map(transformer3WTypeInputFactory::get),
         Transformer3WTypeInput.class);
   }
 
@@ -200,8 +198,7 @@ public class TypeSource extends EntitySource {
    */
   @SuppressWarnings("unchecked")
   private <T extends AssetTypeInput> Stream<Try<T, FactoryException>> buildEntities(
-      Class<T> entityClass, EntityFactory<? extends InputEntity, SimpleEntityData> factory) {
-    return buildSimpleEntityData(entityClass)
-        .map(data -> (Try<T, FactoryException>) factory.get(data));
+      Class<T> entityClass, EntityFactory<? extends InputEntity, EntityData> factory) {
+    return buildEntityData(entityClass).map(data -> (Try<T, FactoryException>) factory.get(data));
   }
 }

@@ -6,7 +6,8 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
+import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
@@ -327,10 +328,10 @@ public class ResultEntitySource extends EntitySource {
    */
   @SuppressWarnings("unchecked")
   private <T extends ResultEntity> Set<T> getResultEntities(
-      Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory)
+      Class<T> entityClass, EntityFactory<? extends ResultEntity, EntityData> factory)
       throws SourceException {
     return unpackSet(
-        buildSimpleEntityData(entityClass)
+        buildEntityData(entityClass)
             .map(entityData -> factory.get(entityData).map(data -> (T) data)),
         entityClass);
   }

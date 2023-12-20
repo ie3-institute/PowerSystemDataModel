@@ -18,7 +18,7 @@ public class EmInput extends AssetInput {
    * Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
    * unit is not em-controlled.
    */
-  private final UUID parentEm;
+  private final EmInput parentEm;
 
   /**
    * Constructor for an operated energy management system
@@ -36,7 +36,7 @@ public class EmInput extends AssetInput {
       OperatorInput operator,
       OperationTime operationTime,
       String emControlStrategy,
-      UUID parentEm) {
+      EmInput parentEm) {
     super(uuid, id, operator, operationTime);
     this.controlStrategy = emControlStrategy;
     this.parentEm = parentEm;
@@ -50,7 +50,7 @@ public class EmInput extends AssetInput {
    * @param emControlStrategy the control strategy
    * @param parentEm The {@link EmInput} controlling this em unit. Null, if not applicable.
    */
-  public EmInput(UUID uuid, String id, String emControlStrategy, UUID parentEm) {
+  public EmInput(UUID uuid, String id, String emControlStrategy, EmInput parentEm) {
     super(uuid, id);
     this.controlStrategy = emControlStrategy;
     this.parentEm = parentEm;
@@ -60,7 +60,7 @@ public class EmInput extends AssetInput {
     return controlStrategy;
   }
 
-  public UUID getParentEm() {
+  public EmInput getParentEm() {
     return parentEm;
   }
 
@@ -96,7 +96,7 @@ public class EmInput extends AssetInput {
         + ", controlStrategy="
         + getControlStrategy()
         + ", parentEm="
-        + getParentEm()
+        + getParentEm().getUuid()
         + '}';
   }
 
@@ -104,7 +104,7 @@ public class EmInput extends AssetInput {
 
     private String controlStrategy;
 
-    private UUID parentEm;
+    private EmInput parentEm;
 
     protected EmInputCopyBuilder(EmInput entity) {
       super(entity);
@@ -116,7 +116,7 @@ public class EmInput extends AssetInput {
       return this;
     }
 
-    public EmInputCopyBuilder parentEm(UUID parentEm) {
+    public EmInputCopyBuilder parentEm(EmInput parentEm) {
       this.parentEm = parentEm;
       return thisInstance();
     }

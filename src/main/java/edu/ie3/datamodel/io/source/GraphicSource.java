@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
@@ -55,7 +54,8 @@ public class GraphicSource extends EntitySource {
 
     // read all needed entities
     /// start with types and operators
-    Map<UUID, OperatorInput> operators = typeSource.getOperators();
+    Map<UUID, OperatorInput> operators =
+        typeSource.getOperators(); // fixme those only need to be fetched once, if done smartly
     Map<UUID, LineTypeInput> lineTypes = typeSource.getLineTypes();
 
     Map<UUID, NodeInput> nodes = rawGridSource.getNodes(operators);
@@ -135,15 +135,13 @@ public class GraphicSource extends EntitySource {
    */
   protected Stream<Try<NodeGraphicInputEntityData, SourceException>> buildNodeGraphicEntityData(
       Map<UUID, NodeInput> nodes) {
-    return dataSource
-        .getSourceData(NodeGraphicInput.class)
+    return buildEntityData(NodeGraphicInput.class)
         .map(
-            fieldsToAttributes ->
-                enrichEntityData(
-                    new EntityData(fieldsToAttributes, NodeGraphicInput.class),
-                    NODE,
-                    nodes,
-                    NodeGraphicInputEntityData::new));
+            entityDataTry ->
+                entityDataTry.flatMap(
+                    entityData ->
+                        enrichEntityData(
+                            entityData, NODE, nodes, NodeGraphicInputEntityData::new)));
   }
 
   /**
@@ -163,14 +161,12 @@ public class GraphicSource extends EntitySource {
    */
   protected Stream<Try<LineGraphicInputEntityData, SourceException>> buildLineGraphicEntityData(
       Map<UUID, LineInput> lines) {
-    return dataSource
-        .getSourceData(LineGraphicInput.class)
+    return buildEntityData(LineGraphicInput.class)
         .map(
-            fieldsToAttributes ->
-                enrichEntityData(
-                    new EntityData(fieldsToAttributes, LineGraphicInput.class),
-                    "line",
-                    lines,
-                    LineGraphicInputEntityData::new));
+            entityDataTry ->
+                entityDataTry.flatMap(
+                    entityData ->
+                        enrichEntityData(
+                            entityData, "line", lines, LineGraphicInputEntityData::new)));
   }
 }

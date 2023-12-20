@@ -9,7 +9,6 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -27,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 /** Class that provides all functionalities to build entities */
 public abstract class EntitySource {
+  // TODO make all subclasses static?
 
   protected static final Logger log = LoggerFactory.getLogger(EntitySource.class);
 
@@ -163,10 +163,12 @@ public abstract class EntitySource {
                     .transformF(
                         exception ->
                             new SourceException(
-                                "Linked entity "
+                                "Linked "
                                     + fieldName
+                                    + " with UUID "
+                                    + entityUuid
                                     + " was not found for entity "
-                                    + entityData.toString(),
+                                    + entityData,
                                 exception)));
   }
 
@@ -215,10 +217,12 @@ public abstract class EntitySource {
                                 .transformF(
                                     exception ->
                                         new SourceException(
-                                            "Linked entity "
+                                            "Linked "
                                                 + fieldName
-                                                + " was not found for entity of class"
-                                                + entityData.getTargetClass().getSimpleName(),
+                                                + " with UUID "
+                                                + entityUuid
+                                                + " was not found for entity "
+                                                + entityData,
                                             exception))))
         .orElseGet(
             () -> {
@@ -324,7 +328,7 @@ public abstract class EntitySource {
    *     the data
    * @return stream of the entity data wrapped in a {@link Try}
    */
-  private static Stream<Try<AssetInputEntityData, SourceException>> assetInputEntityDataStream(
+  protected static Stream<Try<AssetInputEntityData, SourceException>> assetInputEntityDataStream(
       Stream<Try<EntityData, SourceException>> entityDataStream,
       Map<UUID, OperatorInput> operators) {
     return entityDataStream
@@ -342,34 +346,19 @@ public abstract class EntitySource {
   }
 
   /**
-   * Returns a stream of optional {@link AssetInputEntityData} that can be used to build instances
-   * of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that
-   * consumes this data.
+   * Returns a stream of optional {@link EntityData} that can be used to build instances of several
+   * subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that consumes this
+   * data.
    *
    * @param entityClass the entity class that should be build
    * @param <T> type of the entity that should be build
    * @return stream of the entity data wrapped in a {@link Try}
    */
-  private <T extends InputEntity> Stream<Try<EntityData, SourceException>> buildEntityData(
+  protected <T extends UniqueEntity> Stream<Try<EntityData, SourceException>> buildEntityData(
       Class<T> entityClass) {
     return dataSource
         .getSourceData(entityClass)
         .map(fieldsToAttributes -> new Success<>(new EntityData(fieldsToAttributes, entityClass)));
-  }
-
-  /**
-   * Returns a stream of {@link SimpleEntityData} for result entity classes, using a
-   * fields-to-attributes map.
-   *
-   * @param entityClass the entity class that should be build
-   * @param <T> Type of the {@link UniqueEntity} to expect
-   * @return stream of {@link SimpleEntityData}
-   */
-  protected <T extends UniqueEntity> Stream<SimpleEntityData> buildSimpleEntityData(
-      Class<T> entityClass) {
-    return dataSource
-        .getSourceData(entityClass)
-        .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
 
   protected static <S extends UniqueEntity> Map<UUID, S> unpackMap(
@@ -383,9 +372,9 @@ public abstract class EntitySource {
     return unpack(inputStream, entityClass).collect(Collectors.toSet());
   }
 
-  private static <S> Stream<S> unpack(
-      Stream<Try<S, FactoryException>> inputStream, Class<S> entityClass) throws SourceException {
-    return Try.scanStream(inputStream, entityClass.getSimpleName())
+  protected static <S, E extends Exception> Stream<S> unpack(
+      Stream<Try<S, E>> inputStream, Class<S> clazz) throws SourceException {
+    return Try.scanStream(inputStream, clazz.getSimpleName())
         .transformF(SourceException::new)
         .getOrThrow();
   }
