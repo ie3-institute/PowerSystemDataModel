@@ -201,11 +201,12 @@ public abstract class EntitySource {
         .getFieldOptional(fieldName)
         .filter(s -> !s.isBlank())
         .map(
-            // Entity data includes a proper UUID for the desired entity
+            // Entity data includes a non-empty UUID String for the desired entity
             uuidString ->
                 Try.of(() -> UUID.fromString(uuidString), IllegalArgumentException.class)
                     .transformF(
                         iae ->
+                            // Parsing error still results in a failure, ...
                             new SourceException(
                                 String.format(
                                     "Exception while trying to parse UUID of field \"%s\" with value \"%s\"",
@@ -214,6 +215,8 @@ public abstract class EntitySource {
                     .flatMap(
                         entityUuid ->
                             getEntity(entityUuid, linkedEntities)
+                                // ... as well as a provided entity UUID that does not match any
+                                // given data
                                 .transformF(
                                     exception ->
                                         new SourceException(
@@ -226,8 +229,8 @@ public abstract class EntitySource {
                                             exception))))
         .orElseGet(
             () -> {
-              // No UUID was given (column does not exist, or field is empty),
-              // this is totally fine - we return the default value
+              // No UUID was given (column does not exist, or field is empty).
+              // This is totally fine - we successfully return the default value
               log.debug(
                   "Input source for class {} is missing the '{}' field. "
                       + "Default value '{}' is used.",
