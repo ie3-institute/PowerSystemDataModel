@@ -31,6 +31,7 @@ class ChpInputTest extends Specification {
       assert thermalStorage == SystemParticipantTestData.thermalStorage
       assert marketReaction
       assert type == SystemParticipantTestData.chpTypeInput
+      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

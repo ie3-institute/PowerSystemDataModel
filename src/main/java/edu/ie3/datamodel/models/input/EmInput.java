@@ -6,7 +6,9 @@
 package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class EmInput extends AssetInput {
@@ -60,8 +62,8 @@ public class EmInput extends AssetInput {
     return controlStrategy;
   }
 
-  public EmInput getParentEm() {
-    return parentEm;
+  public Optional<EmInput> getParentEm() {
+    return Optional.ofNullable(parentEm);
   }
 
   @Override
@@ -74,12 +76,13 @@ public class EmInput extends AssetInput {
     if (this == o) return true;
     if (!(o instanceof EmInput emInput)) return false;
     if (!super.equals(o)) return false;
-    return Objects.equals(controlStrategy, emInput.controlStrategy);
+    return Objects.equals(controlStrategy, emInput.controlStrategy)
+        && Objects.equals(parentEm, emInput.parentEm);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), controlStrategy);
+    return Objects.hash(super.hashCode(), controlStrategy, parentEm);
   }
 
   @Override
@@ -96,7 +99,7 @@ public class EmInput extends AssetInput {
         + ", controlStrategy="
         + getControlStrategy()
         + ", parentEm="
-        + getParentEm().getUuid()
+        + getParentEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
         + '}';
   }
 
@@ -109,6 +112,7 @@ public class EmInput extends AssetInput {
     protected EmInputCopyBuilder(EmInput entity) {
       super(entity);
       this.controlStrategy = entity.getControlStrategy();
+      this.parentEm = entity.parentEm;
     }
 
     public EmInputCopyBuilder controlStrategy(String controlStrategy) {

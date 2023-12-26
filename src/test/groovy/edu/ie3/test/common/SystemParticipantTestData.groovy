@@ -58,7 +58,7 @@ class SystemParticipantTestData {
 
   // EmInput
   public static final String emControlStrategy = "self_optimization"
-  private static final EmInput parentEm = new EmInput(
+  public static final EmInput parentEm = new EmInput(
   UUID.fromString("897bfc17-8e54-43d0-8d98-740786fd94dd"),
   "test_parentEmInput",
   SystemParticipantTestData.operator,
@@ -340,18 +340,6 @@ class SystemParticipantTestData {
   EvcsLocationType.HOME,
   v2gSupport
   )
-
-  public static allParticipants = [
-    fixedFeedInInput,
-    pvInput,
-    loadInput,
-    bmInput,
-    storageInput,
-    wecInput,
-    evInput,
-    chpInput,
-    hpInput
-  ]
 
   public static SystemParticipants emptySystemParticipants =
   new SystemParticipants(

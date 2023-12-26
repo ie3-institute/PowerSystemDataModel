@@ -10,6 +10,7 @@ import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.source.GraphicSource
 import edu.ie3.datamodel.io.source.RawGridSource
 import edu.ie3.datamodel.io.source.TypeSource
+import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -133,7 +134,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     Mock(TypeSource),
     Mock(RawGridSource),
     new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
-    Map<UUID, NodeInput> nodeMap = nodeCollection.stream().collect(Collectors.toMap(NodeInput::getUuid, Function.identity()))
+    Map<UUID, NodeInput> nodeMap = nodeCollection.stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
 
     when:
     graphicSource.getNodeGraphicInput(nodeMap)

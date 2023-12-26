@@ -129,7 +129,7 @@ class EntitySourceTest extends Specification {
   def "An EntitySource trying to find a linked entity should fail, if no matching linked entity was provided"() {
     given:
     Map<String, String> parameter = [
-      "linked_entity" : sptd.emInput.parentEm.uuid.toString(),
+      "linked_entity" : sptd.parentEm.uuid.toString(),
     ]
     def entityData = new EntityData(parameter, AssetInput.class)
 

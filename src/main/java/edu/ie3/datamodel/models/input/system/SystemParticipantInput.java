@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -101,12 +102,13 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     if (!(o instanceof SystemParticipantInput that)) return false;
     if (!super.equals(o)) return false;
     return Objects.equals(node, that.node)
-        && Objects.equals(qCharacteristics, that.qCharacteristics);
+        && Objects.equals(qCharacteristics, that.qCharacteristics)
+        && Objects.equals(em, that.em);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), node, qCharacteristics);
+    return Objects.hash(super.hashCode(), node, qCharacteristics, em);
   }
 
   @Override
@@ -125,7 +127,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
         + ", qCharacteristics='"
         + qCharacteristics
         + "', em="
-        + em
+        + getEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
         + '}';
   }
 
@@ -148,6 +150,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       super(entity);
       this.node = entity.getNode();
       this.qCharacteristics = entity.getqCharacteristics();
+      this.em = entity.getEm().orElse(null);
     }
 
     public B node(NodeInput node) {

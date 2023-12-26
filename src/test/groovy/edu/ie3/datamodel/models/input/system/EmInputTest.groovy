@@ -61,7 +61,7 @@ class EmInputTest extends Specification {
         ", controlStrategy=" +
         SystemParticipantTestData.emInput.controlStrategy +
         ", parentEm=" +
-        SystemParticipantTestData.emInput.parentEm.uuid +
+        SystemParticipantTestData.parentEm.uuid +
         '}'
   }
 
@@ -69,7 +69,7 @@ class EmInputTest extends Specification {
     given:
     def emInput = SystemParticipantTestData.emInput
     def newStrat = "new_strat"
-    def parentEm = new EmInput(
+    def givenParentEm = new EmInput(
         UUID.fromString("cfc0639b-65bc-47e5-a8e5-82703de3c650"),
         "testParent",
         "controlStrat",
@@ -77,7 +77,7 @@ class EmInputTest extends Specification {
         )
 
     when:
-    def alteredUnit = emInput.copy().controlStrategy(newStrat).parentEm(parentEm).build()
+    def alteredUnit = emInput.copy().controlStrategy(newStrat).parentEm(givenParentEm).build()
 
     then:
     alteredUnit.with {
@@ -86,7 +86,7 @@ class EmInputTest extends Specification {
       assert operator == emInput.operator
       assert id == emInput.id
       assert controlStrategy == newStrat
-      assert parentEm == parentEm
+      assert parentEm == Optional.of(givenParentEm)
     }
   }
 }
