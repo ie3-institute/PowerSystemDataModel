@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Data used for the construction of {@link edu.ie3.datamodel.models.input.AssetInput} entities
@@ -37,10 +38,6 @@ public class EmAssetInputEntityData extends AssetInputEntityData {
     this.emUnit = emUnit;
   }
 
-  public EmInput getEmUnit() {
-    return emUnit;
-  }
-
   /**
    * Creates a new EmAssetInputEntityData object based on a given {@link AssetInputEntityData}
    * object and given em unit
@@ -51,5 +48,23 @@ public class EmAssetInputEntityData extends AssetInputEntityData {
   public EmAssetInputEntityData(AssetInputEntityData entityData, EmInput emUnit) {
     super(entityData, entityData.getOperatorInput());
     this.emUnit = emUnit;
+  }
+
+  public EmInput getEmUnit() {
+    return emUnit;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    EmAssetInputEntityData that = (EmAssetInputEntityData) o;
+    return Objects.equals(emUnit, that.emUnit);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), emUnit);
   }
 }

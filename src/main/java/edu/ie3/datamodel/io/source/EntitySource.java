@@ -85,45 +85,45 @@ public abstract class EntitySource {
    *
    * @param entityData The entity data of the entity that provides links to two other entities via
    *     UUID
-   * @param fieldNameA The field name of the field that provides the UUID of the first linked entity
-   * @param linkedEntitiesA The first map of UUID to entities, of which one should be linked to
+   * @param fieldName1 The field name of the field that provides the UUID of the first linked entity
+   * @param linkedEntities1 The first map of UUID to entities, of which one should be linked to
    *     given entity data
-   * @param fieldNameB The field name of the field that provides the UUID of the second linked
+   * @param fieldName2 The field name of the field that provides the UUID of the second linked
    *     entity
-   * @param linkedEntitiesB The second map of UUID to entities, of which one should be linked to
+   * @param linkedEntities2 The second map of UUID to entities, of which one should be linked to
    *     given entity data
    * @param createEntityData The function that creates the resulting entity data given entityData
    *     and the linked entities
    * @param <E> Type of input entity data
-   * @param <TA> Type of the first linked entity
-   * @param <TB> Type of the second linked entity
+   * @param <T1> Type of the first linked entity
+   * @param <T2> Type of the second linked entity
    * @param <R> Type of resulting entity data that combines the given entityData and two linked
    *     entities
    * @return {@link Try} to enhanced data
    */
   protected static <
-          E extends EntityData, TA extends UniqueEntity, TB extends UniqueEntity, R extends E>
+          E extends EntityData, T1 extends UniqueEntity, T2 extends UniqueEntity, R extends E>
       Try<R, SourceException> enrichEntityData(
           E entityData,
-          String fieldNameA,
-          Map<UUID, TA> linkedEntitiesA,
-          String fieldNameB,
-          Map<UUID, TB> linkedEntitiesB,
-          TriFunction<E, TA, TB, R> createEntityData) {
-    return getLinkedEntity(entityData, fieldNameA, linkedEntitiesA)
+          String fieldName1,
+          Map<UUID, T1> linkedEntities1,
+          String fieldName2,
+          Map<UUID, T2> linkedEntities2,
+          TriFunction<E, T1, T2, R> createEntityData) {
+    return getLinkedEntity(entityData, fieldName1, linkedEntities1)
         .flatMap(
-            linkedEntityA ->
-                getLinkedEntity(entityData, fieldNameB, linkedEntitiesB)
+            linkedEntity1 ->
+                getLinkedEntity(entityData, fieldName2, linkedEntities2)
                     .map(
-                        linkedEntityB -> {
+                        linkedEntity2 -> {
                           Map<String, String> fieldsToAttributes = entityData.getFieldsToValues();
 
                           // remove fields that are passed as objects to constructor
-                          fieldsToAttributes.keySet().remove(fieldNameA);
-                          fieldsToAttributes.keySet().remove(fieldNameB);
+                          fieldsToAttributes.keySet().remove(fieldName1);
+                          fieldsToAttributes.keySet().remove(fieldName2);
 
                           // build resulting entity data
-                          return createEntityData.apply(entityData, linkedEntityA, linkedEntityB);
+                          return createEntityData.apply(entityData, linkedEntity1, linkedEntity2);
                         }));
   }
 
@@ -254,7 +254,7 @@ public abstract class EntitySource {
   private static <T> Try<T, SourceException> getEntity(UUID uuid, Map<UUID, T> entityMap) {
     return Optional.ofNullable(entityMap.get(uuid))
         // We either find a matching entity for given UUID, thus return a success
-        .map(entity -> (Try<T, SourceException>) new Try.Success<T, SourceException>(entity))
+        .map(entity -> Try.of(() -> entity, SourceException.class))
         // ... or find no matching entity, returning a failure.
         .orElse(
             new Try.Failure<>(
