@@ -8,7 +8,6 @@ package edu.ie3.datamodel.models.input.system
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 
-
 class ChpInputTest extends Specification {
 
   def "A ChpInput copy method should work as expected"() {
@@ -18,7 +17,6 @@ class ChpInputTest extends Specification {
     when:
     def alteredUnit = chpInput.copy().thermalBus(SystemParticipantTestData.thermalBus)
         .type(SystemParticipantTestData.chpTypeInput).thermalStorage(SystemParticipantTestData.thermalStorage).marketReaction(true).build()
-
 
     then:
     alteredUnit.with {

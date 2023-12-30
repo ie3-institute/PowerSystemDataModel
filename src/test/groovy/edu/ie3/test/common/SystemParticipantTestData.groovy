@@ -177,6 +177,8 @@ class SystemParticipantTestData {
   public static final ThermalStorageInput thermalStorage = new CylindricalStorageInput(
   UUID.fromString("8851813b-3a7d-4fee-874b-4df9d724e4b3"),
   "test_cylindricThermalStorage",
+  GridTestData.profBroccoli,
+  OperationTime.notLimited(),
   thermalBus,
   storageVolumeLvl,
   storageVolumeLvlMin,
