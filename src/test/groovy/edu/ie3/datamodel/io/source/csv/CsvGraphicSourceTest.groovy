@@ -5,12 +5,13 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.test.helper.EntityMap.map
+
 import edu.ie3.datamodel.exceptions.FailureException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.source.GraphicSource
 import edu.ie3.datamodel.io.source.RawGridSource
 import edu.ie3.datamodel.io.source.TypeSource
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -20,9 +21,6 @@ import edu.ie3.test.common.GridTestData as gtd
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import spock.lang.Specification
-
-import java.util.function.Function
-import java.util.stream.Collectors
 
 class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
@@ -134,7 +132,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     Mock(TypeSource),
     Mock(RawGridSource),
     new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
-    Map<UUID, NodeInput> nodeMap = nodeCollection.stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, NodeInput> nodeMap = map(nodeCollection)
 
     when:
     graphicSource.getNodeGraphicInput(nodeMap)
@@ -158,7 +156,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     Mock(TypeSource),
     Mock(RawGridSource),
     new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
-    Map<UUID, LineInput> lineMap = lineCollection.stream().collect(Collectors.toMap(LineInput::getUuid, Function.identity()))
+    Map<UUID, LineInput> lineMap = map(lineCollection)
 
     when:
     graphicSource.getLineGraphicInput(lineMap)

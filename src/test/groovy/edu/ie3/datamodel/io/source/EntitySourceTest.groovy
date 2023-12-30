@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source
 
+import static edu.ie3.test.helper.EntityMap.map
+
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
@@ -12,7 +14,6 @@ import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.participant.ChpInputEntityData
 import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantTypedEntityData
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -25,9 +26,6 @@ import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.util.function.Function
-import java.util.stream.Collectors
 
 class EntitySourceTest extends Specification {
 
@@ -47,7 +45,7 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new AssetInputEntityData(parameter, AssetInput.class)
 
-    Map<UUID, NodeInput> entityMap = [GridTestData.nodeA].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
     when:
     def result = dummyEntitySource.enrichEntityData(entityData, "linked_entity", entityMap, NodeAssetInputEntityData::new)
@@ -63,7 +61,7 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new AssetInputEntityData(parameter, AssetInput.class)
 
-    Map<UUID, NodeInput> entityMap = [GridTestData.nodeA].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
     when:
     def result = dummyEntitySource.enrichEntityData(entityData, "linked_entity", entityMap, NodeAssetInputEntityData::new)
@@ -81,8 +79,8 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput.class, sptd.participantNode, null, sptd.chpTypeInput)
 
-    Map<UUID, ThermalBusInput> busMap = [sptd.thermalBus].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
-    Map<UUID, ThermalStorageInput> storageMap = [sptd.thermalStorage].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, ThermalBusInput> busMap = map([sptd.thermalBus])
+    Map<UUID, ThermalStorageInput> storageMap = map([sptd.thermalStorage])
 
     when:
     def result = dummyEntitySource.enrichEntityData(entityData, "t_bus", busMap, "t_storage", storageMap, ChpInputEntityData::new)
@@ -99,8 +97,8 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput.class, sptd.participantNode, null, sptd.chpTypeInput)
 
-    Map<UUID, ThermalBusInput> busMap = [sptd.thermalBus].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
-    Map<UUID, ThermalStorageInput> storageMap = [sptd.thermalStorage].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, ThermalBusInput> busMap = map([sptd.thermalBus])
+    Map<UUID, ThermalStorageInput> storageMap = map([sptd.thermalStorage])
 
     when:
     def result = dummyEntitySource.enrichEntityData(entityData, "t_bus", busMap, "t_storage", storageMap, ChpInputEntityData::new)
@@ -117,7 +115,7 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new EntityData(parameter, AssetInput.class)
 
-    Map<UUID, EmInput> entityMap = [sptd.emInput].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, EmInput> entityMap = map([sptd.emInput])
 
     when:
     def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
@@ -133,7 +131,7 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new EntityData(parameter, AssetInput.class)
 
-    Map<UUID, EmInput> entityMap = [sptd.emInput].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, EmInput> entityMap = map([sptd.emInput])
 
     when:
     def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
@@ -150,7 +148,7 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new EntityData(parameter, AssetInput.class)
 
-    Map<UUID, EmInput> entityMap = [sptd.emInput].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, EmInput> entityMap = map([sptd.emInput])
 
     when:
     def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
@@ -167,7 +165,7 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new AssetInputEntityData(parameter, AssetInput.class)
 
-    Map<UUID, NodeInput> entityMap = [GridTestData.nodeA].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
     when:
     def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
@@ -183,7 +181,7 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new AssetInputEntityData(parameter, AssetInput.class)
 
-    Map<UUID, NodeInput> entityMap = [GridTestData.nodeA].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
     when:
     def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
@@ -199,7 +197,7 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new AssetInputEntityData(parameter, AssetInput.class)
 
-    Map<UUID, NodeInput> entityMap = [GridTestData.nodeA].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
     when:
     def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
@@ -217,7 +215,7 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new AssetInputEntityData(parameter, AssetInput.class)
 
-    Map<UUID, NodeInput> entityMap = [GridTestData.nodeA].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
     when:
     def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)

@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.test.helper.EntityMap.map
+
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData
@@ -12,7 +14,6 @@ import edu.ie3.datamodel.io.factory.input.Transformer3WInputEntityData
 import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData
 import edu.ie3.datamodel.io.source.RawGridSource
 import edu.ie3.datamodel.io.source.TypeSource
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
@@ -23,7 +24,6 @@ import edu.ie3.test.common.GridTestData as rgtd
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.util.function.Function
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
@@ -60,14 +60,13 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     def validAssetEntityInputData = Stream.of(Try.Success.of(new AssetInputEntityData(fieldsToAttributes, SwitchInput)))
 
-    def nodes = [rgtd.nodeA, rgtd.nodeB].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    def nodes = map([rgtd.nodeA, rgtd.nodeB])
 
     when: "the source tries to convert it"
     def connectorDataOption = source.buildUntypedConnectorInputEntityData(validAssetEntityInputData, nodes)
 
     then: "everything is fine"
-    connectorDataOption.forEach {
-      actualTry ->
+    connectorDataOption.forEach { actualTry ->
       assert actualTry.isSuccess()
       actualTry.data.get().with {
         assert fieldsToValues == expectedFieldsToAttributes
@@ -93,7 +92,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     def validAssetEntityInputData = Stream.of(Try.Success.of(new AssetInputEntityData(fieldsToAttributes, SwitchInput)))
 
-    def nodes = [rgtd.nodeA, rgtd.nodeB].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    def nodes = map([rgtd.nodeA, rgtd.nodeB])
 
     when: "the source tries to convert it"
     def connectorDataOption = source.buildUntypedConnectorInputEntityData(validAssetEntityInputData, nodes)
@@ -164,12 +163,12 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       )
     ] as Set
 
-    def nodes = [
+    def nodes = map([
       rgtd.nodeA,
       rgtd.nodeB,
       rgtd.nodeC,
       rgtd.nodeD
-    ].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    ])
 
     when: "the source tries to convert it"
     def actualSet = source.buildUntypedConnectorInputEntityData(validStream, nodes).collect(Collectors.toSet())
@@ -254,7 +253,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       )
     ]
 
-    def availableTypes = [rgtd.lineTypeInputCtoD].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    def availableTypes = map([rgtd.lineTypeInputCtoD])
 
     when: "the source tries to convert it"
     def actualSet = source.buildTypedConnectorEntityData(validStream, availableTypes).collect(Collectors.toSet())
@@ -302,11 +301,11 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     rgtd.nodeB,
     rgtd.transformerTypeAtoBtoC), SourceException))
 
-    def availableNodes = [
+    def availableNodes = map([
       rgtd.nodeA,
       rgtd.nodeB,
       rgtd.nodeC
-    ].stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()))
+    ])
 
     def expected = new Transformer3WInputEntityData([
       "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
