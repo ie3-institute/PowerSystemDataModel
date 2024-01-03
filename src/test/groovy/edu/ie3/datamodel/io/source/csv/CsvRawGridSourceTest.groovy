@@ -435,7 +435,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "all lines are there"
     actualSet.size() == expectedSet.size()
-    actualSet.each {entry ->
+    actualSet.each { entry ->
       def actual = entry.value
       def expected = expectedSet.find {it.uuid == actual.uuid}
       assert expected != null

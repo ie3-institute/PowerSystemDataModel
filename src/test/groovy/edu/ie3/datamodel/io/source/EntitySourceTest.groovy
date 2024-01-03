@@ -43,7 +43,7 @@ class EntitySourceTest extends Specification {
     Map<String, String> parameter = [
       "linked_entity" : GridTestData.nodeA.uuid.toString(),
     ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput.class)
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
 
     Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
@@ -59,7 +59,7 @@ class EntitySourceTest extends Specification {
     Map<String, String> parameter = [
       "linked_entity" : GridTestData.nodeB.uuid.toString(),
     ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput.class)
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
 
     Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
@@ -77,7 +77,7 @@ class EntitySourceTest extends Specification {
       "t_bus" : sptd.thermalBus.uuid.toString(),
       "t_storage" : sptd.thermalStorage.uuid.toString()
     ]
-    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput.class, sptd.participantNode, null, sptd.chpTypeInput)
+    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput, sptd.participantNode, null, sptd.chpTypeInput)
 
     Map<UUID, ThermalBusInput> busMap = map([sptd.thermalBus])
     Map<UUID, ThermalStorageInput> storageMap = map([sptd.thermalStorage])
@@ -95,7 +95,7 @@ class EntitySourceTest extends Specification {
       "t_bus" : sptd.thermalBus.uuid.toString(),
       "t_storage" : "8851813b-3a7d-4fee-874b-4df9d724e4b4"
     ]
-    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput.class, sptd.participantNode, null, sptd.chpTypeInput)
+    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput, sptd.participantNode, null, sptd.chpTypeInput)
 
     Map<UUID, ThermalBusInput> busMap = map([sptd.thermalBus])
     Map<UUID, ThermalStorageInput> storageMap = map([sptd.thermalStorage])
@@ -113,7 +113,7 @@ class EntitySourceTest extends Specification {
     Map<String, String> parameter = [
       "linked_entity" : sptd.emInput.uuid.toString(),
     ]
-    def entityData = new EntityData(parameter, AssetInput.class)
+    def entityData = new EntityData(parameter, AssetInput)
 
     Map<UUID, EmInput> entityMap = map([sptd.emInput])
 
@@ -129,7 +129,7 @@ class EntitySourceTest extends Specification {
     Map<String, String> parameter = [
       "linked_entity" : sptd.parentEm.uuid.toString(),
     ]
-    def entityData = new EntityData(parameter, AssetInput.class)
+    def entityData = new EntityData(parameter, AssetInput)
 
     Map<UUID, EmInput> entityMap = map([sptd.emInput])
 
@@ -146,7 +146,7 @@ class EntitySourceTest extends Specification {
     Map<String, String> parameter = [
       "linked_entity" : "not-a-uuid",
     ]
-    def entityData = new EntityData(parameter, AssetInput.class)
+    def entityData = new EntityData(parameter, AssetInput)
 
     Map<UUID, EmInput> entityMap = map([sptd.emInput])
 
@@ -163,7 +163,7 @@ class EntitySourceTest extends Specification {
     Map<String, String> parameter = [
       "linked_entity" : GridTestData.nodeA.uuid.toString(),
     ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput.class)
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
 
     Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
@@ -179,7 +179,7 @@ class EntitySourceTest extends Specification {
     Map<String, String> parameter = [
       "linked_entity" : "",
     ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput.class)
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
 
     Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
@@ -195,7 +195,7 @@ class EntitySourceTest extends Specification {
     Map<String, String> parameter = [
       "linked_entity" : "4ca90220-74c2-4369-9afa-a18bf068840e",
     ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput.class)
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
 
     Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
@@ -213,7 +213,7 @@ class EntitySourceTest extends Specification {
     Map<String, String> parameter = [
       "linked_entity" : "not-a-uuid",
     ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput.class)
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
 
     Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 

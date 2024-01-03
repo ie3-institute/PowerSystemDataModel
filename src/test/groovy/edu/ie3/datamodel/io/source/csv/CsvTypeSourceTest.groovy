@@ -20,21 +20,22 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
     expect:
     def transformer2WTypes = typeSource.transformer2WTypes
-    def transformerToBeFound = transformer2WTypes.get(gtd.transformerTypeBtoD.uuid)
-    transformerToBeFound.id == gtd.transformerTypeBtoD.id
-    transformerToBeFound.rSc == gtd.transformerTypeBtoD.rSc
-    transformerToBeFound.xSc == gtd.transformerTypeBtoD.xSc
-    transformerToBeFound.sRated == gtd.transformerTypeBtoD.sRated
-    transformerToBeFound.vRatedA == gtd.transformerTypeBtoD.vRatedA
-    transformerToBeFound.vRatedB == gtd.transformerTypeBtoD.vRatedB
-    transformerToBeFound.gM == gtd.transformerTypeBtoD.gM
-    transformerToBeFound.bM == gtd.transformerTypeBtoD.bM
-    transformerToBeFound.dV == gtd.transformerTypeBtoD.dV
-    transformerToBeFound.dPhi == gtd.transformerTypeBtoD.dPhi
-    transformerToBeFound.tapSide == gtd.transformerTypeBtoD.tapSide
-    transformerToBeFound.tapNeutr == gtd.transformerTypeBtoD.tapNeutr
-    transformerToBeFound.tapMin == gtd.transformerTypeBtoD.tapMin
-    transformerToBeFound.tapMax == gtd.transformerTypeBtoD.tapMax
+    with(transformer2WTypes.get(gtd.transformerTypeBtoD.uuid)) {
+      id == gtd.transformerTypeBtoD.id
+      rSc == gtd.transformerTypeBtoD.rSc
+      xSc == gtd.transformerTypeBtoD.xSc
+      sRated == gtd.transformerTypeBtoD.sRated
+      vRatedA == gtd.transformerTypeBtoD.vRatedA
+      vRatedB == gtd.transformerTypeBtoD.vRatedB
+      gM == gtd.transformerTypeBtoD.gM
+      bM == gtd.transformerTypeBtoD.bM
+      dV == gtd.transformerTypeBtoD.dV
+      dPhi == gtd.transformerTypeBtoD.dPhi
+      tapSide == gtd.transformerTypeBtoD.tapSide
+      tapNeutr == gtd.transformerTypeBtoD.tapNeutr
+      tapMin == gtd.transformerTypeBtoD.tapMin
+      tapMax == gtd.transformerTypeBtoD.tapMax
+    }
   }
 
   def "A CsvTypeSource should read and handle valid operator file as expected"() {
@@ -56,14 +57,15 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, new FileNamingStrategy()))
 
     expect:
-    def lineType = typeSource.lineTypes.get(gtd.lineTypeInputCtoD.uuid)
-    lineType.id == gtd.lineTypeInputCtoD.id
-    lineType.b == gtd.lineTypeInputCtoD.b
-    lineType.g == gtd.lineTypeInputCtoD.g
-    lineType.r == gtd.lineTypeInputCtoD.r
-    lineType.x == gtd.lineTypeInputCtoD.x
-    lineType.iMax == gtd.lineTypeInputCtoD.iMax
-    lineType.vRated == gtd.lineTypeInputCtoD.vRated
+    with(typeSource.lineTypes.get(gtd.lineTypeInputCtoD.uuid)) {
+      id == gtd.lineTypeInputCtoD.id
+      b == gtd.lineTypeInputCtoD.b
+      g == gtd.lineTypeInputCtoD.g
+      r == gtd.lineTypeInputCtoD.r
+      x == gtd.lineTypeInputCtoD.x
+      iMax == gtd.lineTypeInputCtoD.iMax
+      vRated == gtd.lineTypeInputCtoD.vRated
+    }
   }
 
   def "A CsvTypeSource should read and handle valid 3W Transformer type file as expected"() {
@@ -71,27 +73,28 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, new FileNamingStrategy()))
 
     expect:
-    def transformer3WType = typeSource.transformer3WTypes.get(gtd.transformerTypeAtoBtoC.uuid)
-    transformer3WType.id == gtd.transformerTypeAtoBtoC.id
-    transformer3WType.sRatedA == gtd.transformerTypeAtoBtoC.sRatedA
-    transformer3WType.sRatedB == gtd.transformerTypeAtoBtoC.sRatedB
-    transformer3WType.sRatedC == gtd.transformerTypeAtoBtoC.sRatedC
-    transformer3WType.vRatedA == gtd.transformerTypeAtoBtoC.vRatedA
-    transformer3WType.vRatedB == gtd.transformerTypeAtoBtoC.vRatedB
-    transformer3WType.vRatedC == gtd.transformerTypeAtoBtoC.vRatedC
-    transformer3WType.rScA == gtd.transformerTypeAtoBtoC.rScA
-    transformer3WType.rScB == gtd.transformerTypeAtoBtoC.rScB
-    transformer3WType.rScC == gtd.transformerTypeAtoBtoC.rScC
-    transformer3WType.xScA == gtd.transformerTypeAtoBtoC.xScA
-    transformer3WType.xScB == gtd.transformerTypeAtoBtoC.xScB
-    transformer3WType.xScC == gtd.transformerTypeAtoBtoC.xScC
-    transformer3WType.gM == gtd.transformerTypeAtoBtoC.gM
-    transformer3WType.bM == gtd.transformerTypeAtoBtoC.bM
-    transformer3WType.dV == gtd.transformerTypeAtoBtoC.dV
-    transformer3WType.dPhi == gtd.transformerTypeAtoBtoC.dPhi
-    transformer3WType.tapNeutr == gtd.transformerTypeAtoBtoC.tapNeutr
-    transformer3WType.tapMin == gtd.transformerTypeAtoBtoC.tapMin
-    transformer3WType.tapMax == gtd.transformerTypeAtoBtoC.tapMax
+    with(typeSource.transformer3WTypes.get(gtd.transformerTypeAtoBtoC.uuid)) {
+      id == gtd.transformerTypeAtoBtoC.id
+      sRatedA == gtd.transformerTypeAtoBtoC.sRatedA
+      sRatedB == gtd.transformerTypeAtoBtoC.sRatedB
+      sRatedC == gtd.transformerTypeAtoBtoC.sRatedC
+      vRatedA == gtd.transformerTypeAtoBtoC.vRatedA
+      vRatedB == gtd.transformerTypeAtoBtoC.vRatedB
+      vRatedC == gtd.transformerTypeAtoBtoC.vRatedC
+      rScA == gtd.transformerTypeAtoBtoC.rScA
+      rScB == gtd.transformerTypeAtoBtoC.rScB
+      rScC == gtd.transformerTypeAtoBtoC.rScC
+      xScA == gtd.transformerTypeAtoBtoC.xScA
+      xScB == gtd.transformerTypeAtoBtoC.xScB
+      xScC == gtd.transformerTypeAtoBtoC.xScC
+      gM == gtd.transformerTypeAtoBtoC.gM
+      bM == gtd.transformerTypeAtoBtoC.bM
+      dV == gtd.transformerTypeAtoBtoC.dV
+      dPhi == gtd.transformerTypeAtoBtoC.dPhi
+      tapNeutr == gtd.transformerTypeAtoBtoC.tapNeutr
+      tapMin == gtd.transformerTypeAtoBtoC.tapMin
+      tapMax == gtd.transformerTypeAtoBtoC.tapMax
+    }
   }
 
   def "A CsvTypeSource should read and handle valid bm type file as expected"() {
@@ -99,13 +102,14 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, new FileNamingStrategy()))
 
     expect:
-    def bmType = typeSource.bmTypes.get(sptd.bmTypeInput.uuid)
-    bmType.id == sptd.bmTypeInput.id
-    bmType.capex == sptd.bmTypeInput.capex
-    bmType.opex == sptd.bmTypeInput.opex
-    bmType.cosPhiRated == sptd.bmTypeInput.cosPhiRated
-    bmType.activePowerGradient == sptd.bmTypeInput.activePowerGradient
-    bmType.etaConv == sptd.bmTypeInput.etaConv
+    with(typeSource.bmTypes.get(sptd.bmTypeInput.uuid)) {
+      id == sptd.bmTypeInput.id
+      capex == sptd.bmTypeInput.capex
+      opex == sptd.bmTypeInput.opex
+      cosPhiRated == sptd.bmTypeInput.cosPhiRated
+      activePowerGradient == sptd.bmTypeInput.activePowerGradient
+      etaConv == sptd.bmTypeInput.etaConv
+    }
   }
 
   def "A CsvTypeSource should read and handle valid chp type file as expected"() {
@@ -113,15 +117,16 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, new FileNamingStrategy()))
 
     expect:
-    def chpType = typeSource.chpTypes.get(sptd.chpTypeInput.uuid)
-    chpType.id == sptd.chpTypeInput.id
-    chpType.capex == sptd.chpTypeInput.capex
-    chpType.opex == sptd.chpTypeInput.opex
-    chpType.etaEl == sptd.chpTypeInput.etaEl
-    chpType.etaThermal == sptd.chpTypeInput.etaThermal
-    chpType.sRated == sptd.chpTypeInput.sRated
-    chpType.pThermal == sptd.chpTypeInput.pThermal
-    chpType.pOwn == sptd.chpTypeInput.pOwn
+    with(typeSource.chpTypes.get(sptd.chpTypeInput.uuid)) {
+      id == sptd.chpTypeInput.id
+      capex == sptd.chpTypeInput.capex
+      opex == sptd.chpTypeInput.opex
+      etaEl == sptd.chpTypeInput.etaEl
+      etaThermal == sptd.chpTypeInput.etaThermal
+      sRated == sptd.chpTypeInput.sRated
+      pThermal == sptd.chpTypeInput.pThermal
+      pOwn == sptd.chpTypeInput.pOwn
+    }
   }
 
   def "A CsvTypeSource should read and handle valid hp type file as expected"() {
@@ -129,13 +134,14 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, new FileNamingStrategy()))
 
     expect:
-    def hpType = typeSource.hpTypes.get(sptd.hpTypeInput.uuid)
-    hpType.id == sptd.hpTypeInput.id
-    hpType.capex == sptd.hpTypeInput.capex
-    hpType.opex == sptd.hpTypeInput.opex
-    hpType.sRated == sptd.hpTypeInput.sRated
-    hpType.cosPhiRated == sptd.hpTypeInput.cosPhiRated
-    hpType.pThermal == sptd.hpTypeInput.pThermal
+    with(typeSource.hpTypes.get(sptd.hpTypeInput.uuid)) {
+      id == sptd.hpTypeInput.id
+      capex == sptd.hpTypeInput.capex
+      opex == sptd.hpTypeInput.opex
+      sRated == sptd.hpTypeInput.sRated
+      cosPhiRated == sptd.hpTypeInput.cosPhiRated
+      pThermal == sptd.hpTypeInput.pThermal
+    }
   }
 
   def "A CsvTypeSource should read and handle valid storage type file as expected"() {
@@ -143,19 +149,20 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, new FileNamingStrategy()))
 
     expect:
-    def storageType = typeSource.storageTypes.get(sptd.storageTypeInput.uuid)
-    storageType.id == sptd.storageTypeInput.id
-    storageType.capex == sptd.storageTypeInput.capex
-    storageType.opex == sptd.storageTypeInput.opex
-    storageType.eStorage == sptd.storageTypeInput.eStorage
-    storageType.sRated == sptd.storageTypeInput.sRated
-    storageType.cosPhiRated == sptd.storageTypeInput.cosPhiRated
-    storageType.pMax == sptd.storageTypeInput.pMax
-    storageType.activePowerGradient == sptd.storageTypeInput.activePowerGradient
-    storageType.eta == sptd.storageTypeInput.eta
-    storageType.dod == sptd.storageTypeInput.dod
-    storageType.lifeTime == sptd.storageTypeInput.lifeTime
-    storageType.lifeCycle == sptd.storageTypeInput.lifeCycle
+    with(typeSource.storageTypes.get(sptd.storageTypeInput.uuid)) {
+      id == sptd.storageTypeInput.id
+      capex == sptd.storageTypeInput.capex
+      opex == sptd.storageTypeInput.opex
+      eStorage == sptd.storageTypeInput.eStorage
+      sRated == sptd.storageTypeInput.sRated
+      cosPhiRated == sptd.storageTypeInput.cosPhiRated
+      pMax == sptd.storageTypeInput.pMax
+      activePowerGradient == sptd.storageTypeInput.activePowerGradient
+      eta == sptd.storageTypeInput.eta
+      dod == sptd.storageTypeInput.dod
+      lifeTime == sptd.storageTypeInput.lifeTime
+      lifeCycle == sptd.storageTypeInput.lifeCycle
+    }
   }
 
   def "A CsvTypeSource should read and handle valid wec type file as expected"() {
@@ -163,19 +170,21 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, new FileNamingStrategy()))
 
     expect:
-    def wecType = typeSource.wecTypes.get(sptd.wecType.uuid)
-    wecType.id == sptd.wecType.id
-    wecType.capex == sptd.wecType.capex
-    wecType.opex == sptd.wecType.opex
-    wecType.cosPhiRated == sptd.wecType.cosPhiRated
-    wecType.etaConv == sptd.wecType.etaConv
-    wecType.sRated == sptd.wecType.sRated
-    wecType.rotorArea == sptd.wecType.rotorArea
-    wecType.hubHeight == sptd.wecType.hubHeight
-    wecType.cpCharacteristic == sptd.wecType.cpCharacteristic
-    //check for the individual points
-    if (wecType.cpCharacteristic.points.iterator().hasNext())
-      wecType.cpCharacteristic.points.iterator().next() == sptd.wecType.cpCharacteristic.points.iterator().next()
+    with(typeSource.wecTypes.get(sptd.wecType.uuid)) {
+      id == sptd.wecType.id
+      capex == sptd.wecType.capex
+      opex == sptd.wecType.opex
+      cosPhiRated == sptd.wecType.cosPhiRated
+      etaConv == sptd.wecType.etaConv
+      sRated == sptd.wecType.sRated
+      rotorArea == sptd.wecType.rotorArea
+      hubHeight == sptd.wecType.hubHeight
+      cpCharacteristic == sptd.wecType.cpCharacteristic
+      //check for the individual points
+      if (cpCharacteristic.points.iterator().hasNext()) {
+        assert cpCharacteristic.points.iterator().next() == sptd.wecType.cpCharacteristic.points.iterator().next()
+      }
+    }
   }
 
   def "A CsvTypeSource should read and handle valid ev type file as expected"() {
@@ -183,13 +192,14 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, new FileNamingStrategy()))
 
     expect:
-    def evType = typeSource.evTypes.get(sptd.evTypeInput.uuid)
-    evType.id == sptd.evTypeInput.id
-    evType.capex == sptd.evTypeInput.capex
-    evType.opex == sptd.evTypeInput.opex
-    evType.eStorage == sptd.evTypeInput.eStorage
-    evType.eCons == sptd.evTypeInput.eCons
-    evType.sRated == sptd.evTypeInput.sRated
-    evType.cosPhiRated == sptd.evTypeInput.cosPhiRated
+    with(typeSource.evTypes.get(sptd.evTypeInput.uuid)) {
+      id == sptd.evTypeInput.id
+      capex == sptd.evTypeInput.capex
+      opex == sptd.evTypeInput.opex
+      eStorage == sptd.evTypeInput.eStorage
+      eCons == sptd.evTypeInput.eCons
+      sRated == sptd.evTypeInput.sRated
+      cosPhiRated == sptd.evTypeInput.cosPhiRated
+    }
   }
 }

@@ -59,8 +59,8 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     ]) {
       // partly fake the return method of the csv raw grid source to always return empty node sets
       // -> elements to build NodeGraphicInputs are missing
-      getNodes() >> new HashMap<UUID, NodeInput>()
-      getNodes(_) >> new HashMap<UUID, NodeInput>()
+      getNodes() >> [:]
+      getNodes(_) >> [:]
     } as RawGridSource
     def energyManagementSource = new EnergyManagementSource(typeSource, new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
     def csvSystemParticipantSource = new SystemParticipantSource(

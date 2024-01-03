@@ -58,16 +58,18 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     resultingCylindricalStorageWoOperator.size() == 1
-    resultingCylindricalStorageWoOperator.first().uuid == sptd.thermalStorage.uuid
-    resultingCylindricalStorageWoOperator.first().id == sptd.thermalStorage.id
-    resultingCylindricalStorageWoOperator.first().operator == sptd.thermalStorage.operator
-    resultingCylindricalStorageWoOperator.first().operationTime == sptd.thermalStorage.operationTime
-    resultingCylindricalStorageWoOperator.first().thermalBus == sptd.thermalStorage.thermalBus
-    resultingCylindricalStorageWoOperator.first().storageVolumeLvl == sptd.storageVolumeLvl
-    resultingCylindricalStorageWoOperator.first().storageVolumeLvlMin == sptd.storageVolumeLvlMin
-    resultingCylindricalStorageWoOperator.first().inletTemp == sptd.inletTemp
-    resultingCylindricalStorageWoOperator.first().returnTemp == sptd.returnTemp
-    resultingCylindricalStorageWoOperator.first().c == sptd.c
+    with(resultingCylindricalStorageWoOperator.first()) {
+      uuid == sptd.thermalStorage.uuid
+      id == sptd.thermalStorage.id
+      operator == sptd.thermalStorage.operator
+      operationTime == sptd.thermalStorage.operationTime
+      thermalBus == sptd.thermalStorage.thermalBus
+      storageVolumeLvl == sptd.storageVolumeLvl
+      storageVolumeLvlMin == sptd.storageVolumeLvlMin
+      inletTemp == sptd.inletTemp
+      returnTemp == sptd.returnTemp
+      c == sptd.c
+    }
 
     //test method when operators and thermal buses are provided as constructor parameters
     when:
@@ -75,16 +77,18 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     resultingCylindricalStorage.size() == 1
-    resultingCylindricalStorage.first().uuid == sptd.thermalStorage.uuid
-    resultingCylindricalStorage.first().id == sptd.thermalStorage.id
-    resultingCylindricalStorage.first().operator == sptd.thermalStorage.operator
-    resultingCylindricalStorage.first().operationTime == sptd.thermalStorage.operationTime
-    resultingCylindricalStorage.first().thermalBus == sptd.thermalStorage.thermalBus
-    resultingCylindricalStorage.first().storageVolumeLvl == sptd.storageVolumeLvl
-    resultingCylindricalStorage.first().storageVolumeLvlMin == sptd.storageVolumeLvlMin
-    resultingCylindricalStorage.first().inletTemp == sptd.inletTemp
-    resultingCylindricalStorage.first().returnTemp == sptd.returnTemp
-    resultingCylindricalStorage.first().c == sptd.c
+    with(resultingCylindricalStorage.first()) {
+      uuid == sptd.thermalStorage.uuid
+      id == sptd.thermalStorage.id
+      operator == sptd.thermalStorage.operator
+      operationTime == sptd.thermalStorage.operationTime
+      thermalBus == sptd.thermalStorage.thermalBus
+      storageVolumeLvl == sptd.storageVolumeLvl
+      storageVolumeLvlMin == sptd.storageVolumeLvlMin
+      inletTemp == sptd.inletTemp
+      returnTemp == sptd.returnTemp
+      c == sptd.c
+    }
   }
 
   def "A CsvThermalSource should return a ThermalHouseInput from valid and invalid input data as expected"() {
@@ -100,18 +104,19 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     resultingThermalHouseWoOperator.size() == 1
-    def thermalHouseWoOp = resultingThermalHouseWoOperator.values().first()
-    thermalHouseWoOp.uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
-    thermalHouseWoOp.id == ThermalUnitInputTestData.thermalHouseInput.id
-    thermalHouseWoOp.operator == ThermalUnitInputTestData.thermalHouseInput.operator
-    thermalHouseWoOp.operationTime.isLimited()
-    thermalHouseWoOp.operationTime == ThermalUnitInputTestData.thermalHouseInput.operationTime
-    thermalHouseWoOp.thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
-    thermalHouseWoOp.ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
-    thermalHouseWoOp.ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
-    thermalHouseWoOp.targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
-    thermalHouseWoOp.upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
-    thermalHouseWoOp.lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
+    with(resultingThermalHouseWoOperator.values().first()) {
+      uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
+      id == ThermalUnitInputTestData.thermalHouseInput.id
+      operator == ThermalUnitInputTestData.thermalHouseInput.operator
+      operationTime.isLimited()
+      operationTime == ThermalUnitInputTestData.thermalHouseInput.operationTime
+      thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
+      ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
+      ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
+      targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
+      upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
+      lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
+    }
 
     //test method when operators and thermal buses are provided as constructor parameters
     when:
@@ -119,17 +124,18 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     resultingThermalHouse.size() == 1
-    def thermalHouse = resultingThermalHouse.values().first()
-    thermalHouse .uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
-    thermalHouse.id == ThermalUnitInputTestData.thermalHouseInput.id
-    thermalHouse.operator == ThermalUnitInputTestData.thermalHouseInput.operator
-    thermalHouse.operationTime.isLimited()
-    thermalHouse.operationTime == ThermalUnitInputTestData.thermalHouseInput.operationTime
-    thermalHouse.thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
-    thermalHouse.ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
-    thermalHouse.ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
-    thermalHouse.targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
-    thermalHouse.upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
-    thermalHouse.lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
+    with(resultingThermalHouse.values().first()) {
+      uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
+      id == ThermalUnitInputTestData.thermalHouseInput.id
+      operator == ThermalUnitInputTestData.thermalHouseInput.operator
+      operationTime.isLimited()
+      operationTime == ThermalUnitInputTestData.thermalHouseInput.operationTime
+      thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
+      ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
+      ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
+      targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
+      upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
+      lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
+    }
   }
 }
