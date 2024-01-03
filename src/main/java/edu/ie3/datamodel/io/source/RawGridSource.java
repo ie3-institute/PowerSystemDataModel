@@ -30,7 +30,9 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * Implementation that provides the capability to build entities that are hold by a {@link
+ * todo javadoc
+ *
+ * <p>Implementation that provides the capability to build entities that are hold by a {@link
  * RawGridElements} as well as the {@link RawGridElements} container as well from different data
  * sources e.g. .csv files or databases.
  *
@@ -84,36 +86,69 @@ public class RawGridSource extends EntitySource {
    * e.g. in the sense that not duplicate UUIDs exist within all entities contained in the returning
    * instance.
    *
-   * @return either a valid, complete {@link RawGridElements} or throws a {@link SourceException}
+   * @return a valid, complete {@link RawGridElements}
+   * @throws SourceException on error
    */
   public RawGridElements getGridData() throws SourceException {
     /* read all needed entities start with the types and operators */
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, LineTypeInput> lineTypes = typeSource.getLineTypes();
+
+    /* assets */
+    Map<UUID, NodeInput> nodes = getNodes(operators);
+    Map<UUID, LineInput> lines = getLines(operators, nodes, lineTypes);
+
+    return getGridData(operators, nodes, lines);
+  }
+
+  /**
+   * Should return either a consistent instance of {@link RawGridElements} or throw a {@link
+   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
+   * incomplete {@link RawGridElements} instance is motivated by the fact, that a {@link
+   * RawGridElements} is a container instance that depends on several other entities. Without being
+   * complete, it is useless for further processing.
+   *
+   * <p>Hence, whenever at least one entity {@link RawGridElements} depends on cannot be provided,
+   * {@link SourceException} should be thrown. The thrown exception should provide enough
+   * information to debug the error and fix the persistent data that has been failed to processed.
+   *
+   * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
+   * only the completeness of the resulting {@link RawGridElements} instance, but also its validity
+   * e.g. in the sense that not duplicate UUIDs exist within all entities contained in the returning
+   * instance.
+   *
+   * <p>This constructor reuses some basic input data to improve performance.
+   *
+   * @param operators All operators of the grid in a map UUID -> operator
+   * @param nodes All nodes of the grid in a map UUID -> node
+   * @param lines All lines of the grid in a map UUID -> line
+   * @return a valid, complete {@link RawGridElements}
+   * @throws SourceException on error
+   */
+  public RawGridElements getGridData(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, LineInput> lines)
+      throws SourceException {
+    /* read all needed entities start with the types and operators */
     Map<UUID, Transformer2WTypeInput> transformer2WTypeInputs = typeSource.getTransformer2WTypes();
     Map<UUID, Transformer3WTypeInput> transformer3WTypeInputs = typeSource.getTransformer3WTypes();
 
     /* assets */
-    Map<UUID, NodeInput> nodes = getNodes(operators);
-    Try<Map<UUID, LineInput>, SourceException> lineInputs =
-        Try.of(() -> getLines(nodes, lineTypes, operators), SourceException.class);
     Try<Set<Transformer2WInput>, SourceException> transformer2WInputs =
         Try.of(
-            () -> get2WTransformers(nodes, transformer2WTypeInputs, operators),
+            () -> get2WTransformers(operators, nodes, transformer2WTypeInputs),
             SourceException.class);
     Try<Set<Transformer3WInput>, SourceException> transformer3WInputs =
         Try.of(
-            () -> get3WTransformers(nodes, transformer3WTypeInputs, operators),
+            () -> get3WTransformers(operators, nodes, transformer3WTypeInputs),
             SourceException.class);
     Try<Set<SwitchInput>, SourceException> switches =
-        Try.of(() -> getSwitches(nodes, operators), SourceException.class);
+        Try.of(() -> getSwitches(operators, nodes), SourceException.class);
     Try<Set<MeasurementUnitInput>, SourceException> measurementUnits =
-        Try.of(() -> getMeasurementUnits(nodes, operators), SourceException.class);
+        Try.of(() -> getMeasurementUnits(operators, nodes), SourceException.class);
 
     List<SourceException> exceptions =
         Try.getExceptions(
-            List.of(
-                lineInputs, transformer2WInputs, transformer3WInputs, switches, measurementUnits));
+            List.of(transformer2WInputs, transformer3WInputs, switches, measurementUnits));
 
     if (!exceptions.isEmpty()) {
       throw new RawGridException(
@@ -124,7 +159,7 @@ public class RawGridSource extends EntitySource {
       // filtered and thrown before
       return new RawGridElements(
           new HashSet<>(nodes.values()),
-          new HashSet<>(lineInputs.getOrThrow().values()),
+          new HashSet<>(lines.values()),
           transformer2WInputs.getOrThrow(),
           transformer3WInputs.getOrThrow(),
           switches.getOrThrow(),
@@ -180,7 +215,7 @@ public class RawGridSource extends EntitySource {
    */
   public Map<UUID, LineInput> getLines() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
-    return getLines(getNodes(operators), typeSource.getLineTypes(), operators);
+    return getLines(operators, getNodes(operators), typeSource.getLineTypes());
   }
 
   /**
@@ -204,9 +239,9 @@ public class RawGridSource extends EntitySource {
    * @return a set of object and uuid unique {@link LineInput} entities
    */
   public Map<UUID, LineInput> getLines(
+      Map<UUID, OperatorInput> operators,
       Map<UUID, NodeInput> nodes,
-      Map<UUID, LineTypeInput> lineTypeInputs,
-      Map<UUID, OperatorInput> operators)
+      Map<UUID, LineTypeInput> lineTypeInputs)
       throws SourceException {
     return unpackMap(
         buildTypedEntityData(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs),
@@ -225,7 +260,7 @@ public class RawGridSource extends EntitySource {
    */
   public Set<Transformer2WInput> get2WTransformers() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
-    return get2WTransformers(getNodes(operators), typeSource.getTransformer2WTypes(), operators);
+    return get2WTransformers(operators, getNodes(operators), typeSource.getTransformer2WTypes());
   }
 
   /**
@@ -251,9 +286,9 @@ public class RawGridSource extends EntitySource {
    * @return a set of object and uuid unique {@link Transformer2WInput} entities
    */
   public Set<Transformer2WInput> get2WTransformers(
+      Map<UUID, OperatorInput> operators,
       Map<UUID, NodeInput> nodes,
-      Map<UUID, Transformer2WTypeInput> transformer2WTypes,
-      Map<UUID, OperatorInput> operators)
+      Map<UUID, Transformer2WTypeInput> transformer2WTypes)
       throws SourceException {
     return unpackSet(
         buildTypedEntityData(
@@ -277,7 +312,7 @@ public class RawGridSource extends EntitySource {
    */
   public Set<Transformer3WInput> get3WTransformers() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
-    return get3WTransformers(getNodes(operators), typeSource.getTransformer3WTypes(), operators);
+    return get3WTransformers(operators, getNodes(operators), typeSource.getTransformer3WTypes());
   }
 
   /**
@@ -303,9 +338,9 @@ public class RawGridSource extends EntitySource {
    * @return a set of object and uuid unique {@link Transformer3WInput} entities
    */
   public Set<Transformer3WInput> get3WTransformers(
+      Map<UUID, OperatorInput> operators,
       Map<UUID, NodeInput> nodes,
-      Map<UUID, Transformer3WTypeInput> transformer3WTypeInputs,
-      Map<UUID, OperatorInput> operators)
+      Map<UUID, Transformer3WTypeInput> transformer3WTypeInputs)
       throws SourceException {
     return unpackSet(
         buildTransformer3WEntities(
@@ -325,7 +360,7 @@ public class RawGridSource extends EntitySource {
    */
   public Set<SwitchInput> getSwitches() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
-    return getSwitches(getNodes(operators), operators);
+    return getSwitches(operators, getNodes(operators));
   }
 
   /**
@@ -348,7 +383,7 @@ public class RawGridSource extends EntitySource {
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
   public Set<SwitchInput> getSwitches(
-      Map<UUID, NodeInput> nodes, Map<UUID, OperatorInput> operators) throws SourceException {
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
     return buildUntypedConnectorInputEntities(
         SwitchInput.class, switchInputFactory, nodes, operators);
   }
@@ -365,7 +400,7 @@ public class RawGridSource extends EntitySource {
    */
   public Set<MeasurementUnitInput> getMeasurementUnits() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
-    return getMeasurementUnits(getNodes(operators), operators);
+    return getMeasurementUnits(operators, getNodes(operators));
   }
 
   /**
@@ -389,7 +424,7 @@ public class RawGridSource extends EntitySource {
    * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
    */
   public Set<MeasurementUnitInput> getMeasurementUnits(
-      Map<UUID, NodeInput> nodes, Map<UUID, OperatorInput> operators) throws SourceException {
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
     return unpackSet(
         buildNodeAssetEntityData(MeasurementUnitInput.class, operators, nodes)
             .map(measurementUnitInputFactory::get),

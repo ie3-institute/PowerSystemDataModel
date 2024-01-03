@@ -54,13 +54,25 @@ public class GraphicSource extends EntitySource {
 
     // read all needed entities
     /// start with types and operators
-    Map<UUID, OperatorInput> operators =
-        typeSource.getOperators(); // fixme those only need to be fetched once, if done smartly
+    Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, LineTypeInput> lineTypes = typeSource.getLineTypes();
 
     Map<UUID, NodeInput> nodes = rawGridSource.getNodes(operators);
-    Map<UUID, LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
+    Map<UUID, LineInput> lines = rawGridSource.getLines(operators, nodes, lineTypes);
 
+    return getGraphicElements(nodes, lines);
+  }
+
+  /**
+   * Returns the graphic elements of the grid or throws a {@link SourceException}.
+   *
+   * <p>This constructor reuses some basic input data to improve performance.
+   *
+   * @param nodes All nodes of the grid in a map UUID -> node
+   * @param lines All lines of the grid in a map UUID -> line
+   */
+  public GraphicElements getGraphicElements(Map<UUID, NodeInput> nodes, Map<UUID, LineInput> lines)
+      throws SourceException {
     Try<Set<NodeGraphicInput>, SourceException> nodeGraphics =
         Try.of(() -> getNodeGraphicInput(nodes), SourceException.class);
     Try<Set<LineGraphicInput>, SourceException> lineGraphics =
@@ -105,7 +117,7 @@ public class GraphicSource extends EntitySource {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     return getLineGraphicInput(
         rawGridSource.getLines(
-            rawGridSource.getNodes(operators), typeSource.getLineTypes(), operators));
+            operators, rawGridSource.getNodes(operators), typeSource.getLineTypes()));
   }
 
   public Set<LineGraphicInput> getLineGraphicInput(Map<UUID, LineInput> lines)

@@ -90,13 +90,45 @@ public class SystemParticipantSource extends EntitySource {
    * validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in the
    * returning instance.
    *
-   * @return either a valid, complete {@link SystemParticipants} or throws a {@link SourceException}
+   * @return a valid, complete {@link SystemParticipants}
+   * @throws SourceException on error
    */
   public SystemParticipants getSystemParticipants() throws SourceException {
 
+    Map<UUID, OperatorInput> operators = typeSource.getOperators();
+    Map<UUID, NodeInput> nodes = rawGridSource.getNodes(operators);
+
+    return getSystemParticipants(operators, nodes);
+  }
+
+  /**
+   * Should return either a consistent instance of {@link SystemParticipants} or throw a {@link
+   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
+   * incomplete {@link SystemParticipants} instance is motivated by the fact, that a {@link
+   * SystemParticipants} is a container instance that depends on several other entities. Without
+   * being complete, it is useless for further processing.
+   *
+   * <p>Hence, whenever at least one entity {@link SystemParticipants} depends on cannot be
+   * provided, {@link SourceException} should be thrown. The thrown exception should provide enough
+   * information to debug the error and fix the persistent data that has been failed to processed.
+   *
+   * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
+   * only the completeness of the resulting {@link SystemParticipants} instance, but also its
+   * validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in the
+   * returning instance.
+   *
+   * <p>This constructor reuses some basic input data to improve performance.
+   *
+   * @param operators All operators of the grid in a map UUID -> operator
+   * @param nodes All nodes of the grid in a map UUID -> node
+   * @return a valid, complete {@link SystemParticipants}
+   * @throws SourceException on error
+   */
+  public SystemParticipants getSystemParticipants(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
+
     // read all needed entities
     /// start with types and operators
-    Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, BmTypeInput> bmTypes = typeSource.getBmTypes();
     Map<UUID, ChpTypeInput> chpTypes = typeSource.getChpTypes();
     Map<UUID, EvTypeInput> evTypes = typeSource.getEvTypes();
@@ -110,8 +142,6 @@ public class SystemParticipantSource extends EntitySource {
     Map<UUID, ThermalStorageInput> thermalStorages =
         thermalSource.getThermalStorages(operators, thermalBuses);
 
-    /// go on with the nodes
-    Map<UUID, NodeInput> nodes = rawGridSource.getNodes(operators);
     Try<Set<FixedFeedInInput>, SourceException> fixedFeedInInputs =
         Try.of(() -> getFixedFeedIns(operators, nodes, emUnits), SourceException.class);
     Try<Set<PvInput>, SourceException> pvInputs =
