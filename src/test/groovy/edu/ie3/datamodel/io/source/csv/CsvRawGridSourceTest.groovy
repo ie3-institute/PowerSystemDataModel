@@ -63,7 +63,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     def nodes = map([rgtd.nodeA, rgtd.nodeB])
 
     when: "the source tries to convert it"
-    def connectorDataOption = source.buildUntypedConnectorInputEntityData(validAssetEntityInputData, nodes)
+    def connectorDataOption = source.untypedConnectorEntityDataStream(validAssetEntityInputData, nodes)
 
     then: "everything is fine"
     connectorDataOption.forEach { actualTry ->
@@ -95,9 +95,9 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     def nodes = map([rgtd.nodeA, rgtd.nodeB])
 
     when: "the source tries to convert it"
-    def connectorDataOption = source.buildUntypedConnectorInputEntityData(validAssetEntityInputData, nodes)
+    def connectorDataOption = source.untypedConnectorEntityDataStream(validAssetEntityInputData, nodes)
 
-    then: "it returns en empty Optional"
+    then: "it returns a Failure"
     connectorDataOption.allMatch(Try::isFailure)
   }
 
@@ -171,7 +171,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     ])
 
     when: "the source tries to convert it"
-    def actualSet = source.buildUntypedConnectorInputEntityData(validStream, nodes).collect(Collectors.toSet())
+    def actualSet = source.untypedConnectorEntityDataStream(validStream, nodes).collect(Collectors.toSet())
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
@@ -256,7 +256,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     def availableTypes = map([rgtd.lineTypeInputCtoD])
 
     when: "the source tries to convert it"
-    def actualSet = source.buildTypedConnectorEntityData(validStream, availableTypes).collect(Collectors.toSet())
+    def actualSet = source.typedConnectorEntityDataStream(validStream, availableTypes).collect(Collectors.toSet())
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
@@ -324,7 +324,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     rgtd.transformerTypeAtoBtoC)
 
     when: "the sources tries to add nodes"
-    def actualSet = source.buildTransformer3WEntityData(inputStream, availableNodes).collect(Collectors.toSet())
+    def actualSet = source.transformer3WEntityDataStream(inputStream, availableNodes).collect(Collectors.toSet())
     def successes = actualSet.stream().filter {
       it.success
     }.toList()
@@ -553,7 +553,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     then: "all elements are there"
     actual != null
     actual.with {
-      /* It's okay, to only test the uuids, because content is tested with the other test mehtods */
+      /* It's okay, to only test the uuids, because content is tested with the other test methods */
       assert nodes.size() == expected.nodes.size()
       assert nodes.each {entry -> expected.nodes.contains({it.uuid == entry.uuid})}
       assert lines.size() == expected.lines.size()
