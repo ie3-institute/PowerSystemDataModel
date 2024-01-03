@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 /** Class that provides all functionalities to build entities */
 public abstract class EntitySource {
-  // TODO make all subclasses static?
 
   protected static final Logger log = LoggerFactory.getLogger(EntitySource.class);
 
