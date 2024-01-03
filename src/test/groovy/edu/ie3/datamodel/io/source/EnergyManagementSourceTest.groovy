@@ -225,7 +225,7 @@ class EnergyManagementSourceTest extends Specification {
     then:
     def exc = thrown(SourceException)
     exc.cause.message.contains("An error occurred when creating instance of EmInput")
-    exc.cause.class == FactoryException
+    exc.cause.cause.class == FactoryException
   }
 
   def "An EnergyManagementSource should fail if a parent em is not provided"() {
