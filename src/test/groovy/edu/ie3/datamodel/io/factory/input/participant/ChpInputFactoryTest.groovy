@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.input.participant
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.ChpInput
@@ -48,14 +47,13 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
     def inputClass = ChpInput
     def nodeInput = Mock(NodeInput)
     def operatorInput = Mock(OperatorInput)
-    def emUnit = Mock(EmInput)
     def typeInput = Mock(ChpTypeInput)
     def thermalBusInput = Mock(ThermalBusInput)
     def thermalStorageInput = Mock(ThermalStorageInput)
 
     when:
     Try<ChpInput, FactoryException> input = inputFactory.get(
-        new ChpInputEntityData(parameter, operatorInput, nodeInput, emUnit, typeInput, thermalBusInput, thermalStorageInput))
+        new ChpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput, thermalStorageInput))
 
     then:
     input.success
@@ -75,7 +73,6 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert em == Optional.of(emUnit)
       assert type == typeInput
       assert marketReaction
     }

@@ -8,8 +8,8 @@ package edu.ie3.datamodel.io.factory.input.participant
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
@@ -47,10 +47,9 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
     def inputClass = FixedFeedInInput
     def nodeInput = Mock(NodeInput)
     def operatorInput = Mock(OperatorInput)
-    def emUnit = Mock(EmInput)
 
     when:
-    Try<FixedFeedInInput, FactoryException> input = inputFactory.get(new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput, emUnit))
+    Try<FixedFeedInInput, FactoryException> input = inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.success
@@ -69,7 +68,6 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert em == Optional.of(emUnit)
       assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
       assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
     }
@@ -86,10 +84,9 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
     ]
     def inputClass = FixedFeedInInput
     def nodeInput = Mock(NodeInput)
-    def emUnit = Mock(EmInput)
 
     when:
-    Try<FixedFeedInInput, FactoryException> input =  inputFactory.get(new SystemParticipantEntityData(parameter, inputClass, nodeInput, emUnit))
+    Try<FixedFeedInInput, FactoryException> input =  inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
 
     then:
     input.failure
@@ -102,10 +99,6 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
         "0: [cosphirated, id, qcharacteristics, srated, uuid]\n" +
         "1: [cosphirated, id, operatesfrom, qcharacteristics, srated, uuid]\n" +
         "2: [cosphirated, id, operatesuntil, qcharacteristics, srated, uuid]\n" +
-        "3: [cosphirated, id, operatesfrom, operatesuntil, qcharacteristics, srated, uuid]\n" +
-        "4: [cosphirated, em, id, qcharacteristics, srated, uuid]\n" +
-        "5: [cosphirated, em, id, operatesfrom, qcharacteristics, srated, uuid]\n" +
-        "6: [cosphirated, em, id, operatesuntil, qcharacteristics, srated, uuid]\n" +
-        "7: [cosphirated, em, id, operatesfrom, operatesuntil, qcharacteristics, srated, uuid]\n"
+        "3: [cosphirated, id, operatesfrom, operatesuntil, qcharacteristics, srated, uuid]\n"
   }
 }

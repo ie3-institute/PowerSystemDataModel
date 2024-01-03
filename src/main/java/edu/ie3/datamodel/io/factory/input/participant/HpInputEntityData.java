@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
-import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData;
-import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.HpInput;
@@ -21,10 +19,9 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
   public HpInputEntityData(
       Map<String, String> fieldsToAttributes,
       NodeInput node,
-      EmInput em,
       HpTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(fieldsToAttributes, HpInput.class, node, em, typeInput);
+    super(fieldsToAttributes, HpInput.class, node, typeInput);
     this.thermalBusInput = thermalBusInput;
   }
 
@@ -32,16 +29,15 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
       Map<String, String> fieldsToAttributes,
       OperatorInput operator,
       NodeInput node,
-      EmInput em,
       HpTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(fieldsToAttributes, HpInput.class, operator, node, em, typeInput);
+    super(fieldsToAttributes, HpInput.class, operator, node, typeInput);
     this.thermalBusInput = thermalBusInput;
   }
 
   /**
-   * Creates a new HpInputEntityData object based on a given {@link ConnectorInputEntityData} object
-   * and given thermal bus input
+   * Creates a new HpInputEntityData object based on a given {@link
+   * SystemParticipantTypedEntityData} object and given thermal bus input
    *
    * @param entityData The SystemParticipantTypedEntityData object to enhance
    * @param thermalBusInput The thermal bus input

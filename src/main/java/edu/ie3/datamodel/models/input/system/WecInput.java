@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
@@ -32,7 +31,6 @@ public class WecInput extends SystemParticipantInput implements HasType {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of this WEC
    * @param marketReaction Is this asset market oriented?
    */
@@ -43,10 +41,9 @@ public class WecInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       WecTypeInput type,
       boolean marketReaction) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
   }
@@ -58,7 +55,6 @@ public class WecInput extends SystemParticipantInput implements HasType {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of this WEC
    * @param marketReaction Is this asset market oriented?
    */
@@ -67,10 +63,9 @@ public class WecInput extends SystemParticipantInput implements HasType {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       WecTypeInput type,
       boolean marketReaction) {
-    super(uuid, id, node, qCharacteristics, em);
+    super(uuid, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
   }
@@ -117,8 +112,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
         + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + "', em="
-        + getEm()
+        + '\''
         + ", type="
         + type.getUuid()
         + ", marketReaction="
@@ -154,7 +148,6 @@ public class WecInput extends SystemParticipantInput implements HasType {
           getOperationTime(),
           getNode(),
           getqCharacteristics(),
-          getEm(),
           type,
           marketReaction);
     }

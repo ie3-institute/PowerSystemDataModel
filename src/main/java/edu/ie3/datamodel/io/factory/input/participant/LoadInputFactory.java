@@ -6,9 +6,9 @@
 package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.LoadInput;
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
 public class LoadInputFactory
-    extends SystemParticipantInputEntityFactory<LoadInput, SystemParticipantEntityData> {
+    extends SystemParticipantInputEntityFactory<LoadInput, NodeAssetInputEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(LoadInputFactory.class);
 
   private static final String LOAD_PROFILE = "loadprofile";
@@ -42,7 +42,7 @@ public class LoadInputFactory
 
   @Override
   protected LoadInput buildModel(
-      SystemParticipantEntityData data,
+      NodeAssetInputEntityData data,
       UUID uuid,
       String id,
       NodeInput node,
@@ -59,7 +59,6 @@ public class LoadInputFactory
           id);
       loadProfile = LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
     }
-    final EmInput em = data.getEm().orElse(null);
     final boolean dsm = data.getBoolean(DSM);
     final ComparableQuantity<Energy> eConsAnnual =
         data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN);
@@ -73,7 +72,6 @@ public class LoadInputFactory
         operationTime,
         node,
         qCharacteristics,
-        em,
         loadProfile,
         dsm,
         eConsAnnual,

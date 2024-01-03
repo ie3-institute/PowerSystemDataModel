@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.BmInput;
@@ -42,7 +41,6 @@ public class BmInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getEm().orElse(null);
     final BmTypeInput typeInput = data.getTypeInput();
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
     final boolean costControlled = data.getBoolean(COST_CONTROLLED);
@@ -56,7 +54,6 @@ public class BmInputFactory
         operationTime,
         node,
         qCharacteristics,
-        em,
         typeInput,
         marketReaction,
         costControlled,

@@ -36,7 +36,6 @@ class EvcsInputTest extends Specification {
       assert chargingPoints == 1
       assert locationType == EvcsLocationType.CHARGING_HUB_HIGHWAY
       assert v2gSupport
-      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

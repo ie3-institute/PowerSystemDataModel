@@ -9,7 +9,6 @@ import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.io.extractor.HasThermalStorage;
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
@@ -42,7 +41,6 @@ public class ChpInput extends SystemParticipantInput
    * @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal
    *     bus of the provided thermal storage!)
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of CHP
    * @param thermalStorage Thermal storage model
    * @param marketReaction Is this asset market oriented?
@@ -55,11 +53,10 @@ public class ChpInput extends SystemParticipantInput
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       ChpTypeInput type,
       ThermalStorageInput thermalStorage,
       boolean marketReaction) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.thermalBus = thermalBus;
     this.type = type;
     this.thermalStorage = thermalStorage;
@@ -75,7 +72,6 @@ public class ChpInput extends SystemParticipantInput
    * @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal
    *     bus of the provided thermal storage!)
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of CHP
    * @param thermalStorage Thermal storage model
    * @param marketReaction Is this asset market oriented?
@@ -86,11 +82,10 @@ public class ChpInput extends SystemParticipantInput
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       ChpTypeInput type,
       ThermalStorageInput thermalStorage,
       boolean marketReaction) {
-    super(uuid, id, node, qCharacteristics, em);
+    super(uuid, id, node, qCharacteristics);
     this.thermalBus = thermalBus;
     this.type = type;
     this.thermalStorage = thermalStorage;
@@ -150,8 +145,7 @@ public class ChpInput extends SystemParticipantInput
         + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + "', em="
-        + getEm()
+        + '\''
         + ", thermalBus="
         + thermalBus.getUuid()
         + ", type="
@@ -196,7 +190,6 @@ public class ChpInput extends SystemParticipantInput
           getNode(),
           thermalBus,
           getqCharacteristics(),
-          getEm(),
           type,
           thermalStorage,
           marketReaction);

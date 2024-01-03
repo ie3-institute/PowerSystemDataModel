@@ -26,7 +26,6 @@ class StorageInputTest extends Specification {
       assert id == storageInput.id
       assert qCharacteristics == storageInput.qCharacteristics
       assert type == SystemParticipantTestData.storageTypeInput
-      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

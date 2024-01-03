@@ -33,7 +33,6 @@ class BmInputTest extends Specification {
       assert qCharacteristics == bmInput.qCharacteristics
       assert feedInTariff == Quantities.getQuantity(15, EURO_PER_MEGAWATTHOUR)
       assert type == SystemParticipantTestData.bmTypeInput
-      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

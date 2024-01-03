@@ -26,7 +26,6 @@ class EvInputTest extends Specification {
       assert id == ev.id
       assert qCharacteristics == ev.qCharacteristics
       assert type == SystemParticipantTestData.evTypeInput
-      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

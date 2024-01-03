@@ -5,6 +5,7 @@
  */
 package edu.ie3.test.common
 
+import static edu.ie3.test.common.EnergyManagementTestData.emptyEnergyManagementUnits
 import static edu.ie3.test.common.SystemParticipantTestData.emptySystemParticipants
 
 import edu.ie3.datamodel.graph.SubGridGate
@@ -45,6 +46,7 @@ class ComplexTopology extends GridTestData {
   gridName,
   rawGrid,
   emptySystemParticipants,
+  emptyEnergyManagementUnits,
   new GraphicElements(
   [] as Set,
   [] as Set))
@@ -65,6 +67,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)
@@ -81,6 +84,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)
@@ -97,6 +101,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)
@@ -113,6 +118,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)
@@ -132,6 +138,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)
@@ -151,6 +158,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
+        emptyEnergyManagementUnits,
         new GraphicElements(
         [] as Set,
         [] as Set)

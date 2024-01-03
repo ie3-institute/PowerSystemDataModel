@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.HpInput;
@@ -34,8 +33,6 @@ public class HpInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getEm().orElse(null);
-
     return new HpInput(
         uuid,
         id,
@@ -44,7 +41,6 @@ public class HpInputFactory
         node,
         data.getThermalBusInput(),
         qCharacteristics,
-        em,
         data.getTypeInput());
   }
 }

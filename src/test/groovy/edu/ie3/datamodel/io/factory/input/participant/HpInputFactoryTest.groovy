@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.input.participant
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.HpInput
@@ -46,13 +45,12 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
     def inputClass = HpInput
     def nodeInput = Mock(NodeInput)
     def operatorInput = Mock(OperatorInput)
-    def emUnit = Mock(EmInput)
     def typeInput = Mock(HpTypeInput)
     def thermalBusInput = Mock(ThermalBusInput)
 
     when:
     Try<HpInput, FactoryException> input = inputFactory.get(
-        new HpInputEntityData(parameter, operatorInput, nodeInput, emUnit, typeInput, thermalBusInput))
+        new HpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput))
 
     then:
     input.success
@@ -72,7 +70,6 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert em == Optional.of(emUnit)
       assert type == typeInput
       assert thermalBus == thermalBusInput
     }
