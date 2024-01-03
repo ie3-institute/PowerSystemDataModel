@@ -24,13 +24,11 @@ public class EnergyManagementSource extends EntitySource {
 
   private final TypeSource typeSource;
 
-  private final EmInputFactory emInputFactory;
+  private static final EmInputFactory emInputFactory = new EmInputFactory();
 
   public EnergyManagementSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
-
-    this.emInputFactory = new EmInputFactory();
   }
 
   /**
@@ -65,7 +63,7 @@ public class EnergyManagementSource extends EntitySource {
    * @return a map of uuid to {@link EmInput} entities
    */
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
-    return buildHierarchicalEmInputs(operators);
+    return createEmInputs(buildAssetInputEntityData(EmInput.class, operators));
   }
 
   /**
@@ -74,14 +72,13 @@ public class EnergyManagementSource extends EntitySource {
    * in {@link SystemParticipantSource}. Instead, we use a recursive approach, starting with EMs at
    * root level (which are not EM-controlled themselves).
    *
-   * @param operators a map of uuid to {@link OperatorInput} that should be used for the returning
-   *     instances
+   * @param assetEntityDataStream the data stream of {@link AssetInputEntityData} * {@link Try}
+   *     objects
    * @return a map of uuid to {@link EmInput} entities
    */
-  private Map<UUID, EmInput> buildHierarchicalEmInputs(Map<UUID, OperatorInput> operators)
+  private static Map<UUID, EmInput> createEmInputs(
+      Stream<Try<AssetInputEntityData, SourceException>> assetEntityDataStream)
       throws SourceException {
-    Stream<Try<AssetInputEntityData, SourceException>> assetEntityDataStream =
-        buildAssetInputEntityData(EmInput.class, operators);
 
     // Split stream by failures and EMs that are themselves EM-controlled on one side, and EMs at
     // root position (that have not failed so far) on the other side, which do not have parents per
@@ -112,8 +109,11 @@ public class EnergyManagementSource extends EntitySource {
             EmInput.class);
 
     if (!others.isEmpty()) {
-      // there's more levels beyond EMs at root level. Build them recursively
+      // there's more EM levels beyond root level. Build them recursively
       Stream<AssetDataAndValidParentUuid> othersWithParentUuid =
+          // We try to keep the Tries as long as possible so that as many failures as possible can
+          // be reported. At this point however, we need to "unpack" (and throw, if applicable),
+          // because without valid parent EM UUID, we cannot proceed.
           unpack(
               others.stream()
                   .map(
@@ -141,14 +141,14 @@ public class EnergyManagementSource extends EntitySource {
                               })),
               AssetDataAndValidParentUuid.class);
 
-      allEms.putAll(buildHierarchicalEmInputs(othersWithParentUuid, allEms));
+      allEms.putAll(createHierarchicalEmInputs(othersWithParentUuid, allEms));
     }
 
     return allEms;
   }
 
-  private Map<UUID, EmInput> buildHierarchicalEmInputs(
-      Stream<AssetDataAndValidParentUuid> assetEntityDataStream, Map<UUID, EmInput> builtEms)
+  private static Map<UUID, EmInput> createHierarchicalEmInputs(
+      Stream<AssetDataAndValidParentUuid> assetEntityDataStream, Map<UUID, EmInput> lastLevelEms)
       throws SourceException {
 
     // Split stream by assets whose parent is already built (which can be built at this level), and
@@ -156,33 +156,34 @@ public class EnergyManagementSource extends EntitySource {
     // or not at all)
     Map<Boolean, List<AssetDataAndValidParentUuid>> split =
         assetEntityDataStream.collect(
-            Collectors.partitioningBy(data -> builtEms.containsKey(data.parentEm)));
+            Collectors.partitioningBy(data -> lastLevelEms.containsKey(data.parentEm)));
 
     List<AssetDataAndValidParentUuid> toBeBuiltAtThisLevel = split.get(true);
-    List<AssetDataAndValidParentUuid> others = split.get(false);
+    List<AssetDataAndValidParentUuid> toBeBuiltAtNextLevel = split.get(false);
 
     if (toBeBuiltAtThisLevel.isEmpty()) {
-      // Since we only start a new recursion step if the asset data stream is not empty,
-      // we can conclude at this point that from all asset data at this recursion level,
-      // no new EMs can be built - thus, parents must be missing
+      // Since we only start a new recursion step if the asset data stream is not empty, there have
+      // to be EMs to be built at next level. This does not work if there's no EMs at the current
+      // recursion level.
       throw new SourceException(
-          "EMs " + others + " were assigned a parent EM that does not exist.");
+          "EMs " + toBeBuiltAtNextLevel + " were assigned a parent EM that does not exist.");
     } else {
       // New EMs can be built at this level
       Map<UUID, EmInput> newEms =
           unpackMap(
               toBeBuiltAtThisLevel.stream()
                   .map(
-                      data ->
-                          emInputFactory.get(
-                              new EmAssetInputEntityData(
-                                  data.entityData, builtEms.get(data.parentEm)))),
+                      data -> {
+                        // exists because we checked above
+                        EmInput parentEm = lastLevelEms.get(data.parentEm);
+                        return emInputFactory.get(
+                            new EmAssetInputEntityData(data.entityData, parentEm));
+                      }),
               EmInput.class);
 
-      // This also means that if there's more EMs left to build, the new EMs might function as
-      // parents there
-      if (!others.isEmpty()) {
-        newEms.putAll(buildHierarchicalEmInputs(others.stream(), newEms));
+      if (!toBeBuiltAtNextLevel.isEmpty()) {
+        // If there's more EMs left to build, the new EMs have to function as parents there
+        newEms.putAll(createHierarchicalEmInputs(toBeBuiltAtNextLevel.stream(), newEms));
       }
       return newEms;
     }

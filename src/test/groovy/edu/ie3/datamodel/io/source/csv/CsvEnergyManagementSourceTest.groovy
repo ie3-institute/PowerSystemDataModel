@@ -15,7 +15,6 @@ import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 
-// TODO test recursion
 class CsvEnergyManagementSourceTest extends Specification implements CsvTestDataMeta {
 
   def "An EnergyManagementSource with csv input should return data from valid em input file as expected"() {
