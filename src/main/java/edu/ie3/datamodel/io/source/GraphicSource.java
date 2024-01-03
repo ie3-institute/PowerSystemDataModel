@@ -66,10 +66,12 @@ public class GraphicSource extends EntitySource {
   /**
    * Returns the graphic elements of the grid or throws a {@link SourceException}.
    *
-   * <p>This constructor reuses some basic input data to improve performance.
+   * <p>In contrast to {@link #getGraphicElements()}, this method provides the ability to pass in
+   * already existing input objects that this method depends on. Doing so, already loaded nodes and
+   * lines can be recycled to improve performance and prevent unnecessary loading operations.
    *
-   * @param nodes All nodes of the grid in a map UUID -> node
-   * @param lines All lines of the grid in a map UUID -> line
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param lines a map of UUID to object- and uuid-unique {@link LineInput} entities
    */
   public GraphicElements getGraphicElements(Map<UUID, NodeInput> nodes, Map<UUID, LineInput> lines)
       throws SourceException {
@@ -142,7 +144,7 @@ public class GraphicSource extends EntitySource {
    * NodeGraphicInputEntityData} instance, a {@link Failure} is included in the stream and warning
    * is logged.
    *
-   * @param nodes a set of nodes with unique uuids
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @return a stream of tries of {@link NodeGraphicInput} entities
    */
   protected Stream<Try<NodeGraphicInputEntityData, SourceException>> buildNodeGraphicEntityData(
@@ -168,7 +170,7 @@ public class GraphicSource extends EntitySource {
    * LineGraphicInputEntityData} instance, a {@link Failure} is included in the stream and warning
    * is logged.
    *
-   * @param lines a set of lines with unique uuids
+   * @param lines a map of UUID to object- and uuid-unique {@link LineInput} entities
    * @return a stream of tries of {@link LineGraphicInput} entities
    */
   protected Stream<Try<LineGraphicInputEntityData, SourceException>> buildLineGraphicEntityData(

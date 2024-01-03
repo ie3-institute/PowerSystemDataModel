@@ -117,10 +117,12 @@ public class SystemParticipantSource extends EntitySource {
    * validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in the
    * returning instance.
    *
-   * <p>This constructor reuses some basic input data to improve performance.
+   * <p>In contrast to {@link #getSystemParticipants()}, this method provides the ability to pass in
+   * already existing input objects that this method depends on. Doing so, already loaded operators
+   * and nodes can be recycled to improve performance and prevent unnecessary loading operations.
    *
-   * @param operators All operators of the grid in a map UUID -> operator
-   * @param nodes All nodes of the grid in a map UUID -> node
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @return a valid, complete {@link SystemParticipants}
    * @throws SourceException on error
    */
@@ -211,7 +213,7 @@ public class SystemParticipantSource extends EntitySource {
    * manually, as {@link FixedFeedInInput#equals(Object)} is NOT restricted on the uuid of {@link
    * FixedFeedInInput}.
    *
-   * @return a set of object and uuid unique {@link FixedFeedInInput} entities
+   * @return a set of object- and uuid-unique {@link FixedFeedInInput} entities
    */
   public Set<FixedFeedInInput> getFixedFeedIns() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -233,10 +235,10 @@ public class SystemParticipantSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @return a set of object and uuid unique {@link FixedFeedInInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @return a set of object- and uuid-unique {@link FixedFeedInInput} entities
    */
   public Set<FixedFeedInInput> getFixedFeedIns(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -254,7 +256,7 @@ public class SystemParticipantSource extends EntitySource {
    * java.util.UUID} uniqueness of the provided {@link PvInput} which has to be checked manually, as
    * {@link PvInput#equals(Object)} is NOT restricted on the uuid of {@link PvInput}.
    *
-   * @return a set of object and uuid unique {@link PvInput} entities
+   * @return a set of object- and uuid-unique {@link PvInput} entities
    */
   public Set<PvInput> getPvPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -276,10 +278,10 @@ public class SystemParticipantSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @return a set of object and uuid unique {@link PvInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @return a set of object- and uuid-unique {@link PvInput} entities
    */
   public Set<PvInput> getPvPlants(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -297,7 +299,7 @@ public class SystemParticipantSource extends EntitySource {
    * java.util.UUID} uniqueness of the provided {@link LoadInput} which has to be checked manually,
    * as {@link LoadInput#equals(Object)} is NOT restricted on the uuid of {@link LoadInput}.
    *
-   * @return a set of object and uuid unique {@link LoadInput} entities
+   * @return a set of object- and uuid-unique {@link LoadInput} entities
    */
   public Set<LoadInput> getLoads() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -319,10 +321,10 @@ public class SystemParticipantSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @return a set of object and uuid unique {@link LoadInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @return a set of object- and uuid-unique {@link LoadInput} entities
    */
   public Set<LoadInput> getLoads(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -340,7 +342,7 @@ public class SystemParticipantSource extends EntitySource {
    * java.util.UUID} uniqueness of the provided {@link EvcsInput} which has to be checked manually,
    * as {@link EvcsInput#equals(Object)} is NOT restricted on the uuid of {@link EvcsInput}.
    *
-   * @return a set of object and uuid unique {@link EvcsInput} entities
+   * @return a set of object- and uuid-unique {@link EvcsInput} entities
    */
   public Set<EvcsInput> getEvcs() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -362,10 +364,10 @@ public class SystemParticipantSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @return a set of object and uuid unique {@link EvcsInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @return a set of object- and uuid-unique {@link EvcsInput} entities
    */
   public Set<EvcsInput> getEvcs(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -383,7 +385,7 @@ public class SystemParticipantSource extends EntitySource {
    * java.util.UUID} uniqueness of the provided {@link BmInput} which has to be checked manually, as
    * {@link BmInput#equals(Object)} is NOT restricted on the uuid of {@link BmInput}.
    *
-   * @return a set of object and uuid unique {@link BmInput} entities
+   * @return a set of object- and uuid-unique {@link BmInput} entities
    */
   public Set<BmInput> getBmPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -406,11 +408,11 @@ public class SystemParticipantSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @param types a set of object and uuid unique {@link BmTypeInput} entities
-   * @return a set of object and uuid unique {@link BmInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @param types a map of UUID to object- and uuid-unique {@link BmTypeInput} entities
+   * @return a set of object- and uuid-unique {@link BmInput} entities
    */
   public Set<BmInput> getBmPlants(
       Map<UUID, OperatorInput> operators,
@@ -432,7 +434,7 @@ public class SystemParticipantSource extends EntitySource {
    * manually, as {@link StorageInput#equals(Object)} is NOT restricted on the uuid of {@link
    * StorageInput}.
    *
-   * @return a set of object and uuid unique {@link StorageInput} entities
+   * @return a set of object- and uuid-unique {@link StorageInput} entities
    */
   public Set<StorageInput> getStorages() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -455,11 +457,12 @@ public class SystemParticipantSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @param types a set of object and uuid unique {@link StorageTypeInput} entities
-   * @return a set of object and uuid unique {@link StorageInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} that should be
+   *     used for the returning instances
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @param types a map of UUID to object- and uuid-unique {@link StorageTypeInput} entities
+   * @return a set of object- and uuid-unique {@link StorageInput} entities
    */
   public Set<StorageInput> getStorages(
       Map<UUID, OperatorInput> operators,
@@ -480,7 +483,7 @@ public class SystemParticipantSource extends EntitySource {
    * java.util.UUID} uniqueness of the provided {@link WecInput} which has to be checked manually,
    * as {@link WecInput#equals(Object)} is NOT restricted on the uuid of {@link WecInput}.
    *
-   * @return a set of object and uuid unique {@link WecInput} entities
+   * @return a set of object- and uuid-unique {@link WecInput} entities
    */
   public Set<WecInput> getWecPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -503,11 +506,11 @@ public class SystemParticipantSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @param types a set of object and uuid unique {@link WecTypeInput} entities
-   * @return a set of object and uuid unique {@link WecInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @param types a map of UUID to object- and uuid-unique {@link WecTypeInput} entities
+   * @return a set of object- and uuid-unique {@link WecInput} entities
    */
   public Set<WecInput> getWecPlants(
       Map<UUID, OperatorInput> operators,
@@ -528,7 +531,7 @@ public class SystemParticipantSource extends EntitySource {
    * java.util.UUID} uniqueness of the provided {@link EvInput} which has to be checked manually, as
    * {@link EvInput#equals(Object)} is NOT restricted on the uuid of {@link EvInput}.
    *
-   * @return a set of object and uuid unique {@link EvInput} entities
+   * @return a set of object- and uuid-unique {@link EvInput} entities
    */
   public Set<EvInput> getEvs() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -550,11 +553,11 @@ public class SystemParticipantSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @param types a set of object and uuid unique {@link EvTypeInput} entities
-   * @return a set of object and uuid unique {@link EvInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @param types a map of UUID to object- and uuid-unique {@link EvTypeInput} entities
+   * @return a set of object- and uuid-unique {@link EvInput} entities
    */
   public Set<EvInput> getEvs(
       Map<UUID, OperatorInput> operators,
@@ -590,6 +593,15 @@ public class SystemParticipantSource extends EntitySource {
    *
    * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   *
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @param types a map of UUID to object- and uuid-unique {@link ChpTypeInput} entities
+   * @param thermalBuses a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
+   * @param thermalStorages a map of UUID to object- and uuid-unique {@link ThermalStorageInput}
+   *     entities
+   * @return a set of object- and uuid-unique {@link ChpInput} entities
    */
   public Set<ChpInput> getChpPlants(
       Map<UUID, OperatorInput> operators,
@@ -629,6 +641,13 @@ public class SystemParticipantSource extends EntitySource {
    *
    * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   *
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @param types a map of UUID to object- and uuid-unique {@link HpTypeInput} entities
+   * @param thermalBuses a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
+   * @return a set of object- and uuid-unique {@link HpInput} entities
    */
   public Set<HpInput> getHeatPumps(
       Map<UUID, OperatorInput> operators,
@@ -698,8 +717,8 @@ public class SystemParticipantSource extends EntitySource {
    * Constructs a stream of {@link SystemParticipantTypedEntityData} wrapped in {@link Try}'s.
    *
    * @param entityClass the class of the entities that should be built
-   * @param nodes the nodes that should be considered for these entities
    * @param operators the operators that should be considered for these entities
+   * @param nodes the nodes that should be considered for these entities
    * @param types the types that should be considered for these entities
    * @param <T> the type of the type model of the resulting entity
    * @return a stream of tries holding an instance of a {@link SystemParticipantTypedEntityData}

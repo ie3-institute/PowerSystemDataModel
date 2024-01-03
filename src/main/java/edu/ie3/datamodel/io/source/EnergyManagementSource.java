@@ -36,9 +36,9 @@ public class EnergyManagementSource extends EntitySource {
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
    * java.util.UUID} uniqueness of the provided {@link EmInput} which has to be checked manually, as
-   * {@link EmInput#equals(Object)} is NOT restricted on the uuid of {@link EmInput}.
+   * {@link EmInput#equals(Object)} is NOT restricted on the UUID of {@link EmInput}.
    *
-   * @return a map of uuid to {@link EmInput} entities
+   * @return a map of UUID to {@link EmInput} entities
    */
   public Map<UUID, EmInput> getEmUnits() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -48,7 +48,7 @@ public class EnergyManagementSource extends EntitySource {
   /**
    * This set has to be unique in the sense of object uniqueness but also in the sense of {@link
    * java.util.UUID} uniqueness of the provided {@link EmInput} which has to be checked manually, as
-   * {@link EmInput#equals(Object)} is NOT restricted on the uuid of {@link EmInput}.
+   * {@link EmInput#equals(Object)} is NOT restricted on the UUID of {@link EmInput}.
    *
    * <p>In contrast to {@link #getEmUnits()} this method provides the ability to pass in an already
    * existing set of {@link OperatorInput} entities, the {@link EmInput} instances depend on. Doing
@@ -58,9 +58,8 @@ public class EnergyManagementSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a map of uuid to {@link OperatorInput} that should be used for the returning
-   *     instances
-   * @return a map of uuid to {@link EmInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @return a map of UUID to {@link EmInput} entities
    */
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
     return createEmInputs(buildAssetInputEntityData(EmInput.class, operators));
@@ -72,9 +71,9 @@ public class EnergyManagementSource extends EntitySource {
    * in {@link SystemParticipantSource}. Instead, we use a recursive approach, starting with EMs at
    * root level (which are not EM-controlled themselves).
    *
-   * @param assetEntityDataStream the data stream of {@link AssetInputEntityData} * {@link Try}
+   * @param assetEntityDataStream the data stream of {@link AssetInputEntityData} {@link Try}
    *     objects
-   * @return a map of uuid to {@link EmInput} entities
+   * @return a map of UUID to {@link EmInput} entities
    */
   private static Map<UUID, EmInput> createEmInputs(
       Stream<Try<AssetInputEntityData, SourceException>> assetEntityDataStream)

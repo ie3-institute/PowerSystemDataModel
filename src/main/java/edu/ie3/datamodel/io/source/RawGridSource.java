@@ -30,11 +30,9 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * todo javadoc
- *
- * <p>Implementation that provides the capability to build entities that are hold by a {@link
- * RawGridElements} as well as the {@link RawGridElements} container as well from different data
- * sources e.g. .csv files or databases.
+ * Implementation that provides the capability to build entities held by {@link RawGridElements} as
+ * well as the {@link RawGridElements} container from different data sources e.g. .csv files or
+ * databases.
  *
  * @version 0.1
  * @since 08.04.20
@@ -117,11 +115,13 @@ public class RawGridSource extends EntitySource {
    * e.g. in the sense that not duplicate UUIDs exist within all entities contained in the returning
    * instance.
    *
-   * <p>This constructor reuses some basic input data to improve performance.
+   * <p>In contrast to {@link #getGridData()}, this method provides the ability to pass in already
+   * existing input objects that this method depends on. Doing so, already loaded operators, nodes
+   * and lines can be recycled to improve performance and prevent unnecessary loading operations.
    *
-   * @param operators All operators of the grid in a map UUID -> operator
-   * @param nodes All nodes of the grid in a map UUID -> node
-   * @param lines All lines of the grid in a map UUID -> line
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param lines a map of UUID to object- and uuid-unique {@link LineInput} entities
    * @return a valid, complete {@link RawGridElements}
    * @throws SourceException on error
    */
@@ -168,23 +168,24 @@ public class RawGridSource extends EntitySource {
   }
 
   /**
-   * Returns a unique set of {@link NodeInput} instances.
+   * Returns a unique set of {@link NodeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
    * java.util.UUID} uniqueness of the provided {@link NodeInput} which has to be checked manually,
    * as {@link NodeInput#equals(Object)} is NOT restricted on the uuid of {@link NodeInput}.
    *
-   * @return a set of object and uuid unique {@link NodeInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link NodeInput} entities
    */
   public Map<UUID, NodeInput> getNodes() throws SourceException {
     return getNodes(typeSource.getOperators());
   }
 
   /**
-   * Returns a set of {@link NodeInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * NodeInput} which has to be checked manually, as {@link NodeInput#equals(Object)} is NOT
-   * restricted on the uuid of {@link NodeInput}.
+   * Returns a unique set of {@link NodeInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link NodeInput} which has to be checked manually,
+   * as {@link NodeInput#equals(Object)} is NOT restricted on the uuid of {@link NodeInput}.
    *
    * <p>In contrast to {@link #getNodes} this method provides the ability to pass in an already
    * existing set of {@link OperatorInput} entities, the {@link NodeInput} instances depend on.
@@ -194,9 +195,8 @@ public class RawGridSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @return a set of object and uuid unique {@link NodeInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link NodeInput} entities
    */
   public Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) throws SourceException {
     return unpackMap(
@@ -205,13 +205,13 @@ public class RawGridSource extends EntitySource {
   }
 
   /**
-   * Returns a unique set of {@link LineInput} instances.
+   * Returns a unique set of {@link LineInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
    * java.util.UUID} uniqueness of the provided {@link LineInput} which has to be checked manually,
    * as {@link LineInput#equals(Object)} is NOT restricted on the uuid of {@link LineInput}.
    *
-   * @return a set of object and uuid unique {@link LineInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link LineInput} entities
    */
   public Map<UUID, LineInput> getLines() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -219,10 +219,11 @@ public class RawGridSource extends EntitySource {
   }
 
   /**
-   * Returns a set of {@link LineInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * LineInput} which has to be checked manually, as {@link LineInput#equals(Object)} is NOT
-   * restricted on the uuid of {@link LineInput}.
+   * Returns a unique set of {@link LineInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link LineInput} which has to be checked manually,
+   * as {@link LineInput#equals(Object)} is NOT restricted on the uuid of {@link LineInput}.
    *
    * <p>In contrast to {@link #getNodes} this method provides the ability to pass in an already
    * existing set of {@link NodeInput}, {@link LineTypeInput} and {@link OperatorInput} entities,
@@ -232,11 +233,10 @@ public class RawGridSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @param lineTypeInputs a set of object and uuid unique {@link LineTypeInput} entities
-   * @return a set of object and uuid unique {@link LineInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param lineTypeInputs a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link LineInput} entities
    */
   public Map<UUID, LineInput> getLines(
       Map<UUID, OperatorInput> operators,
@@ -256,7 +256,7 @@ public class RawGridSource extends EntitySource {
    * manually, as {@link Transformer2WInput#equals(Object)} is NOT restricted on the uuid of {@link
    * Transformer2WInput}.
    *
-   * @return a set of object and uuid unique {@link Transformer2WInput} entities
+   * @return a set of object- and uuid-unique {@link Transformer2WInput} entities
    */
   public Set<Transformer2WInput> get2WTransformers() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -278,12 +278,11 @@ public class RawGridSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @param transformer2WTypes a set of object and uuid unique {@link Transformer2WTypeInput}
-   *     entities
-   * @return a set of object and uuid unique {@link Transformer2WInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param transformer2WTypes a map of UUID to object- and uuid-unique {@link
+   *     Transformer2WTypeInput} entities
+   * @return a set of object- and uuid-unique {@link Transformer2WInput} entities
    */
   public Set<Transformer2WInput> get2WTransformers(
       Map<UUID, OperatorInput> operators,
@@ -308,7 +307,7 @@ public class RawGridSource extends EntitySource {
    * manually, as {@link Transformer3WInput#equals(Object)} is NOT restricted on the uuid of {@link
    * Transformer3WInput}.
    *
-   * @return a set of object and uuid unique {@link Transformer3WInput} entities
+   * @return a set of object- and uuid-unique {@link Transformer3WInput} entities
    */
   public Set<Transformer3WInput> get3WTransformers() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -330,21 +329,19 @@ public class RawGridSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @param transformer3WTypeInputs a set of object and uuid unique {@link Transformer3WTypeInput}
-   *     entities
-   * @return a set of object and uuid unique {@link Transformer3WInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param transformer3WTypes a map of UUID to object- and uuid-unique {@link
+   *     Transformer3WTypeInput} entities
+   * @return a set of object- and uuid-unique {@link Transformer3WInput} entities
    */
   public Set<Transformer3WInput> get3WTransformers(
       Map<UUID, OperatorInput> operators,
       Map<UUID, NodeInput> nodes,
-      Map<UUID, Transformer3WTypeInput> transformer3WTypeInputs)
+      Map<UUID, Transformer3WTypeInput> transformer3WTypes)
       throws SourceException {
     return unpackSet(
-        buildTransformer3WEntities(
-            transformer3WInputFactory, nodes, transformer3WTypeInputs, operators),
+        buildTransformer3WEntities(transformer3WInputFactory, nodes, transformer3WTypes, operators),
         Transformer3WInput.class);
   }
 
@@ -356,7 +353,7 @@ public class RawGridSource extends EntitySource {
    * manually, as {@link SwitchInput#equals(Object)} is NOT restricted on the uuid of {@link
    * SwitchInput}.
    *
-   * @return a set of object and uuid unique {@link SwitchInput} entities
+   * @return a set of object- and uuid-unique {@link SwitchInput} entities
    */
   public Set<SwitchInput> getSwitches() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -377,10 +374,9 @@ public class RawGridSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @return a set of object and uuid unique {@link SwitchInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @return a set of object- and uuid-unique {@link SwitchInput} entities
    */
   public Set<SwitchInput> getSwitches(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
@@ -396,7 +392,7 @@ public class RawGridSource extends EntitySource {
    * manually, as {@link MeasurementUnitInput#equals(Object)} is NOT restricted on the uuid of
    * {@link MeasurementUnitInput}.
    *
-   * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
+   * @return a set of object- and uuid-unique {@link MeasurementUnitInput} entities
    */
   public Set<MeasurementUnitInput> getMeasurementUnits() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -418,10 +414,9 @@ public class RawGridSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param nodes a set of object and uuid unique {@link NodeInput} entities
-   * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @return a set of object- and uuid-unique {@link MeasurementUnitInput} entities
    */
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {

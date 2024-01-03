@@ -48,7 +48,8 @@ public abstract class EntitySource {
    * chosen by taking into account the UUID found by retrieving the field with given fieldName from
    * entityData.
    *
-   * @param entityData The entity data of the entity that provides a link to another entity via UUID
+   * @param entityData The entity data to be enhanced, which also provides a link to another entity
+   *     via UUID
    * @param fieldName The field name of the field that provides the UUID of the linked entity
    * @param linkedEntities A map of UUID to entities, of which one should be linked to given entity
    *     data
@@ -81,10 +82,10 @@ public abstract class EntitySource {
   /**
    * Enhances given entity data with two entities from the given entity maps. The linked entities
    * are chosen by taking into account the UUIDs found by retrieving the fields with given
-   * fieldNameA and fieldNameB from entityData.
+   * fieldName1 and fieldName2 from entityData.
    *
-   * @param entityData The entity data of the entity that provides links to two other entities via
-   *     UUID
+   * @param entityData The entity data to be enhanced, which also provides links to two other
+   *     entities via UUID
    * @param fieldName1 The field name of the field that provides the UUID of the first linked entity
    * @param linkedEntities1 The first map of UUID to entities, of which one should be linked to
    *     given entity data
@@ -128,15 +129,11 @@ public abstract class EntitySource {
   }
 
   /**
-   * todo javadoc
+   * Checks if the linked entity can be found in the provided map of entities. The linked entities
+   * are chosen by taking into account the UUIDs found by retrieving the fields with given
+   * fieldName1 and fieldName2 from entityData.
    *
-   * <p>Checks if the requested type of asset can be found in the provided collection of types based
-   * on the provided fields to values mapping. The provided fields to values mapping needs to have
-   * one and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can
-   * be found in the provided collection based on the UUID it is returned wrapped in a {@link
-   * Success}. Otherwise, a {@link Failure} is returned and a warning is logged.
-   *
-   * @param entityData The entity data of the entity that provides a link to another entity
+   * @param entityData The entity data of the entity that provides a link to another entity via UUID
    * @param fieldName The field name of the field that provides the UUID of the linked entity
    * @param linkedEntities A map of UUID to entities, of which one should be linked to given entity
    *     data
@@ -174,17 +171,18 @@ public abstract class EntitySource {
 
   /**
    * Enhances given entity data with an entity from the given entity map or the default value. The
-   * linked entity is chosen by taking into account the UUID found by retrieving the field with
-   * given fieldName from entityData. If no entity is linked, the default value is used.
+   * linked entity is possibly chosen by taking into account the UUID found by retrieving the field
+   * with given fieldName from entityData. If no entity is linked, the default value is used.
    *
-   * @param entityData The entity data of the entity that provides a link to another entity via UUID
-   * @param fieldName The field name of the field that provides the UUID of the linked entity
+   * @param entityData The entity data to be enhanced, which also might provide a link to another
+   *     entity via UUID
+   * @param fieldName The field name of the field that might provide the UUID of the linked entity
    * @param linkedEntities A map of UUID to entities, of which one should be linked to given entity
    *     data
    * @param defaultEntity The default linked entity to use, if no actual linked entity could be
    *     found
    * @param createEntityData The function that creates the resulting entity data given entityData
-   *     and the linked entity
+   *     and the linked entity (either retrieved from the map or the standard entity)
    * @param <E> Type of input entity data
    * @param <T> Type of the linked entity
    * @param <R> Type of resulting entity data that combines the given entityData and linked entity
@@ -264,13 +262,13 @@ public abstract class EntitySource {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
-   * Returns a stream of {@link Try} entities that can be build by using {@link
+   * Returns a stream of {@link Try} entities that can be built by using {@link
    * NodeAssetInputEntityData} and their corresponding factory.
    *
    * @param entityClass the entity class that should be build
-   * @param nodes a collection of {@link NodeInput} entities that should be used to build the
+   * @param nodes a map of UUID to {@link NodeInput} entities that should be used to build the
    *     entities
-   * @param operators a collection of {@link OperatorInput} entities should be used to build the
+   * @param operators a map of UUID to {@link OperatorInput} entities should be used to build the
    *     entities
    * @return stream of tries of the entities that has been built by the factory
    */
@@ -288,7 +286,7 @@ public abstract class EntitySource {
    *
    * @param assetInputEntityDataStream a stream consisting of {@link AssetInputEntityData} that is
    *     enriched with {@link NodeInput} data
-   * @param nodes a collection of {@link NodeInput} entities that should be used to build the data
+   * @param nodes a map of UUID to {@link NodeInput} entities that should be used to build the data
    * @return stream of the entity data wrapped in a {@link Try}
    */
   protected static Stream<Try<NodeAssetInputEntityData, SourceException>>
@@ -311,7 +309,7 @@ public abstract class EntitySource {
    * consumes this data.
    *
    * @param entityClass the entity class that should be build
-   * @param operators a collection of {@link OperatorInput} entities that should be used to build
+   * @param operators a map of UUID to {@link OperatorInput} entities that should be used to build
    *     the data
    * @return stream of the entity data wrapped in a {@link Try}
    */
@@ -327,8 +325,8 @@ public abstract class EntitySource {
    *
    * @param entityDataStream a stream consisting of {@link EntityData} that is enriched with {@link
    *     OperatorInput} data
-   * @param operators a collection of {@link OperatorInput} entities that should be used to build
-   *     the data
+   * @param operators map of UUID to {@link OperatorInput} entities that should be used to build the
+   *     data
    * @return stream of the entity data wrapped in a {@link Try}
    */
   protected static Stream<Try<AssetInputEntityData, SourceException>> assetInputEntityDataStream(

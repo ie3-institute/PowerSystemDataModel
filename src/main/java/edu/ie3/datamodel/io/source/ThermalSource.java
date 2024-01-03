@@ -22,9 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * todo javadoc
- *
- * <p>Interface that provides the capability to build thermal {@link
+ * Interface that provides the capability to build thermal {@link
  * edu.ie3.datamodel.models.input.AssetInput} entities from persistent data e.g. .csv files or
  * databases
  *
@@ -50,24 +48,26 @@ public class ThermalSource extends EntitySource {
   }
 
   /**
-   * Returns a unique set of {@link ThermalBusInput} instances.
+   * Returns a unique set of {@link ThermalBusInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
    * java.util.UUID} uniqueness of the provided {@link ThermalBusInput} which has to be checked
    * manually, as {@link ThermalBusInput#equals(Object)} is NOT restricted on the uuid of {@link
    * ThermalBusInput}.
    *
-   * @return a set of object and uuid unique {@link ThermalBusInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
    */
   public Map<UUID, ThermalBusInput> getThermalBuses() throws SourceException {
     return getThermalBuses(typeSource.getOperators());
   }
 
   /**
-   * Returns a set of {@link ThermalBusInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link ThermalBusInput} which has to be checked manually, as {@link
-   * ThermalBusInput#equals(Object)} is NOT restricted on the uuid of {@link ThermalBusInput}.
+   * Returns a unique set of {@link ThermalBusInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link ThermalBusInput} which has to be checked
+   * manually, as {@link ThermalBusInput#equals(Object)} is NOT restricted on the uuid of {@link
+   * ThermalBusInput}.
    *
    * <p>In contrast to {@link #getThermalBuses()} this interface provides the ability to pass in an
    * already existing set of {@link OperatorInput} entities, the {@link ThermalBusInput} instances
@@ -77,9 +77,8 @@ public class ThermalSource extends EntitySource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @return a set of object and uuid unique {@link ThermalBusInput} entities
+   * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
    */
   public Map<UUID, ThermalBusInput> getThermalBuses(Map<UUID, OperatorInput> operators)
       throws SourceException {
@@ -91,14 +90,14 @@ public class ThermalSource extends EntitySource {
 
   /**
    * Returns a unique set of instances of all entities implementing the {@link ThermalStorageInput}
-   * abstract class.
+   * abstract class within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
    * java.util.UUID} uniqueness of the provided {@link ThermalStorageInput} which has to be checked
    * manually, as {@link ThermalStorageInput#equals(Object)} is NOT restricted on the uuid of {@link
    * ThermalStorageInput}.
    *
-   * @return a set of object and uuid unique {@link ThermalStorageInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalStorageInput} entities
    */
   public Map<UUID, ThermalStorageInput> getThermalStorages() throws SourceException {
     return getCylindricalStorages().stream()
@@ -120,11 +119,9 @@ public class ThermalSource extends EntitySource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param thermalBuses a set of object and uuid unique {@link ThermalBusInput} that should be used
-   *     for the returning instances
-   * @return a set of object and uuid unique {@link ThermalStorageInput} entities
+   * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
+   * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalStorageInput} entities
    */
   public Map<UUID, ThermalStorageInput> getThermalStorages(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
@@ -141,7 +138,7 @@ public class ThermalSource extends EntitySource {
    * manually, as {@link ThermalHouseInput#equals(Object)} is NOT restricted on the uuid of {@link
    * ThermalHouseInput}.
    *
-   * @return a set of object and uuid unique {@link ThermalHouseInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalHouseInput} entities
    */
   public Map<UUID, ThermalHouseInput> getThermalHouses() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -151,10 +148,12 @@ public class ThermalSource extends EntitySource {
   }
 
   /**
-   * Returns a set of {@link ThermalHouseInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link ThermalHouseInput} which has to be checked manually, as {@link
-   * ThermalHouseInput#equals(Object)} is NOT restricted on the uuid of {@link ThermalHouseInput}.
+   * Returns a set of {@link ThermalHouseInput} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link ThermalHouseInput} which has to be checked
+   * manually, as {@link ThermalHouseInput#equals(Object)} is NOT restricted on the uuid of {@link
+   * ThermalHouseInput}.
    *
    * <p>In contrast to {@link #getThermalHouses()} this interface provides the ability to pass in an
    * already existing set of {@link OperatorInput} entities, the {@link ThermalHouseInput} instances
@@ -164,11 +163,9 @@ public class ThermalSource extends EntitySource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param thermalBuses a set of object and uuid unique {@link ThermalBusInput} that should be used
-   *     for the returning instances
-   * @return a set of object and uuid unique {@link ThermalHouseInput} entities
+   * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
+   * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalHouseInput} entities
    */
   public Map<UUID, ThermalHouseInput> getThermalHouses(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
@@ -188,7 +185,7 @@ public class ThermalSource extends EntitySource {
    * checked manually, as {@link CylindricalStorageInput#equals(Object)} is NOT restricted on the
    * uuid of {@link CylindricalStorageInput}.
    *
-   * @return a set of object and uuid unique {@link CylindricalStorageInput} entities
+   * @return a set of object- and uuid-unique {@link CylindricalStorageInput} entities
    */
   public Set<CylindricalStorageInput> getCylindricalStorages() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -198,11 +195,12 @@ public class ThermalSource extends EntitySource {
   }
 
   /**
-   * Returns a set of {@link CylindricalStorageInput} instances. This set has to be unique in the
-   * sense of object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the
-   * provided {@link CylindricalStorageInput} which has to be checked manually, as {@link
-   * CylindricalStorageInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * CylindricalStorageInput}.
+   * Returns a set of {@link CylindricalStorageInput} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link CylindricalStorageInput} which has to be
+   * checked manually, as {@link CylindricalStorageInput#equals(Object)} is NOT restricted on the
+   * uuid of {@link CylindricalStorageInput}.
    *
    * <p>In contrast to {@link #getCylindricalStorages()} this interface provides the ability to pass
    * in an already existing set of {@link OperatorInput} entities, the {@link
@@ -212,11 +210,9 @@ public class ThermalSource extends EntitySource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
-   * @param thermalBuses a set of object and uuid unique {@link ThermalBusInput} that should be used
-   *     for the returning instances
-   * @return a set of object and uuid unique {@link CylindricalStorageInput} entities
+   * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
+   * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
+   * @return a set of object- and uuid-unique {@link CylindricalStorageInput} entities
    */
   public Set<CylindricalStorageInput> getCylindricalStorages(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
