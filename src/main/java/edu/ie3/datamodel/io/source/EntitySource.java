@@ -351,11 +351,10 @@ public abstract class EntitySource {
    * data.
    *
    * @param entityClass the entity class that should be build
-   * @param <T> type of the entity that should be build
    * @return stream of the entity data wrapped in a {@link Try}
    */
-  protected <T extends UniqueEntity> Stream<Try<EntityData, SourceException>> buildEntityData(
-      Class<T> entityClass) {
+  protected Stream<Try<EntityData, SourceException>> buildEntityData(
+      Class<? extends UniqueEntity> entityClass) {
     return dataSource
         .getSourceData(entityClass)
         .map(fieldsToAttributes -> new Success<>(new EntityData(fieldsToAttributes, entityClass)));

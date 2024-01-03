@@ -1,15 +1,23 @@
 @startuml
 
-' todo apapt
 note "Assuming all classes to implement \nthe abstract methods of their interfaces\n\n" as generalNotes
 
 abstract class EntitySource {
-    - DataSource dataSource
-    - <T extends AssetInput> Set<T> buildNodeAssetEntities(Class<T>, EntityFactory<T, NodeAssetInputEntityData>, Collection<NodeInput>, Collection<OperatorInput>, ConcurrentMap<Class<? extends UniqueEntity>, LongAdder>)
-    - <T extends AssetInput> Set<T> buildNodeAssetEntities(Class<T>, EntityFactory<T, NodeAssetInputEntityData>, Collection<NodeInput>, Collection<OperatorInput>)
-    - <T extends AssetInput> Set<T> buildAssetInputEntities(Class<T>, EntityFactory<T, AssetInputEntityData>, Collection<OperatorInput>)
-    - <T extends AssetInput> Set<T> buildAssetInputEntities(Class<T>, EntityFactory<? extends InputEntity, EntityData>)
+    # DataSource dataSource
+    # {static} <E extends EntityData, T extends UniqueEntity, R extends E> Try<R, SourceException> enrichEntityData(E, String, Map<UUID, T>, BiFunction<E, T, R>)
+    # {static} <E extends EntityData, T1 extends UniqueEntity, T2 extends UniqueEntity, R extends E> Try<R, SourceException> enrichEntityData(E, String, Map<UUID, T1>, String, Map<UUID, T2>, TriFunction<E, T1, T2, R>)
+    # {static} <T extends UniqueEntity> Try<T, SourceException> getLinkedEntity(EntityData, String, Map<UUID, T>)
+    # {static} <E extends EntityData, T extends UniqueEntity, R extends E> Try<R, SourceException> optionallyEnrichEntityData(E, String, Map<UUID, T>, T, BiFunction<E, T, R>)
+    # Stream<Try<NodeAssetInputEntityData, SourceException>> buildNodeAssetEntities(Class<T>, Map<UUID, OperatorInput>, Map<UUID, NodeInput>)
+    # {static} Stream<Try<NodeAssetInputEntityData, SourceException>> nodeAssetInputEntityDataStream(Stream<Try<AssetInputEntityData, SourceException>>, Map<UUID, NodeInput>)
+    # Stream<Try<AssetInputEntityData, SourceException>> buildAssetInputEntities(Class<? extends AssetInput>, Map<UUID, OperatorInput>)
+    # {static} Stream<Try<AssetInputEntityData, SourceException>> assetInputEntityDataStream(Stream<Try<EntityData, SourceException>>, Map<UUID, OperatorInput>)
+    # Stream<Try<EntityData, SourceException>> buildEntityData(Class<? extends UniqueEntity>)
+    # {static} <S extends UniqueEntity> Map<UUID, S> unpackMap(Stream<Try<S, FactoryException>>, Class<S>) throws SourceException
+    # {static} <S extends UniqueEntity> Set<S> unpackSet(Stream<Try<S, FactoryException>>, Class<S>) throws SourceException
+    # {static} <S, E extends Exception> Stream<S> unpackSet(Stream<Try<S, E>>, Class<S>) throws SourceException
 }
+
 EntitySource <|-- GraphicSource
 EntitySource <|-- RawGridSource
 EntitySource <|-- ResultEntitySource
@@ -22,12 +30,13 @@ class GraphicSource {
     - RawGridSource rawGridSource
     - LineGraphicInputFactory lineGraphicInputFactory
     - NodeGraphicInputFactory nodeGraphicInputFactory
-    - GraphicSource(TypeSource, RawGridSource, DataSource)
-    - Optional<GraphicElements> getGraphicElements()
-    - Set<NodeGraphicInput> getNodeGraphicInput()
-    - Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput>)
-    - Set<LineGraphicInput> getLineGraphicInput()
-    - Set<LineGraphicInput> getLineGraphicInput(Set<LineInput>)
+    + GraphicSource(TypeSource, RawGridSource, DataSource)
+    + GraphicElements getGraphicElements() throws SourceException
+    + GraphicElements getGraphicElements(Map<UUID, NodeInput>, Map<UUID, LineInput>) throws SourceException
+    + Set<NodeGraphicInput> getNodeGraphicInput() throws SourceException
+    + Set<NodeGraphicInput> getNodeGraphicInput(Map<UUID, NodeInput>) throws SourceException
+    + Set<LineGraphicInput> getLineGraphicInput() throws SourceException
+    + Set<LineGraphicInput> getLineGraphicInput(Map<UUID, LineInput>) throws SourceException
 }
 
 class RawGridSource {
@@ -38,19 +47,21 @@ class RawGridSource {
     - Transformer3WInputFactory transformer3WInputFactory
     - SwitchInputFactory switchInputFactory
     - MeasurementUnitInputFactory measurementUnitInputFactory
-    - Optional<RawGridElements> getGridData()
-    - Set<NodeInput> getNodes()
-    - Set<NodeInput> getNodes(Set<OperatorInput>)
-    - Set<LineInput> getLines()
-    - Set<LineInput> getLines(Set<NodeInput>, Set<LineTypeInput>, Set<OperatorInput>)
-    - Set<Transformer2WInput> get2WTransformers()
-    - Set<Transformer2WInput> get2WTransformers(Set<NodeInput>, Set<Transformer2WTypeInput>, Set<OperatorInput>)
-    - Set<Transformer3WInput> get3WTransformers()
-    - Set<Transformer3WInput> get3WTransformers(Set<NodeInput>, Set<Transformer3WTypeInput>, Set<OperatorInput>)
-    - Set<SwitchInput> getSwitches()
-    - Set<SwitchInput> getSwitches(Set<NodeInput>, Set<OperatorInput>)
-    - Set<MeasurementUnitInput> getMeasurementUnits()
-    - Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput>, Set<OperatorInput>)
+    + RawGridSource(TypeSource typeSource, DataSource dataSource)
+    + RawGridElements getGridData() throws SourceException
+    + RawGridElements getGridData(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Map<UUID, LineInput>) throws SourceException
+    + Map<UUID, NodeInput> getNodes() throws SourceException
+    + Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput>) throws SourceException
+    + Map<UUID, LineInput> getLines() throws SourceException
+    + Map<UUID, LineInput> getLines(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<LineTypeInput>) throws SourceException
+    + Set<Transformer2WInput> get2WTransformers() throws SourceException
+    + Set<Transformer2WInput> get2WTransformers(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<Transformer2WTypeInput>) throws SourceException
+    + Set<Transformer3WInput> get3WTransformers() throws SourceException
+    + Set<Transformer3WInput> get3WTransformers(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<Transformer3WTypeInput>) throws SourceException
+    + Set<SwitchInput> getSwitches() throws SourceException
+    + Set<SwitchInput> getSwitches(Map<UUID, OperatorInput>, Map<UUID, NodeInput>) throws SourceException
+    + Set<MeasurementUnitInput> getMeasurementUnits() throws SourceException
+    + Set<MeasurementUnitInput> getMeasurementUnits(Map<UUID, OperatorInput>, Map<UUID, NodeInput>) throws SourceException
 }
 
 class ResultEntitySource {
@@ -60,27 +71,27 @@ class ResultEntitySource {
     - NodeResultFactory nodeResultFactory
     - ConnectorResultFactory connectorResultFactory
     - FlexOptionsResultFactory flexOptionsResultFactory
-    - ResultEntitySource(DataSource)
-    - ResultEntitySource(DataSource, String)
-    - Set<NodeResult> getNodeResults()
-    - Set<SwitchResult> getSwitchResults()
-    - Set<LineResult> getLineResults()
-    - Set<Transformer2WResult> getTransformer2WResultResults()
-    - Set<Transformer3WResult> getTransformer3WResultResults()
-    - Set<FlexOptionsResult> getFlexOptionsResults()
-    - Set<LoadResult> getLoadResults()
-    - Set<PvResult> getPvResults()
-    - Set<FixedFeedInResult> getFixedFeedInResults()
-    - Set<BmResult> getBmResults()
-    - Set<ChpResult> getChpResults()
-    - Set<WecResult> getWecResults()
-    - Set<StorageResult> getStorageResults()
-    - Set<EvcsResult> getEvcsResults()
-    - Set<EvResult> getEvResults()
-    - Set<HpResult> getHpResults()
-    - Set<CylindricalStorageResult> getCylindricalStorageResult()
-    - Set<ThermalHouseResult> getThermalHouseResults()
-    - Set<EmResult> getEmResults()
+    + ResultEntitySource(DataSource)
+    + ResultEntitySource(DataSource, String)
+    + Set<NodeResult> getNodeResults() throws SourceException
+    + Set<SwitchResult> getSwitchResults() throws SourceException
+    + Set<LineResult> getLineResults() throws SourceException
+    + Set<Transformer2WResult> getTransformer2WResultResults() throws SourceException
+    + Set<Transformer3WResult> getTransformer3WResultResults() throws SourceException
+    + Set<FlexOptionsResult> getFlexOptionsResults() throws SourceException
+    + Set<LoadResult> getLoadResults() throws SourceException
+    + Set<PvResult> getPvResults() throws SourceException
+    + Set<FixedFeedInResult> getFixedFeedInResults() throws SourceException
+    + Set<BmResult> getBmResults() throws SourceException
+    + Set<ChpResult> getChpResults() throws SourceException
+    + Set<WecResult> getWecResults() throws SourceException
+    + Set<StorageResult> getStorageResults() throws SourceException
+    + Set<EvcsResult> getEvcsResults() throws SourceException
+    + Set<EvResult> getEvResults() throws SourceException
+    + Set<HpResult> getHpResults() throws SourceException
+    + Set<CylindricalStorageResult> getCylindricalStorageResult() throws SourceException
+    + Set<ThermalHouseResult> getThermalHouseResults() throws SourceException
+    + Set<EmResult> getEmResults() throws SourceException
 }
 
 class SystemParticipantSource{
@@ -97,28 +108,29 @@ class SystemParticipantSource{
     - StorageInputFactory storageInputFactory
     - WecInputFactory wecInputFactory
     - EvcsInputFactory evcsInputFactory
-    - SystemParticipantSource(TypeSource, ThermalSource, RawGridSource, DataSource)
-    - Optional<SystemParticipants> getSystemParticipants()
-    - Set<BmInput> getBmPlants()
-    - Set<BmInput> getBmPlants(Set<NodeInput>, Set<OperatorInput>, Set<BmTypeInput>)
-    - Set<ChpInput> getChpPlants()
-    - Set<ChpInput> getChpPlants(Set<NodeInput>, Set<OperatorInput>, Set<ChpTypeInput>, Set<ThermalBusInput>, Set<ThermalStorageInput>)
-    - Set<EvInput> getEvs()
-    - Set<EvInput> getEvs(Set<NodeInput>, Set<OperatorInput>, Set<EvTypeInput>)
-    - Set<EvcsInput> getEvcs()
-    - Set<EvcsInput> getEvcs(Set<NodeInput>, Set<OperatorInput>)
-    - Set<FixedFeedInInput> getFixedFeedIns()
-    - Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput>, Set<OperatorInput>)
-    - Set<HpInput> getHeatPumps()
-    - Set<HpInput> getHeatPumps(Set<NodeInput>, Set<OperatorInput>, Set<HpTypeInput>, Set<ThermalBusInput>)
-    - Set<LoadInput> getLoads()
-    - Set<LoadInput> getLoads(Set<NodeInput>, Set<OperatorInput>)
-    - Set<PvInput> getPvPlants()
-    - Set<PvInput> getPvPlants(Set<NodeInput>, Set<OperatorInput>)
-    - Set<StorageInput> getStorages()
-    - Set<StorageInput> getStorages(Set<NodeInput>, Set<OperatorInput>, Set<StorageTypeInput>)
-    - Set<WecInput> getWecPlants()
-    - Set<WecInput> getWecPlants(Set<NodeInput>, Set<OperatorInput>, Set<WecTypeInput>)
+    + SystemParticipantSource(TypeSource, ThermalSource, RawGridSource, DataSource)
+    + SystemParticipants getSystemParticipants() throws SourceException
+    + SystemParticipants getSystemParticipants(Map<UUID, OperatorInput>, Map<UUID, NodeInput>) throws SourceException
+    + Set<BmInput> getBmPlants() throws SourceException
+    + Set<BmInput> getBmPlants(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<BmTypeInput>) throws SourceException
+    + Set<ChpInput> getChpPlants() throws SourceException
+    + Set<ChpInput> getChpPlants(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<ChpTypeInput>, Map<UUID, ThermalBusInput>, Set<ThermalStorageInput>) throws SourceException
+    + Set<EvInput> getEvs() throws SourceException
+    + Set<EvInput> getEvs(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<EvTypeInput>) throws SourceException
+    + Set<EvcsInput> getEvcs() throws SourceException
+    + Set<EvcsInput> getEvcs(Map<UUID, OperatorInput>, Map<UUID, NodeInput>) throws SourceException
+    + Set<FixedFeedInInput> getFixedFeedIns() throws SourceException
+    + Set<FixedFeedInInput> getFixedFeedIns(Map<UUID, OperatorInput>, Map<UUID, NodeInput>) throws SourceException
+    + Set<HpInput> getHeatPumps() throws SourceException
+    + Set<HpInput> getHeatPumps(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<HpTypeInput>, Map<UUID, ThermalBusInput>) throws SourceException
+    + Set<LoadInput> getLoads() throws SourceException
+    + Set<LoadInput> getLoads(Map<UUID, OperatorInput>, Map<UUID, NodeInput>) throws SourceException
+    + Set<PvInput> getPvPlants() throws SourceException
+    + Set<PvInput> getPvPlants(Map<UUID, OperatorInput>, Map<UUID, NodeInput>) throws SourceException
+    + Set<StorageInput> getStorages() throws SourceException
+    + Set<StorageInput> getStorages(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<StorageTypeInput>) throws SourceException
+    + Set<WecInput> getWecPlants() throws SourceException
+    + Set<WecInput> getWecPlants(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<WecTypeInput>) throws SourceException
 }
 
 class ThermalSource {
@@ -126,15 +138,15 @@ class ThermalSource {
     - ThermalBusInputFactory thermalBusInputFactory
     - CylindricalStorageInputFactory cylindricalStorageInputFactory
     - ThermalHouseInputFactory thermalHouseInputFactory
-    - ThermalSource(TypeSource, DataSource)
-    - Set<ThermalBusInput> getThermalBuses()
-    - Set<ThermalBusInput> getThermalBuses(Set<OperatorInput>)
-    - Set<ThermalStorageInput> getThermalStorages()
-    - Set<ThermalStorageInput> getThermalStorages(Set<OperatorInput>, Set<ThermalBusInput>)
-    - Set<ThermalHouseInput> getThermalHouses()
-    - Set<ThermalHouseInput> getThermalHouses(Set<OperatorInput>, Set<ThermalBusInput>)
-    - Set<CylindricalStorageInput> getCylindricStorages()
-    - Set<CylindricalStorageInput> getCylindricStorages(Set<OperatorInput>, Set<ThermalBusInput>)
+    + ThermalSource(TypeSource, DataSource)
+    + Map<UUID, ThermalBusInput> getThermalBuses() throws SourceException
+    + Map<UUID, ThermalBusInput> getThermalBuses(Map<UUID, OperatorInput>) throws SourceException
+    + Set<ThermalStorageInput> getThermalStorages() throws SourceException
+    + Set<ThermalStorageInput> getThermalStorages(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
+    + Set<ThermalHouseInput> getThermalHouses() throws SourceException
+    + Set<ThermalHouseInput> getThermalHouses(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
+    + Set<CylindricalStorageInput> getCylindricStorages() throws SourceException
+    + Set<CylindricalStorageInput> getCylindricStorages(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
 }
 
 class TypeSource {
@@ -143,16 +155,16 @@ class TypeSource {
     - LineTypeInputFactory lineTypeInputFactory
     - Transformer3WTypeInputFactory transformer3WTypeInputFactory
     - SystemParticipantTypeInputFactory systemParticipantTypeInputFactory
-    - TypeSource(DataSource)
-    - Set<Transformer2WTypeInput> getTransformer2WTypes()
-    - Set<Transformer3WTypeInput> getTransformer3WTypes()
-    - Set<OperatorInput> getOperators()
-    - Set<LineTypeInput> getLineTypes()
-    - Set<BmTypeInput> getBmTypes()
-    - Set<ChpTypeInput> getChpTypes()
-    - Set<HpTypeInput> getHpTypes()
-    - Set<StorageTypeInput> getStorageTypes()
-    - Set<WecTypeInput> getWecTypes()
-    - Set<EvTypeInput> getEvTypes()
+    + TypeSource(DataSource)
+    + Map<UUID, Transformer2WTypeInput> getTransformer2WTypes() throws SourceException
+    + Map<UUID, Transformer3WTypeInput> getTransformer3WTypes() throws SourceException
+    + Map<UUID, OperatorInput> getOperators() throws SourceException
+    + Map<UUID, LineTypeInput> getLineTypes() throws SourceException
+    + Map<UUID, BmTypeInput> getBmTypes() throws SourceException
+    + Map<UUID, ChpTypeInput> getChpTypes() throws SourceException
+    + Map<UUID, HpTypeInput> getHpTypes() throws SourceException
+    + Map<UUID, StorageTypeInput> getStorageTypes() throws SourceException
+    + Map<UUID, WecTypeInput> getWecTypes() throws SourceException
+    + Map<UUID, EvTypeInput> getEvTypes() throws SourceException
 }
 @enduml
