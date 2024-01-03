@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
-import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -40,8 +39,8 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
   }
 
   /**
-   * Creates a new HpInputEntityData object based on a given {@link ConnectorInputEntityData} object
-   * and given thermal bus input
+   * Creates a new HpInputEntityData object based on a given {@link
+   * SystemParticipantTypedEntityData} object and given thermal bus input
    *
    * @param entityData The SystemParticipantTypedEntityData object to enhance
    * @param thermalBusInput The thermal bus input
