@@ -57,7 +57,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
 
   @Override
   public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
-    return connector.getSourceFields(entityClass);
+    return connector.getSourceFields();
   }
 
   @Override

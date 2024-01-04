@@ -110,7 +110,7 @@ public class InfluxDbConnector implements DataConnector {
   }
 
   /** Returns the option for fields found in the source. */
-  public <C> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
+  public Optional<Set<String>> getSourceFields() {
     QueryResult tagKeys = session.query(new Query("SHOW TAG KEYS ON " + databaseName));
     Map<String, Set<Map<String, String>>> tagResults = parseQueryResult(tagKeys);
 

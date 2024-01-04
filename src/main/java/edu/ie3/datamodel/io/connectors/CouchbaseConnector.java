@@ -62,7 +62,7 @@ public class CouchbaseConnector implements DataConnector {
 
   /** Returns the option for a set of found fields. */
   @SuppressWarnings("unchecked")
-  public <C> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
+  public Optional<Set<String>> getSourceFields() {
     String query =
         "SELECT ARRAY_DISTINCT(ARRAY_AGG(v)) AS column FROM "
             + bucketName
