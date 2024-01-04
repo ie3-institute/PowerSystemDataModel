@@ -4,34 +4,66 @@ Load
 ----
 Model of (mainly) domestic loads.
 
-Attributes, Units and Remarks
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| Attribute           | Unit    | Remarks                                                                              |
-+=====================+=========+======================================================================================+
-| uuid                | --      |                                                                                      |
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| id                  | --      | Human readable identifier                                                            |
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| operator            | --      |                                                                                      |
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| operationTime       | --      | Timely restriction of operation                                                      |
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| node                | --      |                                                                                      |
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| qCharacteristics    | --      | :ref:`Reactive power characteristic<participant_general_q_characteristic>` to follow |
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| loadProfile         | --      | :ref:`Load profile<load_lp>` as model behaviour                                      |
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| dsm                 | --      | Whether the load is able to follow demand side management signals                    |
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| eConsAnnual         | kWh     | Annual energy consumption                                                            |
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| sRated              | kVA     | Rated apparent power                                                                 |
-+---------------------+---------+--------------------------------------------------------------------------------------+
-| cosphiRated         | --      | Rated power factor                                                                   |
-+---------------------+---------+--------------------------------------------------------------------------------------+
+.. list-table:: Entity Model
+   :widths: auto
+   :header-rows: 1
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     - 
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     - 
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - node
+     - --
+     - 
+
+   * - qCharacteristics
+     - --
+     - :ref:`Reactive power characteristic<participant_general_q_characteristic>` to follow
+
+   * - loadProfile
+     - --
+     - :ref:`Load profile<load_lp>` as model behaviour
+
+   * - dsm
+     - --
+     - Whether the load is able to follow demand side management signals
+
+   * - eConsAnnual
+     - kWh
+     - Annual energy consumption
+
+   * - sRated
+     - kVA
+     - Rated apparent power
+
+   * - cosphiRated
+     - --
+     - Rated power factor
+
+   * - em
+     - --
+     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       | this system participant. Field can be empty or missing, if this participant
+       | is not controlled.
+
 
 Caveats
 ^^^^^^^

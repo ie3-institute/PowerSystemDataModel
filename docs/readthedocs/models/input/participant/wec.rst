@@ -4,60 +4,107 @@ Wind Energy Converter
 ---------------------
 Model of a wind energy converter.
 
-Attributes, Units and Remarks
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Type Model
-""""""""""
+.. list-table:: Type Model
+   :widths: auto
+   :header-rows: 1
 
-+------------------+---------+----------------------------------------------------------------------+
-| Attribute        | Unit    | Remarks                                                              |
-+==================+=========+======================================================================+
-| uuid             | --      |                                                                      |
-+------------------+---------+----------------------------------------------------------------------+
-| id               | --      | Human readable identifier                                            |
-+------------------+---------+----------------------------------------------------------------------+
-| capex            | €       | Capital expenditure to purchase one entity of this type              |
-+------------------+---------+----------------------------------------------------------------------+
-| opex             | € / MWh | | Operational expenditure to operate one entity of                   |
-|                  |         | | this type                                                          |
-+------------------+---------+----------------------------------------------------------------------+
-| sRated           | kVA     | Rated apparent power                                                 |
-+------------------+---------+----------------------------------------------------------------------+
-| cosphiRated      | --      | Rated power factor                                                   |
-+------------------+---------+----------------------------------------------------------------------+
-| cpCharacteristic | --      | Wind velocity dependent :ref:`Betz factors<wec_cp_characteristic>`.  |
-+------------------+---------+----------------------------------------------------------------------+
-| etaConv          | %       | Efficiency of the assets inverter                                    |
-+------------------+---------+----------------------------------------------------------------------+
-| rotorArea        | m²      | Area the rotor covers                                                |
-+------------------+---------+----------------------------------------------------------------------+
-| hubHeight        | m       | Height of the rotor hub                                              |
-+------------------+---------+----------------------------------------------------------------------+
 
-Entity Model
-""""""""""""
+   * - Attribute
+     - Unit
+     - Remarks
 
-+------------------+---------+--------------------------------------------------------------------------------------+
-| Attribute        | Unit    | Remarks                                                                              |
-+==================+=========+======================================================================================+
-| uuid             | --      |                                                                                      |
-+------------------+---------+--------------------------------------------------------------------------------------+
-| id               | --      | Human readable identifier                                                            |
-+------------------+---------+--------------------------------------------------------------------------------------+
-| operator         | --      |                                                                                      |
-+------------------+---------+--------------------------------------------------------------------------------------+
-| operationTime    | --      | Timely restriction of operation                                                      |
-+------------------+---------+--------------------------------------------------------------------------------------+
-| node             | --      |                                                                                      |
-+------------------+---------+--------------------------------------------------------------------------------------+
-| qCharacteristics | --      | :ref:`Reactive power characteristic<participant_general_q_characteristic>` to follow |
-+------------------+---------+--------------------------------------------------------------------------------------+
-| type             | --      |                                                                                      |
-+------------------+---------+--------------------------------------------------------------------------------------+
-| marketReaction   | --      | | Whether to adapt output based on (volatile)                                        |
-|                  |         | | market price or not                                                                |
-+------------------+---------+--------------------------------------------------------------------------------------+
+   * - uuid
+     - --
+     - 
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - capex
+     - €
+     - Capital expenditure to purchase one entity of this type
+
+   * - opex
+     - € / MWh
+     - | Operational expenditure to operate one entity of
+       | this type
+
+   * - sRated
+     - kVA
+     - Rated apparent power
+
+   * - cosphiRated
+     - --
+     - Rated power factor
+
+   * - cpCharacteristic
+     - --
+     - Wind velocity dependent :ref:`Betz factors<wec_cp_characteristic>`.
+
+   * - etaConv
+     - %
+     - Efficiency of the assets inverter
+
+   * - rotorArea
+     - m²
+     - Area the rotor covers
+
+   * - hubHeight
+     - m
+     - Height of the rotor hub
+
+
+
+.. list-table:: Entity Model
+   :widths: auto
+   :header-rows: 1
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     - 
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     - 
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - node
+     - --
+     - 
+
+   * - qCharacteristics
+     - --
+     - :ref:`Reactive power characteristic<participant_general_q_characteristic>` to follow
+
+   * - type
+     - --
+     - 
+
+   * - marketReaction
+     - --
+     - | Whether to adapt output based on (volatile)
+       | market price or not
+
+   * - em
+     - --
+     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       | this system participant. Field can be empty or missing, if this participant
+       | is not controlled.
+
 
 Caveats
 ^^^^^^^
