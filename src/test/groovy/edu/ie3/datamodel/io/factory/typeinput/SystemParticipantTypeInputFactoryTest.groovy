@@ -280,10 +280,10 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
   def "A SystemParticipantTypeInputFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
     def typeInputFactory = new SystemParticipantTypeInputFactory()
-    def foundFields = typeInputFactory.newSet("uuid", "id", "capex", "opex", "srated", "cosPhiRated", "estorage", "pmin", "pmax", "eta", "dod", "lifetime",)
+    def actualFields = SystemParticipantTypeInputFactory.newSet("uuid", "id", "capex", "opex", "srated", "cosPhiRated", "estorage", "pmin", "pmax", "eta", "dod", "lifetime",)
 
     when:
-    def input = typeInputFactory.validate(foundFields, StorageTypeInput)
+    def input = typeInputFactory.validate(actualFields, StorageTypeInput)
 
     then:
     input.failure

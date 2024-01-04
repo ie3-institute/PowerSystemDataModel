@@ -51,10 +51,10 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
   def "A NodeResultFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
     def resultFactory = new NodeResultFactory()
-    def foundFields = resultFactory.newSet("time", "input_model", "v_mag")
+    def actualFields = NodeResultFactory.newSet("time", "input_model", "v_mag")
 
     when:
-    Try<Void, FactoryException> input = resultFactory.validate(foundFields, NodeResult)
+    Try<Void, FactoryException> input = resultFactory.validate(actualFields, NodeResult)
 
     then:
     input.failure

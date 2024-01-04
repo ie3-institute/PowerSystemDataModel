@@ -41,10 +41,10 @@ class IconIdCoordinateFactoryTest extends Specification {
 
   def "A COSMO id to coordinate factory refuses to build from invalid data"() {
     given:
-    def foundFields = factory.newSet("id", "latitude", "coordinatetype")
+    def actualFields = IconIdCoordinateFactory.newSet("id", "latitude", "coordinatetype")
 
     when:
-    def actual = factory.validate(foundFields, Pair)
+    def actual = factory.validate(actualFields, Pair)
 
     then:
     actual.failure

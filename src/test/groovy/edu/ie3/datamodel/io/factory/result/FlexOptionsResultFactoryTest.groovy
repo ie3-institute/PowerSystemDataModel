@@ -53,10 +53,10 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
   def "A FlexOptionsResultFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
     def resultFactory = new FlexOptionsResultFactory()
-    def foundFields = resultFactory.newSet("time", "input_model", "p_ref", "p_min")
+    def actualFields = FlexOptionsResultFactory.newSet("time", "input_model", "p_ref", "p_min")
 
     when:
-    Try<Void, FactoryException> input = resultFactory.validate(foundFields, FlexOptionsResult)
+    Try<Void, FactoryException> input = resultFactory.validate(actualFields, FlexOptionsResult)
 
     then:
     input.failure

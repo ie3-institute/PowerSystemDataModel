@@ -15,9 +15,9 @@ public interface SourceValidator<C> {
   /**
    * Method for validating a data source.
    *
-   * @param foundFields fields that were found in the source data
+   * @param actualFields fields that were found in the source data
    * @param entityClass that should be buildable from the source data
    * @return either an exception wrapped by a {@link Failure} or an empty success
    */
-  Try<Void, FactoryException> validate(Set<String> foundFields, Class<? extends C> entityClass);
+  Try<Void, FactoryException> validate(Set<String> actualFields, Class<? extends C> entityClass);
 }

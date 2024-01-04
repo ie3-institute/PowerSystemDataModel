@@ -69,13 +69,13 @@ class FactoryTest extends Specification {
 
   def "A Factory should allow additional fields"() {
     given:
-    def foundFields = factory.newSet("uuid", "id", "time", "value_1", "value_2", "value_3")
+    def actualFields = DummyFactory.newSet("uuid", "id", "time", "value_1", "value_2", "value_3")
 
     when:
-    Try<Void, FactoryException> input = Try.ofVoid(() -> factory.validate(foundFields, String), FactoryException)
+    def result = Try.ofVoid(() -> factory.validate(actualFields, String), FactoryException)
 
     then:
-    input.success
+    result.success
   }
 
 

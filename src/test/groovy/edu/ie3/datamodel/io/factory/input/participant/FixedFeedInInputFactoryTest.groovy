@@ -76,10 +76,10 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
   def "A FixedFeedInInputFactory should throw an exception on invalid or incomplete data fields"() {
     given:
     def inputFactory = new FixedFeedInInputFactory()
-    def foundFields = inputFactory.newSet("uuid", "id", "s_rated", "cosphi_rated")
+    def actualFields = FixedFeedInInputFactory.newSet("uuid", "id", "s_rated", "cosphi_rated")
 
     when:
-    Try<Void, FactoryException> input = inputFactory.validate(foundFields, FixedFeedInInput)
+    Try<Void, FactoryException> input = inputFactory.validate(actualFields, FixedFeedInInput)
 
     then:
     input.failure

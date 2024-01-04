@@ -127,10 +127,10 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
   def "A SystemParticipantResultFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
     def resultFactory = new SystemParticipantResultFactory()
-    def foundFields = resultFactory.newSet("time", "input_model", "q")
+    def actualFields = SystemParticipantResultFactory.newSet("time", "input_model", "q")
 
     when:
-    Try<SystemParticipantResult, FactoryException> result = resultFactory.validate(foundFields, WecResult)
+    Try<SystemParticipantResult, FactoryException> result = resultFactory.validate(actualFields, WecResult)
 
     then:
     result.failure

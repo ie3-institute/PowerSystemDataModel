@@ -134,10 +134,10 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
   }
 
   /**
-   * Method for validating the found fields. The found fields needs to fully contain at least one of
-   * the sets returned by {@link #getFields(Class)}. If the found fields don't contain all necessary
-   * fields, an {@link FactoryException} with a detail message is thrown. If the found fields
-   * contain more fields than necessary, these fields are ignored.
+   * Method for validating the actual fields. The actual fields need to fully contain at least one
+   * of the sets returned by {@link #getFields(Class)}. If the actual fields don't contain all
+   * necessary fields, an {@link FactoryException} with a detail message is thrown. If the actual
+   * fields contain more fields than necessary, these fields are ignored.
    *
    * @param actualFields that were found
    * @param entityClass of the build data
@@ -146,14 +146,14 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
   public Try<Void, FactoryException> validate(
       Set<String> actualFields, Class<? extends C> entityClass) {
     List<Set<String>> fieldSets = getFields(entityClass);
-    Set<String> harmonizedFoundFields = toCamelCase(actualFields);
+    Set<String> harmonizedActualFields = toCamelCase(actualFields);
 
-    // comparing the found fields to a list of possible fields (allows additional fields)
+    // comparing the actual fields to a list of possible fields (allows additional fields)
     // if not all fields were found in a set, this set is filtered out
     // all other fields are saved as a list
     // allows snake, camel and mixed cases
     List<Set<String>> validFieldSets =
-        fieldSets.stream().filter(harmonizedFoundFields::containsAll).toList();
+        fieldSets.stream().filter(harmonizedActualFields::containsAll).toList();
 
     if (validFieldSets.isEmpty()) {
       // build the exception string with extensive debug information
@@ -172,7 +172,7 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
                   + "' are possible (NOT case-sensitive!):\n"
                   + possibleOptions));
     } else {
-      Set<String> unused = getUnusedFields(harmonizedFoundFields, validFieldSets);
+      Set<String> unused = getUnusedFields(harmonizedActualFields, validFieldSets);
 
       if (!unused.isEmpty()) {
         log.debug(
@@ -208,7 +208,7 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
    * @param attributes attribute names
    * @return new set exactly containing attribute names
    */
-  protected TreeSet<String> newSet(String... attributes) {
+  protected static TreeSet<String> newSet(String... attributes) {
     TreeSet<String> set = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     set.addAll(Arrays.asList(attributes));
     return set;
@@ -223,7 +223,7 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
    * @param more attribute names to expand given set with
    * @return new set exactly containing given attribute set plus additional attributes
    */
-  protected TreeSet<String> expandSet(Set<String> attributeSet, String... more) {
+  protected static TreeSet<String> expandSet(Set<String> attributeSet, String... more) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     newSet.addAll(attributeSet);
     newSet.addAll(Arrays.asList(more));

@@ -5,9 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.SimpleFactoryData
-import edu.ie3.datamodel.utils.Try
 import edu.ie3.util.geo.GeoUtils
 import org.apache.commons.lang3.tuple.Pair
 import org.locationtech.jts.geom.Point
@@ -43,10 +41,10 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 
   def "A COSMO id to coordinate factory refuses to build from invalid data"() {
     given:
-    def foundFields = factory.newSet("tid", "id", "latrot", "longrot")
+    def actualFields = CosmoIdCoordinateFactory.newSet("tid", "id", "latrot", "longrot")
 
     when:
-    def actual = factory.validate(foundFields, Pair)
+    def actual = factory.validate(actualFields, Pair)
 
     then:
     actual.failure

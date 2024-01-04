@@ -277,10 +277,10 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
   def "An AssetInputFactory should throw an exception on invalid or incomplete fields"() {
     given:
     def inputFactory = new TestAssetInputFactory()
-    def foundFields = inputFactory.newSet("uuid", "operates_from", "operates_until")
+    def actualFields = TestAssetInputFactory.newSet("uuid", "operates_from", "operates_until")
 
     when:
-    Try<Void, FactoryException> input = inputFactory.validate(foundFields, TestAssetInput)
+    Try<Void, FactoryException> input = inputFactory.validate(actualFields, TestAssetInput)
 
     then:
     input.failure
