@@ -87,7 +87,6 @@ public class SystemParticipantSource extends EntitySource {
     validate(StorageInput.class, storageInputFactory);
     validate(WecInput.class, wecInputFactory);
     validate(EvcsInput.class, evcsInputFactory);
-    validate(EmInput.class, emInputFactory);
   }
 
   /**

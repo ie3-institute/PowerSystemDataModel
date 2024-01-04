@@ -26,6 +26,11 @@ public class EnergyManagementSource extends EntitySource {
     this.emInputFactory = new EmInputFactory();
   }
 
+  @Override
+  public void validate() {
+    validate(EmInput.class, emInputFactory);
+  }
+
   /**
    * Returns a unique set of {@link EmInput} instances.
    *
