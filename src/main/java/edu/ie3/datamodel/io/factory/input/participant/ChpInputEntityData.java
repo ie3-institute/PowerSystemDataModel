@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
-import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.ChpInput;
@@ -22,11 +21,10 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
   public ChpInputEntityData(
       Map<String, String> fieldsToAttributes,
       NodeInput node,
-      EmInput em,
       ChpTypeInput typeInput,
       ThermalBusInput thermalBusInput,
       ThermalStorageInput thermalStorageInput) {
-    super(fieldsToAttributes, ChpInput.class, node, em, typeInput);
+    super(fieldsToAttributes, ChpInput.class, node, typeInput);
     this.thermalBusInput = thermalBusInput;
     this.thermalStorageInput = thermalStorageInput;
   }
@@ -35,11 +33,10 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
       Map<String, String> fieldsToAttributes,
       OperatorInput operator,
       NodeInput node,
-      EmInput em,
       ChpTypeInput typeInput,
       ThermalBusInput thermalBusInput,
       ThermalStorageInput thermalStorageInput) {
-    super(fieldsToAttributes, ChpInput.class, operator, node, em, typeInput);
+    super(fieldsToAttributes, ChpInput.class, operator, node, typeInput);
     this.thermalBusInput = thermalBusInput;
     this.thermalStorageInput = thermalStorageInput;
   }

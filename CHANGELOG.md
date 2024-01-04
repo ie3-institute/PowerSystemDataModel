@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Formatting Spotless Groovy import order [#960](https://github.com/ie3-institute/PowerSystemDataModel/issues/960)
+- Implementing missing typical methods in `Try` [#970](https://github.com/ie3-institute/PowerSystemDataModel/issues/970)
 
 ### Fixed
 - Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adding JavaDoc to `EntitySource.safeMapGet` [#828](https://github.com/ie3-institute/PowerSystemDataModel/issues/828)
 - Abstracting some methods in `ValidationUtils` [#852](https://github.com/ie3-institute/PowerSystemDataModel/issues/852)
 - `EmInput` should not be connected to the grid [#955](https://github.com/ie3-institute/PowerSystemDataModel/issues/955)
+- Refactored and abstracted `EntitySource`s and `EntityData` creation [#969](https://github.com/ie3-institute/PowerSystemDataModel/issues/969)
 
 ## [4.1.0] - 2023-11-02
 

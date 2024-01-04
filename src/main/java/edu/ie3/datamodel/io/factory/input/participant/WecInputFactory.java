@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.WecInput;
@@ -38,10 +37,9 @@ public class WecInputFactory
       OperatorInput operator,
       OperationTime operationTime) {
     WecTypeInput typeInput = data.getTypeInput();
-    EmInput em = data.getEm().orElse(null);
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
 
     return new WecInput(
-        uuid, id, operator, operationTime, node, qCharacteristics, em, typeInput, marketReaction);
+        uuid, id, operator, operationTime, node, qCharacteristics, typeInput, marketReaction);
   }
 }

@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
@@ -49,7 +48,6 @@ public class PvInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param albedo Albedo value (typically a value between 0 and 1)
    * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
    * @param etaConv Efficiency of converter (typically in %)
@@ -67,7 +65,6 @@ public class PvInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       double albedo,
       ComparableQuantity<Angle> azimuth,
       ComparableQuantity<Dimensionless> etaConv,
@@ -77,7 +74,7 @@ public class PvInput extends SystemParticipantInput {
       boolean marketReaction,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
@@ -96,7 +93,6 @@ public class PvInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param albedo Albedo value (typically a value between 0 and 1)
    * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
    * @param etaConv Efficiency of converter (typically in %)
@@ -112,7 +108,6 @@ public class PvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       double albedo,
       ComparableQuantity<Angle> azimuth,
       ComparableQuantity<Dimensionless> etaConv,
@@ -122,7 +117,7 @@ public class PvInput extends SystemParticipantInput {
       boolean marketReaction,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
-    super(uuid, id, node, qCharacteristics, em);
+    super(uuid, id, node, qCharacteristics);
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
@@ -220,8 +215,7 @@ public class PvInput extends SystemParticipantInput {
         + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + "', em="
-        + getEm()
+        + '\''
         + ", albedo="
         + albedo
         + ", azimuth="
@@ -330,7 +324,6 @@ public class PvInput extends SystemParticipantInput {
           getOperationTime(),
           getNode(),
           getqCharacteristics(),
-          getEm(),
           albedo,
           azimuth,
           etaConv,

@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
-import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.RandomLoadParameters
@@ -21,6 +20,7 @@ import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.ChpInput
+import edu.ie3.datamodel.models.input.system.EmInput
 import edu.ie3.datamodel.models.input.system.EvInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput

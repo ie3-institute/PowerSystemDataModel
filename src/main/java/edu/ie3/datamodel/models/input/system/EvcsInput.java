@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
@@ -39,7 +38,6 @@ public class EvcsInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type type of the charging points available to this charging station
    * @param chargingPoints number of charging points available at this charging station
    * @param cosPhiRated rated cos phi
@@ -53,13 +51,12 @@ public class EvcsInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       ChargingPointType type,
       int chargingPoints,
       double cosPhiRated,
       EvcsLocationType locationType,
       boolean v2gSupport) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
     this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
@@ -74,7 +71,6 @@ public class EvcsInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type type of the charging points available to this charging station
    * @param cosPhiRated rated cos phi
    * @param locationType the location type
@@ -87,7 +83,6 @@ public class EvcsInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       ChargingPointType type,
       double cosPhiRated,
       EvcsLocationType locationType,
@@ -99,7 +94,6 @@ public class EvcsInput extends SystemParticipantInput {
         operationTime,
         node,
         qCharacteristics,
-        em,
         type,
         1,
         cosPhiRated,
@@ -111,7 +105,6 @@ public class EvcsInput extends SystemParticipantInput {
    * @param id Human readable identifier
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type type of the charging points available to this charging station
    * @param chargingPoints number of charging points available at this charging station
    * @param cosPhiRated rated cos phi
@@ -123,13 +116,12 @@ public class EvcsInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       ChargingPointType type,
       int chargingPoints,
       double cosPhiRated,
       EvcsLocationType locationType,
       boolean v2gSupport) {
-    super(uuid, id, node, qCharacteristics, em);
+    super(uuid, id, node, qCharacteristics);
     this.type = type;
     this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
@@ -142,7 +134,6 @@ public class EvcsInput extends SystemParticipantInput {
    * @param id Human readable identifier
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type type of the charging points available to this charging station
    * @param cosPhiRated rated cos phi
    * @param locationType the location type
@@ -153,12 +144,11 @@ public class EvcsInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       ChargingPointType type,
       double cosPhiRated,
       EvcsLocationType locationType,
       boolean v2gSupport) {
-    this(uuid, id, node, qCharacteristics, em, type, 1, cosPhiRated, locationType, v2gSupport);
+    this(uuid, id, node, qCharacteristics, type, 1, cosPhiRated, locationType, v2gSupport);
   }
 
   public ChargingPointType getType() {
@@ -218,8 +208,6 @@ public class EvcsInput extends SystemParticipantInput {
         + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + "', em="
-        + getEm()
         + ", type="
         + type
         + ", chargingPoints="
@@ -292,7 +280,6 @@ public class EvcsInput extends SystemParticipantInput {
           getOperationTime(),
           getNode(),
           getqCharacteristics(),
-          getEm(),
           type,
           chargingPoints,
           cosPhiRated,

@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.input.participant
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.models.input.EmInput
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
@@ -55,11 +55,10 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     def inputClass = EvcsInput
     def nodeInput = Mock(NodeInput)
     def operatorInput = Mock(OperatorInput)
-    def emUnit = Mock(EmInput)
 
     when:
     Try<EvcsInput, FactoryException> input = inputFactory.get(
-        new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput, emUnit))
+        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.success
@@ -79,7 +78,6 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PowerSystemUnits.PU), Quantities.getQuantity(1d, PowerSystemUnits.PU))
         ] as TreeSet)
       }
-      assert em == Optional.of(emUnit)
       assert type == ChargingPointTypeUtils.HouseholdSocket
       assert chargingPoints == Integer.parseInt(parameter["chargingpoints"])
       assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
@@ -106,11 +104,10 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     def inputClass = EvcsInput
     def nodeInput = Mock(NodeInput)
     def operatorInput = Mock(OperatorInput)
-    def emUnit = Mock(EmInput)
 
     when:
     Try<EvcsInput, FactoryException> input = inputFactory.get(
-        new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput, emUnit))
+        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.failure
@@ -135,11 +132,10 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     def inputClass = EvcsInput
     def nodeInput = Mock(NodeInput)
     def operatorInput = Mock(OperatorInput)
-    def emUnit = Mock(EmInput)
 
     when:
     Try<EvcsInput, FactoryException> input = inputFactory.get(
-        new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput, emUnit))
+        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
     then:
     input.failure

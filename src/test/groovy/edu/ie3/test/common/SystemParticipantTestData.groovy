@@ -8,7 +8,6 @@ package edu.ie3.test.common
 import static edu.ie3.datamodel.models.StandardUnits.*
 
 import edu.ie3.datamodel.models.OperationTime
-import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.container.SystemParticipants
@@ -56,25 +55,6 @@ class SystemParticipantTestData {
   private static final ComparableQuantity<EnergyPrice> opex = Quantities.getQuantity(50d, ENERGY_PRICE)
   static final ComparableQuantity<Dimensionless> etaConv = Quantities.getQuantity(98d, EFFICIENCY)
 
-  // EmInput
-  public static final String emControlStrategy = "self_optimization"
-  public static final EmInput parentEm = new EmInput(
-  UUID.fromString("897bfc17-8e54-43d0-8d98-740786fd94dd"),
-  "test_parentEmInput",
-  SystemParticipantTestData.operator,
-  SystemParticipantTestData.operationTime,
-  emControlStrategy,
-  null
-  )
-
-  public static final EmInput emInput = new EmInput(
-  UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
-  "test_emInput",
-  SystemParticipantTestData.operator,
-  SystemParticipantTestData.operationTime,
-  emControlStrategy,
-  parentEm
-  )
 
   // FixedFeedInput
   public static final FixedFeedInInput fixedFeedInInput = new FixedFeedInInput(
@@ -84,7 +64,6 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
-  emInput,
   sRated,
   cosPhiRated
   )
@@ -102,7 +81,6 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
-  emInput,
   albedo,
   azimuth,
   etaConv,
@@ -139,7 +117,6 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiP,
-  emInput,
   wecType,
   false
   )
@@ -195,7 +172,6 @@ class SystemParticipantTestData {
   participantNode,
   thermalBus,
   cosPhiFixed,
-  emInput,
   chpTypeInput,
   thermalStorage,
   false
@@ -222,7 +198,6 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   qV,
-  emInput,
   bmTypeInput,
   false,
   false,
@@ -248,7 +223,6 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
-  emInput,
   evTypeInput
   )
 
@@ -262,7 +236,6 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
-  emInput,
   standardLoadProfile,
   false,
   eConsAnnual,
@@ -299,7 +272,6 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
-  emInput,
   storageTypeInput
   )
 
@@ -322,7 +294,6 @@ class SystemParticipantTestData {
   participantNode,
   thermalBus,
   cosPhiFixed,
-  emInput,
   hpTypeInput
   )
 
@@ -335,7 +306,6 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
-  emInput,
   ChargingPointTypeUtils.HouseholdSocket,
   4,
   cosPhiRated,

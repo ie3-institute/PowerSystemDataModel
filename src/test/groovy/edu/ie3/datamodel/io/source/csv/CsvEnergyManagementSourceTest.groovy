@@ -12,7 +12,7 @@ import edu.ie3.datamodel.io.source.EnergyManagementSource
 import edu.ie3.datamodel.io.source.TypeSource
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.utils.Try
-import edu.ie3.test.common.SystemParticipantTestData
+import edu.ie3.test.common.EnergyManagementTestData
 import spock.lang.Specification
 
 class CsvEnergyManagementSourceTest extends Specification implements CsvTestDataMeta {
@@ -23,13 +23,13 @@ class CsvEnergyManagementSourceTest extends Specification implements CsvTestData
     Mock(TypeSource),
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
-    Map<UUID, OperatorInput> operatorMap = map([SystemParticipantTestData.emInput.operator])
+    Map<UUID, OperatorInput> operatorMap = map([EnergyManagementTestData.emInput.operator])
 
     expect:
     def emUnits = Try.of(() -> csvEnergyManagementSource.getEmUnits(operatorMap), SourceException)
 
     emUnits.success
-    emUnits.data.get().size() == 2
-    emUnits.data.get() == map([SystemParticipantTestData.emInput, SystemParticipantTestData.parentEm])
+    emUnits.data.get().emUnits.size() == 1
+    emUnits.data.get().emUnits == [EnergyManagementTestData.emInput] as Set
   }
 }
