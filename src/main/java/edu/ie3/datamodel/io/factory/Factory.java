@@ -110,15 +110,15 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
   protected abstract List<Set<String>> getFields(Class<?> entityClass);
 
   /**
-   * Method to find and return additional fields that were found in a source. This method will
-   * return the minimal additional fields among all field sets, meaning that the set of actual
-   * fields is compared to the field set with the least additional fields.
+   * Method to find and return additional fields that were found in a source and are not used by the
+   * data model. This method will return the minimal unused fields among all field sets, meaning
+   * that the set of actual fields is compared to the field set with the least unused fields.
    *
    * @param actualFields found in the source
    * @param validFieldSets that contains at least all fields found in the source
-   * @return a set of additional fields
+   * @return a set of unused fields
    */
-  protected Set<String> getAdditionalFields(
+  protected Set<String> getUnusedFields(
       Set<String> actualFields, List<Set<String>> validFieldSets) {
     // checking for additional fields
     // and returning the set with the least additional fields
@@ -172,13 +172,13 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
                   + "' are possible (NOT case-sensitive!):\n"
                   + possibleOptions));
     } else {
-      Set<String> additionalFields = getAdditionalFields(harmonizedFoundFields, validFieldSets);
+      Set<String> unused = getUnusedFields(harmonizedFoundFields, validFieldSets);
 
-      if (!additionalFields.isEmpty()) {
+      if (!unused.isEmpty()) {
         log.debug(
             "The following additional fields were found for entity class of '{}': {}",
             entityClass.getSimpleName(),
-            additionalFields);
+            unused);
       }
 
       return Success.empty();

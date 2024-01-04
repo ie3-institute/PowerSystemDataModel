@@ -15,12 +15,12 @@ class FactoryTest extends Specification {
   private DummyFactory factory = new DummyFactory(String)
 
 
-  def "A Factory can return additional fields correctly"() {
+  def "A Factory can return unused fields correctly"() {
     when:
-    def additional = factory.getAdditionalFields(actualFields as Set<String>, validFieldSets)
+    def unused = factory.getUnusedFields(actualFields as Set<String>, validFieldSets)
 
     then:
-    additional == expected as Set<String>
+    unused == expected as Set<String>
 
     where:
     actualFields | validFieldSets | expected
