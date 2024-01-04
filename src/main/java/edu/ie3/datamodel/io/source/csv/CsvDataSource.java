@@ -305,13 +305,6 @@ public class CsvDataSource implements DataSource {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
-      // sanity check for headline
-      if (!Arrays.asList(headline).contains("uuid")) {
-        throw new SourceException(
-            "The first line does not contain a field named 'uuid'. Is the headline valid?\nProvided headline: "
-                + String.join(", ", headline));
-      }
-
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
@@ -323,9 +316,6 @@ public class CsvDataSource implements DataSource {
           .parallelStream();
     } catch (IOException e) {
       log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-    } catch (SourceException e) {
-      log.error(
           "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
 
