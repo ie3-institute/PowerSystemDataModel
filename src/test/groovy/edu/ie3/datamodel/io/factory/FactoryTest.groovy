@@ -44,6 +44,27 @@ class FactoryTest extends Specification {
       ["uuid", "value_1", "value_3"] as Set<String>,
       ["id", "time", "value_1"] as Set<String>
     ] | ["id", "time", "value_2"]
+    [
+      "uuid",
+      "id",
+      "time",
+      "value_1"
+    ] | [
+      [
+        "uuid",
+        "id",
+        "time",
+        "value_1",
+        "value_2"
+      ] as Set<String>,
+      [
+        "uuid",
+        "id",
+        "time",
+        "value_1",
+        "value_3"
+      ] as Set<String>
+    ] | []
   }
 
   def "A Factory should allow additional fields"() {
