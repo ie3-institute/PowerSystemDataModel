@@ -111,7 +111,8 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
 
   /**
    * Method to find and return additional fields that were found in a source. This method will
-   * return the additional fields that were found in the valid set with the least additional fields.
+   * return the minimal additional fields among all field sets, meaning that the set of actual
+   * fields is compared to the field set with the least additional fields.
    *
    * @param actualFields found in the source
    * @param validFieldSets that contains at least all fields found in the source
