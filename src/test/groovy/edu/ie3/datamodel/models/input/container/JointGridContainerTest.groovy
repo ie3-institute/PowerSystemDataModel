@@ -5,10 +5,8 @@
  */
 package edu.ie3.datamodel.models.input.container
 
-import static edu.ie3.test.common.EnergyManagementTestData.emptyEnergyManagementUnits
 import static edu.ie3.test.common.SystemParticipantTestData.emptySystemParticipants
 
-import edu.ie3.test.common.EnergyManagementTestData
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
@@ -31,7 +29,7 @@ class JointGridContainerTest extends Specification {
 
   def "A single subgrid can be used to build a JointGridContainer"() {
     when:
-    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits, GRAPHIC_ELEMENTS)
+    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, GRAPHIC_ELEMENTS)
 
     then:
     noExceptionThrown()
@@ -40,10 +38,9 @@ class JointGridContainerTest extends Specification {
 
   def "A JointGridContainer's copy method should work as expected"() {
     given:
-    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits, GRAPHIC_ELEMENTS)
+    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, GRAPHIC_ELEMENTS)
     def rawGrid = new RawGridElements(List.of(GridTestData.lineAtoB, GridTestData.transformerAtoBtoC))
     def systemParticipants = new SystemParticipants(List.of(SystemParticipantTestData.bmInput))
-    def emUnits = new EnergyManagementUnits(Set.of(EnergyManagementTestData.emInput))
     def graphics = new GraphicElements(Set.of(GridTestData.nodeGraphicD), Set.of(GridTestData.lineGraphicCtoD))
 
     when:
@@ -51,7 +48,6 @@ class JointGridContainerTest extends Specification {
         .gridName("new grid name")
         .rawGrid(rawGrid)
         .systemParticipants(systemParticipants)
-        .emUnits(emUnits)
         .graphics(graphics)
         .build()
 
@@ -59,7 +55,6 @@ class JointGridContainerTest extends Specification {
     modifiedJointGridContainer.gridName == "new grid name"
     modifiedJointGridContainer.rawGrid == rawGrid
     modifiedJointGridContainer.systemParticipants == systemParticipants
-    modifiedJointGridContainer.emUnits == emUnits
     modifiedJointGridContainer.graphics == graphics
   }
 }

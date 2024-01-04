@@ -27,10 +27,12 @@ import java.util.*;
  * @since 28.01.20
  */
 public abstract class SystemParticipantInputEntityFactory<
-        T extends SystemParticipantInput, D extends NodeAssetInputEntityData>
+        T extends SystemParticipantInput, D extends SystemParticipantEntityData>
     extends AssetInputEntityFactory<T, D> {
 
   private static final String Q_CHARACTERISTICS = "qcharacteristics";
+
+  public static final String EM = "em";
 
   protected SystemParticipantInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
@@ -40,6 +42,10 @@ public abstract class SystemParticipantInputEntityFactory<
   protected List<Set<String>> getFields(D data) {
     List<Set<String>> fields = new ArrayList<>(super.getFields(data));
     for (Set<String> set : fields) set.add(Q_CHARACTERISTICS);
+
+    List<Set<String>> withEm = fields.stream().map(f -> (Set<String>) expandSet(f, EM)).toList();
+
+    fields.addAll(withEm);
 
     return fields;
   }
