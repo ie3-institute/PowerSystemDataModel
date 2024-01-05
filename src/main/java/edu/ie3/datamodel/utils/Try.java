@@ -10,7 +10,6 @@ import static java.util.stream.Collectors.partitioningBy;
 import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.TryException;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -194,20 +193,6 @@ public abstract class Try<T, E extends Exception> {
   // functional methods
 
   /**
-   * Method to consume the contained data.
-   *
-   * @param consumer operation to compute
-   */
-  public abstract void ifSuccess(Consumer<T> consumer);
-
-  /**
-   * Method to consume the exception
-   *
-   * @param consumer operation to compute
-   */
-  public abstract void ifFailure(Consumer<E> consumer);
-
-  /**
    * Method to transform the data if this object is a {@link Success}.
    *
    * @param mapper that is used to map the data
@@ -300,16 +285,6 @@ public abstract class Try<T, E extends Exception> {
       return Optional.empty();
     }
 
-    @Override
-    public void ifSuccess(Consumer<T> consumer) {
-      consumer.accept(data);
-    }
-
-    @Override
-    public void ifFailure(Consumer<E> consumer) {
-      // does nothing
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <U> Try<U, E> flatMap(Function<? super T, ? extends Try<U, E>> mapper) {
@@ -393,16 +368,6 @@ public abstract class Try<T, E extends Exception> {
     @Override
     public Optional<E> getException() {
       return exception != null ? Optional.of(exception) : Optional.empty();
-    }
-
-    @Override
-    public void ifSuccess(Consumer<T> consumer) {
-      // does nothing
-    }
-
-    @Override
-    public void ifFailure(Consumer<E> consumer) {
-      consumer.accept(exception);
     }
 
     @SuppressWarnings("unchecked")
