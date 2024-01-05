@@ -18,10 +18,10 @@ import tech.units.indriya.ComparableQuantity;
 
 public class CylindricalStorageInputFactory
     extends AssetInputEntityFactory<CylindricalStorageInput, ThermalUnitInputEntityData> {
-  private static final String STORAGE_VOLUME_LVL = "storagevolumelvl";
-  private static final String STORAGE_VOLUME_LVL_MIN = "storagevolumelvlmin";
-  private static final String INLET_TEMP = "inlettemp";
-  private static final String RETURN_TEMP = "returntemp";
+  private static final String STORAGE_VOLUME_LVL = "storageVolumeLvl";
+  private static final String STORAGE_VOLUME_LVL_MIN = "storageVolumeLvlMin";
+  private static final String INLET_TEMP = "inletTemp";
+  private static final String RETURN_TEMP = "returnTemp";
   private static final String C = "c";
 
   public CylindricalStorageInputFactory() {

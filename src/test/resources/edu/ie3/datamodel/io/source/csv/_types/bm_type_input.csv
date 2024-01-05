@@ -1,2 +1,2 @@
-uuid,active_power_gradient,capex,cosphi_rated,eta_conv,id,opex,s_rated
+uuid,active_power_gradient,capex,cos_phi_rated,eta_conv,id,opex,s_rated
 5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0

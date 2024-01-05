@@ -21,13 +21,13 @@ public class PvInputFactory
     extends SystemParticipantInputEntityFactory<PvInput, NodeAssetInputEntityData> {
   private static final String ALBEDO = "albedo";
   private static final String AZIMUTH = "azimuth";
-  private static final String ETA_CONV = "etaconv";
-  private static final String ELEVATION_ANGLE = "elevationangle";
-  private static final String KG = "kg";
-  private static final String KT = "kt";
-  private static final String MARKET_REACTION = "marketreaction";
-  private static final String S_RATED = "srated";
-  private static final String COS_PHI_RATED = "cosphirated";
+  private static final String ETA_CONV = "etaConv";
+  private static final String ELEVATION_ANGLE = "elevationAngle";
+  private static final String KG = "kG";
+  private static final String KT = "kT";
+  private static final String MARKET_REACTION = "marketReaction";
+  private static final String S_RATED = "sRated";
+  private static final String COS_PHI_RATED = "cosPhiRated";
 
   public PvInputFactory() {
     super(PvInput.class);

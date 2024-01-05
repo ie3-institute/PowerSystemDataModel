@@ -38,6 +38,7 @@ public class InfluxDbConnector implements DataConnector {
         return maps;
       };
 
+  private final String databaseName;
   private final String scenarioName;
   private final InfluxDB session;
 
@@ -77,6 +78,7 @@ public class InfluxDbConnector implements DataConnector {
    */
   public InfluxDbConnector(
       InfluxDB session, String scenarioName, String databaseName, boolean createDb) {
+    this.databaseName = databaseName;
     this.scenarioName = scenarioName;
     this.session = session;
 
@@ -105,6 +107,21 @@ public class InfluxDbConnector implements DataConnector {
    */
   public InfluxDbConnector(String url, String databaseName) {
     this(url, databaseName, NO_SCENARIO, true, InfluxDB.LogLevel.NONE, BatchOptions.DEFAULTS);
+  }
+
+  /** Returns the option for fields found in the source. */
+  public Optional<Set<String>> getSourceFields() {
+    QueryResult tagKeys = session.query(new Query("SHOW TAG KEYS ON " + databaseName));
+    Map<String, Set<Map<String, String>>> tagResults = parseQueryResult(tagKeys);
+
+    QueryResult fieldKeys = session.query(new Query("SHOW FIELD KEYS ON " + databaseName));
+    Map<String, Set<Map<String, String>>> fieldResults = parseQueryResult(fieldKeys);
+
+    Set<String> set = new HashSet<>();
+    tagResults.values().forEach(v -> v.stream().map(m -> m.get("tagKey")).forEach(set::add));
+    fieldResults.values().forEach(v -> v.stream().map(m -> m.get("fieldKey")).forEach(set::add));
+
+    return Optional.of(set);
   }
 
   /**
