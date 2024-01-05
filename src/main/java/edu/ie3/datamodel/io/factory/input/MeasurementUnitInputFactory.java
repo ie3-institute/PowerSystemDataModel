@@ -13,8 +13,8 @@ import java.util.UUID;
 
 public class MeasurementUnitInputFactory
     extends AssetInputEntityFactory<MeasurementUnitInput, NodeAssetInputEntityData> {
-  private static final String V_MAG = "vmag";
-  private static final String V_ANG = "vang";
+  private static final String V_MAG = "vMag";
+  private static final String V_ANG = "vAng";
   private static final String P = "p";
   private static final String Q = "q";
 

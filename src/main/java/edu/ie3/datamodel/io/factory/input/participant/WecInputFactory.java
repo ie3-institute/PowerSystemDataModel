@@ -16,7 +16,7 @@ import java.util.UUID;
 public class WecInputFactory
     extends SystemParticipantInputEntityFactory<
         WecInput, SystemParticipantTypedEntityData<WecTypeInput>> {
-  private static final String MARKET_REACTION = "marketreaction";
+  private static final String MARKET_REACTION = "marketReaction";
 
   public WecInputFactory() {
     super(WecInput.class);

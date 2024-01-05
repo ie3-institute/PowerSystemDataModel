@@ -274,31 +274,22 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     }
   }
 
-  def "An AssetInputFactory should throw an exception on invalid or incomplete data "() {
-    given: "a system participant input type factory and model data"
+  def "An AssetInputFactory should throw an exception on invalid or incomplete fields"() {
+    given:
     def inputFactory = new TestAssetInputFactory()
-    Map<String, String> parameter = [
-      "uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil": "2019-12-31T00:00:00+01:00[Europe/Berlin]"
-    ]
-    def inputClass = TestAssetInput
+    def actualFields = TestAssetInputFactory.newSet("uuid", "operates_from", "operates_until")
 
     when:
-    Try<AssetInput, FactoryException> input =  inputFactory.get(new AssetInputEntityData(parameter, inputClass))
+    Try<Void, FactoryException> input = inputFactory.validate(actualFields, TestAssetInput)
 
     then:
     input.failure
-    input.exception.get().cause.message ==
-        "The provided fields [operatesfrom, operatesuntil, uuid] with data \n" +
-        "{operatesfrom -> 2019-01-01T00:00:00+01:00[Europe/Berlin],\n" +
-        "operatesuntil -> 2019-12-31T00:00:00+01:00[Europe/Berlin],\n" +
-        "uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of TestAssetInput. \n" +
+    input.exception.get().message == "The provided fields [operates_from, operates_until, uuid] are invalid for instance of 'TestAssetInput'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'TestAssetInput' are possible (NOT case-sensitive!):\n" +
-        "0: [id, uuid]\n" +
-        "1: [id, operatesfrom, uuid]\n" +
-        "2: [id, operatesuntil, uuid]\n" +
-        "3: [id, operatesfrom, operatesuntil, uuid]\n"
+        "0: [id, uuid] or [id, uuid]\n" +
+        "1: [id, operatesFrom, uuid] or [id, operates_from, uuid]\n" +
+        "2: [id, operatesUntil, uuid] or [id, operates_until, uuid]\n" +
+        "3: [id, operatesFrom, operatesUntil, uuid] or [id, operates_from, operates_until, uuid]\n"
   }
 
   private static class TestAssetInput extends AssetInput {

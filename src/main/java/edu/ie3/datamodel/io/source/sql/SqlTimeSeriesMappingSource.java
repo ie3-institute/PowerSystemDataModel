@@ -7,34 +7,57 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
+import edu.ie3.datamodel.utils.Try;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final String queryFull;
+  private final String tableName;
   private final SqlDataSource dataSource;
 
   public SqlTimeSeriesMappingSource(
       SqlConnector connector,
       String schemaName,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy)
+      throws SourceException {
     this.dataSource =
         new SqlDataSource(
             connector, schemaName, new DatabaseNamingStrategy(entityPersistenceNamingStrategy));
     this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
 
-    final String tableName =
+    this.tableName =
         entityPersistenceNamingStrategy.getEntityName(MappingEntry.class).orElseThrow();
     this.queryFull = createBaseQueryString(schemaName, tableName);
+
+    Try.of(this::getSourceFields, SourceException.class)
+        .flatMap(
+            fieldsOpt ->
+                fieldsOpt
+                    .map(
+                        fields ->
+                            mappingFactory
+                                .validate(fields, MappingEntry.class)
+                                .transformF(SourceException::new))
+                    .orElse(Try.Success.empty()))
+        .getOrThrow();
   }
 
   @Override
   public Stream<Map<String, String>> getMappingSourceData() {
     return dataSource.executeQuery(queryFull);
+  }
+
+  @Override
+  public Optional<Set<String>> getSourceFields() throws SourceException {
+    return dataSource.getSourceFields(tableName);
   }
 }

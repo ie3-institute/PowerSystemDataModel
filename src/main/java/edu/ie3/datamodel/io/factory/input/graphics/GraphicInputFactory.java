@@ -23,7 +23,7 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
     extends EntityFactory<T, D> {
 
   private static final String UUID = "uuid";
-  private static final String GRAPHIC_LAYER = "graphiclayer";
+  private static final String GRAPHIC_LAYER = "graphicLayer";
   private static final String PATH_LINE_STRING = "path";
 
   protected GraphicInputFactory(Class<? extends T>... allowedClasses) {
@@ -36,11 +36,11 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
    * <p>The mandatory attributes required to create an {@link GraphicInput} are enhanced with custom
    * attribute names that each subclass factory determines in {@link #getAdditionalFields()}.
    *
-   * @param data EntityData (or subclass) containing the data
+   * @param entityClass class of the entity
    * @return list of possible attribute sets
    */
   @Override
-  protected List<Set<String>> getFields(D data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> constructorParamsMin = newSet(UUID, GRAPHIC_LAYER, PATH_LINE_STRING);
     final String[] additionalFields = getAdditionalFields();
     constructorParamsMin = expandSet(constructorParamsMin, additionalFields);

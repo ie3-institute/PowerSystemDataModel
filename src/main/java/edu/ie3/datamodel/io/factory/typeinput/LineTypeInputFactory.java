@@ -23,15 +23,15 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
   private static final String G = "g";
   private static final String R = "r";
   private static final String X = "x";
-  private static final String I_MAX = "imax";
-  private static final String V_RATED = "vrated";
+  private static final String I_MAX = "iMax";
+  private static final String V_RATED = "vRated";
 
   public LineTypeInputFactory() {
     super(LineTypeInput.class);
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData entityData) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> constructorParams = newSet(ENTITY_UUID, ENTITY_ID, B, G, R, X, I_MAX, V_RATED);
 
     return Collections.singletonList(constructorParams);
