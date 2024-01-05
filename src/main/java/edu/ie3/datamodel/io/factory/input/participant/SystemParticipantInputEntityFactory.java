@@ -30,7 +30,7 @@ public abstract class SystemParticipantInputEntityFactory<
         T extends SystemParticipantInput, D extends SystemParticipantEntityData>
     extends AssetInputEntityFactory<T, D> {
 
-  private static final String Q_CHARACTERISTICS = "qcharacteristics";
+  private static final String Q_CHARACTERISTICS = "qCharacteristics";
 
   public static final String EM = "em";
 
@@ -39,8 +39,8 @@ public abstract class SystemParticipantInputEntityFactory<
   }
 
   @Override
-  protected List<Set<String>> getFields(D data) {
-    List<Set<String>> fields = new ArrayList<>(super.getFields(data));
+  protected List<Set<String>> getFields(Class<?> entityClass) {
+    List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
     for (Set<String> set : fields) set.add(Q_CHARACTERISTICS);
 
     List<Set<String>> withEm = fields.stream().map(f -> (Set<String>) expandSet(f, EM)).toList();

@@ -20,10 +20,10 @@ import org.locationtech.jts.geom.Point;
 public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
   private static final String TID = "tid";
   private static final String COORDINATE_ID = "id";
-  private static final String LONG_GEO = "longgeo";
-  private static final String LAT_GEO = "latgeo";
-  private static final String LONG_ROT = "longrot";
-  private static final String LAT_ROT = "latrot";
+  private static final String LONG_GEO = "longGeo";
+  private static final String LAT_GEO = "latGeo";
+  private static final String LONG_ROT = "longRot";
+  private static final String LAT_ROT = "latRot";
 
   @Override
   protected Pair<Integer, Point> buildModel(SimpleFactoryData data) {
@@ -34,7 +34,7 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleFactoryData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     return Collections.singletonList(
         newSet(TID, COORDINATE_ID, LONG_GEO, LAT_GEO, LONG_ROT, LAT_ROT));
   }

@@ -22,7 +22,7 @@ public class OperatorInputFactory extends EntityFactory<OperatorInput, EntityDat
   }
 
   @Override
-  protected List<Set<String>> getFields(EntityData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> constructorParams = newSet(ENTITY_UUID, ENTITY_ID);
     return Collections.singletonList(constructorParams);
   }

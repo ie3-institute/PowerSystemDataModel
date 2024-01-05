@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source;
 import static edu.ie3.datamodel.io.factory.input.participant.EmInputFactory.PARENT_EM;
 
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.EmAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.EmInputFactory;
@@ -29,6 +30,11 @@ public class EnergyManagementSource extends EntitySource {
   public EnergyManagementSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    validate(EmInput.class, emInputFactory).getOrThrow();
   }
 
   /**

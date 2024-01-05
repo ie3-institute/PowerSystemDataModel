@@ -13,6 +13,10 @@ public class FailedValidationException extends ValidationException {
     super(message, throwable);
   }
 
+  public FailedValidationException(Throwable throwable) {
+    super(throwable);
+  }
+
   public FailedValidationException(String message) {
     super(message);
   }

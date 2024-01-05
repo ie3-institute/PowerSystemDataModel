@@ -16,7 +16,7 @@ Model of an ideal electrical battery energy storage.
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -39,7 +39,7 @@ Model of an ideal electrical battery energy storage.
      - kVA
      - Rated apparent power
 
-   * - cosphiRated
+   * - cosPhiRated
      - --
      - Rated power factor
 
@@ -82,7 +82,7 @@ Model of an ideal electrical battery energy storage.
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -90,7 +90,7 @@ Model of an ideal electrical battery energy storage.
 
    * - operator
      - --
-     - 
+     -
 
    * - operationTime
      - --
@@ -98,7 +98,7 @@ Model of an ideal electrical battery energy storage.
 
    * - node
      - --
-     - 
+     -
 
    * - qCharacteristics
      - --
@@ -106,7 +106,7 @@ Model of an ideal electrical battery energy storage.
 
    * - type
      - --
-     - 
+     -
 
    * - behaviour
      - --

@@ -43,7 +43,7 @@ Combined heat and power plant.
      - kVA
      - Rated apparent power
 
-   * - cosphiRated
+   * - cosPhiRated
      - --
      - Rated power factor
 

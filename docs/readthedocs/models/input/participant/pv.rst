@@ -16,7 +16,7 @@ Detailed model of a photovoltaic power plant.
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -24,7 +24,7 @@ Detailed model of a photovoltaic power plant.
 
    * - operator
      - --
-     - 
+     -
 
    * - operationTime
      - --
@@ -32,7 +32,7 @@ Detailed model of a photovoltaic power plant.
 
    * - node
      - --
-     - 
+     -
 
    * - qCharacteristics
      - --
@@ -72,7 +72,7 @@ Detailed model of a photovoltaic power plant.
      - kVA
      - Rated apparent power
 
-   * - cosphiRated
+   * - cosPhiRated
      - --
      - Rated power factor
 

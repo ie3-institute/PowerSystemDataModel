@@ -16,7 +16,7 @@ Model of (mainly) domestic loads.
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -24,7 +24,7 @@ Model of (mainly) domestic loads.
 
    * - operator
      - --
-     - 
+     -
 
    * - operationTime
      - --
@@ -32,7 +32,7 @@ Model of (mainly) domestic loads.
 
    * - node
      - --
-     - 
+     -
 
    * - qCharacteristics
      - --
@@ -54,7 +54,7 @@ Model of (mainly) domestic loads.
      - kVA
      - Rated apparent power
 
-   * - cosphiRated
+   * - cosPhiRated
      - --
      - Rated power factor
 

@@ -16,7 +16,7 @@ model can be derived.
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -24,7 +24,7 @@ model can be derived.
 
    * - operator
      - --
-     - 
+     -
 
    * - operationTime
      - --
@@ -32,7 +32,7 @@ model can be derived.
 
    * - node
      - --
-     - 
+     -
 
    * - qCharacteristics
      - --
@@ -42,7 +42,7 @@ model can be derived.
      - kVA
      - Rated apparent power
 
-   * - cosphiRated
+   * - cosPhiRated
      - --
      - Rated power factor
 

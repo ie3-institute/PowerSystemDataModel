@@ -143,6 +143,6 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.failure
-    input.exception.get().cause.message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
+    input.exception.get().cause.message == "Exception while trying to parse field \"locationType\" with supposed int value \"-- invalid --\""
   }
 }

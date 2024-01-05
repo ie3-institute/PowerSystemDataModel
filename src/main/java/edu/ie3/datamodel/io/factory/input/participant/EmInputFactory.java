@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInputEntityData> {
 
-  private static final String CONTROL_STRATEGY = "controlstrategy";
+  private static final String CONTROL_STRATEGY = "controlStrategy";
 
   public static final String PARENT_EM = "parentem";
 
@@ -26,8 +26,8 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInpu
   }
 
   @Override
-  protected List<Set<String>> getFields(EmAssetInputEntityData data) {
-    List<Set<String>> fields = new ArrayList<>(super.getFields(data));
+  protected List<Set<String>> getFields(Class<?> entityClass) {
+    List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
 
     List<Set<String>> withEm =
         fields.stream().map(f -> (Set<String>) expandSet(f, PARENT_EM)).toList();

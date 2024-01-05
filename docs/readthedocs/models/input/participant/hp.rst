@@ -18,7 +18,7 @@ Attributes, Units and Remarks
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -37,7 +37,7 @@ Attributes, Units and Remarks
      - kVA
      - Rated apparent power
 
-   * - cosphiRated
+   * - cosPhiRated
      - --
      - Rated power factor
 
@@ -58,7 +58,7 @@ Attributes, Units and Remarks
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -66,7 +66,7 @@ Attributes, Units and Remarks
 
    * - operator
      - --
-     - 
+     -
 
    * - operationTime
      - --
@@ -74,7 +74,7 @@ Attributes, Units and Remarks
 
    * - node
      - --
-     - 
+     -
 
    * - thermalBus
      - --
@@ -86,7 +86,7 @@ Attributes, Units and Remarks
 
    * - type
      - --
-     - 
+     -
 
    * - em
      - --

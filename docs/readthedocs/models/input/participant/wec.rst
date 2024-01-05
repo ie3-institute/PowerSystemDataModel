@@ -16,7 +16,7 @@ Model of a wind energy converter.
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -35,7 +35,7 @@ Model of a wind energy converter.
      - kVA
      - Rated apparent power
 
-   * - cosphiRated
+   * - cosPhiRated
      - --
      - Rated power factor
 
@@ -68,7 +68,7 @@ Model of a wind energy converter.
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -76,7 +76,7 @@ Model of a wind energy converter.
 
    * - operator
      - --
-     - 
+     -
 
    * - operationTime
      - --
@@ -84,7 +84,7 @@ Model of a wind energy converter.
 
    * - node
      - --
-     - 
+     -
 
    * - qCharacteristics
      - --
@@ -92,7 +92,7 @@ Model of a wind energy converter.
 
    * - type
      - --
-     - 
+     -
 
    * - marketReaction
      - --

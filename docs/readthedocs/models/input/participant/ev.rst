@@ -16,7 +16,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -43,7 +43,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
      - kVA
      - Rated apparent power
 
-   * - cosphiRated
+   * - cosPhiRated
      - --
      - Rated power factor
 
@@ -59,7 +59,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - uuid
      - --
-     - 
+     -
 
    * - id
      - --
@@ -67,7 +67,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - operator
      - --
-     - 
+     -
 
    * - operationTime
      - --
@@ -75,11 +75,11 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - node
      - --
-     - 
+     -
 
    * - type
      - --
-     - 
+     -
 
    * - em
      - --

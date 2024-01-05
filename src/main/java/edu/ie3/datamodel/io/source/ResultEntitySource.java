@@ -5,7 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
@@ -18,7 +20,11 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
+import edu.ie3.datamodel.utils.Try;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link ResultEntity} container
@@ -58,6 +64,41 @@ public class ResultEntitySource extends EntitySource {
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    List<Try<Void, ValidationException>> participantResults =
+        new ArrayList<>(
+            Stream.of(
+                    LoadResult.class,
+                    FixedFeedInResult.class,
+                    BmResult.class,
+                    PvResult.class,
+                    ChpResult.class,
+                    WecResult.class,
+                    StorageResult.class,
+                    EvcsResult.class,
+                    EvResult.class,
+                    HpResult.class,
+                    EmResult.class)
+                .map(c -> validate(c, systemParticipantResultFactory))
+                .toList());
+
+    participantResults.addAll(
+        List.of(
+            validate(ThermalHouseResult.class, thermalResultFactory),
+            validate(CylindricalStorageResult.class, thermalResultFactory),
+            validate(SwitchResult.class, switchResultFactory),
+            validate(NodeResult.class, nodeResultFactory),
+            validate(LineResult.class, connectorResultFactory),
+            validate(Transformer2WResult.class, connectorResultFactory),
+            validate(Transformer3WResult.class, connectorResultFactory),
+            validate(FlexOptionsResult.class, flexOptionsResultFactory)));
+
+    Try.scanCollection(participantResults, Void.class)
+        .transformF(FailedValidationException::new)
+        .getOrThrow();
   }
 
   /**

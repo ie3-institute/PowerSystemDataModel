@@ -39,7 +39,7 @@ Model of a biomass power plant.
      - kVA
      - Rated apparent power
 
-   * - cosphiRated
+   * - cosPhiRated
      - --
      - Rated power factor
 
