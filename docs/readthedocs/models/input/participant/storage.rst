@@ -26,7 +26,7 @@ Type Model
 +---------------------+---------+---------------------------------------------------------+
 | sRated              | kVA     | Rated apparent power                                    |
 +---------------------+---------+---------------------------------------------------------+
-| cosphiRated         | --      | Rated power factor                                      |
+| cosPhiRated         | --      | Rated power factor                                      |
 +---------------------+---------+---------------------------------------------------------+
 | pMax                | kW      | | Maximum permissible active power                      |
 |                     |         | | infeed or consumption                                 |
