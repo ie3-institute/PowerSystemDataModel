@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
@@ -175,13 +176,16 @@ public class CsvWeatherSource extends WeatherSource {
         log.error("Cannot read file {}. File not found!", data.getFullFilePath());
       } catch (IOException e) {
         log.error("Cannot read file {}. Exception: {}", data.getFullFilePath(), e);
+      } catch (ValidationException ve) {
+        log.error("Validation failed for file {}. Exception: {}", data.getFullFilePath(), ve);
       }
     }
     return weatherTimeSeries;
   }
 
   private Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader)
+      throws ValidationException {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 

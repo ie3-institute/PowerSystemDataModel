@@ -7,12 +7,14 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.models.value.CoordinateValue;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
@@ -46,7 +48,8 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
   private final SqlIdCoordinateFactory factory;
 
   public SqlIdCoordinateSource(
-      SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource) {
+      SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource)
+      throws SourceException {
     this.factory = factory;
     this.dataSource = dataSource;
     this.coordinateTableName = coordinateTableName;
@@ -56,7 +59,15 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
         dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
 
     // validating table
-    getSourceFields(Pair.class).ifPresent(s -> factory.validate(s, Pair.class).getOrThrow());
+    Try.of(() -> getSourceFields(Pair.class), SourceException.class)
+        .flatMap(
+            fieldsOpt ->
+                fieldsOpt
+                    .map(
+                        fields ->
+                            factory.validate(fields, Pair.class).transformF(SourceException::new))
+                    .orElse(Try.Success.empty()))
+        .getOrThrow();
 
     // setup queries
     this.basicQuery = createBaseQueryString(dataSource.schemaName, coordinateTableName);
@@ -81,7 +92,8 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
       SqlConnector connector,
       String schemaName,
       String coordinateTableName,
-      SqlIdCoordinateFactory factory) {
+      SqlIdCoordinateFactory factory)
+      throws SourceException {
     this(
         factory,
         coordinateTableName,

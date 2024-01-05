@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
@@ -25,7 +26,7 @@ public interface IdCoordinateSource {
    * @param entityClass class of the source
    * @return an option for the found fields
    */
-  Optional<Set<String>> getSourceFields(Class<?> entityClass);
+  Optional<Set<String>> getSourceFields(Class<?> entityClass) throws SourceException;
 
   /**
    * Get the matching coordinate for the given ID

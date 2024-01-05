@@ -5,9 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.exceptions.SystemParticipantsException;
+import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
@@ -76,17 +74,22 @@ public class SystemParticipantSource extends EntitySource {
   }
 
   @Override
-  public void validate() {
-    validate(BmInput.class, bmInputFactory);
-    validate(ChpInput.class, chpInputFactory);
-    validate(EvInput.class, evInputFactory);
-    validate(FixedFeedInInput.class, fixedFeedInInputFactory);
-    validate(HpInput.class, hpInputFactory);
-    validate(LoadInput.class, loadInputFactory);
-    validate(PvInput.class, pvInputFactory);
-    validate(StorageInput.class, storageInputFactory);
-    validate(WecInput.class, wecInputFactory);
-    validate(EvcsInput.class, evcsInputFactory);
+  public void validate() throws ValidationException {
+    Try.scanStream(
+            Stream.of(
+                validate(BmInput.class, bmInputFactory),
+                validate(ChpInput.class, chpInputFactory),
+                validate(EvInput.class, evInputFactory),
+                validate(FixedFeedInInput.class, fixedFeedInInputFactory),
+                validate(HpInput.class, hpInputFactory),
+                validate(LoadInput.class, loadInputFactory),
+                validate(PvInput.class, pvInputFactory),
+                validate(StorageInput.class, storageInputFactory),
+                validate(WecInput.class, wecInputFactory),
+                validate(EvcsInput.class, evcsInputFactory)),
+            "Validation")
+        .transformF(FailedValidationException::new)
+        .getOrThrow();
   }
 
   /**

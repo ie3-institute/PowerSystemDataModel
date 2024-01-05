@@ -6,7 +6,9 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
@@ -39,7 +41,7 @@ public abstract class EntitySource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-  public abstract void validate();
+  public abstract void validate() throws ValidationException;
 
   /**
    * Method for validating a single source.
@@ -48,11 +50,22 @@ public abstract class EntitySource {
    * @param validator used to validate
    * @param <C> type of the class
    */
-  protected final <C extends UniqueEntity> void validate(
+  protected final <C extends UniqueEntity> Try<Void, ValidationException> validate(
       Class<? extends C> entityClass, SourceValidator<C> validator) {
-    dataSource
-        .getSourceFields(entityClass)
-        .ifPresent(s -> validator.validate(s, entityClass).getOrThrow());
+    return Try.of(() -> dataSource.getSourceFields(entityClass), SourceException.class)
+        .transformF(
+            se ->
+                (ValidationException)
+                    new FailedValidationException(
+                        "Validation for entity "
+                            + entityClass
+                            + " failed because of an error related to its source.",
+                        se))
+        .flatMap(
+            fieldsOpt ->
+                fieldsOpt
+                    .map(fields -> validator.validate(fields, entityClass))
+                    .orElse(Try.Success.empty()));
   }
 
   protected String buildSkippingMessage(

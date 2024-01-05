@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.*;
 import java.util.stream.Stream;
@@ -18,7 +19,8 @@ public interface DataSource {
    * @param entityClass class of the source
    * @return an option for the found fields
    */
-  Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass);
+  Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass)
+      throws SourceException;
 
   /** Creates a stream of maps that represent the rows in the database */
   Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass);

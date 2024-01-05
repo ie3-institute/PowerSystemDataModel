@@ -47,7 +47,7 @@ public abstract class WeatherSource {
    * @return an option for fields found in the source
    */
   public abstract <C extends WeatherValue> Optional<Set<String>> getSourceFields(
-      Class<C> entityClass);
+      Class<C> entityClass) throws SourceException;
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

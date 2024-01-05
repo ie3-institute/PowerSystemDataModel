@@ -59,17 +59,27 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass) {
-    try (BufferedReader reader = connector.initReader(entityClass)) {
+  public Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass)
+      throws SourceException {
+    return getSourceFields(() -> connector.initReader(entityClass));
+  }
+
+  public Optional<Set<String>> getSourceFields(ReaderSupplier readerSupplier)
+      throws SourceException {
+    try (BufferedReader reader = readerSupplier.get()) {
       return Optional.of(
           Arrays.stream(parseCsvRow(reader.readLine(), csvSep)).collect(Collectors.toSet()));
-    } catch (ConnectorException | IOException e) {
-      log.warn(
-          "The source for the entity '{}' couldn't be read and therefore not be validated! Cause: {}",
-          entityClass,
-          e.getMessage());
+    } catch (FileNotFoundException e) {
+      // A file not existing can be acceptable in many cases, and is handled elsewhere.
+      log.debug("The source for the given entity couldn't be found! Cause: {}", e.getMessage());
       return Optional.empty();
+    } catch (ConnectorException | IOException e) {
+      throw new SourceException("Error while trying to read source", e);
     }
+  }
+
+  public interface ReaderSupplier {
+    BufferedReader get() throws FileNotFoundException, ConnectorException;
   }
 
   @Override

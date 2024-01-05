@@ -5,7 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
@@ -17,8 +19,10 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.utils.Try;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link
@@ -47,20 +51,29 @@ public class TypeSource extends EntitySource {
   }
 
   @Override
-  public void validate() {
-    validate(OperatorInput.class, operatorInputFactory);
-    validate(LineTypeInput.class, lineTypeInputFactory);
-    validate(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
-    validate(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
+  public void validate() throws ValidationException {
+    List<Try<Void, ValidationException>> participantResults =
+        new ArrayList<>(
+            Stream.of(
+                    EvTypeInput.class,
+                    HpTypeInput.class,
+                    BmTypeInput.class,
+                    WecTypeInput.class,
+                    ChpTypeInput.class,
+                    StorageTypeInput.class)
+                .map(c -> validate(c, systemParticipantTypeInputFactory))
+                .toList());
 
-    List.of(
-            EvTypeInput.class,
-            HpTypeInput.class,
-            BmTypeInput.class,
-            WecTypeInput.class,
-            ChpTypeInput.class,
-            StorageTypeInput.class)
-        .forEach(c -> validate(c, systemParticipantTypeInputFactory));
+    participantResults.addAll(
+        List.of(
+            validate(OperatorInput.class, operatorInputFactory),
+            validate(LineTypeInput.class, lineTypeInputFactory),
+            validate(Transformer2WTypeInput.class, transformer2WTypeInputFactory),
+            validate(Transformer3WTypeInput.class, transformer3WTypeInputFactory)));
+
+    Try.scanCollection(participantResults, Void.class)
+        .transformF(FailedValidationException::new)
+        .getOrThrow();
   }
 
   /**

@@ -5,9 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.exceptions.RawGridException;
-import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.models.input.*;
@@ -63,13 +61,18 @@ public class RawGridSource extends EntitySource {
   }
 
   @Override
-  public void validate() {
-    validate(NodeInput.class, nodeInputFactory);
-    validate(LineInput.class, lineInputFactory);
-    validate(Transformer2WInput.class, transformer2WInputFactory);
-    validate(Transformer3WInput.class, transformer3WInputFactory);
-    validate(SwitchInput.class, switchInputFactory);
-    validate(MeasurementUnitInput.class, measurementUnitInputFactory);
+  public void validate() throws ValidationException {
+    Try.scanStream(
+            Stream.of(
+                validate(NodeInput.class, nodeInputFactory),
+                validate(LineInput.class, lineInputFactory),
+                validate(Transformer2WInput.class, transformer2WInputFactory),
+                validate(Transformer3WInput.class, transformer3WInputFactory),
+                validate(SwitchInput.class, switchInputFactory),
+                validate(MeasurementUnitInput.class, measurementUnitInputFactory)),
+            "Validation")
+        .transformF(FailedValidationException::new)
+        .getOrThrow();
   }
 
   /**

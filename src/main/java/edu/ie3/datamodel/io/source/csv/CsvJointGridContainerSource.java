@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -51,10 +52,14 @@ public class CsvJointGridContainerSource {
     GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* validating sources */
-    typeSource.validate();
-    rawGridSource.validate();
-    systemParticipantSource.validate();
-    graphicSource.validate();
+    try {
+      typeSource.validate();
+      rawGridSource.validate();
+      systemParticipantSource.validate();
+      graphicSource.validate();
+    } catch (ValidationException ve) {
+      throw new SourceException("Could not read source because validation failed", ve);
+    }
 
     /* Loading models */
     Try<RawGridElements, SourceException> rawGridElements =

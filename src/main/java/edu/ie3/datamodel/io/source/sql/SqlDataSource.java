@@ -110,25 +110,8 @@ public class SqlDataSource implements DataSource {
 
   @Override
   public Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass) {
-    try {
-      String tableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
-      ResultSet rs =
-          connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
-      Set<String> columnNames = new HashSet<>();
-
-      while (rs.next()) {
-        String name = rs.getString("COLUMN_NAME");
-        columnNames.add(StringUtils.snakeCaseToCamelCase(name));
-      }
-
-      return Optional.of(columnNames);
-    } catch (NoSuchElementException | SQLException e) {
-      log.warn(
-          "The source for the entity '{}' couldn't be read and therefore not be validated! Cause: {}",
-          entityClass,
-          e.getMessage());
-      return Optional.empty();
-    }
+    String tableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
+    return getSourceFields(tableName);
   }
 
   /**
@@ -149,8 +132,9 @@ public class SqlDataSource implements DataSource {
       }
 
       return Optional.of(columnNames);
-    } catch (NoSuchElementException | SQLException e) {
+    } catch (SQLException e) {
       log.warn("The table '{}' couldn't be read and therefore not be validated!", tableName, e);
+      // FIXME only return empty if table not found. Throw exception if error occurred
       return Optional.empty();
     }
   }

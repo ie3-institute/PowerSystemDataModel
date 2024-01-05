@@ -10,6 +10,7 @@ import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -18,6 +19,7 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -59,7 +61,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
       IdCoordinateSource coordinateSource,
       String coordinateIdColumnName,
       TimeBasedWeatherValueFactory weatherFactory,
-      String timeStampPattern) {
+      String timeStampPattern)
+      throws SourceException {
     this(
         connector,
         coordinateSource,
@@ -88,15 +91,26 @@ public class CouchbaseWeatherSource extends WeatherSource {
       String coordinateIdColumnName,
       String keyPrefix,
       TimeBasedWeatherValueFactory weatherFactory,
-      String timeStampPattern) {
+      String timeStampPattern)
+      throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.connector = connector;
     this.coordinateIdColumnName = coordinateIdColumnName;
     this.keyPrefix = keyPrefix;
     this.timeStampPattern = timeStampPattern;
 
-    getSourceFields(WeatherValue.class)
-        .ifPresent(s -> weatherFactory.validate(s, WeatherValue.class).getOrThrow());
+    // validating
+    Try.of(() -> getSourceFields(WeatherValue.class), SourceException.class)
+        .flatMap(
+            fieldsOpt ->
+                fieldsOpt
+                    .map(
+                        fields ->
+                            weatherFactory
+                                .validate(fields, WeatherValue.class)
+                                .transformF(SourceException::new))
+                    .orElse(Try.Success.empty()))
+        .getOrThrow();
   }
 
   @Override

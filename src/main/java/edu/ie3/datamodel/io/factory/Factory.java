@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.FailedValidationException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
@@ -143,7 +145,7 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
    * @param entityClass of the build data
    * @return either an exception wrapped by a {@link Failure} or an empty success
    */
-  public Try<Void, FactoryException> validate(
+  public Try<Void, ValidationException> validate(
       Set<String> actualFields, Class<? extends C> entityClass) {
     List<Set<String>> fieldSets = getFields(entityClass);
     Set<String> harmonizedActualFields = toCamelCase(actualFields);
@@ -162,7 +164,7 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
       String possibleOptions = getFieldsString(fieldSets).toString();
 
       return Failure.of(
-          new FactoryException(
+          new FailedValidationException(
               "The provided fields "
                   + providedKeysString
                   + " are invalid for instance of '"

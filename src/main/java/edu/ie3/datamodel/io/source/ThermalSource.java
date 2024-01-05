@@ -5,9 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.exceptions.FailureException;
-import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
@@ -47,10 +45,15 @@ public class ThermalSource extends EntitySource {
   }
 
   @Override
-  public void validate() {
-    validate(ThermalBusInput.class, thermalBusInputFactory);
-    validate(CylindricalStorageInput.class, cylindricalStorageInputFactory);
-    validate(ThermalHouseInput.class, thermalHouseInputFactory);
+  public void validate() throws ValidationException {
+    Try.scanStream(
+            Stream.of(
+                validate(ThermalBusInput.class, thermalBusInputFactory),
+                validate(CylindricalStorageInput.class, cylindricalStorageInputFactory),
+                validate(ThermalHouseInput.class, thermalHouseInputFactory)),
+            "Validation")
+        .transformF(FailedValidationException::new)
+        .getOrThrow();
   }
 
   /**
