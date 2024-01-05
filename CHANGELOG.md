@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adding JavaDoc to `EntitySource.safeMapGet` [#828](https://github.com/ie3-institute/PowerSystemDataModel/issues/828)
 - Abstracting some methods in `ValidationUtils` [#852](https://github.com/ie3-institute/PowerSystemDataModel/issues/852)
 - `EmInput` should not be connected to the grid [#955](https://github.com/ie3-institute/PowerSystemDataModel/issues/955)
+- Enhancing the error message for coordinate sources with invalid column names [#670](https://github.com/ie3-institute/PowerSystemDataModel/issues/670) 
+- Allowing for additional unused columns in sources [#839](https://github.com/ie3-institute/PowerSystemDataModel/issues/839)
+- Improving column name validation to only run once per source [#849](https://github.com/ie3-institute/PowerSystemDataModel/issues/849)
 
 ## [4.1.0] - 2023-11-02
 

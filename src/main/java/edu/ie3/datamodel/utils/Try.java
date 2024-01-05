@@ -107,6 +107,17 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
+   * Method to retrieve the exceptions from all {@link Failure} objects.
+   *
+   * @param tries array of {@link Try} objects
+   * @return a list of {@link Exception}'s
+   */
+  @SafeVarargs
+  public static <D, E extends Exception> List<E> getExceptions(Try<? extends D, E>... tries) {
+    return Arrays.stream(tries).filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
+  }
+
+  /**
    * Method to scan a collection of {@link Try} objects for {@link Failure}'s.
    *
    * @param c collection of {@link Try} objects

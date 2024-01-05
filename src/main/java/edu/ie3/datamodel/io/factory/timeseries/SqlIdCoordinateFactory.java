@@ -39,7 +39,7 @@ public class SqlIdCoordinateFactory extends IdCoordinateFactory {
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleFactoryData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     return Collections.singletonList(newSet(COORDINATE_ID, COORDINATE));
   }
 

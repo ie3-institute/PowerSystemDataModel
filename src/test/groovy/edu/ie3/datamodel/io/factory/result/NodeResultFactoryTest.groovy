@@ -51,23 +51,16 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
   def "A NodeResultFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
     def resultFactory = new NodeResultFactory()
-    Map<String, String> parameter = [
-      "time"      : "2020-01-30 17:26:44",
-      "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-      "vmag"      : "2"
-    ]
+    def actualFields = NodeResultFactory.newSet("time", "input_model", "v_mag")
 
     when:
-    Try<NodeResult, FactoryException> input = resultFactory.get(new SimpleEntityData(parameter, NodeResult))
+    Try<Void, FactoryException> input = resultFactory.validate(actualFields, NodeResult)
 
     then:
     input.failure
-    input.exception.get().cause.message == "The provided fields [inputModel, time, vmag] with data \n" +
-        "{inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,\n" +
-        "time -> 2020-01-30 17:26:44,\n" +
-        "vmag -> 2} are invalid for instance of NodeResult. \n" +
+    input.exception.get().message == "The provided fields [input_model, time, v_mag] are invalid for instance of 'NodeResult'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'NodeResult' are possible (NOT case-sensitive!):\n" +
-        "0: [inputModel, time, vang, vmag]\n" +
-        "1: [inputModel, time, uuid, vang, vmag]\n"
+        "0: [inputModel, time, vAng, vMag] or [input_model, time, v_ang, v_mag]\n" +
+        "1: [inputModel, time, uuid, vAng, vMag] or [input_model, time, uuid, v_ang, v_mag]\n"
   }
 }
