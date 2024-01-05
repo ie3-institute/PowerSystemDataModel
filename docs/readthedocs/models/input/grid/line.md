@@ -18,7 +18,7 @@ Representation of an AC line.
 | vRated    | kV      | Rated voltage                               |
 
 
-A list with some standard line types can be found here: [:ref:`Standard-Line-Types`](#Standard-Line-Types)_
+A list with some standard line types can be found here: [{ref}`Standard-Line-Types`](#Standard-Line-Types)_
 
 
 ### Entity Model
