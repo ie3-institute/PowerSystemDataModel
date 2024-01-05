@@ -12,7 +12,7 @@ import spock.lang.Specification
 
 class FactoryTest extends Specification {
   @Shared
-  private DummyFactory factory = new DummyFactory(String)
+  private final DummyFactory factory = new DummyFactory(String)
 
 
   def "A Factory can return unused fields correctly"() {

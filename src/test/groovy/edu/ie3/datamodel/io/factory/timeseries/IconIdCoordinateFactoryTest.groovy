@@ -5,9 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.SimpleFactoryData
-import edu.ie3.datamodel.utils.Try
 import edu.ie3.util.geo.GeoUtils
 import org.apache.commons.lang3.tuple.Pair
 import org.locationtech.jts.geom.Point

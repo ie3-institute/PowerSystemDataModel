@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.source
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
