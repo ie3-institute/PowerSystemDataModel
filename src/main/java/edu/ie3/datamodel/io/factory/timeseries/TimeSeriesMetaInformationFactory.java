@@ -30,7 +30,7 @@ public class TimeSeriesMetaInformationFactory
   }
 
   @Override
-  protected List<Set<String>> getFields(EntityData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     return Collections.singletonList(
         Stream.of(TIME_SERIES, COLUMN_SCHEME).collect(Collectors.toSet()));
   }

@@ -26,7 +26,7 @@ public class TimeSeriesMappingFactory
   }
 
   @Override
-  protected List<Set<String>> getFields(EntityData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     return Collections.singletonList(
         Stream.of(UUID, PARTICIPANT, TIME_SERIES).collect(Collectors.toSet()));
   }

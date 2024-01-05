@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source
 import static edu.ie3.test.helper.EntityMap.map
 
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
@@ -31,6 +32,10 @@ class EntitySourceTest extends Specification {
   private final class DummyEntitySource extends EntitySource {
     DummyEntitySource(CsvDataSource dataSource) {
       super(dataSource)
+    }
+
+    @Override
+    void validate() throws ValidationException {
     }
   }
 

@@ -25,11 +25,11 @@ public class LoadInputFactory
     extends SystemParticipantInputEntityFactory<LoadInput, NodeAssetInputEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(LoadInputFactory.class);
 
-  private static final String LOAD_PROFILE = "loadprofile";
+  private static final String LOAD_PROFILE = "loadProfile";
   private static final String DSM = "dsm";
-  private static final String E_CONS_ANNUAL = "econsannual";
-  private static final String S_RATED = "srated";
-  private static final String COS_PHI = "cosphirated";
+  private static final String E_CONS_ANNUAL = "eConsAnnual";
+  private static final String S_RATED = "sRated";
+  private static final String COS_PHI = "cosPhiRated";
 
   public LoadInputFactory() {
     super(LoadInput.class);

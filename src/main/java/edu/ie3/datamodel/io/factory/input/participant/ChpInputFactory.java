@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class ChpInputFactory
     extends SystemParticipantInputEntityFactory<ChpInput, ChpInputEntityData> {
-  private static final String MARKET_REACTION = "marketreaction";
+  private static final String MARKET_REACTION = "marketReaction";
 
   public ChpInputFactory() {
     super(ChpInput.class);
