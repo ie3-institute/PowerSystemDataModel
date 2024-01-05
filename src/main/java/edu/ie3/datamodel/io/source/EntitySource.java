@@ -335,6 +335,13 @@ public abstract class EntitySource {
         .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
 
+  protected <T extends AssetInput> Stream<Try<T, FactoryException>> assetInputEntityStream(
+      Class<T> entityClass,
+      EntityFactory<T, AssetInputEntityData> factory,
+      Collection<OperatorInput> operators) {
+    return assetInputEntityDataStream(entityClass, operators).map(factory::get);
+  }
+
   /**
    * Returns a stream of {@link Try} entities that can be build by using {@link
    * NodeAssetInputEntityData} and their corresponding factory.
@@ -372,9 +379,7 @@ public abstract class EntitySource {
       Class<T> entityClass,
       EntityFactory<T, AssetInputEntityData> factory,
       Collection<OperatorInput> operators) {
-    return assetInputEntityDataStream(entityClass, operators)
-        .map(factory::get)
-        .collect(Collectors.toSet());
+    return assetInputEntityStream(entityClass, factory, operators).collect(Collectors.toSet());
   }
 
   @SuppressWarnings("unchecked")
