@@ -6,28 +6,52 @@ Representation of an electrical node, with no further distinction into bus bar, 
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+---------------+------+--------------------------------------------------------------------+
-| Attribute     | Unit | Remarks                                                            |
-+===============+======+====================================================================+
-| uuid          | --   |                                                                    |
-+---------------+------+--------------------------------------------------------------------+
-| id            | --   | Human readable identifier                                          |
-+---------------+------+--------------------------------------------------------------------+
-| operator      | --   |                                                                    |
-+---------------+------+--------------------------------------------------------------------+
-| operationTime | --   | Timely restriction of operation                                    |
-+---------------+------+--------------------------------------------------------------------+
-| vTarget       | p.u. | Target voltage magnitude to be used by voltage regulation entities |
-+---------------+------+--------------------------------------------------------------------+
-| slack         | --   | | Boolean indicator, if this nodes serves as a slack node in power |
-|               |      | | flow calculation                                                 |
-+---------------+------+--------------------------------------------------------------------+
-| geoPosition   | --   | Geographical location                                              |
-+---------------+------+--------------------------------------------------------------------+
-| voltLvl       | --   | Information of the voltage level (id and nominal voltage)          |
-+---------------+------+--------------------------------------------------------------------+
-| subnet        | --   | Sub grid number                                                    |
-+---------------+------+--------------------------------------------------------------------+
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     - 
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     - 
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - vTarget
+     - p.u.
+     - Target voltage magnitude to be used by voltage regulation entities
+
+   * - slack
+     - --
+     - | Boolean indicator, if this nodes serves as a slack node in power
+       | flow calculation
+
+   * - geoPosition
+     - --
+     - Geographical location
+
+   * - voltLvl
+     - --
+     - Information of the voltage level (id and nominal voltage)
+
+   * - subnet
+     - --
+     - Sub grid number
+
 
 Caveats
 ^^^^^^^
