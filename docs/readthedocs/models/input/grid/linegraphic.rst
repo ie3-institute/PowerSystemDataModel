@@ -6,18 +6,32 @@ Schematic drawing information for a line model.
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+--------------+------+-----------------------------------------------------------+
-| Attribute    | Unit | Remarks                                                   |
-+==============+======+===========================================================+
-| uuid         | --   |                                                           |
-+--------------+------+-----------------------------------------------------------+
-| graphicLayer | --   | | Human readable identifier of the graphic layer to draw  |
-|              |      | | this element on                                         |
-+--------------+------+-----------------------------------------------------------+
-| path         | --   | Line string of coordinates describing the drawing         |
-+--------------+------+-----------------------------------------------------------+
-| line         | --   | Reference to the physical line model                      |
-+--------------+------+-----------------------------------------------------------+
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     - 
+
+   * - graphicLayer
+     - --
+     - | Human readable identifier of the graphic layer to draw
+       | this element on
+
+   * - path
+     - --
+     - Line string of coordinates describing the drawing
+
+   * - line
+     - --
+     - Reference to the physical line model
+
 
 Caveats
 ^^^^^^^
