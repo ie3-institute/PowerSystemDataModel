@@ -171,9 +171,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
-    actualSet.every {
-      it.success
-    }
+    Try.scanCollection(actualSet, List).success
 
     actualSet.stream().map { it.data.get() }.toList().containsAll(expectedSet)
   }
@@ -371,9 +369,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
-    actualSet.every {
-      it.success
-    }
+    Try.scanCollection(actualSet, List).success
+
     actualSet.stream().map {
       it.data.get()
     }.toList().containsAll(expectedSet)
