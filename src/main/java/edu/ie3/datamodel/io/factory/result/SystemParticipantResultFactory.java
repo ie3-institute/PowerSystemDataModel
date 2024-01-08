@@ -27,7 +27,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   private static final String POWER = "p";
   private static final String REACTIVE_POWER = "q";
   private static final String SOC = "soc";
-  private static final String Q_DOT = "qdot";
+  private static final String Q_DOT = "qDot";
 
   public SystemParticipantResultFactory() {
     super(
@@ -67,18 +67,17 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     /// all result models have the same constructor except StorageResult
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, POWER, REACTIVE_POWER);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
-    if (data.getTargetClass().equals(StorageResult.class)
-        || data.getTargetClass().equals(EvResult.class)) {
+    if (entityClass.equals(StorageResult.class) || entityClass.equals(EvResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, POWER, REACTIVE_POWER, SOC);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
-    if (SystemParticipantWithHeatResult.class.isAssignableFrom(data.getTargetClass())) {
+    if (SystemParticipantWithHeatResult.class.isAssignableFrom(entityClass)) {
       minConstructorParams = expandSet(minConstructorParams, Q_DOT);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }

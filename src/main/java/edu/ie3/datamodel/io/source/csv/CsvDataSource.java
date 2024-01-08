@@ -51,6 +51,30 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
+  public Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass)
+      throws SourceException {
+    return getSourceFields(() -> connector.initReader(entityClass));
+  }
+
+  public Optional<Set<String>> getSourceFields(ReaderSupplier readerSupplier)
+      throws SourceException {
+    try (BufferedReader reader = readerSupplier.get()) {
+      return Optional.of(
+          Arrays.stream(parseCsvRow(reader.readLine(), csvSep)).collect(Collectors.toSet()));
+    } catch (FileNotFoundException e) {
+      // A file not existing can be acceptable in many cases, and is handled elsewhere.
+      log.debug("The source for the given entity couldn't be found! Cause: {}", e.getMessage());
+      return Optional.empty();
+    } catch (ConnectorException | IOException e) {
+      throw new SourceException("Error while trying to read source", e);
+    }
+  }
+
+  public interface ReaderSupplier {
+    BufferedReader get() throws FileNotFoundException, ConnectorException;
+  }
+
+  @Override
   public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }
@@ -214,13 +238,6 @@ public class CsvDataSource implements DataSource {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
-      // sanity check for headline
-      if (!Arrays.asList(headline).contains("uuid")) {
-        throw new SourceException(
-            "The first line does not contain a field named 'uuid'. Is the headline valid?\nProvided headline: "
-                + String.join(", ", headline));
-      }
-
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
@@ -232,9 +249,6 @@ public class CsvDataSource implements DataSource {
           .parallelStream();
     } catch (IOException e) {
       log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-    } catch (SourceException e) {
-      log.error(
           "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
 

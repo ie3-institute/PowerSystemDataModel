@@ -5,28 +5,19 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.exceptions.RawGridException;
-import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.MeasurementUnitInput;
-import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
 import java.util.*;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,6 +58,21 @@ public class RawGridSource extends EntitySource {
     this.transformer3WInputFactory = new Transformer3WInputFactory();
     this.switchInputFactory = new SwitchInputFactory();
     this.measurementUnitInputFactory = new MeasurementUnitInputFactory();
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    Try.scanStream(
+            Stream.of(
+                validate(NodeInput.class, nodeInputFactory),
+                validate(LineInput.class, lineInputFactory),
+                validate(Transformer2WInput.class, transformer2WInputFactory),
+                validate(Transformer3WInput.class, transformer3WInputFactory),
+                validate(SwitchInput.class, switchInputFactory),
+                validate(MeasurementUnitInput.class, measurementUnitInputFactory)),
+            "Validation")
+        .transformF(FailedValidationException::new)
+        .getOrThrow();
   }
 
   /**

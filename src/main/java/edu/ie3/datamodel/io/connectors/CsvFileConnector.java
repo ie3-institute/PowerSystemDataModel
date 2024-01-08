@@ -168,28 +168,22 @@ public class CsvFileConnector implements DataConnector {
    */
   public BufferedReader initReader(Class<? extends UniqueEntity> clz)
       throws FileNotFoundException, ConnectorException {
-    try {
-      Path filePath =
-          fileNamingStrategy
-              .getFilePath(clz)
-              .orElseThrow(
-                  () ->
-                      new ConnectorException(
-                          "Cannot find a naming strategy for class '"
-                              + clz.getSimpleName()
-                              + "'."));
-      return initReader(filePath);
-    } catch (ConnectorException e) {
-      throw new ConnectorException(
-          "Cannot initialize reader for entity '" + clz.getSimpleName() + "'.", e);
-    }
+    Path filePath =
+        fileNamingStrategy
+            .getFilePath(clz)
+            .orElseThrow(
+                () ->
+                    new ConnectorException(
+                        "Cannot find a naming strategy for class '" + clz.getSimpleName() + "'."));
+    return initReader(filePath);
   }
 
   /**
    * Initializes a file reader for the given file name. Use {@link
    * CsvFileConnector#initReader(Class)} for files that actually correspond to concrete entities.
    *
-   * @param filePath sub directory tree starting from base folder, including file name
+   * @param filePath path of file starting from base folder, including file name but not file
+   *     extension
    * @return the reader that contains information about the file to be read in
    * @throws FileNotFoundException if no file with the provided file name can be found
    */

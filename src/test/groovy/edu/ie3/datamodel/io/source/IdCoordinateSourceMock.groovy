@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source
 
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.util.geo.CoordinateDistance
 import org.locationtech.jts.geom.Point
 import tech.units.indriya.ComparableQuantity
@@ -12,6 +13,11 @@ import tech.units.indriya.ComparableQuantity
 import javax.measure.quantity.Length
 
 class IdCoordinateSourceMock implements IdCoordinateSource {
+
+  @Override
+  Optional<Set<String>> getSourceFields(Class<?> entityClass) throws SourceException {
+    return Optional.empty()
+  }
 
   @Override
   Optional<Point> getCoordinate(int id) {

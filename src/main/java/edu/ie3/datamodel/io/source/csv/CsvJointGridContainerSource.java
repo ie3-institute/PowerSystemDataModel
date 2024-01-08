@@ -8,17 +8,15 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.*;
-import edu.ie3.datamodel.models.input.container.GraphicElements;
-import edu.ie3.datamodel.models.input.container.JointGridContainer;
-import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.models.input.container.SystemParticipants;
+import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.*;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
@@ -50,13 +48,26 @@ public class CsvJointGridContainerSource {
     ThermalSource thermalSource = new ThermalSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
         new SystemParticipantSource(typeSource, thermalSource, rawGridSource, dataSource);
+    EnergyManagementSource emSource = new EnergyManagementSource(typeSource, dataSource);
     GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
+
+    /* validating sources */
+    try {
+      typeSource.validate();
+      rawGridSource.validate();
+      systemParticipantSource.validate();
+      graphicSource.validate();
+    } catch (ValidationException ve) {
+      throw new SourceException("Could not read source because validation failed", ve);
+    }
 
     /* Loading models */
     Try<RawGridElements, SourceException> rawGridElements =
         Try.of(rawGridSource::getGridData, SourceException.class);
     Try<SystemParticipants, SourceException> systemParticipants =
         Try.of(systemParticipantSource::getSystemParticipants, SourceException.class);
+    Try<EnergyManagementUnits, SourceException> emUnits =
+        Try.of(emSource::getEmUnits, SourceException.class);
     Try<GraphicElements, SourceException> graphicElements =
         Try.of(graphicSource::getGraphicElements, SourceException.class);
 
@@ -73,6 +84,7 @@ public class CsvJointGridContainerSource {
           gridName,
           rawGridElements.getOrThrow(),
           systemParticipants.getOrThrow(),
+          emUnits.getOrThrow(),
           graphicElements.getOrThrow());
     }
   }

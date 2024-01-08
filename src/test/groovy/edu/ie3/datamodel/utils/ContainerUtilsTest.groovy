@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.utils
 
+import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.graph.DistanceWeightedGraph
 import edu.ie3.datamodel.graph.ImpedanceWeightedGraph
@@ -23,9 +26,6 @@ import edu.ie3.test.helper.DoubleTestHelper
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ContainerUtilsTest extends Specification {
 
@@ -294,6 +294,7 @@ class ContainerUtilsTest extends Specification {
     Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
+    EnergyManagementUnits emUnits = ComplexTopology.grid.emUnits
     GraphicElements graphics = ComplexTopology.grid.graphics
 
     HashMap<Integer, SubGridContainer> expectedSubGrids = ComplexTopology.expectedSubGrids
@@ -304,6 +305,7 @@ class ContainerUtilsTest extends Specification {
         subNetNumbers,
         rawGrid,
         systemParticipants,
+        emUnits,
         graphics)
 
     then:
@@ -323,6 +325,7 @@ class ContainerUtilsTest extends Specification {
     Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
     RawGridElements rawGridInput= ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipantsInput = ComplexTopology.grid.systemParticipants
+    EnergyManagementUnits emUnits = ComplexTopology.grid.emUnits
     GraphicElements graphicsInput = ComplexTopology.grid.graphics
 
     HashMap<Integer, SubGridContainer> unmodifiedSubGrids = ComplexTopology.expectedSubGrids
@@ -332,6 +335,7 @@ class ContainerUtilsTest extends Specification {
         subNetNumbers,
         rawGridInput,
         systemParticipantsInput,
+        emUnits,
         graphicsInput)
 
     when:
@@ -386,12 +390,14 @@ class ContainerUtilsTest extends Specification {
     Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
+    EnergyManagementUnits emUnits = ComplexTopology.grid.emUnits
     GraphicElements graphics = ComplexTopology.grid.graphics
     Map<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
         gridName,
         subNetNumbers,
         rawGrid,
         systemParticipants,
+        emUnits,
         graphics)
     SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
@@ -409,6 +415,7 @@ class ContainerUtilsTest extends Specification {
     String gridName = ComplexTopology.gridName
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticpants = ComplexTopology.grid.systemParticipants
+    EnergyManagementUnits emUnits = ComplexTopology.grid.emUnits
     GraphicElements graphics = ComplexTopology.grid.graphics
     SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
@@ -417,6 +424,7 @@ class ContainerUtilsTest extends Specification {
         gridName,
         rawGrid,
         systemParticpants,
+        emUnits,
         graphics)
 
     then:

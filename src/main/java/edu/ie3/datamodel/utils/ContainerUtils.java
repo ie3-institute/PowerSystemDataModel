@@ -291,7 +291,7 @@ public class ContainerUtils {
 
   /**
    * Filters all raw grid elements for the provided subnet. For each transformer all nodes (and not
-   * only the the node of the grid the transformer is located in) are added as well. Two winding
+   * only the node of the grid the transformer is located in) are added as well. Two winding
    * transformers are counted, if the low voltage node is in the queried subnet. Three winding
    * transformers are counted, as long as any of the three nodes is in the queried subnet.
    *
@@ -358,7 +358,7 @@ public class ContainerUtils {
   public static SystemParticipants filterForSubnet(SystemParticipants input, int subnet) {
     Set<BmInput> bmPlants = filterParticipants(input.getBmPlants(), subnet);
     Set<ChpInput> chpPlants = filterParticipants(input.getChpPlants(), subnet);
-    Set<EvcsInput> evcsInputs = filterParticipants(input.getEvCS(), subnet);
+    Set<EvcsInput> evcsInputs = filterParticipants(input.getEvcs(), subnet);
     Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
     Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
     Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
@@ -366,7 +366,6 @@ public class ContainerUtils {
     Set<PvInput> pvs = filterParticipants(input.getPvPlants(), subnet);
     Set<StorageInput> storages = filterParticipants(input.getStorages(), subnet);
     Set<WecInput> wecPlants = filterParticipants(input.getWecPlants(), subnet);
-    Set<EmInput> emSystems = filterParticipants(input.getEmSystems(), subnet);
 
     return new SystemParticipants(
         bmPlants,
@@ -378,8 +377,7 @@ public class ContainerUtils {
         loads,
         pvs,
         storages,
-        wecPlants,
-        emSystems);
+        wecPlants);
   }
 
   /**
@@ -503,6 +501,7 @@ public class ContainerUtils {
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      EnergyManagementUnits energyManagementUnits,
       GraphicElements graphics)
       throws InvalidGridException {
     /* Collect the different sub nets. Through the validation of lines, it is ensured, that no galvanically connected
@@ -511,7 +510,8 @@ public class ContainerUtils {
 
     /* Build the single sub grid models */
     HashMap<Integer, SubGridContainer> subgrids =
-        buildSubGridContainers(gridName, subnetNumbers, rawGrid, systemParticipants, graphics);
+        buildSubGridContainers(
+            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits, graphics);
 
     /* Build the graph structure denoting the topology of the grid */
     return buildSubGridTopologyGraph(subgrids, rawGrid);
@@ -542,6 +542,7 @@ public class ContainerUtils {
       SortedSet<Integer> subnetNumbers,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      EnergyManagementUnits energyManagementUnits,
       GraphicElements graphics)
       throws InvalidGridException {
     HashMap<Integer, SubGridContainer> subGrids = new HashMap<>(subnetNumbers.size());
@@ -554,7 +555,12 @@ public class ContainerUtils {
       subGrids.put(
           subnetNumber,
           new SubGridContainer(
-              gridName, subnetNumber, rawGridElements, systemParticipantElements, graphicElements));
+              gridName,
+              subnetNumber,
+              rawGridElements,
+              systemParticipantElements,
+              energyManagementUnits, // TODO filtering (part of #957)
+              graphicElements));
     }
     return subGrids;
   }
@@ -806,6 +812,9 @@ public class ContainerUtils {
     GraphicElements graphicElements =
         new GraphicElements(
             subGridContainers.stream().map(GridContainer::getGraphics).collect(Collectors.toSet()));
+    EnergyManagementUnits energyManagementUnits =
+        new EnergyManagementUnits(
+            subGridContainers.stream().map(GridContainer::getEmUnits).collect(Collectors.toSet()));
 
     Map<Integer, SubGridContainer> subGridMapping =
         subGridContainers.stream()
@@ -814,7 +823,12 @@ public class ContainerUtils {
     SubGridTopologyGraph subGridTopologyGraph = buildSubGridTopologyGraph(subGridMapping, rawGrid);
 
     return new JointGridContainer(
-        gridName, rawGrid, systemParticipants, graphicElements, subGridTopologyGraph);
+        gridName,
+        rawGrid,
+        systemParticipants,
+        energyManagementUnits,
+        graphicElements,
+        subGridTopologyGraph);
   }
 
   /**
@@ -987,6 +1001,7 @@ public class ContainerUtils {
             subGridContainer.getRawGrid().getSwitches(),
             subGridContainer.getRawGrid().getMeasurementUnits()),
         subGridContainer.getSystemParticipants(),
+        subGridContainer.getEmUnits(),
         new GraphicElements(newNodeGraphics, subGridContainer.getGraphics().getLineGraphics()));
   }
 }

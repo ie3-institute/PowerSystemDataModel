@@ -42,7 +42,7 @@ package models.input.container {
     class SystemParticipants {
         - bmPlants: Set<BmInput>
         - chpPlants: Set<ChpInput>
-        - evCS: Set<EvcsInput>
+        - evcs: Set<EvcsInput>
         - evs: Set<EvInput>
         - fixedFeedIns: Set<FixedFeedInInput>
         - heatPumps: Set<HpInput>

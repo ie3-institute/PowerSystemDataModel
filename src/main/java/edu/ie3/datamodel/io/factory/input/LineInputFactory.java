@@ -23,8 +23,8 @@ import tech.units.indriya.ComparableQuantity;
 public class LineInputFactory
     extends ConnectorInputEntityFactory<LineInput, TypedConnectorInputEntityData<LineTypeInput>> {
   private static final String LENGTH = "length";
-  private static final String GEO_POSITION = "geoposition";
-  private static final String OLM_CHARACTERISTIC = "olmcharacteristic";
+  private static final String GEO_POSITION = "geoPosition";
+  private static final String OLM_CHARACTERISTIC = "olmCharacteristic";
 
   public LineInputFactory() {
     super(LineInput.class);

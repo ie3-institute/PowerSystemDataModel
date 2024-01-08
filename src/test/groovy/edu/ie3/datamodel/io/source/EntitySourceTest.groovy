@@ -5,14 +5,14 @@
  */
 package edu.ie3.datamodel.io.source
 
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
-import edu.ie3.test.common.SystemParticipantTestData as sptd
 import edu.ie3.test.common.GridTestData as gtd
-
+import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -23,6 +23,10 @@ class EntitySourceTest extends Specification {
   private final class DummyEntitySource extends EntitySource {
     DummyEntitySource(CsvDataSource dataSource) {
       this.dataSource = dataSource
+    }
+
+    @Override
+    void validate() throws ValidationException {
     }
   }
 

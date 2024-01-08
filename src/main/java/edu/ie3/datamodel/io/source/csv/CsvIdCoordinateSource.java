@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -87,6 +88,11 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
   }
 
   @Override
+  public Optional<Set<String>> getSourceFields(Class<?> entityClass) throws SourceException {
+    return dataSource.getSourceFields(dataSource.connector::initIdCoordinateReader);
+  }
+
+  @Override
   public Optional<Point> getCoordinate(int id) {
     return Optional.ofNullable(idToCoordinate.get(id));
   }
@@ -158,9 +164,13 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    *
    * @return Stream with mappings from field identifiers to attributes
    */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap() {
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap()
+      throws SourceException {
     try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
+
+      // validating read file
+      factory.validate(Set.of(headline), Pair.class).getOrThrow();
 
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
@@ -185,6 +195,8 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
           .parallelStream();
     } catch (IOException e) {
       log.error("Cannot read the file for coordinate id to coordinate mapping.", e);
+    } catch (ValidationException ve) {
+      throw new SourceException("Creating stream failed due to failed validation", ve);
     }
     return Stream.empty();
   }
