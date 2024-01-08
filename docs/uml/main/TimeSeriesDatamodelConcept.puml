@@ -1,0 +1,150 @@
+@startuml
+scale 2048 width
+scale 1538 height
+
+note "For better readability no getters are shown in the classes. Also the final attributes are not marked especially." as generalNote
+
+interface Comparable<T>
+
+package models {
+
+    abstract class UniqueEntity {
+        + {static} UUID_FIELD_NAME: String
+        - uuid: UUID
+    }
+
+    package result {}
+    package input {}
+    package voltagelevels {}
+    note "Has also children in these packages.\ncf. separate uml diagrams" as childNote
+    UniqueEntity .. childNote
+    childNote .. result
+    childNote .. input
+    childNote .. voltagelevels
+
+    interface StandardLoadProfile {
+        + getKey: String
+        + enum DefaultLoadProfiles
+        + {static} parse(String): StandardLoadProfile
+    }
+
+    enum BdewLoadProfile {
+        - key: String
+        + {static} get(String): BdewLoadProfile
+    }
+    BdewLoadProfile ..|> StandardLoadProfile
+
+    package value {
+        interface Value
+
+        class EnergyPriceValue {
+            - price: ComparableQuantity<SpecificCurrency> [€/MWh]
+        }
+        EnergyPriceValue ..|> Value
+
+        class HeatDemandValue {
+            - heatDemand : ComparableQuantity<Power> [kW]
+        }
+        HeatDemandValue ..|> Value
+
+        class PValue {
+            - p: ComparableQuantity<Power> [kW]
+        }
+        PValue ..|> Value
+
+        class HeatAndPValue {
+            - heatDemand: ComparableQuantity<Power> [kW]
+        }
+        HeatAndPValue --|> PValue
+
+        class SValue {
+            - q: ComparableQuantity<Power> [kVAr]
+        }
+        SValue --|> PValue
+
+        class HeatAndSValue {
+            - heatDemand: ComparableQuantity<Power> [kW]
+        }
+        HeatAndSValue --|> SValue
+
+        class SolarIrradianceValue {
+            - directIrradiance: ComparableQuantity<Irradiance> [W/m²]
+            - diffuseIrradiance: ComparableQuantity<Irradiance> [W/m²]
+        }
+        SolarIrradianceValue ..|> Value
+
+        class TemperatureValue {
+          - temperature: ComparableQuantity<Temperature> [°C]
+        }
+        TemperatureValue ..|> Value
+
+        class WindValue {
+          - direction: ComparableQuantity<Angle> [°]
+          - velocity: ComparableQuantity<Speed> [m/s]
+        }
+        WindValue ..|> Value
+
+        class WeatherValue {
+          - coordinate: Point
+          - solarIrradiance: SolarIrradianceValue
+          - temperature: TemperatureValue
+          - wind: WindValue
+        }
+        WeatherValue ..|> Value
+        WeatherValue *-- SolarIrradianceValue
+        WeatherValue *-- TemperatureValue
+        WeatherValue *-- WindValue
+    }
+
+    package timeseries {
+        abstract class TimeSeries<E extends Entry<V>, V extends Value> {
+            # entries: Set<E>
+            + Optional<TimeBasedValue<V>> getTimeBasedValue(ZonedDateTime)
+            + Optional<V> getValue(ZonedDateTime)
+            + Set<E> getEntries()
+            + Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime)
+            + Optional<TimeBasedValue<V>> getNextTimeBasedValue(ZonedDateTime)
+            # Optional<ZonedDateTime> getPreviousDateTime()
+            # Optional<ZonedDateTime> getNextDateTime()
+        }
+        TimeSeries --|> UniqueEntity
+        TimeSeries "1" *-- "n" TimeSeriesEntry
+
+        class IndividualTimeSeries<V extends Value> {
+            - Map<ZonedDateTime, TimeBasedValue<V>> timeToValue
+        }
+        IndividualTimeSeries --|> TimeSeries: <<bind>>:TimeBasedValue<V>
+
+        abstract class RepetitiveTimeSeries<E extends TimeSeriesEntry<V>, V extends Value> {
+            # calc(ZonedDateTime): T
+        }
+        RepetitiveTimeSeries --|> TimeSeries
+
+        class LoadProfileInput {
+            - type: StandardLoadProfile
+            - dayOfWeekToHourlyValues: Map<DayOfWeek, Map<Integer, PValue>>
+        }
+        LoadProfileInput --|> RepetitiveTimeSeries
+        LoadProfileInput *-- StandardLoadProfile
+
+        abstract class TimeSeriesEntry <V extends Value> {
+            # value: V
+        }
+        TimeSeriesEntry --|> UniqueEntity
+        TimeSeriesEntry *-- Value
+
+        abstract class TimeBasedValue<V extends Value>{
+            - time: ZonedDateTime
+        }
+        TimeBasedValue --|> TimeSeriesEntry
+        TimeBasedValue ..|> Comparable: <<bind>>:<TimeBasedValue>
+
+        class LoadProfileEntry {
+            - dayOfWeek: DayOfWeek
+            - quarterHourOfDay: int
+        }
+        LoadProfileEntry --|> TimeSeriesEntry: <<bind>>:PValue
+    }
+}
+
+@enduml

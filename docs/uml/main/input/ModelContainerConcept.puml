@@ -1,0 +1,80 @@
+@startuml
+
+package org.jgrapht.graph {
+    class AsUnmodifiableGraph<V, E>
+}
+
+package graph {
+    class SubGridGate {
+        - link: TransformerInput
+        - superiorNode: NodeInput
+        - superiorNode: NodeInput
+    }
+
+    class SubGridTopologyGraph {
+    }
+    SubGridTopologyGraph --|> AsUnmodifiableGraph: <<bind>>V:SubGridContainer,E:SubGridGate
+    SubGridTopologyGraph "1" *-- "n" SubGridGate
+}
+
+package models.input.container {
+    interface InputContainer {
+        + allEntitiesAsList(): List<UniqueEntity>
+        + validate(): void
+    }
+
+    class GraphicElements {
+        - nodeGraphics: Set<NodeGraphicInput>
+        - lineGraphics: Set<LineGraphicInput>
+    }
+    GraphicElements ..|> InputContainer
+
+    class RawGridElements {
+        - nodes: Set<NodeInput>
+        - lines: Set<LineInput>
+        - transformer2Ws: Set<Transformer2WInput>
+        - transformer3Ws: Set<Transformer3WInput>
+        - switches: Set<SwitchInput>
+        - measurementUnits: Set<MeasurementUnitInput>
+    }
+    RawGridElements ..|> InputContainer
+
+    class SystemParticipants {
+        - bmPlants: Set<BmInput>
+        - chpPlants: Set<ChpInput>
+        - evcs: Set<EvcsInput>
+        - evs: Set<EvInput>
+        - fixedFeedIns: Set<FixedFeedInInput>
+        - heatPumps: Set<HpInput>
+        - loads: Set<LoadInput>
+        - pvPlants: Set<PvInput>
+        - storages: Set<StorageInput>
+        - wecPlants: Set<WecInput>
+    }
+    SystemParticipants ..|> InputContainer
+
+    abstract class GridContainer {
+        # gridName: String
+        # rawGrid: RawGridElements
+        # systemParticipants: SystemParticipants
+        # graphics: GraphicElements
+    }
+    GridContainer ..|> InputContainer
+    GridContainer *-- RawGridElements
+    GridContainer *-- SystemParticipants
+    GridContainer *-- GraphicElements
+
+    class JointGridContainer {
+        - subGridTopologyGraph: SubGridTopologyGraph
+        - checkSubGridTopologyGraph(): SubGridTopologyGraph
+    }
+    JointGridContainer --|> GridContainer
+    JointGridContainer *-- SubGridTopologyGraph
+
+    class SubGridContainer {
+        - subnet: int
+        - predominantVoltageLevel: VoltageLevel
+    }
+    SubGridContainer --|> GridContainer
+}
+@enduml

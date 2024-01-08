@@ -1,0 +1,196 @@
+@startuml
+scale 1024 width
+scale 768 height
+
+note "For better readability no getters are shown in the classes. Also the final attributes are not marked especially." as generalNote
+
+package io.extractor {
+    interface NestedEntity
+
+    interface HasNodes {
+        + allNodes(): List<NodeInput>
+    }
+    HasNodes --|> NestedEntity
+
+    interface HasThermalBus {
+        + getThermalBus(): ThermalBusInput
+    }
+    HasThermalBus --|> NestedEntity
+
+    interface HasThermalStorage {
+        + getThermalStorage(): ThermalStorageInput
+    }
+    HasThermalStorage --|> NestedEntity
+
+    interface HasType {
+        + getType(): AssetTypeInput
+    }
+    HasType --|> NestedEntity
+
+    interface HasLine {
+        + getLine(): LineInput
+    }
+    HasLine --|> NestedEntity
+}
+
+package models {
+    abstract class UniqueEntity {
+        + {static} UUID_FIELD_NAME: String
+        - uuid: UUID
+    }
+
+    class OperationTime {
+        cf. other uml diagram for details
+    }
+
+    interface Operable {
+        + getOperationTime(): OperationTime
+        + getOperator(): OperatorInput
+        + inOperationOn(ZonedDateTime): boolean
+    }
+    Operable --|> NestedEntity
+
+    package result {}
+    package timeseries {}
+    package value {}
+    note "Has also children in these packages.\ncf. separate uml diagrams" as childNote
+    UniqueEntity .. childNote
+    childNote .. result
+    childNote .. timeseries
+    childNote .. value
+    childNote .. system
+    childNote .. thermal
+
+    package input {
+        abstract class InputEntity
+        InputEntity --|> UniqueEntity
+
+        class OperatorInput {
+            cf. other uml diagram for details
+        }
+        OperatorInput --|> InputEntity
+
+        abstract class AssetInput {
+            - id: String
+            - operationTime: OperationTime
+            - operator: OperatorInput
+        }
+        AssetInput --|> InputEntity
+        AssetInput ..|> Operable
+        AssetInput *-- OperationTime
+        AssetInput *-- OperatorInput
+
+        class NodeInput {
+            cf. other uml diagram for details
+        }
+
+        abstract class AssetTypeInput {
+            - id: String
+        }
+        AssetTypeInput --|> InputEntity
+
+        package connector {
+            package type {
+                class LineTypeInput {
+                    - r: ComparableQuantity<SpecificResistance> [Ohm/km]
+                    - x: ComparableQuantity<SpecificResistance> [Ohm/km]
+                    - g: ComparableQuantity<SpecificConductance> [µS/km]
+                    - b: ComparableQuantity<SpecificConductance> [µS/km]
+                    - iMax: ComparableQuantity<ElectricCurrent> [A]
+                    - vRated: ComparableQuantity<ElectricPotential> [kV]
+                }
+                LineTypeInput --|> AssetTypeInput
+
+                class Transformer2WTypeInput {
+                    - sRated: ComparableQuantity<Power> [MVA]
+                    - vRatedA: ComparableQuantity<ElectricPotential> [kV]
+                    - vRatedB: ComparableQuantity<ElectricPotential> [kV]
+                    - rSc: ComparableQuantity<ElectricalResistance> [Ohm]
+                    - xSc: ComparableQuantity<ElectricalResistance> [Ohm]
+                    - gM: ComparableQuantity<ElectricalConductance> [nS]
+                    - bM: ComparableQuantity<ElectricalConductance> [nS]
+                    - dV: ComparableQuantity<Dimensionless> [%]
+                    - dPhi: ComparableQuantity<Angle> [°]
+                    - tapSide: boolean
+                    - tapNeutr: int
+                    - tapMin: int
+                    - tapMax: int
+                }
+                Transformer2WTypeInput --|> AssetTypeInput
+
+                class Transformer3WTypeInput {
+                    - vRatedA: ComparableQuantity<ElectricPotential> [kV]
+                    - vRatedB: ComparableQuantity<ElectricPotential> [kV]
+                    - vRatedC: ComparableQuantity<ElectricPotential> [kV]
+                    - rScA: ComparableQuantity<ElectricalResistance> [Ohm]
+                    - rScB: ComparableQuantity<ElectricalResistance> [Ohm]
+                    - rScC: ComparableQuantity<ElectricalResistance> [Ohm]
+                    - xScA: ComparableQuantity<ElectricalResistance> [Ohm]
+                    - xScB: ComparableQuantity<ElectricalResistance> [Ohm]
+                    - xScC: ComparableQuantity<ElectricalResistance> [Ohm]
+                    - gM: ComparableQuantity<ElectricalConductance> [nS]
+                    - bM: ComparableQuantity<ElectricalConductance> [nS]
+                    - sRatedA: ComparableQuantity<Power> [MVA]
+                    - sRatedB: ComparableQuantity<Power> [MVA]
+                    - sRatedC: ComparableQuantity<Power> [MVA]
+                    - dV: ComparableQuantity<Dimensionless> [%]
+                    - dPhi: ComparableQuantity<Angle> [°]
+                    - tapNeutr: int
+                    - tapMin: int
+                    - tapMax: int
+                }
+                Transformer3WTypeInput --|> AssetTypeInput
+            }
+
+            abstract class ConnectorInput {
+                - nodeA: NodeInput
+                - nodeB: NodeInput
+                - parallelDevices: int
+            }
+            ConnectorInput --|> AssetInput
+            ConnectorInput ..|> HasNodes
+            ConnectorInput "1" *-- "2" NodeInput
+
+            class SwitchInput {
+                - closed: Boolean
+            }
+            SwitchInput --|> ConnectorInput
+
+            class LineInput {
+                - type: LineTypeInput
+                - length: ComparableQuantity<Length> [km]
+                - olm: OlmCharacteristicInput
+                - geoPosition: LineString
+            }
+            LineInput --|> ConnectorInput
+            LineInput ..|> HasType
+
+            abstract TransformerInput {
+                - tapPos: int
+                - autoTap: Boolean
+            }
+            TransformerInput --|> ConnectorInput
+
+            class Transformer2WInput {
+                - type: Transformer2WTypeInput
+            }
+            Transformer2WInput --|> TransformerInput
+            Transformer2WInput ..|> HasType
+
+            class Transformer3WInput {
+                - nodeC: NodeInput
+                - nodeInternal: NodeInput
+                - type: Transformer3WTypeInput
+            }
+            Transformer3WInput --|> TransformerInput
+            Transformer3WInput ..|> HasType
+            Transformer3WInput *-- NodeInput
+        }
+
+        package system {}
+
+        package thermal {}
+    }
+}
+
+@enduml
