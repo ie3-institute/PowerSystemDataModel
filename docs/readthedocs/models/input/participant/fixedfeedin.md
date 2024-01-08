@@ -1,0 +1,24 @@
+(fixed-feed-in-model)=
+
+# Fixed Feed In Facility
+
+Model of a facility, that provides constant power feed in, as no further information about the actual behaviour of the
+model can be derived.
+
+## Attributes, Units and Remarks
+
+| Attribute        | Unit | Remarks                                                                              |
+| ---------------- | ---- | ------------------------------------------------------------------------------------ |
+| uuid             | --   |                                                                                      |
+| id               | --   | Human readable identifier                                                            |
+| operator         | --   |                                                                                      |
+| operationTime    | --   | Timely restriction of operation                                                      |
+| node             | --   |                                                                                      |
+| qCharacteristics | --   | {ref}`Reactive power characteristic<participant_general_q_characteristic>` to follow |
+| sRated           | kVA  | Rated apparent power                                                                 |
+| cosphiRated      | --   | Rated power factor                                                                   |
+
+## Caveats
+
+Nothing - at least not known.
+If you found something, please contact us!
