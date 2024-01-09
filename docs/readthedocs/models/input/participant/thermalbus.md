@@ -2,7 +2,7 @@
 
 # Thermal Bus
 
-A coupling point to thermal system - equivalent to {ref}`electrical node <node_model>`.
+A coupling point to thermal system - equivalent to [electrical node](node_model).
 
 ## Attributes, Units and Remarks
 
