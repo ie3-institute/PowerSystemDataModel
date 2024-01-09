@@ -16,11 +16,11 @@ station and has some limitations outlined below.
 | operator         | --   |                                                                                      |
 | operationTime    | --   | Timely restriction of operation                                                      |
 | node             | --   |                                                                                      |
-| qCharacteristics | --   | {ref}`Reactive power characteristic<participant_general_q_characteristic>` to follow |
-| type             | --   | {ref}`Charging point type<evcs_point_types>` (valid for all installed points)        |
+| qCharacteristics | --   | [Reactive power characteristic](participant_general_q_characteristic) to follow |
+| type             | --   | [Charging point type](evcs_point_types) (valid for all installed points)        |
 | chargingPoints   | --   | no of installed charging points @ the specific station                               |
 | cosPhiRated      | --   | Rated power factor                                                                   |
-| locationType     | --   | {ref}`Charging station location types<location_types>`                               |
+| locationType     | --   | [Charging station location types](location_types)                               |
 
 ### Type Model
 
