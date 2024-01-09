@@ -11,7 +11,7 @@ Detailed model of a photovoltaic power plant.
 | operator         | --   |                                                                                      |
 | operationTime    | --   | Timely restriction of operation                                                      |
 | node             | --   |                                                                                      |
-| qCharacteristics | --   | {ref}`Reactive power characteristic<participant_general_q_characteristic>` to follow |
+| qCharacteristics | --   | [Reactive power characteristic](participant_general_q_characteristic) to follow |
 | albedo           | --   | [Albedo](https://en.wikipedia.org/wiki/Albedo) of the plant's surrounding            |
 | azimuth          | °    | Inclination in a compass directionSouth = 0°, West = 90°, East = -90°                |
 | etaConv          | %    | Efficiency of the assets inverter                                                    |
