@@ -31,7 +31,7 @@ Combined heat and power plant.
 | operationTime    | --   | Timely restriction of operation                                                      |
 | node             | --   |                                                                                      |
 | thermalBus       | --   | Connection point to the thermal system                                               |
-| qCharacteristics | --   | {ref}`Reactive power characteristic<participant_general_q_characteristic>` to follow |
+| qCharacteristics | --   | [Reactive power characteristic](participant_general_q_characteristic) to follow |
 | type             | --   |                                                                                      |
 | thermalStorage   | --   | Reference to thermal storage                                                         |
 | marketReaction   | --   | Whether to adapt output based on (volatile)market price or not                       |
