@@ -18,7 +18,7 @@ Representation of an AC line.
 | vRated    | kV      | Rated voltage                               |
 
 
-A list with some standard line types can be found here: `Standard Line Types`_
+A list with some standard line types can be found here: `Standard Line Types`
 
 
 ### Entity Model
@@ -42,9 +42,9 @@ A list with some standard line types can be found here: `Standard Line Types`_
 ## Standard Line Types
 
 Following there are some standard line types with their source. A ``csv file`` containing the types listed below can be found
-`here <https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes>`_. This file can be used directly
+`here <https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes>`. This file can be used directly
 for any simulation with ``simona``.
-The lines which source is ``simBench`` are from `here <https://simbench.de/en/download/datasets/>`_.
+The lines which source is ``simBench`` are from `here <https://simbench.de/en/download/datasets/>`.
 
 
 ### Overhead Lines
