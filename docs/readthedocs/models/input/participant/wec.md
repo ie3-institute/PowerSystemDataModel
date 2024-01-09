@@ -16,7 +16,7 @@ Model of a wind energy converter.
 | opex             | € / MWh | Operational expenditure to operate one entity ofthis type           |
 | sRated           | kVA     | Rated apparent power                                                |
 | cosphiRated      | --      | Rated power factor                                                  |
-| cpCharacteristic | --      | Wind velocity dependent {ref}`Betz factors<wec_cp_characteristic>`. |
+| cpCharacteristic | --      | Wind velocity dependent [Betz factors](wec_cp_characteristic). |
 | etaConv          | %       | Efficiency of the assets inverter                                   |
 | rotorArea        | m²      | Area the rotor covers                                               |
 | hubHeight        | m       | Height of the rotor hub                                             |
@@ -30,7 +30,7 @@ Model of a wind energy converter.
 | operator         | --   |                                                                                      |
 | operationTime    | --   | Timely restriction of operation                                                      |
 | node             | --   |                                                                                      |
-| qCharacteristics | --   | {ref}`Reactive power characteristic<participant_general_q_characteristic>` to follow |
+| qCharacteristics | --   | [Reactive power characteristic](participant_general_q_characteristic) to follow |
 | type             | --   |                                                                                      |
 | marketReaction   | --   | Whether to adapt output based on (volatile)market price or not                       |
 
