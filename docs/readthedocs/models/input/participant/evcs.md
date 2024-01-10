@@ -10,17 +10,17 @@ station and has some limitations outlined below.
 ### Entity Model
 
 | Attribute        | Unit | Remarks                                                                              |
-| ---------------- | ---- | ------------------------------------------------------------------------------------ |
+| ---------------- | ---- |--------------------------------------------------------------------------------------|
 | uuid             | --   |                                                                                      |
 | id               | --   | Human readable identifier                                                            |
 | operator         | --   |                                                                                      |
 | operationTime    | --   | Timely restriction of operation                                                      |
 | node             | --   |                                                                                      |
-| qCharacteristics | --   | [Reactive power characteristic](participant_general_q_characteristic) to follow |
-| type             | --   | [Charging point type](evcs_point_types) (valid for all installed points)        |
+| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
+| type             | --   | [Charging point type](#charging-point-types) (valid for all installed points)        |
 | chargingPoints   | --   | no of installed charging points @ the specific station                               |
 | cosPhiRated      | --   | Rated power factor                                                                   |
-| locationType     | --   | [Charging station location types](location_types)                               |
+| locationType     | --   | [Charging station location types](#location-types)                                   |
 
 ### Type Model
 
@@ -28,7 +28,7 @@ In contrast to other models, electric vehicle charging station types are not con
 but 'inline' of a charging station entry. This is justified by the fact, that the station type (in contrast to e.g.
 the type of a wind energy converter) only consists of a few, more or less standardized parameters, that are (most of the
 time) equal for all manufacturers. Hence, to simplify the type model handling, types are provided either by a string
-literal of their id or by providing a custom one. See {ref}`Charging point types<evcs_point_types>` for details of on
+literal of their id or by providing a custom one. See [Charging point types](evcs.md#charging-point-types) for details of on
 available standard types and how to use custom types.
 
 The actual model definition for charging point types looks as follows:

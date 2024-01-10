@@ -8,18 +8,18 @@ Model of a wind energy converter.
 
 ### Type Model
 
-| Attribute        | Unit    | Remarks                                                             |
-| ---------------- | ------- | ------------------------------------------------------------------- |
-| uuid             | --      |                                                                     |
-| id               | --      | Human readable identifier                                           |
-| capex            | €       | Capital expenditure to purchase one entity of this type             |
-| opex             | € / MWh | Operational expenditure to operate one entity ofthis type           |
-| sRated           | kVA     | Rated apparent power                                                |
-| cosphiRated      | --      | Rated power factor                                                  |
-| cpCharacteristic | --      | Wind velocity dependent [Betz factors](wec_cp_characteristic). |
-| etaConv          | %       | Efficiency of the assets inverter                                   |
-| rotorArea        | m²      | Area the rotor covers                                               |
-| hubHeight        | m       | Height of the rotor hub                                             |
+| Attribute        | Unit    | Remarks                                                       |
+| ---------------- | ------- |---------------------------------------------------------------|
+| uuid             | --      |                                                               |
+| id               | --      | Human readable identifier                                     |
+| capex            | €       | Capital expenditure to purchase one entity of this type       |
+| opex             | € / MWh | Operational expenditure to operate one entity ofthis type     |
+| sRated           | kVA     | Rated apparent power                                          |
+| cosphiRated      | --      | Rated power factor                                            |
+| cpCharacteristic | --      | Wind velocity dependent [Betz factors](#betz-characteristic). |
+| etaConv          | %       | Efficiency of the assets inverter                             |
+| rotorArea        | m²      | Area the rotor covers                                         |
+| hubHeight        | m       | Height of the rotor hub                                       |
 
 ### Entity Model
 
@@ -30,7 +30,7 @@ Model of a wind energy converter.
 | operator         | --   |                                                                                      |
 | operationTime    | --   | Timely restriction of operation                                                      |
 | node             | --   |                                                                                      |
-| qCharacteristics | --   | [Reactive power characteristic](participant_general_q_characteristic) to follow |
+| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
 | type             | --   |                                                                                      |
 | marketReaction   | --   | Whether to adapt output based on (volatile)market price or not                       |
 

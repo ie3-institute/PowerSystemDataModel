@@ -2,7 +2,7 @@
 
 # Electric Vehicle
 
-Model of an electric vehicle, that is occasionally connected to the grid via an [electric vehicle charging system](evcs_model).
+Model of an electric vehicle, that is occasionally connected to the grid via an [electric vehicle charging system](evcs.md#electric-vehicle-charging-station).
 
 ## Attributes, Units and Remarks
 

@@ -14,7 +14,7 @@ model can be derived.
 | operator         | --   |                                                                                      |
 | operationTime    | --   | Timely restriction of operation                                                      |
 | node             | --   |                                                                                      |
-| qCharacteristics | --   | [Reactive power characteristic](participant_general_q_characteristic) to follow |
+| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
 | sRated           | kVA  | Rated apparent power                                                                 |
 | cosphiRated      | --   | Rated power factor                                                                   |
 

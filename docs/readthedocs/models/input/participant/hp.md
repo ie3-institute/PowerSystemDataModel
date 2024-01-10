@@ -28,7 +28,7 @@ Model of a heat pump.
 | operationTime    | --   | Timely restriction of operation                                                      |
 | node             | --   |                                                                                      |
 | thermalBus       | --   | Connection point to the thermal system                                               |
-| qCharacteristics | --   | [Reactive power characteristic](participant_general_q_characteristic) to follow |
+| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
 | type             | --   |                                                                                      |
 
 ## Caveats

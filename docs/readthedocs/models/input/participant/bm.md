@@ -22,13 +22,13 @@ Model of a biomass power plant.
 ### Entity Model
 
 | Attribute        | Unit    | Remarks                                                                                                 |
-| ---------------- | ------- | ------------------------------------------------------------------------------------------------------- |
+| ---------------- | ------- |---------------------------------------------------------------------------------------------------------|
 | uuid             | --      |                                                                                                         |
 | id               | --      | Human readable identifier                                                                               |
 | operator         | --      |                                                                                                         |
 | operationTime    | --      | Timely restriction of operation                                                                         |
 | node             | --      |                                                                                                         |
-| qCharacteristics | --      | [Reactive power characteristic](general.md#reactive_power_characteristics) to follow                    |
+| qCharacteristics | --      | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow                    |
 | type             | --      |                                                                                                         |
 | marketReaction   | --      | Whether to adapt output based on (volatile)market price or not                                          |
 | costControlled   | --      | Whether to adapt output based on the differencebetween production costs and fixed feed in tariff or not |

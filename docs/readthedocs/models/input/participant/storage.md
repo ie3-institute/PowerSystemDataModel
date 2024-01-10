@@ -33,7 +33,7 @@ Model of an ideal electrical battery energy storage.
 | operator         | --   |                                                                                           |
 | operationTime    | --   | Timely restriction of operation                                                           |
 | node             | --   |                                                                                           |
-| qCharacteristics | --   | [Reactive power characteristic](participant_general_q_characteristic) to follow      |
+| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow      |
 | type             | --   |                                                                                           |
 | behaviour        | --   | Foreseen operation strategy of the storage.Eligible input: *"market"*, *"grid"*, *"self"* |
 

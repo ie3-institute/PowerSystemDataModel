@@ -23,18 +23,18 @@ Combined heat and power plant.
 
 ### Entity Model
 
-| Attribute        | Unit | Remarks                                                                              |
-| ---------------- | ---- | ------------------------------------------------------------------------------------ |
-| uuid             | --   |                                                                                      |
-| id               | --   | Human readable identifier                                                            |
-| operator         | --   |                                                                                      |
-| operationTime    | --   | Timely restriction of operation                                                      |
-| node             | --   |                                                                                      |
-| thermalBus       | --   | Connection point to the thermal system                                               |
-| qCharacteristics | --   | [Reactive power characteristic](participant_general_q_characteristic) to follow |
-| type             | --   |                                                                                      |
-| thermalStorage   | --   | Reference to thermal storage                                                         |
-| marketReaction   | --   | Whether to adapt output based on (volatile)market price or not                       |
+| Attribute        | Unit | Remarks                                                                                |
+| ---------------- | ---- |----------------------------------------------------------------------------------------|
+| uuid             | --   |                                                                                        |
+| id               | --   | Human readable identifier                                                              |
+| operator         | --   |                                                                                        |
+| operationTime    | --   | Timely restriction of operation                                                        |
+| node             | --   |                                                                                        |
+| thermalBus       | --   | Connection point to the thermal system                                                 |
+| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
+| type             | --   |                                                                                        |
+| thermalStorage   | --   | Reference to thermal storage                                                           |
+| marketReaction   | --   | Whether to adapt output based on (volatile)market price or not                         |
 
 ## Caveats
 

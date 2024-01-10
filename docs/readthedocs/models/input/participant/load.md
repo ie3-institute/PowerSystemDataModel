@@ -7,14 +7,14 @@ Model of (mainly) domestic loads.
 ## Attributes, Units and Remarks
 
 | Attribute        | Unit | Remarks                                                                              |
-| ---------------- | ---- | ------------------------------------------------------------------------------------ |
+| ---------------- | ---- |--------------------------------------------------------------------------------------|
 | uuid             | --   |                                                                                      |
 | id               | --   | Human readable identifier                                                            |
 | operator         | --   |                                                                                      |
 | operationTime    | --   | Timely restriction of operation                                                      |
 | node             | --   |                                                                                      |
-| qCharacteristics | --   | {ref}`Reactive power characteristic<participant_general_q_characteristic>` to follow |
-| loadProfile      | --   | {ref}`Load profile<load_lp>` as model behaviour                                      |
+| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
+| loadProfile      | --   | [Load profile](#load-profiles) as model behaviour                                    |
 | dsm              | --   | Whether the load is able to follow demand side management signals                    |
 | eConsAnnual      | kWh  | Annual energy consumption                                                            |
 | sRated           | kVA  | Rated apparent power                                                                 |
