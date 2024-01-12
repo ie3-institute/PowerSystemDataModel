@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source
 
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
@@ -22,6 +23,10 @@ class EntitySourceTest extends Specification {
   private final class DummyEntitySource extends EntitySource {
     DummyEntitySource(CsvDataSource dataSource) {
       this.dataSource = dataSource
+    }
+
+    @Override
+    void validate() throws ValidationException {
     }
   }
 

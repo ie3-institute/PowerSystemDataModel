@@ -5,8 +5,10 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
@@ -48,6 +50,17 @@ public class GraphicSource extends EntitySource {
 
     this.lineGraphicInputFactory = new LineGraphicInputFactory();
     this.nodeGraphicInputFactory = new NodeGraphicInputFactory();
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    Try.scanStream(
+            Stream.of(
+                validate(NodeGraphicInput.class, nodeGraphicInputFactory),
+                validate(LineGraphicInput.class, lineGraphicInputFactory)),
+            "Validation")
+        .transformF(FailedValidationException::new)
+        .getOrThrow();
   }
 
   /** Returns the graphic elements of the grid or throws a {@link SourceException} */

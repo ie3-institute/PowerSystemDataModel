@@ -18,8 +18,8 @@ import tech.units.indriya.ComparableQuantity;
 public class FixedFeedInInputFactory
     extends SystemParticipantInputEntityFactory<FixedFeedInInput, NodeAssetInputEntityData> {
 
-  private static final String S_RATED = "srated";
-  private static final String COSPHI_RATED = "cosphirated";
+  private static final String S_RATED = "sRated";
+  private static final String COSPHI_RATED = "cosPhiRated";
 
   public FixedFeedInInputFactory() {
     super(FixedFeedInInput.class);

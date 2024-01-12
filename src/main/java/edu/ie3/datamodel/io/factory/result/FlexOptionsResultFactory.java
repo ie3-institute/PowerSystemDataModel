@@ -15,9 +15,9 @@ import tech.units.indriya.ComparableQuantity;
 
 public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsResult> {
 
-  private static final String P_REF = "pref";
-  private static final String P_MIN = "pmin";
-  private static final String P_MAX = "pmax";
+  private static final String P_REF = "pRef";
+  private static final String P_MIN = "pMin";
+  private static final String P_MAX = "pMax";
 
   public FlexOptionsResultFactory() {
     super(FlexOptionsResult.class);
@@ -34,7 +34,7 @@ public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsRes
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, P_REF, P_MIN, P_MAX);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 

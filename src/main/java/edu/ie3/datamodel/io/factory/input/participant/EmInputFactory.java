@@ -19,9 +19,9 @@ import org.slf4j.LoggerFactory;
 public class EmInputFactory extends AssetInputEntityFactory<EmInput, AssetInputEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(EmInputFactory.class);
 
-  private static final String CONNECTED_ASSETS = "connectedassets";
+  private static final String CONNECTED_ASSETS = "connectedAssets";
 
-  private static final String CONTROL_STRATEGY = "controlstrategy";
+  private static final String CONTROL_STRATEGY = "controlStrategy";
 
   public EmInputFactory() {
     super(EmInput.class);

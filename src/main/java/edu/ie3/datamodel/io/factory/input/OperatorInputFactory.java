@@ -22,7 +22,7 @@ public class OperatorInputFactory extends EntityFactory<OperatorInput, SimpleEnt
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> constructorParams = newSet(ENTITY_UUID, ENTITY_ID);
     return Collections.singletonList(constructorParams);
   }
