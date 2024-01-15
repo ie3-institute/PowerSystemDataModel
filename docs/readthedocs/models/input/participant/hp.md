@@ -8,28 +8,93 @@ Model of a heat pump.
 
 ### Type Model
 
-| Attribute   | Unit    | Remarks                                                   |
-| ----------- | ------- | --------------------------------------------------------- |
-| uuid        | --      |                                                           |
-| id          | --      | Human readable identifier                                 |
-| capex       | €       | Capital expenditure to purchase one entity of this type   |
-| opex        | € / MWh | Operational expenditure to operate one entity ofthis type |
-| sRated      | kVA     | Rated apparent power                                      |
-| cosphiRated | --      | Rated power factor                                        |
-| pThermal    | kW      | Rated thermal power (at rated electrical power)           |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - capex
+     - €
+     - Capital expenditure to purchase one entity of this type
+
+   * - opex
+     - € / MWh
+     - | Operational expenditure to operate one entity of
+       | this type
+
+   * - sRated
+     - kVA
+     - Rated apparent power
+
+   * - cosPhiRated
+     - --
+     - Rated power factor
+
+   * - pThermal
+     - kW
+     - Rated thermal power (at rated electrical power)
+
+```
 
 ### Entity Model
 
-| Attribute        | Unit | Remarks                                                                              |
-| ---------------- | ---- | ------------------------------------------------------------------------------------ |
-| uuid             | --   |                                                                                      |
-| id               | --   | Human readable identifier                                                            |
-| operator         | --   |                                                                                      |
-| operationTime    | --   | Timely restriction of operation                                                      |
-| node             | --   |                                                                                      |
-| thermalBus       | --   | Connection point to the thermal system                                               |
-| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
-| type             | --   |                                                                                      |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     -
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - node
+     - --
+     -
+
+   * - thermalBus
+     - --
+     - Connection point to the thermal system
+
+   * - qCharacteristics
+     - --
+     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+
+   * - type
+     - --
+     -
+
+
+```
 
 ## Caveats
 

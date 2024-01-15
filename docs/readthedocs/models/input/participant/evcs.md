@@ -9,18 +9,57 @@ station and has some limitations outlined below.
 
 ### Entity Model
 
-| Attribute        | Unit | Remarks                                                                              |
-| ---------------- | ---- |--------------------------------------------------------------------------------------|
-| uuid             | --   |                                                                                      |
-| id               | --   | Human readable identifier                                                            |
-| operator         | --   |                                                                                      |
-| operationTime    | --   | Timely restriction of operation                                                      |
-| node             | --   |                                                                                      |
-| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
-| type             | --   | [Charging point type](#charging-point-types) (valid for all installed points)        |
-| chargingPoints   | --   | no of installed charging points @ the specific station                               |
-| cosPhiRated      | --   | Rated power factor                                                                   |
-| locationType     | --   | [Charging station location types](#location-types)                                   |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     -
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - node
+     - --
+     -
+
+   * - qCharacteristics
+     - --
+     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+
+   * - type
+     - --
+     -  [Charging point type](#charging-point-types) (valid for all installed points)
+
+   * - chargingPoints
+     - --
+     - no of installed charging points @ the specific station
+
+   * - cosPhiRated
+     - --
+     - Rated power factor
+
+   * - locationType
+     - --
+     - [Charging station location types](#location-types) 
+
+```
 
 ### Type Model
 
@@ -33,12 +72,33 @@ available standard types and how to use custom types.
 
 The actual model definition for charging point types looks as follows:
 
-| Attribute           | Unit | Remarks                                       |
-| ------------------- | ---- | --------------------------------------------- |
-| id                  | --   | Human readable identifier                     |
-| sRated              | kVA  | Rated apparent power                          |
-| electricCurrentType | --   | Electric current type                         |
-| synonymousIds       | --   | Set of alternative human readable identifiers |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - sRated
+     - kVA
+     - Rated apparent power
+
+   * - electricCurrentType
+     - --
+     - Electric current type
+
+   * - synonymousIds
+     - --
+     - Set of alternative human readable identifiers
+
+```
 
 (evcs-point-types)=
 
@@ -50,20 +110,79 @@ To simplify the application of electric vehicle charging stations, some common s
 They can either by used code wise or directly from database or file input by referencing their id or one of their
 synonymous ids. All standard types can be found in {code}`edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils`.
 
-| id                           | synonymous ids                               | sRated in kVA | electric current type |
-| ---------------------------- | -------------------------------------------- | ------------- | --------------------- |
-| HouseholdSocket              | household, hhs, schuko-simple                | 2.3           | AC                    |
-| BlueHouseholdSocket          | bluehousehold, bhs, schuko-camping           | 3.6           | AC                    |
-| Cee16ASocket                 | cee16                                        | 11            | AC                    |
-| Cee32ASocket                 | cee32                                        | 22            | AC                    |
-| Cee63ASocket                 | cee63                                        | 43            | AC                    |
-| ChargingStationType1         | cst1, stationtype1, cstype1                  | 7.2           | AC                    |
-| ChargingStationType2         | cst2, stationtype2, cstype2                  | 43            | AC                    |
-| ChargingStationCcsComboType1 | csccs1, csccscombo1                          | 11            | DC                    |
-| ChargingStationCcsComboType2 | csccs2, csccscombo2                          | 50            | DC                    |
-| TeslaSuperChargerV1          | tesla1, teslav1, supercharger1, supercharger | 135           | DC                    |
-| TeslaSuperChargerV2          | tesla2, teslav2, supercharger2               | 150           | DC                    |
-| TeslaSuperChargerV3          | tesla3, teslav3, supercharger3               | 250           | DC                    |
+```{eval-rst}
+.. list-table::
+   :widths: 25 25 25 25
+   :header-rows: 0
+
+
+   * - id
+     - synonymous ids
+     - sRated in kVA
+     - electric current type
+
+   * - HouseholdSocket
+     - household, hhs, schuko-simple
+     - 2.3
+     - AC
+
+   * - BlueHouseholdSocket
+     - bluehousehold, bhs, schuko-camping
+     - 3.6
+     - AC
+
+   * - Cee16ASocket
+     - cee16
+     - 11
+     - AC
+
+   * - Cee32ASocket
+     - cee32
+     - 22
+     - AC
+
+   * - Cee63ASocket
+     - cee63
+     - 43
+     - AC
+
+   * - ChargingStationType1
+     - cst1, stationtype1, cstype1
+     - 7.2
+     - AC
+
+   * - ChargingStationType2
+     - cst2, stationtype2, cstype2
+     - 43
+     - AC
+
+   * - ChargingStationCcsComboType1
+     - csccs1, csccscombo1
+     - 11
+     - DC
+
+   * - ChargingStationCcsComboType2
+     - csccs2, csccscombo2
+     - 50
+     - DC
+
+   * - TeslaSuperChargerV1
+     - tesla1, teslav1, supercharger1, supercharger
+     - 135
+     - DC
+
+   * - TeslaSuperChargerV2
+     - tesla2, teslav2, supercharger2
+     - 150
+     - DC
+
+   * - TeslaSuperChargerV3
+     - tesla3, teslav3, supercharger3
+     - 250
+     - DC
+
+
+```
 
 ### Custom Types
 
@@ -95,14 +214,41 @@ be in kVA!
 Evcs location types describe the type of charging location of a charging station. Parsing of these types is case-insensitive
 and underscores and minuses are ignored, that means "charginghubtown" is parsed as type {code}`CHARGING_HUB_TOWN`.
 
-| type name            | public/private | description                    |
-| -------------------- | -------------- | ------------------------------ |
-| HOME                 | private        | Charging at home               |
-| WORK                 | private        | Charging at work               |
-| CUSTOMER_PARKING     | public         | Charging at store parking lots |
-| STREET               | public         | Charging at street side        |
-| CHARGING_HUB_TOWN    | public         | Charging at hub in town        |
-| CHARGING_HUB_HIGHWAY | public         | Charging at hub out of town    |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - type name
+     - public/private
+     - description
+
+   * - HOME
+     - private
+     - Charging at home
+
+   * - WORK
+     - private
+     - Charging at work
+
+   * - CUSTOMER_PARKING
+     - public
+     - Charging at store parking lots
+
+   * - STREET
+     - public
+     - Charging at street side
+
+   * - CHARGING_HUB_TOWN
+     - public
+     - Charging at hub in town
+
+   * - CHARGING_HUB_HIGHWAY
+     - public
+     - Charging at hub out of town
+
+```
 
 ## Caveats
 

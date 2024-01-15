@@ -7,17 +7,53 @@ This reflects a simple shoe box with transmission losses
 
 ## Attributes, Units and Remarks
 
-| Attribute             | Unit    | Remarks                         |
-| --------------------- | ------- | ------------------------------- |
-| uuid                  | --      |                                 |
-| id                    | --      | Human readable identifier       |
-| operator              | --      |                                 |
-| operationTime         | --      | Timely restriction of operation |
-| ethLosses             | kW / K  | Thermal losses                  |
-| ethCapa               | kWh / K | Thermal capacity                |
-| targetTemperature     | °C      | Desired target temperature      |
-| upperTemperatureLimit | °C      | Upper temperature boundary      |
-| lowerTemperatureLimit | °C      | Lower temperature boundary      |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     -
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - ethLosses
+     - kW / K
+     - Thermal losses
+
+   * - ethCapa
+     - kWh / K
+     - Thermal capacity
+
+   * - targetTemperature
+     - °C
+     - Desired target temperature
+
+   * - upperTemperatureLimit
+     - °C
+     - Upper temperature boundary
+
+   * - lowerTemperatureLimit
+     - °C
+     - Lower temperature boundary
+
+```
 
 ## Caveats
 

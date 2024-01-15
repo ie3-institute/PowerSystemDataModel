@@ -8,27 +8,88 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
 ### Type Model
 
-| Attribute   | Unit     | Remarks                                                   |
-| ----------- | -------- | --------------------------------------------------------- |
-| uuid        | --       |                                                           |
-| id          | --       | Human readable identifier                                 |
-| capex       | €        | Capital expenditure to purchase one entity of this type   |
-| opex        | € / MWh  | Operational expenditure to operate one entity ofthis type |
-| eStorage    | kWh      | Available battery capacity                                |
-| eCons       | kWh / km | Energy consumption per driven kilometre                   |
-| sRated      | kVA      | Rated apparent power                                      |
-| cosphiRated | --       | Rated power factor                                        |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - capex
+     - €
+     - Capital expenditure to purchase one entity of this type
+
+   * - opex
+     - € / MWh
+     - | Operational expenditure to operate one entity of
+       | this type
+
+   * - eStorage
+     - kWh
+     - Available battery capacity
+
+   * - eCons
+     - kWh / km
+     - Energy consumption per driven kilometre
+
+   * - sRated
+     - kVA
+     - Rated apparent power
+
+   * - cosPhiRated
+     - --
+     - Rated power factor
+
+```
 
 ### Entity Model
 
-| Attribute     | Unit | Remarks                         |
-| ------------- | ---- | ------------------------------- |
-| uuid          | --   |                                 |
-| id            | --   | Human readable identifier       |
-| operator      | --   |                                 |
-| operationTime | --   | Timely restriction of operation |
-| node          | --   |                                 |
-| type          | --   |                                 |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     -
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - node
+     - --
+     -
+
+   * - type
+     - --
+     -
+
+```
 
 ## Caveats
 

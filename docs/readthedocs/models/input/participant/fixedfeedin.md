@@ -7,16 +7,49 @@ model can be derived.
 
 ## Attributes, Units and Remarks
 
-| Attribute        | Unit | Remarks                                                                              |
-| ---------------- | ---- | ------------------------------------------------------------------------------------ |
-| uuid             | --   |                                                                                      |
-| id               | --   | Human readable identifier                                                            |
-| operator         | --   |                                                                                      |
-| operationTime    | --   | Timely restriction of operation                                                      |
-| node             | --   |                                                                                      |
-| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
-| sRated           | kVA  | Rated apparent power                                                                 |
-| cosphiRated      | --   | Rated power factor                                                                   |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     -
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - node
+     - --
+     -
+
+   * - qCharacteristics
+     - --
+     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+
+   * - sRated
+     - kVA
+     - Rated apparent power
+
+   * - cosPhiRated
+     - --
+     - Rated power factor
+
+```
 
 ## Caveats
 

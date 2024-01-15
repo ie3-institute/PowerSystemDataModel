@@ -4,23 +4,79 @@
 
 Detailed model of a photovoltaic power plant.
 
-| Attribute        | Unit | Remarks                                                                              |
-| ---------------- | ---- | ------------------------------------------------------------------------------------ |
-| uuid             | --   |                                                                                      |
-| id               | --   | Human readable identifier                                                            |
-| operator         | --   |                                                                                      |
-| operationTime    | --   | Timely restriction of operation                                                      |
-| node             | --   |                                                                                      |
-| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
-| albedo           | --   | [Albedo](https://en.wikipedia.org/wiki/Albedo) of the plant's surrounding            |
-| azimuth          | °    | Inclination in a compass directionSouth = 0°, West = 90°, East = -90°                |
-| etaConv          | %    | Efficiency of the assets inverter                                                    |
-| elevationAngle   | °    | Tilted inclination from horizontal \[0°, 90°\]                                       |
-| kG               | --   | Generator correction factor merging technical influences                             |
-| kT               | --   | Temperature correction factor merging thermal influences                             |
-| marketReaction   | --   | Whether to adapt output based on (volatile)market price or not                       |
-| sRated           | kVA  | Rated apparent power                                                                 |
-| cosphiRated      | --   | Rated power factor                                                                   |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     -
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - node
+     - --
+     -
+
+   * - qCharacteristics
+     - --
+     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+
+   * - albedo
+     - --
+     - `Albedo <https://en.wikipedia.org/wiki/Albedo>`_ of the plant's surrounding
+
+   * - azimuth
+     - °
+     - | Inclination in a compass direction
+       | South = 0°, West = 90°, East = -90°
+
+   * - etaConv
+     - %
+     - Efficiency of the assets inverter
+
+   * - elevationAngle
+     - °
+     - Tilted inclination from horizontal [0°, 90°]
+
+   * - kG
+     - --
+     - Generator correction factor merging technical influences
+
+   * - kT
+     - --
+     - Temperature correction factor merging thermal influences
+
+   * - marketReaction
+     - --
+     - | Whether to adapt output based on (volatile)
+       | market price or not
+
+   * - sRated
+     - kVA
+     - Rated apparent power
+
+   * - cosPhiRated
+     - --
+     - Rated power factor
+
+```
 
 ## Caveats
 

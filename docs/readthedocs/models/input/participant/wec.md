@@ -8,31 +8,105 @@ Model of a wind energy converter.
 
 ### Type Model
 
-| Attribute        | Unit    | Remarks                                                       |
-| ---------------- | ------- |---------------------------------------------------------------|
-| uuid             | --      |                                                               |
-| id               | --      | Human readable identifier                                     |
-| capex            | €       | Capital expenditure to purchase one entity of this type       |
-| opex             | € / MWh | Operational expenditure to operate one entity ofthis type     |
-| sRated           | kVA     | Rated apparent power                                          |
-| cosphiRated      | --      | Rated power factor                                            |
-| cpCharacteristic | --      | Wind velocity dependent [Betz factors](#betz-characteristic). |
-| etaConv          | %       | Efficiency of the assets inverter                             |
-| rotorArea        | m²      | Area the rotor covers                                         |
-| hubHeight        | m       | Height of the rotor hub                                       |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - capex
+     - €
+     - Capital expenditure to purchase one entity of this type
+
+   * - opex
+     - € / MWh
+     - | Operational expenditure to operate one entity of
+       | this type
+
+   * - sRated
+     - kVA
+     - Rated apparent power
+
+   * - cosPhiRated
+     - --
+     - Rated power factor
+
+   * - cpCharacteristic
+     - --
+     - Wind velocity dependent [Betz factors](#betz-characteristic).
+
+   * - etaConv
+     - %
+     - Efficiency of the assets inverter
+
+   * - rotorArea
+     - m²
+     - Area the rotor covers
+
+   * - hubHeight
+     - m
+     - Height of the rotor hub
+
+```
 
 ### Entity Model
 
-| Attribute        | Unit | Remarks                                                                              |
-| ---------------- | ---- | ------------------------------------------------------------------------------------ |
-| uuid             | --   |                                                                                      |
-| id               | --   | Human readable identifier                                                            |
-| operator         | --   |                                                                                      |
-| operationTime    | --   | Timely restriction of operation                                                      |
-| node             | --   |                                                                                      |
-| qCharacteristics | --   | [Reactive power characteristic](general.md#reactive-power-characteristics) to follow |
-| type             | --   |                                                                                      |
-| marketReaction   | --   | Whether to adapt output based on (volatile)market price or not                       |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     -
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - node
+     - --
+     -
+
+   * - qCharacteristics
+     - --
+     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+
+   * - type
+     - --
+     -
+
+   * - marketReaction
+     - --
+     - | Whether to adapt output based on (volatile)
+       | market price or not
+
+```
 
 ## Caveats
 

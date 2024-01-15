@@ -6,13 +6,37 @@ A coupling point to thermal system - equivalent to [electrical node](https://pow
 
 ## Attributes, Units and Remarks
 
-| Attribute     | Unit | Remarks                                |
-| ------------- | ---- | -------------------------------------- |
-| uuid          | --   |                                        |
-| id            | --   | Human readable identifier              |
-| operator      | --   |                                        |
-| operationTime | --   | Timely restriction of operation        |
-| bus           | --   | Connection point to the thermal system |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - --
+     -
+
+   * - id
+     - --
+     - Human readable identifier
+
+   * - operator
+     - --
+     -
+
+   * - operationTime
+     - --
+     - Timely restriction of operation
+
+   * - bus
+     - --
+     - Connection point to the thermal system
+
+```
 
 ## Caveats
 
