@@ -8,12 +8,13 @@ It is assumed, that node A is the node with highest, node B with intermediate an
 The assumed mathematical model is inspired by *ABB Schaltanlagenhanbuch* [^cite_gremmel1999], but with the addition of a
 central phase-to-ground admittance, cf. following picture.
 
-:::{figure} ../../../_static/figures/ecdTransformer3w.png
-:align: center
-:alt: Equivalent circuit diagram of a three winding transformer
-
+```{figure} ../../../_static/figures/ecdTransformer3w.png
+---
+align: center
+name: Equivalent circuit diagram of a three winding transformer
+---
 "Star like" T-equivalent circuit diagram of a three winding transformer
-:::
+```
 
 ## Attributes, Units and Remarks
 
