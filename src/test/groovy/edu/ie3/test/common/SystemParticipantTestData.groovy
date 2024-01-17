@@ -154,6 +154,8 @@ class SystemParticipantTestData {
   public static final ThermalStorageInput thermalStorage = new CylindricalStorageInput(
   UUID.fromString("8851813b-3a7d-4fee-874b-4df9d724e4b3"),
   "test_cylindricThermalStorage",
+  GridTestData.profBroccoli,
+  OperationTime.notLimited(),
   thermalBus,
   storageVolumeLvl,
   storageVolumeLvlMin,
@@ -267,8 +269,7 @@ class SystemParticipantTestData {
   UUID.fromString("06b58276-8350-40fb-86c0-2414aa4a0452"),
   "test_storageInput",
   operator,
-  operationTime
-  ,
+  operationTime,
   participantNode,
   cosPhiFixed,
   storageTypeInput
@@ -311,18 +312,6 @@ class SystemParticipantTestData {
   EvcsLocationType.HOME,
   v2gSupport
   )
-
-  public static allParticipants = [
-    fixedFeedInInput,
-    pvInput,
-    loadInput,
-    bmInput,
-    storageInput,
-    wecInput,
-    evInput,
-    chpInput,
-    hpInput
-  ]
 
   public static SystemParticipants emptySystemParticipants =
   new SystemParticipants(

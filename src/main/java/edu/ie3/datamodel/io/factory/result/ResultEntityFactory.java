@@ -5,7 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
+import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.util.TimeUtil;
 import java.time.ZoneId;
@@ -18,7 +19,7 @@ import java.util.Locale;
  * @version 0.1
  * @since 11.02.20
  */
-abstract class ResultEntityFactory<T extends ResultEntity> extends SimpleEntityFactory<T> {
+abstract class ResultEntityFactory<T extends ResultEntity> extends EntityFactory<T, EntityData> {
 
   protected static final String ENTITY_UUID = "uuid";
   protected static final String TIME = "time";

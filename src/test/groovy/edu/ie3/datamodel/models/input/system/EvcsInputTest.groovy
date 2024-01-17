@@ -12,7 +12,7 @@ import spock.lang.Specification
 
 class EvcsInputTest extends Specification {
 
-  def "A EvCsInput copy method should work as expected"() {
+  def "A EvcsInput copy method should work as expected"() {
     given:
     def evcsInput = SystemParticipantTestData.evcsInput
 

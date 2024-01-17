@@ -64,6 +64,23 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
     this.typeInput = typeInput;
   }
 
+  /**
+   * Creates a new SystemParticipantTypedEntityData object based on a given {@link
+   * NodeAssetInputEntityData} object and given type input
+   *
+   * @param nodeAssetEntityData The system participant entity data object to use attributes of
+   * @param typeInput type input
+   */
+  public SystemParticipantTypedEntityData(
+      NodeAssetInputEntityData nodeAssetEntityData, T typeInput) {
+    super(nodeAssetEntityData, nodeAssetEntityData.getNode());
+    this.typeInput = typeInput;
+  }
+
+  public T getTypeInput() {
+    return typeInput;
+  }
+
   @Override
   public String toString() {
     return "SystemParticipantTypedEntityData{"
@@ -92,9 +109,5 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), getTypeInput());
-  }
-
-  public T getTypeInput() {
-    return typeInput;
   }
 }

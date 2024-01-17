@@ -9,7 +9,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.SimpleEntityData
+import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.*
@@ -56,7 +56,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = EvTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -91,7 +91,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = HpTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -125,7 +125,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = BmTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -163,7 +163,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = WecTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -210,7 +210,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = ChpTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -253,7 +253,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = StorageTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
