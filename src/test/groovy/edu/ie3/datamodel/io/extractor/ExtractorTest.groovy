@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.extractor
 
 import edu.ie3.datamodel.exceptions.ExtractorException
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd

@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.connector.ConnectorResult;
@@ -62,7 +62,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   }
 
   @Override
-  protected ConnectorResult buildModel(SimpleEntityData data) {
+  protected ConnectorResult buildModel(EntityData data) {
     final Class<? extends UniqueEntity> entityClass = data.getTargetClass();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
 

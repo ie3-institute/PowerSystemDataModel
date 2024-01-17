@@ -9,20 +9,20 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.function.TriFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +35,12 @@ public abstract class EntitySource {
   protected static final String OPERATOR = "operator";
   protected static final String NODE = "node";
   protected static final String TYPE = "type";
-  protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
-  DataSource dataSource;
+  protected final DataSource dataSource;
+
+  protected EntitySource(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -68,213 +71,264 @@ public abstract class EntitySource {
                     .orElse(Try.Success.empty()));
   }
 
-  protected String buildSkippingMessage(
-      String entityDesc, String entityUuid, String entityId, String missingElementsString) {
-    return "Skipping "
-        + entityDesc
-        + " with uuid "
-        + entityUuid
-        + " and id "
-        + entityId
-        + ". Not all required entities found or map is missing entity key!\nMissing elements:\n"
-        + missingElementsString;
-  }
-
   /**
-   * Method for retrieving an element from a map. If the map doesn't contain the key an error
-   * message is build and returned instead.
+   * Enhances given entity data with an entity from the given entity map. The linked entity is
+   * chosen by taking into account the UUID found by retrieving the field with given fieldName from
+   * entityData.
    *
-   * <p>Should not be used for other purposes than creating error messages.
-   *
-   * @param map with value
-   * @param key for the value
-   * @param mapName name of the map used for the error message
-   * @return either the value or an error message
-   */
-  protected String safeMapGet(Map<String, String> map, String key, String mapName) {
-    return Optional.ofNullable(map.get(key))
-        .orElse(
-            "Key '"
-                + key
-                + "' not found"
-                + (mapName.isEmpty() ? "!" : " in map '" + mapName + "'!"));
-  }
-
-  /**
-   * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
-   * matching the provided UUID or an empty {@code Optional} if no matching entity can be found.
-   *
-   * @param entityUuid uuid of the entity that should be looked for
-   * @param entities collection of entities that should be
-   * @param <T> type of the entity that will be returned, derived from the provided collection
-   * @return either an optional containing the first entity that has the provided uuid or an empty
-   *     optional if no matching entity with the provided uuid can be found
-   */
-  protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
-      UUID entityUuid, Collection<T> entities) {
-    return entities.stream()
-        .parallel()
-        .filter(uniqueEntity -> uniqueEntity.getUuid().equals(entityUuid))
-        .findFirst();
-  }
-
-  /**
-   * Checks if the requested type of asset can be found in the provided collection of types based on
-   * the provided fields to values mapping. The provided fields to values mapping needs to have one
-   * and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can be
-   * found in the provided collection based on the UUID it is returned wrapped in a {@link Success}.
-   * Otherwise, a {@link Failure} is returned and a warning is logged.
-   *
-   * @param types a collection of types that should be used for searching
-   * @param fieldsToAttributes the field name to value mapping incl. the key {@link #TYPE}
-   * @param skippedClassString debug string of the class that will be skipping
-   * @param <T> the type of the resulting type instance
-   * @return a {@link Success} containing the type or a {@link Failure} if the type cannot be found
-   */
-  protected <T extends AssetTypeInput> Try<T, SourceException> getAssetType(
-      Collection<T> types, Map<String, String> fieldsToAttributes, String skippedClassString) {
-
-    Optional<T> assetType =
-        Optional.ofNullable(fieldsToAttributes.get(TYPE))
-            .flatMap(typeUuid -> findFirstEntityByUuid(UUID.fromString(typeUuid), types));
-
-    // if the type is not present we return an empty element and
-    // log a warning
-    if (assetType.isEmpty()) {
-      String skippingMessage =
-          buildSkippingMessage(
-              skippedClassString,
-              safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
-              safeMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-              TYPE + ": " + safeMapGet(fieldsToAttributes, TYPE, FIELDS_TO_VALUES_MAP));
-      return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
-    }
-    return new Success<>(assetType.get());
-  }
-
-  /**
-   * Finds the required asset type and if present, adds it to the untyped entity data
-   *
-   * @param untypedEntityData Untyped entity data to enrich
-   * @param availableTypes Yet available asset types
-   * @param <T> Type of the asset type
+   * @param entityData The entity data to be enhanced, which also provides a link to another entity
+   *     via UUID
+   * @param fieldName The field name of the field that provides the UUID of the linked entity
+   * @param linkedEntities A map of UUID to entities, of which one should be linked to given entity
+   *     data
+   * @param createEntityData The function that creates the resulting entity data given entityData
+   *     and the linked entity
+   * @param <E> Type of input entity data
+   * @param <T> Type of the linked entity
+   * @param <R> Type of resulting entity data that combines the given entityData and linked entity
    * @return {@link Try} to enhanced data
    */
-  protected <T extends AssetTypeInput>
-      Try<TypedConnectorInputEntityData<T>, SourceException> findAndAddType(
-          ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
-    Try<T, SourceException> assetTypeOption =
-        getAssetType(
-            availableTypes,
-            untypedEntityData.getFieldsToValues(),
-            untypedEntityData.getClass().getSimpleName());
-    return assetTypeOption.map(assetType -> addTypeToEntityData(untypedEntityData, assetType));
+  protected static <E extends EntityData, T extends UniqueEntity, R extends E>
+      Try<R, SourceException> enrichEntityData(
+          E entityData,
+          String fieldName,
+          Map<UUID, T> linkedEntities,
+          BiFunction<E, T, R> createEntityData) {
+    return getLinkedEntity(entityData, fieldName, linkedEntities)
+        .map(
+            linkedEntity -> {
+              Map<String, String> fieldsToAttributes = entityData.getFieldsToValues();
+
+              // remove fields that are passed as objects to constructor
+              fieldsToAttributes.keySet().remove(fieldName);
+
+              // build resulting entity data
+              return createEntityData.apply(entityData, linkedEntity);
+            });
   }
 
   /**
-   * Enriches the given, untyped entity data with the provided asset type
+   * Enhances given entity data with two entities from the given entity maps. The linked entities
+   * are chosen by taking into account the UUIDs found by retrieving the fields with given
+   * fieldName1 and fieldName2 from entityData.
    *
-   * @param untypedEntityData Untyped entity data to enrich
-   * @param assetType Asset type to add
-   * @param <T> Type of the asset type
-   * @return The enriched entity data
+   * @param entityData The entity data to be enhanced, which also provides links to two other
+   *     entities via UUID
+   * @param fieldName1 The field name of the field that provides the UUID of the first linked entity
+   * @param linkedEntities1 The first map of UUID to entities, of which one should be linked to
+   *     given entity data
+   * @param fieldName2 The field name of the field that provides the UUID of the second linked
+   *     entity
+   * @param linkedEntities2 The second map of UUID to entities, of which one should be linked to
+   *     given entity data
+   * @param createEntityData The function that creates the resulting entity data given entityData
+   *     and the linked entities
+   * @param <E> Type of input entity data
+   * @param <T1> Type of the first linked entity
+   * @param <T2> Type of the second linked entity
+   * @param <R> Type of resulting entity data that combines the given entityData and two linked
+   *     entities
+   * @return {@link Try} to enhanced data
    */
-  protected <T extends AssetTypeInput> TypedConnectorInputEntityData<T> addTypeToEntityData(
-      ConnectorInputEntityData untypedEntityData, T assetType) {
-    Map<String, String> fieldsToAttributes = untypedEntityData.getFieldsToValues();
+  protected static <
+          E extends EntityData, T1 extends UniqueEntity, T2 extends UniqueEntity, R extends E>
+      Try<R, SourceException> enrichEntityData(
+          E entityData,
+          String fieldName1,
+          Map<UUID, T1> linkedEntities1,
+          String fieldName2,
+          Map<UUID, T2> linkedEntities2,
+          TriFunction<E, T1, T2, R> createEntityData) {
+    return getLinkedEntity(entityData, fieldName1, linkedEntities1)
+        .flatMap(
+            linkedEntity1 ->
+                getLinkedEntity(entityData, fieldName2, linkedEntities2)
+                    .map(
+                        linkedEntity2 -> {
+                          Map<String, String> fieldsToAttributes = entityData.getFieldsToValues();
 
-    // remove fields that are passed as objects to constructor
-    fieldsToAttributes.keySet().remove(TYPE);
+                          // remove fields that are passed as objects to constructor
+                          fieldsToAttributes.keySet().remove(fieldName1);
+                          fieldsToAttributes.keySet().remove(fieldName2);
 
-    // build result object
-    return new TypedConnectorInputEntityData<>(
-        fieldsToAttributes,
-        untypedEntityData.getTargetClass(),
-        untypedEntityData.getOperatorInput(),
-        untypedEntityData.getNodeA(),
-        untypedEntityData.getNodeB(),
-        assetType);
+                          // build resulting entity data
+                          return createEntityData.apply(entityData, linkedEntity1, linkedEntity2);
+                        }));
   }
 
   /**
-   * Returns either the first instance of a {@link OperatorInput} in the provided collection of or
-   * {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   * Checks if the linked entity can be found in the provided map of entities. The linked entities
+   * are chosen by taking into account the UUIDs found by retrieving the fields with given
+   * fieldName1 and fieldName2 from entityData.
    *
-   * @param operators the collections of {@link OperatorInput}s that should be searched in
-   * @param operatorUuid the operator uuid that is requested
-   * @return either the first found instancen of {@link OperatorInput} or {@link
-   *     OperatorInput#NO_OPERATOR_ASSIGNED}
+   * @param entityData The entity data of the entity that provides a link to another entity via UUID
+   * @param fieldName The field name of the field that provides the UUID of the linked entity
+   * @param linkedEntities A map of UUID to entities, of which one should be linked to given entity
+   *     data
+   * @param <T> the type of the resulting linked entity instance
+   * @return a {@link Success} containing the entity or a {@link Failure} if the entity cannot be
+   *     found
    */
-  protected OperatorInput getFirstOrDefaultOperator(
-      Collection<OperatorInput> operators,
-      Optional<UUID> operatorUuid,
-      String entityClassName,
-      String requestEntityUuid) {
-    if (operatorUuid.isEmpty()) {
-      log.warn(
-          "Input source for class '{}' is missing the 'operator' field. "
-              + "This is okay, but you should consider fixing the file by adding the field. "
-              + "Defaulting to 'NO OPERATOR ASSIGNED'",
-          entityClassName);
-      return OperatorInput.NO_OPERATOR_ASSIGNED;
-    } else {
-      return findFirstEntityByUuid(operatorUuid.get(), operators)
-          .orElseGet(
-              () -> {
-                log.debug(
-                    "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
-                    operatorUuid,
-                    entityClassName,
-                    requestEntityUuid);
-                return OperatorInput.NO_OPERATOR_ASSIGNED;
-              });
-    }
+  protected static <T extends UniqueEntity> Try<T, SourceException> getLinkedEntity(
+      EntityData entityData, String fieldName, Map<UUID, T> linkedEntities) {
+
+    return Try.of(() -> entityData.getUUID(fieldName), FactoryException.class)
+        .transformF(
+            exception ->
+                new SourceException(
+                    "Extracting UUID field "
+                        + fieldName
+                        + " from entity data "
+                        + entityData.toString()
+                        + " failed.",
+                    exception))
+        .flatMap(
+            entityUuid ->
+                getEntity(entityUuid, linkedEntities)
+                    .transformF(
+                        exception ->
+                            new SourceException(
+                                "Linked "
+                                    + fieldName
+                                    + " with UUID "
+                                    + entityUuid
+                                    + " was not found for entity "
+                                    + entityData,
+                                exception)));
+  }
+
+  /**
+   * Enhances given entity data with an entity from the given entity map or the default value. The
+   * linked entity is possibly chosen by taking into account the UUID found by retrieving the field
+   * with given fieldName from entityData. If no entity is linked, the default value is used.
+   *
+   * @param entityData The entity data to be enhanced, which also might provide a link to another
+   *     entity via UUID
+   * @param fieldName The field name of the field that might provide the UUID of the linked entity
+   * @param linkedEntities A map of UUID to entities, of which one should be linked to given entity
+   *     data
+   * @param defaultEntity The default linked entity to use, if no actual linked entity could be
+   *     found
+   * @param createEntityData The function that creates the resulting entity data given entityData
+   *     and the linked entity (either retrieved from the map or the standard entity)
+   * @param <E> Type of input entity data
+   * @param <T> Type of the linked entity
+   * @param <R> Type of resulting entity data that combines the given entityData and linked entity
+   * @return {@link Try} to enhanced data
+   */
+  protected static <E extends EntityData, T extends UniqueEntity, R extends E>
+      Try<R, SourceException> optionallyEnrichEntityData(
+          E entityData,
+          String fieldName,
+          Map<UUID, T> linkedEntities,
+          T defaultEntity,
+          BiFunction<E, T, R> createEntityData) {
+    return entityData
+        .getFieldOptional(fieldName)
+        .filter(s -> !s.isBlank())
+        .map(
+            // Entity data includes a non-empty UUID String for the desired entity
+            uuidString ->
+                Try.of(() -> UUID.fromString(uuidString), IllegalArgumentException.class)
+                    .transformF(
+                        iae ->
+                            // Parsing error still results in a failure, ...
+                            new SourceException(
+                                String.format(
+                                    "Exception while trying to parse UUID of field \"%s\" with value \"%s\"",
+                                    fieldName, uuidString),
+                                iae))
+                    .flatMap(
+                        entityUuid ->
+                            getEntity(entityUuid, linkedEntities)
+                                // ... as well as a provided entity UUID that does not match any
+                                // given data
+                                .transformF(
+                                    exception ->
+                                        new SourceException(
+                                            "Linked "
+                                                + fieldName
+                                                + " with UUID "
+                                                + entityUuid
+                                                + " was not found for entity "
+                                                + entityData,
+                                            exception))))
+        .orElseGet(
+            () -> {
+              // No UUID was given (column does not exist, or field is empty).
+              // This is totally fine - we successfully return the default value
+              log.debug(
+                  "Input source for class {} is missing the '{}' field. "
+                      + "Default value '{}' is used.",
+                  entityData.getTargetClass().getSimpleName(),
+                  fieldName,
+                  defaultEntity);
+              return new Try.Success<>(defaultEntity);
+            })
+        .map(
+            linkedEntity -> {
+              Map<String, String> fieldsToAttributes = entityData.getFieldsToValues();
+
+              // remove fields that are passed as objects to constructor
+              fieldsToAttributes.keySet().remove(fieldName);
+
+              // build resulting entity data
+              return createEntityData.apply(entityData, linkedEntity);
+            });
+  }
+
+  private static <T> Try<T, SourceException> getEntity(UUID uuid, Map<UUID, T> entityMap) {
+    return Optional.ofNullable(entityMap.get(uuid))
+        // We either find a matching entity for given UUID, thus return a success
+        .map(entity -> Try.of(() -> entity, SourceException.class))
+        // ... or find no matching entity, returning a failure.
+        .orElse(
+            new Try.Failure<>(
+                new SourceException("Entity with uuid " + uuid + " was not provided.")));
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  /**
+   * Returns a stream of {@link Try} entities that can be built by using {@link
+   * NodeAssetInputEntityData} and their corresponding factory.
+   *
+   * @param entityClass the entity class that should be build
+   * @param nodes a map of UUID to {@link NodeInput} entities that should be used to build the
+   *     entities
+   * @param operators a map of UUID to {@link OperatorInput} entities should be used to build the
+   *     entities
+   * @return stream of tries of the entities that has been built by the factory
+   */
+  protected Stream<Try<NodeAssetInputEntityData, SourceException>> buildNodeAssetEntityData(
+      Class<? extends AssetInput> entityClass,
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes) {
+    return nodeAssetInputEntityDataStream(buildAssetInputEntityData(entityClass, operators), nodes);
   }
 
   /**
    * Returns a stream of tries of {@link NodeAssetInputEntityData} that can be used to build
    * instances of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory}
-   * that consumes this data. param assetInputEntityDataStream
+   * that consumes this data.
    *
    * @param assetInputEntityDataStream a stream consisting of {@link AssetInputEntityData} that is
    *     enriched with {@link NodeInput} data
-   * @param nodes a collection of {@link NodeInput} entities that should be used to build the data
+   * @param nodes a map of UUID to {@link NodeInput} entities that should be used to build the data
    * @return stream of the entity data wrapped in a {@link Try}
    */
-  protected Stream<Try<NodeAssetInputEntityData, SourceException>> nodeAssetInputEntityDataStream(
-      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
+  protected static Stream<Try<NodeAssetInputEntityData, SourceException>>
+      nodeAssetInputEntityDataStream(
+          Stream<Try<AssetInputEntityData, SourceException>> assetInputEntityDataStream,
+          Map<UUID, NodeInput> nodes) {
     return assetInputEntityDataStream
         .parallel()
         .map(
-            assetInputEntityData -> {
-              // get the raw data
-              Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
-              // get the node of the entity
-              UUID nodeUuid = UUID.fromString(fieldsToAttributes.get(NODE));
-              Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
-
-              // if the node is not present we return an empty element and
-              // log a warning
-              if (node.isEmpty()) {
-                String skippingMessage =
-                    buildSkippingMessage(
-                        assetInputEntityData.getTargetClass().getSimpleName(),
-                        fieldsToAttributes.get("uuid"),
-                        fieldsToAttributes.get("id"),
-                        NODE + ": " + nodeUuid);
-                return new Failure<>(new SourceException("Failure due to: " + skippingMessage));
-              }
-
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove(NODE);
-
-              return new Success<>(
-                  new NodeAssetInputEntityData(
-                      fieldsToAttributes,
-                      assetInputEntityData.getTargetClass(),
-                      assetInputEntityData.getOperatorInput(),
-                      node.get()));
-            });
+            assetInputEntityDataTry ->
+                assetInputEntityDataTry.flatMap(
+                    assetInputEntityData ->
+                        enrichEntityData(
+                            assetInputEntityData, NODE, nodes, NodeAssetInputEntityData::new)));
   }
 
   /**
@@ -283,115 +337,73 @@ public abstract class EntitySource {
    * consumes this data.
    *
    * @param entityClass the entity class that should be build
-   * @param operators a collection of {@link OperatorInput} entities that should be used to build
+   * @param operators a map of UUID to {@link OperatorInput} entities that should be used to build
    *     the data
-   * @param <T> type of the entity that should be build
    * @return stream of the entity data wrapped in a {@link Try}
    */
-  protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
-      Class<T> entityClass, Collection<OperatorInput> operators) {
-    return dataSource
-        .getSourceData(entityClass)
-        .map(
-            fieldsToAttributes ->
-                assetInputEntityDataStream(entityClass, fieldsToAttributes, operators));
-  }
-
-  protected <T extends AssetInput> AssetInputEntityData assetInputEntityDataStream(
-      Class<T> entityClass,
-      Map<String, String> fieldsToAttributes,
-      Collection<OperatorInput> operators) {
-
-    // get the operator of the entity
-    Optional<UUID> operatorUuid =
-        Optional.ofNullable(fieldsToAttributes.get(OPERATOR))
-            .filter(s -> !s.isBlank())
-            .map(UUID::fromString);
-    OperatorInput operator =
-        getFirstOrDefaultOperator(
-            operators,
-            operatorUuid,
-            entityClass.getSimpleName(),
-            safeMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
-
-    // remove fields that are passed as objects to constructor
-    fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
-
-    return new AssetInputEntityData(fieldsToAttributes, entityClass, operator);
+  protected Stream<Try<AssetInputEntityData, SourceException>> buildAssetInputEntityData(
+      Class<? extends AssetInput> entityClass, Map<UUID, OperatorInput> operators) {
+    return assetInputEntityDataStream(buildEntityData(entityClass), operators);
   }
 
   /**
-   * Returns a stream of {@link SimpleEntityData} for result entity classes, using a
-   * fields-to-attributes map.
+   * Returns a stream of tries of {@link AssetInputEntityData} that can be used to build instances
+   * of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that
+   * consumes this data.
    *
-   * @param entityClass the entity class that should be build
-   * @param <T> Type of the {@link ResultEntity} to expect
-   * @return stream of {@link SimpleEntityData}
+   * @param entityDataStream a stream consisting of {@link EntityData} that is enriched with {@link
+   *     OperatorInput} data
+   * @param operators map of UUID to {@link OperatorInput} entities that should be used to build the
+   *     data
+   * @return stream of the entity data wrapped in a {@link Try}
    */
-  protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
-      Class<T> entityClass) {
-    return dataSource
-        .getSourceData(entityClass)
-        .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
-  }
-
-  protected <T extends AssetInput> Stream<Try<T, FactoryException>> assetInputEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, AssetInputEntityData> factory,
-      Collection<OperatorInput> operators) {
-    return assetInputEntityDataStream(entityClass, operators).map(factory::get);
+  protected static Stream<Try<AssetInputEntityData, SourceException>> assetInputEntityDataStream(
+      Stream<Try<EntityData, SourceException>> entityDataStream,
+      Map<UUID, OperatorInput> operators) {
+    return entityDataStream
+        .parallel()
+        .map(
+            entityDataTry ->
+                entityDataTry.flatMap(
+                    entityData ->
+                        optionallyEnrichEntityData(
+                            entityData,
+                            OPERATOR,
+                            operators,
+                            OperatorInput.NO_OPERATOR_ASSIGNED,
+                            AssetInputEntityData::new)));
   }
 
   /**
-   * Returns a stream of {@link Try} entities that can be build by using {@link
-   * NodeAssetInputEntityData} and their corresponding factory.
+   * Returns a stream of optional {@link EntityData} that can be used to build instances of several
+   * subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that consumes this
+   * data.
    *
    * @param entityClass the entity class that should be build
-   * @param factory the factory that should be used for the building process
-   * @param nodes a collection of {@link NodeInput} entities that should be used to build the
-   *     entities
-   * @param operators a collection of {@link OperatorInput} entities should be used to build the
-   *     entities
-   * @param <T> Type of the {@link AssetInput} to expect
-   * @return stream of tries of the entities that has been built by the factory
+   * @return stream of the entity data wrapped in a {@link Try}
    */
-  protected <T extends AssetInput> Stream<Try<T, FactoryException>> nodeAssetEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, NodeAssetInputEntityData> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators) {
-    return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-        .map(factory::get);
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-  public <T extends AssetInput> Set<Try<T, FactoryException>> buildNodeAssetEntities(
-      Class<T> entityClass,
-      EntityFactory<T, NodeAssetInputEntityData> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators) {
-    return nodeAssetEntityStream(entityClass, factory, nodes, operators)
-        .collect(Collectors.toSet());
-  }
-
-  public <T extends AssetInput> Set<Try<T, FactoryException>> buildAssetInputEntities(
-      Class<T> entityClass,
-      EntityFactory<T, AssetInputEntityData> factory,
-      Collection<OperatorInput> operators) {
-    return assetInputEntityStream(entityClass, factory, operators).collect(Collectors.toSet());
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T extends InputEntity> Set<Try<T, FactoryException>> buildEntities(
-      Class<T> entityClass, EntityFactory<? extends InputEntity, SimpleEntityData> factory) {
+  protected Stream<Try<EntityData, SourceException>> buildEntityData(
+      Class<? extends UniqueEntity> entityClass) {
     return dataSource
         .getSourceData(entityClass)
-        .map(
-            fieldsToAttributes -> {
-              SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
-              return (Try<T, FactoryException>) factory.get(data);
-            })
-        .collect(Collectors.toSet());
+        .map(fieldsToAttributes -> new Success<>(new EntityData(fieldsToAttributes, entityClass)));
+  }
+
+  protected static <S extends UniqueEntity> Map<UUID, S> unpackMap(
+      Stream<Try<S, FactoryException>> inputStream, Class<S> entityClass) throws SourceException {
+    return unpack(inputStream, entityClass)
+        .collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
+  }
+
+  protected static <S extends UniqueEntity> Set<S> unpackSet(
+      Stream<Try<S, FactoryException>> inputStream, Class<S> entityClass) throws SourceException {
+    return unpack(inputStream, entityClass).collect(Collectors.toSet());
+  }
+
+  protected static <S, E extends Exception> Stream<S> unpack(
+      Stream<Try<S, E>> inputStream, Class<S> clazz) throws SourceException {
+    return Try.scanStream(inputStream, clazz.getSimpleName())
+        .transformF(SourceException::new)
+        .getOrThrow();
   }
 }

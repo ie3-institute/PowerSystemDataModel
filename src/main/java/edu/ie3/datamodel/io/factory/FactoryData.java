@@ -18,10 +18,8 @@ public abstract class FactoryData {
 
   protected FactoryData(Map<String, String> fieldsToAttributes, Class<?> targetClass) {
     // this does the magic: case-insensitive get/set calls on keys
-    TreeMap<String, String> insensitiveFieldsToAttributes =
-        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    insensitiveFieldsToAttributes.putAll(fieldsToAttributes);
-    this.fieldsToAttributes = insensitiveFieldsToAttributes;
+    this.fieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    this.fieldsToAttributes.putAll(fieldsToAttributes);
     this.targetClass = targetClass;
   }
 

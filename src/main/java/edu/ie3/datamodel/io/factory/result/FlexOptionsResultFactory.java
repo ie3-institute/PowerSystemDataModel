@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult;
 import java.time.ZonedDateTime;
@@ -42,7 +42,7 @@ public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsRes
   }
 
   @Override
-  protected FlexOptionsResult buildModel(SimpleEntityData data) {
+  protected FlexOptionsResult buildModel(EntityData data) {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> pRef = data.getQuantity(P_REF, StandardUnits.ACTIVE_POWER_RESULT);
