@@ -146,6 +146,7 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
 .. list-table::
    :widths: 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
    :header-rows: 0
+   
    * - uuid
      - bM
      - dPhi
@@ -162,6 +163,7 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
      - vRatedB
      - xSc
      - source
+     
    * - 5a890aae-b9c9-4ebf-8a49-8850ae9df402
      - 219.43184927638458
      - 0.0
@@ -178,6 +180,7 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
      - 220.0
      - 44.51926783240413
      - simBench
+     
    * - 03159c0d-126e-47cc-9871-066870df3a3f
      - 1193.4686938790917
      - 0.0
@@ -194,6 +197,7 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
      - 110.0
      - 90.75951402093402
      - simBench
+     
    * - 7cb289cb-e6af-4470-9c68-e5a91978a5e7
      - 2013.800484464662
      - 0.0
@@ -210,6 +214,7 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
      - 110.0
      - 19.358892855688435
      - simBench
+     
    * - 73644bc6-78cf-4882-9837-e6508cab092d
      - 867.7685950413226
      - 0.0
@@ -226,6 +231,7 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
      - 20.0
      - 58.04608993412045
      - simBench
+     
    * - 6935ae26-374a-4c24-aeee-6d5760d6ddf3
      - 720.4791642215993
      - 0.0
@@ -242,6 +248,7 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
      - 20.0
      - 48.994205909984906
      - simBench
+     
    * - b49db20f-b8b5-4265-8318-f669b9d121e9
      - 1015.6886939330394
      - 0.0
@@ -258,6 +265,7 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
      - 10.0
      - 34.56596500037509
      - simBench
+     
    * - 0843b836-cee4-4a8c-81a4-098400fe91cf
      - 24.495101551166183
      - 0.0
@@ -274,6 +282,7 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
      - 0.4
      - 58.787753826796276
      - simBench
+     
    * - a8f3aeea-ef4d-4f3c-bb07-09a0a86766c1
      - 9.591746452043322
      - 0.0
@@ -290,6 +299,7 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
      - 0.4
      - 93.01469452961452
      - simBench
+     
    * - 0644c120-a247-425f-bbe4-31b153f7f440
      - 16.583241729259253
      - 0.0
@@ -306,9 +316,40 @@ The transformers which source is ``simBench`` are from `here <https://simbench.d
      - 0.4
      - 93.6479876986153
      - simBench
+     
    * - bdf22ee4-deba-41f4-a187-ae00638a6880
      - 36.47380569074435
      - 0.0
+     - 2.5
+     - 4125.0
+     - 0.63 MVA 20/0.4 kV Dyn5 ASEA
+     - 6.953892668178382
+     - 630.0
+     - 2
+     - -2
+     - 0
+     - false
+     - 20.0
+     - 0.4
+     - 37.45518044666632
+     - simBench
+     
+   * - a0cbd90a-4e9f-47db-8dca-041d3a288f77
+     - 145.8952227629774
+     - 0.0
+     - 2.5
+     - 16500.0
+     - 0.63 MVA 10/0.4 kV Dyn5 ASEA
+     - 1.7384731670445954
+     - 630.0
+     - 2
+     - -2
+     - 0
+     - false
+     - 10.0
+     - 0.4
+     - 9.36379511166658
+     - simBench
 ```
 
 ## Caveats
