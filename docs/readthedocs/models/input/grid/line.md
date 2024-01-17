@@ -472,6 +472,8 @@ Some standard cables.
      - NAYY 4x240SE 0.6/1kV
      - 0.1267
      - 0.4
+     - 0.0797965
+     -simBench
 ```
 
 
