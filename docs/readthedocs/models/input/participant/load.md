@@ -38,11 +38,11 @@ Model of (mainly) domestic loads.
 
    * - qCharacteristics
      - --
-     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - loadProfile
      - --
-     - [Load profile](#load-profiles) as model behaviour
+     - :ref:`Load profile<load-lp>`  as model behaviour
 
    * - dsm
      - --

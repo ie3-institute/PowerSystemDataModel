@@ -87,7 +87,7 @@ Model of a heat pump.
 
    * - qCharacteristics
      - --
-     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - type
      - --

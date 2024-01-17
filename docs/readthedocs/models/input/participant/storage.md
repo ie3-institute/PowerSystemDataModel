@@ -109,7 +109,7 @@ Model of an ideal electrical battery energy storage.
 
    * - qCharacteristics
      - --
-     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - type
      - --

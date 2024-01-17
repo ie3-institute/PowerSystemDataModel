@@ -41,11 +41,11 @@ station and has some limitations outlined below.
 
    * - qCharacteristics
      - --
-     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - type
      - --
-     -  [Charging point type](#charging-point-types) (valid for all installed points)
+     -  :ref:`Charging point type<evcs-point-types>`  (valid for all installed points)
 
    * - chargingPoints
      - --
@@ -57,7 +57,7 @@ station and has some limitations outlined below.
 
    * - locationType
      - --
-     - [Charging station location types](#location-types) 
+     - 	:ref:`Charging station location types<location-types>` 
 
 ```
 

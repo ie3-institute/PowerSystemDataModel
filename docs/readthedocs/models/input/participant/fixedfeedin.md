@@ -39,7 +39,7 @@ model can be derived.
 
    * - qCharacteristics
      - --
-     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - sRated
      - kVA

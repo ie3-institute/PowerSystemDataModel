@@ -45,7 +45,7 @@ Model of a wind energy converter.
 
    * - cpCharacteristic
      - --
-     - Wind velocity dependent [Betz factors](#betz-characteristic).
+     - Wind velocity dependent :ref:`Betz factors<wec-cp-characteristic>`.
 
    * - etaConv
      - %
@@ -95,7 +95,7 @@ Model of a wind energy converter.
 
    * - qCharacteristics
      - --
-     - [Reactive power characteristic](general.md#reactive-power-characteristics) to follow
+     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - type
      - --
