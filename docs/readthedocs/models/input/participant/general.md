@@ -21,12 +21,13 @@ The power factor is determined based on the current active power feed in or cons
 The characteristic in the figure below would be described by the three coordinates (0.0, 1.0), (0.9,1.0) and (1.0, 0.95).
 Alternatively it can be parsed from {code}`cosPhiP:{(0.0, 1.0),(0.9,1.0),(1.0, 0.95)}`.
 
-:::{figure} ../../../_static/figures/cosPhiP.png
-:align: center
-:alt: Active power dependent power factor
-
+```{figure} ../../../_static/figures/cosPhiP.png
+---
+align: center
+name: Active power dependent power factor
+---
 Exemplary active power dependent power factor
-:::
+```
 
 ### Reactive Power as Function of Nodal Voltage Magnitude
 
@@ -35,9 +36,10 @@ The characteristic in the figure below would be described by the three coordinat
 and (1.08, 1.0).
 Alternatively it can be parsed from {code}`qV:{(0.92, -1),(0.97, 0.0),(1.03, 0.0),(1.08, 1.0)}`.
 
-:::{figure} ../../../_static/figures/qv.png
-:align: center
-:alt: Reactive power as function of nodal voltage magnitude
-
+```{figure} ../../../_static/figures/qv.png
+---
+align: center
+name: Reactive power as function of nodal voltage magnitude
+---
 Exemplary reactive power as function of nodal voltage magnitude
-:::
+```
