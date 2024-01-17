@@ -10,7 +10,6 @@ import static edu.ie3.test.helper.EntityMap.map
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.exceptions.SystemParticipantsException
 import edu.ie3.datamodel.io.source.*
-import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.utils.Try
