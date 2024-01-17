@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.PvInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
@@ -43,7 +44,7 @@ public class PvInputFactory
   @Override
   protected PvInput buildModel(
       NodeAssetInputEntityData data,
-      java.util.UUID uuid,
+      UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,

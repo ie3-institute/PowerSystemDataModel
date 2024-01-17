@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.factory.typeinput;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
@@ -105,7 +105,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   @Override
-  protected SystemParticipantTypeInput buildModel(SimpleEntityData data) {
+  protected SystemParticipantTypeInput buildModel(EntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
     ComparableQuantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
@@ -132,7 +132,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildEvTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -148,7 +148,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildHpTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -161,7 +161,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildBmTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -177,7 +177,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildWecTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -207,7 +207,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildChpTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -228,7 +228,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildStorageTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,

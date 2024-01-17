@@ -5,7 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
+import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 
 /**
@@ -17,7 +18,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
  * @since 11.02.20
  */
 abstract class AssetTypeInputEntityFactory<T extends AssetTypeInput>
-    extends SimpleEntityFactory<T> {
+    extends EntityFactory<T, EntityData> {
 
   protected static final String ENTITY_UUID = "uuid";
   protected static final String ENTITY_ID = "id";
