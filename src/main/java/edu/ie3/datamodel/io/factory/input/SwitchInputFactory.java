@@ -34,6 +34,19 @@ public class SwitchInputFactory
       OperatorInput operator,
       OperationTime operationTime) {
     final boolean closed = data.getBoolean(CLOSED);
+
+    try {
+      final int parallelDevices = data.getInt(PARALLEL_DEVICES);
+      log.warn(
+          "Found a `SwitchInput` with the id `{}` that specifies `parallelDevices` with a value of `{}`. Because switches cannot be parallel, the given value is ignored!",
+          id,
+          parallelDevices);
+    } catch (Exception ignored) {
+      // because the field should not be used for switches, we can ignore the exception, that is
+      // thrown, when we
+      // do not find the field
+    }
+
     return new SwitchInput(uuid, id, operator, operationTime, nodeA, nodeB, closed);
   }
 }
