@@ -99,9 +99,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     nodes               | operators               | types               | thermalBuses              || resultingSize | resultingSet
     [sptd.hpInput.node] | [sptd.hpInput.operator] | [sptd.hpInput.type] | [sptd.hpInput.thermalBus] || 1             | [sptd.hpInput]
-    [sptd.hpInput.node] | []                      | [sptd.hpInput.type] | [sptd.hpInput.thermalBus] || 1             | [
-      new HpInput(sptd.hpInput.uuid, sptd.hpInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.hpInput.operationTime, sptd.hpInput.node, sptd.hpInput.thermalBus, sptd.hpInput.qCharacteristics, sptd.hpInput.type)
-    ]
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from an invalid heat pump input file as expected"() {
@@ -111,19 +108,23 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     Mock(ThermalSource),
     Mock(RawGridSource),
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    def nodeMap = map([sptd.hpInput.node])
 
     expect:
-    def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(nodes as Set, operators as Set, types as Set, thermalBuses as Set), SourceException)
+    def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(map(operators), nodeMap, map(types), map(thermalBuses)), SourceException)
 
     heatPumps.failure
     heatPumps.exception.get().class == SourceException
 
     where:
-    nodes               | operators               | types               | thermalBuses              || resultingSize || resultingSet
-    [] | [] | [] | []                                                        || 0             || []
-    [sptd.hpInput.node] | []                      | []                  | [] || 0             || []
-    [sptd.hpInput.node] | [sptd.hpInput.operator] | []                  | [] || 0             || []
-    [sptd.hpInput.node] | [sptd.hpInput.operator] | [sptd.hpInput.type] | [] || 0             || []
+    nodes               | operators               | types               | thermalBuses              | resultingSize || resultingSet
+    [sptd.hpInput.node] | []                      | [sptd.hpInput.type] | [sptd.hpInput.thermalBus] || 1             | [
+            new HpInput(sptd.hpInput.uuid, sptd.hpInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.hpInput.operationTime, sptd.hpInput.node, sptd.hpInput.thermalBus, sptd.hpInput.qCharacteristics, sptd.hpInput.type)
+    ]
+    [] | [] | [] | []                                                        || 0             | []
+    [sptd.hpInput.node] | []                      | []                  | [] || 0             | []
+    [sptd.hpInput.node] | [sptd.hpInput.operator] | []                  | [] || 0             | []
+    [sptd.hpInput.node] | [sptd.hpInput.operator] | [sptd.hpInput.type] | [] || 0             | []
   }
 
   def "A SystemParticipantSource with csv input should return data from a valid chp input file as expected"() {
@@ -145,9 +146,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     operators                | types                | thermalBuses               | thermalStorages                || resultingSize || resultingSet
     [sptd.chpInput.operator] | [sptd.chpInput.type] | [sptd.chpInput.thermalBus] | [sptd.chpInput.thermalStorage] || 1             || [sptd.chpInput]
-    []                       | [sptd.chpInput.type] | [sptd.chpInput.thermalBus] | [sptd.chpInput.thermalStorage] || 1             || [
-      new ChpInput(sptd.chpInput.uuid, sptd.chpInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.chpInput.operationTime, sptd.chpInput.node, sptd.chpInput.thermalBus, sptd.chpInput.qCharacteristics, sptd.chpInput.type, sptd.chpInput.thermalStorage, sptd.chpInput.marketReaction)
-    ]
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from a invalid chp input file as expected"() {
@@ -157,20 +155,23 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     Mock(ThermalSource),
     Mock(RawGridSource),
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    def nodeMap = map([sptd.hpInput.node])
 
     expect:
-    def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(nodes as Set, operators as Set, types as Set, thermalBuses as Set, thermalStorages as Set), SourceException)
+    def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(map(operators), nodeMap, map(types), map(thermalBuses), map(thermalStorages)), SourceException)
 
     chpUnits.failure
     chpUnits.exception.get().class == SourceException
 
-
     where:
-    nodes                | operators                | types                | thermalBuses               | thermalStorages || resultingSize || resultingSet
-    [] | [] | [] | [] | [] as List      || 0             || []
-    [sptd.chpInput.node] | [] | [] | [] | [] as List      || 0             || []
-    [sptd.chpInput.node] | [sptd.chpInput.operator] | [] | [] | [] as List      || 0             || []
-    [sptd.chpInput.node] | [sptd.chpInput.operator] | [sptd.chpInput.type] | [] | [] as List      || 0             || []
+    operators                | types                | thermalBuses               | thermalStorages || resultingSize || resultingSet
+    []                       | [sptd.chpInput.type] | [sptd.chpInput.thermalBus] | [sptd.chpInput.thermalStorage] || 1             || [
+            new ChpInput(sptd.chpInput.uuid, sptd.chpInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.chpInput.operationTime, sptd.chpInput.node, sptd.chpInput.thermalBus, sptd.chpInput.qCharacteristics, sptd.chpInput.type, sptd.chpInput.thermalStorage, sptd.chpInput.marketReaction)
+    ]
+    [] | [] | [] | [] as List      || 0             || []
+    [] | [] | [] | [] as List      || 0             || []
+    [sptd.chpInput.operator] | [] | [] | [] as List      || 0             || []
+    [sptd.chpInput.operator] | [sptd.chpInput.type] | [] | [] as List      || 0             || []
   }
 
   def "A SystemParticipantSource with csv input should return data from valid ev input file as expected"() {
@@ -191,9 +192,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     nodes               | operators               | types               || resultingSize || resultingSet
     [sptd.evInput.node] | [sptd.evInput.operator] | [sptd.evInput.type] || 1             || [sptd.evInput]
-    [sptd.evInput.node] | []                      | [sptd.evInput.type] || 1             || [
-      new EvInput(sptd.evInput.uuid, sptd.evInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.evInput.operationTime, sptd.evInput.node, sptd.evInput.qCharacteristics, sptd.evInput.type)
-    ]
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from invalid ev input file as expected"() {
@@ -205,7 +203,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvs(nodes as Set, operators as Set, types as Set), SourceException)
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvs(map(operators), map(nodes), map(types)), SourceException)
 
     sysParts.failure
     sysParts.exception.get().class == SourceException
@@ -213,6 +211,9 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     nodes               | operators               | types               || resultingSize || resultingSet
+    [sptd.evInput.node] | []                      | [sptd.evInput.type] || 1             || [
+            new EvInput(sptd.evInput.uuid, sptd.evInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.evInput.operationTime, sptd.evInput.node, sptd.evInput.qCharacteristics, sptd.evInput.type)
+    ]
     [sptd.evInput.node] | [sptd.evInput.operator] | [] || 0             || []
     [sptd.evInput.node] | [] | [] || 0             || []
     [] | [] | [] || 0             || []
@@ -236,9 +237,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     nodes                | operators                | types                || resultingSize || resultingSet
     [sptd.wecInput.node] | [sptd.wecInput.operator] | [sptd.wecInput.type] || 1             || [sptd.wecInput]
-    [sptd.wecInput.node] | []                       | [sptd.wecInput.type] || 1             || [
-      new WecInput(sptd.wecInput.uuid, sptd.wecInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.wecInput.operationTime, sptd.wecInput.node, sptd.wecInput.qCharacteristics, sptd.wecInput.type, sptd.wecInput.marketReaction)
-    ]
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from invalid wec input file as expected"() {
@@ -250,13 +248,16 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getWecPlants(nodes as Set, operators as Set, types as Set), SourceException)
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getWecPlants(map(operators), map(nodes), map(types)), SourceException)
 
     sysParts.failure
     sysParts.exception.get().class == SourceException
 
     where:
     nodes                | operators                | types                || resultingSize || resultingSet
+    [sptd.wecInput.node] | []                       | [sptd.wecInput.type] || 1             || [
+            new WecInput(sptd.wecInput.uuid, sptd.wecInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.wecInput.operationTime, sptd.wecInput.node, sptd.wecInput.qCharacteristics, sptd.wecInput.type, sptd.wecInput.marketReaction)
+    ]
     [sptd.wecInput.node] | [sptd.wecInput.operator] | [] || 0             || []
     [sptd.wecInput.node] | [] | [] || 0             || []
     [] | [] | [] || 0             || []
@@ -280,9 +281,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     nodes                    | operators                    | types                    || resultingSize || resultingSet
     [sptd.storageInput.node] | [sptd.storageInput.operator] | [sptd.storageInput.type] || 1             || [sptd.storageInput]
-    [sptd.storageInput.node] | []                           | [sptd.storageInput.type] || 1             || [
-      new StorageInput(sptd.storageInput.uuid, sptd.storageInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.storageInput.operationTime, sptd.storageInput.node, sptd.storageInput.qCharacteristics, sptd.storageInput.type)
-    ]
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from invalid storage input file as expected"() {
@@ -294,13 +292,16 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getStorages(nodes as Set, operators as Set, types as Set), SourceException)
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getStorages(map(operators), map(nodes), map(types)), SourceException)
 
     sysParts.failure
     sysParts.exception.get().class == SourceException
 
     where:
     nodes                    | operators                    | types                    || resultingSize || resultingSet
+    [sptd.storageInput.node] | []                           | [sptd.storageInput.type] || 1             || [
+            new StorageInput(sptd.storageInput.uuid, sptd.storageInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.storageInput.operationTime, sptd.storageInput.node, sptd.storageInput.qCharacteristics, sptd.storageInput.type)
+    ]
     [sptd.storageInput.node] | [sptd.storageInput.operator] | [] || 0             || []
     [sptd.storageInput.node] | []                           | [] || 0             || []
     []                       | []                           | [] || 0             || []
@@ -324,9 +325,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     nodes               | operators               | types               || resultingSize || resultingSet
     [sptd.bmInput.node] | [sptd.bmInput.operator] | [sptd.bmInput.type] || 1             || [sptd.bmInput]
-    [sptd.bmInput.node] | []                      | [sptd.bmInput.type] || 1             || [
-      new BmInput(sptd.bmInput.uuid, sptd.bmInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.bmInput.operationTime, sptd.bmInput.node, sptd.bmInput.qCharacteristics, sptd.bmInput.type, sptd.bmInput.marketReaction, sptd.bmInput.costControlled, sptd.bmInput.feedInTariff)
-    ]
+
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from invalid bm input file as expected"() {
@@ -338,13 +337,16 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getBmPlants(nodes as Set, operators as Set, types as Set), SourceException)
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getBmPlants(map(operators), map(nodes), map(types)), SourceException)
 
     sysParts.failure
     sysParts.exception.get().class == SourceException
 
     where:
     nodes               | operators               | types               || resultingSize || resultingSet
+    [sptd.bmInput.node] | []                      | [sptd.bmInput.type] || 1             || [
+            new BmInput(sptd.bmInput.uuid, sptd.bmInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.bmInput.operationTime, sptd.bmInput.node, sptd.bmInput.qCharacteristics, sptd.bmInput.type, sptd.bmInput.marketReaction, sptd.bmInput.costControlled, sptd.bmInput.feedInTariff)
+    ]
     [sptd.bmInput.node] | [sptd.bmInput.operator] | [] || 0             || []
     [sptd.bmInput.node] | []                      | [] || 0             || []
     []                  | []                      | [] || 0             || []
@@ -368,9 +370,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     nodes                 | operators                 || resultingSize || resultingSet
     [sptd.evcsInput.node] | [sptd.evcsInput.operator] || 1             || [sptd.evcsInput]
-    [sptd.evcsInput.node] | []                        || 1             || [
-      new EvcsInput(sptd.evcsInput.uuid, sptd.evcsInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.evcsInput.operationTime, sptd.evcsInput.node, sptd.evcsInput.qCharacteristics, sptd.evcsInput.type, sptd.evcsInput.chargingPoints, sptd.evcsInput.cosPhiRated, sptd.evcsInput.locationType, sptd.evcsInput.v2gSupport)
-    ]
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from invalid ev charging station input file as expected"() {
@@ -382,13 +381,16 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvCS(nodes as Set, operators as Set), SourceException)
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvcs(map(operators), map(nodes)), SourceException)
 
     sysParts.failure
     sysParts.exception.get().class == SourceException
 
     where:
     nodes                 | operators                 || resultingSize || resultingSet
+    [sptd.evcsInput.node] | []                        || 1             || [
+            new EvcsInput(sptd.evcsInput.uuid, sptd.evcsInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.evcsInput.operationTime, sptd.evcsInput.node, sptd.evcsInput.qCharacteristics, sptd.evcsInput.type, sptd.evcsInput.chargingPoints, sptd.evcsInput.cosPhiRated, sptd.evcsInput.locationType, sptd.evcsInput.v2gSupport)
+    ]
     []| [sptd.evcsInput.operator]|| 0             || []
     []| []|| 0             || []
   }
@@ -411,9 +413,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     nodes                 | operators                 || resultingSize || resultingSet
     [sptd.loadInput.node] | [sptd.loadInput.operator] || 1             || [sptd.loadInput]
-    [sptd.loadInput.node] | []                        || 1             || [
-      new LoadInput(sptd.loadInput.uuid, sptd.loadInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.loadInput.operationTime, sptd.loadInput.node, sptd.loadInput.qCharacteristics, sptd.loadInput.loadProfile, sptd.loadInput.dsm, sptd.loadInput.eConsAnnual, sptd.loadInput.sRated, sptd.loadInput.cosPhiRated)
-    ]
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from invalid load input file as expected"() {
@@ -425,7 +424,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getLoads(nodes as Set, operators as Set), SourceException)
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getLoads(map(operators), map(nodes)), SourceException)
 
     sysParts.failure
     sysParts.exception.get().class == SourceException
@@ -433,6 +432,9 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     nodes                 | operators                 || resultingSize || resultingSet
+    [sptd.loadInput.node] | []                        || 1             || [
+            new LoadInput(sptd.loadInput.uuid, sptd.loadInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.loadInput.operationTime, sptd.loadInput.node, sptd.loadInput.qCharacteristics, sptd.loadInput.loadProfile, sptd.loadInput.dsm, sptd.loadInput.eConsAnnual, sptd.loadInput.sRated, sptd.loadInput.cosPhiRated)
+    ]
     [] | [sptd.loadInput.operator] || 0             || []
     [] | [] || 0             || []
   }
@@ -455,9 +457,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     nodes               | operators               || resultingSize || resultingSet
     [sptd.pvInput.node] | [sptd.pvInput.operator] || 1             || [sptd.pvInput]
-    [sptd.pvInput.node] | []                      || 1             || [
-      new PvInput(sptd.pvInput.uuid, sptd.pvInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.pvInput.operationTime, sptd.pvInput.node, sptd.pvInput.qCharacteristics, sptd.pvInput.albedo, sptd.pvInput.azimuth, sptd.pvInput.etaConv, sptd.pvInput.elevationAngle, sptd.pvInput.kG, sptd.pvInput.kT, sptd.pvInput.marketReaction, sptd.pvInput.sRated, sptd.pvInput.cosPhiRated)
-    ]
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from invalid pv input file as expected"() {
@@ -469,13 +468,16 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getPvPlants(nodes as Set, operators as Set), SourceException)
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getPvPlants(map(operators), map(nodes)), SourceException)
 
     sysParts.failure
     sysParts.exception.get().class == SourceException
 
     where:
     nodes               | operators               || resultingSize || resultingSet
+    [sptd.pvInput.node] | []                      || 1             || [
+            new PvInput(sptd.pvInput.uuid, sptd.pvInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.pvInput.operationTime, sptd.pvInput.node, sptd.pvInput.qCharacteristics, sptd.pvInput.albedo, sptd.pvInput.azimuth, sptd.pvInput.etaConv, sptd.pvInput.elevationAngle, sptd.pvInput.kG, sptd.pvInput.kT, sptd.pvInput.marketReaction, sptd.pvInput.sRated, sptd.pvInput.cosPhiRated)
+    ]
     [] | [sptd.pvInput.operator] || 0             || []
     [] | [] || 0             || []
   }
@@ -498,9 +500,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     nodes                        | operators        || resultingSize || resultingSet
     [sptd.fixedFeedInInput.node] | [sptd.fixedFeedInInput.operator] as List || 1             || [sptd.fixedFeedInInput]
-    [sptd.fixedFeedInInput.node] | [] as List       || 1             || [
-      new FixedFeedInInput(sptd.fixedFeedInInput.uuid, sptd.fixedFeedInInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics, sptd.fixedFeedInInput.sRated, sptd.fixedFeedInInput.cosPhiRated)
-    ]
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from invalid fixedFeedIn input file as expected"() {
@@ -512,13 +511,16 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getFixedFeedIns(nodes as Set, operators as Set), SourceException)
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getFixedFeedIns(map(operators), map(nodes)), SourceException)
 
     sysParts.failure
     sysParts.exception.get().class == SourceException
 
     where:
     nodes                        | operators        || resultingSize || resultingSet
+    [sptd.fixedFeedInInput.node] | [] as List       || 1             || [
+            new FixedFeedInInput(sptd.fixedFeedInInput.uuid, sptd.fixedFeedInInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics, sptd.fixedFeedInInput.sRated, sptd.fixedFeedInInput.cosPhiRated)
+    ]
     [] | [sptd.fixedFeedInInput.operator] as List || 0             || []
     [] | [] as List       || 0             || []
   }
