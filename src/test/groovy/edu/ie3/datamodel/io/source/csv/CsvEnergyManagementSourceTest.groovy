@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.test.helper.EntityMap.map
+
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.source.EnergyManagementSource
 import edu.ie3.datamodel.io.source.TypeSource
@@ -21,16 +23,13 @@ class CsvEnergyManagementSourceTest extends Specification implements CsvTestData
     Mock(TypeSource),
     new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
+    Map<UUID, OperatorInput> operatorMap = map([EnergyManagementTestData.emInput.operator])
+
     expect:
-    def emUnits = Try.of(() -> csvEnergyManagementSource.getEmUnits(operators.toSet()), SourceException)
+    def emUnits = Try.of(() -> csvEnergyManagementSource.getEmUnits(operatorMap), SourceException)
 
     emUnits.success
     emUnits.data.get().emUnits.size() == 1
-    emUnits.data.get().emUnits == resultingSet as Set
-
-    where:
-    operators                                   || resultingSet
-    [EnergyManagementTestData.emInput.operator] || [EnergyManagementTestData.emInput]
-    []					                        || [EnergyManagementTestData.emInput.copy().operator(OperatorInput.NO_OPERATOR_ASSIGNED).build()]
+    emUnits.data.get().emUnits == [EnergyManagementTestData.emInput] as Set
   }
 }

@@ -11,8 +11,9 @@ import edu.ie3.datamodel.io.factory.input.participant.EmInputFactory;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.EnergyManagementUnits;
 import edu.ie3.datamodel.models.input.system.EmInput;
-import edu.ie3.datamodel.utils.Try;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class EnergyManagementSource extends EntitySource {
 
@@ -21,8 +22,8 @@ public class EnergyManagementSource extends EntitySource {
   private final EmInputFactory emInputFactory;
 
   public EnergyManagementSource(TypeSource typeSource, DataSource dataSource) {
+    super(dataSource);
     this.typeSource = typeSource;
-    this.dataSource = dataSource;
 
     this.emInputFactory = new EmInputFactory();
   }
@@ -42,7 +43,7 @@ public class EnergyManagementSource extends EntitySource {
    * @return a set of object and uuid unique {@link EmInput} entities
    */
   public EnergyManagementUnits getEmUnits() throws SourceException {
-    Set<OperatorInput> operators = typeSource.getOperators();
+    Map<UUID, OperatorInput> operators = typeSource.getOperators();
     return getEmUnits(operators);
   }
 
@@ -59,16 +60,16 @@ public class EnergyManagementSource extends EntitySource {
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
-   *     the returning instances
+   * @param operators a map of UUID to object and uuid unique {@link OperatorInput} that should be
+   *     used for the returning instances
    * @return a set of object and uuid unique {@link EmInput} entities
    */
-  public EnergyManagementUnits getEmUnits(Set<OperatorInput> operators) throws SourceException {
+  public EnergyManagementUnits getEmUnits(Map<UUID, OperatorInput> operators)
+      throws SourceException {
     Set<EmInput> emUnits =
-        Try.scanCollection(
-                buildAssetInputEntities(EmInput.class, emInputFactory, operators), EmInput.class)
-            .transformF(SourceException::new)
-            .getOrThrow();
+        unpackSet(
+            buildAssetInputEntityData(EmInput.class, operators).map(emInputFactory::get),
+            EmInput.class);
     return new EnergyManagementUnits(emUnits);
   }
 }

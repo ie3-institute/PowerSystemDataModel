@@ -26,7 +26,7 @@ import java.util.*;
  * @version 0.1
  * @since 28.01.20
  */
-abstract class SystemParticipantInputEntityFactory<
+public abstract class SystemParticipantInputEntityFactory<
         T extends SystemParticipantInput, D extends NodeAssetInputEntityData>
     extends AssetInputEntityFactory<T, D> {
 
@@ -38,7 +38,7 @@ abstract class SystemParticipantInputEntityFactory<
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-    List<Set<String>> fields = super.getFields(entityClass);
+    List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
     for (Set<String> set : fields) set.add(Q_CHARACTERISTICS);
 
     return fields;

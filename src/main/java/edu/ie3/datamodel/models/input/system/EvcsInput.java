@@ -196,11 +196,18 @@ public class EvcsInput extends SystemParticipantInput {
   @Override
   public String toString() {
     return "EvcsInput{"
-        + "id='"
-        + getId()
-        + '\''
-        + ", uuid="
+        + "uuid="
         + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
         + ", type="
         + type
         + ", chargingPoints="
@@ -209,12 +216,9 @@ public class EvcsInput extends SystemParticipantInput {
         + cosPhiRated
         + ", locationType="
         + locationType
-        + ", node="
-        + getNode()
-        + "} "
         + ", v2gSupport="
         + getV2gSupport()
-        + super.toString();
+        + '}';
   }
 
   /**

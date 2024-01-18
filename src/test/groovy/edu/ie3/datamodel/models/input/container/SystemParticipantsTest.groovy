@@ -49,7 +49,7 @@ class SystemParticipantsTest extends Specification {
 
     def modifiedBmInput = SystemParticipantTestData.bmInput.copy().id("modified").build()
     def modifiedChpInput = SystemParticipantTestData.chpInput.copy().id("modified").build()
-    def modifiedEvCSInput = SystemParticipantTestData.evcsInput.copy().id("modified").build()
+    def modifiedEvcsInput = SystemParticipantTestData.evcsInput.copy().id("modified").build()
     def modifiedEvInput = SystemParticipantTestData.evInput.copy().id("modified").build()
     def modifiedFixedFeedInInput = SystemParticipantTestData.fixedFeedInInput.copy().id("modified").build()
     def modifiedHpInput = SystemParticipantTestData.hpInput.copy().id("modified").build()
@@ -62,7 +62,7 @@ class SystemParticipantsTest extends Specification {
     def modifiedSystemParticipants = systemParticipants.copy()
         .bmPlants(Set.of(modifiedBmInput))
         .chpPlants(Set.of(modifiedChpInput))
-        .evcs(Set.of(modifiedEvCSInput))
+        .evcs(Set.of(modifiedEvcsInput))
         .evs(Set.of(modifiedEvInput))
         .fixedFeedIn(Set.of(modifiedFixedFeedInInput))
         .heatPumps(Set.of(modifiedHpInput))
@@ -75,7 +75,7 @@ class SystemParticipantsTest extends Specification {
     then:
     modifiedSystemParticipants.bmPlants.first() == modifiedBmInput
     modifiedSystemParticipants.chpPlants.first() == modifiedChpInput
-    modifiedSystemParticipants.evcs.first() == modifiedEvCSInput
+    modifiedSystemParticipants.evcs.first() == modifiedEvcsInput
     modifiedSystemParticipants.evs.first() == modifiedEvInput
     modifiedSystemParticipants.fixedFeedIns.first() == modifiedFixedFeedInInput
     modifiedSystemParticipants.heatPumps.first() == modifiedHpInput

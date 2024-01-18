@@ -53,6 +53,18 @@ public class NodeAssetInputEntityData extends AssetInputEntityData {
     this.node = node;
   }
 
+  /**
+   * Creates a new NodeAssetInputEntityData object based on a given {@link AssetInputEntityData}
+   * object and given node
+   *
+   * @param assetInputEntityData The asset entity data object to use attributes of
+   * @param node input node
+   */
+  public NodeAssetInputEntityData(AssetInputEntityData assetInputEntityData, NodeInput node) {
+    super(assetInputEntityData, assetInputEntityData.getOperatorInput());
+    this.node = node;
+  }
+
   public NodeInput getNode() {
     return node;
   }

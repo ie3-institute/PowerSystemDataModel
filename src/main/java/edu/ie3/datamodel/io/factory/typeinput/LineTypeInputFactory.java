@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
@@ -38,7 +38,7 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
   }
 
   @Override
-  protected LineTypeInput buildModel(SimpleEntityData data) {
+  protected LineTypeInput buildModel(EntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
     ComparableQuantity<SpecificConductance> b =

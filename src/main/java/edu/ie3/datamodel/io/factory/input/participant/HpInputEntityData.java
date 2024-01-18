@@ -35,6 +35,19 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
     this.thermalBusInput = thermalBusInput;
   }
 
+  /**
+   * Creates a new HpInputEntityData object based on a given {@link
+   * SystemParticipantTypedEntityData} object and given thermal bus input
+   *
+   * @param entityData The SystemParticipantTypedEntityData object to enhance
+   * @param thermalBusInput The thermal bus input
+   */
+  public HpInputEntityData(
+      SystemParticipantTypedEntityData<HpTypeInput> entityData, ThermalBusInput thermalBusInput) {
+    super(entityData, entityData.getTypeInput());
+    this.thermalBusInput = thermalBusInput;
+  }
+
   public ThermalBusInput getThermalBusInput() {
     return thermalBusInput;
   }

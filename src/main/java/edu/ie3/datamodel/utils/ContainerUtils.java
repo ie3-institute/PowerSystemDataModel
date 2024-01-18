@@ -559,7 +559,7 @@ public class ContainerUtils {
               subnetNumber,
               rawGridElements,
               systemParticipantElements,
-              energyManagementUnits, // TODO filtering (part of #957)
+              energyManagementUnits,
               graphicElements));
     }
     return subGrids;

@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
@@ -55,7 +55,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   }
 
   @Override
-  protected ThermalUnitResult buildModel(SimpleEntityData data) {
+  protected ThermalUnitResult buildModel(EntityData data) {
     Class<? extends UniqueEntity> clazz = data.getTargetClass();
 
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
