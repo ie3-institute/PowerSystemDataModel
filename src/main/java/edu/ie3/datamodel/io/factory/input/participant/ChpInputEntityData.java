@@ -41,6 +41,23 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
     this.thermalStorageInput = thermalStorageInput;
   }
 
+  /**
+   * Creates a new ChpInputEntityData object based on a given {@link
+   * SystemParticipantTypedEntityData} object and a thermal bus and storage input
+   *
+   * @param entityData The SystemParticipantTypedEntityData object to enhance
+   * @param thermalBusInput The thermal bus input
+   * @param thermalStorageInput The thermal storage input
+   */
+  public ChpInputEntityData(
+      SystemParticipantTypedEntityData<ChpTypeInput> entityData,
+      ThermalBusInput thermalBusInput,
+      ThermalStorageInput thermalStorageInput) {
+    super(entityData, entityData.getTypeInput());
+    this.thermalBusInput = thermalBusInput;
+    this.thermalStorageInput = thermalStorageInput;
+  }
+
   public ThermalBusInput getThermalBusInput() {
     return thermalBusInput;
   }

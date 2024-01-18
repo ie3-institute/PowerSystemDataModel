@@ -5,8 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import java.util.Collections;
@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  * mappings
  */
 public class TimeSeriesMetaInformationFactory
-    extends EntityFactory<IndividualTimeSeriesMetaInformation, SimpleEntityData> {
+    extends EntityFactory<IndividualTimeSeriesMetaInformation, EntityData> {
   private static final String TIME_SERIES = "timeSeries";
   private static final String COLUMN_SCHEME = "columnScheme";
 
@@ -36,7 +36,7 @@ public class TimeSeriesMetaInformationFactory
   }
 
   @Override
-  protected IndividualTimeSeriesMetaInformation buildModel(SimpleEntityData data) {
+  protected IndividualTimeSeriesMetaInformation buildModel(EntityData data) {
     UUID timeSeries = data.getUUID(TIME_SERIES);
     ColumnScheme columnScheme = ColumnScheme.parse(data.getField(COLUMN_SCHEME)).orElseThrow();
     return new IndividualTimeSeriesMetaInformation(timeSeries, columnScheme);

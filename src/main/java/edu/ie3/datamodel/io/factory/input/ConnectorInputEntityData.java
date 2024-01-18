@@ -42,6 +42,21 @@ public class ConnectorInputEntityData extends AssetInputEntityData {
     this.nodeB = nodeB;
   }
 
+  /**
+   * Creates a new ConnectorInputEntityData object based on a given {@link AssetInputEntityData}
+   * object and given nodes
+   *
+   * @param entityData The AssetInputEntityData object to enhance
+   * @param nodeA The first node to add
+   * @param nodeB The second node to add
+   */
+  public ConnectorInputEntityData(
+      AssetInputEntityData entityData, NodeInput nodeA, NodeInput nodeB) {
+    super(entityData, entityData.getOperatorInput());
+    this.nodeA = nodeA;
+    this.nodeB = nodeB;
+  }
+
   public NodeInput getNodeA() {
     return nodeA;
   }

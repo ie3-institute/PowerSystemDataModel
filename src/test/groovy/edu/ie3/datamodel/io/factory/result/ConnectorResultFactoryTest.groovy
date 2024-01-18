@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.SimpleEntityData
+import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.connector.ConnectorResult
 import edu.ie3.datamodel.models.result.connector.LineResult
@@ -53,7 +53,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
     }
 
     when:
-    Try<? extends ConnectorResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
+    Try<? extends ConnectorResult, FactoryException> result = resultFactory.get(new EntityData(parameter, modelClass))
 
     then:
     result.success
