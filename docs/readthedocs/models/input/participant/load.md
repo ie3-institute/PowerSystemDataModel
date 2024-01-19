@@ -84,6 +84,6 @@ Wasserwirtschaft; engl. Federal Association of the Energy and Water Industry). F
 
 Furthermore there are {code}`TemperatureDependantLoadProfiles` which can be used to note usage of load profiles for night heating storages or heat pumps for example.
 The profiles rely on the VDN description for interruptable loads.
-For more details see [here (German only)](https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf/).
+For more details see [here (German only)](https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf).
 {code}`NbwTemperatureDependantLoadProfiles` provides sample temperature dependant load profiles that can be used.
 The `NbwTemperatureDependantLoadProfiles` consists of load profiles "ep1" for heat pumps and "ez2" for night storage heating.

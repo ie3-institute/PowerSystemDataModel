@@ -44,7 +44,7 @@ A synoptic overview of both classes' attributes is given here:
 
 
    * - Attribute
-     - Un it
+     - Unit
      - Remarks
 
    * - gridName

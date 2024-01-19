@@ -16,7 +16,7 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
    :header-rows: 0
 
    * - Attribute
-     - Un it
+     - Unit
      - Remarks
 
    * - id
@@ -40,7 +40,7 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
      - No load susceptance
 
    * - sRated
-     - k VA
+     - kVA
      - Rated apparent power
 
    * - vRatedA
@@ -77,7 +77,7 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
      - Maximum tap position
 ```
 
-A list with some standard transformer types can be found here: `Standard Two Winding Transformer Types`_
+A list with some standard transformer types can be found here: [Standard Two Winding Transformer Types](#standard-two-winding-transformer-types)
 
 
 ### Entity Model
