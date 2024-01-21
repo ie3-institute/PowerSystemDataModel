@@ -60,7 +60,7 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
 
    * - Attribute
-     - U n i t
+     - Unit
      - Remarks
 
    * - uuid
