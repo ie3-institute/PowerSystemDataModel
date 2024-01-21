@@ -12,7 +12,7 @@ Representation of an AC line.
    :header-rows: 0
 
    * - Attribute
-     - U n i t
+     - Unit
      - Remarks
 
    * - uuid
