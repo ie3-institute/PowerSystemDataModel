@@ -138,9 +138,9 @@ A list with some standard transformer types can be found here: [Standard Two Win
 
 
 Following there are some standard two winding transformer types with their source. A ``csv file`` containing the types listed
-below can be found `here <https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes>`_. This
+below can be found [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes). This
 file can be used directly for any simulation with ``simona``.
-The transformers which source is ``simBench`` are from `here <https://simbench.de/en/download/datasets/>`_.
+The transformers which source is ``simBench`` are from [here](https://simbench.de/en/download/datasets/).
 
 ```{eval-rst}
 .. list-table::
