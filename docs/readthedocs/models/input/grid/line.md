@@ -49,8 +49,7 @@ Representation of an AC line.
 
 ```
 
-A list with some standard line types can be found here: [Standard Line
-Types](#standard-line-types)
+A list with some standard line types can be found here: [Standard Line Types](#standard-line-types)
 
 ### Entity Model
 
