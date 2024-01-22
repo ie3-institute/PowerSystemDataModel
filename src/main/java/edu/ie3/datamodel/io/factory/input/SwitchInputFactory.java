@@ -35,16 +35,14 @@ public class SwitchInputFactory
       OperationTime operationTime) {
     final boolean closed = data.getBoolean(CLOSED);
 
-    try {
-      final int parallelDevices = data.getInt(PARALLEL_DEVICES);
+    if (data.containsKey(PARALLEL_DEVICES)) {
+      String parallelDevices = data.getField(PARALLEL_DEVICES);
+
       log.warn(
-          "Found a `SwitchInput` with the id `{}` that specifies `parallelDevices` with a value of `{}`. Because switches cannot be parallel, the given value is ignored!",
+          "The `SwitchInput` with the id `{}` specifies the unsupported parameter `parallelDevices` with a value of `{}`."
+              + " Because switches are expected to have a given value `1`, the provided value is ignored.",
           id,
           parallelDevices);
-    } catch (Exception ignored) {
-      // because the field should not be used for switches, we can ignore the exception, that is
-      // thrown, when we
-      // do not find the field
     }
 
     return new SwitchInput(uuid, id, operator, operationTime, nodeA, nodeB, closed);
