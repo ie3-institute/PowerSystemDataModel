@@ -175,11 +175,10 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
-    Try.scanCollection(actualSet, List).success
+    def result = Try.scanCollection(actualSet, List)
 
-    actualSet.stream().map {
-      it.data.get()
-    }.toList().containsAll(expectedSet)
+    result.success
+    result.data.get().toList().containsAll(expectedSet)
   }
 
   def "The CsvRawGridSource is able to convert a stream of valid ConnectorInputEntityData to TypedConnectorInputEntityData"() {
@@ -258,11 +257,10 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
-    Try.scanCollection(actualSet, List).success
+    def result = Try.scanCollection(actualSet, List)
 
-    actualSet.stream().map {
-      it.data.get()
-    }.toList().containsAll(expectedSet)
+    result.success
+    result.data.get().toList().containsAll(expectedSet)
   }
 
   def "The CsvRawGridSource is able to add the third node for a three winding transformer to a stream of candidates"() {
