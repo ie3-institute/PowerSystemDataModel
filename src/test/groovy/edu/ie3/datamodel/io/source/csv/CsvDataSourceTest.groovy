@@ -67,7 +67,7 @@ class CsvDataSourceTest extends Specification {
   def "A DataSource should contain a valid connector after initialization"() {
     expect:
     dummyCsvSource.connector != null
-    dummyCsvSource.connector.baseDirectoryName == testBaseFolderPath
+    dummyCsvSource.connector.baseDirectory == testBaseFolderPath
     dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
     dummyCsvSource.connector.entityWriters.isEmpty()
   }

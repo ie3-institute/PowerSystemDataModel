@@ -42,12 +42,12 @@ public class CsvFileConnector implements DataConnector {
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
 
   private final FileNamingStrategy fileNamingStrategy;
-  private final Path baseDirectoryName;
+  private final Path baseDirectory;
 
   private static final String FILE_ENDING = ".csv";
 
-  public CsvFileConnector(Path baseDirectoryName, FileNamingStrategy fileNamingStrategy) {
-    this.baseDirectoryName = baseDirectoryName;
+  public CsvFileConnector(Path baseDirectory, FileNamingStrategy fileNamingStrategy) {
+    this.baseDirectory = baseDirectory;
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
@@ -61,7 +61,7 @@ public class CsvFileConnector implements DataConnector {
     /* If it is not available, build and register one */
     try {
       CsvFileDefinition fileDefinition = buildFileDefinition(clz, headerElements, csvSep);
-      BufferedCsvWriter newWriter = initWriter(baseDirectoryName, fileDefinition);
+      BufferedCsvWriter newWriter = initWriter(baseDirectory, fileDefinition);
 
       entityWriters.put(clz, newWriter);
       return newWriter;
@@ -81,7 +81,7 @@ public class CsvFileConnector implements DataConnector {
     /* If it is not available, build and register one */
     try {
       CsvFileDefinition fileDefinition = buildFileDefinition(timeSeries, headerElements, csvSep);
-      BufferedCsvWriter newWriter = initWriter(baseDirectoryName, fileDefinition);
+      BufferedCsvWriter newWriter = initWriter(baseDirectory, fileDefinition);
 
       timeSeriesWriters.put(timeSeries.getUuid(), newWriter);
       return newWriter;
@@ -194,7 +194,7 @@ public class CsvFileConnector implements DataConnector {
    * @throws FileNotFoundException if no file with the provided file name can be found
    */
   public BufferedReader initReader(Path filePath) throws FileNotFoundException {
-    File fullPath = baseDirectoryName.resolve(filePath.toString() + FILE_ENDING).toFile();
+    File fullPath = baseDirectory.resolve(filePath.toString() + FILE_ENDING).toFile();
     return new BufferedReader(
         new InputStreamReader(new FileInputStream(fullPath), StandardCharsets.UTF_8), 16384);
   }
@@ -234,9 +234,9 @@ public class CsvFileConnector implements DataConnector {
    * @return A set of relative paths to time series files, with respect to the base folder path
    */
   private Set<Path> getIndividualTimeSeriesFilePaths() {
-    try (Stream<Path> pathStream = Files.walk(baseDirectoryName)) {
+    try (Stream<Path> pathStream = Files.walk(baseDirectory)) {
       return pathStream
-          .map(baseDirectoryName::relativize)
+          .map(baseDirectory::relativize)
           .filter(
               path -> {
                 Path withoutEnding =
