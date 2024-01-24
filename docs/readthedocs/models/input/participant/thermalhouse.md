@@ -19,15 +19,19 @@ This reflects a simple shoe box with transmission losses
 
    * - uuid
      - --
-     -
+     - Unique identifier of a thermal house model
 
    * - id
      - --
      - Human readable identifier
+     
+   * - bus
+     - --
+     - Thermal bus, the model is connected to
 
    * - operator
      - --
-     -
+     - operator of the asset
 
    * - operationTime
      - --
