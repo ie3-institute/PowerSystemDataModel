@@ -30,15 +30,15 @@ Result of an electric vehicle, that is occasionally connected to the grid via an
 
    * - p
      - MW
-     -
+     - active power output normally provided in MW
 
    * - q
      - MVAr
-     -
+     - reactive power output normally provided in MVAr
 
    * - soc
      - %
-     -
+     - the current state of charge of the electric vehicle
 
 ```
 
