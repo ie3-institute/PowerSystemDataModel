@@ -26,18 +26,11 @@ class IconIdCoordinateFactoryTest extends Specification {
       "id",
       "latitude",
       "longitude",
-      "coordinatetype"
+      "coordinateType"
     ] as Set
-    Map<String, String> parameter = [
-      "id":"477295",
-      "latitude":"52.312",
-      "longitude":"12.812",
-      "coordinatetype":"ICON"]
-
-    def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
 
     when:
-    def actual = factory.getFields(validSimpleFactoryData)
+    def actual = factory.getFields(Pair)
 
     then:
     actual.size() == 1
@@ -46,20 +39,16 @@ class IconIdCoordinateFactoryTest extends Specification {
 
   def "A COSMO id to coordinate factory refuses to build from invalid data"() {
     given:
-    Map<String, String> parameter = [
-      "id":"477295",
-      "latitude":"52.312",
-      "coordinatetype":"ICON"]
-
-    def invalidSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
+    def actualFields = IconIdCoordinateFactory.newSet("id", "latitude", "coordinatetype")
 
     when:
-    def actual = factory.get(invalidSimpleFactoryData)
+    def actual = factory.validate(actualFields, Pair)
 
     then:
     actual.failure
-    actual.exception.get().cause.message.startsWith("The provided fields [coordinatetype, id, latitude] with data \n{coordinatetype -> " +
-        "ICON,\nid -> 477295,\nlatitude -> 52.312} are invalid for instance of Pair. ")
+    actual.exception.get().message == "The provided fields [coordinatetype, id, latitude] are invalid for instance of 'Pair'. \n" +
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'Pair' are possible (NOT case-sensitive!):\n" +
+        "0: [coordinateType, id, latitude, longitude] or [coordinate_type, id, latitude, longitude]\n"
   }
 
   def "A COSMO id to coordinate factory builds model from valid data"() {
@@ -68,7 +57,7 @@ class IconIdCoordinateFactoryTest extends Specification {
       "id":"477295",
       "latitude":"52.312",
       "longitude":"12.812",
-      "coordinatetype":"ICON"]
+      "coordinateType":"ICON"]
     def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
     Pair<Integer, Point> expectedPair = Pair.of(477295, GeoUtils.buildPoint(52.312, 12.812))
 

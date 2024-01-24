@@ -6,15 +6,13 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,7 +22,7 @@ import java.util.stream.Stream;
  */
 public abstract class TimeSeriesMappingSource {
 
-  private final TimeSeriesMappingFactory mappingFactory;
+  protected final TimeSeriesMappingFactory mappingFactory;
 
   protected TimeSeriesMappingSource() {
     this.mappingFactory = new TimeSeriesMappingFactory();
@@ -61,11 +59,14 @@ public abstract class TimeSeriesMappingSource {
    */
   public abstract Stream<Map<String, String>> getMappingSourceData();
 
+  /** Returns the option for fields found in the source */
+  public abstract Optional<Set<String>> getSourceFields() throws SourceException;
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   private Try<MappingEntry, FactoryException> createMappingEntry(
       Map<String, String> fieldToValues) {
-    SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
+    EntityData entityData = new EntityData(fieldToValues, MappingEntry.class);
     return mappingFactory.get(entityData);
   }
 

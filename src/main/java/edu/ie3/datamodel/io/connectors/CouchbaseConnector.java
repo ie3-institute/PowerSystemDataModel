@@ -8,11 +8,17 @@ package edu.ie3.datamodel.io.connectors;
 import com.couchbase.client.core.diagnostics.PingResult;
 import com.couchbase.client.java.AsyncCollection;
 import com.couchbase.client.java.Cluster;
+import com.couchbase.client.java.ClusterOptions;
 import com.couchbase.client.java.Collection;
+import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.kv.MutationResult;
 import com.couchbase.client.java.query.QueryResult;
+import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -34,6 +40,46 @@ public class CouchbaseConnector implements DataConnector {
   public CouchbaseConnector(String url, String bucketName, String username, String password) {
     this.bucketName = bucketName;
     cluster = Cluster.connect(url, username, password);
+  }
+
+  /**
+   * Initializes a new CouchbaseConnector with given KV timeout
+   *
+   * @param url the url to the cluster
+   * @param bucketName the name of the bucket to connect to
+   * @param username the user name
+   * @param password the user password
+   * @param kvTimeout the key-value access timeout
+   */
+  public CouchbaseConnector(
+      String url, String bucketName, String username, String password, Duration kvTimeout) {
+    this.bucketName = bucketName;
+    ClusterOptions clusterOptions =
+        ClusterOptions.clusterOptions(username, password)
+            .environment(env -> env.timeoutConfig(to -> to.kvTimeout(kvTimeout)));
+    cluster = Cluster.connect(url, clusterOptions);
+  }
+
+  /** Returns the option for a set of found fields. */
+  @SuppressWarnings("unchecked")
+  public Optional<Set<String>> getSourceFields() {
+    String query =
+        "SELECT ARRAY_DISTINCT(ARRAY_AGG(v)) AS column FROM "
+            + bucketName
+            + " b UNNEST OBJECT_NAMES(b) AS v";
+    cluster.bucket(bucketName).waitUntilReady(Duration.ofSeconds(30));
+
+    QueryResult queryResult = query(query).join();
+    JsonObject jsonObject = queryResult.rowsAsObject().get(0);
+    Object columns = jsonObject.toMap().get("column");
+
+    Set<String> set = new HashSet<>();
+
+    if (columns != null) {
+      set.addAll((List<String>) columns);
+    }
+
+    return Optional.of(set);
   }
 
   /**

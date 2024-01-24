@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.datamodel.models.StandardUnits.*
+import static tech.units.indriya.unit.Units.PERCENT
+
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.NotImplementedException
 import edu.ie3.datamodel.models.input.NodeInput
@@ -20,9 +23,6 @@ import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.*
-
-import static edu.ie3.datamodel.models.StandardUnits.*
-import static tech.units.indriya.unit.Units.PERCENT
 
 class SystemParticipantValidationUtilsTest extends Specification {
 

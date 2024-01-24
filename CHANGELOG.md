@@ -7,10 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Formatting Spotless Groovy import order [#960](https://github.com/ie3-institute/PowerSystemDataModel/issues/960)
+- Implementing missing typical methods in `Try` [#970](https://github.com/ie3-institute/PowerSystemDataModel/issues/970)
 
 ### Fixed
+- Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
+- Fixed hyperlink in line documentation [#965](https://github.com/ie3-institute/PowerSystemDataModel/issues/965)
+- Fixed some tests no failing when they should [#958](https://github.com/ie3-institute/PowerSystemDataModel/issues/958)
 
 ### Changed
+- Changing from comparing strings to comparing uuids in `EntitySource.findFirstEntityByUuid` [#829](https://github.com/ie3-institute/PowerSystemDataModel/issues/829)
+- Adding JavaDoc to `EntitySource.safeMapGet` [#828](https://github.com/ie3-institute/PowerSystemDataModel/issues/828)
+- Abstracting some methods in `ValidationUtils` [#852](https://github.com/ie3-institute/PowerSystemDataModel/issues/852)
+- `EmInput` should not be connected to the grid [#955](https://github.com/ie3-institute/PowerSystemDataModel/issues/955)
+- Enhancing the error message for coordinate sources with invalid column names [#670](https://github.com/ie3-institute/PowerSystemDataModel/issues/670) 
+- Allowing for additional unused columns in sources [#839](https://github.com/ie3-institute/PowerSystemDataModel/issues/839)
+- Improving column name validation to only run once per source [#849](https://github.com/ie3-institute/PowerSystemDataModel/issues/849)
+- Refactored and abstracted `EntitySource`s and `EntityData` creation [#969](https://github.com/ie3-institute/PowerSystemDataModel/issues/969)
 
 ## [4.1.0] - 2023-11-02
 
@@ -43,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use nio paths instead of strings for file path [#723](https://github.com/ie3-institute/PowerSystemDataModel/issues/723)
 - Data source will throw an exceptions instead of returning an empty optionals [#707](https://github.com/ie3-institute/PowerSystemDataModel/issues/707)
 - Improving `ValidationUtils` [#758](https://github.com/ie3-institute/PowerSystemDataModel/issues/758)
+- conversion from rst to markdown myst[#979](https://github.com/ie3-institute/PowerSystemDataModel/pull/985)
 
 ## [3.0.0] - 2023-02-16
 

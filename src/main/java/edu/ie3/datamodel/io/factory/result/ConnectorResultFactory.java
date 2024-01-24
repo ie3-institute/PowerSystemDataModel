@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.connector.ConnectorResult;
@@ -21,13 +21,13 @@ import tech.units.indriya.ComparableQuantity;
 
 public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
 
-  private static final String IAMAG = "iamag";
-  private static final String IAANG = "iaang";
-  private static final String IBMAG = "ibmag";
-  private static final String IBANG = "ibang";
-  private static final String ICMAG = "icmag";
-  private static final String ICANG = "icang";
-  private static final String TAPPOS = "tappos";
+  private static final String IAMAG = "iAMag";
+  private static final String IAANG = "iAAng";
+  private static final String IBMAG = "iBMag";
+  private static final String IBANG = "iBAng";
+  private static final String ICMAG = "iCMag";
+  private static final String ICANG = "iCAng";
+  private static final String TAPPOS = "tapPos";
 
   public ConnectorResultFactory() {
     super(LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
@@ -44,12 +44,11 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     /// all result models have the same constructor except StorageResult
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
-    final Class<? extends UniqueEntity> entityClass = simpleEntityData.getTargetClass();
     if (entityClass.equals(Transformer2WResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, TAPPOS);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
@@ -63,7 +62,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   }
 
   @Override
-  protected ConnectorResult buildModel(SimpleEntityData data) {
+  protected ConnectorResult buildModel(EntityData data) {
     final Class<? extends UniqueEntity> entityClass = data.getTargetClass();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
 

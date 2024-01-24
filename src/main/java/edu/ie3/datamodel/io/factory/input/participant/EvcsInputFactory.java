@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTyp
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationTypeUtils;
+import java.util.UUID;
 
 /**
  * Factory to create instances of {@link EvcsInput}s based on {@link NodeAssetInputEntityData} and
@@ -30,10 +31,10 @@ public class EvcsInputFactory
     extends SystemParticipantInputEntityFactory<EvcsInput, NodeAssetInputEntityData> {
 
   private static final String TYPE = "type";
-  private static final String CHARGING_POINTS = "chargingpoints";
-  private static final String COS_PHI_RATED = "cosphirated";
-  private static final String LOCATION_TYPE = "locationtype";
-  private static final String V2G_SUPPORT = "v2gsupport";
+  private static final String CHARGING_POINTS = "chargingPoints";
+  private static final String COS_PHI_RATED = "cosPhiRated";
+  private static final String LOCATION_TYPE = "locationType";
+  private static final String V2G_SUPPORT = "v2gSupport";
 
   public EvcsInputFactory() {
     super(EvcsInput.class);
@@ -47,7 +48,7 @@ public class EvcsInputFactory
   @Override
   protected EvcsInput buildModel(
       NodeAssetInputEntityData data,
-      java.util.UUID uuid,
+      UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,

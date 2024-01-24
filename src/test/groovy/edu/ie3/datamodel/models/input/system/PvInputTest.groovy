@@ -5,13 +5,13 @@
  */
 package edu.ie3.datamodel.models.input.system
 
-import edu.ie3.test.common.SystemParticipantTestData
-import spock.lang.Specification
-import tech.units.indriya.quantity.Quantities
-
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
+
+import edu.ie3.test.common.SystemParticipantTestData
+import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 
 class PvInputTest extends Specification {

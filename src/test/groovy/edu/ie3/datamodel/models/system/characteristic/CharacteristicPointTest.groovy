@@ -5,6 +5,10 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import static tech.units.indriya.unit.Units.PERCENT
+
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import spock.lang.Specification
@@ -12,10 +16,6 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Power
-
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
-import static tech.units.indriya.unit.Units.PERCENT
 
 class CharacteristicPointTest extends Specification {
   def "A set of CharacteristicCoordinates are sorted correctly"() {

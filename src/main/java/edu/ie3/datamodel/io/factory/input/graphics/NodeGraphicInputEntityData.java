@@ -31,6 +31,18 @@ public class NodeGraphicInputEntityData extends EntityData {
     this.node = node;
   }
 
+  /**
+   * Creates a new NodeGraphicInputEntityData object based on a given {@link EntityData} object and
+   * a node
+   *
+   * @param entityData The EntityData object to enhance
+   * @param node node input element of this graphic
+   */
+  public NodeGraphicInputEntityData(EntityData entityData, NodeInput node) {
+    super(entityData);
+    this.node = node;
+  }
+
   public NodeInput getNode() {
     return node;
   }

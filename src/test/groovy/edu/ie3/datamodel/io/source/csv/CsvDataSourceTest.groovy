@@ -5,11 +5,12 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.test.common.SystemParticipantTestData as sptd
-
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -19,7 +20,7 @@ import java.util.concurrent.atomic.LongAdder
 import java.util.function.Function
 import java.util.stream.Collectors
 
-class CsvDataSourceTest extends Specification {
+class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
   @Shared
   Function<Map<String, String>, String> uuidExtractor = { fieldToValues -> fieldToValues.get("uuid") }
 
@@ -70,6 +71,52 @@ class CsvDataSourceTest extends Specification {
     dummyCsvSource.connector.baseDirectory == testBaseFolderPath
     dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
     dummyCsvSource.connector.entityWriters.isEmpty()
+  }
+
+  def "A CsvDataSource should return column names from a valid CSV file as expected"() {
+    given:
+    DummyCsvSource source = new DummyCsvSource(csvSep, participantsFolderPath, fileNamingStrategy)
+
+    expect:
+    source.getSourceFields(LoadInput).get() == [
+      "operates_from",
+      "node",
+      "s_rated",
+      "cos_phi_rated",
+      "load_profile",
+      "id",
+      "operates_until",
+      "uuid",
+      "q_characteristics",
+      "e_cons_annual",
+      "operator",
+      "dsm"
+    ] as Set
+  }
+
+  def "A CsvDataSource should return an empty result when retrieving column names for a non-existing CSV file"() {
+    given:
+    def path = Path.of("this/path/does-not-exist")
+
+    expect:
+    dummyCsvSource.getSourceFields(() -> dummyCsvSource.connector.initReader(path)).isEmpty()
+  }
+
+  def "A CsvDataSource should throw an exception when retrieving column names for a non-readable CSV file"() {
+    given:
+    DummyCsvSource source = new DummyCsvSource(csvSep, participantsFolderPath, fileNamingStrategy)
+    def readerSupplier = () -> {
+      def reader = source.connector.initReader(LoadInput)
+      reader.close() // We simulate the file being unreadable by just closing the reader before passing it over
+      return reader
+    }
+
+    when:
+    source.getSourceFields(readerSupplier)
+
+    then:
+    def exc = thrown(SourceException)
+    exc.message.startsWith("Error while trying to read source")
   }
 
   def "A CsvDataSource should build a valid fields to attributes map with valid data as expected"() {

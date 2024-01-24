@@ -5,8 +5,12 @@
  */
 package edu.ie3.test.common
 
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static tech.units.indriya.unit.Units.CELSIUS
+import static tech.units.indriya.unit.Units.METRE_PER_SECOND
+
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -23,10 +27,6 @@ import tech.units.indriya.quantity.Quantities
 import java.time.DayOfWeek
 import java.time.ZoneId
 import java.time.ZonedDateTime
-
-import static edu.ie3.util.quantities.PowerSystemUnits.*
-import static tech.units.indriya.unit.Units.CELSIUS
-import static tech.units.indriya.unit.Units.METRE_PER_SECOND
 
 trait TimeSeriesTestData {
   GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326)

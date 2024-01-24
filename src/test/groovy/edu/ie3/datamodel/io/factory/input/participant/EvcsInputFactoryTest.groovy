@@ -19,8 +19,8 @@ import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
+import javax.measure.quantity.Dimensionless
 /**
  * Testing EvcsInputFactory
  *
@@ -139,6 +139,6 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.failure
-    input.exception.get().cause.message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
+    input.exception.get().cause.message == "Exception while trying to parse field \"locationType\" with supposed int value \"-- invalid --\""
   }
 }
