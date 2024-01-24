@@ -5,11 +5,12 @@
 A model of an Energy Management Unit that controls the power of connected system participants. 
 Participants are connected to an EM each via their `em` field.
 
+## Attributes, Units and Remarks
 
 ```{eval-rst}
-.. list-table:: Entity Model
-   :widths: auto
-   :header-rows: 1
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
 
 
    * - Attribute
