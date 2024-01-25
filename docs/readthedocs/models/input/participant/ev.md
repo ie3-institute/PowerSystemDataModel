@@ -84,6 +84,10 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
    * - node
      - --
      - node the asset is connected to
+     
+   * - qCharacteristics
+     - --
+     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - type
      - --
