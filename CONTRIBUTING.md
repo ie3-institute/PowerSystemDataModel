@@ -51,6 +51,7 @@ In order to maintain a consistent project, we thought of some general design gui
 
 * We :heart: **immutability**. Therefore, please don't provide setters and use proper instantiation instead.
 * `double a = b * pow(x, j)`? :hand: Please **be expressive** in what you code!
+* Document your code with **javadoc**.
 
 ### Testing
 Ensure the proper function of your code by [test driven development (TDD)](https://www.guru99.com/test-driven-development.html).
