@@ -93,7 +93,6 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
     Point coordinate = data.getCoordinate();
-    java.util.UUID uuid = data.containsKey(UUID) ? data.getUUID(UUID) : java.util.UUID.randomUUID();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
         data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
@@ -111,7 +110,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             temperature,
             windDirection,
             windVelocity);
-    return new TimeBasedValue<>(uuid, time, weatherValue);
+    return new TimeBasedValue<>(time, weatherValue);
   }
 
   /**

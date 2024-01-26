@@ -11,17 +11,12 @@ import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 /** Describes a TimeSeries with repetitive values that can be calculated from a pattern */
 public abstract class RepetitiveTimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
     extends TimeSeries<E, V> {
   protected RepetitiveTimeSeries(Set<E> entries) {
     super(entries);
-  }
-
-  protected RepetitiveTimeSeries(UUID uuid, Set<E> entries) {
-    super(uuid, entries);
   }
 
   /**

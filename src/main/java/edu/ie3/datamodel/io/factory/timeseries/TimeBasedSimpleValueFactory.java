@@ -49,7 +49,6 @@ public class TimeBasedSimpleValueFactory<V extends Value>
 
   @Override
   protected TimeBasedValue<V> buildModel(SimpleTimeBasedValueData<V> data) {
-    UUID uuid = data.getUUID(UUID);
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     V value;
 
@@ -83,7 +82,7 @@ public class TimeBasedSimpleValueFactory<V extends Value>
           "The given factory cannot handle target class '" + data.getTargetClass() + "'.");
     }
 
-    return new TimeBasedValue<>(uuid, time, value);
+    return new TimeBasedValue<>(time, value);
   }
 
   @Override

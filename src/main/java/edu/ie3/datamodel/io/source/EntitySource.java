@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.utils.Try;
@@ -53,7 +54,7 @@ public abstract class EntitySource {
    * @param validator used to validate
    * @param <C> type of the class
    */
-  protected final <C extends UniqueEntity> Try<Void, ValidationException> validate(
+  protected final <C extends Entity> Try<Void, ValidationException> validate(
       Class<? extends C> entityClass, SourceValidator<C> validator) {
     return Try.of(() -> dataSource.getSourceFields(entityClass), SourceException.class)
         .transformF(
@@ -88,7 +89,7 @@ public abstract class EntitySource {
    * @param <R> Type of resulting entity data that combines the given entityData and linked entity
    * @return {@link Try} to enhanced data
    */
-  protected static <E extends EntityData, T extends UniqueEntity, R extends E>
+  protected static <E extends EntityData, T extends Entity, R extends E>
       Try<R, SourceException> enrichEntityData(
           E entityData,
           String fieldName,
@@ -169,7 +170,7 @@ public abstract class EntitySource {
    * @return a {@link Success} containing the entity or a {@link Failure} if the entity cannot be
    *     found
    */
-  protected static <T extends UniqueEntity> Try<T, SourceException> getLinkedEntity(
+  protected static <T extends Entity> Try<T, SourceException> getLinkedEntity(
       EntityData entityData, String fieldName, Map<UUID, T> linkedEntities) {
 
     return Try.of(() -> entityData.getUUID(fieldName), FactoryException.class)
@@ -383,7 +384,7 @@ public abstract class EntitySource {
    * @return stream of the entity data wrapped in a {@link Try}
    */
   protected Stream<Try<EntityData, SourceException>> buildEntityData(
-      Class<? extends UniqueEntity> entityClass) {
+      Class<? extends Entity> entityClass) {
     return dataSource
         .getSourceData(entityClass)
         .map(fieldsToAttributes -> new Success<>(new EntityData(fieldsToAttributes, entityClass)));
@@ -395,7 +396,7 @@ public abstract class EntitySource {
         .collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
   }
 
-  protected static <S extends UniqueEntity> Set<S> unpackSet(
+  protected static <S extends Entity> Set<S> unpackSet(
       Stream<Try<S, FactoryException>> inputStream, Class<S> entityClass) throws SourceException {
     return unpack(inputStream, entityClass).collect(Collectors.toSet());
   }

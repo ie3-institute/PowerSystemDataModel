@@ -9,7 +9,6 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Describes an entity of a time series by mapping a value to a timestamp
@@ -19,14 +18,12 @@ import java.util.UUID;
 public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
     implements Comparable<TimeBasedValue<? extends Value>> {
   private final ZonedDateTime time;
-
-  public TimeBasedValue(UUID uuid, ZonedDateTime time, T value) {
-    super(uuid, value);
-    this.time = time;
-  }
+  private final T value;
 
   public TimeBasedValue(ZonedDateTime time, T value) {
-    this(UUID.randomUUID(), time, value);
+    super(value);
+    this.time = time;
+    this.value = value;
   }
 
   public ZonedDateTime getTime() {
@@ -49,7 +46,7 @@ public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
 
   @Override
   public String toString() {
-    return "TimeBasedValue{" + "uuid=" + getUuid() + ", time=" + time + ", value=" + value + '}';
+    return "TimeBasedValue{" + "time=" + time + ", value=" + value + '}';
   }
 
   @Override

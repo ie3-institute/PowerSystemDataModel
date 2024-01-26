@@ -16,6 +16,14 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
   /** Maps a time to its respective value to retrieve faster */
   private final Map<ZonedDateTime, TimeBasedValue<V>> timeToValue;
 
+  public IndividualTimeSeries(Set<TimeBasedValue<V>> values) {
+    super(values);
+
+    timeToValue =
+        values.stream()
+            .collect(Collectors.toMap(TimeBasedValue::getTime, timeBasedValue -> timeBasedValue));
+  }
+
   public IndividualTimeSeries(UUID uuid, Set<TimeBasedValue<V>> values) {
     super(uuid, values);
 
@@ -75,6 +83,6 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
 
   @Override
   public String toString() {
-    return "IndividualTimeSeries{" + "uuid=" + getUuid() + ", #entries=" + timeToValue.size() + '}';
+    return "IndividualTimeSeries{" + ", #entries=" + timeToValue.size() + '}';
   }
 }

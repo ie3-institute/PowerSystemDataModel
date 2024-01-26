@@ -16,10 +16,6 @@ Groups together all system participants such as PV, Storage etc.
      - Unit
      - Remarks
 
-   * - uuid
-     - --
-     - uuid for the result entity
-
    * - time
      - --
      - date and time for the produced result

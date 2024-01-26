@@ -47,11 +47,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
     ComparableQuantity<Dimensionless> vMagValue =
         data.getQuantity(VMAG, StandardUnits.VOLTAGE_MAGNITUDE);
     ComparableQuantity<Angle> vAngValue = data.getQuantity(VANG, StandardUnits.VOLTAGE_ANGLE);
-    Optional<UUID> uuidOpt =
-        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
-    return uuidOpt
-        .map(uuid -> new NodeResult(uuid, zdtTime, inputModelUuid, vMagValue, vAngValue))
-        .orElseGet(() -> new NodeResult(zdtTime, inputModelUuid, vMagValue, vAngValue));
+    return new NodeResult(zdtTime, inputModelUuid, vMagValue, vAngValue);
   }
 }

@@ -238,7 +238,7 @@ class CsvFileConnectorTest extends Specification {
 
     and: "credible input"
     def entries = [
-      new TimeBasedValue(UUID.fromString("5bac1c86-19d1-4145-8dae-f207a1346916"), ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
+      new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
     ] as SortedSet
     def timeSeries = Mock(IndividualTimeSeries)
     timeSeries.uuid >> UUID.fromString("0c03ce9f-ab0e-4715-bc13-f9d903f26dbf")
@@ -263,7 +263,7 @@ class CsvFileConnectorTest extends Specification {
 
     and: "credible input"
     def entries = [
-      new TimeBasedValue(UUID.fromString("5bac1c86-19d1-4145-8dae-f207a1346916"), ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
+      new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
     ] as SortedSet
     def timeSeries = Mock(IndividualTimeSeries)
     timeSeries.uuid >> UUID.fromString("0c03ce9f-ab0e-4715-bc13-f9d903f26dbf")

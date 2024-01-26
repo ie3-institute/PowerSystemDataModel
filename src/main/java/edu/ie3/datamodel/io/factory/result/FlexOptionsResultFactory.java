@@ -49,11 +49,6 @@ public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsRes
     ComparableQuantity<Power> pMin = data.getQuantity(P_MIN, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_RESULT);
 
-    Optional<UUID> uuidOpt =
-        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
-
-    return uuidOpt
-        .map(uuid -> new FlexOptionsResult(uuid, zdtTime, inputModelUuid, pRef, pMin, pMax))
-        .orElseGet(() -> new FlexOptionsResult(zdtTime, inputModelUuid, pRef, pMin, pMax));
+    return new FlexOptionsResult(zdtTime, inputModelUuid, pRef, pMin, pMax);
   }
 }

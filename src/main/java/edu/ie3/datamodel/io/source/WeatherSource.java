@@ -101,7 +101,7 @@ public abstract class WeatherSource {
     for (Map.Entry<Point, Set<TimeBasedValue<WeatherValue>>> entry :
         coordinateToValues.entrySet()) {
       Set<TimeBasedValue<WeatherValue>> values = entry.getValue();
-      IndividualTimeSeries<WeatherValue> timeSeries = new IndividualTimeSeries<>(null, values);
+      IndividualTimeSeries<WeatherValue> timeSeries = new IndividualTimeSeries<>(values);
       coordinateToTimeSeriesMap.put(entry.getKey(), timeSeries);
     }
     return coordinateToTimeSeriesMap;

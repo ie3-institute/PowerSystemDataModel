@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory;
 
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 
 /**
  * Universal factory class for creating entities with {@link EntityData} data objects.
@@ -16,7 +16,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
  * @version 0.1
  * @since 28.01.20
  */
-public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData>
+public abstract class EntityFactory<T extends Entity, D extends EntityData>
     extends Factory<T, D, T> {
   /**
    * Constructor for an EntityFactory for given classes

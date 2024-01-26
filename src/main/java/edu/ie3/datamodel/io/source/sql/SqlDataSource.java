@@ -9,7 +9,7 @@ import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -109,7 +109,7 @@ public class SqlDataSource implements DataSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass) {
+  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass) {
     String tableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
     return getSourceFields(tableName);
   }
@@ -140,7 +140,7 @@ public class SqlDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
+  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass) {
     String explicitTableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
     return buildStreamByTableName(explicitTableName);
   }
@@ -168,7 +168,7 @@ public class SqlDataSource implements DataSource {
    * class.
    */
   protected Stream<Map<String, String>> buildStreamByEntityClass(
-      Class<? extends UniqueEntity> entityClass, AddParams addParams) {
+      Class<? extends Entity> entityClass, AddParams addParams) {
     String query = createBaseQueryString(schemaName, entityClass.getSimpleName());
     return executeQuery(query, addParams);
   }

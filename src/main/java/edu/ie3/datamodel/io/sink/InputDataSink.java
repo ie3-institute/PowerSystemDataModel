@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.sink;
 
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import java.util.Collection;
@@ -21,8 +21,8 @@ public interface InputDataSink extends DataSink {
    * missing if-/else-clauses but can also lead to missing persisted data that should be persisted,
    * but is not e.g. nested types that are not available anymore afterwards. It might be useful
    * especially for all entities without nested entities. For all doubts about if the provided
-   * entity contains needed nested data or not {@link DataSink#persist(UniqueEntity)} is the
-   * recommended method to be used.
+   * entity contains needed nested data or not {@link DataSink#persist(Entity)} is the recommended
+   * method to be used.
    *
    * @param entity the entity that should be persisted
    * @param <C> bounded to be all input entities. Handling of the entities is normally then executed

@@ -10,6 +10,7 @@ import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
@@ -59,7 +60,7 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass)
+  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass)
       throws SourceException {
     return getSourceFields(() -> connector.initReader(entityClass));
   }
@@ -83,7 +84,7 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
+  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass) {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);
   }
 
@@ -252,9 +253,9 @@ public class CsvDataSource implements DataSource {
   }
 
   /**
-   * Returns a predicate that can be used to filter optionals of {@link UniqueEntity}s and keep
-   * track on the number of elements that have been empty optionals. This filter let only pass
-   * optionals that are non-empty. Example usage:
+   * Returns a predicate that can be used to filter optionals of {@link Entity}s and keep track on
+   * the number of elements that have been empty optionals. This filter let only pass optionals that
+   * are non-empty. Example usage:
    *
    * <pre>{@code
    * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
@@ -266,9 +267,9 @@ public class CsvDataSource implements DataSource {
    * @param <T> the type of the entity
    * @return a predicate that can be used to filter and count empty optionals
    */
-  protected <T extends UniqueEntity> Predicate<Optional<T>> isPresentCollectIfNot(
-      Class<? extends UniqueEntity> entityClass,
-      ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
+  protected <T extends Entity> Predicate<Optional<T>> isPresentCollectIfNot(
+      Class<? extends Entity> entityClass,
+      ConcurrentHashMap<Class<? extends Entity>, LongAdder> invalidElementsCounterMap) {
     return o -> {
       if (o.isPresent()) {
         return true;
@@ -290,7 +291,7 @@ public class CsvDataSource implements DataSource {
    *     mapping (fieldName to fieldValue)
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+      Class<? extends Entity> entityClass, CsvFileConnector connector) {
     try {
       return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
     } catch (FileNotFoundException | ConnectorException e) {
@@ -310,8 +311,8 @@ public class CsvDataSource implements DataSource {
    * @return a parallel stream of maps, where each map represents one row of the csv file with the
    *     mapping (fieldName to fieldValue)
    */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+  protected <T extends Entity> Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+      Class<T> entityClass, BufferedReader bufferedReader) {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
@@ -321,9 +322,17 @@ public class CsvDataSource implements DataSource {
       // returning the original one
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
-      return distinctRowsWithLog(
-          allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
-          .parallelStream();
+      if (UniqueEntity.class.isAssignableFrom(entityClass)) {
+        return distinctRowsWithLog(
+            allRows,
+            fieldToValues -> fieldToValues.get("uuid"),
+            entityClass.getSimpleName(),
+            "UUID")
+            .parallelStream();
+      } else {
+        // result entities don't have an uuid
+        return checkForDuplicates(allRows, entityClass.getSimpleName()).parallelStream();
+      }
     } catch (IOException e) {
       log.warn(
           "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
@@ -340,6 +349,21 @@ public class CsvDataSource implements DataSource {
         .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
         .filter(map -> !map.isEmpty())
         .toList();
+  }
+
+  public Set<Map<String, String>> checkForDuplicates(
+      Collection<Map<String, String>> rows, String entityDescriptor) {
+    Set<Map<String, String>> rowsSet = new HashSet<>(rows);
+
+    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
+    if (rows.size() != rowsSet.size()) {
+      log.warn(
+          "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
+          entityDescriptor,
+          (rows.size() - rowsSet.size()));
+    }
+
+    return rowsSet;
   }
 
   /**
@@ -366,25 +390,17 @@ public class CsvDataSource implements DataSource {
       final Function<Map<String, String>, String> keyExtractor,
       String entityDescriptor,
       String keyDescriptor) {
-    Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
-    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
-    // case a)
-    if (allRows.size() != allRowsSet.size()) {
-      log.warn(
-          "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
-          entityDescriptor,
-          (allRows.size() - allRowsSet.size()));
-    }
+    Set<Map<String, String>> allRowSet = checkForDuplicates(allRows, entityDescriptor);
 
     /* Check for rows with the same key based on the provided key extractor function */
     Set<Map<String, String>> distinctIdSet =
-        allRowsSet.parallelStream()
+        allRowSet.parallelStream()
             .filter(ValidationUtils.distinctByKey(keyExtractor))
             .collect(Collectors.toSet());
-    if (distinctIdSet.size() != allRowsSet.size()) {
-      allRowsSet.removeAll(distinctIdSet);
+    if (distinctIdSet.size() != allRowSet.size()) {
+      allRowSet.removeAll(distinctIdSet);
       String affectedCoordinateIds =
-          allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
+          allRowSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
           """
               '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
@@ -397,6 +413,6 @@ public class CsvDataSource implements DataSource {
       return new HashSet<>();
     }
 
-    return allRowsSet;
+    return allRowSet;
   }
 }

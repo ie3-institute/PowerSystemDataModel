@@ -35,7 +35,6 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
       "price": "52.4"
     ]
     def expected = new TimeBasedValue(
-        UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
         new EnergyPriceValue(Quantities.getQuantity(52.4, ENERGY_PRICE))
         )
