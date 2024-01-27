@@ -19,7 +19,7 @@ This reflects a simple shoe box with transmission losses
 
    * - uuid
      - --
-     - Unique identifier of a thermal house model
+     - 
 
    * - id
      - --
@@ -31,7 +31,7 @@ This reflects a simple shoe box with transmission losses
 
    * - operator
      - --
-     - operator of the asset
+     - 
 
    * - operationTime
      - --
