@@ -20,7 +20,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - uuid
      - --
-     - uuid of the input entity
+     - 
 
    * - id
      - --
@@ -67,7 +67,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - uuid
      - --
-     - uuid of the input entity
+     - 
 
    * - id
      - --
@@ -75,7 +75,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - operator
      - --
-     - operator of the asset
+     - 
 
    * - operationTime
      - --
@@ -83,7 +83,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - node
      - --
-     - node the asset is connected to
+     - 
      
    * - qCharacteristics
      - --
@@ -91,7 +91,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - type
      - --
-     - type of EV
+     - 
 
 ```
 
