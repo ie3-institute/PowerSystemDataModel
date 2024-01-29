@@ -5,45 +5,47 @@ If you feel, something is missing, please contact us!
 
 
 ## Requirements
+
 Java > v 17
 
 ## Where to get
 
-Checkout latest from `GitHub <https://github.com/ie3-institute/PowerSystemDataModel>`_ or use maven for dependency
+Checkout latest from [GitHub](https://github.com/ie3-institute/PowerSystemDataModel) or use maven for dependency
 management:
 
 ### Stable releases
-On `Maven central <https://search.maven.org/artifact/com.github.ie3-institute/PowerSystemDataModel>`_:
 
-``` xml
-    <dependency>
-     <groupId>com.github.ie3-institute</groupId>
-     <artifactId>PowerSystemDataModel</artifactId>
-     <version>2.1.0</version>
-   </dependency>
- 
- ```
+On [Maven central](https://search.maven.org/artifact/com.github.ie3-institute/PowerSystemDataModel):
+
+```xml
+<dependency>
+  <groupId>com.github.ie3-institute</groupId>
+  <artifactId>PowerSystemDataModel</artifactId>
+  <version>2.1.0</version>
+</dependency>
+```
 
 
 ### Snapshot releases
-Available on `OSS Sonatype <https://s01.oss.sonatype.org/>`_.
+
+Available on [OSS Sonatype](https://s01.oss.sonatype.org/).
 Add the correct repository:
 
-``` xml
-   <repositories>
-     <repository>https://s01.oss.sonatype.org/content/repositories/snapshots</repository>
-   </repositories>
- ```
+```xml
+<repositories>
+  <repository>https://s01.oss.sonatype.org/content/repositories/snapshots</repository>
+</repositories>
+```
 
 and add the dependency:
 
-``` xml
-   <dependency>
-     <groupId>com.github.ie3-institute</groupId>
-     <artifactId>PowerSystemDataModel</artifactId>
-     <version>3.0-SNAPSHOT</version>
-   </dependency>
- ```
+```xml
+<dependency>
+  <groupId>com.github.ie3-institute</groupId>
+  <artifactId>PowerSystemDataModel</artifactId>
+  <version>3.0-SNAPSHOT</version>
+</dependency>
+```
 
 ## Important changes
 

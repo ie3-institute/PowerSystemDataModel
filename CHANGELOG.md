@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
 - Fixed hyperlink in line documentation [#965](https://github.com/ie3-institute/PowerSystemDataModel/issues/965)
+- Fixed some tests no failing when they should [#958](https://github.com/ie3-institute/PowerSystemDataModel/issues/958)
 
 ### Changed
 - Changing from comparing strings to comparing uuids in `EntitySource.findFirstEntityByUuid` [#829](https://github.com/ie3-institute/PowerSystemDataModel/issues/829)
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allowing for additional unused columns in sources [#839](https://github.com/ie3-institute/PowerSystemDataModel/issues/839)
 - Improving column name validation to only run once per source [#849](https://github.com/ie3-institute/PowerSystemDataModel/issues/849)
 - Refactored and abstracted `EntitySource`s and `EntityData` creation [#969](https://github.com/ie3-institute/PowerSystemDataModel/issues/969)
+- Updated contributing.md [#737](https://github.com/ie3-institute/PowerSystemDataModel/issues/737)
 - Removing the support for the old csv format that was marked `deprecated` back in version `1.1.0` [#795](https://github.com/ie3-institute/PowerSystemDataModel/issues/795)
 
 ## [4.1.0] - 2023-11-02
@@ -47,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed wrong rated power unit hint [#804](https://github.com/ie3-institute/PowerSystemDataModel/issues/804)
 - Fixed wrong hash code generation of ConnectorResult [#817](https://github.com/ie3-institute/PowerSystemDataModel/issues/817) 
+- Fixed wrong path for timeSeriesMapping [#886](https://github.com/ie3-institute/PowerSystemDataModel/issues/886)
 
 ### Changed
 - Removing deprecated classes and methods [#540](https://github.com/ie3-institute/PowerSystemDataModel/issues/540)
@@ -55,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use nio paths instead of strings for file path [#723](https://github.com/ie3-institute/PowerSystemDataModel/issues/723)
 - Data source will throw an exceptions instead of returning an empty optionals [#707](https://github.com/ie3-institute/PowerSystemDataModel/issues/707)
 - Improving `ValidationUtils` [#758](https://github.com/ie3-institute/PowerSystemDataModel/issues/758)
+- conversion from rst to markdown myst[#979](https://github.com/ie3-institute/PowerSystemDataModel/pull/985)
 
 ## [3.0.0] - 2023-02-16
 
