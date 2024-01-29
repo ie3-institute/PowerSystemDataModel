@@ -39,8 +39,9 @@ public class SwitchInputFactory
       String parallelDevices = data.getField(PARALLEL_DEVICES);
 
       log.warn(
-          "The `SwitchInput` with the id `{}` specifies the unsupported parameter `parallelDevices` with a value of `{}`."
-              + " Because switches are expected to have a given value `1`, the provided value is ignored.",
+          "The `SwitchInput` with the id `{}` specifies the unused parameter `parallelDevices` with a value of `{}`."
+              + " SwitchInputs do not need to specify `parallelDevices`, as its value depends on the electrotechnical"
+              + " context where the switch is embedded.",
           id,
           parallelDevices);
     }
