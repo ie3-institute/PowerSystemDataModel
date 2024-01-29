@@ -101,6 +101,13 @@ Those files are meant to carry different types of content - one might give infor
 the other is a record of power values provided by a real system.
 To be able to understand, what's inside of the file, the *columnScheme* part of the file name gives insight of it's
 content.
+
+For example, you have an IndividualTimeSeries CSV file for energy prices, then you use the key `c` from the table below
+for columnScheme `its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1.csv`.
+The CSV file must then have the appropriate format for the key `c` :
+
+`"uuid";"time";"price"` <br> `45bd936f-524a-4d59-8978-31ccf37fa230;2020-01-01T00:00:00Z;100.0`
+
 The following keys are supported until now:
 ```{eval-rst}
 .. list-table::
@@ -132,8 +139,6 @@ The following keys are supported until now:
        | Permissible head line: ``uuid,time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
 
 ```
-
-As the ``uuid`` and ``time`` field are mandatory, they are not mentioned explicitly, here.
 
 ### Results
 
