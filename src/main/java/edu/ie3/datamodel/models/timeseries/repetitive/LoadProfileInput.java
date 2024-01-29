@@ -19,8 +19,8 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
   private final StandardLoadProfile type;
   private final Map<DayOfWeek, Map<Integer, PValue>> dayOfWeekToHourlyValues;
 
-  public LoadProfileInput(StandardLoadProfile type, Set<LoadProfileEntry> values) {
-    super(values);
+  public LoadProfileInput(UUID uuid, StandardLoadProfile type, Set<LoadProfileEntry> values) {
+    super(uuid, values);
     this.type = type;
     this.dayOfWeekToHourlyValues =
         getEntries().stream()
@@ -29,6 +29,10 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
                     LoadProfileEntry::getDayOfWeek,
                     Collectors.toMap(
                         LoadProfileEntry::getQuarterHourOfDay, LoadProfileEntry::getValue)));
+  }
+
+  public LoadProfileInput(StandardLoadProfile type, Set<LoadProfileEntry> values) {
+    this(UUID.randomUUID(), type, values);
   }
 
   @Override

@@ -14,6 +14,7 @@ import java.util.*;
 /**
  * Describes a Series of {@link edu.ie3.datamodel.models.value.Value values}
  *
+ * @param <E> Type of the entries, the time series is foreseen to contain
  * @param <V> Type of the values, the entries will have
  */
 public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
