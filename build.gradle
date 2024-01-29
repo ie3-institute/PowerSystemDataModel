@@ -4,8 +4,8 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '6.24.0' //code format
-  id 'com.github.spotbugs' version '5.2.5' // code check, working on byte code
+  id 'com.diffplug.spotless' version '6.25.0' //code format
+  id 'com.github.spotbugs' version '6.0.7' // code check, working on byte code
   id 'de.undercouch.download' version '5.5.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
@@ -18,7 +18,7 @@ ext {
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
   groovyBinaryVersion = "4.0.18"
-  testcontainersVersion = '1.19.3'
+  testcontainersVersion = '1.19.4'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
