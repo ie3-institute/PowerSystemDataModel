@@ -8,10 +8,8 @@ package edu.ie3.datamodel.utils
 import edu.ie3.datamodel.exceptions.FailureException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.exceptions.TryException
-import org.junit.runner.notification.Failure
 import spock.lang.Specification
 
-import java.util.function.Function
 import java.util.stream.Stream
 
 class TryTest extends Specification {
