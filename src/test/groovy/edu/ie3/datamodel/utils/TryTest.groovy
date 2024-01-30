@@ -8,7 +8,11 @@ package edu.ie3.datamodel.utils
 import edu.ie3.datamodel.exceptions.FailureException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.exceptions.TryException
+import org.junit.runner.notification.Failure
 import spock.lang.Specification
+
+import java.util.function.Function
+import java.util.stream.Stream
 
 class TryTest extends Specification {
 
@@ -315,6 +319,33 @@ class TryTest extends Specification {
     transform.exception.get().class == Exception
     flatMapS.exception.get() == failure.get()
     flatMapF.exception.get() == failure.get()
+  }
+
+  def "The convert method should work correctly for successes"() {
+    given:
+    Try<Stream<Integer>, SourceException> success = new Try.Success(Stream.of(1, 2, 3))
+
+    when:
+    List<Try<Integer, SourceException>> converted = success.convert(d -> d.map(r -> Try.Success.of(r)).toList(), e -> [Try.Failure.of(e)] )
+
+    then:
+    converted.size() == 3
+    converted.get(0).data.get() == 1
+    converted.get(1).data.get() == 2
+    converted.get(2).data.get() == 3
+  }
+
+  def "The convert method should work correctly for failures"() {
+    given:
+    SourceException exception = new SourceException("exception")
+    Try<Stream<Integer>, SourceException> failure = new Try.Failure<>(exception)
+
+    when:
+    List<Try<Integer, SourceException>> converted = failure.convert(d -> d.map(r -> Try.Success.of(r)).toList(), e -> [Try.Failure.of(e)] )
+
+    then:
+    converted.size() == 1
+    converted.get(0).exception.get() == exception
   }
 
   def "The getOrElse method should work as expected on a success"() {

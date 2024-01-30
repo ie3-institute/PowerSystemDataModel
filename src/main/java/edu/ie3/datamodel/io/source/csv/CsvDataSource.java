@@ -11,6 +11,9 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
@@ -83,8 +86,9 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector);
+  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass)
+      throws SourceException {
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector).getOrThrow();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -289,15 +293,15 @@ public class CsvDataSource implements DataSource {
    * @return a parallel stream of maps, where each map represents one row of the csv file with the
    *     mapping (fieldName to fieldValue)
    */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+  protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
     try {
       return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
     } catch (FileNotFoundException | ConnectorException e) {
       log.warn(
           "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+      return Success.of(Stream.empty());
     }
-    return Stream.empty();
   }
 
   /**
@@ -307,10 +311,10 @@ public class CsvDataSource implements DataSource {
    *
    * @param entityClass the entity class that should be build
    * @param bufferedReader the reader to use
-   * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName to fieldValue)
+   * @return a try containing either a parallel stream of maps, where each map represents one row of
+   *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+  protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
@@ -322,14 +326,16 @@ public class CsvDataSource implements DataSource {
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
       return distinctRowsWithLog(
-          allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
-          .parallelStream();
+              allRows,
+              fieldToValues -> fieldToValues.get("uuid"),
+              entityClass.getSimpleName(),
+              "UUID")
+          .map(Set::parallelStream);
     } catch (IOException e) {
       log.warn(
           "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+      return Success.of(Stream.empty());
     }
-
-    return Stream.empty();
   }
 
   protected List<Map<String, String>> csvRowFieldValueMapping(
@@ -358,10 +364,10 @@ public class CsvDataSource implements DataSource {
    *     debug String)
    * @param keyDescriptor Colloquial descriptor of the key, that is meant to be unique (for debug
    *     String)
-   * @return either a set containing only unique rows or an empty set if at least two rows with the
-   *     same UUID but different field values exist
+   * @return a try of either a set containing only unique rows or an exception if at least two rows
+   *     with the same UUID but different field values exist
    */
-  protected Set<Map<String, String>> distinctRowsWithLog(
+  protected Try<Set<Map<String, String>>, SourceException> distinctRowsWithLog(
       Collection<Map<String, String>> allRows,
       final Function<Map<String, String>, String> keyExtractor,
       String entityDescriptor,
@@ -385,18 +391,19 @@ public class CsvDataSource implements DataSource {
       allRowsSet.removeAll(distinctIdSet);
       String affectedCoordinateIds =
           allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
-      log.error(
-          """
-              '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
-              Affected primary keys:
-              {}""",
-          entityDescriptor,
-          keyDescriptor,
-          affectedCoordinateIds);
-      // if this happens, we return an empty set to prevent further processing
-      return new HashSet<>();
+
+      // if this happens, we return a failure
+      return Failure.of(
+          new SourceException(
+              "'"
+                  + entityDescriptor
+                  + "' entities with duplicated "
+                  + keyDescriptor
+                  + " key, but different field "
+                  + "values found! Please review the corresponding input file! Affected primary keys: "
+                  + affectedCoordinateIds));
     }
 
-    return allRowsSet;
+    return Success.of(allRowsSet);
   }
 }

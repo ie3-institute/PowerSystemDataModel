@@ -444,7 +444,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     when:
     def allRows = [nodeInputRow]* noOfEntities
-    def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
+    def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID").getOrThrow()
 
     then:
     distinctRows.size() == distinctSize
@@ -466,7 +466,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "v_rated"       : "380"]
   }
 
-  def "A CsvDataSource should return an empty set of csv row mappings if the provided collection of mappings contains duplicated UUIDs with different data"() {
+  def "A CsvDataSource should return a failure if the provided collection of mappings contains duplicated UUIDs with different data"() {
 
     given:
     def nodeInputRow1 = [
@@ -501,6 +501,6 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
 
     then:
-    distinctRows.size() == 0
+    distinctRows.failure
   }
 }

@@ -23,5 +23,6 @@ public interface DataSource {
       throws SourceException;
 
   /** Creates a stream of maps that represent the rows in the database */
-  Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass);
+  Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass)
+      throws SourceException;
 }

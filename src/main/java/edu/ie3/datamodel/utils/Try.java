@@ -247,6 +247,17 @@ public abstract class Try<T, E extends Exception> {
       Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc);
 
   /**
+   * Method to convert a {@link Try} object.
+   *
+   * @param successFunc that will be used to transform the data to the new type
+   * @param failureFunc that will be used to transform the exception to the new type
+   * @return the new type
+   * @param <U> new type
+   */
+  public abstract <U> U convert(
+      Function<? super T, ? extends U> successFunc, Function<E, U> failureFunc);
+
+  /**
    * If this is a Success, the value is returned, otherwise given default is returned.
    *
    * @param defaultData the value to be returned, if this is a failure.
@@ -332,6 +343,11 @@ public abstract class Try<T, E extends Exception> {
     public <U, R extends Exception> Try<U, R> transform(
         Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
       return new Success<>(successFunc.apply(data));
+    }
+
+    @Override
+    public <U> U convert(Function<? super T, ? extends U> successFunc, Function<E, U> failureFunc) {
+      return successFunc.apply(data);
     }
 
     @Override
@@ -462,6 +478,11 @@ public abstract class Try<T, E extends Exception> {
     public <U, R extends Exception> Try<U, R> transform(
         Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
       return Failure.of(failureFunc.apply(exception));
+    }
+
+    @Override
+    public <U> U convert(Function<? super T, ? extends U> successFunc, Function<E, U> failureFunc) {
+      return failureFunc.apply(exception);
     }
 
     @Override

@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improving column name validation to only run once per source [#849](https://github.com/ie3-institute/PowerSystemDataModel/issues/849)
 - Refactored and abstracted `EntitySource`s and `EntityData` creation [#969](https://github.com/ie3-institute/PowerSystemDataModel/issues/969)
 - Updated contributing.md [#737](https://github.com/ie3-institute/PowerSystemDataModel/issues/737)
+- `CsvDataSource` throws exceptions on error [#954](https://github.com/ie3-institute/PowerSystemDataModel/issues/954)
 
 ## [4.1.0] - 2023-11-02
 

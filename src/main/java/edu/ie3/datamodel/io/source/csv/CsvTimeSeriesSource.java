@@ -144,11 +144,11 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       throws SourceException {
     try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
       Try<Stream<TimeBasedValue<V>>, FailureException> timeBasedValues =
-          Try.scanStream(
-              dataSource
-                  .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-                  .map(fieldToValueFunction),
-              "TimeBasedValue<V>");
+          dataSource
+              .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+              .transformF(FailureException::new)
+              .flatMap(
+                  stream -> Try.scanStream(stream.map(fieldToValueFunction), "TimeBasedValue<V>"));
       return new IndividualTimeSeries<>(
           timeSeriesUuid, new HashSet<>(timeBasedValues.getOrThrow().toList()));
     } catch (FileNotFoundException e) {

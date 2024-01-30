@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
@@ -20,6 +21,8 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.Success;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -154,6 +157,7 @@ public class CsvWeatherSource extends WeatherSource {
       // we need a reader for each file
       try (BufferedReader reader = connector.initReader(data.getFullFilePath())) {
         buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+            .getOrThrow()
             .map(fieldToValueFunction)
             .flatMap(Optional::stream)
             .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
@@ -172,6 +176,8 @@ public class CsvWeatherSource extends WeatherSource {
                     weatherTimeSeries.put(point, timeSeries);
                   }
                 });
+      } catch (SourceException e) {
+        log.error("Cannot process weather source", e);
       } catch (FileNotFoundException e) {
         log.error("Cannot read file {}. File not found!", data.getFullFilePath());
       } catch (IOException e) {
@@ -183,7 +189,7 @@ public class CsvWeatherSource extends WeatherSource {
     return weatherTimeSeries;
   }
 
-  private Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+  private Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader)
       throws ValidationException {
     try (BufferedReader reader = bufferedReader) {
@@ -207,14 +213,12 @@ public class CsvWeatherSource extends WeatherSource {
       return dataSource
           .distinctRowsWithLog(
               allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
-          .parallelStream();
-
+          .map(Set::parallelStream);
     } catch (IOException e) {
       log.warn(
           "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+      return Success.of(Stream.empty());
     }
-
-    return Stream.empty();
   }
 
   /**
