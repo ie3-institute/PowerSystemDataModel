@@ -108,6 +108,10 @@ The CSV file must then have the appropriate format for the key `c` :
 
 `"uuid";"time";"price"` <br> `45bd936f-524a-4d59-8978-31ccf37fa230;2020-01-01T00:00:00Z;100.0`
 
+The CSV file requires a unique identification number.
+The UUID (Universally Unique Identifier) can be created [here](https://www.uuidgenerator.net/).
+This is the uuid from the example above `2fcb3e53-b94a-4b96-bea4-c469e499f1a1`.
+
 The following keys are supported until now:
 ```{eval-rst}
 .. list-table::
