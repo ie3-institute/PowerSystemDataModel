@@ -34,6 +34,18 @@ public class SwitchInputFactory
       OperatorInput operator,
       OperationTime operationTime) {
     final boolean closed = data.getBoolean(CLOSED);
+
+    if (data.containsKey(PARALLEL_DEVICES)) {
+      String parallelDevices = data.getField(PARALLEL_DEVICES);
+
+      log.warn(
+          "The SwitchInput with id `{}` specifies the unused parameter `parallelDevices` with a value of `{}`."
+              + " SwitchInputs do not need to specify `parallelDevices`, as its physical value depends on"
+              + " the electrotechnical context of where the switch is embedded.",
+          id,
+          parallelDevices);
+    }
+
     return new SwitchInput(uuid, id, operator, operationTime, nodeA, nodeB, closed);
   }
 }
