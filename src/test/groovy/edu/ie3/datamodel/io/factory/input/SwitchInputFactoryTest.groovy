@@ -58,4 +58,38 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
       assert closed
     }
   }
+
+  def "A SwitchInputFactory should parse a valid SwitchInput with parallelDevices parameter correctly"() {
+    given: "a system participant input type factory and model data"
+    def inputFactory = new SwitchInputFactory()
+    Map<String, String> parameter = [
+      "uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil": "",
+      "id"           : "TestID",
+      "closed"       : "true",
+      "paralleldevices": "2"
+    ]
+    def inputClass = SwitchInput
+    def operatorInput = Mock(OperatorInput)
+    def nodeInputA = Mock(NodeInput)
+    def nodeInputB = Mock(NodeInput)
+
+    expect:
+    Try<SwitchInput, FactoryException> input = inputFactory.get(new ConnectorInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB))
+    input.success
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
+      assert uuid == UUID.fromString(parameter["uuid"])
+      assert operationTime.startDate.present
+      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      assert !operationTime.endDate.present
+      assert operator == operatorInput
+      assert id == parameter["id"]
+      assert nodeA == nodeInputA
+      assert nodeB == nodeInputB
+      assert closed
+      assert parallelDevices == 1
+    }
+  }
 }
