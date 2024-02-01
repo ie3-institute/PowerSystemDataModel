@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Abstract class to hold all mappings common to all result models */
-public abstract class ResultEntity extends Entity {
+public abstract class ResultEntity implements Entity {
 
   /** date and time of the produced result */
   private ZonedDateTime time;

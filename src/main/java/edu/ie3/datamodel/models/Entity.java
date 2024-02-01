@@ -6,4 +6,4 @@
 package edu.ie3.datamodel.models;
 
 /** Interface for all entities. */
-public abstract class Entity {}
+public interface Entity {}

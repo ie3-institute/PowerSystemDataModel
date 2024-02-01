@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @param <V> Type of the contained value
  */
-public abstract class TimeSeriesEntry<V extends Value> extends Entity {
+public abstract class TimeSeriesEntry<V extends Value> implements Entity {
   protected final V value;
 
   protected TimeSeriesEntry(V value) {
