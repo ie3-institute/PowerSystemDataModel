@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
@@ -99,24 +98,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     def path = Path.of("this/path/does-not-exist")
 
     expect:
-    dummyCsvSource.getSourceFields(() -> dummyCsvSource.connector.initReader(path)).isEmpty()
-  }
-
-  def "A CsvDataSource should throw an exception when retrieving column names for a non-readable CSV file"() {
-    given:
-    DummyCsvSource source = new DummyCsvSource(csvSep, participantsFolderPath, fileNamingStrategy)
-    def readerSupplier = () -> {
-      def reader = source.connector.initReader(LoadInput)
-      reader.close() // We simulate the file being unreadable by just closing the reader before passing it over
-      return reader
-    }
-
-    when:
-    source.getSourceFields(readerSupplier)
-
-    then:
-    def exc = thrown(SourceException)
-    exc.message.startsWith("Error while trying to read source")
+    dummyCsvSource.getSourceFields(path).isEmpty()
   }
 
   def "A CsvDataSource should build a valid fields to attributes map with valid data as expected"() {

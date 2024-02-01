@@ -17,6 +17,7 @@ import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -92,7 +93,8 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
 
   @Override
   public Optional<Set<String>> getSourceFields(Class<?> entityClass) throws SourceException {
-    return dataSource.getSourceFields(dataSource.connector::initIdCoordinateReader);
+    Path filePath = Path.of(dataSource.getNamingStrategy().getIdCoordinateEntityName());
+    return dataSource.getSourceFields(filePath);
   }
 
   @Override
@@ -169,7 +171,8 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    */
   protected Try<Stream<Map<String, String>>, SourceException>
       buildStreamWithFieldsToAttributesMap() {
-    try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
+    Path filePath = Path.of(dataSource.getNamingStrategy().getIdCoordinateEntityName());
+    try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
       // validating read file

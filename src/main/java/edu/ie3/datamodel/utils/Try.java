@@ -97,6 +97,21 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
+   * Method to create a {@link Try} object from Optional.
+   *
+   * @param opt The optional
+   * @param exception Supplier function that supplies an exception if Optional is empty
+   * @return a try object
+   * @param <T> type of data
+   * @param <E> type of exception
+   */
+  public static <T, E extends Exception> Try<T, E> from(
+      Optional<T> opt, ExceptionSupplier<E> exception) {
+    return opt.map(data -> (Try<T, E>) new Success<T, E>(data))
+        .orElseGet(() -> new Failure<>(exception.get()));
+  }
+
+  /**
    * Method to retrieve the exceptions from all {@link Failure} objects.
    *
    * @param tries collection of {@link Try} objects

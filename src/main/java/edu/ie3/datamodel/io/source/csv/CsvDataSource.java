@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -49,6 +48,8 @@ public class CsvDataSource implements DataSource {
   protected final String csvSep;
   protected final CsvFileConnector connector;
 
+  private final FileNamingStrategy fileNamingStrategy;
+
   /**
    * @deprecated ensures downward compatibility with old csv data format. Can be removed when
    *     support for old csv format is removed. *
@@ -59,42 +60,38 @@ public class CsvDataSource implements DataSource {
   public CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
+    this.fileNamingStrategy = fileNamingStrategy;
   }
 
   @Override
   public Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass)
       throws SourceException {
-    return getSourceFields(() -> connector.initReader(entityClass));
+    return getSourceFields(getFilePath(entityClass).getOrThrow());
   }
 
-  public Optional<Set<String>> getSourceFields(ReaderSupplier readerSupplier)
-      throws SourceException {
-    try (BufferedReader reader = readerSupplier.get()) {
+  /**
+   * @param filePath path of file starting from base folder, including file name but not file
+   *     extension
+   * @return The source field names as a set, if file exists
+   * @throws SourceException on error while reading the source file
+   */
+  public Optional<Set<String>> getSourceFields(Path filePath) throws SourceException {
+    try (BufferedReader reader = connector.initReader(filePath)) {
       return Optional.of(
           Arrays.stream(parseCsvRow(reader.readLine(), csvSep)).collect(Collectors.toSet()));
     } catch (FileNotFoundException e) {
       // A file not existing can be acceptable in many cases, and is handled elsewhere.
       log.debug("The source for the given entity couldn't be found! Cause: {}", e.getMessage());
       return Optional.empty();
-    } catch (ConnectorException | IOException e) {
+    } catch (IOException e) {
       throw new SourceException("Error while trying to read source", e);
     }
-  }
-
-  public interface ReaderSupplier {
-    BufferedReader get() throws FileNotFoundException, ConnectorException;
   }
 
   @Override
   public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass)
       throws SourceException {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector).getOrThrow();
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-  public BufferedReader createReader(Path filePath) throws FileNotFoundException {
-    return connector.initReader(filePath);
+    return buildStreamWithFieldsToAttributesMap(entityClass, true).getOrThrow();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -283,25 +280,24 @@ public class CsvDataSource implements DataSource {
     };
   }
 
+  public FileNamingStrategy getNamingStrategy() {
+    return fileNamingStrategy;
+  }
+
   /**
-   * Tries to open a file reader from the connector based on the provided entity class and hands it
-   * over for further processing.
+   * Tries to open a file reader based on the provided entity class and hands it over for further
+   * processing.
    *
    * @param entityClass the entity class that should be build and that is used to get the
    *     corresponding reader
-   * @param connector the connector that should be used to get the reader from
    * @return a parallel stream of maps, where each map represents one row of the csv file with the
    *     mapping (fieldName to fieldValue)
    */
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
-    try {
-      return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
-    } catch (FileNotFoundException | ConnectorException e) {
-      log.warn(
-          "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-      return Success.of(Stream.empty());
-    }
+      Class<? extends UniqueEntity> entityClass, boolean allowFileNotExisting) {
+    return getFilePath(entityClass)
+        .flatMap(
+            path -> buildStreamWithFieldsToAttributesMap(entityClass, path, allowFileNotExisting));
   }
 
   /**
@@ -310,13 +306,13 @@ public class CsvDataSource implements DataSource {
    * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
    * @param entityClass the entity class that should be build
-   * @param bufferedReader the reader to use
+   * @param filePath the path of the file to read
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
-    try (BufferedReader reader = bufferedReader) {
+      Class<? extends UniqueEntity> entityClass, Path filePath, boolean allowFileNotExisting) {
+    try (BufferedReader reader = connector.initReader(filePath)) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
       // by default try-with-resources closes the reader directly when we leave this method (which
@@ -331,11 +327,26 @@ public class CsvDataSource implements DataSource {
               entityClass.getSimpleName(),
               "UUID")
           .map(Set::parallelStream);
+    } catch (FileNotFoundException e) {
+      if (allowFileNotExisting) {
+        log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
+        return Success.of(Stream.empty());
+      } else {
+        return Failure.of(new SourceException("Unable to find file '" + filePath + "'.", e));
+      }
     } catch (IOException e) {
-      log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-      return Success.of(Stream.empty());
+      return Failure.of(
+          new SourceException(
+              "Cannot read file to build entity '" + entityClass.getSimpleName() + "'", e));
     }
+  }
+
+  private Try<Path, SourceException> getFilePath(Class<? extends UniqueEntity> entityClass) {
+    return Try.from(
+        fileNamingStrategy.getFilePath(entityClass),
+        () ->
+            new SourceException(
+                "Cannot find a naming strategy for class '" + entityClass.getSimpleName() + "'."));
   }
 
   protected List<Map<String, String>> csvRowFieldValueMapping(

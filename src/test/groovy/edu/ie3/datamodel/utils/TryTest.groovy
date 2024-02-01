@@ -163,6 +163,30 @@ class TryTest extends Specification {
     ex.cause.message == "source exception"
   }
 
+  def "A Success is created from a non-empty Optional"() {
+    given:
+    def opt = Optional.of("Test")
+
+    when:
+    def actualTry = Try.from(opt, () -> new FailureException("failure"))
+
+    then:
+    actualTry.success
+    actualTry.data.get() == "Test"
+  }
+
+  def "A Failure is created from an empty Optional"() {
+    given:
+    def opt = Optional.<String>empty()
+
+    when:
+    def actualTry = Try.from(opt, () -> new FailureException("failure"))
+
+    then:
+    actualTry.failure
+    actualTry.exception.get().getMessage() == "failure"
+  }
+
   def "A void method can be applied to a try object"() {
     when:
     Try<Void, Exception> actual = Try.ofVoid(() -> null, Exception)

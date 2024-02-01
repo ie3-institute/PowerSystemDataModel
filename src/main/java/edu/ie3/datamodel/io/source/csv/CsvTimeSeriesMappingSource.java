@@ -40,9 +40,7 @@ public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
 
   @Override
   public Stream<Map<String, String>> getMappingSourceData() throws SourceException {
-    return dataSource
-        .buildStreamWithFieldsToAttributesMap(MappingEntry.class, dataSource.connector)
-        .getOrThrow();
+    return dataSource.buildStreamWithFieldsToAttributesMap(MappingEntry.class, true).getOrThrow();
   }
 
   @Override
