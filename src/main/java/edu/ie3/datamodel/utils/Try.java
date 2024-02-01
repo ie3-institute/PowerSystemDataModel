@@ -107,7 +107,7 @@ public abstract class Try<T, E extends Exception> {
    */
   public static <T, E extends Exception> Try<T, E> from(
       Optional<T> opt, ExceptionSupplier<E> exception) {
-    return opt.map(data -> (Try<T, E>) new Success<T, E>(data))
+    return opt.map(data -> (Try<T, E>) Success.<T, E>of(data))
         .orElseGet(() -> new Failure<>(exception.get()));
   }
 
