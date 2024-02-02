@@ -5,12 +5,13 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.models.input.EmInput;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Represents calculation results of an {@link edu.ie3.datamodel.models.input.system.EmInput} */
+/** Represents calculation results of an {@link EmInput} */
 public class EmResult extends SystemParticipantResult {
 
   /**

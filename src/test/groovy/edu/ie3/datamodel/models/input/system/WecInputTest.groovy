@@ -27,6 +27,7 @@ class WecInputTest extends Specification {
       assert qCharacteristics == wec.qCharacteristics
       assert type == SystemParticipantTestData.wecType
       assert marketReaction
+      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }
