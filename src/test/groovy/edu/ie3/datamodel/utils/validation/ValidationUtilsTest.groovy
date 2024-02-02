@@ -86,19 +86,6 @@ class ValidationUtilsTest extends Specification {
     [] as Set                          || Optional.empty()
   }
 
-  def "If an object can't be identified, a ValidationException is thrown as expected"() {
-    when:
-    ValidationUtils.check(invalidObject)
-
-    then:
-    Exception ex = thrown()
-    ex.message.contains(expectedException.message)
-
-    where:
-    invalidObject          || expectedException
-    new Coordinate(10, 10) || new FailedValidationException("Cannot validate object of class '" + invalidObject.class.simpleName + "', as no routine is implemented.")
-  }
-
   def "The validation check method recognizes all potential errors for an asset"() {
     when:
     ValidationUtils.check(invalidAsset)
@@ -189,45 +176,6 @@ class ValidationUtilsTest extends Specification {
     then:
     InvalidEntityException ex = thrown()
     ex.message == "Entity is invalid because of: \nThe following quantities have to be positive: 0.0 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0.0 µS/km, g=0.0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
-  }
-
-  def "Checking an unsupported asset leads to an exception"() {
-    given:
-    def invalidAsset = invalid()
-
-    when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAsset(invalidAsset).stream().filter { it -> it.failure }.toList()
-
-    then:
-    exceptions.size() == 1
-    def e = exceptions.get(0).exception.get()
-    e.message.contains("Cannot validate object of class 'DummyAssetInput', as no routine is implemented.")
-  }
-
-  def "Checking an unsupported asset type leads to an exception"() {
-    given:
-    def invalidAssetType = new InvalidAssetTypeInput()
-
-    when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter { it -> it.failure }.toList()
-
-    then:
-    exceptions.size() == 1
-    def e = exceptions.get(0).exception.get()
-    e.message.contains("Cannot validate object of class 'InvalidAssetTypeInput', as no routine is implemented.")
-  }
-
-  def "Checking an asset type input without an id leads to an exception"() {
-    given:
-    def invalidAssetType = new InvalidAssetTypeInput(UUID.randomUUID(), null)
-
-    when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter { it -> it.failure }.toList()
-
-    then:
-    exceptions.size() == 2
-    def e = exceptions.get(0).exception.get()
-    e.message.startsWith("Entity is invalid because of: \nNo ID assigned [AssetTypeInput")
   }
 
   def "Checking if asset input ids are unique"() {

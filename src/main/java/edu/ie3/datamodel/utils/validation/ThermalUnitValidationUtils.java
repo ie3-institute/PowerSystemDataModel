@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.thermal.*;
@@ -48,10 +47,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     } else if (ThermalStorageInput.class.isAssignableFrom(thermalUnitInput.getClass())) {
       exceptions.addAll(checkThermalStorage((ThermalStorageInput) thermalUnitInput));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(thermalUnitInput).getMessage())));
+      logNotImplemented(thermalUnitInput);
     }
 
     return exceptions;
@@ -81,10 +77,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass())) {
       exceptions.addAll(checkThermalHouse((ThermalHouseInput) thermalSinkInput));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(thermalSinkInput).getMessage())));
+      logNotImplemented(thermalSinkInput);
     }
 
     return exceptions;
@@ -115,10 +108,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass())) {
       exceptions.addAll(checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(thermalStorageInput).getMessage())));
+      logNotImplemented(thermalStorageInput);
     }
 
     return exceptions;

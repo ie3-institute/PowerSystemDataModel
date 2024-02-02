@@ -41,17 +41,14 @@ public class ValidationUtils {
   }
 
   /**
-   * Creates a new {@link NotImplementedException}, if there is no check available for the class of
-   * the given object
+   * Logs a warning, if there is no check available for the class of the given object.
    *
-   * @param obj Object, that cannot be checked
-   * @return Exception with predefined error string
+   * @param obj object, that cannot be checked
    */
-  protected static NotImplementedException buildNotImplementedException(Object obj) {
-    return new NotImplementedException(
-        String.format(
-            "Cannot validate object of class '%s', as no routine is implemented.",
-            obj.getClass().getSimpleName()));
+  protected static void logNotImplemented(Object obj) {
+    logger.warn(
+        "Cannot validate object of class '{}', as no routine is implemented.",
+        obj.getClass().getSimpleName());
   }
 
   /**
@@ -74,9 +71,7 @@ public class ValidationUtils {
     } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(checkAssetType((AssetTypeInput) obj));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(buildNotImplementedException(obj).getMessage())));
+      logNotImplemented(obj);
     }
 
     List<? extends ValidationException> list =
@@ -156,10 +151,7 @@ public class ValidationUtils {
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
       exceptions.addAll(ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput));
     else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(assetInput).getMessage())));
+      logNotImplemented(assetInput);
     }
 
     return exceptions;
@@ -207,10 +199,7 @@ public class ValidationUtils {
       exceptions.addAll(
           SystemParticipantValidationUtils.checkType((SystemParticipantTypeInput) assetTypeInput));
     else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(assetTypeInput).getMessage())));
+      logNotImplemented(assetTypeInput);
     }
 
     return exceptions;

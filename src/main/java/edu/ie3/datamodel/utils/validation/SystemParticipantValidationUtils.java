@@ -8,7 +8,6 @@ package edu.ie3.datamodel.utils.validation;
 import static edu.ie3.datamodel.models.StandardUnits.*;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
-import edu.ie3.datamodel.exceptions.NotImplementedException;
 import edu.ie3.datamodel.exceptions.TryException;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.system.*;
@@ -81,14 +80,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     } else if (WecInput.class.isAssignableFrom(systemParticipant.getClass())) {
       exceptions.addAll(checkWec((WecInput) systemParticipant));
     } else if (EvcsInput.class.isAssignableFrom(systemParticipant.getClass())) {
-      exceptions.add(
-          Try.ofVoid(SystemParticipantValidationUtils::checkEvcs, NotImplementedException.class)
-              .transformF(e -> new InvalidEntityException(e.getMessage(), e.getCause())));
+      exceptions.addAll(checkEvcs((EvcsInput) systemParticipant));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation failed due to: ", buildNotImplementedException(systemParticipant))));
+      logNotImplemented(systemParticipant);
     }
 
     return exceptions;
@@ -167,11 +161,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     } else if (WecTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
       exceptions.addAll(checkWecType((WecTypeInput) systemParticipantTypeInput));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException(
-                  buildNotImplementedException(systemParticipantTypeInput).getMessage(),
-                  systemParticipantTypeInput)));
+      logNotImplemented(systemParticipantTypeInput);
     }
 
     return exceptions;
@@ -532,11 +522,33 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                 wecTypeInput));
   }
 
-  /** Validates a EvcsInput */
-  private static void checkEvcs() {
-    throw new NotImplementedException(
-        String.format(
-            "Validation of '%s' is currently not supported.", EvcsInput.class.getSimpleName()));
+  /**
+   * Validates a EvcsInput if <br>
+   * - its number of charging points is < 1 - its rated power factor is between 0 and 1 - its rated
+   * apparent power is not negative
+   *
+   * @param evcsInput EvcsInput to validate
+   * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
+   *     Success
+   */
+  private static List<Try<Void, InvalidEntityException>> checkEvcs(EvcsInput evcsInput) {
+    return List.of(
+        Try.ofVoid(
+            evcsInput.getChargingPoints() < 1,
+            () ->
+                new InvalidEntityException(
+                    "The number of charging points needs to be at least one. Got: '"
+                        + evcsInput.getChargingPoints()
+                        + "'.",
+                    evcsInput)),
+        Try.ofVoid(
+            () -> checkRatedPowerFactor(evcsInput, evcsInput.getCosPhiRated()),
+            InvalidEntityException.class),
+        Try.ofVoid(
+            evcsInput.getType().getsRated().getValue().doubleValue() < 0d,
+            () ->
+                new InvalidEntityException(
+                    "The rated power of the given entity is below zero.", evcsInput)));
   }
 
   /**

@@ -5,14 +5,16 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.datamodel.models.ElectricCurrentType.AC
 import static edu.ie3.datamodel.models.StandardUnits.*
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.exceptions.NotImplementedException
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.*
+import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.util.quantities.interfaces.Currency
@@ -48,7 +50,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.check() recognizes all potential errors for a system participant"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidSystemParticipant).stream().filter { it -> it.failure }.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidSystemParticipant).findAll { it -> it.failure }
 
     then:
     exceptions.size() == expectedSize
@@ -255,7 +257,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkFixedFeedIn() recognizes all potential errors for an a Fixed Feed-In"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidFixedFeedIn).stream().filter { it -> it.failure }.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidFixedFeedIn).findAll { it -> it.failure }
 
     then:
     exceptions.size() == expectedSize
@@ -325,7 +327,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkLoad() recognizes all potential errors for a load"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidLoad).stream().filter { it -> it.failure }.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidLoad).findAll { it -> it.failure }
 
     then:
     exceptions.size() == expectedSize
@@ -355,7 +357,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkPV() recognizes all potential errors for a PV"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidPV).stream().filter { it -> it.failure }.toList()
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidPV).findAll { it -> it.failure }
 
     then:
     exceptions.size() == expectedSize
@@ -460,39 +462,36 @@ class SystemParticipantValidationUtilsTest extends Specification {
     new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, etaConv, Quantities.getQuantity(-10, ROTOR_AREA), Quantities.getQuantity(-200, HUB_HEIGHT)) || new InvalidEntityException("The following quantities have to be zero or positive: -10 m², -200 m", invalidWecType)
   }
 
-  def "Checking an unsupported asset leads to an exception"() {
-    given:
-    def node = Mock(NodeInput)
-    node.getUuid() >> UUID.randomUUID()
-    def invalidParticipant = new InvalidSystemParticipantInput(node)
-
+  def "SystemParticipantValidationUtils.checkEvcs() recognizes all potential errors for a evcs"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidParticipant).stream().filter { it -> it.failure }.toList()
+    def exceptions = SystemParticipantValidationUtils.check(invalidEvcs).findAll { it.failure }
 
     then:
-    def e = exceptions.get(0).exception.get().cause
-    e.message == "Cannot validate object of class 'InvalidSystemParticipantInput', as no routine is implemented."
+    exceptions.size() == 1
+    Exception ex = exceptions.get(0).exception.get()
+    ex.class == expectedException.class
+    ex.message == expectedException.message
+
+    where:
+    invalidEvcs                                                           || expectedException
+    SystemParticipantTestData.evcsInput.copy().chargingPoints(-1).build() || new InvalidEntityException("The number of charging points needs to be at least one. Got: '-1'.", invalidEvcs)
+    SystemParticipantTestData.evcsInput.copy().chargingPoints(0).build()  || new InvalidEntityException("The number of charging points needs to be at least one. Got: '0'.", invalidEvcs)
+    SystemParticipantTestData.evcsInput.copy().cosPhiRated(2).build()     || new InvalidEntityException("Rated power factor of EvcsInput must be between 0 and 1", invalidEvcs)
   }
 
-  def "Checking an unsupported asset type leads to an exception"() {
+  def "SystemParticipantValidationUtils.checkEvcs() recognizes all potential errors for a evcs type"() {
     given:
-    def invalidParticipantInput = new InvalidSystemParticipantTypeInput()
+    def invalidType = new ChargingPointType("invalid type", Quantities.getQuantity(-1d, KILOVOLTAMPERE), AC)
+    def invalidEvcs = SystemParticipantTestData.evcsInput.copy().type(invalidType).build()
+    def expectedExceptions = new InvalidEntityException("The rated power of the given entity is below zero.", invalidEvcs)
 
     when:
-    SystemParticipantValidationUtils.check(invalidParticipantInput)
+    def exceptions = SystemParticipantValidationUtils.check(invalidEvcs).findAll { it.failure }
 
     then:
-    Throwable topEx = thrown()
-    Throwable e = topEx.cause
-    e.message.contains "Cannot validate object of class 'InvalidSystemParticipantTypeInput', as no routine is implemented."
-  }
-
-  def "Checking electric vehicle charging stations leads to an exception"() {
-    when:
-    SystemParticipantValidationUtils.checkEvcs()
-
-    then:
-    def e = thrown(NotImplementedException)
-    e.message == "Validation of 'EvcsInput' is currently not supported."
+    exceptions.size() == 1
+    Exception ex = exceptions.get(0).exception.get()
+    ex.class == expectedExceptions.class
+    ex.message == expectedExceptions.message
   }
 }
