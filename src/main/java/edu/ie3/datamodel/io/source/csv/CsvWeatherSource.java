@@ -56,7 +56,8 @@ public class CsvWeatherSource extends WeatherSource {
       Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       IdCoordinateSource idCoordinateSource,
-      TimeBasedWeatherValueFactory weatherFactory) {
+      TimeBasedWeatherValueFactory weatherFactory)
+      throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     coordinateToTimeSeries = getWeatherTimeSeries();
@@ -130,7 +131,8 @@ public class CsvWeatherSource extends WeatherSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
+  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries()
+      throws SourceException {
     /* Get only weather time series meta information */
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
         dataSource
@@ -148,7 +150,8 @@ public class CsvWeatherSource extends WeatherSource {
    */
   private Map<Point, IndividualTimeSeries<WeatherValue>> readWeatherTimeSeries(
       Set<CsvIndividualTimeSeriesMetaInformation> weatherMetaInformation,
-      CsvFileConnector connector) {
+      CsvFileConnector connector)
+      throws SourceException {
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
     Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
         this::buildWeatherValue;
@@ -176,14 +179,13 @@ public class CsvWeatherSource extends WeatherSource {
                     weatherTimeSeries.put(point, timeSeries);
                   }
                 });
-      } catch (SourceException e) {
-        log.error("Cannot process weather source", e);
       } catch (FileNotFoundException e) {
-        log.error("Cannot read file {}. File not found!", data.getFullFilePath());
+        throw new SourceException(
+            "Cannot read file " + data.getFullFilePath() + ". File not found!", e);
       } catch (IOException e) {
-        log.error("Cannot read file {}. Exception: {}", data.getFullFilePath(), e);
-      } catch (ValidationException ve) {
-        log.error("Validation failed for file {}. Exception: {}", data.getFullFilePath(), ve);
+        throw new SourceException("Cannot read file " + data.getFullFilePath() + ".", e);
+      } catch (ValidationException e) {
+        throw new SourceException("Validation failed for file " + data.getFullFilePath() + ".", e);
       }
     }
     return weatherTimeSeries;

@@ -484,5 +484,6 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     distinctRows.failure
+    distinctRows.exception.get().message == "'NodeInput' entities with duplicated UUID key, but different field values found! Please review the corresponding input file! Affected primary keys: 4ca90220-74c2-4369-9afa-a18bf068840d"
   }
 }

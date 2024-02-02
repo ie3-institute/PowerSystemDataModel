@@ -12,7 +12,6 @@ import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
-import edu.ie3.datamodel.utils.Try.Success;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.io.BufferedReader;
@@ -66,7 +65,6 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    * @return Mapping from coordinate id to coordinate
    */
   private Map<Integer, Point> setupIdToCoordinateMap() throws SourceException {
-
     return buildStreamWithFieldsToAttributesMap()
         .map(
             data ->
@@ -92,7 +90,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<?> entityClass) throws SourceException {
+  public Optional<Set<String>> getSourceFields() throws SourceException {
     Path filePath = Path.of(dataSource.getNamingStrategy().getIdCoordinateEntityName());
     return dataSource.getSourceFields(filePath);
   }
@@ -203,8 +201,8 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
                       set, coordinateExtractor, COORDINATE_ID_MAPPING, "coordinate"))
           .map(Set::parallelStream);
     } catch (IOException e) {
-      log.error("Cannot read the file for coordinate id to coordinate mapping.", e);
-      return Success.of(Stream.empty());
+      return Failure.of(
+          new SourceException("Cannot read the file for coordinate id to coordinate mapping.", e));
     } catch (ValidationException ve) {
       return Failure.of(new SourceException("Creating stream failed due to failed validation", ve));
     }

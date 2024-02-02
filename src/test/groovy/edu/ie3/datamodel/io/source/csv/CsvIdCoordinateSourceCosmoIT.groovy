@@ -40,6 +40,22 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
     actualStream.data.get().collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
   }
 
+  def "The CsvCoordinateSource is able to return the source fields from a coordinate file"() {
+    when:
+    def sourceFields = source.sourceFields
+
+    then:
+    sourceFields.present
+    sourceFields.get() == [
+      "id",
+      "lat_geo",
+      "lat_rot",
+      "long_geo",
+      "long_rot",
+      "tid"
+    ] as Set<String>
+  }
+
   def "The CsvIdCoordinateSource is able to look up a specific point or an empty Optional otherwise" () {
     given:
     def knownCoordinateId = 106582

@@ -23,10 +23,9 @@ public interface IdCoordinateSource {
   /**
    * Method to retrieve the fields found in the source.
    *
-   * @param entityClass class of the source
    * @return an option for the found fields
    */
-  Optional<Set<String>> getSourceFields(Class<?> entityClass) throws SourceException;
+  Optional<Set<String>> getSourceFields() throws SourceException;
 
   /**
    * Get the matching coordinate for the given ID

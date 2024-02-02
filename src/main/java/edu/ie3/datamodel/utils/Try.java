@@ -262,7 +262,7 @@ public abstract class Try<T, E extends Exception> {
       Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc);
 
   /**
-   * Method to convert a {@link Try} object.
+   * Method to convert a {@link Try} object to a common type.
    *
    * @param successFunc that will be used to transform the data to the new type
    * @param failureFunc that will be used to transform the exception to the new type
