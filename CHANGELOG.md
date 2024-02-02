@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
 - Fixed hyperlink in line documentation [#965](https://github.com/ie3-institute/PowerSystemDataModel/issues/965)
 - Fixed some tests no failing when they should [#958](https://github.com/ie3-institute/PowerSystemDataModel/issues/958)
+- Fixed thermal-house-documentation [#873](https://github.com/ie3-institute/PowerSystemDataModel/issues/873)
+- Fixed ElectricVehicle Documentation [#875](https://github.com/ie3-institute/PowerSystemDataModel/issues/875)
+- Fixed Equal behavior of `ConnectorResult` [#1001](https://github.com/ie3-institute/PowerSystemDataModel/issues/1001) 
 
 ### Changed
 - Changing from comparing strings to comparing uuids in `EntitySource.findFirstEntityByUuid` [#829](https://github.com/ie3-institute/PowerSystemDataModel/issues/829)
