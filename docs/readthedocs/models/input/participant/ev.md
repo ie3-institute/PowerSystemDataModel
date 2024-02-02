@@ -20,7 +20,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - uuid
      - --
-     -
+     - 
 
    * - id
      - --
@@ -67,7 +67,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - uuid
      - --
-     -
+     - 
 
    * - id
      - --
@@ -75,7 +75,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - operator
      - --
-     -
+     - 
 
    * - operationTime
      - --
@@ -83,11 +83,15 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - node
      - --
-     -
+     - 
+     
+   * - qCharacteristics
+     - --
+     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - type
      - --
-     -
+     - 
 
    * - em
      - --

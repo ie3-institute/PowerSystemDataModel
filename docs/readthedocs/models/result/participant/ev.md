@@ -30,15 +30,15 @@ Result of an electric vehicle, that is occasionally connected to the grid via an
 
    * - p
      - MW
-     -
+     - 
 
    * - q
      - MVAr
-     -
+     - 
 
    * - soc
      - %
-     -
+     - 
 
 ```
 
