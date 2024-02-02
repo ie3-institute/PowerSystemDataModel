@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
-import edu.ie3.test.helper.TestContainerHelper
-
 import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 
 import edu.ie3.datamodel.exceptions.SourceException
@@ -15,6 +13,7 @@ import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.value.*
+import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.interval.ClosedInterval
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer

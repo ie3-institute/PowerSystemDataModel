@@ -5,8 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue

@@ -5,6 +5,8 @@
  */
 package edu.ie3.test.common
 
+import static edu.ie3.datamodel.models.StandardUnits.*
+
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -28,8 +30,6 @@ import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.*
-
-import static edu.ie3.datamodel.models.StandardUnits.*
 
 class SystemParticipantTestData {
 
@@ -154,6 +154,8 @@ class SystemParticipantTestData {
   public static final ThermalStorageInput thermalStorage = new CylindricalStorageInput(
   UUID.fromString("8851813b-3a7d-4fee-874b-4df9d724e4b3"),
   "test_cylindricThermalStorage",
+  GridTestData.profBroccoli,
+  OperationTime.notLimited(),
   thermalBus,
   storageVolumeLvl,
   storageVolumeLvlMin,
@@ -267,8 +269,7 @@ class SystemParticipantTestData {
   UUID.fromString("06b58276-8350-40fb-86c0-2414aa4a0452"),
   "test_storageInput",
   operator,
-  operationTime
-  ,
+  operationTime,
   participantNode,
   cosPhiFixed,
   storageTypeInput
@@ -312,47 +313,16 @@ class SystemParticipantTestData {
   v2gSupport
   )
 
-  // Energy Management
-  public static final UUID[] connectedAssets = new UUID[]{
-    loadInput.getUuid(), pvInput.getUuid()
-  }
-  public static final String emControlStrategy = "self_optimization"
-  public static final emInput = new EmInput(
-  UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
-  "test_emInput",
-  operator,
-  operationTime,
-  participantNode,
-  cosPhiFixed,
-  connectedAssets,
-  emControlStrategy
-  )
-
-  public static allParticipants = [
-    fixedFeedInInput,
-    pvInput,
-    loadInput,
-    bmInput,
-    storageInput,
-    wecInput,
-    evInput,
-    chpInput,
-    hpInput,
-    emInput
-  ]
-
-  static SystemParticipants getEmptySystemParticipants() {
-    return new SystemParticipants(
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set,
-    [] as Set)
-  }
+  public static SystemParticipants emptySystemParticipants =
+  new SystemParticipants(
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set,
+  [] as Set)
 }

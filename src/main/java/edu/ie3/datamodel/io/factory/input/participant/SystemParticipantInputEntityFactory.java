@@ -26,19 +26,19 @@ import java.util.*;
  * @version 0.1
  * @since 28.01.20
  */
-abstract class SystemParticipantInputEntityFactory<
+public abstract class SystemParticipantInputEntityFactory<
         T extends SystemParticipantInput, D extends NodeAssetInputEntityData>
     extends AssetInputEntityFactory<T, D> {
 
-  private static final String Q_CHARACTERISTICS = "qcharacteristics";
+  private static final String Q_CHARACTERISTICS = "qCharacteristics";
 
   protected SystemParticipantInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
 
   @Override
-  protected List<Set<String>> getFields(D data) {
-    List<Set<String>> fields = super.getFields(data);
+  protected List<Set<String>> getFields(Class<?> entityClass) {
+    List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
     for (Set<String> set : fields) set.add(Q_CHARACTERISTICS);
 
     return fields;

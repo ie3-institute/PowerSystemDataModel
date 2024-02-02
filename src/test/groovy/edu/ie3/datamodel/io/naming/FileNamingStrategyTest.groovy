@@ -9,7 +9,6 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -41,6 +40,7 @@ import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult

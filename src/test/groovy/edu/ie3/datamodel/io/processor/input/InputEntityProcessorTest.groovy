@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.processor.input
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -29,8 +31,6 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import java.time.ZonedDateTime
-
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 /**
  * Testing the function of processors

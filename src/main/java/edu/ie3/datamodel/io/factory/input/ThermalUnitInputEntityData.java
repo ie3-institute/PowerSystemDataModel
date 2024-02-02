@@ -31,6 +31,18 @@ public class ThermalUnitInputEntityData extends AssetInputEntityData {
     this.busInput = busInput;
   }
 
+  /**
+   * Creates a new ThermalUnitInputEntityData object based on a given {@link AssetInputEntityData}
+   * object and a bus input
+   *
+   * @param entityData The AssetInputEntityData object to enhance
+   * @param busInput The thermal bus input
+   */
+  public ThermalUnitInputEntityData(AssetInputEntityData entityData, ThermalBusInput busInput) {
+    super(entityData, entityData.getOperatorInput());
+    this.busInput = busInput;
+  }
+
   public ThermalBusInput getBusInput() {
     return busInput;
   }

@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.LoadInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.profile.LoadProfile;
+import java.util.UUID;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import org.slf4j.Logger;
@@ -24,11 +25,11 @@ public class LoadInputFactory
     extends SystemParticipantInputEntityFactory<LoadInput, NodeAssetInputEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(LoadInputFactory.class);
 
-  private static final String LOAD_PROFILE = "loadprofile";
+  private static final String LOAD_PROFILE = "loadProfile";
   private static final String DSM = "dsm";
-  private static final String E_CONS_ANNUAL = "econsannual";
-  private static final String S_RATED = "srated";
-  private static final String COS_PHI = "cosphirated";
+  private static final String E_CONS_ANNUAL = "eConsAnnual";
+  private static final String S_RATED = "sRated";
+  private static final String COS_PHI = "cosPhiRated";
 
   public LoadInputFactory() {
     super(LoadInput.class);
@@ -42,7 +43,7 @@ public class LoadInputFactory
   @Override
   protected LoadInput buildModel(
       NodeAssetInputEntityData data,
-      java.util.UUID uuid,
+      UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,

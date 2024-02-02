@@ -5,102 +5,227 @@
  */
 package edu.ie3.datamodel.io.source
 
-import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory
-import edu.ie3.datamodel.io.naming.FileNamingStrategy
-import edu.ie3.datamodel.io.source.csv.CsvDataSource
-import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
-import edu.ie3.test.common.SystemParticipantTestData as sptd
-import edu.ie3.test.common.GridTestData as gtd
+import static edu.ie3.test.helper.EntityMap.map
 
+import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
+import edu.ie3.datamodel.io.factory.input.participant.ChpInputEntityData
+import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantTypedEntityData
+import edu.ie3.datamodel.io.source.csv.CsvDataSource
+import edu.ie3.datamodel.models.input.AssetInput
+import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.system.ChpInput
+import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
+import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
+import edu.ie3.datamodel.utils.Try
+import edu.ie3.test.common.GridTestData
+import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.nio.file.Path
 
 class EntitySourceTest extends Specification {
 
   private final class DummyEntitySource extends EntitySource {
     DummyEntitySource(CsvDataSource dataSource) {
-      this.dataSource = dataSource
+      super(dataSource)
+    }
+
+    @Override
+    void validate() throws ValidationException {
     }
   }
 
   @Shared
-  String csvSep = ","
-  @Shared
-  Path testBaseFolderPath = Path.of("testBaseFolderPath") // does not have to exist for this test
-  @Shared
-  FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+  DummyEntitySource dummyEntitySource = new DummyEntitySource(Mock(CsvDataSource))
 
-  CsvDataSource csvDataSource = new CsvDataSource(csvSep, testBaseFolderPath, fileNamingStrategy)
-
-  DummyEntitySource dummyEntitySource = new DummyEntitySource(csvDataSource)
-
-  def "A csv data source is able to find the correct first entity by uuid"() {
+  def "An EntitySource should enrich entity data with a linked entity, if it was provided"() {
     given:
-    def uuid = UUID.randomUUID()
-    def queriedOperator = new OperatorInput(uuid, "b")
-    def entities = Arrays.asList(
-        new OperatorInput(UUID.randomUUID(), "a"),
-        queriedOperator,
-        new OperatorInput(UUID.randomUUID(), "c")
-        )
-
-    when:
-    def actual = dummyEntitySource.findFirstEntityByUuid(uuid.toString(), entities)
-
-    then:
-    actual.present
-    actual.get() == queriedOperator
-  }
-
-  def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
-
-    expect:
-    dummyEntitySource.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid) == expectedOperator
-
-    where:
-    operatorUuid                           | operators                | entityClassName   | requestEntityUuid                      || expectedOperator
-    "8f9682df-0744-4b58-a122-f0dc730f6510" | [sptd.hpInput.operator]  | "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || sptd.hpInput.operator
-    "8f9682df-0744-4b58-a122-f0dc730f6520" | [sptd.hpInput.operator]  | "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
-    "8f9682df-0744-4b58-a122-f0dc730f6510" | []                       | "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
-  }
-
-  def "A CsvDataSource should be able to handle the extraction process of an asset type correctly"() {
-    when:
-    def assetTypeOpt = dummyEntitySource.getAssetType(types, fieldsToAttributes, "TestClassName")
-
-    then:
-    assetTypeOpt.data.present == resultIsPresent
-    assetTypeOpt.data.ifPresent({ assetType ->
-      assert (assetType == resultData)
-    })
-
-    where:
-    types                       | fieldsToAttributes                               || resultIsPresent || resultData
-    []                          | ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || false           || null
-    []                          | ["bla": "foo"]                                   || false           || null
-    [gtd.transformerTypeBtoD]   | ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || true            || gtd.transformerTypeBtoD
-    [sptd.chpTypeInput]         | ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true            || sptd.chpTypeInput
-  }
-
-  def "A CsvDataSource should not throw an exception but assume NO_OPERATOR_ASSIGNED if the operator field is missing in the headline"() {
-
-    given:
-    def thermalBusInputFieldsToAttributesMap = [
-      "uuid"          : "0d95d7f2-49fb-4d49-8636-383a5220384e",
-      "id"            : "test_thermalBusInput",
-      "operatesuntil": "2020-03-25T15:11:31Z[UTC]",
-      "operatesfrom" : "2020-03-24T15:11:31Z[UTC]"
+    Map<String, String> parameter = [
+      "linked_entity" : GridTestData.nodeA.uuid.toString(),
     ]
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
+
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
 
     when:
-    def thermalBusInputEntity = new ThermalBusInputFactory().get(dummyEntitySource.assetInputEntityDataStream(ThermalBusInput, thermalBusInputFieldsToAttributesMap, Collections.emptyList()))
+    def result = dummyEntitySource.enrichEntityData(entityData, "linked_entity", entityMap, NodeAssetInputEntityData::new)
 
     then:
-    noExceptionThrown() // no NPE should be thrown
-    thermalBusInputEntity.success
-    thermalBusInputEntity.data.get().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
+    result == new Try.Success<NodeAssetInputEntityData, SourceException>(new NodeAssetInputEntityData(entityData, GridTestData.nodeA))
+  }
+
+  def "An EntitySource trying to enrich entity data should fail, if no matching linked entity was provided"() {
+    given:
+    Map<String, String> parameter = [
+      "linked_entity" : GridTestData.nodeB.uuid.toString(),
+    ]
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
+
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+
+    when:
+    def result = dummyEntitySource.enrichEntityData(entityData, "linked_entity", entityMap, NodeAssetInputEntityData::new)
+
+    then:
+    result.isFailure()
+    result.getException().get().message.startsWith("Linked linked_entity with UUID 47d29df0-ba2d-4d23-8e75-c82229c5c758 was not found for entity AssetInputEntityData")
+  }
+
+  def "An EntitySource should enrich entity data with two linked entities, if they are provided"() {
+    given:
+    Map<String, String> parameter = [
+      "t_bus" : sptd.thermalBus.uuid.toString(),
+      "t_storage" : sptd.thermalStorage.uuid.toString()
+    ]
+    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput, sptd.participantNode, sptd.chpTypeInput)
+
+    Map<UUID, ThermalBusInput> busMap = map([sptd.thermalBus])
+    Map<UUID, ThermalStorageInput> storageMap = map([sptd.thermalStorage])
+
+    when:
+    def result = dummyEntitySource.enrichEntityData(entityData, "t_bus", busMap, "t_storage", storageMap, ChpInputEntityData::new)
+
+    then:
+    result == new Try.Success<ChpInputEntityData, SourceException>(new ChpInputEntityData(entityData, sptd.thermalBus, sptd.thermalStorage))
+  }
+
+  def "An EntitySource trying to enrich entity data should fail, if one of two linked entities is not provided"() {
+    given:
+    Map<String, String> parameter = [
+      "t_bus" : sptd.thermalBus.uuid.toString(),
+      "t_storage" : "8851813b-3a7d-4fee-874b-4df9d724e4b4"
+    ]
+    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput, sptd.participantNode, sptd.chpTypeInput)
+
+    Map<UUID, ThermalBusInput> busMap = map([sptd.thermalBus])
+    Map<UUID, ThermalStorageInput> storageMap = map([sptd.thermalStorage])
+
+    when:
+    def result = dummyEntitySource.enrichEntityData(entityData, "t_bus", busMap, "t_storage", storageMap, ChpInputEntityData::new)
+
+    then:
+    result.isFailure()
+    result.getException().get().message.startsWith("Linked t_storage with UUID 8851813b-3a7d-4fee-874b-4df9d724e4b4 was not found for entity SystemParticipantTypedEntityData")
+  }
+
+  def "An EntitySource should find a linked entity, if it was provided"() {
+    given:
+    Map<String, String> parameter = [
+      "linked_entity" : sptd.chpTypeInput.uuid.toString(),
+    ]
+    def entityData = new EntityData(parameter, AssetInput)
+
+    Map<UUID, ChpTypeInput> entityMap = map([sptd.chpTypeInput])
+
+    when:
+    def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
+
+    then:
+    result == new Try.Success<ChpTypeInput, SourceException>(sptd.chpTypeInput)
+  }
+
+  def "An EntitySource trying to find a linked entity should fail, if no matching linked entity was provided"() {
+    given:
+    Map<String, String> parameter = [
+      "linked_entity" : "5ebd8f7e-dedb-4017-bb86-6373c4b60000",
+    ]
+    def entityData = new EntityData(parameter, AssetInput)
+
+    Map<UUID, ChpTypeInput> entityMap = map([sptd.chpTypeInput])
+
+    when:
+    def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
+
+    then:
+    result.isFailure()
+    result.getException().get().message == "Linked linked_entity with UUID 5ebd8f7e-dedb-4017-bb86-6373c4b60000 was not found for entity EntityData{fieldsToAttributes={linked_entity=5ebd8f7e-dedb-4017-bb86-6373c4b60000}, targetClass=class edu.ie3.datamodel.models.input.AssetInput}"
+  }
+
+  def "An EntitySource trying to find a linked entity should fail, if corresponding UUID is malformed"() {
+    given:
+    Map<String, String> parameter = [
+      "linked_entity" : "not-a-uuid",
+    ]
+    def entityData = new EntityData(parameter, AssetInput)
+
+    Map<UUID, ChpTypeInput> entityMap = map([sptd.chpTypeInput])
+
+    when:
+    def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
+
+    then:
+    result.isFailure()
+    result.getException().get().message == "Extracting UUID field linked_entity from entity data EntityData{fieldsToAttributes={linked_entity=not-a-uuid}, targetClass=class edu.ie3.datamodel.models.input.AssetInput} failed."
+  }
+
+  def "An EntitySource should optionally enrich entity data with a linked entity, if it was provided"() {
+    given:
+    Map<String, String> parameter = [
+      "linked_entity" : GridTestData.nodeA.uuid.toString(),
+    ]
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
+
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+
+    when:
+    def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
+
+    then:
+    result == new Try.Success<NodeAssetInputEntityData, SourceException>(new NodeAssetInputEntityData(entityData, GridTestData.nodeA))
+  }
+
+  def "An EntitySource should (optionally) enrich entity data with the default entity, if no linked entity is specified"() {
+    given:
+    Map<String, String> parameter = [
+      "linked_entity" : "",
+    ]
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
+
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+
+    when:
+    def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
+
+    then:
+    result == new Try.Success<NodeAssetInputEntityData, SourceException>(new NodeAssetInputEntityData(entityData, GridTestData.nodeB))
+  }
+
+  def "An EntitySource trying to optionally find a linked entity should fail, if no matching linked entity was provided"() {
+    given:
+    Map<String, String> parameter = [
+      "linked_entity" : "4ca90220-74c2-4369-9afa-a18bf068840e",
+    ]
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
+
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+
+    when:
+    def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
+
+    then:
+    result.isFailure()
+    result.getException().get().message.startsWith("Linked linked_entity with UUID 4ca90220-74c2-4369-9afa-a18bf068840e was not found for entity AssetInputEntityData{fieldsToValues={linked_entity=4ca90220-74c2-4369-9afa-a18bf068840e}, targetClass=class edu.ie3.datamodel.models.input.AssetInput")
+  }
+
+
+  def "An EntitySource trying to optionally find a linked entity should fail, if corresponding UUID is malformed"() {
+    given:
+    Map<String, String> parameter = [
+      "linked_entity" : "not-a-uuid",
+    ]
+    def entityData = new AssetInputEntityData(parameter, AssetInput)
+
+    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+
+    when:
+    def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
+
+    then:
+    result.isFailure()
+    result.getException().get().message == "Exception while trying to parse UUID of field \"linked_entity\" with value \"not-a-uuid\""
   }
 }

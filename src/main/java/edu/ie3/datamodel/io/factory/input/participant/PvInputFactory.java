@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.PvInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
@@ -21,13 +22,13 @@ public class PvInputFactory
     extends SystemParticipantInputEntityFactory<PvInput, NodeAssetInputEntityData> {
   private static final String ALBEDO = "albedo";
   private static final String AZIMUTH = "azimuth";
-  private static final String ETA_CONV = "etaconv";
-  private static final String ELEVATION_ANGLE = "elevationangle";
-  private static final String KG = "kg";
-  private static final String KT = "kt";
-  private static final String MARKET_REACTION = "marketreaction";
-  private static final String S_RATED = "srated";
-  private static final String COS_PHI_RATED = "cosphirated";
+  private static final String ETA_CONV = "etaConv";
+  private static final String ELEVATION_ANGLE = "elevationAngle";
+  private static final String KG = "kG";
+  private static final String KT = "kT";
+  private static final String MARKET_REACTION = "marketReaction";
+  private static final String S_RATED = "sRated";
+  private static final String COS_PHI_RATED = "cosPhiRated";
 
   public PvInputFactory() {
     super(PvInput.class);
@@ -43,7 +44,7 @@ public class PvInputFactory
   @Override
   protected PvInput buildModel(
       NodeAssetInputEntityData data,
-      java.util.UUID uuid,
+      UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,

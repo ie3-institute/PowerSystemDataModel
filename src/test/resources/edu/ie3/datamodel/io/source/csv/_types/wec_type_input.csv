@@ -1,2 +1,2 @@
-uuid,capex,cosphi_rated,cp_characteristic,eta_conv,hub_height,id,opex,rotor_area,s_rated
+uuid,capex,cos_phi_rated,cp_characteristic,eta_conv,hub_height,id,opex,rotor_area,s_rated
 5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,100.0,0.95,"cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",98.0,200.0,test_wecType,50.0,20.0,25.0
