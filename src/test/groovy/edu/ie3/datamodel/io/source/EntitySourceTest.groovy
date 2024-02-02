@@ -16,6 +16,7 @@ import edu.ie3.datamodel.io.factory.input.participant.ChpInputEntityData
 import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantTypedEntityData
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
 import edu.ie3.datamodel.models.input.AssetInput
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.system.ChpInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
@@ -81,7 +82,7 @@ class EntitySourceTest extends Specification {
       "t_bus" : sptd.thermalBus.uuid.toString(),
       "t_storage" : sptd.thermalStorage.uuid.toString()
     ]
-    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput, sptd.participantNode, sptd.chpTypeInput)
+    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput, sptd.participantNode, null, sptd.chpTypeInput)
 
     Map<UUID, ThermalBusInput> busMap = map([sptd.thermalBus])
     Map<UUID, ThermalStorageInput> storageMap = map([sptd.thermalStorage])
@@ -99,7 +100,7 @@ class EntitySourceTest extends Specification {
       "t_bus" : sptd.thermalBus.uuid.toString(),
       "t_storage" : "8851813b-3a7d-4fee-874b-4df9d724e4b4"
     ]
-    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput, sptd.participantNode, sptd.chpTypeInput)
+    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput, sptd.participantNode, null, sptd.chpTypeInput)
 
     Map<UUID, ThermalBusInput> busMap = map([sptd.thermalBus])
     Map<UUID, ThermalStorageInput> storageMap = map([sptd.thermalStorage])
@@ -115,34 +116,34 @@ class EntitySourceTest extends Specification {
   def "An EntitySource should find a linked entity, if it was provided"() {
     given:
     Map<String, String> parameter = [
-      "linked_entity" : sptd.chpTypeInput.uuid.toString(),
+      "linked_entity" : sptd.emInput.uuid.toString(),
     ]
     def entityData = new EntityData(parameter, AssetInput)
 
-    Map<UUID, ChpTypeInput> entityMap = map([sptd.chpTypeInput])
+    Map<UUID, EmInput> entityMap = map([sptd.emInput])
 
     when:
     def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
 
     then:
-    result == new Try.Success<ChpTypeInput, SourceException>(sptd.chpTypeInput)
+    result == new Try.Success<EmInput, SourceException>(sptd.emInput)
   }
 
   def "An EntitySource trying to find a linked entity should fail, if no matching linked entity was provided"() {
     given:
     Map<String, String> parameter = [
-      "linked_entity" : "5ebd8f7e-dedb-4017-bb86-6373c4b60000",
+      "linked_entity" : sptd.parentEm.uuid.toString(),
     ]
     def entityData = new EntityData(parameter, AssetInput)
 
-    Map<UUID, ChpTypeInput> entityMap = map([sptd.chpTypeInput])
+    Map<UUID, EmInput> entityMap = map([sptd.emInput])
 
     when:
     def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
 
     then:
     result.isFailure()
-    result.getException().get().message == "Linked linked_entity with UUID 5ebd8f7e-dedb-4017-bb86-6373c4b60000 was not found for entity EntityData{fieldsToAttributes={linked_entity=5ebd8f7e-dedb-4017-bb86-6373c4b60000}, targetClass=class edu.ie3.datamodel.models.input.AssetInput}"
+    result.getException().get().message == "Linked linked_entity with UUID 897bfc17-8e54-43d0-8d98-740786fd94dd was not found for entity EntityData{fieldsToAttributes={linked_entity=897bfc17-8e54-43d0-8d98-740786fd94dd}, targetClass=class edu.ie3.datamodel.models.input.AssetInput}"
   }
 
   def "An EntitySource trying to find a linked entity should fail, if corresponding UUID is malformed"() {
@@ -152,7 +153,7 @@ class EntitySourceTest extends Specification {
     ]
     def entityData = new EntityData(parameter, AssetInput)
 
-    Map<UUID, ChpTypeInput> entityMap = map([sptd.chpTypeInput])
+    Map<UUID, EmInput> entityMap = map([sptd.emInput])
 
     when:
     def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)

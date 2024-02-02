@@ -73,6 +73,12 @@ Model of an ideal electrical battery energy storage.
      - --
      - Permissible amount of full cycles
 
+   * - em
+     - --
+     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       | this system participant. Field can be empty or missing, if this participant
+       | is not controlled.
+
 ```
 
 ### Entity Model

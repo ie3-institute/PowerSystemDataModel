@@ -9,6 +9,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.BmInput
@@ -48,11 +49,12 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
     def inputClass = BmInput
     def nodeInput = Mock(NodeInput)
     def operatorInput = Mock(OperatorInput)
+    def emUnit = Mock(EmInput)
     def typeInput = Mock(BmTypeInput)
 
     when:
     Try<BmInput, FactoryException> input = inputFactory.get(
-        new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
+        new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass, operatorInput, nodeInput, emUnit, typeInput))
 
     then:
     input.success
@@ -72,6 +74,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
+      assert em == Optional.of(emUnit)
       assert type == typeInput
       assert !marketReaction
       assert costControlled

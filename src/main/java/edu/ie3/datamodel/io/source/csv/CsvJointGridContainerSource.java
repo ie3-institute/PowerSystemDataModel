@@ -50,9 +50,9 @@ public class CsvJointGridContainerSource {
     TypeSource typeSource = new TypeSource(dataSource);
     RawGridSource rawGridSource = new RawGridSource(typeSource, dataSource);
     ThermalSource thermalSource = new ThermalSource(typeSource, dataSource);
-    SystemParticipantSource systemParticipantSource =
-        new SystemParticipantSource(typeSource, thermalSource, rawGridSource, dataSource);
     EnergyManagementSource emSource = new EnergyManagementSource(typeSource, dataSource);
+    SystemParticipantSource systemParticipantSource =
+        new SystemParticipantSource(typeSource, thermalSource, rawGridSource, emSource, dataSource);
     GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* validating sources */
@@ -80,8 +80,6 @@ public class CsvJointGridContainerSource {
         Try.of(
             () -> systemParticipantSource.getSystemParticipants(operators, nodes),
             SourceException.class);
-    Try<EnergyManagementUnits, SourceException> emUnits =
-        Try.of(() -> emSource.getEmUnits(operators), SourceException.class);
     Try<GraphicElements, SourceException> graphicElements =
         Try.of(() -> graphicSource.getGraphicElements(nodes, lines), SourceException.class);
 
@@ -98,7 +96,6 @@ public class CsvJointGridContainerSource {
           gridName,
           rawGridElements.getOrThrow(),
           systemParticipants.getOrThrow(),
-          emUnits.getOrThrow(),
           graphicElements.getOrThrow());
     }
   }

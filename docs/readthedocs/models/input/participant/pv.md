@@ -76,6 +76,12 @@ Detailed model of a photovoltaic power plant.
      - --
      - Rated power factor
 
+   * - em
+     - --
+     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       | this system participant. Field can be empty or missing, if this participant
+       | is not controlled.
+
 ```
 
 ## Caveats
