@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.container.EnergyManagementUnits
 import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
@@ -48,7 +47,6 @@ class SampleJointGrid extends SystemParticipantTestData {
         "sampleGrid",
         rawGridElements,
         systemParticipants(rawGridElements),
-        new EnergyManagementUnits(Collections.emptySet()),
         new GraphicElements(Collections.emptySet()))
   }
 
@@ -72,6 +70,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         operationTime,
         participantNode,
         cosPhiFixed,
+        emInput,
         albedo,
         azimuth,
         etaConv,
@@ -91,6 +90,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         operationTime,
         participantNode,
         cosPhiFixed,
+        emInput,
         standardLoadProfile,
         false,
         eConsAnnual,
@@ -105,6 +105,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         operationTime,
         participantNode,
         cosPhiFixed,
+        emInput,
         standardLoadProfile,
         false,
         eConsAnnual,
@@ -120,6 +121,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         operationTime,
         participantNode,
         cosPhiFixed,
+        emInput,
         storageTypeInput)
 
     return new SystemParticipants(
