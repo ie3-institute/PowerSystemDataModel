@@ -84,11 +84,15 @@ public class ValidationUtils {
   }
 
   /**
-   * Validates an asset if: <br>
-   * - it is not null <br>
-   * - its id is not null <br>
-   * - its operation time is not null <br>
-   * - in case operation time is limited, start time is before end time <br>
+   * Validates an asset if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>its id is not null
+   *   <li>its operation time is not null
+   *   <li>in case operation time is limited, start time is before end time
+   * </ul>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object.
    *
@@ -158,8 +162,12 @@ public class ValidationUtils {
   }
 
   /**
-   * Validates an asset type if: <br>
-   * - it is not null <br>
+   * Validates an asset type if:
+   *
+   * <ul>
+   *   <li>it is not null
+   * </ul>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object.
    *

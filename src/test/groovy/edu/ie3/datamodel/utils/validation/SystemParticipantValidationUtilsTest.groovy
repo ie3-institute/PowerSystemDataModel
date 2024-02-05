@@ -474,8 +474,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     where:
     invalidEvcs                                                           || expectedException
-    SystemParticipantTestData.evcsInput.copy().chargingPoints(-1).build() || new InvalidEntityException("The number of charging points needs to be at least one. Got: '-1'.", invalidEvcs)
-    SystemParticipantTestData.evcsInput.copy().chargingPoints(0).build()  || new InvalidEntityException("The number of charging points needs to be at least one. Got: '0'.", invalidEvcs)
+    SystemParticipantTestData.evcsInput.copy().chargingPoints(-1).build() || new InvalidEntityException("Invalid number of charging points: '-1'. At least one charging point is needed.", invalidEvcs)
+    SystemParticipantTestData.evcsInput.copy().chargingPoints(0).build()  || new InvalidEntityException("Invalid number of charging points: '0'. At least one charging point is needed.", invalidEvcs)
     SystemParticipantTestData.evcsInput.copy().cosPhiRated(2).build()     || new InvalidEntityException("Rated power factor of EvcsInput must be between 0 and 1", invalidEvcs)
   }
 
@@ -483,7 +483,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     given:
     def invalidType = new ChargingPointType("invalid type", Quantities.getQuantity(-1d, KILOVOLTAMPERE), AC)
     def invalidEvcs = SystemParticipantTestData.evcsInput.copy().type(invalidType).build()
-    def expectedExceptions = new InvalidEntityException("The rated power of the given entity is below zero.", invalidEvcs)
+    def expectedExceptions = new InvalidEntityException("The following quantities have to be zero or positive: -1 kVA", invalidEvcs)
 
     when:
     def exceptions = SystemParticipantValidationUtils.check(invalidEvcs).findAll { it.failure }

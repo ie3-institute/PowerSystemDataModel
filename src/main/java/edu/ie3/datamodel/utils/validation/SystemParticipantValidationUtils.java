@@ -30,9 +30,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a system participant if: <br>
-   * - it is not null <br>
-   * - its qCharacteristics are not null
+   * Validates a system participant if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>its qCharacteristics are not null
+   * </ul>
    *
    * <p>A "distribution" method, that forwards the check request to specific implementations to
    * fulfill the checking task, based on the class of the given object.
@@ -89,12 +92,15 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a system participant type if: <br>
-   * - it is not null <br>
-   * - capex is not null and not negative <br>
-   * - opex is not null and not negative <br>
-   * - sRated is not null and not negative <br>
-   * - cosphiRated is between zero and one
+   * Validates a system participant type if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>capex is not null and not negative
+   *   <li>opex is not null and not negative
+   *   <li>sRated is not null and not negative
+   *   <li>cosphiRated is between zero and one
+   * </ul>
    *
    * <p>A "distribution" method, that forwards the check request to specific implementations to
    * fulfill the checking task, based on the class of the given object.
@@ -169,8 +175,11 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
 
   /**
    * Validates a bmInput if: <br>
-   * - {@link SystemParticipantValidationUtils#checkBmType(BmTypeInput)} confirms a valid type
-   * properties <br>
+   *
+   * <ul>
+   *   <li>{@link SystemParticipantValidationUtils#checkBmType(BmTypeInput)} confirms a valid type
+   *       properties
+   * </ul>
    *
    * @param bmInput BmInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -181,9 +190,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a bmTypeInput if: <br>
-   * - its active power gradient is not negative <br>
-   * - its efficiency of assets inverter is between 0% and 100%
+   * Validates a bmTypeInput if:
+   *
+   * <ul>
+   *   <li>its active power gradient is not negative#
+   *   <li>its efficiency of assets inverter is between 0% and 100%
+   * </ul>
    *
    * @param bmTypeInput BmTypeInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -201,9 +213,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a chpInput if: <br>
-   * - {@link SystemParticipantValidationUtils#checkChpType(ChpTypeInput)} confirms a valid type
-   * properties
+   * Validates a chpInput if:
+   *
+   * <ul>
+   *   <li>{@link SystemParticipantValidationUtils#checkChpType(ChpTypeInput)} confirms a valid type
+   *       properties
+   * </ul>
    *
    * @param chpInput ChpInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -214,11 +229,14 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a chpTypeInput if: <br>
-   * - its efficiency of the electrical inverter is between 0% and 100% <br>
-   * - its thermal efficiency of the system is between 0% and 100% <br>
-   * - its rated thermal power is positive <br>
-   * - its needed self-consumption is not negative
+   * Validates a chpTypeInput if:
+   *
+   * <ul>
+   *   <li>its efficiency of the electrical inverter is between 0% and 100%
+   *   <li>its thermal efficiency of the system is between 0% and 100%
+   *   <li>its rated thermal power is positive
+   *   <li>its needed self-consumption is not negative
+   * </ul>
    *
    * @param chpTypeInput ChpTypeInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -240,9 +258,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a EvInput if: <br>
-   * - {@link SystemParticipantValidationUtils#checkEvType(EvTypeInput)} confirms a valid type
-   * properties
+   * Validates a EvInput if:
+   *
+   * <ul>
+   *   <li>{@link SystemParticipantValidationUtils#checkEvType(EvTypeInput)} confirms a valid type
+   *       properties
+   * </ul>
    *
    * @param evInput EvInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -253,9 +274,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a EvTypeInput if: <br>
-   * - its available battery capacity is positive <br>
-   * - its energy consumption per driven kilometre is positive
+   * Validates a EvTypeInput if:
+   *
+   * <ul>
+   *   <li>its available battery capacity is positive
+   *   <li>its energy consumption per driven kilometre is positive
+   * </ul>
    *
    * @param evTypeInput EvTypeInput to validate
    * @return a try object either containing an {@link InvalidEntityException} or an empty Success
@@ -269,9 +293,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a FixedFeedInInput if: <br>
-   * - its rated apparent power is not negative <br>
-   * - its rated power factor is between 0 and 1
+   * Validates a FixedFeedInInput if:
+   *
+   * <ul>
+   *   <li>its rated apparent power is not negative
+   *   <li>its rated power factor is between 0 and 1
+   * </ul>
    *
    * @param fixedFeedInInput FixedFeedInInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -288,9 +315,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a HpInput if: <br>
-   * - {@link SystemParticipantValidationUtils#checkHpType(HpTypeInput)} confirms a valid type
-   * properties
+   * Validates a HpInput if:
+   *
+   * <ul>
+   *   <li>{@link SystemParticipantValidationUtils#checkHpType(HpTypeInput)} confirms a valid type
+   *       properties
+   * </ul>
    *
    * @param hpInput HpInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -301,8 +331,11 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a HpTypeInput if: <br>
-   * - its rated thermal power is positive
+   * Validates a HpTypeInput if:
+   *
+   * <ul>
+   *   <li>its rated thermal power is positive
+   * </ul>
    *
    * @param hpTypeInput HpTypeInput to validate
    * @return a try object either containing an {@link InvalidEntityException} or an empty Success
@@ -316,11 +349,14 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a LoadInput if: <br>
-   * - its standard load profile is not null <br>
-   * - its rated apparent power is not negative <br>
-   * - its annual energy consumption is not negative <br>
-   * - its rated power factor is between 0 and 1
+   * Validates a LoadInput if:
+   *
+   * <ul>
+   *   <li>its standard load profile is not null
+   *   <li>its rated apparent power is not negative
+   *   <li>its annual energy consumption is not negative
+   *   <li>its rated power factor is between 0 and 1
+   * </ul>
    *
    * @param loadInput LoadInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -349,13 +385,16 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a PvInput if: <br>
-   * - its rated apparent power is not negative <br>
-   * - its albedo value of the plant's surrounding is between 0 and 1 <br>
-   * - its inclination in a compass direction (azimuth) is between -90° and 90° <br>
-   * - its efficiency of the asset's inverter (etaConv) is between 0% and 100% <br>
-   * - its tilted inclination from horizontal (elevation angle) is between 0° and 90° <br>
-   * - its rated power factor is between 0 and 1
+   * Validates a PvInput if:
+   *
+   * <ul>
+   *   <li>its rated apparent power is not negative
+   *   <li>its albedo value of the plant's surrounding is between 0 and 1
+   *   <li>its inclination in a compass direction (azimuth) is between -90° and 90°
+   *   <li>its efficiency of the asset's inverter (etaConv) is between 0% and 100%
+   *   <li>its tilted inclination from horizontal (elevation angle) is between 0° and 90°
+   *   <li>its rated power factor is between 0 and 1
+   * </ul>
    *
    * @param pvInput PvInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -421,9 +460,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a StorageInput if: <br>
-   * - {@link SystemParticipantValidationUtils#checkStorageType(StorageTypeInput)} confirms a valid
-   * type properties
+   * Validates a StorageInput if:
+   *
+   * <ul>
+   *   <li>{@link SystemParticipantValidationUtils#checkStorageType(StorageTypeInput)} confirms a
+   *       valid type properties
+   * </ul>
    *
    * @param storageInput StorageInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -434,14 +476,17 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a StorageTypeInput if: <br>
-   * - its permissible amount of full cycles is not negative <br>
-   * - its efficiency of the electrical converter is between 0% and 100% <br>
-   * - its maximum permissible depth of discharge is between 0% and 100% <br>
-   * - its active power gradient is not negative <br>
-   * - its battery capacity is positive <br>
-   * - its maximum permissible active power (in-feed or consumption) is not negative <br>
-   * - its permissible hours of full use is not negative
+   * Validates a StorageTypeInput if:
+   *
+   * <ul>
+   *   <li>its permissible amount of full cycles is not negative
+   *   <li>its efficiency of the electrical converter is between 0% and 100%
+   *   <li>its maximum permissible depth of discharge is between 0% and 100%
+   *   <li>its active power gradient is not negative
+   *   <li>its battery capacity is positive
+   *   <li>its maximum permissible active power (in-feed or consumption) is not negative
+   *   <li>its permissible hours of full use is not negative
+   * </ul>
    *
    * @param storageTypeInput StorageTypeInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -488,9 +533,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a WecInput if: <br>
-   * - {@link SystemParticipantValidationUtils#checkWecType(WecTypeInput)} confirms a valid type
-   * properties
+   * Validates a WecInput if:
+   * <li>{@link SystemParticipantValidationUtils#checkWecType(WecTypeInput)} confirms a valid type
+   *     properties
    *
    * @param wecInput WecInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -501,10 +546,13 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a WecTypeInput if: <br>
-   * - its efficiency of the assets converter is between 0% and 100% <br>
-   * - its rotor area is not negative <br>
-   * - its height of the rotor hub is not negative
+   * Validates a WecTypeInput if:
+   *
+   * <ul>
+   *   <li>its efficiency of the assets converter is between 0% and 100%
+   *   <li>its rotor area is not negative
+   *   <li>its height of the rotor hub is not negative
+   * </ul>
    *
    * @param wecTypeInput WecTypeInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -523,32 +571,35 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a EvcsInput if <br>
-   * - its number of charging points is < 1 - its rated power factor is between 0 and 1 - its rated
-   * apparent power is not negative
+   * Validates a EvcsInput if:
+   *
+   * <ul>
+   *   <li>its number of charging points is < 1
+   *   <li>its rated power factor is between 0 and 1
+   *   <li>its rated apparent power is not negative
+   * </ul>
    *
    * @param evcsInput EvcsInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
    *     Success
    */
   private static List<Try<Void, InvalidEntityException>> checkEvcs(EvcsInput evcsInput) {
-    return List.of(
-        Try.ofVoid(
-            evcsInput.getChargingPoints() < 1,
-            () ->
-                new InvalidEntityException(
-                    "The number of charging points needs to be at least one. Got: '"
-                        + evcsInput.getChargingPoints()
-                        + "'.",
-                    evcsInput)),
-        Try.ofVoid(
-            () -> checkRatedPowerFactor(evcsInput, evcsInput.getCosPhiRated()),
-            InvalidEntityException.class),
-        Try.ofVoid(
-            evcsInput.getType().getsRated().getValue().doubleValue() < 0d,
-            () ->
-                new InvalidEntityException(
-                    "The rated power of the given entity is below zero.", evcsInput)));
+    Try.VoidSupplier<InvalidEntityException> chargingPointValidation =
+        () -> {
+          if (evcsInput.getChargingPoints() < 1)
+            throw new InvalidEntityException(
+                "Invalid number of charging points: '"
+                    + evcsInput.getChargingPoints()
+                    + "'. At least one charging point is needed.",
+                evcsInput);
+        };
+
+    return Try.ofVoid(
+        InvalidEntityException.class,
+        chargingPointValidation,
+        () -> checkRatedPowerFactor(evcsInput, evcsInput.getCosPhiRated()),
+        () ->
+            detectNegativeQuantities(new Quantity[] {evcsInput.getType().getsRated()}, evcsInput));
   }
 
   /**

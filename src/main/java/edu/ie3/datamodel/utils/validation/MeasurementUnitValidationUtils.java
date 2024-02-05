@@ -19,9 +19,12 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a measurement unit if: <br>
-   * - it is not null <br>
-   * - any values are measured
+   * Validates a measurement unit if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>any values are measured
+   * </ul>
    *
    * @param measurementUnit Measurement unit to validate
    * @return a try object either containing an {@link ValidationException} or an empty Success
