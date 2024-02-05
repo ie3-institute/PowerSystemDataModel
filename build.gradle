@@ -70,7 +70,7 @@ dependencies {
   // testing
   testImplementation "org.apache.groovy:groovy:$groovyBinaryVersion"
 
-  testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
   testImplementation 'net.bytebuddy:byte-buddy:1.14.11' // Mocks of classes
