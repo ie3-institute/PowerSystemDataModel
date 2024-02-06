@@ -21,6 +21,10 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<Energy> eStorage;
   /** Consumed electric energy per driven distance (typically in kWh/km) */
   private final ComparableQuantity<SpecificEnergy> eCons;
+  /** Rated apparent power for AC charging (typically in kVA) */
+  private final ComparableQuantity<Power> sRatedAC;
+  /** Rated apparent power for DC charging (typically in kVA) */
+  private final ComparableQuantity<Power> sRatedDC;
 
   /**
    * @param uuid of the input entity
@@ -40,10 +44,14 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Energy> eStorage,
       ComparableQuantity<SpecificEnergy> eCons,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosphiRated,
+      ComparableQuantity<Power> sRatedAC,
+      ComparableQuantity<Power> sRatedDC) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
+    this.sRatedAC = sRatedAC.to(StandardUnits.S_RATED);
+    this.sRatedDC = sRatedDC.to(StandardUnits.S_RATED);
   }
 
   public ComparableQuantity<Energy> geteStorage() {
@@ -52,6 +60,14 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<SpecificEnergy> geteCons() {
     return eCons;
+  }
+
+  public ComparableQuantity<Power> getsRatedAC() {
+    return sRatedAC;
+  }
+
+  public ComparableQuantity<Power> getsRatedDC() {
+    return sRatedDC;
   }
 
   @Override
@@ -86,6 +102,10 @@ public class EvTypeInput extends SystemParticipantTypeInput {
         + eStorage
         + ", eCons="
         + eCons
+        + ", sRatedAC="
+        + sRatedAC
+        + ", sRatedDC="
+        + sRatedDC
         + '}';
   }
 }
