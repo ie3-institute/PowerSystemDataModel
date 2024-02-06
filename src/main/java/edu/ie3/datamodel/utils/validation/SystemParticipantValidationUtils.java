@@ -534,8 +534,11 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
 
   /**
    * Validates a WecInput if:
-   * <li>{@link SystemParticipantValidationUtils#checkWecType(WecTypeInput)} confirms a valid type
-   *     properties
+   *
+   * <ul>
+   *   <li>{@link SystemParticipantValidationUtils#checkWecType(WecTypeInput)} confirms a valid type
+   *       properties
+   * </ul>
    *
    * @param wecInput WecInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty

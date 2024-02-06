@@ -87,7 +87,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * <ul>
    *   <li>{@link ConnectorValidationUtils#checkLineType(LineTypeInput)} confirms valid type
-   *   properties
+   *       properties
    *   <li>it does not connect the same node
    *   <li>it connects nodes in the same subnet
    *   <li>it connects nodes in the same voltage level
