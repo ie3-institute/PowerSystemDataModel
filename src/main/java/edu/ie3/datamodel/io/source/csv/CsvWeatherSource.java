@@ -22,7 +22,7 @@ import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.Success;
+import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -159,7 +159,7 @@ public class CsvWeatherSource extends WeatherSource {
     for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       // we need a reader for each file
       try (BufferedReader reader = connector.initReader(data.getFullFilePath())) {
-        buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+        buildStreamWithFieldsToAttributesMap(reader)
             .getOrThrow()
             .map(fieldToValueFunction)
             .flatMap(Optional::stream)
@@ -192,8 +192,9 @@ public class CsvWeatherSource extends WeatherSource {
   }
 
   private Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader)
-      throws ValidationException {
+      BufferedReader bufferedReader) throws ValidationException {
+    Class<? extends UniqueEntity> entityClass = TimeBasedValue.class;
+
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
@@ -217,9 +218,12 @@ public class CsvWeatherSource extends WeatherSource {
               allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
           .map(Set::parallelStream);
     } catch (IOException e) {
-      log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-      return Success.of(Stream.empty());
+      return Failure.of(
+          new SourceException(
+              "Cannot read file to build entity '"
+                  + entityClass.getSimpleName()
+                  + "': "
+                  + e.getMessage()));
     }
   }
 
