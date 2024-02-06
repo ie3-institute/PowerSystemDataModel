@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.thermal.*;
@@ -23,8 +22,12 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a thermal unit if: <br>
-   * - it is not null <br>
+   * Validates a thermal unit if:
+   *
+   * <ul>
+   *   <li>it is not null
+   * </ul>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object.
    *
@@ -48,18 +51,19 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     } else if (ThermalStorageInput.class.isAssignableFrom(thermalUnitInput.getClass())) {
       exceptions.addAll(checkThermalStorage((ThermalStorageInput) thermalUnitInput));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(thermalUnitInput).getMessage())));
+      logNotImplemented(thermalUnitInput);
     }
 
     return exceptions;
   }
 
   /**
-   * Validates a thermalSinkInput if: <br>
-   * - it is not null <br>
+   * Validates a thermalSinkInput if:
+   *
+   * <ul>
+   *   <li>it is not null
+   * </ul>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object.
    *
@@ -81,18 +85,19 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass())) {
       exceptions.addAll(checkThermalHouse((ThermalHouseInput) thermalSinkInput));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(thermalSinkInput).getMessage())));
+      logNotImplemented(thermalSinkInput);
     }
 
     return exceptions;
   }
 
   /**
-   * Validates a thermalStorageInput if: <br>
-   * - it is not null <br>
+   * Validates a thermalStorageInput if:
+   *
+   * <ul>
+   *   <li>it is not null
+   * </ul>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object.
    *
@@ -115,22 +120,22 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass())) {
       exceptions.addAll(checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(thermalStorageInput).getMessage())));
+      logNotImplemented(thermalStorageInput);
     }
 
     return exceptions;
   }
 
   /**
-   * Validates a thermalHouseInput if: <br>
-   * - it is not null <br>
-   * - its thermal losses are not negative <br>
-   * - its thermal capacity is positive <br>
-   * - its upper temperature limit is higher than the lower temperature limit <br>
-   * - its target temperature lies between the upper und lower limit temperatures
+   * Validates a thermalHouseInput if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>its thermal losses are not negative
+   *   <li>its thermal capacity is positive
+   *   <li>its upper temperature limit is higher than the lower temperature limit
+   *   <li>its target temperature lies between the upper und lower limit temperatures
+   * </ul>
    *
    * @param thermalHouseInput ThermalHouseInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -172,13 +177,16 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a cylindricalStorageInput if: <br>
-   * - it is not null <br>
-   * - its available storage volume is positive <br>
-   * - its minimum permissible storage volume is positive and not greater than the available storage
-   * volume <br>
-   * - its inlet temperature is equal/greater than the outlet temperature <br>
-   * - its specific heat capacity is positive
+   * Validates a cylindricalStorageInput if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>its available storage volume is positive
+   *   <li>its minimum permissible storage volume is positive and not greater than the available
+   *       storage volume
+   *   <li>its inlet temperature is equal/greater than the outlet temperature
+   *   <li>its specific heat capacity is positive
+   * </ul>
    *
    * @param cylindricalStorageInput CylindricalStorageInput to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
