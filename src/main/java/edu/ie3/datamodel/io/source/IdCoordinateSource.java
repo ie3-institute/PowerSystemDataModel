@@ -134,7 +134,14 @@ public interface IdCoordinateSource {
       Point point = distance.getCoordinateB();
 
       // check for bounding box
-      if (!topLeft && (point.getX() < coordinate.getX() && point.getY() > coordinate.getY())) {
+      if (coordinate.equalsExact(point, 1e-6)) {
+        // if current point is matching the given coordinate, we need to return only the current
+        // point
+        resultingDistances.clear();
+        resultingDistances.add(distance);
+        return resultingDistances;
+      } else if (!topLeft
+          && (point.getX() < coordinate.getX() && point.getY() > coordinate.getY())) {
         resultingDistances.add(distance);
         topLeft = true;
       } else if (!topRight
@@ -149,13 +156,6 @@ public interface IdCoordinateSource {
           && (point.getX() > coordinate.getX() && point.getY() < coordinate.getY())) {
         resultingDistances.add(distance);
         bottomRight = true;
-      } else if (coordinate.equalsExact(point, 1e-6)) {
-        // if current point is matching the given coordinate, we need to return only the current
-        // point
-
-        resultingDistances.clear();
-        resultingDistances.add(distance);
-        return resultingDistances;
       } else {
         other.add(distance);
       }
