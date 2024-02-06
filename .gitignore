@@ -242,4 +242,9 @@ docs/readthedocs/_build
 **/*.synctex.gz
 **/*.synctex(busy)
 
+### Metals ###
+.metals/
+.bloop/
+project/**/metals.sbt
+
 docs/javadoc

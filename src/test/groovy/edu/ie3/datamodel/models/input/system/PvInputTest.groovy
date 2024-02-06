@@ -40,6 +40,7 @@ class PvInputTest extends Specification {
       assert elevationAngle == Quantities.getQuantity(50, DEGREE_GEOM)
       assert kG == 10
       assert kT == 5
+      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }
