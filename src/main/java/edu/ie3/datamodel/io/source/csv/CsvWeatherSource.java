@@ -220,10 +220,7 @@ public class CsvWeatherSource extends WeatherSource {
     } catch (IOException e) {
       return Failure.of(
           new SourceException(
-              "Cannot read file to build entity '"
-                  + entityClass.getSimpleName()
-                  + "': "
-                  + e.getMessage()));
+              "Cannot read file to build entity '" + entityClass.getSimpleName() + "'.", e));
     }
   }
 
