@@ -59,7 +59,7 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
         dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
 
     // validating table
-    Try.of(() -> getSourceFields(Pair.class), SourceException.class)
+    Try.of(this::getSourceFields, SourceException.class)
         .flatMap(
             fieldsOpt ->
                 fieldsOpt
@@ -101,7 +101,7 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<?> entityClass) {
+  public Optional<Set<String>> getSourceFields() {
     return dataSource.getSourceFields(coordinateTableName);
   }
 
