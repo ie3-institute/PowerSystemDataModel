@@ -52,6 +52,9 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
       "estorage":	"7",
       "econs":	"8",
+      "sratedac":	"8",
+      "srateddc":	"8",
+
     ]
     def typeInputClass = EvTypeInput
 
@@ -72,8 +75,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
       assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
       assert eCons == getQuant(parameter["econs"], StandardUnits.ENERGY_PER_DISTANCE)
-      assert sRatedAC == getQuant(parameter["sratedAC"], StandardUnits.S_RATED)
-      assert sRatedDC == getQuant(parameter["sratedDC"], StandardUnits.S_RATED)
+      assert sRatedAC == getQuant(parameter["sratedac"], StandardUnits.S_RATED)
+      assert sRatedDC == getQuant(parameter["srateddc"], StandardUnits.S_RATED)
     }
   }
 
