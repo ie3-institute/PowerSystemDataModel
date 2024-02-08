@@ -52,8 +52,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
       "estorage":	"7",
       "econs":	"8",
-      "sratedac":	"8",
-      "srateddc":	"8",
+      "sratedac":	"9",
+      "srateddc":	"10",
 
     ]
     def typeInputClass = EvTypeInput
