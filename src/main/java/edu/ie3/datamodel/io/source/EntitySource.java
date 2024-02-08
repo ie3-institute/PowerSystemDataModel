@@ -384,9 +384,14 @@ public abstract class EntitySource {
    */
   protected Stream<Try<EntityData, SourceException>> buildEntityData(
       Class<? extends UniqueEntity> entityClass) {
-    return dataSource
-        .getSourceData(entityClass)
-        .map(fieldsToAttributes -> new Success<>(new EntityData(fieldsToAttributes, entityClass)));
+
+    return Try.of(() -> dataSource.getSourceData(entityClass), SourceException.class)
+        .convert(
+            data ->
+                data.map(
+                    fieldsToAttributes ->
+                        new Success<>(new EntityData(fieldsToAttributes, entityClass))),
+            exception -> Stream.of(Failure.of(exception)));
   }
 
   protected static <S extends UniqueEntity> Map<UUID, S> unpackMap(

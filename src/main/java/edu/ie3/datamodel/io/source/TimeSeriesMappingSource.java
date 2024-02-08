@@ -33,7 +33,7 @@ public abstract class TimeSeriesMappingSource {
    *
    * @return That mapping
    */
-  public Map<UUID, UUID> getMapping() {
+  public Map<UUID, UUID> getMapping() throws SourceException {
     return getMappingSourceData()
         .map(this::createMappingEntry)
         .filter(Try::isSuccess)
@@ -48,7 +48,7 @@ public abstract class TimeSeriesMappingSource {
    * @param modelIdentifier Identifier of the model
    * @return An {@link Optional} to the time series identifier
    */
-  public Optional<UUID> getTimeSeriesUuid(UUID modelIdentifier) {
+  public Optional<UUID> getTimeSeriesUuid(UUID modelIdentifier) throws SourceException {
     return Optional.ofNullable(getMapping().get(modelIdentifier));
   }
 
@@ -57,7 +57,7 @@ public abstract class TimeSeriesMappingSource {
    *
    * @return Stream of maps
    */
-  public abstract Stream<Map<String, String>> getMappingSourceData();
+  public abstract Stream<Map<String, String>> getMappingSourceData() throws SourceException;
 
   /** Returns the option for fields found in the source */
   public abstract Optional<Set<String>> getSourceFields() throws SourceException;
