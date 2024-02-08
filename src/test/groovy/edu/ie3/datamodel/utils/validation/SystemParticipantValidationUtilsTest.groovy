@@ -239,7 +239,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     where:
     invalidEvType                                                                                                                                     || expectedException
-    new EvTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), Quantities.getQuantity(0, ENERGY_PER_DISTANCE), sRated, cosPhiRated, Quantities.getQuantity(20,S_RATED ), Quantities.getQuantity(20,S_RATED )) || new InvalidEntityException("The following quantities have to be positive: 0 kWh, 0 kWh/km", invalidEvType)
+    new EvTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), Quantities.getQuantity(0, ENERGY_PER_DISTANCE), sRated, cosPhiRated, Quantities.getQuantity(20, S_RATED), Quantities.getQuantity(20, S_RATED)) || new InvalidEntityException("The following quantities have to be positive: 0 kWh, 0 kWh/km", invalidEvType)
   }
 
   // Fixed Feed In
