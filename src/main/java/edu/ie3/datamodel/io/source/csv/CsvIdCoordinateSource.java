@@ -11,10 +11,12 @@ import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -63,13 +65,13 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    * @return Mapping from coordinate id to coordinate
    */
   private Map<Integer, Point> setupIdToCoordinateMap() throws SourceException {
-    return Try.scanStream(
-            buildStreamWithFieldsToAttributesMap()
-                .map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
-                .map(factory::get),
-            "Pair<Integer, Point>")
-        .transform(
-            s -> s.collect(Collectors.toMap(Pair::getKey, Pair::getValue)), SourceException::new)
+    return buildStreamWithFieldsToAttributesMap()
+        .map(
+            data ->
+                data.map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
+                    .map(factory::get))
+        .flatMap(s -> Try.scanStream(s, "Pair<Integer, Point>").transformF(SourceException::new))
+        .map(s -> s.collect(Collectors.toMap(Pair::getKey, Pair::getValue)))
         .getOrThrow();
   }
 
@@ -88,8 +90,9 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<?> entityClass) throws SourceException {
-    return dataSource.getSourceFields(dataSource.connector::initIdCoordinateReader);
+  public Optional<Set<String>> getSourceFields() throws SourceException {
+    Path filePath = Path.of(dataSource.getNamingStrategy().getIdCoordinateEntityName());
+    return dataSource.getSourceFields(filePath);
   }
 
   @Override
@@ -164,9 +167,10 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    *
    * @return Stream with mappings from field identifiers to attributes
    */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap()
-      throws SourceException {
-    try (BufferedReader reader = dataSource.connector.initIdCoordinateReader()) {
+  protected Try<Stream<Map<String, String>>, SourceException>
+      buildStreamWithFieldsToAttributesMap() {
+    Path filePath = Path.of(dataSource.getNamingStrategy().getIdCoordinateEntityName());
+    try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
       // validating read file
@@ -181,7 +185,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
 
       Function<Map<String, String>, String> idExtractor =
           fieldToValues -> fieldToValues.get(factory.getIdField());
-      Set<Map<String, String>> withDistinctCoordinateId =
+      Try<Set<Map<String, String>>, SourceException> withDistinctCoordinateId =
           dataSource.distinctRowsWithLog(
               allRows, idExtractor, COORDINATE_ID_MAPPING, "coordinate id");
       Function<Map<String, String>, String> coordinateExtractor =
@@ -189,15 +193,18 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
               fieldToValues
                   .get(factory.getLatField())
                   .concat(fieldToValues.get(factory.getLonField()));
-      return dataSource
-          .distinctRowsWithLog(
-              withDistinctCoordinateId, coordinateExtractor, COORDINATE_ID_MAPPING, "coordinate")
-          .parallelStream();
+
+      return withDistinctCoordinateId
+          .flatMap(
+              set ->
+                  dataSource.distinctRowsWithLog(
+                      set, coordinateExtractor, COORDINATE_ID_MAPPING, "coordinate"))
+          .map(Set::parallelStream);
     } catch (IOException e) {
-      log.error("Cannot read the file for coordinate id to coordinate mapping.", e);
+      return Failure.of(
+          new SourceException("Cannot read the file for coordinate id to coordinate mapping.", e));
     } catch (ValidationException ve) {
-      throw new SourceException("Creating stream failed due to failed validation", ve);
+      return Failure.of(new SourceException("Creating stream failed due to failed validation", ve));
     }
-    return Stream.empty();
   }
 }
