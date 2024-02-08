@@ -75,12 +75,15 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     if (this == o) return true;
     if (!(o instanceof EvTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    return eStorage.equals(that.eStorage) && eCons.equals(that.eCons);
+    return eStorage.equals(that.eStorage)
+        && eCons.equals(that.eCons)
+        && sRatedAC.equals(that.sRatedAC)
+        && sRatedDC.equals(that.sRatedDC);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), eStorage, eCons);
+    return Objects.hash(super.hashCode(), eStorage, eCons, sRatedAC, sRatedDC);
   }
 
   @Override
