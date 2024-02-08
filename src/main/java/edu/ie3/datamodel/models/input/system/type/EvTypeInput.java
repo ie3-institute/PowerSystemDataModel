@@ -33,8 +33,10 @@ public class EvTypeInput extends SystemParticipantTypeInput {
    * @param opex Operating expense for this type of EV (typically in €)
    * @param eStorage Energy capacity of the storage
    * @param eCons Consumed electric energy per driven distance
-   * @param sRated Rated apparent power for this type of EV (typically in kW)
+   * @param sRated Rated apparent power for this type of EV (typically in kVA)
    * @param cosphiRated Power factor for this type of EV
+   * @param sRatedAC Rated apparent power for AC charging for this type of EV (typically in kVA)
+   * @param sRatedDC Rated apparent power for DC charging for this type of EV (typically in kVA)
    */
   public EvTypeInput(
       UUID uuid,
