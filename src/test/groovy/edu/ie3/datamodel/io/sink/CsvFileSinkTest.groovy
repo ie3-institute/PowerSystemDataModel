@@ -17,6 +17,7 @@ import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -25,7 +26,6 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
-import edu.ie3.datamodel.models.input.system.EmInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
@@ -45,7 +45,6 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
-import edu.ie3.test.common.EnergyManagementTestData
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SampleJointGrid
 import edu.ie3.test.common.SystemParticipantTestData
@@ -170,7 +169,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
       ThermalUnitInputTestData.thermalHouseInput,
       SystemParticipantTestData.evcsInput,
       SystemParticipantTestData.loadInput,
-      EnergyManagementTestData.emInput
+      SystemParticipantTestData.emInput
     ])
     csvFileSink.shutdown()
 
@@ -251,6 +250,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         OperationTime.notLimited(),
         Mock(NodeInput),
         new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
+        Mock(EmInput),
         0.2,
         Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
         Quantities.getQuantity(95d, PERCENT),

@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
@@ -90,7 +89,8 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "q_characteristics",
       "e_cons_annual",
       "operator",
-      "dsm"
+      "dsm",
+      "em"
     ] as Set
   }
 
@@ -99,24 +99,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     def path = Path.of("this/path/does-not-exist")
 
     expect:
-    dummyCsvSource.getSourceFields(() -> dummyCsvSource.connector.initReader(path)).isEmpty()
-  }
-
-  def "A CsvDataSource should throw an exception when retrieving column names for a non-readable CSV file"() {
-    given:
-    DummyCsvSource source = new DummyCsvSource(csvSep, participantsFolderPath, fileNamingStrategy)
-    def readerSupplier = () -> {
-      def reader = source.connector.initReader(LoadInput)
-      reader.close() // We simulate the file being unreadable by just closing the reader before passing it over
-      return reader
-    }
-
-    when:
-    source.getSourceFields(readerSupplier)
-
-    then:
-    def exc = thrown(SourceException)
-    exc.message.startsWith("Error while trying to read source")
+    dummyCsvSource.getSourceFields(path).isEmpty()
   }
 
   def "A CsvDataSource should build a valid fields to attributes map with valid data as expected"() {
@@ -444,7 +427,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     when:
     def allRows = [nodeInputRow]* noOfEntities
-    def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
+    def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID").getOrThrow()
 
     then:
     distinctRows.size() == distinctSize
@@ -466,7 +449,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "v_rated"       : "380"]
   }
 
-  def "A CsvDataSource should return an empty set of csv row mappings if the provided collection of mappings contains duplicated UUIDs with different data"() {
+  def "A CsvDataSource should return a failure if the provided collection of mappings contains duplicated UUIDs with different data"() {
 
     given:
     def nodeInputRow1 = [
@@ -501,6 +484,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
 
     then:
-    distinctRows.size() == 0
+    distinctRows.failure
+    distinctRows.exception.get().message == "'NodeInput' entities with duplicated UUID key, but different field values found! Please review the corresponding input file! Affected primary keys: 4ca90220-74c2-4369-9afa-a18bf068840d"
   }
 }

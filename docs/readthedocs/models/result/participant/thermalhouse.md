@@ -31,7 +31,7 @@ This reflects a simple shoe box with transmission losses
 
    * - indoorTemperature
      - °C
-     -
+     - 
 
 ```
 

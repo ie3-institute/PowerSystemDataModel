@@ -22,5 +22,6 @@ public interface DataSource {
   Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass) throws SourceException;
 
   /** Creates a stream of maps that represent the rows in the database */
-  Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass);
+  Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
+      throws SourceException;
 }

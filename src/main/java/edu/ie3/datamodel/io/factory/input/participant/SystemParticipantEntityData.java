@@ -1,55 +1,54 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2023. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Data used for those classes of {@link
- * edu.ie3.datamodel.models.input.system.SystemParticipantInput} that need an instance of some type
- * T of {@link SystemParticipantTypeInput} as well.
- *
- * @param <T> Subclass of {@link SystemParticipantTypeInput} that is required for the construction
- *     of the SystemParticipantInput
+ * edu.ie3.datamodel.models.input.system.SystemParticipantInput}, including an (optional) link to an
+ * {@link EmInput} entity.
  */
-public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
-    extends SystemParticipantEntityData {
+public class SystemParticipantEntityData extends NodeAssetInputEntityData {
 
-  private final T typeInput;
+  /** Energy management unit that is managing the system participant. Can be null. */
+  private final EmInput em;
 
   /**
    * Creates a new SystemParticipantEntityData object for an operated, always on system participant
-   * input that needs a type input as well
+   * input
    *
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param node input node
    * @param em The energy management unit that is managing the system participant. Null, if the
    *     system participant is not managed.
-   * @param typeInput type input
    */
-  public SystemParticipantTypedEntityData(
+  public SystemParticipantEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       NodeInput node,
-      EmInput em,
-      T typeInput) {
-    super(fieldsToAttributes, entityClass, node, em);
-    this.typeInput = typeInput;
+      EmInput em) {
+    super(fieldsToAttributes, entityClass, node);
+    this.em = em;
+  }
+
+  public Optional<EmInput> getEm() {
+    return Optional.ofNullable(em);
   }
 
   /**
-   * Creates a new SystemParticipantEntityData object for an operable system participant input that
-   * needs a type input as well
+   * Creates a new SystemParticipantEntityData object for an operable system participant input
    *
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
@@ -57,43 +56,35 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
    * @param node input node
    * @param em The energy management unit that is managing the system participant. Null, if the
    *     system participant is not managed.
-   * @param typeInput type input
    */
-  public SystemParticipantTypedEntityData(
+  public SystemParticipantEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator,
       NodeInput node,
-      EmInput em,
-      T typeInput) {
-    super(fieldsToAttributes, entityClass, operator, node, em);
-    this.typeInput = typeInput;
+      EmInput em) {
+    super(fieldsToAttributes, entityClass, operator, node);
+    this.em = em;
   }
 
   /**
-   * Creates a new SystemParticipantTypedEntityData object based on a given {@link
-   * SystemParticipantEntityData} object and given type input
+   * Creates a new SystemParticipantEntityData object based on a given {@link
+   * NodeAssetInputEntityData} object and given energy management unit
    *
-   * @param systemParticipantEntityData The system participant entity data object to use attributes
-   *     of
-   * @param typeInput type input
+   * @param nodeAssetInputEntityData The node asset entity data object to use attributes of
+   * @param em The energy management unit that is managing the system participant. Null, if the
+   *     system participant is not managed.
    */
-  public SystemParticipantTypedEntityData(
-      SystemParticipantEntityData systemParticipantEntityData, T typeInput) {
-    super(systemParticipantEntityData, systemParticipantEntityData.getEm().orElse(null));
-    this.typeInput = typeInput;
-  }
-
-  public T getTypeInput() {
-    return typeInput;
+  public SystemParticipantEntityData(
+      NodeAssetInputEntityData nodeAssetInputEntityData, EmInput em) {
+    super(nodeAssetInputEntityData, nodeAssetInputEntityData.getNode());
+    this.em = em;
   }
 
   @Override
   public String toString() {
-    return "SystemParticipantTypedEntityData{"
-        + "typeInput="
-        + typeInput.getUuid()
-        + ", em="
+    return "SystemParticipantEntityData{"
+        + "em="
         + getEm().map(EmInput::toString).orElse("")
         + ", node="
         + getNode().getUuid()
@@ -111,12 +102,12 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    SystemParticipantTypedEntityData<?> that = (SystemParticipantTypedEntityData<?>) o;
-    return getTypeInput().equals(that.getTypeInput());
+    SystemParticipantEntityData that = (SystemParticipantEntityData) o;
+    return getEm().equals(that.getEm());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getTypeInput());
+    return Objects.hash(super.hashCode(), getEm());
   }
 }

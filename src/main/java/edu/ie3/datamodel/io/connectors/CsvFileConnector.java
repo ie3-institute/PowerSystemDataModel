@@ -157,28 +157,7 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
-   * Initializes a file reader for the given class that should be read in. The expected file name is
-   * determined based on {@link FileNamingStrategy} of the this {@link CsvFileConnector} instance
-   *
-   * @param clz the class of the entity that should be read
-   * @return the reader that contains information about the file to be read in
-   * @throws FileNotFoundException If the matching file cannot be found
-   */
-  public BufferedReader initReader(Class<? extends Entity> clz)
-      throws FileNotFoundException, ConnectorException {
-    Path filePath =
-        fileNamingStrategy
-            .getFilePath(clz)
-            .orElseThrow(
-                () ->
-                    new ConnectorException(
-                        "Cannot find a naming strategy for class '" + clz.getSimpleName() + "'."));
-    return initReader(filePath);
-  }
-
-  /**
-   * Initializes a file reader for the given file name. Use {@link
-   * CsvFileConnector#initReader(Class)} for files that actually correspond to concrete entities.
+   * Initializes a file reader for the given file name.
    *
    * @param filePath path of file starting from base folder, including file name but not file
    *     extension
@@ -243,18 +222,6 @@ public class CsvFileConnector implements DataConnector {
       log.error("Unable to determine time series files readers for time series.", e);
       return Collections.emptySet();
     }
-  }
-
-  /**
-   * Initialises a reader to get grip on the file that contains mapping information between
-   * coordinate id and actual coordinate
-   *
-   * @return A {@link BufferedReader}
-   * @throws FileNotFoundException If the file is not present
-   */
-  public BufferedReader initIdCoordinateReader() throws FileNotFoundException {
-    Path filePath = Path.of(fileNamingStrategy.getIdCoordinateEntityName());
-    return initReader(filePath);
   }
 
   /**

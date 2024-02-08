@@ -377,7 +377,7 @@ public abstract class EntitySource {
 
   /**
    * Returns a stream of optional {@link EntityData} that can be used to build instances of several
-   * subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that consumes this
+   * subtypes of {@link Entity} by a corresponding {@link EntityFactory} that consumes this
    * data.
    *
    * @param entityClass the entity class that should be build
@@ -385,9 +385,14 @@ public abstract class EntitySource {
    */
   protected Stream<Try<EntityData, SourceException>> buildEntityData(
       Class<? extends Entity> entityClass) {
-    return dataSource
-        .getSourceData(entityClass)
-        .map(fieldsToAttributes -> new Success<>(new EntityData(fieldsToAttributes, entityClass)));
+
+    return Try.of(() -> dataSource.getSourceData(entityClass), SourceException.class)
+        .convert(
+            data ->
+                data.map(
+                    fieldsToAttributes ->
+                        new Success<>(new EntityData(fieldsToAttributes, entityClass))),
+            exception -> Stream.of(Failure.of(exception)));
   }
 
   protected static <S extends UniqueEntity> Map<UUID, S> unpackMap(
