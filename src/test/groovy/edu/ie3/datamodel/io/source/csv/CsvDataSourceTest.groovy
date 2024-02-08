@@ -20,8 +20,6 @@ import java.util.function.Function
 import java.util.stream.Collectors
 
 class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
-  @Shared
-  Function<Map<String, String>, String> uuidExtractor = { fieldToValues -> fieldToValues.get("uuid") }
 
   // Using a groovy bug to gain access to private methods in superclass:
   // by default, we cannot access private methods with parameters from abstract parent classes, introducing a
@@ -36,11 +34,6 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     Map<String, String> buildFieldsToAttributes(
         final String csvRow, final String[] headline) {
       return super.buildFieldsToAttributes(csvRow, headline)
-    }
-
-    def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
-        Class<T> entityClass, Collection<Map<String, String>> allRows) {
-      return super.distinctRowsWithLog(allRows, uuidExtractor, entityClass.simpleName, "UUID")
     }
 
     String[] parseCsvRow(
@@ -408,7 +401,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     resultingList.get(1) == Optional.of(sptd.chpInput.node)
   }
 
-  def "A CsvDataSource should return a given collection of csv row mappings as distinct rows collection correctly"() {
+  def "A CsvDataSource should return a given collection of csv row mappings as unique rows collection correctly"() {
 
     given:
     def nodeInputRow = [
@@ -427,7 +420,8 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     when:
     def allRows = [nodeInputRow]* noOfEntities
-    def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID").getOrThrow()
+    def distinctRows = dummyCsvSource.checkUniqueness(NodeInput.simpleName, allRows, ["UUID": Set.of("uuid")]).getOrThrow().toList()
+
 
     then:
     distinctRows.size() == distinctSize
@@ -481,7 +475,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     when:
     def allRows = [nodeInputRow1, nodeInputRow2]* 10
-    def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
+    def distinctRows = dummyCsvSource.checkUniqueness(NodeInput.simpleName, allRows, "UUID", Set.of("uuid"))
 
     then:
     distinctRows.failure

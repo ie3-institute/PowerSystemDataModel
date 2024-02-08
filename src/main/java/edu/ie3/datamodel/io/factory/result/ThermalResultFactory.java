@@ -43,7 +43,6 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT);
-    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     if (entityClass.equals(ThermalHouseResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, INDOOR_TEMPERATURE);
@@ -51,7 +50,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
       minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
     }
 
-    return Arrays.asList(minConstructorParams, optionalFields);
+    return List.of(minConstructorParams);
   }
 
   @Override

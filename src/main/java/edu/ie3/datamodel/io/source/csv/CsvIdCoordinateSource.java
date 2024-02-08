@@ -18,7 +18,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.quantity.Length;
@@ -183,23 +182,11 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
       Collection<Map<String, String>> allRows =
           dataSource.csvRowFieldValueMapping(reader, headline);
 
-      Function<Map<String, String>, String> idExtractor =
-          fieldToValues -> fieldToValues.get(factory.getIdField());
-      Try<Set<Map<String, String>>, SourceException> withDistinctCoordinateId =
-          dataSource.distinctRowsWithLog(
-              allRows, idExtractor, COORDINATE_ID_MAPPING, "coordinate id");
-      Function<Map<String, String>, String> coordinateExtractor =
-          fieldToValues ->
-              fieldToValues
-                  .get(factory.getLatField())
-                  .concat(fieldToValues.get(factory.getLonField()));
-
-      return withDistinctCoordinateId
-          .flatMap(
-              set ->
-                  dataSource.distinctRowsWithLog(
-                      set, coordinateExtractor, COORDINATE_ID_MAPPING, "coordinate"))
-          .map(Set::parallelStream);
+      Map<String, Set<String>> fieldsMap =
+          Map.ofEntries(
+              Map.entry("id", Set.of(factory.getIdField())),
+              Map.entry("coordinate", Set.of(factory.getLatField(), factory.getLonField())));
+      return dataSource.checkUniqueness("IdCoordinate", allRows, fieldsMap);
     } catch (IOException e) {
       return Failure.of(
           new SourceException("Cannot read the file for coordinate id to coordinate mapping.", e));

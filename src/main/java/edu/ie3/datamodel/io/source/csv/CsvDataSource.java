@@ -10,11 +10,9 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.Entity;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.utils.ExceptionUtils;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.Failure;
-import edu.ie3.datamodel.utils.Try.Success;
-import edu.ie3.datamodel.utils.validation.ValidationUtils;
+import edu.ie3.datamodel.utils.Try.*;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -268,6 +266,7 @@ public class CsvDataSource implements DataSource {
    * @param <T> the type of the entity
    * @return a predicate that can be used to filter and count empty optionals
    */
+  @Deprecated
   protected <T extends Entity> Predicate<Optional<T>> isPresentCollectIfNot(
       Class<? extends Entity> entityClass,
       ConcurrentHashMap<Class<? extends Entity>, LongAdder> invalidElementsCounterMap) {
@@ -311,43 +310,35 @@ public class CsvDataSource implements DataSource {
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
-  protected <T extends Entity> Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-      Class<T> entityClass, Path filePath, boolean allowFileNotExisting) {
-      try (BufferedReader reader = connector.initReader(filePath)) {
-          final String[] headline = parseCsvRow(reader.readLine(), csvSep);
+  protected <T extends Entity>
+      Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
+          Class<T> entityClass, Path filePath, boolean allowFileNotExisting) {
+    try (BufferedReader reader = connector.initReader(filePath)) {
+      final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
-          // by default try-with-resources closes the reader directly when we leave this method (which
-          // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
-          // As we still want to consume the data at other places, we start a new stream instead of
-          // returning the original one
-          Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
+      // by default try-with-resources closes the reader directly when we leave this method (which
+      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
+      // As we still want to consume the data at other places, we start a new stream instead of
+      // returning the original one
+      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
-          if (UniqueEntity.class.isAssignableFrom(entityClass)) {
-              return distinctRowsWithLog(
-                      allRows,
-                      fieldToValues -> fieldToValues.get("uuid"),
-                      entityClass.getSimpleName(),
-                      "UUID")
-                      .map(Set::parallelStream);
-          } else {
-              // result entities don't have an uuid
-              return checkForDuplicates(allRows, entityClass.getSimpleName()).parallelStream();
-          }
-      } catch (FileNotFoundException e) {
-          if (allowFileNotExisting) {
-              log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
-              return Success.of(Stream.empty());
-          } else {
-              return Failure.of(new SourceException("Unable to find file '" + filePath + "'.", e));
-          }
-      } catch (IOException e) {
-          return Failure.of(
-                  new SourceException(
-                          "Cannot read file to build entity '" + entityClass.getSimpleName() + "'", e));
+      // checks the uniqueness of the rows
+      return checkUniqueness(entityClass.getSimpleName(), allRows, getUniqueFields(entityClass));
+    } catch (FileNotFoundException e) {
+      if (allowFileNotExisting) {
+        log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
+        return Success.of(Stream.empty());
+      } else {
+        return Failure.of(new SourceException("Unable to find file '" + filePath + "'.", e));
       }
+    } catch (IOException e) {
+      return Failure.of(
+          new SourceException(
+              "Cannot read file to build entity '" + entityClass.getSimpleName() + "'", e));
+    }
   }
 
-  private Try<Path, SourceException> getFilePath(Class<? extends UniqueEntity> entityClass) {
+  private Try<Path, SourceException> getFilePath(Class<? extends Entity> entityClass) {
     return Try.from(
         fileNamingStrategy.getFilePath(entityClass),
         () ->
@@ -365,69 +356,96 @@ public class CsvDataSource implements DataSource {
         .toList();
   }
 
-  public Set<Map<String, String>> checkForDuplicates(
-      Collection<Map<String, String>> rows, String entityDescriptor) {
-    Set<Map<String, String>> rowsSet = new HashSet<>(rows);
+  /**
+   * Checking the uniqueness for a given entity.
+   *
+   * @param entityName name of the entity
+   * @param allRows of the csv file
+   * @param fieldsMap field name to fields
+   * @return a try object
+   */
+  protected Try<Stream<Map<String, String>>, SourceException> checkUniqueness(
+      String entityName,
+      Collection<Map<String, String>> allRows,
+      Map<String, Set<String>> fieldsMap) {
+    Set<Map<String, String>> rows = new HashSet<>(allRows);
 
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
-    if (rows.size() != rowsSet.size()) {
+    if (allRows.size() != rows.size()) {
       log.warn(
           "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
-          entityDescriptor,
-          (rows.size() - rowsSet.size()));
+          entityName,
+          (allRows.size() - rows.size()));
     }
 
-    return rowsSet;
+    List<SourceException> exceptions =
+        Try.getExceptions(
+            fieldsMap.entrySet().stream()
+                .map(e -> checkUniqueness(entityName, rows, e.getKey(), e.getValue())));
+
+    if (exceptions.isEmpty()) {
+      return Success.of(rows.parallelStream());
+    } else {
+      return Failure.of(
+          new SourceException(
+              "The following exception(s) occurred while checking the uniqueness of '"
+                  + entityName
+                  + "' entities: "
+                  + ExceptionUtils.getMessages(exceptions)));
+    }
   }
 
   /**
-   * Returns a collection of maps each representing a row in csv file that can be used to built one
-   * entity. The uniqueness of each row is doubled checked by a) that no duplicated rows are
-   * returned that are full (1:1) matches and b) that no rows are returned that have the same
-   * composite key, which gets extracted by the provided extractor. As both cases destroy uniqueness
-   * constraints, an empty set is returned to indicate that these data cannot be processed safely
-   * and the error is logged. For case a), only the duplicates are filtered out and a set with
-   * unique rows is returned.
+   * Checking the uniqueness for a given entity.
    *
-   * @param allRows collection of rows of a csv file an entity should be built from
-   * @param keyExtractor Function, that extracts the key from field to value mapping, that is meant
-   *     to be unique
-   * @param entityDescriptor Colloquial descriptor of the entity, the data is foreseen for (for
-   *     debug String)
-   * @param keyDescriptor Colloquial descriptor of the key, that is meant to be unique (for debug
-   *     String)
-   * @return a try of either a set containing only unique rows or an exception if at least two rows
-   *     with the same UUID but different field values exist
+   * @param entityName name of the entity
+   * @param rows of the csv file
+   * @param fieldName name of the field
+   * @param fields set of strings used to create an extractor
+   * @return a try object
    */
-  protected Try<Set<Map<String, String>>, SourceException> distinctRowsWithLog(
-      Collection<Map<String, String>> allRows,
-      final Function<Map<String, String>, String> keyExtractor,
-      String entityDescriptor,
-      String keyDescriptor) {
-    Set<Map<String, String>> allRowSet = checkForDuplicates(allRows, entityDescriptor);
+  protected Try<Void, SourceException> checkUniqueness(
+      String entityName,
+      Collection<Map<String, String>> rows,
+      String fieldName,
+      Set<String> fields) {
 
-    /* Check for rows with the same key based on the provided key extractor function */
-    Set<Map<String, String>> distinctIdSet =
-        allRowSet.parallelStream()
-            .filter(ValidationUtils.distinctByKey(keyExtractor))
-            .collect(Collectors.toSet());
-    if (distinctIdSet.size() != allRowSet.size()) {
-      allRowSet.removeAll(distinctIdSet);
-      String affectedCoordinateIds =
-          allRowSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
+    Function<Map<String, String>, String> extractor =
+        fieldsToAttributes ->
+            fields.stream().map(fieldsToAttributes::get).collect(Collectors.joining(""));
 
-      // if this happens, we return a failure
+    List<String> elements = rows.stream().map(extractor).toList();
+    Set<String> uniqueElements = new HashSet<>(elements);
+
+    if (uniqueElements.contains("null")) {
       return Failure.of(
           new SourceException(
               "'"
-                  + entityDescriptor
-                  + "' entities with duplicated "
-                  + keyDescriptor
-                  + " key, but different field "
-                  + "values found! Please review the corresponding input file! Affected primary keys: "
-                  + affectedCoordinateIds));
+                  + entityName
+                  + "' entities with missing "
+                  + fieldName
+                  + " key found! Please review the corresponding input file!"));
     }
 
-    return Success.of(allRowsSet);
+    Map<String, Long> counts =
+        elements.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+    String duplicates =
+        counts.entrySet().stream()
+            .filter(e -> e.getValue() > 1)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.joining(",\n"));
+
+    // if this happens, we return a failure
+    return Try.ofVoid(
+        elements.size() != uniqueElements.size(),
+        () ->
+            new SourceException(
+                "'"
+                    + entityName
+                    + "' entities with duplicated "
+                    + fieldName
+                    + " key, but different field "
+                    + "values found! Please review the corresponding input file! Affected primary keys: "
+                    + duplicates));
   }
 }

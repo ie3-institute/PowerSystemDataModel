@@ -35,9 +35,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, VMAG, VANG);
-    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
-
-    return Arrays.asList(minConstructorParams, optionalFields);
+    return List.of(minConstructorParams);
   }
 
   @Override

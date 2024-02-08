@@ -24,4 +24,28 @@ public interface DataSource {
   /** Creates a stream of maps that represent the rows in the database */
   Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
       throws SourceException;
+
+  /**
+   * @param entityClass class of the source
+   * @return a map: field name to set of fields that needs to be unique for the source.
+   */
+  default Map<String, Set<String>> getUniqueFields(Class<? extends Entity> entityClass) {
+    return Map.of();
+    /*
+    if (TimeSeriesMappingSource.MappingEntry.class.isAssignableFrom(entityClass)) {
+      return Map.of("UUID", Set.of("uuid"));
+    } else if (TimeSeriesMetaInformation.class.isAssignableFrom(entityClass)) {
+      return Map.of("UUID", Set.of("uuid"));
+    } else if (UniqueEntity.class.isAssignableFrom(entityClass)) {
+      return Map.of(
+          "UUID", Set.of("uuid"),
+          "ID", Set.of("id"));
+    } else if (ResultEntity.class.isAssignableFrom(entityClass)) {
+      return Map.of("TIME-and-MODEL", Set.of("time", "inputModel"));
+    } else if (TimeBasedValue.class.isAssignableFrom(entityClass)) {
+      return Map.of("TIME", Set.of("time"));
+    } else {
+      return Map.of();
+    }*/
+  }
 }

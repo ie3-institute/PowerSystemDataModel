@@ -30,11 +30,8 @@ public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, CLOSED);
-    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
-
-    return Arrays.asList(minConstructorParams, optionalFields);
+    return List.of(minConstructorParams);
   }
 
   @Override

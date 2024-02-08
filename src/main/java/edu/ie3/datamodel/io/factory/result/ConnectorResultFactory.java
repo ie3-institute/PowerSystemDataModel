@@ -47,18 +47,15 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   protected List<Set<String>> getFields(Class<?> entityClass) {
     /// all result models have the same constructor except StorageResult
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG);
-    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     if (entityClass.equals(Transformer2WResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, TAPPOS);
-      optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     } else if (entityClass.equals(Transformer3WResult.class)) {
       minConstructorParams =
           newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, ICMAG, ICANG, TAPPOS);
-      optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
-    return Arrays.asList(minConstructorParams, optionalFields);
+    return List.of(minConstructorParams);
   }
 
   @Override

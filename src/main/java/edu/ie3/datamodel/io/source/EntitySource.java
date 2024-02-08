@@ -377,8 +377,7 @@ public abstract class EntitySource {
 
   /**
    * Returns a stream of optional {@link EntityData} that can be used to build instances of several
-   * subtypes of {@link Entity} by a corresponding {@link EntityFactory} that consumes this
-   * data.
+   * subtypes of {@link Entity} by a corresponding {@link EntityFactory} that consumes this data.
    *
    * @param entityClass the entity class that should be build
    * @return stream of the entity data wrapped in a {@link Try}
