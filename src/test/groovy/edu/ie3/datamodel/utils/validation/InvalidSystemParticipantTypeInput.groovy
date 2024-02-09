@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.exceptions.NotImplementedException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput
 import tech.units.indriya.quantity.Quantities
@@ -24,6 +25,6 @@ class InvalidSystemParticipantTypeInput extends SystemParticipantTypeInput {
 
   @Override
   SystemParticipantTypeInputCopyBuilder<?> copy() {
-    throw new RuntimeException("Not implemented")
+    throw new NotImplementedException("Not implemented")
   }
 }
