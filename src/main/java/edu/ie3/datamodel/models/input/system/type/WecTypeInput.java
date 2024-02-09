@@ -122,7 +122,8 @@ public class WecTypeInput extends SystemParticipantTypeInput {
   }
 
   /**
-   * Abstract class for all builder that build child entities of abstract class {@link WecTypeInput}
+   * A builder pattern based approach to create copies of {@link WecTypeInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link WecTypeInput}
    */
   public static class WecTypeInputCopyBuilder
       extends SystemParticipantTypeInputCopyBuilder<WecTypeInput.WecTypeInputCopyBuilder> {

@@ -105,7 +105,8 @@ public class ChargingPointType implements Serializable {
   }
 
   /**
-   * Abstract class for all builder that build child entities of abstract class {@link
+   * A builder pattern based approach to create copies of {@link ChargingPointType} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
    * ChargingPointType}
    */
   public static class ChargingPointTypeCopyBuilder {

@@ -96,7 +96,8 @@ public class BmTypeInput extends SystemParticipantTypeInput {
   }
 
   /**
-   * Abstract class for all builder that build child entities of abstract class {@link BmTypeInput}
+   * A builder pattern based approach to create copies of {@link BmTypeInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link BmTypeInput}
    */
   public static class BmTypeInputCopyBuilder
       extends SystemParticipantTypeInputCopyBuilder<BmTypeInputCopyBuilder> {

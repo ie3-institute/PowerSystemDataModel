@@ -83,7 +83,8 @@ public class HpTypeInput extends SystemParticipantTypeInput {
   }
 
   /**
-   * Abstract class for all builder that build child entities of abstract class {@link HpTypeInput}
+   * A builder pattern based approach to create copies of {@link HpTypeInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link HpTypeInput}
    */
   public static class HpTypeInputCopyBuilder
       extends SystemParticipantTypeInputCopyBuilder<HpTypeInput.HpTypeInputCopyBuilder> {

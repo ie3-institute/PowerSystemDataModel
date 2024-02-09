@@ -119,7 +119,8 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
   }
 
   /**
-   * Abstract class for all builder that build child entities of abstract class {@link ChpTypeInput}
+   * A builder pattern based approach to create copies of {@link ChpTypeInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link ChpTypeInput}
    */
   public static class ChpTypeInputCopyBuilder
       extends SystemParticipantTypeInputCopyBuilder<ChpTypeInput.ChpTypeInputCopyBuilder> {
