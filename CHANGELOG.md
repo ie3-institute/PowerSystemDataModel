@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implementing missing typical methods in `Try` [#970](https://github.com/ie3-institute/PowerSystemDataModel/issues/970)
 - Added log warning when using `SwitchInputs` with `parallelDevices` parameter [#840](https://github.com/ie3-institute/PowerSystemDataModel/issues/840)
 - Validation for `EvcsInput` [#1000](https://github.com/ie3-institute/PowerSystemDataModel/issues/1000)
-- Added Maximum ac and dc Charging limits to evtype [#876](https://github.com/ie3-institute/PowerSystemDataModel/issues/876)
+- Added separate fields for maximum power limits for AC and DC to evtype [#876](https://github.com/ie3-institute/PowerSystemDataModel/issues/876)
 
 ### Fixed
 - Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
