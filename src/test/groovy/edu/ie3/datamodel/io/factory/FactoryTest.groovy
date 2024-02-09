@@ -87,12 +87,12 @@ class FactoryTest extends Specification {
 
     @Override
     protected String buildModel(SimpleFactoryData data) {
-      return null
+      return ""
     }
 
     @Override
     List<Set<String>> getUniqueFields() {
-      return null
+      return []
     }
 
     @Override
