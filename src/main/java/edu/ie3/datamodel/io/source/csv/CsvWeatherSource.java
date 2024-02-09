@@ -208,14 +208,8 @@ public class CsvWeatherSource extends WeatherSource {
       Collection<Map<String, String>> allRows =
           dataSource.csvRowFieldValueMapping(reader, headline);
 
-      List<Set<String>> fields =
-          List.of(
-              Set.of(
-                  weatherFactory.getTimeFieldString(),
-                  weatherFactory.getCoordinateIdFieldString()));
-
-      return dataSource.checkUniqueness("Weather", allRows, fields);
-
+      List<Set<String>> uniqueFields = weatherFactory.getUniqueFields();
+      return dataSource.checkUniqueness("Weather", allRows, uniqueFields);
     } catch (IOException e) {
       return Failure.of(
           new SourceException(

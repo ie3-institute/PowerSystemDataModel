@@ -8,8 +8,6 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import edu.ie3.datamodel.io.factory.Factory;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Abstract class that is able to build {@link TimeBasedValue}s from "flat" information
@@ -20,14 +18,7 @@ import java.util.Set;
 public abstract class TimeBasedValueFactory<D extends TimeBasedValueData<V>, V extends Value>
     extends Factory<V, D, TimeBasedValue<V>> {
 
-  protected static final String UUID = "uuid";
-
   protected TimeBasedValueFactory(Class<? extends V>... valueClasses) {
     super(valueClasses);
-  }
-
-  @Override
-  public List<Set<String>> getUniqueFields() {
-    return List.of(newSet(UUID));
   }
 }

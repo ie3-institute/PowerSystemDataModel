@@ -88,9 +88,9 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
-      throws SourceException {
-    return buildStreamWithFieldsToAttributesMap(entityClass, true).getOrThrow();
+  public Stream<Map<String, String>> getSourceData(
+      Class<? extends Entity> entityClass, List<Set<String>> uniqueFields) throws SourceException {
+    return buildStreamWithFieldsToAttributesMap(entityClass, uniqueFields, true).getOrThrow();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -294,10 +294,14 @@ public class CsvDataSource implements DataSource {
    *     mapping (fieldName to fieldValue)
    */
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-      Class<? extends Entity> entityClass, boolean allowFileNotExisting) {
+      Class<? extends Entity> entityClass,
+      List<Set<String>> uniqueFields,
+      boolean allowFileNotExisting) {
     return getFilePath(entityClass)
         .flatMap(
-            path -> buildStreamWithFieldsToAttributesMap(entityClass, path, allowFileNotExisting));
+            path ->
+                buildStreamWithFieldsToAttributesMap(
+                    entityClass, path, uniqueFields, allowFileNotExisting));
   }
 
   /**
@@ -306,13 +310,17 @@ public class CsvDataSource implements DataSource {
    * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
    * @param entityClass the entity class that should be build
+   * @param uniqueFields list of sets that contain fields which needs to be unique
    * @param filePath the path of the file to read
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
   protected <T extends Entity>
       Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-          Class<T> entityClass, Path filePath, boolean allowFileNotExisting) {
+          Class<T> entityClass,
+          Path filePath,
+          List<Set<String>> uniqueFields,
+          boolean allowFileNotExisting) {
     try (BufferedReader reader = connector.initReader(filePath)) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
@@ -323,7 +331,7 @@ public class CsvDataSource implements DataSource {
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
       // checks the uniqueness of the rows
-      return checkUniqueness(entityClass.getSimpleName(), allRows, getUniqueFields(entityClass));
+      return checkUniqueness(entityClass.getSimpleName(), allRows, uniqueFields);
     } catch (FileNotFoundException e) {
       if (allowFileNotExisting) {
         log.warn("Unable to find file '{}': {}", filePath, e.getMessage());

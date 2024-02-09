@@ -86,7 +86,7 @@ public class TimeBasedSimpleValueFactory<V extends Value>
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> minConstructorParams = newSet(UUID, TIME);
+    Set<String> minConstructorParams = newSet(TIME);
 
     if (EnergyPriceValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.add(PRICE);
@@ -106,5 +106,10 @@ public class TimeBasedSimpleValueFactory<V extends Value>
     }
 
     return Collections.singletonList(minConstructorParams);
+  }
+
+  @Override
+  public List<Set<String>> getUniqueFields() {
+    return List.of(newSet(TIME));
   }
 }

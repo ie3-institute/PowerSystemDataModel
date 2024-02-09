@@ -33,6 +33,6 @@ public abstract class IdCoordinateFactory
 
   @Override
   public List<Set<String>> getUniqueFields() {
-    return List.of(newSet(getIdField()));
+    return List.of(newSet(getIdField()), newSet(getLatField(), getLonField()));
   }
 }

@@ -40,14 +40,12 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     valueClass       || expectedFields
     EnergyPriceValue || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         PRICE
       ] as Set
     ]
     SValue           || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         ACTIVE_POWER,
         REACTIVE_POWER
@@ -55,14 +53,12 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     ]
     PValue || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         ACTIVE_POWER
       ] as Set
     ]
     HeatAndSValue || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         ACTIVE_POWER,
         REACTIVE_POWER,
@@ -71,7 +67,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     ]
     HeatAndPValue || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         ACTIVE_POWER,
         HEAT_DEMAND
@@ -79,7 +74,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     ]
     HeatDemandValue || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         HEAT_DEMAND
       ] as Set

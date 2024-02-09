@@ -139,8 +139,10 @@ public class SqlDataSource implements DataSource {
     }
   }
 
+  // TODO: Check if uniqueFields should be used to validate the uniqueness of returned entities
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass) {
+  public Stream<Map<String, String>> getSourceData(
+      Class<? extends Entity> entityClass, List<Set<String>> uniqueFields) {
     String explicitTableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
     return buildStreamByTableName(explicitTableName);
   }

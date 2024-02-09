@@ -26,8 +26,21 @@ public interface DataSource {
   Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass) throws SourceException;
 
   /** Creates a stream of maps that represent the rows in the database */
-  Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
-      throws SourceException;
+  default Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
+      throws SourceException {
+    return getSourceData(entityClass, getUniqueFields(entityClass));
+  }
+
+  /**
+   * Creates a stream of maps that represent the rows in the database
+   *
+   * @param entityClass class of the entity
+   * @param uniqueFields list of sets of fields that needs to be unique for the given {@link Entity}
+   * @return a stream of maps
+   * @throws SourceException if an exception occurred
+   */
+  Stream<Map<String, String>> getSourceData(
+      Class<? extends Entity> entityClass, List<Set<String>> uniqueFields) throws SourceException;
 
   /**
    * @param entityClass class of the source
