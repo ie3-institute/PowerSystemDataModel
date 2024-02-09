@@ -72,6 +72,11 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
   }
 
   @Override
+  public ChpTypeInputCopyBuilder copy() {
+    return new ChpTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof ChpTypeInput that)) return false;
@@ -111,5 +116,88 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
         + ", pOwn="
         + pOwn
         + '}';
+  }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link ChpTypeInput}
+   */
+  public static class ChpTypeInputCopyBuilder
+      extends SystemParticipantTypeInputCopyBuilder<ChpTypeInput.ChpTypeInputCopyBuilder> {
+
+    private ComparableQuantity<Dimensionless> etaEl;
+    private ComparableQuantity<Dimensionless> etaThermal;
+    private ComparableQuantity<Power> pThermal;
+    private ComparableQuantity<Power> pOwn;
+
+    private ChpTypeInputCopyBuilder(ChpTypeInput entity) {
+      super(entity);
+      this.etaEl = entity.getEtaEl();
+      this.etaThermal = entity.getEtaThermal();
+      this.pThermal = entity.getpThermal();
+      this.pOwn = entity.getpOwn();
+    }
+
+    public ChpTypeInputCopyBuilder setEtaEl(ComparableQuantity<Dimensionless> etaEl) {
+      this.etaEl = etaEl;
+      return this;
+    }
+
+    public ChpTypeInputCopyBuilder setEtaThermal(ComparableQuantity<Dimensionless> etaThermal) {
+      this.etaThermal = etaThermal;
+      return this;
+    }
+
+    public ChpTypeInputCopyBuilder setpThermal(ComparableQuantity<Power> pThermal) {
+      this.pThermal = pThermal;
+      return this;
+    }
+
+    public ChpTypeInputCopyBuilder setpOwn(ComparableQuantity<Power> pOwn) {
+      this.pOwn = pOwn;
+      return this;
+    }
+
+    public ComparableQuantity<Dimensionless> getEtaEl() {
+      return etaEl;
+    }
+
+    public ComparableQuantity<Dimensionless> getEtaThermal() {
+      return etaThermal;
+    }
+
+    public ComparableQuantity<Power> getpThermal() {
+      return pThermal;
+    }
+
+    public ComparableQuantity<Power> getpOwn() {
+      return pOwn;
+    }
+
+    public ChpTypeInput.ChpTypeInputCopyBuilder scale(Double factor) {
+      setsRated(getsRated().multiply(factor));
+      setpThermal(getpThermal().multiply(factor));
+      setpOwn(getpOwn().multiply(factor));
+      return this;
+    }
+
+    @Override
+    public ChpTypeInput build() {
+      return new ChpTypeInput(
+          getUuid(),
+          getId(),
+          getCapex(),
+          getOpex(),
+          etaEl,
+          etaThermal,
+          getsRated(),
+          getCosPhiRated(),
+          pThermal,
+          pOwn);
+    }
+
+    @Override
+    protected ChpTypeInput.ChpTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

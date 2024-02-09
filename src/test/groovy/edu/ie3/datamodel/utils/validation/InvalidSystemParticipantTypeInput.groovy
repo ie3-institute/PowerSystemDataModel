@@ -21,4 +21,9 @@ class InvalidSystemParticipantTypeInput extends SystemParticipantTypeInput {
   InvalidSystemParticipantTypeInput() {
     super(UUID.randomUUID(), "invalid_system_participant_type", Quantities.getQuantity(0d, StandardUnits.CAPEX), Quantities.getQuantity(0d, StandardUnits.ENERGY_PRICE), Quantities.getQuantity(0d, StandardUnits.S_RATED), 1.0d)
   }
+
+  @Override
+  SystemParticipantTypeInputCopyBuilder<?> copy() {
+    throw new RuntimeException("Not implemented")
+  }
 }

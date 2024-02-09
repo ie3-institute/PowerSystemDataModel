@@ -55,6 +55,11 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   }
 
   @Override
+  public EvTypeInputCopyBuilder copy() {
+    return new EvTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof EvTypeInput that)) return false;
@@ -87,5 +92,64 @@ public class EvTypeInput extends SystemParticipantTypeInput {
         + ", eCons="
         + eCons
         + '}';
+  }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link EvTypeInput}
+   */
+  public static class EvTypeInputCopyBuilder
+      extends SystemParticipantTypeInputCopyBuilder<EvTypeInput.EvTypeInputCopyBuilder> {
+
+    private ComparableQuantity<Energy> eStorage;
+    private ComparableQuantity<SpecificEnergy> eCons;
+
+    private EvTypeInputCopyBuilder(EvTypeInput entity) {
+      super(entity);
+      this.eStorage = entity.geteStorage();
+      this.eCons = entity.geteCons();
+    }
+
+    public EvTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
+      this.eStorage = eStorage;
+      return this;
+    }
+
+    public EvTypeInputCopyBuilder seteCons(ComparableQuantity<SpecificEnergy> eCons) {
+      this.eCons = eCons;
+      return this;
+    }
+
+    public ComparableQuantity<Energy> geteStorage() {
+      return eStorage;
+    }
+
+    public ComparableQuantity<SpecificEnergy> geteCons() {
+      return eCons;
+    }
+
+    public EvTypeInput.EvTypeInputCopyBuilder scale(Double factor) {
+      setsRated(getsRated().multiply(factor));
+      seteStorage(geteStorage().multiply(factor));
+      seteCons(geteCons().multiply(factor));
+      return this;
+    }
+
+    @Override
+    public EvTypeInput build() {
+      return new EvTypeInput(
+          getUuid(),
+          getId(),
+          getCapex(),
+          getOpex(),
+          eStorage,
+          eCons,
+          getsRated(),
+          getCosPhiRated());
+    }
+
+    @Override
+    protected EvTypeInput.EvTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

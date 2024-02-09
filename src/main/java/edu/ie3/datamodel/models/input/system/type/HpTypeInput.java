@@ -45,6 +45,11 @@ public class HpTypeInput extends SystemParticipantTypeInput {
   }
 
   @Override
+  public HpTypeInputCopyBuilder copy() {
+    return new HpTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof HpTypeInput that)) return false;
@@ -75,5 +80,45 @@ public class HpTypeInput extends SystemParticipantTypeInput {
         + "pThermal="
         + pThermal
         + '}';
+  }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link HpTypeInput}
+   */
+  public static class HpTypeInputCopyBuilder
+      extends SystemParticipantTypeInputCopyBuilder<HpTypeInput.HpTypeInputCopyBuilder> {
+
+    private ComparableQuantity<Power> pThermal;
+
+    private HpTypeInputCopyBuilder(HpTypeInput entity) {
+      super(entity);
+      this.pThermal = entity.getpThermal();
+    }
+
+    public HpTypeInputCopyBuilder setpThermal(ComparableQuantity<Power> pThermal) {
+      this.pThermal = pThermal;
+      return this;
+    }
+
+    public ComparableQuantity<Power> getpThermal() {
+      return pThermal;
+    }
+
+    public HpTypeInput.HpTypeInputCopyBuilder scale(Double factor) {
+      setsRated(getsRated().multiply(factor));
+      setpThermal(getpThermal().multiply(factor));
+      return this;
+    }
+
+    @Override
+    public HpTypeInput build() {
+      return new HpTypeInput(
+          getUuid(), getId(), getCapex(), getOpex(), getsRated(), getCosPhiRated(), pThermal);
+    }
+
+    @Override
+    protected HpTypeInput.HpTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

@@ -127,6 +127,17 @@ public class EvInput extends SystemParticipantInput implements HasType {
       this.type = entity.getType();
     }
 
+    public EvInputCopyBuilder type(EvTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    @Override
+    public EvInputCopyBuilder scale(Double factor) {
+      type(type.copy().scale(factor).build());
+      return this;
+    }
+
     @Override
     public EvInput build() {
       return new EvInput(
@@ -138,11 +149,6 @@ public class EvInput extends SystemParticipantInput implements HasType {
           getqCharacteristics(),
           getEm(),
           type);
-    }
-
-    public EvInputCopyBuilder type(EvTypeInput type) {
-      this.type = type;
-      return this;
     }
 
     @Override

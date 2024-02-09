@@ -181,6 +181,8 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       return em;
     }
 
+    public abstract B scale(Double factor);
+
     @Override
     public abstract SystemParticipantInput build();
 
