@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import java.util.*;
@@ -48,7 +48,7 @@ public interface DataSource {
    */
   // TODO: May be replaced by Factory#getUniqueFields()
   default List<Set<String>> getUniqueFields(Class<? extends Entity> entityClass) {
-    if (InputEntity.class.isAssignableFrom(entityClass)) {
+    if (UniqueInputEntity.class.isAssignableFrom(entityClass)) {
       return List.of(Set.of("uuid"));
     } else if (AssetInput.class.isAssignableFrom(entityClass)) {
       return List.of(Set.of("uuid"), Set.of("id"));

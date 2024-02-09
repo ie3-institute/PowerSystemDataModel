@@ -5,10 +5,10 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.util.*;
 
-public abstract class GridContainer implements InputContainer<InputEntity> {
+public abstract class GridContainer implements InputContainer<UniqueInputEntity> {
   /** Name of this grid */
   protected final String gridName;
   /** Accumulated raw grid elements (lines, nodes, transformers, switches) */
@@ -31,8 +31,8 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
   }
 
   @Override
-  public List<InputEntity> allEntitiesAsList() {
-    List<InputEntity> allEntities = new LinkedList<>();
+  public List<UniqueInputEntity> allEntitiesAsList() {
+    List<UniqueInputEntity> allEntities = new LinkedList<>();
     allEntities.addAll(rawGrid.allEntitiesAsList());
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(graphics.allEntitiesAsList());
@@ -87,7 +87,7 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
    * @since 14.02.23
    */
   protected abstract static class GridContainerCopyBuilder<B extends GridContainerCopyBuilder<B>>
-      implements InputContainerCopyBuilder<InputEntity> {
+      implements InputContainerCopyBuilder<UniqueInputEntity> {
     private String gridName;
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;

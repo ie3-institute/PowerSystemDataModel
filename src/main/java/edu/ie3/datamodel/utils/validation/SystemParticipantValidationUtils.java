@@ -9,7 +9,7 @@ import static edu.ie3.datamodel.models.StandardUnits.*;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.TryException;
-import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.utils.Try;
@@ -612,7 +612,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param input entity to validate
    * @param cosPhiRated rated power factor to check
    */
-  private static void checkRatedPowerFactor(InputEntity input, double cosPhiRated)
+  private static void checkRatedPowerFactor(UniqueInputEntity input, double cosPhiRated)
       throws InvalidEntityException {
     if (cosPhiRated < 0d || cosPhiRated > 1d)
       throw new InvalidEntityException(
@@ -628,7 +628,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param value value of entity to check
    */
   private static void isBetweenZeroAndHundredPercent(
-      InputEntity input, ComparableQuantity<Dimensionless> value, String string)
+      UniqueInputEntity input, ComparableQuantity<Dimensionless> value, String string)
       throws InvalidEntityException {
     if (value.isLessThan(Quantities.getQuantity(0d, Units.PERCENT))
         || value.isGreaterThan(Quantities.getQuantity(100d, Units.PERCENT)))
