@@ -7,6 +7,8 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.Factory;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
+import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 
@@ -28,4 +30,9 @@ public abstract class IdCoordinateFactory
 
   /** @return the field id for the coordinate longitude */
   public abstract String getLonField();
+
+  @Override
+  public List<Set<String>> getUniqueFields() {
+    return List.of(newSet(getIdField()));
+  }
 }

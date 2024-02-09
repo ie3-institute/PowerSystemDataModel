@@ -38,4 +38,9 @@ public class TimeSeriesMappingFactory
     UUID timeSeries = data.getUUID(TIME_SERIES);
     return new TimeSeriesMappingSource.MappingEntry(uuid, participant, timeSeries);
   }
+
+  @Override
+  public List<Set<String>> getUniqueFields() {
+    return List.of(newSet(UUID));
+  }
 }

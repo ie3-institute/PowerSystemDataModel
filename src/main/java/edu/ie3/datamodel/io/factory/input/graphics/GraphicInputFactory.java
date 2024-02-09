@@ -47,6 +47,11 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
     return Collections.singletonList(constructorParamsMin);
   }
 
+  @Override
+  public List<Set<String>> getUniqueFields() {
+    return List.of(newSet(UUID));
+  }
+
   /**
    * Returns fields other than the required fields of {@link GraphicInput} that have to be present.
    *

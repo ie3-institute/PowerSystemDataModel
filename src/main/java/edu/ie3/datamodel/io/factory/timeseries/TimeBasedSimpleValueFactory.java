@@ -18,7 +18,6 @@ import java.util.*;
 
 public class TimeBasedSimpleValueFactory<V extends Value>
     extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {
-  private static final String UUID = "uuid";
   private static final String TIME = "time";
   /* Energy price */
   private static final String PRICE = "price";

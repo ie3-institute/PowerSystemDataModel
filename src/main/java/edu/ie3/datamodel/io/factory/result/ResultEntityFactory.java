@@ -10,7 +10,9 @@ import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.util.TimeUtil;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Internal API for building {@link ResultEntity}s. This additional abstraction layer is necessary
@@ -34,5 +36,10 @@ abstract class ResultEntityFactory<T extends ResultEntity> extends EntityFactory
   protected ResultEntityFactory(String dtfPattern, Class<? extends T>... allowedClasses) {
     super(allowedClasses);
     timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern);
+  }
+
+  @Override
+  public List<Set<String>> getUniqueFields() {
+    return List.of(newSet(TIME, INPUT_MODEL));
   }
 }
