@@ -420,7 +420,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     when:
     def allRows = [nodeInputRow]* noOfEntities
-    def distinctRows = dummyCsvSource.checkUniqueness(NodeInput.simpleName, allRows, ["UUID": Set.of("uuid")]).getOrThrow().toList()
+    def distinctRows = dummyCsvSource.checkUniqueness(NodeInput.simpleName, allRows, [Set.of("uuid")]).getOrThrow().toList()
 
 
     then:
@@ -475,7 +475,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     when:
     def allRows = [nodeInputRow1, nodeInputRow2]* 10
-    def distinctRows = dummyCsvSource.checkUniqueness(NodeInput.simpleName, allRows, "UUID", Set.of("uuid"))
+    def distinctRows = dummyCsvSource.checkUniqueness(NodeInput.simpleName, allRows, Set.of("uuid"))
 
     then:
     distinctRows.failure

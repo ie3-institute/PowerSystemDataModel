@@ -361,13 +361,11 @@ public class CsvDataSource implements DataSource {
    *
    * @param entityName name of the entity
    * @param allRows of the csv file
-   * @param fieldsMap field name to fields
+   * @param fields list of set of field names
    * @return a try object
    */
   protected Try<Stream<Map<String, String>>, SourceException> checkUniqueness(
-      String entityName,
-      Collection<Map<String, String>> allRows,
-      Map<String, Set<String>> fieldsMap) {
+      String entityName, Collection<Map<String, String>> allRows, List<Set<String>> fields) {
     Set<Map<String, String>> rows = new HashSet<>(allRows);
 
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
@@ -379,9 +377,7 @@ public class CsvDataSource implements DataSource {
     }
 
     List<SourceException> exceptions =
-        Try.getExceptions(
-            fieldsMap.entrySet().stream()
-                .map(e -> checkUniqueness(entityName, rows, e.getKey(), e.getValue())));
+        Try.getExceptions(fields.stream().map(e -> checkUniqueness(entityName, rows, e)));
 
     if (exceptions.isEmpty()) {
       return Success.of(rows.parallelStream());
@@ -400,52 +396,56 @@ public class CsvDataSource implements DataSource {
    *
    * @param entityName name of the entity
    * @param rows of the csv file
-   * @param fieldName name of the field
    * @param fields set of strings used to create an extractor
    * @return a try object
    */
   protected Try<Void, SourceException> checkUniqueness(
-      String entityName,
-      Collection<Map<String, String>> rows,
-      String fieldName,
-      Set<String> fields) {
+      String entityName, Collection<Map<String, String>> rows, Set<String> fields) {
+    String fieldName = String.join("-", fields).toUpperCase();
 
-    Function<Map<String, String>, String> extractor =
-        fieldsToAttributes ->
-            fields.stream().map(fieldsToAttributes::get).collect(Collectors.joining(""));
+    Function<Map<String, String>, List<String>> extractor =
+        fieldsToAttributes -> fields.stream().map(fieldsToAttributes::get).toList();
 
-    List<String> elements = rows.stream().map(extractor).toList();
-    Set<String> uniqueElements = new HashSet<>(elements);
+    List<List<String>> elements = rows.stream().map(extractor).toList();
 
-    if (uniqueElements.contains("null")) {
+    // counting all keys that are missing
+    long missingKey = elements.stream().filter(l -> l.contains(null)).count();
+
+    if (missingKey > 0) {
       return Failure.of(
           new SourceException(
               "'"
-                  + entityName
+                  + missingKey
                   + "' entities with missing "
                   + fieldName
                   + " key found! Please review the corresponding input file!"));
     }
 
-    Map<String, Long> counts =
-        elements.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
-    String duplicates =
-        counts.entrySet().stream()
-            .filter(e -> e.getValue() > 1)
-            .map(Map.Entry::getKey)
-            .collect(Collectors.joining(",\n"));
+    Set<List<String>> uniqueElements = new HashSet<>(elements);
 
     // if this happens, we return a failure
-    return Try.ofVoid(
-        elements.size() != uniqueElements.size(),
-        () ->
-            new SourceException(
-                "'"
-                    + entityName
-                    + "' entities with duplicated "
-                    + fieldName
-                    + " key, but different field "
-                    + "values found! Please review the corresponding input file! Affected primary keys: "
-                    + duplicates));
+    if (elements.size() != uniqueElements.size()) {
+      // calculations are done only if we have a
+      Map<List<String>, Long> counts =
+          elements.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+      String duplicates =
+          counts.entrySet().stream()
+              .filter(e -> e.getValue() > 1)
+              .map(m -> String.join("-", m.getKey()))
+              .collect(Collectors.joining(",\n"));
+
+      return Failure.of(
+          new SourceException(
+              "'"
+                  + entityName
+                  + "' entities with duplicated "
+                  + fieldName
+                  + " key, but different field "
+                  + "values found! Please review the corresponding input file! Affected primary keys: "
+                  + duplicates));
+    }
+
+    // returning an empty success if all is fine
+    return Success.empty();
   }
 }

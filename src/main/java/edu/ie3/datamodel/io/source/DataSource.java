@@ -7,6 +7,10 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.Entity;
+import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -27,25 +31,20 @@ public interface DataSource {
 
   /**
    * @param entityClass class of the source
-   * @return a map: field name to set of fields that needs to be unique for the source.
+   * @return a list of sets of fields that needs to be unique for the source.
    */
-  default Map<String, Set<String>> getUniqueFields(Class<? extends Entity> entityClass) {
-    return Map.of();
-    /*
-    if (TimeSeriesMappingSource.MappingEntry.class.isAssignableFrom(entityClass)) {
-      return Map.of("UUID", Set.of("uuid"));
-    } else if (TimeSeriesMetaInformation.class.isAssignableFrom(entityClass)) {
-      return Map.of("UUID", Set.of("uuid"));
-    } else if (UniqueEntity.class.isAssignableFrom(entityClass)) {
-      return Map.of(
-          "UUID", Set.of("uuid"),
-          "ID", Set.of("id"));
+  // TODO: May be replaced by Factory#getUniqueFields()
+  default List<Set<String>> getUniqueFields(Class<? extends Entity> entityClass) {
+    if (InputEntity.class.isAssignableFrom(entityClass)) {
+      return List.of(Set.of("uuid"));
+    } else if (AssetInput.class.isAssignableFrom(entityClass)) {
+      return List.of(Set.of("uuid"), Set.of("id"));
     } else if (ResultEntity.class.isAssignableFrom(entityClass)) {
-      return Map.of("TIME-and-MODEL", Set.of("time", "inputModel"));
+      return List.of(Set.of("time", "inputModel"));
     } else if (TimeBasedValue.class.isAssignableFrom(entityClass)) {
-      return Map.of("TIME", Set.of("time"));
+      return List.of(Set.of("time"));
     } else {
-      return Map.of();
-    }*/
+      return List.of();
+    }
   }
 }

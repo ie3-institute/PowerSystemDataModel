@@ -182,11 +182,11 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
       Collection<Map<String, String>> allRows =
           dataSource.csvRowFieldValueMapping(reader, headline);
 
-      Map<String, Set<String>> fieldsMap =
-          Map.ofEntries(
-              Map.entry("id", Set.of(factory.getIdField())),
-              Map.entry("coordinate", Set.of(factory.getLatField(), factory.getLonField())));
-      return dataSource.checkUniqueness("IdCoordinate", allRows, fieldsMap);
+      List<Set<String>> fields =
+          List.of(
+              Set.of(factory.getIdField()), Set.of(factory.getLatField(), factory.getLonField()));
+
+      return dataSource.checkUniqueness("IdCoordinate", allRows, fields);
     } catch (IOException e) {
       return Failure.of(
           new SourceException("Cannot read the file for coordinate id to coordinate mapping.", e));
