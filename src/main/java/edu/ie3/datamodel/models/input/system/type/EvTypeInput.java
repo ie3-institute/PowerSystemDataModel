@@ -21,9 +21,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<Energy> eStorage;
   /** Consumed electric energy per driven distance (typically in kWh/km) */
   private final ComparableQuantity<SpecificEnergy> eCons;
-  /** Rated apparent power for AC charging (typically in kVA) */
-  private final ComparableQuantity<Power> sRatedAC;
-  /** Rated apparent power for DC charging (typically in kVA) */
+  /** power for DC (typically in kW) */
   private final ComparableQuantity<Power> sRatedDC;
 
   /**
@@ -35,7 +33,6 @@ public class EvTypeInput extends SystemParticipantTypeInput {
    * @param eCons Consumed electric energy per driven distance
    * @param sRated Rated apparent power for this type of EV (typically in kW)
    * @param cosphiRated Power factor for this type of EV
-   * @param sRatedAC Rated apparent power for AC charging for this type of EV (typically in kW)
    * @param sRatedDC Rated apparent power for DC charging for this type of EV (typically in kW)
    */
   public EvTypeInput(
@@ -47,13 +44,11 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<SpecificEnergy> eCons,
       ComparableQuantity<Power> sRated,
       double cosphiRated,
-      ComparableQuantity<Power> sRatedAC,
       ComparableQuantity<Power> sRatedDC) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
-    this.sRatedAC = sRatedAC.to(StandardUnits.S_RATED);
-    this.sRatedDC = sRatedDC.to(StandardUnits.S_RATED);
+    this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   public ComparableQuantity<Energy> geteStorage() {
@@ -62,10 +57,6 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<SpecificEnergy> geteCons() {
     return eCons;
-  }
-
-  public ComparableQuantity<Power> getsRatedAC() {
-    return sRatedAC;
   }
 
   public ComparableQuantity<Power> getsRatedDC() {
@@ -79,13 +70,12 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     if (!super.equals(o)) return false;
     return eStorage.equals(that.eStorage)
         && eCons.equals(that.eCons)
-        && sRatedAC.equals(that.sRatedAC)
         && sRatedDC.equals(that.sRatedDC);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), eStorage, eCons, sRatedAC, sRatedDC);
+    return Objects.hash(super.hashCode(), eStorage, eCons, sRatedDC);
   }
 
   @Override
@@ -107,8 +97,6 @@ public class EvTypeInput extends SystemParticipantTypeInput {
         + eStorage
         + ", eCons="
         + eCons
-        + ", sRatedAC="
-        + sRatedAC
         + ", sRatedDC="
         + sRatedDC
         + '}';

@@ -291,8 +291,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                 new Quantity<?>[] {
                   evTypeInput.geteStorage(),
                   evTypeInput.geteCons(),
-                  evTypeInput.getsRatedAC(),
-                  evTypeInput.getsRatedDC()
                 },
                 evTypeInput),
         InvalidEntityException.class);

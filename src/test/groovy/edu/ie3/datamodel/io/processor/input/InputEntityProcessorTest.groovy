@@ -522,7 +522,6 @@ class InputEntityProcessorTest extends Specification {
       "eCons"      : "23.0",
       "sRated"     : "22.0",
       "cosPhiRated": "0.9",
-      "sRatedAC"     : "20.0",
       "sRatedDC"     : "20.0",
     ]
 

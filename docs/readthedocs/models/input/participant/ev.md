@@ -43,9 +43,13 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
      - kWh / km
      - Energy consumption per driven kilometre
 
-   * - sRated
+   * - sRatedAC
      - kVA
-     - Rated apparent power
+     - Rated apparent power for AC
+     
+   * - sRatedDC
+     - kW
+     - power for DC
 
    * - cosPhiRated
      - --
