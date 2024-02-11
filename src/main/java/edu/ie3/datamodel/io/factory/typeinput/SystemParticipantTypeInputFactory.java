@@ -144,11 +144,9 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<SpecificEnergy> eCons =
         data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
 
-
     ComparableQuantity<Power> sRatedDC = data.getQuantity(S_RATEDDC, StandardUnits.ACTIVE_POWER_IN);
 
-    return new EvTypeInput(
-        uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC);
+    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC);
   }
 
   private SystemParticipantTypeInput buildHpTypeInput(
