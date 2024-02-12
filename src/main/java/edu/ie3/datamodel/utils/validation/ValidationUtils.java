@@ -6,11 +6,10 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.*;
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource.MappingEntry;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.datamodel.models.input.MeasurementUnitInput;
-import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
@@ -20,6 +19,9 @@ import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
+import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
+import edu.ie3.datamodel.utils.ExceptionUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
@@ -303,44 +305,124 @@ public class ValidationUtils {
    * @param <T> the type of the returning predicate
    * @return the filter predicate that filters based on the provided function
    */
+  @Deprecated(since = "4.2")
   public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
     Set<Object> seen = ConcurrentHashMap.newKeySet();
     return t -> seen.add(keyExtractor.apply(t));
   }
 
-  /**
-   * Method to check for duplicate fields in a set of {@link UniqueEntity}.
-   *
-   * @param entities to be checked
-   * @param supplier for the field
-   * @return a list of {@link Try}.
-   * @param <E> type of the {@link UniqueEntity}
-   * @param <F> type of the field
-   */
-  protected static <E extends UniqueEntity, F>
-      List<Try<Void, DuplicateEntitiesException>> checkForDuplicates(
-          Collection<E> entities, FieldSupplier<E, F> supplier) {
-    Map<F, List<E>> duplicates =
-        entities.stream().collect(Collectors.groupingBy(supplier::getField));
+  @SuppressWarnings("unchecked")
+  protected static <E extends Entity> Try<Void, DuplicateEntitiesException> checkUniqueness(
+      Collection<E> entities) {
+    if (entities.size() < 2) {
+      return Success.empty();
+    }
 
-    return duplicates.entrySet().stream()
-        .filter(e -> e.getValue().size() > 1)
-        .map(
-            duplicate ->
-                Failure.ofVoid(
-                    new DuplicateEntitiesException(
-                        duplicate.getKey().getClass().getSimpleName(), duplicate.getValue())))
-        .collect(Collectors.toList());
+    Class<E> entityClass = entities.stream().findAny().map(e -> (Class<E>) e.getClass()).get();
+    List<FieldSetSupplier<E>> fieldSets = getFieldSets(entityClass);
+
+    String entityName =
+        entities.stream().findAny().map(e -> e.getClass().getSimpleName()).orElseGet(() -> "");
+    List<DuplicateEntitiesException> exceptions =
+        Try.getExceptions(fieldSets.stream().map(e -> checkUniqueness(entities, e)));
+
+    return Try.ofVoid(
+        !exceptions.isEmpty(),
+        () ->
+            new DuplicateEntitiesException(
+                "The following exception(s) occurred while checking the uniqueness of '"
+                    + entityName
+                    + "' entities: "
+                    + ExceptionUtils.getMessages(exceptions)));
   }
 
   /**
-   * Supplier for unique entity fields that returns a field of type F given an entity of type E.
+   * Checking the uniqueness for a given entity.
    *
-   * @param <E> type of unique entity
-   * @param <F> type of field
+   * @param entities to be checked
+   * @param supplier for the field set
+   * @return a try object
+   */
+  protected static <E extends Entity> Try<Void, DuplicateEntitiesException> checkUniqueness(
+      Collection<E> entities, FieldSetSupplier<E> supplier) {
+    List<Set<Object>> elements = entities.stream().map(supplier::getFieldSets).toList();
+    Set<Set<Object>> uniqueElements = new HashSet<>(elements);
+
+    if (elements.size() != uniqueElements.size()) {
+      String fieldName =
+          elements.get(0).stream()
+              .map(f -> f.getClass().getSimpleName())
+              .collect(Collectors.joining("-"));
+
+      // calculating the elements that violate the uniqueness
+      Map<Set<Object>, Long> counts =
+          elements.stream()
+              .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+      String duplicates =
+          counts.entrySet().stream()
+              .filter(e -> e.getValue() > 1)
+              .map(m -> String.join("-", m.getKey().toString()))
+              .collect(Collectors.joining(",\n"));
+
+      return Failure.of(
+          new DuplicateEntitiesException(
+              "Entities with duplicated "
+                  + fieldName
+                  + " key, but different field "
+                  + "values found! Affected primary keys: "
+                  + duplicates));
+    }
+
+    return Success.empty();
+  }
+
+  /**
+   * Method to return the {@link FieldSetSupplier} for a given {@link Entity} class.
+   *
+   * @param entityClass class of the entity
+   * @return a list of {@link FieldSetSupplier}s
+   * @param <E> type of class
+   */
+  @SuppressWarnings("unchecked")
+  protected static <E extends Entity> List<FieldSetSupplier<E>> getFieldSets(Class<E> entityClass) {
+    List<FieldSetSupplier<?>> suppliers = new ArrayList<>();
+
+    // adding all necessary suppliers
+    if (UniqueEntity.class.isAssignableFrom(entityClass)) {
+      FieldSetSupplier<UniqueEntity> uuid = e -> Set.of(e.getUuid());
+      suppliers.add(uuid);
+    }
+    if (AssetInput.class.isAssignableFrom(entityClass)) {
+      FieldSetSupplier<AssetInput> id = e -> Set.of(e.getId());
+      suppliers.add(id);
+    }
+    if (ResultEntity.class.isAssignableFrom(entityClass)) {
+      FieldSetSupplier<ResultEntity> result = e -> Set.of(e.getTime(), e.getInputModel());
+      suppliers.add(result);
+    }
+    if (TimeBasedValue.class.isAssignableFrom(entityClass)) {
+      FieldSetSupplier<TimeBasedValue<?>> time = e -> Set.of(e.getTime());
+      suppliers.add(time);
+    }
+    if (MappingEntry.class.isAssignableFrom(entityClass)) {
+      FieldSetSupplier<MappingEntry> participant = e -> Set.of(e.participant());
+      suppliers.add(participant);
+    }
+
+    return suppliers.stream().map(e -> (FieldSetSupplier<E>) e).toList();
+  }
+
+  /**
+   * Supplier for sets of fields that are required to be unique throughout the whole dataset. For
+   * each set, the combination of all members of the set must be unique. This means that individual
+   * members of the set are not required to be unique, but only their combination. A set can contain
+   * only a single member. In this case the single field must be unique throughout the dataset.
+   *
+   * @param <E> type of entity
    */
   @FunctionalInterface
-  protected interface FieldSupplier<E extends UniqueEntity, F> {
-    F getField(E entity);
+  protected interface FieldSetSupplier<E extends Entity> {
+    Set<Object> getFieldSets(E entity);
   }
 }

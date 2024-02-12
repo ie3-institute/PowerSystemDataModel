@@ -103,15 +103,6 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
   }
 
   /**
-   * Returns a list of sets of field names that are required to be unique throughout the whole
-   * dataset. For each set, the combination of all members of the set must be unique. This means
-   * that individual members of the set are not required to be unique, but only their combination.
-   * Sets with only a single member are exempt here; the single field must be unique throughout the
-   * dataset.
-   */
-  public abstract List<Set<String>> getUniqueFields();
-
-  /**
    * Returns list of sets of attribute names that the entity requires to be built. At least one of
    * these sets needs to be delivered for entity creation to be successful.
    *

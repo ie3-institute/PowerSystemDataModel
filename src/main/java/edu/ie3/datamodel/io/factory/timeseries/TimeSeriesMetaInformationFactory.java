@@ -41,9 +41,4 @@ public class TimeSeriesMetaInformationFactory
     ColumnScheme columnScheme = ColumnScheme.parse(data.getField(COLUMN_SCHEME)).orElseThrow();
     return new IndividualTimeSeriesMetaInformation(timeSeries, columnScheme);
   }
-
-  @Override
-  public List<Set<String>> getUniqueFields() {
-    return List.of(newSet(TIME_SERIES));
-  }
 }

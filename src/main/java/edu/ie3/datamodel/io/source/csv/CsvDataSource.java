@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.Entity;
-import edu.ie3.datamodel.utils.ExceptionUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
 import edu.ie3.util.StringUtils;
@@ -22,7 +21,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -88,9 +86,9 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(
-      Class<? extends Entity> entityClass, List<Set<String>> uniqueFields) throws SourceException {
-    return buildStreamWithFieldsToAttributesMap(entityClass, uniqueFields, true).getOrThrow();
+  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
+      throws SourceException {
+    return buildStreamWithFieldsToAttributesMap(entityClass, true).getOrThrow();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -294,14 +292,10 @@ public class CsvDataSource implements DataSource {
    *     mapping (fieldName to fieldValue)
    */
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-      Class<? extends Entity> entityClass,
-      List<Set<String>> uniqueFields,
-      boolean allowFileNotExisting) {
+      Class<? extends Entity> entityClass, boolean allowFileNotExisting) {
     return getFilePath(entityClass)
         .flatMap(
-            path ->
-                buildStreamWithFieldsToAttributesMap(
-                    entityClass, path, uniqueFields, allowFileNotExisting));
+            path -> buildStreamWithFieldsToAttributesMap(entityClass, path, allowFileNotExisting));
   }
 
   /**
@@ -310,17 +304,13 @@ public class CsvDataSource implements DataSource {
    * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
    * @param entityClass the entity class that should be build
-   * @param uniqueFields list of sets that contain fields which needs to be unique
    * @param filePath the path of the file to read
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
   protected <T extends Entity>
       Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-          Class<T> entityClass,
-          Path filePath,
-          List<Set<String>> uniqueFields,
-          boolean allowFileNotExisting) {
+          Class<T> entityClass, Path filePath, boolean allowFileNotExisting) {
     try (BufferedReader reader = connector.initReader(filePath)) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
@@ -330,8 +320,8 @@ public class CsvDataSource implements DataSource {
       // returning the original one
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
-      // checks the uniqueness of the rows
-      return checkUniqueness(entityClass.getSimpleName(), allRows, uniqueFields);
+      return Success.of(
+          checkExactDuplicates(entityClass.getSimpleName(), allRows).parallelStream());
     } catch (FileNotFoundException e) {
       if (allowFileNotExisting) {
         log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
@@ -364,16 +354,8 @@ public class CsvDataSource implements DataSource {
         .toList();
   }
 
-  /**
-   * Checking the uniqueness for a given entity.
-   *
-   * @param entityName name of the entity
-   * @param allRows of the csv file
-   * @param fields list of set of field names
-   * @return a try object
-   */
-  protected Try<Stream<Map<String, String>>, SourceException> checkUniqueness(
-      String entityName, Collection<Map<String, String>> allRows, List<Set<String>> fields) {
+  protected Set<Map<String, String>> checkExactDuplicates(
+      String entityName, Collection<Map<String, String>> allRows) {
     Set<Map<String, String>> rows = new HashSet<>(allRows);
 
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
@@ -384,76 +366,6 @@ public class CsvDataSource implements DataSource {
           (allRows.size() - rows.size()));
     }
 
-    List<SourceException> exceptions =
-        Try.getExceptions(fields.stream().map(e -> checkUniqueness(entityName, rows, e)));
-
-    if (exceptions.isEmpty()) {
-      return Success.of(rows.parallelStream());
-    } else {
-      return Failure.of(
-          new SourceException(
-              "The following exception(s) occurred while checking the uniqueness of '"
-                  + entityName
-                  + "' entities: "
-                  + ExceptionUtils.getMessages(exceptions)));
-    }
-  }
-
-  /**
-   * Checking the uniqueness for a given entity.
-   *
-   * @param entityName name of the entity
-   * @param rows of the csv file
-   * @param fields set of strings used to create an extractor
-   * @return a try object
-   */
-  protected Try<Void, SourceException> checkUniqueness(
-      String entityName, Collection<Map<String, String>> rows, Set<String> fields) {
-    String fieldName = String.join("-", fields).toUpperCase();
-
-    Function<Map<String, String>, List<String>> extractor =
-        fieldsToAttributes -> fields.stream().map(fieldsToAttributes::get).toList();
-
-    List<List<String>> elements = rows.stream().map(extractor).toList();
-
-    // counting all keys that are missing
-    long missingKey = elements.stream().filter(l -> l.contains(null)).count();
-
-    if (missingKey > 0) {
-      return Failure.of(
-          new SourceException(
-              "'"
-                  + missingKey
-                  + "' entities with missing "
-                  + fieldName
-                  + " key found! Please review the corresponding input file!"));
-    }
-
-    Set<List<String>> uniqueElements = new HashSet<>(elements);
-
-    // if this happens, we return a failure
-    if (elements.size() != uniqueElements.size()) {
-      // calculations are done only if we have a
-      Map<List<String>, Long> counts =
-          elements.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
-      String duplicates =
-          counts.entrySet().stream()
-              .filter(e -> e.getValue() > 1)
-              .map(m -> String.join("-", m.getKey()))
-              .collect(Collectors.joining(",\n"));
-
-      return Failure.of(
-          new SourceException(
-              "'"
-                  + entityName
-                  + "' entities with duplicated "
-                  + fieldName
-                  + " key, but different field "
-                  + "values found! Please review the corresponding input file! Affected primary keys: "
-                  + duplicates));
-    }
-
-    // returning an empty success if all is fine
-    return Success.empty();
+    return rows;
   }
 }

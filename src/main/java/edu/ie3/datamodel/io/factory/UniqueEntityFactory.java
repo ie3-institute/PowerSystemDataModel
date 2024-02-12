@@ -6,8 +6,6 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.models.Entity;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Universal factory class for creating entities with unique fields uuid and id.
@@ -25,10 +23,5 @@ public abstract class UniqueEntityFactory<T extends Entity, D extends EntityData
 
   public UniqueEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
-  }
-
-  @Override
-  public List<Set<String>> getUniqueFields() {
-    return List.of(newSet(UUID), newSet(ID));
   }
 }

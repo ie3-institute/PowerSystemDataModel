@@ -7,11 +7,9 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.Entity;
-import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.UniqueInputEntity;
-import edu.ie3.datamodel.models.result.ResultEntity;
-import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /** Interface that include functionalities for data sources in the database table, csv file etc. */
@@ -26,38 +24,6 @@ public interface DataSource {
   Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass) throws SourceException;
 
   /** Creates a stream of maps that represent the rows in the database */
-  default Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
-      throws SourceException {
-    return getSourceData(entityClass, getUniqueFields(entityClass));
-  }
-
-  /**
-   * Creates a stream of maps that represent the rows in the database
-   *
-   * @param entityClass class of the entity
-   * @param uniqueFields list of sets of fields that needs to be unique for the given {@link Entity}
-   * @return a stream of maps
-   * @throws SourceException if an exception occurred
-   */
-  Stream<Map<String, String>> getSourceData(
-      Class<? extends Entity> entityClass, List<Set<String>> uniqueFields) throws SourceException;
-
-  /**
-   * @param entityClass class of the source
-   * @return a list of sets of fields that needs to be unique for the source.
-   */
-  // TODO: May be replaced by Factory#getUniqueFields()
-  default List<Set<String>> getUniqueFields(Class<? extends Entity> entityClass) {
-    if (UniqueInputEntity.class.isAssignableFrom(entityClass)) {
-      return List.of(Set.of("uuid"));
-    } else if (AssetInput.class.isAssignableFrom(entityClass)) {
-      return List.of(Set.of("uuid"), Set.of("id"));
-    } else if (ResultEntity.class.isAssignableFrom(entityClass)) {
-      return List.of(Set.of("time", "inputModel"));
-    } else if (TimeBasedValue.class.isAssignableFrom(entityClass)) {
-      return List.of(Set.of("time"));
-    } else {
-      return List.of();
-    }
-  }
+  Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
+      throws SourceException;
 }

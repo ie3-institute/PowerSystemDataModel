@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -41,10 +40,7 @@ public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
 
   @Override
   public Stream<Map<String, String>> getMappingSourceData() throws SourceException {
-    List<Set<String>> uniqueFields = mappingFactory.getUniqueFields();
-    return dataSource
-        .buildStreamWithFieldsToAttributesMap(MappingEntry.class, uniqueFields, true)
-        .getOrThrow();
+    return dataSource.buildStreamWithFieldsToAttributesMap(MappingEntry.class, true).getOrThrow();
   }
 
   @Override

@@ -49,9 +49,4 @@ public abstract class TimeBasedWeatherValueFactory
    * @return the field name for the date time
    */
   public abstract String getTimeFieldString();
-
-  @Override
-  public List<Set<String>> getUniqueFields() {
-    return List.of(newSet(TIME, COORDINATE_ID));
-  }
 }

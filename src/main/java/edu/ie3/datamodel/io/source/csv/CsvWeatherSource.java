@@ -22,7 +22,7 @@ import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.*;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -208,8 +208,7 @@ public class CsvWeatherSource extends WeatherSource {
       Collection<Map<String, String>> allRows =
           dataSource.csvRowFieldValueMapping(reader, headline);
 
-      List<Set<String>> uniqueFields = weatherFactory.getUniqueFields();
-      return dataSource.checkUniqueness("Weather", allRows, uniqueFields);
+      return Success.of(dataSource.checkExactDuplicates("Weather", allRows).parallelStream());
     } catch (IOException e) {
       return Failure.of(
           new SourceException(

@@ -11,7 +11,7 @@ import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.*;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.io.BufferedReader;
@@ -37,8 +37,6 @@ import tech.units.indriya.unit.Units;
 public class CsvIdCoordinateSource implements IdCoordinateSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvIdCoordinateSource.class);
-
-  private static final String COORDINATE_ID_MAPPING = "coordinate id mapping";
 
   /** Mapping in both ways (id -> coordinate) and (coordinate -> id) have to be unique */
   private final Map<Integer, Point> idToCoordinate;
@@ -182,9 +180,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
       Collection<Map<String, String>> allRows =
           dataSource.csvRowFieldValueMapping(reader, headline);
 
-      List<Set<String>> uniqueFields = factory.getUniqueFields();
-
-      return dataSource.checkUniqueness("IdCoordinate", allRows, uniqueFields);
+      return Success.of(dataSource.checkExactDuplicates("IdCoordinate", allRows).parallelStream());
     } catch (IOException e) {
       return Failure.of(
           new SourceException("Cannot read the file for coordinate id to coordinate mapping.", e));

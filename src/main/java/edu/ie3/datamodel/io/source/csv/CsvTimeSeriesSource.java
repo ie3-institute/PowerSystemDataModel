@@ -139,12 +139,9 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       Path filePath,
       Function<Map<String, String>, Try<TimeBasedValue<V>, FactoryException>> fieldToValueFunction)
       throws SourceException {
-    List<Set<String>> uniqueFields = valueFactory.getUniqueFields();
-
     Try<Stream<TimeBasedValue<V>>, SourceException> timeBasedValues =
         dataSource
-            .buildStreamWithFieldsToAttributesMap(
-                TimeBasedValue.class, filePath, uniqueFields, false)
+            .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, filePath, false)
             .flatMap(
                 stream ->
                     Try.scanStream(stream.map(fieldToValueFunction), "TimeBasedValue<V>")

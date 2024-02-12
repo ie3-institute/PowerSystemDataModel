@@ -107,9 +107,4 @@ public class TimeBasedSimpleValueFactory<V extends Value>
 
     return Collections.singletonList(minConstructorParams);
   }
-
-  @Override
-  public List<Set<String>> getUniqueFields() {
-    return List.of(newSet(TIME));
-  }
 }

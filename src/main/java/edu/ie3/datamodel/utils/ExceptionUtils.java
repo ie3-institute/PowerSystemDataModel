@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.utils;
 
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -43,15 +43,13 @@ public class ExceptionUtils {
   }
 
   /**
-   * Combines multiple {@link UniqueEntity} into a string.
+   * Combines multiple {@link Entity} into a string.
    *
    * @param entities to be combined
    * @return a string
    */
-  public static String combine(Collection<? extends UniqueEntity> entities) {
-    return "{"
-        + entities.stream().map(UniqueEntity::toString).collect(Collectors.joining(", "))
-        + "}";
+  public static String combine(Collection<? extends Entity> entities) {
+    return "{" + entities.stream().map(Entity::toString).collect(Collectors.joining(", ")) + "}";
   }
 
   /**

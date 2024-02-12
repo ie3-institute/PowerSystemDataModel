@@ -420,8 +420,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     when:
     def allRows = [nodeInputRow]* noOfEntities
-    def distinctRows = dummyCsvSource.checkUniqueness(NodeInput.simpleName, allRows, [Set.of("uuid")]).getOrThrow().toList()
-
+    def distinctRows = dummyCsvSource.checkExactDuplicates(NodeInput.simpleName, allRows).toList()
 
     then:
     distinctRows.size() == distinctSize
@@ -441,44 +440,5 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "v_target"      : "1.0",
       "volt_lvl"      : "Höchstspannung",
       "v_rated"       : "380"]
-  }
-
-  def "A CsvDataSource should return a failure if the provided collection of mappings contains duplicated UUIDs with different data"() {
-
-    given:
-    def nodeInputRow1 = [
-      "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "id"            : "node_a",
-      "operates_until": "2020-03-25T15:11:31Z[UTC]",
-      "operates_from" : "2020-03-24T15:11:31Z[UTC]",
-      "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "slack"         : "true",
-      "subnet"        : "1",
-      "v_target"      : "1.0",
-      "volt_lvl"      : "Höchstspannung",
-      "v_rated"       : "380"
-    ]
-    def nodeInputRow2 = [
-      "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "id"            : "node_b",
-      "operates_until": "2020-03-25T15:11:31Z[UTC]",
-      "operates_from" : "2020-03-24T15:11:31Z[UTC]",
-      "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "slack"         : "true",
-      "subnet"        : "1",
-      "v_target"      : "1.0",
-      "volt_lvl"      : "Höchstspannung",
-      "v_rated"       : "380"
-    ]
-
-    when:
-    def allRows = [nodeInputRow1, nodeInputRow2]* 10
-    def distinctRows = dummyCsvSource.checkUniqueness(NodeInput.simpleName, allRows, Set.of("uuid"))
-
-    then:
-    distinctRows.failure
-    distinctRows.exception.get().message == "'NodeInput' entities with duplicated UUID key, but different field values found! Please review the corresponding input file! Affected primary keys: 4ca90220-74c2-4369-9afa-a18bf068840d"
   }
 }

@@ -91,11 +91,6 @@ class FactoryTest extends Specification {
     }
 
     @Override
-    List<Set<String>> getUniqueFields() {
-      return []
-    }
-
-    @Override
     protected List<Set<String>> getFields(Class<?> entityClass) {
       return [
         ["uuid", "value1", "value3"] as Set<String>,
