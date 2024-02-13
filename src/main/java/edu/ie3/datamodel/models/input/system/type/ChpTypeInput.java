@@ -174,6 +174,7 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       return pOwn;
     }
 
+    @Override
     public ChpTypeInput.ChpTypeInputCopyBuilder scale(Double factor) {
       setsRated(getsRated().multiply(factor));
       setpThermal(getpThermal().multiply(factor));

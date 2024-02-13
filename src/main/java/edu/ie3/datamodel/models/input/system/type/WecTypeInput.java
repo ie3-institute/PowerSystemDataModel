@@ -177,6 +177,7 @@ public class WecTypeInput extends SystemParticipantTypeInput {
       return hubHeight;
     }
 
+    @Override
     public WecTypeInput.WecTypeInputCopyBuilder scale(Double factor) {
       setsRated(getsRated().multiply(factor));
       setRotorArea(getRotorArea().multiply(factor));

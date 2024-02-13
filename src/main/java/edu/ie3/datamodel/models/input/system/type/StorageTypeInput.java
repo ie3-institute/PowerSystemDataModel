@@ -249,6 +249,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       return lifeCycle;
     }
 
+    @Override
     public StorageTypeInput.StorageTypeInputCopyBuilder scale(Double factor) {
       setsRated(getsRated().multiply(factor));
       seteStorage(geteStorage().multiply(factor));

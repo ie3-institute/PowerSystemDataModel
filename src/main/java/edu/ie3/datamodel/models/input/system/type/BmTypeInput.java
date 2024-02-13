@@ -130,6 +130,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       return etaConv;
     }
 
+    @Override
     public BmTypeInputCopyBuilder scale(Double factor) {
       setsRated(getsRated().multiply(factor));
       return this;
