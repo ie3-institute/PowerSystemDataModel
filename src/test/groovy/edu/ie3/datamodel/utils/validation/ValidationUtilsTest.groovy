@@ -97,8 +97,8 @@ class ValidationUtilsTest extends Specification {
     GridTestData.nodeA.copy().id(null).build()										|| new InvalidEntityException("No ID assigned", invalidAsset)
     GridTestData.nodeA.copy().operationTime(null).build()							|| new InvalidEntityException("Operation time of the asset is not defined", invalidAsset)
     GridTestData.nodeA.copy().operationTime(OperationTime.builder().
-    withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-26 15:11:31")).
-    withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()).build() || new InvalidEntityException("Operation start time of the asset has to be before end time", invalidAsset)
+    withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-26T15:11:31+01:00")).
+    withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25T15:11:31+01:00")).build()).build() || new InvalidEntityException("Operation start time of the asset has to be before end time", invalidAsset)
   }
 
   def "The check for negative entities should work as expected"() {

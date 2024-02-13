@@ -29,7 +29,7 @@ class SwitchResultFactoryTest extends Specification implements FactoryTestHelper
     given: "a switch result factory and model data"
     def resultFactory = new SwitchResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30 17:26:44",
+      "time"      : "2020-01-30T17:26:44+01:00",
       "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "closed"    : "true"
     ]

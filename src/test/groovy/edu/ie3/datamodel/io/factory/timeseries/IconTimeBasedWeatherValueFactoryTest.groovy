@@ -113,7 +113,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
     then:
     actual.with {
-      assert it.time == TimeUtil.withDefaults.toZonedDateTime("2019-08-01 01:00:00")
+      assert it.time == TimeUtil.withDefaults.toZonedDateTime("2019-08-01T01:00:00+01:00")
       assert it.value.coordinate == coordinate
       assert it.value.solarIrradiance.directIrradiance.present
       assert it.value.solarIrradiance.directIrradiance.get() == Quantities.getQuantity(0.002317613203124999, PowerSystemUnits.KILOWATT_PER_SQUAREMETRE)

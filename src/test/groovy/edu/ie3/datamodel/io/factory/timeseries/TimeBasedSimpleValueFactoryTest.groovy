@@ -22,6 +22,7 @@ import java.time.ZoneId
 class TimeBasedSimpleValueFactoryTest extends Specification {
   @Shared
   TimeUtil defaultTimeUtil
+  def zonedDateTime = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00+01:00")
 
   def setupSpec() {
     defaultTimeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
@@ -103,7 +104,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
   def "The simple time based value factory builds correct energy price value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
@@ -122,7 +123,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
   def "The simple time based value factory builds correct heat and apparent power value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(HeatAndSValue)
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
@@ -143,7 +144,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
   def "The simple time based value factory builds correct heat and active power value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(HeatAndPValue)
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
@@ -163,7 +164,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
   def "The simple time based value factory builds correct heat demand value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(HeatDemandValue)
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
@@ -182,7 +183,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
   def "The simple time based value factory builds correct apparent power value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(SValue)
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
@@ -202,7 +203,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
   def "The simple time based value factory builds correct active power value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(PValue)
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
@@ -221,7 +222,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
   def "The simple time based value factory throws a FactoryException upon build request, if a class is not supported"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time)

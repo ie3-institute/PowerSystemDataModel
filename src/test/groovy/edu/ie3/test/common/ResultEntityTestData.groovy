@@ -25,5 +25,5 @@ class ResultEntityTestData {
   public static final UUID BM_INPUT_MODEL = UUID.fromString("66df67d0-c789-4393-b0a5-897a3bc821a2")
   public static final ComparableQuantity<Power> BM_ACTIVE_POWER = Quantities.getQuantity(-1, PowerSystemUnits.MEGAWATT)
   public static final ComparableQuantity<Power> BM_REACTIVE_POWER = Quantities.getQuantity(-5, PowerSystemUnits.MEGAVAR)
-  public static final ZonedDateTime BM_TIME = TimeUtil.withDefaults.toZonedDateTime("2011-01-01 00:00:00")
+  public static final ZonedDateTime BM_TIME = TimeUtil.withDefaults.toZonedDateTime("2011-01-01T00:00:00+01:00")
 }

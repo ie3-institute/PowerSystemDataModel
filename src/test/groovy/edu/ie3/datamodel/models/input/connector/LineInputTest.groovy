@@ -88,7 +88,7 @@ class LineInputTest extends Specification {
         "uuid=92ec3bcf-1777-4d38-af67-0bf7c9fa73c7" +
         ", id=test_line_AtoB" +
         ", operator=f15105c4-a2de-4ab8-a621-4bc98e372d92" +
-        ", operationTime=OperationTime{startDate=2020-03-24T15:11:31Z[UTC], endDate=2020-03-25T15:11:31Z[UTC], isLimited=true}" +
+        ", operationTime=OperationTime{startDate=2020-03-24T15:11:31+01:00, endDate=2020-03-25T15:11:31+01:00, isLimited=true}" +
         ", nodeA=4ca90220-74c2-4369-9afa-a18bf068840d" +
         ", nodeB=47d29df0-ba2d-4d23-8e75-c82229c5c758" +
         ", noOfParallelDevices=2" +
