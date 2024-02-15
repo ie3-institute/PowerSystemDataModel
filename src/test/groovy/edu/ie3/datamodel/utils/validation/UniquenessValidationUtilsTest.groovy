@@ -14,10 +14,8 @@ import static tech.units.indriya.unit.Units.METRE_PER_SECOND
 
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
-import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.AssetInput
-import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
@@ -25,10 +23,7 @@ import edu.ie3.datamodel.models.value.SolarIrradianceValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
-import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
-import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
-import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 import tech.units.indriya.unit.Units
