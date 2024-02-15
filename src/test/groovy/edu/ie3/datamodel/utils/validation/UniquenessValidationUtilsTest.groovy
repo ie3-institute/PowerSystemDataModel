@@ -7,19 +7,17 @@ package edu.ie3.datamodel.utils.validation
 
 import static edu.ie3.datamodel.utils.validation.DummyAssetInput.of
 import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
-import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkAssetUniqueness
-import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkMappingEntryUniqueness
-import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkResultUniqueness
-import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkUniqueEntities
-import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkWeatherUniqueness
-import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.uuidFieldSupplier
+import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import static tech.units.indriya.unit.Units.METRE_PER_SECOND
 
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
+import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.AssetInput
+import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
@@ -27,10 +25,11 @@ import edu.ie3.datamodel.models.value.SolarIrradianceValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
+import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
+import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Specification
-import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 import tech.units.indriya.unit.Units
 
@@ -109,7 +108,7 @@ class UniquenessValidationUtilsTest extends Specification {
     given:
     ZonedDateTime time = ZonedDateTime.now()
     UUID uuid = UUID.randomUUID()
-    Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
+    Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PU)
     Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
 
     Set<ResultEntity> uniqueResults = [
@@ -129,7 +128,7 @@ class UniquenessValidationUtilsTest extends Specification {
     ZonedDateTime time = ZonedDateTime.parse("2024-02-15T13:49:44+01:00[Europe/Berlin]")
     UUID uuid1 = UUID.fromString("4f7938ad-3d8f-4d56-a76c-525f2362e8b6")
     UUID uuid2 = UUID.fromString("7b0ac056-3f5a-4cf3-b373-4f19d13981cf")
-    Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
+    Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PU)
     Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
 
     Set<ResultEntity> notUniqueResults = [

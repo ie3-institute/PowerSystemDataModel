@@ -286,7 +286,7 @@ public class CsvDataSource implements DataSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      return Success.of(csvRowFieldValueMapping(reader, headline));
+      return Success.of(csvRowFieldValueMapping(reader, headline).parallelStream());
     } catch (FileNotFoundException e) {
       if (allowFileNotExisting) {
         log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
@@ -309,12 +309,20 @@ public class CsvDataSource implements DataSource {
                 "Cannot find a naming strategy for class '" + entityClass.getSimpleName() + "'."));
   }
 
-  protected Stream<Map<String, String>> csvRowFieldValueMapping(
+  /**
+   * Method to return a row to field value mapping from a csv file.
+   *
+   * @param reader for the file
+   * @param headline of the file
+   * @return a list of mapping
+   */
+  protected List<Map<String, String>> csvRowFieldValueMapping(
       BufferedReader reader, String[] headline) {
     return reader
         .lines()
         .parallel()
         .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-        .filter(map -> !map.isEmpty());
+        .filter(map -> !map.isEmpty())
+        .toList();
   }
 }

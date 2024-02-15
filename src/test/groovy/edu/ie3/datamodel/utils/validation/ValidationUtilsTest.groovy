@@ -6,24 +6,12 @@
 package edu.ie3.datamodel.utils.validation
 
 import static edu.ie3.datamodel.models.StandardUnits.*
-import static edu.ie3.datamodel.utils.validation.DummyAssetInput.invalid
-import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
 import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
-import edu.ie3.datamodel.exceptions.DuplicateEntitiesException
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.ValidationException
-import edu.ie3.datamodel.io.source.TimeSeriesMappingSource.MappingEntry
-import edu.ie3.datamodel.models.Entity
 import edu.ie3.datamodel.models.OperationTime
-import edu.ie3.datamodel.models.UniqueEntity
-import edu.ie3.datamodel.models.input.AssetInput
-import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
-import edu.ie3.datamodel.models.result.ResultEntity
-import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeUtil
@@ -44,43 +32,6 @@ class ValidationUtilsTest extends Specification {
 
     then:
     noExceptionThrown()
-  }
-
-  def "The validation utils should check for duplicates as expected"() {
-    expect:
-    def tries = ValidationUtils.checkUniqueness(collection)
-
-    tries.exception.map { it.message } == checkResult
-
-    where:
-    collection                         || checkResult
-    [
-      new NodeInput(
-      UUID.fromString("9e37ce48-9650-44ec-b888-c2fd182aff01"), "node_f", GridTestData.profBroccoli,
-      OperationTime.notLimited()
-      ,
-      Quantities.getQuantity(1d, PU),
-      false,
-      null,
-      GermanVoltageLevelUtils.LV,
-      6),
-      new NodeInput(
-      UUID.fromString("9e37ce48-9650-44ec-b888-c2fd182aff01"), "node_g", GridTestData.profBroccoli,
-      OperationTime.notLimited()
-      ,
-      Quantities.getQuantity(1d, PU),
-      false,
-      null,
-      GermanVoltageLevelUtils.LV,
-      6)
-    ] as Set         || Optional.of("The following exception(s) occurred while checking the uniqueness of 'NodeInput'" +
-    " entities: Entities with duplicated UUID key, but different field values found!" +
-    " Affected primary keys: [9e37ce48-9650-44ec-b888-c2fd182aff01]")
-    [
-      GridTestData.nodeD,
-      GridTestData.nodeE
-    ] as Set || Optional.empty()
-    [] as Set                          || Optional.empty()
   }
 
   def "The validation check method recognizes all potential errors for an asset"() {

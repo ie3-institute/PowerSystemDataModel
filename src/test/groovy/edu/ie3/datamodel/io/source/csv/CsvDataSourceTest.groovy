@@ -378,26 +378,4 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too less columns"
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too much columns"
   }
-
-  def "A CsvDataSource should collect be able to collect empty optionals when asked to do so"() {
-
-    given:
-    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> emptyCollector = new ConcurrentHashMap<>()
-    def nodeInputOptionals = [
-      Optional.of(sptd.hpInput.node),
-      Optional.empty(),
-      Optional.of(sptd.chpInput.node)
-    ]
-
-    when:
-    def resultingList = nodeInputOptionals.stream().filter(dummyCsvSource.isPresentCollectIfNot(NodeInput, emptyCollector)).collect(Collectors.toList())
-
-    then:
-    emptyCollector.size() == 1
-    emptyCollector.get(NodeInput).toInteger() == 1
-
-    resultingList.size() == 2
-    resultingList.get(0) == Optional.of(sptd.hpInput.node)
-    resultingList.get(1) == Optional.of(sptd.chpInput.node)
-  }
 }
