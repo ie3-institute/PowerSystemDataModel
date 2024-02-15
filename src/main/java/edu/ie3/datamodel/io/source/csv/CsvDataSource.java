@@ -18,10 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.LongAdder;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -249,35 +246,6 @@ public class CsvDataSource implements DataSource {
     return matchingList;
   }
 
-  /**
-   * Returns a predicate that can be used to filter optionals of {@link Entity}s and keep track on
-   * the number of elements that have been empty optionals. This filter let only pass optionals that
-   * are non-empty. Example usage:
-   *
-   * <pre>{@code
-   * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
-   * }</pre>
-   *
-   * @param entityClass entity class that should be used as they key in the provided counter map
-   * @param invalidElementsCounterMap a map that counts the number of empty optionals and maps it to
-   *     the provided entity clas
-   * @param <T> the type of the entity
-   * @return a predicate that can be used to filter and count empty optionals
-   */
-  @Deprecated
-  protected <T extends Entity> Predicate<Optional<T>> isPresentCollectIfNot(
-      Class<? extends Entity> entityClass,
-      ConcurrentHashMap<Class<? extends Entity>, LongAdder> invalidElementsCounterMap) {
-    return o -> {
-      if (o.isPresent()) {
-        return true;
-      } else {
-        invalidElementsCounterMap.computeIfAbsent(entityClass, k -> new LongAdder()).increment();
-        return false;
-      }
-    };
-  }
-
   public FileNamingStrategy getNamingStrategy() {
     return fileNamingStrategy;
   }
@@ -318,10 +286,7 @@ public class CsvDataSource implements DataSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
-
-      return Success.of(
-          checkExactDuplicates(entityClass.getSimpleName(), allRows).parallelStream());
+      return Success.of(csvRowFieldValueMapping(reader, headline));
     } catch (FileNotFoundException e) {
       if (allowFileNotExisting) {
         log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
@@ -344,28 +309,12 @@ public class CsvDataSource implements DataSource {
                 "Cannot find a naming strategy for class '" + entityClass.getSimpleName() + "'."));
   }
 
-  protected List<Map<String, String>> csvRowFieldValueMapping(
+  protected Stream<Map<String, String>> csvRowFieldValueMapping(
       BufferedReader reader, String[] headline) {
     return reader
         .lines()
         .parallel()
         .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-        .filter(map -> !map.isEmpty())
-        .toList();
-  }
-
-  protected Set<Map<String, String>> checkExactDuplicates(
-      String entityName, Collection<Map<String, String>> allRows) {
-    Set<Map<String, String>> rows = new HashSet<>(allRows);
-
-    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
-    if (allRows.size() != rows.size()) {
-      log.warn(
-          "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
-          entityName,
-          (allRows.size() - rows.size()));
-    }
-
-    return rows;
+        .filter(map -> !map.isEmpty());
   }
 }

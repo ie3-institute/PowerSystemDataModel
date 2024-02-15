@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
+import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkAssetUniqueness;
+import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkUniqueEntities;
+
 import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
@@ -43,9 +46,6 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
-    /* sanity check to ensure uniqueness */
-    exceptions.add(checkUniqueness(gridContainer.allEntitiesAsList()));
-
     exceptions.addAll(checkRawGridElements(gridContainer.getRawGrid()));
     exceptions.addAll(
         checkSystemParticipants(
@@ -79,10 +79,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
       return List.of(isNull);
     }
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-
     /* sanity check to ensure uniqueness */
-    exceptions.add(checkUniqueness(rawGridElements.allEntitiesAsList()));
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    exceptions.add(
+        Try.ofVoid(
+            () -> checkAssetUniqueness(rawGridElements.allEntitiesAsList()),
+            DuplicateEntitiesException.class));
 
     /* Checking nodes */
     Set<NodeInput> nodes = rawGridElements.getNodes();
@@ -168,10 +170,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
       return List.of(isNull);
     }
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-
     /* sanity check to ensure uniqueness */
-    exceptions.add(checkUniqueness(systemParticipants.allEntitiesAsList()));
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    exceptions.add(
+        Try.ofVoid(
+            () -> checkAssetUniqueness(systemParticipants.allEntitiesAsList()),
+            DuplicateEntitiesException.class));
 
     exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
@@ -231,7 +235,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
     /* sanity check to ensure uniqueness */
-    exceptions.add(checkUniqueness(graphicElements.allEntitiesAsList()));
+    exceptions.add(
+        Try.ofVoid(
+            () -> checkUniqueEntities(graphicElements.allEntitiesAsList()),
+            DuplicateEntitiesException.class));
 
     graphicElements
         .getNodeGraphics()

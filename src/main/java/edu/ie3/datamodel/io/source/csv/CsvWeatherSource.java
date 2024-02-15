@@ -205,10 +205,7 @@ public class CsvWeatherSource extends WeatherSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows =
-          dataSource.csvRowFieldValueMapping(reader, headline);
-
-      return Success.of(dataSource.checkExactDuplicates("Weather", allRows).parallelStream());
+      return Success.of(dataSource.csvRowFieldValueMapping(reader, headline));
     } catch (IOException e) {
       return Failure.of(
           new SourceException(

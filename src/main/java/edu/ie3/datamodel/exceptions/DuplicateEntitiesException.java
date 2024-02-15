@@ -5,9 +5,8 @@
 */
 package edu.ie3.datamodel.exceptions;
 
-import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.utils.ExceptionUtils;
-import java.util.Collection;
+import java.util.List;
 
 public class DuplicateEntitiesException extends ValidationException {
 
@@ -15,13 +14,12 @@ public class DuplicateEntitiesException extends ValidationException {
     super(s);
   }
 
-  public DuplicateEntitiesException(String s, String entities) {
-    super(s + entities);
-  }
-
-  public DuplicateEntitiesException(String fieldName, Collection<? extends Entity> entities) {
+  public DuplicateEntitiesException(
+      String entityName, List<? extends ValidationException> exceptions) {
     this(
-        "The following entities have duplicate '" + fieldName + "': ",
-        ExceptionUtils.combine(entities));
+        "The following exception(s) occurred while checking the uniqueness of '"
+            + entityName
+            + "' entities: "
+            + ExceptionUtils.getMessages(exceptions));
   }
 }
