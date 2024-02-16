@@ -55,13 +55,6 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
      - --
      - Rated power factor
      
-   * - sRatedAC
-     - kVA
-     - Rated apparent power for AC charging
-     
-   * - sRatedDC
-     - kVA
-     - Rated apparent power for DC charging
 ```
 
 ### Entity Model

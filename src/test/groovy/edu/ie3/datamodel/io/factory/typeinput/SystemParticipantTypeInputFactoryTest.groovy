@@ -47,7 +47,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       "id":	    "blablub",
       "capex":    "3",
       "opex":	    "4",
-      "srated":   "5",
+      "sratedac":   "5",
       "cosPhiRated":	"6",
 
       "estorage":	"7",
@@ -68,7 +68,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       assert id == parameter["id"]
       assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
       assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      assert sRatedAC == getQuant(parameter["sratedac"], StandardUnits.S_RATED)
       assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
       assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)

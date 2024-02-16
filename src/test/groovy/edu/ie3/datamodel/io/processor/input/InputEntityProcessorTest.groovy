@@ -520,7 +520,7 @@ class InputEntityProcessorTest extends Specification {
       "opex"       : "101.0",
       "eStorage"   : "100.0",
       "eCons"      : "23.0",
-      "sRated"     : "22.0",
+      "sRatedAC"     : "22.0",
       "cosPhiRated": "0.9",
       "sRatedDC"     : "20.0",
     ]
