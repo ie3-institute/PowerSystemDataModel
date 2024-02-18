@@ -43,4 +43,35 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
   public String toString() {
     return "AssetTypeInput{" + "uuid=" + getUuid() + ", id=" + id + "}";
   }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link
+   * AssetTypeInput}
+   */
+  public abstract static class AssetTypeInputCopyBuilder<
+          B extends AssetTypeInput.AssetTypeInputCopyBuilder<B>>
+      extends UniqueEntityCopyBuilder<B> {
+
+    private String id;
+
+    protected AssetTypeInputCopyBuilder(AssetTypeInput entity) {
+      super(entity);
+      this.id = entity.getId();
+    }
+
+    public B id(String id) {
+      this.id = id;
+      return thisInstance();
+    }
+
+    protected String getId() {
+      return id;
+    }
+
+    @Override
+    public abstract AssetTypeInput build();
+
+    @Override
+    protected abstract B thisInstance();
+  }
 }

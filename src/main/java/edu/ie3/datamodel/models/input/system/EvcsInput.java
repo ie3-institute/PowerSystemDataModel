@@ -284,6 +284,12 @@ public class EvcsInput extends SystemParticipantInput {
     }
 
     @Override
+    public EvcsInputCopyBuilder scale(Double factor) {
+      type(type.copy().scale(factor).build());
+      return this;
+    }
+
+    @Override
     public EvcsInput build() {
       return new EvcsInput(
           getUuid(),

@@ -118,7 +118,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
             });
 
     /* Checking switches
-     * Because of the fact, that a transformer with switch gear in "upstream" direction has it's corresponding node in
+     * Because of the fact, that a transformer with switch gear in "upstream" direction has its corresponding node in
      * upper grid connected to a switch, instead of to the transformer directly: Collect all nodes at the end of the
      * upstream switch chain and add them to the set of allowed nodes */
     HashSet<NodeInput> validSwitchNodes = new HashSet<>(nodes);

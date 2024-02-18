@@ -24,7 +24,7 @@ import tech.units.indriya.unit.Units;
 
 /**
  * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
- * value mapping in the column scheme, ie<sup>3</sup> uses to store it's data from German Federal
+ * value mapping in the column scheme, ie<sup>3</sup> uses to store its data from German Federal
  * Weather Service's ICON-EU model
  */
 public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {

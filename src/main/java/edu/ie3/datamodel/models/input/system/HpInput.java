@@ -146,6 +146,22 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       this.thermalBus = entity.getThermalBus();
     }
 
+    public HpInputCopyBuilder type(HpTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    public HpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
+      this.thermalBus = thermalBus;
+      return this;
+    }
+
+    @Override
+    public HpInputCopyBuilder scale(Double factor) {
+      type(type.copy().scale(factor).build());
+      return this;
+    }
+
     @Override
     public HpInput build() {
       return new HpInput(
@@ -158,16 +174,6 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
           getqCharacteristics(),
           getEm(),
           type);
-    }
-
-    public HpInputCopyBuilder type(HpTypeInput type) {
-      this.type = type;
-      return this;
-    }
-
-    public HpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
-      this.thermalBus = thermalBus;
-      return this;
     }
 
     @Override
