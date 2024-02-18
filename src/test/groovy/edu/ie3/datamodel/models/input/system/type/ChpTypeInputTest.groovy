@@ -51,7 +51,7 @@ class ChpTypeInputTest extends Specification {
     alteredUnit.with {
       assert uuid == chpTypeInput.uuid
       assert id == chpTypeInput.id
-      assert capex == chpTypeInput.capex
+      assert capex == chpTypeInput.capex * 2d
       assert opex == chpTypeInput.opex
       assert etaEl == chpTypeInput.etaEl
       assert etaThermal == chpTypeInput.etaThermal

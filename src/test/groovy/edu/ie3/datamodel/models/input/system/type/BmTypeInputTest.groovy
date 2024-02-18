@@ -49,7 +49,7 @@ class BmTypeInputTest extends Specification {
     alteredUnit.with {
       assert uuid == bmTypeInput.uuid
       assert id == bmTypeInput.id
-      assert capex == bmTypeInput.capex
+      assert capex == bmTypeInput.capex * 2d
       assert opex == bmTypeInput.opex
       assert sRated == bmTypeInput.sRated * 2d
       assert cosPhiRated == bmTypeInput.cosPhiRated

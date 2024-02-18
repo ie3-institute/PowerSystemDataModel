@@ -50,7 +50,7 @@ class WecTypeInputTest extends Specification {
     alteredUnit.with {
       assert uuid == wecType.uuid
       assert id == wecType.id
-      assert capex == wecType.capex
+      assert capex == wecType.capex * 2d
       assert opex == wecType.opex
       assert sRated == wecType.sRated * 2d
       assert cosPhiRated == wecType.cosPhiRated

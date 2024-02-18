@@ -55,7 +55,7 @@ class StorageTypeInputTest extends Specification {
     alteredUnit.with {
       assert uuid == storageTypeInput.uuid
       assert id == storageTypeInput.id
-      assert capex == storageTypeInput.capex
+      assert capex == storageTypeInput.capex * 2d
       assert opex == storageTypeInput.opex
       assert eStorage == storageTypeInput.eStorage * 2d
       assert sRated == storageTypeInput.sRated * 2d

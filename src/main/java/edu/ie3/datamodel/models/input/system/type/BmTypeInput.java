@@ -132,6 +132,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
     @Override
     public BmTypeInputCopyBuilder scale(Double factor) {
+      setCapex(getCapex().multiply(factor));
       setsRated(getsRated().multiply(factor));
       return this;
     }

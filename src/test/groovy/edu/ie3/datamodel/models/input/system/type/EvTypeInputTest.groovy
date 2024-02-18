@@ -46,7 +46,7 @@ class EvTypeInputTest extends Specification {
     alteredUnit.with {
       assert uuid == evTypeInput.uuid
       assert id == evTypeInput.id
-      assert capex == evTypeInput.capex
+      assert capex == evTypeInput.capex * 2d
       assert opex == evTypeInput.opex
       assert eStorage == evTypeInput.eStorage * 2d
       assert eCons == evTypeInput.eCons * 2d

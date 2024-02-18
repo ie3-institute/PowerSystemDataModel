@@ -46,7 +46,7 @@ class HpTypeInputTest extends Specification {
     alteredUnit.with {
       assert uuid == hpTypeInput.uuid
       assert id == hpTypeInput.id
-      assert capex == hpTypeInput.capex
+      assert capex == hpTypeInput.capex * 2d
       assert opex == hpTypeInput.opex
       assert sRated == hpTypeInput.sRated * 2d
       assert cosPhiRated == hpTypeInput.cosPhiRated
