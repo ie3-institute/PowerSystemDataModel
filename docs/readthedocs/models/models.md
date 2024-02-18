@@ -37,7 +37,7 @@ This means that capacity, consumption etc. are scaled with the same factor as po
 Throughout all models you can be sure, that no information is given twice, reducing the possibility to have ambiguous
 information in your simulation set up.
 "Missing" information can be received through the grids relational information - e.g. if you intend to model a wind
-energy converter in detail, you may find information of it's geographical location in the model of it's common
+energy converter in detail, you may find information of its geographical location in the model of its common
 coupling point ([node](/models/input/grid/node)).
 
 **Harmonized Units System** <br>
