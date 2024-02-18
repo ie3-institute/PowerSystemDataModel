@@ -56,6 +56,11 @@ public class BmTypeInput extends SystemParticipantTypeInput {
   }
 
   @Override
+  public BmTypeInputCopyBuilder copy() {
+    return new BmTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof BmTypeInput that)) return false;
@@ -88,5 +93,66 @@ public class BmTypeInput extends SystemParticipantTypeInput {
         + ", etaConv="
         + etaConv
         + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link BmTypeInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link BmTypeInput}
+   */
+  public static class BmTypeInputCopyBuilder
+      extends SystemParticipantTypeInputCopyBuilder<BmTypeInputCopyBuilder> {
+
+    private ComparableQuantity<DimensionlessRate> activePowerGradient;
+    private ComparableQuantity<Dimensionless> etaConv;
+
+    private BmTypeInputCopyBuilder(BmTypeInput entity) {
+      super(entity);
+      this.activePowerGradient = entity.getActivePowerGradient();
+      this.etaConv = entity.getEtaConv();
+    }
+
+    public BmTypeInputCopyBuilder setActivePowerGradient(
+        ComparableQuantity<DimensionlessRate> activePowerGradient) {
+      this.activePowerGradient = activePowerGradient;
+      return this;
+    }
+
+    public BmTypeInputCopyBuilder setEtaConv(ComparableQuantity<Dimensionless> etaConv) {
+      this.etaConv = etaConv;
+      return this;
+    }
+
+    public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
+      return activePowerGradient;
+    }
+
+    public ComparableQuantity<Dimensionless> getEtaConv() {
+      return etaConv;
+    }
+
+    @Override
+    public BmTypeInputCopyBuilder scale(Double factor) {
+      setCapex(getCapex().multiply(factor));
+      setsRated(getsRated().multiply(factor));
+      return this;
+    }
+
+    @Override
+    public BmTypeInput build() {
+      return new BmTypeInput(
+          getUuid(),
+          getId(),
+          getCapex(),
+          getOpex(),
+          activePowerGradient,
+          getsRated(),
+          getCosPhiRated(),
+          etaConv);
+    }
+
+    @Override
+    protected BmTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

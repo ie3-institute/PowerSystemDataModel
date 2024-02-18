@@ -322,6 +322,12 @@ public class PvInput extends SystemParticipantInput {
     }
 
     @Override
+    public PvInputCopyBuilder scale(Double factor) {
+      this.sRated = this.sRated.multiply(factor);
+      return this;
+    }
+
+    @Override
     public PvInput build() {
       return new PvInput(
           getUuid(),

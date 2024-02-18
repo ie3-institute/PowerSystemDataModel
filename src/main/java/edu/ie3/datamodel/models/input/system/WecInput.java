@@ -146,6 +146,12 @@ public class WecInput extends SystemParticipantInput implements HasType {
     }
 
     @Override
+    public WecInputCopyBuilder scale(Double factor) {
+      type(type.copy().scale(factor).build());
+      return this;
+    }
+
+    @Override
     public WecInput build() {
       return new WecInput(
           getUuid(),

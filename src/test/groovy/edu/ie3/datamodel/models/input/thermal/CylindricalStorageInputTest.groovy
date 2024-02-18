@@ -36,4 +36,26 @@ class CylindricalStorageInputTest extends Specification {
       assert c == ThermalUnitInputTestData.c
     }
   }
+
+  def "Scaling a CylindricalStorageInput via builder should work as expected"() {
+    given:
+    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricStorageInput
+
+    when:
+    def alteredUnit = cylindricalStorageInput.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == cylindricalStorageInput.uuid
+      assert id == cylindricalStorageInput.id
+      assert operator == cylindricalStorageInput.operator
+      assert operationTime == cylindricalStorageInput.operationTime
+      assert thermalBus == cylindricalStorageInput.thermalBus
+      assert storageVolumeLvl == cylindricalStorageInput.storageVolumeLvl * 2d
+      assert storageVolumeLvlMin == cylindricalStorageInput.storageVolumeLvlMin * 2d
+      assert inletTemp == cylindricalStorageInput.inletTemp
+      assert returnTemp == cylindricalStorageInput.returnTemp
+      assert c == cylindricalStorageInput.c
+    }
+  }
 }
