@@ -155,6 +155,13 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
       return cosPhiRated;
     }
 
+    /**
+     * Scales the type input entity in a way that tries to preserve proportions that are related to
+     * power. This means that capacity, consumption etc. are scaled with the same factor.
+     *
+     * @param factor The factor to scale with
+     * @return A copy builder with scaled relevant properties
+     */
     public abstract B scale(Double factor);
 
     @Override

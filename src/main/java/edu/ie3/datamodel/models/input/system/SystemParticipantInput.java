@@ -181,6 +181,14 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       return em;
     }
 
+    /**
+     * Scales the input entity in a way that tries to preserve proportions that are related to
+     * power. This means that capacity, consumption etc. are scaled with the same factor. Related
+     * properties associated with the input type (if applicable) are scaled as well.
+     *
+     * @param factor The factor to scale with
+     * @return A copy builder with scaled relevant properties
+     */
     public abstract B scale(Double factor);
 
     @Override
