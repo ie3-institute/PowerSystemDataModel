@@ -31,7 +31,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
    * @param opex Operating expense for this type of EV (typically in €)
    * @param eStorage Energy capacity of the storage
    * @param eCons Consumed electric energy per driven distance
-   * @param sRatedAC Rated apparent power for this type of EV (typically in kVA)
+   * @param sRated Rated apparent power for this type of EV (typically in kVA)
    * @param cosphiRated Power factor for this type of EV
    * @param sRatedDC power for DC (typically in kW)
    */
@@ -42,10 +42,10 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<EnergyPrice> opex,
       ComparableQuantity<Energy> eStorage,
       ComparableQuantity<SpecificEnergy> eCons,
-      ComparableQuantity<Power> sRatedAC,
+      ComparableQuantity<Power> sRated,
       double cosphiRated,
       ComparableQuantity<Power> sRatedDC) {
-    super(uuid, id, capex, opex, sRatedAC.to(StandardUnits.S_RATED), cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
     this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
@@ -61,10 +61,6 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<Power> getsRatedDC() {
     return sRatedDC;
-  }
-
-  public ComparableQuantity<Power> getsRatedAC() {
-    return getsRated();
   }
 
   @Override
@@ -98,8 +94,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
         + getCapex()
         + ", opex="
         + getOpex()
-        + ", sRatedAC="
-        + getsRatedAC()
+        + ", sRated="
+        + getsRated()
         + ", cosphiRated="
         + getCosPhiRated()
         + "eStorage="

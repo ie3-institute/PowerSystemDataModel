@@ -233,7 +233,6 @@ class SystemParticipantTestData {
   private static final ComparableQuantity<Energy> eStorage = Quantities.getQuantity(100, ENERGY_IN)
   private static final ComparableQuantity<SpecificEnergy> eCons = Quantities.getQuantity(5, ENERGY_PER_DISTANCE)
   private static final ComparableQuantity<Power> sRatedDC = Quantities.getQuantity(20,ACTIVE_POWER_IN )
-  private static final ComparableQuantity<Power> sRatedAC = Quantities.getQuantity(25,S_RATED )
   public static final EvTypeInput evTypeInput = new EvTypeInput(
   typeUuid,
   "test_evTypeInput",
@@ -241,7 +240,7 @@ class SystemParticipantTestData {
   opex,
   eStorage,
   eCons,
-  sRatedAC,
+  sRated,
   cosPhiRated,
   sRatedDC)
   public static final EvInput evInput = new EvInput(

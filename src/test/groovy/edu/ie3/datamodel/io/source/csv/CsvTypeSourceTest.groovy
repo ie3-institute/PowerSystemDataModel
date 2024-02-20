@@ -198,7 +198,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
       opex == sptd.evTypeInput.opex
       eStorage == sptd.evTypeInput.eStorage
       eCons == sptd.evTypeInput.eCons
-      sRatedAC == sptd.evTypeInput.sRatedAC
+      sRated == sptd.evTypeInput.sRated
       cosPhiRated == sptd.evTypeInput.cosPhiRated
       sRatedDC == sptd.evTypeInput.sRatedDC
     }

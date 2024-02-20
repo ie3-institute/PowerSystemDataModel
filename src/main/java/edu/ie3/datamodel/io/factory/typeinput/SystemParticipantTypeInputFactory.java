@@ -137,7 +137,7 @@ public class SystemParticipantTypeInputFactory
       String id,
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
-      ComparableQuantity<Power> sRatedAC,
+      ComparableQuantity<Power> sRated,
       double cosPhi) {
     ComparableQuantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
 
@@ -146,7 +146,7 @@ public class SystemParticipantTypeInputFactory
 
     ComparableQuantity<Power> sRatedDC = data.getQuantity(S_RATEDDC, StandardUnits.ACTIVE_POWER_IN);
 
-    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRatedAC, cosPhi, sRatedDC);
+    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC);
   }
 
   private SystemParticipantTypeInput buildHpTypeInput(
