@@ -120,11 +120,13 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
     private ComparableQuantity<Energy> eStorage;
     private ComparableQuantity<SpecificEnergy> eCons;
+    private ComparableQuantity<Power> sRatedDC;
 
     private EvTypeInputCopyBuilder(EvTypeInput entity) {
       super(entity);
       this.eStorage = entity.geteStorage();
       this.eCons = entity.geteCons();
+      this.sRatedDC = entity.getsRatedDC();
     }
 
     public EvTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
@@ -137,6 +139,11 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       return this;
     }
 
+    public EvTypeInputCopyBuilder setsRatedDC(ComparableQuantity<Power> sRatedDC) {
+      this.sRatedDC = sRatedDC;
+      return this;
+    }
+
     public ComparableQuantity<Energy> geteStorage() {
       return eStorage;
     }
@@ -145,12 +152,17 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       return eCons;
     }
 
+    public ComparableQuantity<Power> getsRatedDC() {
+      return sRatedDC;
+    }
+
     @Override
     public EvTypeInput.EvTypeInputCopyBuilder scale(Double factor) {
       setCapex(getCapex().multiply(factor));
       setsRated(getsRated().multiply(factor));
       seteStorage(geteStorage().multiply(factor));
       seteCons(geteCons().multiply(factor));
+      setsRatedDC(getsRatedDC().multiply(factor));
       return this;
     }
 
@@ -164,7 +176,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
           eStorage,
           eCons,
           getsRated(),
-          getCosPhiRated());
+          getCosPhiRated(),
+          getsRatedDC());
     }
 
     @Override

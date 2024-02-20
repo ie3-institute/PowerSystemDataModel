@@ -47,6 +47,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       "id":	    "blablub",
       "capex":    "3",
       "opex":	    "4",
+      "srated":   "5",
       "sratedac":   "5",
       "cosPhiRated":	"6",
 

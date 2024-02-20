@@ -31,6 +31,7 @@ class EvTypeInputTest extends Specification {
       assert eStorage == Quantities.getQuantity(150, ENERGY_IN)
       assert eCons == evTypeInput.eCons
       assert sRated == evTypeInput.sRated
+      assert sRatedDC == evTypeInput.sRatedDC
       assert cosPhiRated == evTypeInput.cosPhiRated
     }
   }
@@ -51,6 +52,7 @@ class EvTypeInputTest extends Specification {
       assert eStorage == evTypeInput.eStorage * 2d
       assert eCons == evTypeInput.eCons * 2d
       assert sRated == evTypeInput.sRated * 2d
+      assert sRatedDC == evTypeInput.sRatedDC * 2d
       assert cosPhiRated == evTypeInput.cosPhiRated
     }
   }
