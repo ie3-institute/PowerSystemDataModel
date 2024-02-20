@@ -35,4 +35,23 @@ public abstract class ThermalStorageInput extends ThermalUnitInput {
       ThermalBusInput bus) {
     super(uuid, id, operator, operationTime, bus);
   }
+
+  @Override
+  public abstract ThermalStorageInputCopyBuilder<?> copy();
+
+  /**
+   * Abstract class for all builders that build child entities of abstract class {@link
+   * ThermalStorageInput}
+   */
+  public abstract static class ThermalStorageInputCopyBuilder<
+          B extends ThermalStorageInputCopyBuilder<B>>
+      extends ThermalUnitInputCopyBuilder<B> {
+
+    protected ThermalStorageInputCopyBuilder(ThermalStorageInput entity) {
+      super(entity);
+    }
+
+    @Override
+    public abstract ThermalStorageInput build();
+  }
 }

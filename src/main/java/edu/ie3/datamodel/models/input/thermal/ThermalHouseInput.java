@@ -166,7 +166,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
    * ThermalHouseInput}
    */
   public static class ThermalHouseInputCopyBuilder
-      extends ThermalUnitInput.ThermalUnitInputCopyBuilder<ThermalHouseInputCopyBuilder> {
+      extends ThermalSinkInputCopyBuilder<ThermalHouseInputCopyBuilder> {
 
     private ComparableQuantity<ThermalConductance> ethLosses;
     private ComparableQuantity<HeatCapacity> ethCapa;
@@ -181,21 +181,6 @@ public class ThermalHouseInput extends ThermalSinkInput {
       this.targetTemperature = entity.getTargetTemperature();
       this.upperTemperatureLimit = entity.getUpperTemperatureLimit();
       this.lowerTemperatureLimit = entity.getLowerTemperatureLimit();
-    }
-
-    @Override
-    public ThermalHouseInput build() {
-      return new ThermalHouseInput(
-          getUuid(),
-          getId(),
-          getOperator(),
-          getOperationTime(),
-          getThermalBus(),
-          ethLosses,
-          ethCapa,
-          targetTemperature,
-          upperTemperatureLimit,
-          lowerTemperatureLimit);
     }
 
     public ThermalHouseInputCopyBuilder ethLosses(
@@ -225,6 +210,30 @@ public class ThermalHouseInput extends ThermalSinkInput {
         ComparableQuantity<Temperature> lowerTemperatureLimit) {
       this.lowerTemperatureLimit = lowerTemperatureLimit;
       return this;
+    }
+
+    @Override
+    public ThermalHouseInputCopyBuilder scale(Double factor) {
+      // scale losses as well as capacity to keep equal
+      // the time needed to heat a scaled house
+      ethLosses(ethLosses.multiply(factor));
+      ethCapa(ethCapa.multiply(factor));
+      return this;
+    }
+
+    @Override
+    public ThermalHouseInput build() {
+      return new ThermalHouseInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getThermalBus(),
+          ethLosses,
+          ethCapa,
+          targetTemperature,
+          upperTemperatureLimit,
+          lowerTemperatureLimit);
     }
 
     @Override

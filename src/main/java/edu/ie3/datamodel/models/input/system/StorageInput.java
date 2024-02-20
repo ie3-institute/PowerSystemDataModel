@@ -127,6 +127,17 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       this.type = entity.getType();
     }
 
+    public StorageInputCopyBuilder type(StorageTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    @Override
+    public StorageInputCopyBuilder scale(Double factor) {
+      type(type.copy().scale(factor).build());
+      return this;
+    }
+
     @Override
     public StorageInput build() {
       return new StorageInput(
@@ -138,11 +149,6 @@ public class StorageInput extends SystemParticipantInput implements HasType {
           getqCharacteristics(),
           getEm(),
           type);
-    }
-
-    public StorageInputCopyBuilder type(StorageTypeInput type) {
-      this.type = type;
-      return this;
     }
 
     @Override

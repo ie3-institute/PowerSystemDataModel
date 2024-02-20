@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.exceptions.NotImplementedException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput
 import tech.units.indriya.quantity.Quantities
@@ -20,5 +21,10 @@ class InvalidSystemParticipantTypeInput extends SystemParticipantTypeInput {
    */
   InvalidSystemParticipantTypeInput() {
     super(UUID.randomUUID(), "invalid_system_participant_type", Quantities.getQuantity(0d, StandardUnits.CAPEX), Quantities.getQuantity(0d, StandardUnits.ENERGY_PRICE), Quantities.getQuantity(0d, StandardUnits.S_RATED), 1.0d)
+  }
+
+  @Override
+  SystemParticipantTypeInputCopyBuilder<?> copy() {
+    throw new NotImplementedException("Not implemented")
   }
 }

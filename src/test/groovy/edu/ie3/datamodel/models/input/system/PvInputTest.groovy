@@ -24,6 +24,7 @@ class PvInputTest extends Specification {
     def alteredUnit = pvInput.copy().albedo(10).azimuth(Quantities.getQuantity(10, DEGREE_GEOM)).elevationAngle(Quantities.getQuantity(50, DEGREE_GEOM))
         .etaConv(Quantities.getQuantity(50d, PERCENT)).kG(10).kT(5).marketReaction(true).sRated(Quantities.getQuantity(0d, KILOVOLTAMPERE))
         .cosPhiRated(0.7d).build()
+
     then:
     alteredUnit.with {
       assert uuid == pvInput.uuid
@@ -40,6 +41,33 @@ class PvInputTest extends Specification {
       assert elevationAngle == Quantities.getQuantity(50, DEGREE_GEOM)
       assert kG == 10
       assert kT == 5
+      assert em == Optional.of(SystemParticipantTestData.emInput)
+    }
+  }
+
+  def "Scaling a PvInput via builder should work as expected"() {
+    given:
+    def pvInput = SystemParticipantTestData.pvInput
+
+    when:
+    def alteredUnit = pvInput.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == pvInput.uuid
+      assert operationTime == pvInput.operationTime
+      assert operator == pvInput.operator
+      assert id == pvInput.id
+      assert qCharacteristics == pvInput.qCharacteristics
+      assert sRated == pvInput.sRated * 2d
+      assert cosPhiRated == pvInput.cosPhiRated
+      assert marketReaction == pvInput.marketReaction
+      assert albedo == pvInput.albedo
+      assert azimuth == pvInput.azimuth
+      assert etaConv == pvInput.etaConv
+      assert elevationAngle == pvInput.elevationAngle
+      assert kG == pvInput.kG
+      assert kT == pvInput.kT
       assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
