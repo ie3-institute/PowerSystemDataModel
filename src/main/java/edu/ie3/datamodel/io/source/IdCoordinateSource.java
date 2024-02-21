@@ -97,19 +97,17 @@ public interface IdCoordinateSource {
     if (coordinates != null && !coordinates.isEmpty()) {
       SortedSet<CoordinateDistance> sortedDistances =
           GeoUtils.calcOrderedCoordinateDistances(coordinate, coordinates);
-      return restrictToBoundingBox(coordinate, sortedDistances, n);
+      return enrichedCornerPoints(coordinate, sortedDistances, n);
     } else {
       return Collections.emptyList();
     }
   }
 
   /**
-   * Method for evaluating the found points. This method tries to return the four corner points of
-   * the bounding box of the given coordinate. If one of the found points matches the given
-   * coordinate, only this point is returned. If the given number of searched points is less than
-   * four, this method will only return the nearest n corner points. If the given number of searched
-   * points is greater than four, this method will return the four corner points plus the nearest n
-   * points to match the number of searched points.
+   * Method for evaluating the found points. This method uses {@link #findCornerPoints(Point,
+   * Collection)} to find the corner points. After the points are found the difference between the
+   * size of the corners and the expected number of points is calculated. If the difference is
+   * {@code != 0} the list of corner points is enriched with other found points.
    *
    * <p>To work properly, the given collection of {@link CoordinateDistance}'s should already be
    * sorted by distance.
@@ -119,27 +117,56 @@ public interface IdCoordinateSource {
    * @param numberOfPoints that should be returned
    * @return list of distances
    */
-  default List<CoordinateDistance> restrictToBoundingBox(
+  default List<CoordinateDistance> enrichedCornerPoints(
       Point coordinate, Collection<CoordinateDistance> distances, int numberOfPoints) {
+    // tries to find the corner points
+    List<CoordinateDistance> corners = new ArrayList<>(findCornerPoints(coordinate, distances));
+
+    // check if n distances are found
+    int diff = numberOfPoints - corners.size();
+
+    if (diff > 0) {
+      // calculates the points that are not in the collection
+      distances.stream().filter(c -> !corners.contains(c)).limit(diff).forEach(corners::add);
+    } else if (diff < 0) {
+      return corners.stream().limit(numberOfPoints).toList();
+    }
+
+    return corners;
+  }
+
+  /**
+   * Method for finding the corner points of a given coordinate. If a point matches the given
+   * coordinate, only this point is returned.
+   *
+   * <p>The max. number of returned corner points is set by the implementation (default: 4).
+   *
+   * <p>To work properly, the given collection of {@link CoordinateDistance}'s should already be
+   * sorted by distance.
+   *
+   * @param coordinate at the center
+   * @param coordinateDistances list of fount points with their distances
+   * @return either a list with one exact match or a list of corner points (default implementation:
+   *     max. 4 points)
+   */
+  default List<CoordinateDistance> findCornerPoints(
+      Point coordinate, Collection<CoordinateDistance> coordinateDistances) {
     boolean topLeft = false;
     boolean topRight = false;
     boolean bottomLeft = false;
     boolean bottomRight = false;
 
     List<CoordinateDistance> resultingDistances = new ArrayList<>();
-    List<CoordinateDistance> other = new ArrayList<>();
 
     // search for smallest bounding box
-    for (CoordinateDistance distance : distances) {
+    for (CoordinateDistance distance : coordinateDistances) {
       Point point = distance.getCoordinateB();
 
       // check for bounding box
       if (coordinate.equalsExact(point, 1e-6)) {
         // if current point is matching the given coordinate, we need to return only the current
         // point
-        resultingDistances.clear();
-        resultingDistances.add(distance);
-        return resultingDistances;
+        return List.of(distance);
       } else if (!topLeft
           && (point.getX() < coordinate.getX() && point.getY() > coordinate.getY())) {
         resultingDistances.add(distance);
@@ -156,18 +183,7 @@ public interface IdCoordinateSource {
           && (point.getX() > coordinate.getX() && point.getY() < coordinate.getY())) {
         resultingDistances.add(distance);
         bottomRight = true;
-      } else {
-        other.add(distance);
       }
-    }
-
-    // check if n distances are found
-    int diff = numberOfPoints - resultingDistances.size();
-
-    if (diff > 0) {
-      resultingDistances.addAll(other.stream().limit(diff).toList());
-    } else if (diff < 0) {
-      return resultingDistances.stream().limit(numberOfPoints).toList();
     }
 
     return resultingDistances;
