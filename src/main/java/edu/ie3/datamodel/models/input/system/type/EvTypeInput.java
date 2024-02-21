@@ -21,6 +21,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<Energy> eStorage;
   /** Consumed electric energy per driven distance (typically in kWh/km) */
   private final ComparableQuantity<SpecificEnergy> eCons;
+  /** power for DC (typically in kW) */
+  private final ComparableQuantity<Power> sRatedDC;
 
   /**
    * @param uuid of the input entity
@@ -29,8 +31,9 @@ public class EvTypeInput extends SystemParticipantTypeInput {
    * @param opex Operating expense for this type of EV (typically in €)
    * @param eStorage Energy capacity of the storage
    * @param eCons Consumed electric energy per driven distance
-   * @param sRated Rated apparent power for this type of EV (typically in kW)
+   * @param sRated Rated apparent power for this type of EV (typically in kVA)
    * @param cosphiRated Power factor for this type of EV
+   * @param sRatedDC power for DC (typically in kW)
    */
   public EvTypeInput(
       UUID uuid,
@@ -40,10 +43,12 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Energy> eStorage,
       ComparableQuantity<SpecificEnergy> eCons,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosphiRated,
+      ComparableQuantity<Power> sRatedDC) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
+    this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   public ComparableQuantity<Energy> geteStorage() {
@@ -52,6 +57,10 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<SpecificEnergy> geteCons() {
     return eCons;
+  }
+
+  public ComparableQuantity<Power> getsRatedDC() {
+    return sRatedDC;
   }
 
   @Override
@@ -64,12 +73,14 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     if (this == o) return true;
     if (!(o instanceof EvTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    return eStorage.equals(that.eStorage) && eCons.equals(that.eCons);
+    return eStorage.equals(that.eStorage)
+        && eCons.equals(that.eCons)
+        && sRatedDC.equals(that.sRatedDC);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), eStorage, eCons);
+    return Objects.hash(super.hashCode(), eStorage, eCons, sRatedDC);
   }
 
   @Override
@@ -91,6 +102,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
         + eStorage
         + ", eCons="
         + eCons
+        + ", sRatedDC="
+        + sRatedDC
         + '}';
   }
 
@@ -103,11 +116,13 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
     private ComparableQuantity<Energy> eStorage;
     private ComparableQuantity<SpecificEnergy> eCons;
+    private ComparableQuantity<Power> sRatedDC;
 
     private EvTypeInputCopyBuilder(EvTypeInput entity) {
       super(entity);
       this.eStorage = entity.geteStorage();
       this.eCons = entity.geteCons();
+      this.sRatedDC = entity.getsRatedDC();
     }
 
     public EvTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
@@ -120,6 +135,11 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       return this;
     }
 
+    public EvTypeInputCopyBuilder setsRatedDC(ComparableQuantity<Power> sRatedDC) {
+      this.sRatedDC = sRatedDC;
+      return this;
+    }
+
     public ComparableQuantity<Energy> geteStorage() {
       return eStorage;
     }
@@ -128,12 +148,17 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       return eCons;
     }
 
+    public ComparableQuantity<Power> getsRatedDC() {
+      return sRatedDC;
+    }
+
     @Override
     public EvTypeInput.EvTypeInputCopyBuilder scale(Double factor) {
       setCapex(getCapex().multiply(factor));
       setsRated(getsRated().multiply(factor));
       seteStorage(geteStorage().multiply(factor));
       seteCons(geteCons().multiply(factor));
+      setsRatedDC(getsRatedDC().multiply(factor));
       return this;
     }
 
@@ -147,7 +172,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
           eStorage,
           eCons,
           getsRated(),
-          getCosPhiRated());
+          getCosPhiRated(),
+          getsRatedDC());
     }
 
     @Override
