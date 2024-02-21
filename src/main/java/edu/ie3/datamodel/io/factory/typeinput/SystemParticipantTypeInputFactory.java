@@ -37,7 +37,7 @@ public class SystemParticipantTypeInputFactory
 
   // EvTypeInput
   private static final String E_CONS = "eCons";
-
+  private static final String S_RATEDDC = "sRatedDC";
   // BmTypeInput
   private static final String ACTIVE_POWER_GRADIENT = "activePowerGradient";
 
@@ -144,7 +144,9 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<SpecificEnergy> eCons =
         data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
 
-    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi);
+    ComparableQuantity<Power> sRatedDC = data.getQuantity(S_RATEDDC, StandardUnits.ACTIVE_POWER_IN);
+
+    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC);
   }
 
   private SystemParticipantTypeInput buildHpTypeInput(
