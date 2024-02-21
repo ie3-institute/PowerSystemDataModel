@@ -75,7 +75,7 @@ return less than n coordinates.
 
 ## Finding and returning the closest corner coordinates:
 In most cases we need four corner coordinates for our given coordinate. Therefor the 
-IdCoordinateSource contains a method that will use the calculated distances to find the closest 
+IdCoordinateSource contains methods that will use the calculated distances to find the closest 
 corner coordinates for the given coordinate.
 
 ``` java
