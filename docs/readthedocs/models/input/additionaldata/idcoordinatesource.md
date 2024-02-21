@@ -79,14 +79,12 @@ IdCoordinateSource contains a method that will use the calculated distances to f
 corner coordinates for the given coordinate.
 
 ``` java
-    List<CoordinateDistance> restrictToBoundingBox(
-          Point coordinate,
-          Collection<CoordinateDistance> distances,
-          int numberOfPoints
-    )
+    List<CoordinateDistance> findCornerPoints(Point coordinate, Collection<CoordinateDistance> distances)
+    List<CoordinateDistance> enrichedCornerPoints(Point coordinate, Collection<CoordinateDistance> distances, int numberOfPoints)
 ```
 
-For a given set of coordinates, the closest four corner coordinates plus more close points if n > 4
-are returned. If n < 4 the method will return the closest n corner coordinates. If the set of 
-coordinates contains a coordinate that matches the given coordinate, only this one coordinate is
-returned. If n > number of coordinates in the set, all coordinates are returned.
+1. If a coordinate matches the given coordinate, only this coordinate is returned. If no coordinate matches the given 
+coordinate, this method tries to return four corner points.
+
+2. This method uses the first to calculate the corner points. After that this method tries to enrich the found points to
+match the set number of points.
