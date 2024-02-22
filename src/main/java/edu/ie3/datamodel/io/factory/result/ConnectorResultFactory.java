@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
-import com.couchbase.client.core.deps.com.google.type.DateTime;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;

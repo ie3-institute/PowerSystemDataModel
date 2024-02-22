@@ -9,7 +9,6 @@ import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
 import java.time.format.DateTimeFormatter;
 
-
 /**
  * Abstract factory to handle the conversion from "flat" field to value mapping onto actual {@link
  * TimeBasedValueFactory} with {@link WeatherValue}

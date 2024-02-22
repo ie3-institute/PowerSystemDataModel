@@ -254,7 +254,6 @@ public class FileNamingStrategy {
     return entityPersistenceNamingStrategy.getIdCoordinateEntityName();
   }
 
-
   /**
    * Returns the name of the entity, that should be used for persistence.
    *
