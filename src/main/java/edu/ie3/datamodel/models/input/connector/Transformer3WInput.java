@@ -79,7 +79,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
    * transformer (here: that not holds node A in its grid).
    *
    * <p>Then, the internal node becomes a virtual representation of a slack node for the grid and
-   * allows for power flow calculations based on it's 'close-to-T-equivalent' representation
+   * allows for power flow calculations based on its 'close-to-T-equivalent' representation
    *
    * @param uuid of the input entity
    * @param id of the asset

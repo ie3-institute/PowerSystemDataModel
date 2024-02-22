@@ -102,6 +102,11 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   }
 
   @Override
+  public StorageTypeInputCopyBuilder copy() {
+    return new StorageTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof StorageTypeInput that)) return false;
@@ -151,5 +156,129 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
         + ", lifeCycle="
         + lifeCycle
         + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link StorageTypeInput} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * StorageTypeInput}
+   */
+  public static class StorageTypeInputCopyBuilder
+      extends SystemParticipantTypeInputCopyBuilder<StorageTypeInput.StorageTypeInputCopyBuilder> {
+
+    private ComparableQuantity<Energy> eStorage;
+    private ComparableQuantity<Power> pMax;
+    private ComparableQuantity<DimensionlessRate> activePowerGradient;
+    private ComparableQuantity<Dimensionless> eta;
+    private ComparableQuantity<Dimensionless> dod;
+    private ComparableQuantity<Time> lifeTime;
+    private int lifeCycle;
+
+    private StorageTypeInputCopyBuilder(StorageTypeInput entity) {
+      super(entity);
+      this.eStorage = entity.geteStorage();
+      this.pMax = entity.getpMax();
+      this.activePowerGradient = entity.getActivePowerGradient();
+      this.eta = entity.getEta();
+      this.dod = entity.getDod();
+      this.lifeTime = entity.getLifeTime();
+      this.lifeCycle = entity.getLifeCycle();
+    }
+
+    public StorageTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
+      this.eStorage = eStorage;
+      return this;
+    }
+
+    public StorageTypeInputCopyBuilder setpMax(ComparableQuantity<Power> pMax) {
+      this.pMax = pMax;
+      return this;
+    }
+
+    public StorageTypeInputCopyBuilder setActivePowerGradient(
+        ComparableQuantity<DimensionlessRate> activePowerGradient) {
+      this.activePowerGradient = activePowerGradient;
+      return this;
+    }
+
+    public StorageTypeInputCopyBuilder setEta(ComparableQuantity<Dimensionless> eta) {
+      this.eta = eta;
+      return this;
+    }
+
+    public StorageTypeInputCopyBuilder setDod(ComparableQuantity<Dimensionless> dod) {
+      this.dod = dod;
+      return this;
+    }
+
+    public StorageTypeInputCopyBuilder setLifeTime(ComparableQuantity<Time> lifeTime) {
+      this.lifeTime = lifeTime;
+      return this;
+    }
+
+    public StorageTypeInputCopyBuilder setLifeCycle(int lifeCycle) {
+      this.lifeCycle = lifeCycle;
+      return this;
+    }
+
+    public ComparableQuantity<Energy> geteStorage() {
+      return eStorage;
+    }
+
+    public ComparableQuantity<Power> getpMax() {
+      return pMax;
+    }
+
+    public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
+      return activePowerGradient;
+    }
+
+    public ComparableQuantity<Dimensionless> getEta() {
+      return eta;
+    }
+
+    public ComparableQuantity<Dimensionless> getDod() {
+      return dod;
+    }
+
+    public ComparableQuantity<Time> getLifeTime() {
+      return lifeTime;
+    }
+
+    public int getLifeCycle() {
+      return lifeCycle;
+    }
+
+    @Override
+    public StorageTypeInput.StorageTypeInputCopyBuilder scale(Double factor) {
+      setCapex(getCapex().multiply(factor));
+      setsRated(getsRated().multiply(factor));
+      seteStorage(geteStorage().multiply(factor));
+      setpMax(getpMax().multiply(factor));
+      return this;
+    }
+
+    @Override
+    public StorageTypeInput build() {
+      return new StorageTypeInput(
+          getUuid(),
+          getId(),
+          getCapex(),
+          getOpex(),
+          eStorage,
+          getsRated(),
+          getCosPhiRated(),
+          pMax,
+          activePowerGradient,
+          eta,
+          dod,
+          lifeTime,
+          lifeCycle);
+    }
+
+    @Override
+    protected StorageTypeInput.StorageTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

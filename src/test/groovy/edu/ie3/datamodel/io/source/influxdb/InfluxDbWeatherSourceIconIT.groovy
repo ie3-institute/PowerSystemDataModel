@@ -118,7 +118,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeseries67776.entries)
   }
 
-  def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to it's ID"() {
+  def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to its ID"() {
     given:
     def validCoordinate = IconWeatherTestData.COORDINATE_67775
     def invalidCoordinate = GeoUtils.buildPoint(7d, 48d)

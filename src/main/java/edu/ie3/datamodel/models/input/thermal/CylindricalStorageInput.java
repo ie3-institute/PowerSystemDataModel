@@ -161,7 +161,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
    * CylindricalStorageInput}
    */
   public static class CylindricalStorageInputCopyBuilder
-      extends ThermalUnitInput.ThermalUnitInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
+      extends ThermalStorageInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
 
     private ComparableQuantity<Volume> storageVolumeLvl;
     private ComparableQuantity<Volume> storageVolumeLvlMin;
@@ -176,21 +176,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
       this.inletTemp = entity.getInletTemp();
       this.returnTemp = entity.getReturnTemp();
       this.c = entity.getC();
-    }
-
-    @Override
-    public CylindricalStorageInput build() {
-      return new CylindricalStorageInput(
-          getUuid(),
-          getId(),
-          getOperator(),
-          getOperationTime(),
-          getThermalBus(),
-          storageVolumeLvl,
-          storageVolumeLvlMin,
-          inletTemp,
-          returnTemp,
-          c);
     }
 
     public CylindricalStorageInputCopyBuilder storageVolumeLvl(
@@ -219,6 +204,28 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     public CylindricalStorageInputCopyBuilder c(ComparableQuantity<SpecificHeatCapacity> c) {
       this.c = c;
       return this;
+    }
+
+    @Override
+    public CylindricalStorageInputCopyBuilder scale(Double factor) {
+      storageVolumeLvl(storageVolumeLvl.multiply(factor));
+      storageVolumeLvlMin(storageVolumeLvlMin.multiply(factor));
+      return this;
+    }
+
+    @Override
+    public CylindricalStorageInput build() {
+      return new CylindricalStorageInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getThermalBus(),
+          storageVolumeLvl,
+          storageVolumeLvlMin,
+          inletTemp,
+          returnTemp,
+          c);
     }
 
     @Override
