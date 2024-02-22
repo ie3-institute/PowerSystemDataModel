@@ -223,6 +223,12 @@ public class ChpInput extends SystemParticipantInput
     }
 
     @Override
+    public ChpInputCopyBuilder scale(Double factor) {
+      this.type = this.type.copy().scale(factor).build();
+      return this;
+    }
+
+    @Override
     protected ChpInputCopyBuilder thisInstance() {
       return this;
     }

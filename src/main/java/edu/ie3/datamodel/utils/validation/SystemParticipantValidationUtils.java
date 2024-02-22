@@ -288,7 +288,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     return Try.ofVoid(
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {evTypeInput.geteStorage(), evTypeInput.geteCons()}, evTypeInput),
+                new Quantity<?>[] {
+                  evTypeInput.geteStorage(), evTypeInput.geteCons(),
+                },
+                evTypeInput),
         InvalidEntityException.class);
   }
 

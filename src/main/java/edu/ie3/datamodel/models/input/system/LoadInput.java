@@ -318,6 +318,13 @@ public class LoadInput extends SystemParticipantInput {
     }
 
     @Override
+    public LoadInputCopyBuilder scale(Double factor) {
+      eConsAnnual(eConsAnnual.multiply(factor));
+      sRated(sRated.multiply(factor));
+      return this;
+    }
+
+    @Override
     public LoadInput build() {
       return new LoadInput(
           getUuid(),

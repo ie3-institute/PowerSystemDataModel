@@ -144,6 +144,22 @@ public class FixedFeedInInput extends SystemParticipantInput {
       this.cosPhiRated = entity.getCosPhiRated();
     }
 
+    public FixedFeedInInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
+      this.sRated = sRated;
+      return this;
+    }
+
+    public FixedFeedInInputCopyBuilder cosPhiRated(double cosPhiRated) {
+      this.cosPhiRated = cosPhiRated;
+      return this;
+    }
+
+    @Override
+    public FixedFeedInInputCopyBuilder scale(Double factor) {
+      sRated(sRated.multiply(factor));
+      return this;
+    }
+
     @Override
     public FixedFeedInInput build() {
       return new FixedFeedInInput(
@@ -156,16 +172,6 @@ public class FixedFeedInInput extends SystemParticipantInput {
           getEm(),
           sRated,
           cosPhiRated);
-    }
-
-    public FixedFeedInInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
-      this.sRated = sRated;
-      return this;
-    }
-
-    public FixedFeedInInputCopyBuilder cosPhiRated(double cosPhiRated) {
-      this.cosPhiRated = cosPhiRated;
-      return this;
     }
 
     @Override
