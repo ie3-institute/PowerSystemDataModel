@@ -12,6 +12,7 @@ import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -36,8 +37,8 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
     super(timeUtil);
   }
 
-  public CosmoTimeBasedWeatherValueFactory(String timePattern) {
-    super(timePattern);
+  public CosmoTimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
+    super(dateTimeFormatter);
   }
 
   public CosmoTimeBasedWeatherValueFactory() {

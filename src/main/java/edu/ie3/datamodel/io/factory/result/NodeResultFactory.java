@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
@@ -26,10 +27,10 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
    * Create a new factory to build {@link NodeResult}s and utilize the given date time formatter
    * pattern to parse date time strings
    *
-   * @param dtfPattern Pattern to parse date time strings
+   * @param dateTimeFormatter to parse date time strings
    */
-  public NodeResultFactory(String dtfPattern) {
-    super(dtfPattern, NodeResult.class);
+  public NodeResultFactory(DateTimeFormatter dateTimeFormatter) {
+    super(dateTimeFormatter, NodeResult.class);
   }
 
   @Override
