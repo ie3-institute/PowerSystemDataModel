@@ -25,7 +25,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
   def zonedDateTime = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00+01:00")
 
   def setupSpec() {
-    defaultTimeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
+    defaultTimeUtil = TimeUtil.withDefaults
   }
 
   def "The simple time based value factory provides correct fields"() {
