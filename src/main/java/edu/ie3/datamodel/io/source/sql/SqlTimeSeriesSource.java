@@ -135,16 +135,21 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     Class<? extends Value> valClass = metaInformation.getColumnScheme().getValueClass();
 
     return create(
-        connector, schemaName, namingStrategy, metaInformation.getUuid(), valClass, dateTimeFormatter);
+        connector,
+        schemaName,
+        namingStrategy,
+        metaInformation.getUuid(),
+        valClass,
+        dateTimeFormatter);
   }
 
   private static <T extends Value> SqlTimeSeriesSource<T> create(
-          SqlConnector connector,
-          String schemaName,
-          DatabaseNamingStrategy namingStrategy,
-          UUID timeSeriesUuid,
-          Class<T> valClass,
-          DateTimeFormatter dateTimeFormatter)
+      SqlConnector connector,
+      String schemaName,
+      DatabaseNamingStrategy namingStrategy,
+      UUID timeSeriesUuid,
+      Class<T> valClass,
+      DateTimeFormatter dateTimeFormatter)
       throws SourceException {
     TimeBasedSimpleValueFactory<T> valueFactory =
         new TimeBasedSimpleValueFactory<>(valClass, dateTimeFormatter);
