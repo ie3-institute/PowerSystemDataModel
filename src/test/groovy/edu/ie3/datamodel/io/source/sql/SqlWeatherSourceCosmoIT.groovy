@@ -69,7 +69,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     optTimeBasedValue.empty
   }
 
-  def "A SqlWeatherSource can read multiple timeseries values for multiple coordinates"() {
+  def "A SqlWeatherSource can read multiple time series values for multiple coordinates"() {
     given:
     def coordinates = [
       CosmoWeatherTestData.COORDINATE_193186,
