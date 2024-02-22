@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
+import com.couchbase.client.core.deps.com.google.type.DateTime;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -14,6 +15,7 @@ import edu.ie3.datamodel.models.result.connector.LineResult;
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
@@ -37,10 +39,11 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
    * Create a new factory to build {@link ConnectorResult}s and utilize the given date time
    * formatter pattern to parse date time strings
    *
-   * @param dtfPattern Pattern to parse date time strings
+   * @param dateTimeFormatter to parse date time strings
    */
-  public ConnectorResultFactory(String dtfPattern) {
-    super(dtfPattern, LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
+  public ConnectorResultFactory(DateTimeFormatter dateTimeFormatter) {
+    super(
+        dateTimeFormatter, LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
   }
 
   @Override

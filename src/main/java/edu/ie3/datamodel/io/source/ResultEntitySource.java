@@ -21,6 +21,8 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.utils.Try;
+
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -54,11 +56,11 @@ public class ResultEntitySource extends EntitySource {
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
-  public ResultEntitySource(DataSource dataSource, String dtfPattern) {
+  public ResultEntitySource(DataSource dataSource, DateTimeFormatter dateTimeFormatter) {
     super(dataSource);
 
     // init factories
-    this.systemParticipantResultFactory = new SystemParticipantResultFactory(dtfPattern);
+    this.systemParticipantResultFactory = new SystemParticipantResultFactory(dateTimeFormatter);
     this.thermalResultFactory = new ThermalResultFactory();
     this.switchResultFactory = new SwitchResultFactory();
     this.nodeResultFactory = new NodeResultFactory();

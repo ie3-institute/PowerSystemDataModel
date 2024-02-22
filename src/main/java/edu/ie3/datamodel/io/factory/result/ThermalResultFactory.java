@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
@@ -34,10 +35,10 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
    * Create a new factory to build {@link ThermalResultFactory}s and utilize the given date time
    * formatter pattern to parse date time strings
    *
-   * @param dtfPattern Pattern to parse date time strings
+   * @param dateTimeFormatter parse date time strings
    */
-  public ThermalResultFactory(String dtfPattern) {
-    super(dtfPattern, ThermalHouseResult.class, CylindricalStorageResult.class);
+  public ThermalResultFactory(DateTimeFormatter dateTimeFormatter) {
+    super(dateTimeFormatter, ThermalHouseResult.class, CylindricalStorageResult.class);
   }
 
   @Override
