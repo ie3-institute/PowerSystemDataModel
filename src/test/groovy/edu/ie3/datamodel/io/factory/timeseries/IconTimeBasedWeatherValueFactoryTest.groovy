@@ -72,11 +72,11 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
   def "A time based weather value factory for ICON column scheme builds a single time based value correctly"() {
     given:
-    def factory = new IconTimeBasedWeatherValueFactory()
+    def factory = new IconTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
     def coordinate = CosmoWeatherTestData.COORDINATE_67775
 
     def parameter = [
-      "time"        : "2019-08-01 01:00:00",
+      "time"        : "2019-08-01T01:00:00+02:00",
       "albRad"      : "13.015240669",
       "asobS"       : "3.555093673828124",
       "aswdifdS"    : "1.8088226191406245",
@@ -113,7 +113,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
     then:
     actual.with {
-      assert it.time == TimeUtil.withDefaults.toZonedDateTime("2019-08-01T01:00:00+01:00")
+      assert it.time == TimeUtil.withDefaults.toZonedDateTime("2019-08-01T01:00:00+02:00")
       assert it.value.coordinate == coordinate
       assert it.value.solarIrradiance.directIrradiance.present
       assert it.value.solarIrradiance.directIrradiance.get() == Quantities.getQuantity(0.002317613203124999, PowerSystemUnits.KILOWATT_PER_SQUAREMETRE)

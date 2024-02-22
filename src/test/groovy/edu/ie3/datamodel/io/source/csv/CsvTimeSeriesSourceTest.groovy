@@ -28,7 +28,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
     def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00+01:00")
-    def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
+    def timeUtil = TimeUtil.withDefaults
     def fieldToValue = [
       "uuid" : "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time" : timeUtil.toString(time),
