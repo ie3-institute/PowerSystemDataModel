@@ -45,7 +45,8 @@ class TypeTestData extends GridTestData {
   Quantities.getQuantity(100d, KILOWATTHOUR),
   Quantities.getQuantity(23d, KILOWATTHOUR_PER_KILOMETRE),
   Quantities.getQuantity(22d, KILOWATT),
-  0.9
+  0.9,
+  Quantities.getQuantity(20d, KILOWATT)
   )
 
   public static final HpTypeInput hpType = new HpTypeInput(
