@@ -23,18 +23,21 @@ import java.util.stream.Collectors;
 public class UniquenessValidationUtils extends ValidationUtils {
 
   // default field set supplier
-  protected static FieldSetSupplier<UniqueEntity> uuidFieldSupplier =
+  protected static final FieldSetSupplier<UniqueEntity> uuidFieldSupplier =
       entity -> Set.of(entity.getUuid());
-  protected static FieldSetSupplier<AssetInput> idFieldSupplier = e -> Set.of(e.getId());
-  protected static FieldSetSupplier<ResultEntity> resultFieldSupplier =
+  protected static final FieldSetSupplier<AssetInput> idFieldSupplier = e -> Set.of(e.getId());
+  protected static final FieldSetSupplier<ResultEntity> resultFieldSupplier =
       entity -> Set.of(entity.getTime(), entity.getInputModel());
-  protected static FieldSetSupplier<MappingEntry> mappingFieldSupplier =
+  protected static final FieldSetSupplier<MappingEntry> mappingFieldSupplier =
       entity -> Set.of(entity.participant());
-  protected static FieldSetSupplier<TimeBasedValue<WeatherValue>> timeBasedValueFieldSupplier =
-      entity -> Set.of(entity.getTime(), entity.getValue().getCoordinate());
+  protected static final FieldSetSupplier<TimeBasedValue<WeatherValue>>
+      timeBasedValueFieldSupplier =
+          entity -> Set.of(entity.getTime(), entity.getValue().getCoordinate());
 
   /**
    * Checks the uniqueness of a collection of {@link UniqueEntity}.
+   *
+   * <p>Caution: Only the field {@code uuid} is checked for uniqueness here
    *
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated
@@ -80,7 +83,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated
    */
-  public static void checkMappingEntryUniqueness(Collection<? extends MappingEntry> entities)
+  public static void checkMappingEntryUniqueness(Collection<MappingEntry> entities)
       throws DuplicateEntitiesException {
     checkUniqueness(entities, mappingFieldSupplier).getOrThrow();
   }

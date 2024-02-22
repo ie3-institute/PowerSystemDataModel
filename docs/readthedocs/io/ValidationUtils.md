@@ -65,7 +65,7 @@ The ValidationUtils include validation checks for...
         - PvInput
         - StorageInput
         - WecInput
-        - EvcsInput
+        - EvcsInput (also checks EvcsTypeInput/ChargingPointType)
     - SystemParticipantTypeInput
         - BmTypeInput
         - ChpTypeInput
@@ -73,7 +73,6 @@ The ValidationUtils include validation checks for...
         - HpTypeInput
         - StorageTypeInput
         - WecTypeInput
-        - (EvcsTypeInput/ChargingPointType: is checked in EvcsInput method)
 - ThermalUnitValidationUtils
     - ThermalUnitInput
         - ThermalSinkInput

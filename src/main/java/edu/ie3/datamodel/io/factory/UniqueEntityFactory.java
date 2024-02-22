@@ -21,7 +21,8 @@ public abstract class UniqueEntityFactory<T extends Entity, D extends EntityData
 
   protected static final String ID = "id";
 
-  public UniqueEntityFactory(Class<? extends T>... allowedClasses) {
+  @SafeVarargs
+  protected UniqueEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
 }

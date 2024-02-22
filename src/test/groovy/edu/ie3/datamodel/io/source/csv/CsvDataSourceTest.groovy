@@ -6,18 +6,11 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
-import edu.ie3.datamodel.models.UniqueEntity
-import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.system.LoadInput
-import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Path
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.LongAdder
-import java.util.function.Function
-import java.util.stream.Collectors
 
 class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 

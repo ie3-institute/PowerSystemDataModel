@@ -143,9 +143,10 @@ class UniquenessValidationUtilsTest extends Specification {
 
   def "Checking if mapping entries are unique"() {
     given:
+    UUID timeSeries = UUID.randomUUID()
     Set<TimeSeriesMappingSource.MappingEntry> uniqueEntries = [
-      new TimeSeriesMappingSource.MappingEntry(UUID.randomUUID(), UUID.randomUUID()),
-      new TimeSeriesMappingSource.MappingEntry(UUID.randomUUID(), UUID.randomUUID()),
+      new TimeSeriesMappingSource.MappingEntry(UUID.randomUUID(), timeSeries),
+      new TimeSeriesMappingSource.MappingEntry(UUID.randomUUID(), timeSeries),
     ]
 
     when:
