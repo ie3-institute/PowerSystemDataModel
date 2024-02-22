@@ -16,7 +16,6 @@ import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.Optional;
 
 /**
  * The interface definition of a source, that is able to provide one specific time series for one
