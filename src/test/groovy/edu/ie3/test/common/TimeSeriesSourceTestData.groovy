@@ -18,8 +18,8 @@ final class  TimeSeriesSourceTestData {
     // restrict instantiation
   }
 
-  public static final ZonedDateTime TIME_00MIN = ZonedDateTime.parse("2020-01-01T00:00:00Z[UTC]")
-  public static final ZonedDateTime TIME_15MIN = ZonedDateTime.parse("2020-01-01T00:15:00Z[UTC]")
+  public static final ZonedDateTime TIME_00MIN = ZonedDateTime.parse("2020-01-01T00:00:00Z")
+  public static final ZonedDateTime TIME_15MIN = ZonedDateTime.parse("2020-01-01T00:15:00Z")
 
   public static final PValue P_VALUE_00MIN = new PValue(
   Quantities.getQuantity(1000.0d, StandardUnits.ACTIVE_POWER_IN)
