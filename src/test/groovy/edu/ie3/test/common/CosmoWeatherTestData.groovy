@@ -7,7 +7,6 @@ package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.value.WeatherValue
-import edu.ie3.util.TimeUtil
 import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
