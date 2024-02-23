@@ -5,8 +5,6 @@
  */
 package edu.ie3.test.common
 
-import edu.ie3.util.TimeUtil
-
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 import static tech.units.indriya.unit.Units.CELSIUS
 import static tech.units.indriya.unit.Units.METRE_PER_SECOND
@@ -20,6 +18,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.value.*
+import edu.ie3.util.TimeUtil
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.geom.Point

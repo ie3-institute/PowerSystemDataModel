@@ -401,10 +401,10 @@ public abstract class Processor<T> {
    * manually BEFORE calling this method!
    *
    * @param zonedDateTime representation of the ZonedDateTime
-   * @return string representation of the ZonedDateTime
+   * @return ISO 8601 conform string representation of the ZonedDateTime
    */
   protected String processZonedDateTime(ZonedDateTime zonedDateTime) {
-      return TimeUtil.withDefaults.toString(zonedDateTime);
+    return TimeUtil.withDefaults.toString(zonedDateTime);
   }
 
   /**
