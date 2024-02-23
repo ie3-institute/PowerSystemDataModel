@@ -22,7 +22,7 @@ import java.time.ZoneId
 class TimeBasedSimpleValueFactoryTest extends Specification {
   @Shared
   TimeUtil defaultTimeUtil
-  def zonedDateTime = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00+01:00")
+  def zonedDateTime = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00+00:00")
 
   def setupSpec() {
     defaultTimeUtil = TimeUtil.withDefaults

@@ -19,7 +19,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     given:
     def factory = new CosmoTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00+01:00")
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00+00:00")
 
     Map<String, String> parameter = [
       "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
@@ -52,7 +52,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     given:
     def factory = new CosmoTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00+01:00")
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00+00:00")
 
     Map<String, String> parameter = [
       "time"             : TimeUtil.withDefaults.toString(time),
