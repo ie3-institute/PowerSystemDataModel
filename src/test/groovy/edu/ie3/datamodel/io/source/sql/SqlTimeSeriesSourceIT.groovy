@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
+import java.time.format.DateTimeFormatter
+
 import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 
 import edu.ie3.datamodel.exceptions.SourceException
@@ -37,6 +39,9 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
   @Shared
   DatabaseNamingStrategy namingStrategy
 
+  @Shared
+  DateTimeFormatter dateTimeFormatter
+
   static String schemaName = "public"
 
   static UUID pTimeSeriesUuid = UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
@@ -66,17 +71,17 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
         )
 
     namingStrategy = new DatabaseNamingStrategy()
+    dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
-    pSource = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, "yyyy-MM-dd HH:mm:ss")
+    pSource = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, dateTimeFormatter)
   }
 
   def "The factory method in SqlTimeSeriesSource builds a time series source for all supported column types"() {
     given:
     def metaInformation = new IndividualTimeSeriesMetaInformation(uuid, columnScheme)
-    def timePattern = "yyyy-MM-dd HH:mm:ss"
 
     when:
-    def source = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, timePattern)
+    def source = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, dateTimeFormatter)
     def timeSeries = source.timeSeries
 
     then:
@@ -99,10 +104,9 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
         UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"),
         ColumnScheme.WEATHER
         )
-    def timePattern = "yyyy-MM-dd HH:mm:ss"
 
     when:
-    SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, timePattern)
+    SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, dateTimeFormatter)
 
     then:
     def e = thrown(SourceException)
