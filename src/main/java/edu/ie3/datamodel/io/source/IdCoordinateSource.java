@@ -27,11 +27,6 @@ public interface IdCoordinateSource {
    */
   Optional<Set<String>> getSourceFields() throws SourceException;
 
-  /** Returns a set of fields that needs to be unique for the source. */
-  default Set<String> getUniqueFields() {
-    return Set.of("");
-  }
-
   /**
    * Get the matching coordinate for the given ID
    *

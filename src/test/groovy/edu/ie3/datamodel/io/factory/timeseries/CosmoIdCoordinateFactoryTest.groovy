@@ -6,9 +6,8 @@
 package edu.ie3.datamodel.io.factory.timeseries
 
 import edu.ie3.datamodel.io.factory.SimpleFactoryData
+import edu.ie3.datamodel.models.input.IdCoordinatePair
 import edu.ie3.util.geo.GeoUtils
-import org.apache.commons.lang3.tuple.Pair
-import org.locationtech.jts.geom.Point
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -32,7 +31,7 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     ] as Set
 
     when:
-    def actual = factory.getFields(Pair)
+    def actual = factory.getFields(IdCoordinatePair)
 
     then:
     actual.size() == 1
@@ -44,12 +43,12 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     def actualFields = CosmoIdCoordinateFactory.newSet("tid", "id", "latrot", "longrot")
 
     when:
-    def actual = factory.validate(actualFields, Pair)
+    def actual = factory.validate(actualFields, IdCoordinatePair)
 
     then:
     actual.failure
-    actual.exception.get().message == "The provided fields [id, latrot, longrot, tid] are invalid for instance of 'Pair'. \n" +
-        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'Pair' are possible (NOT case-sensitive!):\n" +
+    actual.exception.get().message == "The provided fields [id, latrot, longrot, tid] are invalid for instance of 'IdCoordinatePair'. \n" +
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'IdCoordinatePair' are possible (NOT case-sensitive!):\n" +
         "0: [id, latGeo, latRot, longGeo, longRot, tid] or [id, lat_geo, lat_rot, long_geo, long_rot, tid]\n"
   }
 
@@ -64,8 +63,8 @@ class CosmoIdCoordinateFactoryTest extends Specification {
       "longRot": "-6.8125"
     ]
 
-    def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
-    Pair<Integer, Point> expectedPair = Pair.of(106580, GeoUtils.buildPoint(39.602772, 1.279336))
+    def validSimpleFactoryData = new SimpleFactoryData(parameter, IdCoordinatePair)
+    IdCoordinatePair expectedPair = IdCoordinatePair.of(106580, GeoUtils.buildPoint(39.602772, 1.279336))
 
     when:
     def actual = factory.get(validSimpleFactoryData)

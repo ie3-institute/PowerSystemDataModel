@@ -5,13 +5,16 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
+import edu.ie3.datamodel.models.input.IdCoordinatePair;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.validation.UniquenessValidationUtils;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.io.BufferedReader;
@@ -62,14 +65,27 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    * @return Mapping from coordinate id to coordinate
    */
   private Map<Integer, Point> setupIdToCoordinateMap() throws SourceException {
-    return buildStreamWithFieldsToAttributesMap()
-        .map(
-            data ->
-                data.map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
-                    .map(factory::get))
-        .flatMap(s -> Try.scanStream(s, "Pair<Integer, Point>").transformF(SourceException::new))
-        .map(s -> s.collect(Collectors.toMap(Pair::getKey, Pair::getValue)))
-        .getOrThrow();
+    List<IdCoordinatePair> pairs =
+        buildStreamWithFieldsToAttributesMap()
+            .map(
+                data ->
+                    data.map(
+                            fieldToValues ->
+                                new SimpleFactoryData(fieldToValues, IdCoordinatePair.class))
+                        .map(factory::get))
+            .flatMap(
+                s -> Try.scanStream(s, "Pair<Integer, Point>").transformF(SourceException::new))
+            .getOrThrow()
+            .toList();
+
+    try {
+      // check the uniqueness of the source
+      UniquenessValidationUtils.checkIdCoordinateUniqueness(pairs);
+    } catch (DuplicateEntitiesException de) {
+      throw new SourceException("Due to: ", de);
+    }
+
+    return pairs.stream().collect(Collectors.toMap(Pair::getKey, Pair::getValue));
   }
 
   /**
@@ -171,7 +187,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
       // validating read file
-      factory.validate(Set.of(headline), Pair.class).getOrThrow();
+      factory.validate(Set.of(headline), IdCoordinatePair.class).getOrThrow();
 
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.

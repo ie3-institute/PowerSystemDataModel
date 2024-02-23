@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkWeatherUniqueness;
+
+import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
@@ -20,6 +23,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.utils.ExceptionUtils;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
@@ -188,7 +192,22 @@ public class CsvWeatherSource extends WeatherSource {
         throw new SourceException("Validation failed for file " + data.getFullFilePath() + ".", e);
       }
     }
-    return weatherTimeSeries;
+
+    // checking the uniqueness before returning the time series
+    List<DuplicateEntitiesException> exceptions =
+        Try.getExceptions(
+            weatherTimeSeries.values().stream()
+                .map(
+                    ts ->
+                        Try.ofVoid(
+                            () -> checkWeatherUniqueness(ts.getEntries()),
+                            DuplicateEntitiesException.class)));
+
+    if (exceptions.isEmpty()) {
+      return weatherTimeSeries;
+    } else {
+      throw new SourceException("Due to: " + ExceptionUtils.getMessages(exceptions));
+    }
   }
 
   private Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(

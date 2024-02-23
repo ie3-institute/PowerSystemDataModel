@@ -10,11 +10,12 @@ import edu.ie3.datamodel.io.source.TimeSeriesMappingSource.MappingEntry;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.IdCoordinatePair;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.Try.Success;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -30,9 +31,10 @@ public class UniquenessValidationUtils extends ValidationUtils {
       entity -> Set.of(entity.getTime(), entity.getInputModel());
   protected static final FieldSetSupplier<MappingEntry> mappingFieldSupplier =
       entity -> Set.of(entity.participant());
-  protected static final FieldSetSupplier<TimeBasedValue<WeatherValue>>
-      timeBasedValueFieldSupplier =
-          entity -> Set.of(entity.getTime(), entity.getValue().getCoordinate());
+  protected static final FieldSetSupplier<IdCoordinatePair> idCoordinateSupplier =
+      pair -> Set.of(pair.getKey(), pair.getValue());
+  protected static final FieldSetSupplier<TimeBasedValue<WeatherValue>> weatherValueFieldSupplier =
+      entity -> Set.of(entity.getTime(), entity.getValue().getCoordinate());
 
   /**
    * Checks the uniqueness of a collection of {@link UniqueEntity}.
@@ -89,6 +91,17 @@ public class UniquenessValidationUtils extends ValidationUtils {
   }
 
   /**
+   * Checks the uniqueness of a collection of
+   *
+   * @param entities to be checked
+   * @throws DuplicateEntitiesException if uniqueness is violated
+   */
+  public static void checkIdCoordinateUniqueness(Collection<IdCoordinatePair> entities)
+      throws DuplicateEntitiesException {
+    checkUniqueness(entities, idCoordinateSupplier).getOrThrow();
+  }
+
+  /**
    * Checks the uniqueness of TimeBasedWeatherValues.
    *
    * @param entities to be checked
@@ -96,7 +109,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
    */
   public static void checkWeatherUniqueness(Collection<TimeBasedValue<WeatherValue>> entities)
       throws DuplicateEntitiesException {
-    checkUniqueness(entities, timeBasedValueFieldSupplier).getOrThrow();
+    checkUniqueness(entities, weatherValueFieldSupplier).getOrThrow();
   }
 
   /**

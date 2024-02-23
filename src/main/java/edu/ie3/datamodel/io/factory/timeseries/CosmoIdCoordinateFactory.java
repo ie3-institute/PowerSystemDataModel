@@ -6,12 +6,10 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
-import edu.ie3.util.geo.GeoUtils;
+import edu.ie3.datamodel.models.input.IdCoordinatePair;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang3.tuple.Pair;
-import org.locationtech.jts.geom.Point;
 
 /**
  * Factory, that is able to build coordinate id to coordinate mapping from German Federal Weather
@@ -26,11 +24,11 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
   private static final String LAT_ROT = "latRot";
 
   @Override
-  protected Pair<Integer, Point> buildModel(SimpleFactoryData data) {
+  protected IdCoordinatePair buildModel(SimpleFactoryData data) {
     int coordinateId = data.getInt(COORDINATE_ID);
     double lat = data.getDouble(LAT_GEO);
     double lon = data.getDouble(LONG_GEO);
-    return Pair.of(coordinateId, GeoUtils.buildPoint(lat, lon));
+    return IdCoordinatePair.of(coordinateId, lat, lon);
   }
 
   @Override
