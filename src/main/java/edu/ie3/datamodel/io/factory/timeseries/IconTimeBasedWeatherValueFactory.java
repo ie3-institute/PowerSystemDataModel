@@ -35,6 +35,10 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
 
+  public IconTimeBasedWeatherValueFactory() {
+    super();
+  }
+
   public IconTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
   }
