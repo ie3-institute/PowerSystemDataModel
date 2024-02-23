@@ -30,8 +30,8 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private final TimeUtil timeUtil;
 
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
-    super();
-    this.timeUtil = new TimeUtil(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    super(valueClasses);
+    this.timeUtil = TimeUtil.withDefaults;
   }
 
   public TimeBasedSimpleValueFactory(
