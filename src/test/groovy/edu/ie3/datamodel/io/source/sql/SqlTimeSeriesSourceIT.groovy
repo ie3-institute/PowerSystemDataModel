@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
-import java.time.format.DateTimeFormatter
-
 import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 
 import edu.ie3.datamodel.exceptions.SourceException
@@ -23,6 +21,8 @@ import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
+
+import java.time.format.DateTimeFormatter
 
 @Testcontainers
 class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper {
