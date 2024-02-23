@@ -139,12 +139,12 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     where:
     csvSep | csvRow                                                                                                                                                                                                                                                                                                                                                                                                              || resultingArray
-    ","    | "4ca90220-74c2-4369-9afa-a18bf068840d,{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}},node_a,2020-03-25T15:11:31Z[UTC],2020-03-24T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0,olm:{(0.00,1.00)},cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"                                                     || [
+    ","    | "4ca90220-74c2-4369-9afa-a18bf068840d,{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}},node_a,2020-03-25T15:11:31Z,2020-03-24T15:11:31Z,8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0,olm:{(0.00,1.00)},cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"                                                     || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
+      "2020-03-25T15:11:31Z",
+      "2020-03-24T15:11:31Z",
       "8f9682df-0744-4b58-a122-f0dc730f6510",
       "true",
       "1",
@@ -154,12 +154,12 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "olm:{(0.00,1.00)}",
       "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
     ]
-    ","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z[UTC]\",\"2020-03-24T15:11:31Z[UTC]\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+    ","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z\",\"2020-03-24T15:11:31Z\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
+      "2020-03-25T15:11:31Z",
+      "2020-03-24T15:11:31Z",
       "8f9682df-0744-4b58-a122-f0dc730f6510",
       "true",
       "1",
@@ -169,13 +169,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "olm:{(0.00,1.00)}",
       "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
     ]
-    ";"    | "4ca90220-74c2-4369-9afa-a18bf068840d;cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)};{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}};node_a;2020-03-25T15:11:31Z[UTC];2020-03-24T15:11:31Z[UTC];8f9682df-0744-4b58-a122-f0dc730f6510;true;1;1.0;Höchstspannung;380.0;olm:{(0.00,1.00)};cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"            || [
+    ";"    | "4ca90220-74c2-4369-9afa-a18bf068840d;cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)};{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}};node_a;2020-03-25T15:11:31Z;2020-03-24T15:11:31Z;8f9682df-0744-4b58-a122-f0dc730f6510;true;1;1.0;Höchstspannung;380.0;olm:{(0.00,1.00)};cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"            || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}",
       "{(0.0,1.0),(0.9,1.0),(1.2,-0.3)};{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
+      "2020-03-25T15:11:31Z",
+      "2020-03-24T15:11:31Z",
       "8f9682df-0744-4b58-a122-f0dc730f6510",
       "true",
       "1",
@@ -185,12 +185,12 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "olm:{(0.00,1.00)}",
       "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
     ]
-    ";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z[UTC]\";\"2020-03-24T15:11:31Z[UTC]\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+    ";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z\";\"2020-03-24T15:11:31Z\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
+      "2020-03-25T15:11:31Z",
+      "2020-03-24T15:11:31Z",
       "8f9682df-0744-4b58-a122-f0dc730f6510",
       "true",
       "1",
@@ -207,12 +207,12 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "{\"type\":\"LineString\",\"coordinates\":[[7.4116482,51.4843281],[7.4116482,51.4843281]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "{\"type\":\"Point\",\"coordinates\":[0.25423729,0.75409836],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:0\"}}}"
     ]
-    ","    | "4ca90220-74c2-4369-9afa-a18bf068840d,{\"\"type\"\":\"\"Point\"\",\"\"coordinates\"\":[7.411111,51.492528],\"\"crs\"\":{\"\"type\"\":\"\"name\"\",\"\"properties\"\":{\"\"name\"\":\"\"EPSG:4326\"\"}}},node_a,2020-03-25T15:11:31Z[UTC],2020-03-24T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0,\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\""         || [
+    ","    | "4ca90220-74c2-4369-9afa-a18bf068840d,{\"\"type\"\":\"\"Point\"\",\"\"coordinates\"\":[7.411111,51.492528],\"\"crs\"\":{\"\"type\"\":\"\"name\"\",\"\"properties\"\":{\"\"name\"\":\"\"EPSG:4326\"\"}}},node_a,2020-03-25T15:11:31Z,2020-03-24T15:11:31Z,8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0,\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\""         || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
+      "2020-03-25T15:11:31Z",
+      "2020-03-24T15:11:31Z",
       "8f9682df-0744-4b58-a122-f0dc730f6510",
       "true",
       "1",
@@ -230,12 +230,12 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     where:
     csvSep | csvRow                                                                                                                                                                                                                                                                                                                                                                                                              || resultingArray
-    ","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z[UTC]\",\"2020-03-24T15:11:31Z[UTC]\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+    ","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z\",\"2020-03-24T15:11:31Z\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
+      "2020-03-25T15:11:31Z",
+      "2020-03-24T15:11:31Z",
       "8f9682df-0744-4b58-a122-f0dc730f6510",
       "true",
       "1",
@@ -245,12 +245,12 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "olm:{(0.00,1.00)}",
       "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
     ]
-    ";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z[UTC]\";\"2020-03-24T15:11:31Z[UTC]\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+    ";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z\";\"2020-03-24T15:11:31Z\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
+      "2020-03-25T15:11:31Z",
+      "2020-03-24T15:11:31Z",
       "8f9682df-0744-4b58-a122-f0dc730f6510",
       "true",
       "1",
@@ -415,8 +415,8 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
       "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "id"            : "node_a",
-      "operates_until": "2020-03-25T15:11:31Z[UTC]",
-      "operates_from" : "2020-03-24T15:11:31Z[UTC]",
+      "operates_until": "2020-03-25T15:11:31Z",
+      "operates_from" : "2020-03-24T15:11:31Z",
       "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
       "slack"         : "true",
       "subnet"        : "1",
@@ -439,8 +439,8 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     10           || 1            || ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
       "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "id"            : "node_a",
-      "operates_until": "2020-03-25T15:11:31Z[UTC]",
-      "operates_from" : "2020-03-24T15:11:31Z[UTC]",
+      "operates_until": "2020-03-25T15:11:31Z",
+      "operates_from" : "2020-03-24T15:11:31Z",
       "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
       "slack"         : "true",
       "subnet"        : "1",
@@ -456,8 +456,8 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
       "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "id"            : "node_a",
-      "operates_until": "2020-03-25T15:11:31Z[UTC]",
-      "operates_from" : "2020-03-24T15:11:31Z[UTC]",
+      "operates_until": "2020-03-25T15:11:31Z",
+      "operates_from" : "2020-03-24T15:11:31Z",
       "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
       "slack"         : "true",
       "subnet"        : "1",
@@ -469,8 +469,8 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
       "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "id"            : "node_b",
-      "operates_until": "2020-03-25T15:11:31Z[UTC]",
-      "operates_from" : "2020-03-24T15:11:31Z[UTC]",
+      "operates_until": "2020-03-25T15:11:31Z",
+      "operates_from" : "2020-03-24T15:11:31Z",
       "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
       "slack"         : "true",
       "subnet"        : "1",

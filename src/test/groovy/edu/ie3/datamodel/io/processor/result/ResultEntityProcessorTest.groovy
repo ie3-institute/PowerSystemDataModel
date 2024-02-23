@@ -45,7 +45,7 @@ class ResultEntityProcessorTest extends Specification {
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     p         : '0.01',
     q         : '0.01',
-    time      : '2020-01-30T17:26:44Z[UTC]']
+    time      : '2020-01-30T17:26:44Z']
 
   @Shared
   def expectedSocResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
@@ -53,14 +53,14 @@ class ResultEntityProcessorTest extends Specification {
     p         : '0.01',
     q         : '0.01',
     soc       : '50.0',
-    time      : '2020-01-30T17:26:44Z[UTC]']
+    time      : '2020-01-30T17:26:44Z']
 
   @Shared
   def expectedQDotResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     p         : '0.01',
     q         : '0.01',
-    time      : '2020-01-30T17:26:44Z[UTC]',
+    time      : '2020-01-30T17:26:44Z',
     qDot      : '1.0']
 
 
@@ -77,23 +77,23 @@ class ResultEntityProcessorTest extends Specification {
 
     where:
     modelClass        | validSystemParticipantResult                                                                     || expectedResults
-    LoadResult        | new LoadResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)         || expectedStandardResults
-    FixedFeedInResult | new FixedFeedInResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)  || expectedStandardResults
-    BmResult          | new BmResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)           || expectedStandardResults
-    EvResult          | new EvResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc)      || expectedSocResults
-    PvResult          | new PvResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)           || expectedStandardResults
-    EvcsResult        | new EvcsResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)         || expectedStandardResults
-    ChpResult         | new ChpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)    || expectedQDotResults
-    WecResult         | new WecResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
-    StorageResult     | new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc) || expectedSocResults
-    HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)     || expectedQDotResults
-    EmResult          | new EmResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)           || expectedStandardResults
+    LoadResult        | new LoadResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q)         || expectedStandardResults
+    FixedFeedInResult | new FixedFeedInResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q)  || expectedStandardResults
+    BmResult          | new BmResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q)           || expectedStandardResults
+    EvResult          | new EvResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q, soc)      || expectedSocResults
+    PvResult          | new PvResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q)           || expectedStandardResults
+    EvcsResult        | new EvcsResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q)         || expectedStandardResults
+    ChpResult         | new ChpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q, qDot)    || expectedQDotResults
+    WecResult         | new WecResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q)          || expectedStandardResults
+    StorageResult     | new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q, soc) || expectedSocResults
+    HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q, qDot)     || expectedQDotResults
+    EmResult          | new EmResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q)           || expectedStandardResults
   }
 
   def "A ResultEntityProcessor should throw an exception if the provided class is not registered"() {
     given:
     def sysPartResProcessor = new ResultEntityProcessor(LoadResult)
-    def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, Quantities.getQuantity(10d, StandardUnits.SOC))
+    def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q, Quantities.getQuantity(10d, StandardUnits.SOC))
 
     when:
     sysPartResProcessor.handleEntity(storageResult)
@@ -110,13 +110,13 @@ class ResultEntityProcessorTest extends Specification {
     Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
     Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
 
-    def validResult = new NodeResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, vMag, vAng)
+    def validResult = new NodeResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, vMag, vAng)
 
     def expectedResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
       inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
       vAng      : '45.0',
       vMag      : '0.95',
-      time      : '2020-01-30T17:26:44Z[UTC]']
+      time      : '2020-01-30T17:26:44Z']
 
     when:
     def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
@@ -134,12 +134,12 @@ class ResultEntityProcessorTest extends Specification {
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
 
-    def validResult = new FlexOptionsResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, pRef, pMin, pMax)
+    def validResult = new FlexOptionsResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
 
     def expectedResults = [
       uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
       inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-      time      : '2020-01-30T17:26:44Z[UTC]',
+      time      : '2020-01-30T17:26:44Z',
       pMax      : '6.0',
       pMin      : '-6.0',
       pRef      : '5.1',
@@ -160,7 +160,7 @@ class ResultEntityProcessorTest extends Specification {
     iAAng     : '45.0',
     iBMag     : '150.0',
     iBAng     : '30.0',
-    time      : '2020-01-30T17:26:44Z[UTC]']
+    time      : '2020-01-30T17:26:44Z']
 
   @Shared
   def expectedTrafo2WResults = [
@@ -171,7 +171,7 @@ class ResultEntityProcessorTest extends Specification {
     iBMag     : '150.0',
     iBAng     : '30.0',
     tapPos    : '5',
-    time      : '2020-01-30T17:26:44Z[UTC]']
+    time      : '2020-01-30T17:26:44Z']
 
 
   @Shared
@@ -185,14 +185,14 @@ class ResultEntityProcessorTest extends Specification {
     iCMag     : '300.0',
     iCAng     : '70.0',
     tapPos    : '5',
-    time      : '2020-01-30T17:26:44Z[UTC]']
+    time      : '2020-01-30T17:26:44Z']
 
   @Shared
   def expectedSwitchResults = [
     uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     closed    : 'true',
-    time      : '2020-01-30T17:26:44Z[UTC]']
+    time      : '2020-01-30T17:26:44Z']
 
 
   @Shared
@@ -227,10 +227,10 @@ class ResultEntityProcessorTest extends Specification {
 
     where:
     modelClass          | validConnectorResult                                                                                                                          || expectedResults
-    LineResult          | new LineResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng)                                || expectedLineResults
-    SwitchResult        | new SwitchResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, closed)                    								|| expectedSwitchResults
-    Transformer2WResult | new Transformer2WResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng, tapPos)               || expectedTrafo2WResults
-    Transformer3WResult | new Transformer3WResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos) || expectedTrafo3WResults
+    LineResult          | new LineResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, iAMag, iAAng, iBMag, iBAng)                                || expectedLineResults
+    SwitchResult        | new SwitchResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, closed)                    								|| expectedSwitchResults
+    Transformer2WResult | new Transformer2WResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, iAMag, iAAng, iBMag, iBAng, tapPos)               || expectedTrafo2WResults
+    Transformer3WResult | new Transformer3WResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos) || expectedTrafo3WResults
   }
 
   def "A ResultEntityProcessor should serialize a CylindricalStorageResult correctly"() {
@@ -241,14 +241,14 @@ class ResultEntityProcessorTest extends Specification {
     Quantity<Energy> energy = Quantities.getQuantity(3, StandardUnits.ENERGY_RESULT)
     Quantity<Dimensionless> fillLevel = Quantities.getQuantity(20, Units.PERCENT)
 
-    def validResult = new CylindricalStorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, energy, qDot, fillLevel)
+    def validResult = new CylindricalStorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, energy, qDot, fillLevel)
 
     def expectedResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
       energy    : '3.0',
       fillLevel : '20.0',
       inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
       qDot      : '2.0',
-      time      : '2020-01-30T17:26:44Z[UTC]']
+      time      : '2020-01-30T17:26:44Z']
 
     when:
     def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
@@ -262,7 +262,7 @@ class ResultEntityProcessorTest extends Specification {
     given:
     def sysPartResProcessor = new ResultEntityProcessor(ResultEntityProcessor.eligibleEntityClasses.get(0))
 
-    def invalidClassResult = new InvalidTestResult(ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), uuid)
+    def invalidClassResult = new InvalidTestResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), uuid)
 
     when:
     sysPartResProcessor.handleEntity(invalidClassResult)
