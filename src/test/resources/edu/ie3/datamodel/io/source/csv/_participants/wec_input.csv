@@ -1,2 +1,2 @@
 uuid,id,market_reaction,node,operates_from,operates_until,operator,q_characteristics,type,em
-ee7e2e37-a5ad-4def-a832-26a317567ca1,test_wecInput,false,4ca90220-74c2-4369-9afa-a18bf068840d,2020-03-24T15:11:31+01:00,2020-03-25T15:11:31+01:00,8f9682df-0744-4b58-a122-f0dc730f6510,"cosPhiP:{(0.00,1.00),(0.90,1.00),(1.20,-0.30)}",5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,977157f4-25e5-4c72-bf34-440edc778792
+ee7e2e37-a5ad-4def-a832-26a317567ca1,test_wecInput,false,4ca90220-74c2-4369-9afa-a18bf068840d,2020-03-24T15:11:31+00:00,2020-03-25T15:11:31+00:00,8f9682df-0744-4b58-a122-f0dc730f6510,"cosPhiP:{(0.00,1.00),(0.90,1.00),(1.20,-0.30)}",5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,977157f4-25e5-4c72-bf34-440edc778792
