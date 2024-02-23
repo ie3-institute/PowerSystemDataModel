@@ -129,7 +129,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     ]
     def expectedValue = new TimeBasedValue(
         UUID.fromString("71a79f59-eebf-40c1-8358-ba7414077d57"),
-        TimeUtil.withDefaults.toZonedDateTime("2020-10-16T12:40:42+01:00"),
+        TimeUtil.withDefaults.toZonedDateTime("2020-10-16T12:40:42Z"),
         new WeatherValue(
         defaultCoordinate,
         new SolarIrradianceValue(
