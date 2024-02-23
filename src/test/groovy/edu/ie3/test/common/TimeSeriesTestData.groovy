@@ -18,7 +18,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.value.*
-import edu.ie3.util.TimeUtil
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.geom.Point
@@ -56,7 +55,7 @@ trait TimeSeriesTestData {
   Set<LinkedHashMap<String, String>>  individualEnergyPriceTimeSeriesProcessed = [
     [
       "uuid" 	: "9e4dba1b-f3bb-4e40-bd7e-2de7e81b7704",
-      "time"	: "2020-04-02T10:00Z",
+      "time"	: "2020-04-02T10:00:00Z",
       "price"	: "5.0"
     ] as LinkedHashMap,
     [
@@ -66,7 +65,7 @@ trait TimeSeriesTestData {
     ] as LinkedHashMap,
     [
       "uuid" 	: "593d006c-ef76-46a9-b8db-f8666f69c5db",
-      "time"	: "2020-04-02T10:30Z",
+      "time"	: "2020-04-02T10:30:00Z",
       "price"	: "10.0"
     ] as LinkedHashMap
   ] as Set
@@ -101,7 +100,7 @@ trait TimeSeriesTestData {
   Set<LinkedHashMap<String, String>>  individualTemperatureTimeSeriesProcessed = [
     [
       "uuid" 			: "48962a4a-b169-41f4-b0fe-e4bd8539b281",
-      "time"			: "2020-04-02T10:00Z",
+      "time"			: "2020-04-02T10:00:00Z",
       "temperature"	: "5.0"
     ] as LinkedHashMap,
     [
@@ -111,7 +110,7 @@ trait TimeSeriesTestData {
     ] as LinkedHashMap,
     [
       "uuid" 			: "e332cae2-785d-47db-941a-3c400fa8518b",
-      "time"			: "2020-04-02T10:30Z",
+      "time"			: "2020-04-02T10:30:00Z",
       "temperature"	: "10.0"
     ] as LinkedHashMap
   ] as Set
@@ -138,7 +137,7 @@ trait TimeSeriesTestData {
     [
       "uuid" 		: "3453d88d-50f6-4124-b2d0-807a9b7dbf54",
       "direction"	: "5.0",
-      "time"		: "2020-04-02T10:00Z",
+      "time"		: "2020-04-02T10:00:00Z",
       "velocity"	: "10.0"
     ] as LinkedHashMap,
     [
@@ -150,7 +149,7 @@ trait TimeSeriesTestData {
     [
       "uuid" 		: "cb7da21b-59af-4579-9352-2aa6b3020627",
       "direction"	: "10.0",
-      "time"		: "2020-04-02T10:30Z",
+      "time"		: "2020-04-02T10:30:00Z",
       "velocity"	: "15.0"
     ] as LinkedHashMap
   ] as Set
@@ -178,7 +177,7 @@ trait TimeSeriesTestData {
       "uuid" 					: "e397cf20-43ae-4601-a6cd-0ee85c63cec3",
       "directIrradiance"		: "5.0",
       "diffuseIrradiance"	: "10.0",
-      "time"					: "2020-04-02T10:00Z"
+      "time"					: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 					: "94400577-83ac-4dd5-818d-8d62edcd4ee2",
@@ -190,7 +189,7 @@ trait TimeSeriesTestData {
       "uuid" 					: "d7523ef9-f8d7-449f-834f-7b92bf51fd9e",
       "directIrradiance"		: "10.0",
       "diffuseIrradiance"	: "15.0",
-      "time"					: "2020-04-02T10:30Z"
+      "time"					: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -238,7 +237,7 @@ trait TimeSeriesTestData {
       "directIrradiance"		: "5.0",
       "direction"				: "5.0",
       "temperature"			: "5.0",
-      "time"					: "2020-04-02T10:00Z",
+      "time"					: "2020-04-02T10:00:00Z",
       "velocity"				: "10.0"
     ] as LinkedHashMap,
     [
@@ -258,7 +257,7 @@ trait TimeSeriesTestData {
       "directIrradiance"		: "10.0",
       "direction"				: "10.0",
       "temperature"			: "10.0",
-      "time"					: "2020-04-02T10:30Z",
+      "time"					: "2020-04-02T10:30:00Z",
       "velocity"				: "15.0"
     ] as LinkedHashMap
   ] as Set
@@ -285,7 +284,7 @@ trait TimeSeriesTestData {
     [
       "uuid" 			: "89ae0ccd-04fd-47a7-a49f-a882cab66784",
       "heatDemand"	: "5.0",
-      "time"			: "2020-04-02T10:00Z"
+      "time"			: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 			: "56e4295b-740a-45dd-9a0d-f5ec8b3bec13",
@@ -295,7 +294,7 @@ trait TimeSeriesTestData {
     [
       "uuid" 			: "996a0ffa-548b-4f5e-825a-25b1452bc9c0",
       "heatDemand"	: "10.0",
-      "time"			: "2020-04-02T10:30Z"
+      "time"			: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -321,7 +320,7 @@ trait TimeSeriesTestData {
     [
       "uuid" 	: "cb3c12e9-7b54-4066-8e51-30aed8ea05ff",
       "p"		: "5.0",
-      "time"	: "2020-04-02T10:00Z"
+      "time"	: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 	: "07937986-c7b6-48b8-852d-8579a4de0f3f",
@@ -331,7 +330,7 @@ trait TimeSeriesTestData {
     [
       "uuid" 	: "43fcb651-94ff-4491-9994-5ce5980b51f8",
       "p"		: "10.0",
-      "time"	: "2020-04-02T10:30Z"
+      "time"	: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -358,7 +357,7 @@ trait TimeSeriesTestData {
       "uuid" 			: "d0dd9b16-6561-45cd-989f-2f9f2d623285",
       "heatDemand"	: "10.0",
       "p"				: "5.0",
-      "time"			: "2020-04-02T10:00Z"
+      "time"			: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 			: "76cdb572-db19-4731-a51d-f88d60ac23bf",
@@ -370,7 +369,7 @@ trait TimeSeriesTestData {
       "uuid" 			: "85d34be8-9672-4382-bb28-6c526e061979",
       "heatDemand"	: "15.0",
       "p"				: "10.0",
-      "time"			: "2020-04-02T10:30Z"
+      "time"			: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -397,7 +396,7 @@ trait TimeSeriesTestData {
       "uuid"	: "1db6d265-40b3-4c02-bee9-ffc74574af65",
       "p"		: "5.0",
       "q"		: "10.0",
-      "time"	: "2020-04-02T10:00Z"
+      "time"	: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 	: "c4fe02c4-1a11-4975-8641-7c3daf452475",
@@ -409,7 +408,7 @@ trait TimeSeriesTestData {
       "uuid" 	: "90082474-af4c-44ea-8b38-f7c6fb48907c",
       "p"		: "10.0",
       "q"		: "15.0",
-      "time"	: "2020-04-02T10:30Z"
+      "time"	: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -437,21 +436,21 @@ trait TimeSeriesTestData {
       "heatDemand"	: "15.0",
       "p"				: "5.0",
       "q"				: "10.0",
-      "time"			: "2020-04-02T10:00Z"
+      "time"			: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 			: "adb6a248-c57f-4ca5-9feb-d0ca3296f0c7",
       "heatDemand"	: "25.0",
       "p"				: "15.0",
       "q"				: "20.0",
-      "time"			: "2020-04-02T10:15Z"
+      "time"			: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 			: "07feb8fa-1ee0-4a40-bca0-cf831db0b745",
       "heatDemand"	: "20.0",
       "p"				: "10.0",
       "q"				: "15.0",
-      "time"			: "2020-04-02T10:30Z"
+      "time"			: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
