@@ -43,7 +43,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     assert res.stderr.empty
 
     def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
-    def weatherFactory = new IconTimeBasedWeatherValueFactory("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
+    def weatherFactory = new IconTimeBasedWeatherValueFactory()
     source = new InfluxDbWeatherSource(connector, IconWeatherTestData.coordinateSource, weatherFactory)
   }
 
