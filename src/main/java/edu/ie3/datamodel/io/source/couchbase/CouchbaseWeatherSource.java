@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 /** Couchbase Source for weather data */
 public class CouchbaseWeatherSource extends WeatherSource {
   private static final Logger logger = LoggerFactory.getLogger(CouchbaseWeatherSource.class);
-  private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
   /** The start of the document key, comparable to a table name in relational databases */
   private static final String DEFAULT_KEY_PREFIX = "weather";
 
