@@ -255,6 +255,22 @@ public class FileNamingStrategy {
   }
 
   /**
+   * Get the full path to the id coordinate file with regard to some (not explicitly specified) base
+   * directory. The path does NOT start or end with any of the known file separators or file
+   * extension.
+   *
+   * @return An optional sub path to the id coordinate file
+   * @deprecated unused, no substitute
+   */
+  @Deprecated(since = "3.0", forRemoval = true)
+  public Optional<Path> getIdCoordinateFilePath() {
+    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
+    // details
+    return Optional.of(FileUtils.of( getIdCoordinateEntityName(), fileHierarchy.getBaseDirectory()));
+
+  }
+
+  /**
    * Returns the name of the entity, that should be used for persistence.
    *
    * @param cls Targeted class of the given file
