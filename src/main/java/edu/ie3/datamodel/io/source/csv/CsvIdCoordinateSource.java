@@ -148,18 +148,29 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
   @Override
   public List<CoordinateDistance> getClosestCoordinates(
       Point coordinate, int n, ComparableQuantity<Length> distance) {
-    Set<Point> points = coordinateToId.keySet();
-
-    Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
-    Set<Point> reducedPoints =
-        points.stream()
-            .filter(point -> envelope.contains(point.getCoordinate()))
-            .collect(Collectors.toSet());
+    Collection<Point> reducedPoints = getCoordinatesInBoundingBox(coordinate, distance);
     return calculateCoordinateDistances(coordinate, n, reducedPoints);
+  }
+
+  @Override
+  public List<CoordinateDistance> findCornerPoints(
+      Point coordinate, ComparableQuantity<Length> distance) {
+    Collection<Point> points = getCoordinatesInBoundingBox(coordinate, distance);
+    return findCornerPoints(
+        coordinate, GeoUtils.calcOrderedCoordinateDistances(coordinate, points));
   }
 
   public int getCoordinateCount() {
     return idToCoordinate.keySet().size();
+  }
+
+  private Collection<Point> getCoordinatesInBoundingBox(
+      Point coordinate, ComparableQuantity<Length> distance) {
+    Set<Point> points = coordinateToId.keySet();
+    Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
+    return points.stream()
+        .filter(point -> envelope.contains(point.getCoordinate()))
+        .collect(Collectors.toSet());
   }
 
   /**

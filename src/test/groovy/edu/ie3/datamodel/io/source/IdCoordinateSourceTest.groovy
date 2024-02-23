@@ -36,26 +36,6 @@ class IdCoordinateSourceTest extends Specification {
     point9
   ]
 
-  def "IdCoordinateSource should find and return correct number of corner points"() {
-    given:
-    List<Point> expectedPoints = [
-      point1,
-      point2,
-      point3,
-      point4,
-      point5,
-      point6
-    ]
-
-    when:
-    SortedSet<CoordinateDistance> distances = GeoUtils.calcOrderedCoordinateDistances(point0, points)
-    List<CoordinateDistance> result = coordinateSourceMock.enrichedCornerPoints(point0, distances, 6)
-
-    then:
-    result.size() == expectedPoints.size()
-    result.collect { it.coordinateB }.containsAll(expectedPoints)
-  }
-
   def "IdCoordinateSource should return only the corner points of a collection of coordinate distances"() {
     given:
     List<Point> expectedPoints = [

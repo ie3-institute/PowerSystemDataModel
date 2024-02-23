@@ -74,17 +74,17 @@ return less than n coordinates.
 
 
 ## Finding and returning the closest corner coordinates:
-In most cases we need four corner coordinates for our given coordinate. Therefor the 
-IdCoordinateSource contains methods that will use the calculated distances to find the closest 
-corner coordinates for the given coordinate.
+In most cases we need four corner coordinates for our given coordinate. Therefor the IdCoordinateSource contains methods
+that tries to return the corner points for a given coordinate. The max. number of corner points is specified by the
+implementation of the second method.
 
 ``` java
+    List<CoordinateDistance> findCornerPoints(Point coordinate, ComparableQuantity<Length> distance)
     List<CoordinateDistance> findCornerPoints(Point coordinate, Collection<CoordinateDistance> distances)
-    List<CoordinateDistance> enrichedCornerPoints(Point coordinate, Collection<CoordinateDistance> distances, int numberOfPoints)
 ```
 
-1. If a coordinate matches the given coordinate, only this coordinate is returned. If no coordinate matches the given 
+1. This method can be used to return the corner points by specifying a maximum search distance.
+
+2. If a coordinate matches the given coordinate, only this coordinate is returned. If no coordinate matches the given 
 coordinate, this method tries to return four corner points.
 
-2. This method uses the first to calculate the corner points. After that this method tries to enrich the found points to
-match the set number of points.

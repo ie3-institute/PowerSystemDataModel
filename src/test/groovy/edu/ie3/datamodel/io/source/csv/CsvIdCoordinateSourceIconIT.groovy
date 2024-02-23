@@ -191,4 +191,40 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
     then:
     actualDistances.size() == 1
   }
+
+  def "The CsvCoordinateSource will return the four corner points if enough points are within the given distance"() {
+    given:
+    def basePoint = GeoUtils.buildPoint(51.45, 7.4)
+    def distance = Quantities.getQuantity(10000, Units.METRE)
+
+    when:
+    def actualDistances = source.findCornerPoints(basePoint, distance)
+
+    then:
+    actualDistances.size() == 4
+  }
+
+  def "The CsvCoordinateSource will return less than four corner points if not enough points are within the given distance"() {
+    given:
+    def basePoint = GeoUtils.buildPoint(51.45, 7.38)
+    def distance = Quantities.getQuantity(5000, Units.METRE)
+
+    when:
+    def actualDistances = source.findCornerPoints(basePoint, distance)
+
+    then:
+    actualDistances.size() == 2
+  }
+
+  def "The CsvCoordinateSource will return one point if there is an exact match"() {
+    given:
+    def basePoint = GeoUtils.buildPoint(51.5, 7.438)
+    def distance = Quantities.getQuantity(100, Units.METRE)
+
+    when:
+    def actualDistances = source.findCornerPoints(basePoint, distance)
+
+    then:
+    actualDistances.size() == 1
+  }
 }
