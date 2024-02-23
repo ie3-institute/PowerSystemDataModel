@@ -60,7 +60,7 @@ trait TimeSeriesTestData {
     ] as LinkedHashMap,
     [
       "uuid" 	: "520d8e37-b842-40fd-86fb-32007e88493e",
-      "time"	: "2020-04-02T10:15Z",
+      "time"	: "2020-04-02T10:15:00Z",
       "price"	: "15.0"
     ] as LinkedHashMap,
     [
@@ -105,7 +105,7 @@ trait TimeSeriesTestData {
     ] as LinkedHashMap,
     [
       "uuid" 			: "38e8188d-17dc-4b49-9827-68ba1eeac1e3",
-      "time"			: "2020-04-02T10:15Z",
+      "time"			: "2020-04-02T10:15:00Z",
       "temperature"	: "15.0"
     ] as LinkedHashMap,
     [
@@ -143,7 +143,7 @@ trait TimeSeriesTestData {
     [
       "uuid" 		: "870e8e22-5667-4681-96ad-5ab6ac9cf25b",
       "direction"	: "15.0",
-      "time"		: "2020-04-02T10:15Z",
+      "time"		: "2020-04-02T10:15:00Z",
       "velocity"	: "20.0"
     ] as LinkedHashMap,
     [
@@ -183,7 +183,7 @@ trait TimeSeriesTestData {
       "uuid" 					: "94400577-83ac-4dd5-818d-8d62edcd4ee2",
       "directIrradiance"		: "15.0",
       "diffuseIrradiance"	: "20.0",
-      "time"					: "2020-04-02T10:15Z"
+      "time"					: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 					: "d7523ef9-f8d7-449f-834f-7b92bf51fd9e",
@@ -247,7 +247,7 @@ trait TimeSeriesTestData {
       "directIrradiance"		: "15.0",
       "direction"				: "15.0",
       "temperature"			: "15.0",
-      "time"					: "2020-04-02T10:15Z",
+      "time"					: "2020-04-02T10:15:00Z",
       "velocity"				: "20.0"
     ] as LinkedHashMap,
     [
@@ -289,7 +289,7 @@ trait TimeSeriesTestData {
     [
       "uuid" 			: "56e4295b-740a-45dd-9a0d-f5ec8b3bec13",
       "heatDemand"	: "15.0",
-      "time"			: "2020-04-02T10:15Z"
+      "time"			: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 			: "996a0ffa-548b-4f5e-825a-25b1452bc9c0",
@@ -325,7 +325,7 @@ trait TimeSeriesTestData {
     [
       "uuid" 	: "07937986-c7b6-48b8-852d-8579a4de0f3f",
       "p"		: "15.0",
-      "time"	: "2020-04-02T10:15Z"
+      "time"	: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 	: "43fcb651-94ff-4491-9994-5ce5980b51f8",
@@ -363,7 +363,7 @@ trait TimeSeriesTestData {
       "uuid" 			: "76cdb572-db19-4731-a51d-f88d60ac23bf",
       "heatDemand"	: "20.0",
       "p"				: "15.0",
-      "time"			: "2020-04-02T10:15Z"
+      "time"			: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 			: "85d34be8-9672-4382-bb28-6c526e061979",
@@ -402,7 +402,7 @@ trait TimeSeriesTestData {
       "uuid" 	: "c4fe02c4-1a11-4975-8641-7c3daf452475",
       "p"		: "15.0",
       "q"		: "20.0",
-      "time"	: "2020-04-02T10:15Z"
+      "time"	: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "uuid" 	: "90082474-af4c-44ea-8b38-f7c6fb48907c",

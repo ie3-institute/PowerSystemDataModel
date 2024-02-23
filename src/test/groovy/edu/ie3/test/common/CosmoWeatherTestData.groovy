@@ -7,16 +7,16 @@ package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.value.WeatherValue
+import edu.ie3.util.TimeUtil
 import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class CosmoWeatherTestData extends WeatherTestData {
-  public static final ZonedDateTime TIME_15H = ZonedDateTime.of(2019, 8, 1, 15, 0, 0, 0, ZoneId.of("UTC"))
-  public static final ZonedDateTime TIME_16H = ZonedDateTime.of(2019, 8, 1, 16, 0, 0, 0, ZoneId.of("UTC"))
-  public static final ZonedDateTime TIME_17H = ZonedDateTime.of(2019, 8, 1, 17, 0, 0, 0, ZoneId.of("UTC"))
-
+  public static final ZonedDateTime TIME_15H = TimeUtil.withDefaults.toZonedDateTime("2020-04-28T15:00:00+00:00")
+  public static final ZonedDateTime TIME_16H = TimeUtil.withDefaults.toZonedDateTime("2020-04-28T16:00:00+00:00")
+  public static final ZonedDateTime TIME_17H = TimeUtil.withDefaults.toZonedDateTime("2020-04-28T17:00:00+00:00")
 
   public static final WeatherValue WEATHER_VALUE_193186_15H = new WeatherValue(
   COORDINATE_193186,
