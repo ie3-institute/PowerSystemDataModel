@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
-
 import static edu.ie3.test.helper.EntityMap.map
 
 import edu.ie3.datamodel.exceptions.FailureException
@@ -17,6 +15,7 @@ import edu.ie3.datamodel.io.source.TypeSource
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData as gtd
@@ -53,9 +52,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
       @Override
       Map<UUID, LineInput> getLines(
-              Map<UUID, OperatorInput> operators,
-              Map<UUID, NodeInput> nodes,
-              Map<UUID, LineTypeInput> lineTypeInputs) {
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, LineTypeInput> lineTypeInputs) {
         return Collections.emptyMap()
       }
     }
