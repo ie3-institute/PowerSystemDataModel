@@ -312,7 +312,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("line_input.csv").toFile().exists()
     testBaseFolderPath.resolve("line_type_input.csv").toFile().exists()
     testBaseFolderPath.resolve("load_input.csv").toFile().exists()
-    testBaseFolderPath.resolve( "node_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("node_input.csv").toFile().exists()
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
     testBaseFolderPath.resolve("pv_input.csv").toFile().exists()
     testBaseFolderPath.resolve("storage_input.csv").toFile().exists()
