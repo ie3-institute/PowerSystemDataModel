@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv
 import static edu.ie3.test.helper.EntityMap.map
 
 import edu.ie3.datamodel.exceptions.FailureException
+import edu.ie3.datamodel.exceptions.GraphicSourceException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.source.GraphicSource
 import edu.ie3.datamodel.io.source.RawGridSource
@@ -62,15 +63,15 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     def graphicSource = new GraphicSource(typeSource, rawGridSource, new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
     when:
-    def graphicElements = Try.of(() -> graphicSource.graphicElements, SourceException)
+    def graphicElements = Try.of(() -> graphicSource.graphicElements, GraphicSourceException)
 
     then:
     graphicElements.failure
     graphicElements.data == Optional.empty()
 
     Exception ex = graphicElements.exception.get()
-    ex.class == SourceException
-    ex.message.startsWith("edu.ie3.datamodel.exceptions.SourceException: edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"LineGraphicInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Linked line with UUID 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7 was not found for entity")
+    ex.class == GraphicSourceException
+    ex.message.startsWith("1error(s) occurred while initializing graphic elements.  edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"LineGraphicInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Linked line with UUID 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7 was not found for entity")
   }
 
 
