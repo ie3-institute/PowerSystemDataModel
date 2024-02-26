@@ -164,16 +164,6 @@ public class SqlDataSource implements DataSource {
   }
 
   /**
-   * Creates a stream with maps representing a data point in the SQL data source using an entity
-   * class.
-   */
-  protected Stream<Map<String, String>> buildStreamByEntityClass(
-      Class<? extends Entity> entityClass, AddParams addParams) {
-    String query = createBaseQueryString(schemaName, entityClass.getSimpleName());
-    return executeQuery(query, addParams);
-  }
-
-  /**
    * Creates a stream with maps representing a data point in the SQL data source using an explicit
    * table name.
    */
