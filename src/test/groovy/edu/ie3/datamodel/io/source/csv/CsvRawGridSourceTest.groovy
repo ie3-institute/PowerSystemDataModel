@@ -14,6 +14,8 @@ import edu.ie3.datamodel.io.factory.input.Transformer3WInputEntityData
 import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData
 import edu.ie3.datamodel.io.source.RawGridSource
 import edu.ie3.datamodel.io.source.TypeSource
+import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
@@ -588,5 +590,33 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "the optional is empty"
     actual.allEntitiesAsList().empty
+  }
+
+  def "A CsvRawGridSource should process invalid input data as expected when requested to provide an instance of RawGridElements"() {
+    given:
+    def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    def rawGridSource =
+    new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
+      @Override
+      Map<UUID, NodeInput> getNodes() {
+        return Collections.emptyMap()
+      }
+
+      @Override
+      Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) {
+        return Collections.emptyMap()
+      }
+    }
+
+    when:
+    def rawGridElements = Try.of(() -> rawGridSource.gridData, SourceException)
+
+    then:
+    rawGridElements.failure
+    rawGridElements.data == Optional.empty()
+
+    Exception ex = rawGridElements.exception.get()
+    ex.class == SourceException
+    ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Linked nodeA with UUID 4ca90220-74c2-4369-9afa-a18bf068840d was not found for entity")
   }
 }

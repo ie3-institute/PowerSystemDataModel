@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Validation for `EvcsInput` [#1000](https://github.com/ie3-institute/PowerSystemDataModel/issues/1000)
 - Scaling method in system participant copy builders [#1011](https://github.com/ie3-institute/PowerSystemDataModel/issues/1011)
 - Added separate field for maximum power limit for DC to evtype [#876](https://github.com/ie3-institute/PowerSystemDataModel/issues/876)
+- Added test for invalid input data in `CsvRawGridSource` [#1021](https://github.com/ie3-institute/PowerSystemDataModel/issues/1021)
 
 ### Fixed
 - Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
