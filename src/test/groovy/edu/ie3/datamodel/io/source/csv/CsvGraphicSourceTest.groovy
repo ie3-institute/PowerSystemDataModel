@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
+
 import static edu.ie3.test.helper.EntityMap.map
 
 import edu.ie3.datamodel.exceptions.FailureException
@@ -45,12 +47,15 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     def rawGridSource =
     new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
       @Override
-      Map<UUID, NodeInput> getNodes() {
+      Map<UUID, LineInput> getLines() {
         return Collections.emptyMap()
       }
 
       @Override
-      Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) {
+      Map<UUID, LineInput> getLines(
+              Map<UUID, OperatorInput> operators,
+              Map<UUID, NodeInput> nodes,
+              Map<UUID, LineTypeInput> lineTypeInputs) {
         return Collections.emptyMap()
       }
     }
@@ -66,7 +71,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
     Exception ex = graphicElements.exception.get()
     ex.class == SourceException
-    ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Linked nodeA with UUID 4ca90220-74c2-4369-9afa-a18bf068840d was not found for entity")
+    ex.message.startsWith("edu.ie3.datamodel.exceptions.SourceException: edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"LineGraphicInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Linked line with UUID 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7 was not found for entity")
   }
 
 
