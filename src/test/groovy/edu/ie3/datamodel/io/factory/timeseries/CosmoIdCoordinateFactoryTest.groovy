@@ -25,27 +25,14 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     def expectedFields = [
       "tid",
       "id",
-      "latrot",
-      "longrot",
-      "latgeo",
-      "longgeo"
+      "latRot",
+      "longRot",
+      "latGeo",
+      "longGeo"
     ] as Set
 
-    Map<String, String> parameter = [
-      "tid": "1",
-      "id": "106580",
-      "latgeo": "39.602772",
-      "longgeo": "1.279336",
-      "latrot": "-10",
-      "longrot": "-6.8125"
-    ]
-
-
-    def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
-
-
     when:
-    def actual = factory.getFields(validSimpleFactoryData)
+    def actual = factory.getFields(Pair)
 
     then:
     actual.size() == 1
@@ -54,22 +41,16 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 
   def "A COSMO id to coordinate factory refuses to build from invalid data"() {
     given:
-    Map<String, String> parameter  =  [
-      "tid": "1",
-      "id": "106580",
-      "latrot": "-10",
-      "longrot": "-6.8125"
-    ]
-
-    def invalidSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
+    def actualFields = CosmoIdCoordinateFactory.newSet("tid", "id", "latrot", "longrot")
 
     when:
-    def actual = factory.get(invalidSimpleFactoryData)
+    def actual = factory.validate(actualFields, Pair)
 
     then:
     actual.failure
-    actual.exception.get().cause.message.startsWith("The provided fields [id, latrot, longrot, tid] with data \n{id -> 106580,\nlatrot" +
-        " -> -10,\nlongrot -> -6.8125,\ntid -> 1} are invalid for instance of Pair.")
+    actual.exception.get().message == "The provided fields [id, latrot, longrot, tid] are invalid for instance of 'Pair'. \n" +
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'Pair' are possible (NOT case-sensitive!):\n" +
+        "0: [id, latGeo, latRot, longGeo, longRot, tid] or [id, lat_geo, lat_rot, long_geo, long_rot, tid]\n"
   }
 
   def "A COSMO id to coordinate factory builds model from valid data"() {
@@ -77,10 +58,10 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     Map<String, String> parameter = [
       "tid": "1",
       "id": "106580",
-      "latgeo": "39.602772",
-      "longgeo": "1.279336",
-      "latrot": "-10",
-      "longrot": "-6.8125"
+      "latGeo": "39.602772",
+      "longGeo": "1.279336",
+      "latRot": "-10",
+      "longRot": "-6.8125"
     ]
 
     def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)

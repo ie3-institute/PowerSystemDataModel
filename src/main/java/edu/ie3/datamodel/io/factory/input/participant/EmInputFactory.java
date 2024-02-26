@@ -5,67 +5,54 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
-import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
-import edu.ie3.datamodel.models.ControlStrategy;
+import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
+import edu.ie3.datamodel.io.factory.input.EmAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.EmInput;
-import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class EmInputFactory
-    extends SystemParticipantInputEntityFactory<EmInput, NodeAssetInputEntityData> {
-  private static final Logger logger = LoggerFactory.getLogger(EmInputFactory.class);
+public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInputEntityData> {
 
-  private static final String CONNECTED_ASSETS = "connectedassets";
+  private static final String CONTROL_STRATEGY = "controlStrategy";
 
-  private static final String CONTROL_STRATEGY = "controlstrategy";
+  public static final String PARENT_EM = "parentem";
 
   public EmInputFactory() {
     super(EmInput.class);
   }
 
   @Override
+  protected List<Set<String>> getFields(Class<?> entityClass) {
+    List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
+
+    List<Set<String>> withEm =
+        fields.stream().map(f -> (Set<String>) expandSet(f, PARENT_EM)).toList();
+
+    fields.addAll(withEm);
+
+    return fields;
+  }
+
+  @Override
   protected String[] getAdditionalFields() {
-    return new String[] {CONNECTED_ASSETS, CONTROL_STRATEGY};
+    return new String[] {CONTROL_STRATEGY};
   }
 
   @Override
   protected EmInput buildModel(
-      NodeAssetInputEntityData data,
+      EmAssetInputEntityData data,
       UUID uuid,
       String id,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    ControlStrategy controlStrategy;
-    try {
-      controlStrategy = ControlStrategy.parse(data.getField(CONTROL_STRATEGY));
-    } catch (ParsingException e) {
-      logger.warn(
-          "Cannot parse control strategy \"{}\" of energy management system \"{}\". Assign no control strategy instead.",
-          data.getField(CONTROL_STRATEGY),
-          id);
-      controlStrategy = ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY;
-    }
-    final UUID[] connectedAssets = data.getUUIDs(CONNECTED_ASSETS);
+    String controlStrategy = data.getField(CONTROL_STRATEGY);
 
-    if (connectedAssets.length == 0)
-      logger.warn("There are no connected assets for energy management system \"{}\".", id);
+    EmInput parentEm = data.getEmUnit();
 
-    return new EmInput(
-        uuid,
-        id,
-        operator,
-        operationTime,
-        node,
-        qCharacteristics,
-        connectedAssets,
-        controlStrategy);
+    return new EmInput(uuid, id, operator, operationTime, controlStrategy, parentEm);
   }
 }

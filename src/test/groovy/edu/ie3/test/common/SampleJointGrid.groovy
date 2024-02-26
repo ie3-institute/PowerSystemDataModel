@@ -5,6 +5,8 @@
  */
 package edu.ie3.test.common
 
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
@@ -29,8 +31,6 @@ import org.locationtech.jts.io.geojson.GeoJsonReader
 import tech.units.indriya.quantity.Quantities
 
 import java.util.stream.Collectors
-
-import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 /**
  * //ToDo: Class Description
@@ -70,6 +70,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         operationTime,
         participantNode,
         cosPhiFixed,
+        emInput,
         albedo,
         azimuth,
         etaConv,
@@ -89,6 +90,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         operationTime,
         participantNode,
         cosPhiFixed,
+        emInput,
         standardLoadProfile,
         false,
         eConsAnnual,
@@ -103,6 +105,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         operationTime,
         participantNode,
         cosPhiFixed,
+        emInput,
         standardLoadProfile,
         false,
         eConsAnnual,
@@ -118,6 +121,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         operationTime,
         participantNode,
         cosPhiFixed,
+        emInput,
         storageTypeInput)
 
     return new SystemParticipants(
@@ -127,19 +131,18 @@ class SampleJointGrid extends SystemParticipantTestData {
         Collections.emptySet(),
         Collections.emptySet(),
         Collections.emptySet(),
-        new HashSet<>(Arrays.asList(loadInput, loadInput1)),
+        Set.of(loadInput, loadInput1),
         Collections.singleton(pvInput),
         Collections.singleton(storageInput),
-        Collections.emptySet(),
         Collections.emptySet())
   }
 
   private static RawGridElements jointSampleRawGridElements() throws ParseException {
 
     return new RawGridElements(
-        new HashSet<>(Arrays.asList(nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG)),
-        new HashSet<>(Arrays.asList(lineAB, lineAC, lineBC, lineDE, lineDF, lineEF)),
-        new HashSet<>(Arrays.asList(transformerDtoA, transformerGtoD)),
+        Set.of(nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG),
+        Set.of(lineAB, lineAC, lineBC, lineDE, lineDF, lineEF),
+        Set.of(transformerDtoA, transformerGtoD),
         Collections.emptySet(),
         Collections.emptySet(),
         Collections.emptySet())

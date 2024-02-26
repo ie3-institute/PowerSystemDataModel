@@ -16,7 +16,7 @@ With this document we would like to give you some orientation on how you can con
 ## Testing and reporting bugs
 We really appreciate your usage of this project.
 Whenever you find a bug, it would be nice to check, if this isn't a feature to us. :wink:
-You may find extensive information about the intended behaviour when you [Read the Docs](https://powersystemdatamodel.readthedocs.io/en/latest/) or within the [javadoc](https://ie3-institute.github.io/PowerSystemDataModel/javadoc/).
+You may find extensive information about the intended behaviour when you [Read the Docs](https://powersystemdatamodel.readthedocs.io/en/latest/).
 If you still think it's a bug, please raise an [issue](https://guides.github.com/features/issues/) for us.
 Considering the following aspects in your inquiry, assists us in helping you:
 
@@ -67,9 +67,6 @@ Before marking the pull request as 'ready to review', take these precautionary a
 `gradle finalizePR` summarizes all of these steps .
 
 ## For any doubts
-... please contact
-* Johannes (@johanneshiry),
-* Debopama (@sensarmad) or
-* Chris (@ckittl)
+... please contact [us](AUTHORS)
 
 We are happy to help! :smiley:

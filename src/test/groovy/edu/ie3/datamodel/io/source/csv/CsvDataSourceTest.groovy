@@ -8,8 +8,8 @@ package edu.ie3.datamodel.io.source.csv
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.test.common.SystemParticipantTestData as sptd
-
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.LongAdder
 import java.util.function.Function
 import java.util.stream.Collectors
 
-class CsvDataSourceTest extends Specification {
+class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
   @Shared
   Function<Map<String, String>, String> uuidExtractor = { fieldToValues -> fieldToValues.get("uuid") }
 
@@ -67,9 +67,39 @@ class CsvDataSourceTest extends Specification {
   def "A DataSource should contain a valid connector after initialization"() {
     expect:
     dummyCsvSource.connector != null
-    dummyCsvSource.connector.baseDirectoryName == testBaseFolderPath
+    dummyCsvSource.connector.baseDirectory == testBaseFolderPath
     dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
     dummyCsvSource.connector.entityWriters.isEmpty()
+  }
+
+  def "A CsvDataSource should return column names from a valid CSV file as expected"() {
+    given:
+    DummyCsvSource source = new DummyCsvSource(csvSep, participantsFolderPath, fileNamingStrategy)
+
+    expect:
+    source.getSourceFields(LoadInput).get() == [
+      "operates_from",
+      "node",
+      "s_rated",
+      "cos_phi_rated",
+      "load_profile",
+      "id",
+      "operates_until",
+      "uuid",
+      "q_characteristics",
+      "e_cons_annual",
+      "operator",
+      "dsm",
+      "em"
+    ] as Set
+  }
+
+  def "A CsvDataSource should return an empty result when retrieving column names for a non-existing CSV file"() {
+    given:
+    def path = Path.of("this/path/does-not-exist")
+
+    expect:
+    dummyCsvSource.getSourceFields(path).isEmpty()
   }
 
   def "A CsvDataSource should build a valid fields to attributes map with valid data as expected"() {
@@ -397,7 +427,7 @@ class CsvDataSourceTest extends Specification {
 
     when:
     def allRows = [nodeInputRow]* noOfEntities
-    def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
+    def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID").getOrThrow()
 
     then:
     distinctRows.size() == distinctSize
@@ -419,7 +449,7 @@ class CsvDataSourceTest extends Specification {
       "v_rated"       : "380"]
   }
 
-  def "A CsvDataSource should return an empty set of csv row mappings if the provided collection of mappings contains duplicated UUIDs with different data"() {
+  def "A CsvDataSource should return a failure if the provided collection of mappings contains duplicated UUIDs with different data"() {
 
     given:
     def nodeInputRow1 = [
@@ -454,6 +484,7 @@ class CsvDataSourceTest extends Specification {
     def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
 
     then:
-    distinctRows.size() == 0
+    distinctRows.failure
+    distinctRows.exception.get().message == "'NodeInput' entities with duplicated UUID key, but different field values found! Please review the corresponding input file! Affected primary keys: 4ca90220-74c2-4369-9afa-a18bf068840d"
   }
 }

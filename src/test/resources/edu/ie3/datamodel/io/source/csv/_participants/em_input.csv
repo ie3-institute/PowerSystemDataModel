@@ -1,2 +1,3 @@
-uuid,connected_assets,control_strategy,id,node,operates_from,operates_until,operator,q_characteristics
-977157f4-25e5-4c72-bf34-440edc778792,eaf77f7e-9001-479f-94ca-7fb657766f5f d56f15b7-8293-4b98-b5bd-58f6273ce229,self_optimization,test_emInput,4ca90220-74c2-4369-9afa-a18bf068840d,2020-03-24T15:11:31Z[UTC],2020-03-25T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,cosPhiFixed:{(0.00,0.95)}
+uuid,control_strategy,id,operates_from,operates_until,operator,parent_em
+977157f4-25e5-4c72-bf34-440edc778792,self_optimization,test_emInput,2020-03-24T15:11:31Z[UTC],2020-03-25T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,897bfc17-8e54-43d0-8d98-740786fd94dd
+897bfc17-8e54-43d0-8d98-740786fd94dd,self_optimization,test_parentEmInput,2020-03-24T15:11:31Z[UTC],2020-03-25T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,

@@ -41,17 +41,14 @@ public class ValidationUtils {
   }
 
   /**
-   * Creates a new {@link NotImplementedException}, if there is no check available for the class of
-   * the given object
+   * Logs a warning, if there is no check available for the class of the given object.
    *
-   * @param obj Object, that cannot be checked
-   * @return Exception with predefined error string
+   * @param obj object, that cannot be checked
    */
-  protected static NotImplementedException buildNotImplementedException(Object obj) {
-    return new NotImplementedException(
-        String.format(
-            "Cannot validate object of class '%s', as no routine is implemented.",
-            obj.getClass().getSimpleName()));
+  protected static void logNotImplemented(Object obj) {
+    logger.warn(
+        "Cannot validate object of class '{}', as no routine is implemented.",
+        obj.getClass().getSimpleName());
   }
 
   /**
@@ -74,9 +71,7 @@ public class ValidationUtils {
     } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(checkAssetType((AssetTypeInput) obj));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(buildNotImplementedException(obj).getMessage())));
+      logNotImplemented(obj);
     }
 
     List<? extends ValidationException> list =
@@ -89,11 +84,15 @@ public class ValidationUtils {
   }
 
   /**
-   * Validates an asset if: <br>
-   * - it is not null <br>
-   * - its id is not null <br>
-   * - its operation time is not null <br>
-   * - in case operation time is limited, start time is before end time <br>
+   * Validates an asset if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>its id is not null
+   *   <li>its operation time is not null
+   *   <li>in case operation time is limited, start time is before end time
+   * </ul>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object.
    *
@@ -156,18 +155,19 @@ public class ValidationUtils {
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
       exceptions.addAll(ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput));
     else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(assetInput).getMessage())));
+      logNotImplemented(assetInput);
     }
 
     return exceptions;
   }
 
   /**
-   * Validates an asset type if: <br>
-   * - it is not null <br>
+   * Validates an asset type if:
+   *
+   * <ul>
+   *   <li>it is not null
+   * </ul>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object.
    *
@@ -207,39 +207,8 @@ public class ValidationUtils {
       exceptions.addAll(
           SystemParticipantValidationUtils.checkType((SystemParticipantTypeInput) assetTypeInput));
     else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(assetTypeInput).getMessage())));
+      logNotImplemented(assetTypeInput);
     }
-
-    return exceptions;
-  }
-
-  /**
-   * Checks the validity of the ids for a given set of {@link AssetInput}.
-   *
-   * @param inputs a set of asset inputs
-   * @return a list of try objects either containing an {@link UnsafeEntityException} or an empty
-   *     Success
-   */
-  protected static List<Try<Void, UnsafeEntityException>> checkIds(
-      Set<? extends AssetInput> inputs) {
-    List<String> ids = new ArrayList<>();
-    List<Try<Void, UnsafeEntityException>> exceptions = new ArrayList<>();
-
-    inputs.forEach(
-        input -> {
-          String id = input.getId();
-          if (!ids.contains(id)) {
-            ids.add(id);
-          } else {
-            exceptions.add(
-                new Failure<>(
-                    new UnsafeEntityException(
-                        "There is already an entity with the id " + id, input)));
-          }
-        });
 
     return exceptions;
   }
@@ -328,20 +297,6 @@ public class ValidationUtils {
   }
 
   /**
-   * Determines if the provided set only contains elements with distinct UUIDs
-   *
-   * @param entities the set that should be checked
-   * @return true if all UUIDs of the provided entities are unique, false otherwise
-   */
-  private static boolean distinctUuids(Set<? extends UniqueEntity> entities) {
-    return entities.stream()
-            .filter(distinctByKey(UniqueEntity::getUuid))
-            .collect(Collectors.toSet())
-            .size()
-        == entities.size();
-  }
-
-  /**
    * Predicate that can be used to filter elements based on a given Function
    *
    * @param keyExtractor the function that should be used for the filter operations
@@ -354,38 +309,38 @@ public class ValidationUtils {
   }
 
   /**
-   * Checks if the provided set of unique entities only contains elements with distinct UUIDs and
-   * either returns a string with duplicated UUIDs or an empty optional otherwise.
+   * Method to check for duplicate fields in a set of {@link UniqueEntity}.
    *
-   * @param entities the entities that should be checkd for UUID uniqueness
-   * @return either a string wrapped in an optional with duplicate UUIDs or an empty optional
+   * @param entities to be checked
+   * @param supplier for the field
+   * @return a list of {@link Try}.
+   * @param <E> type of the {@link UniqueEntity}
+   * @param <F> type of the field
    */
-  protected static Optional<String> checkForDuplicateUuids(Set<UniqueEntity> entities) {
-    if (distinctUuids(entities)) {
-      return Optional.empty();
-    }
-    String duplicationsString =
-        entities.stream()
-            .collect(Collectors.groupingBy(UniqueEntity::getUuid, Collectors.counting()))
-            .entrySet()
-            .stream()
-            .filter(entry -> entry.getValue() > 1)
-            .map(
-                entry -> {
-                  String duplicateEntitiesString =
-                      entities.stream()
-                          .filter(entity -> entity.getUuid().equals(entry.getKey()))
-                          .map(UniqueEntity::toString)
-                          .collect(Collectors.joining("\n - "));
+  protected static <E extends UniqueEntity, F>
+      List<Try<Void, DuplicateEntitiesException>> checkForDuplicates(
+          Collection<E> entities, FieldSupplier<E, F> supplier) {
+    Map<F, List<E>> duplicates =
+        entities.stream().collect(Collectors.groupingBy(supplier::getField));
 
-                  return entry.getKey()
-                      + ": "
-                      + entry.getValue()
-                      + "\n - "
-                      + duplicateEntitiesString;
-                })
-            .collect(Collectors.joining("\n\n"));
+    return duplicates.entrySet().stream()
+        .filter(e -> e.getValue().size() > 1)
+        .map(
+            duplicate ->
+                Failure.ofVoid(
+                    new DuplicateEntitiesException(
+                        duplicate.getKey().getClass().getSimpleName(), duplicate.getValue())))
+        .collect(Collectors.toList());
+  }
 
-    return Optional.of(duplicationsString);
+  /**
+   * Supplier for unique entity fields that returns a field of type F given an entity of type E.
+   *
+   * @param <E> type of unique entity
+   * @param <F> type of field
+   */
+  @FunctionalInterface
+  protected interface FieldSupplier<E extends UniqueEntity, F> {
+    F getField(E entity);
   }
 }

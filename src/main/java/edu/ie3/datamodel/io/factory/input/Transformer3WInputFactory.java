@@ -15,8 +15,8 @@ import java.util.UUID;
 public class Transformer3WInputFactory
     extends ConnectorInputEntityFactory<Transformer3WInput, Transformer3WInputEntityData> {
 
-  private static final String TAP_POS = "tappos";
-  private static final String AUTO_TAP = "autotap";
+  private static final String TAP_POS = "tapPos";
+  private static final String AUTO_TAP = "autoTap";
 
   public Transformer3WInputFactory() {
     super(Transformer3WInput.class);

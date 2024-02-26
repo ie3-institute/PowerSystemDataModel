@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.SimpleEntityData
+import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.utils.Try
@@ -56,7 +56,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     when:
-    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new EntityData(parameter, modelClass))
 
     then:
     result.success
@@ -110,7 +110,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "q"         : "2"
     ]
     when:
-    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, StorageResult))
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new EntityData(parameter, StorageResult))
 
     then:
     result.success
@@ -127,23 +127,17 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
   def "A SystemParticipantResultFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
     def resultFactory = new SystemParticipantResultFactory()
-    Map<String, String> parameter = [
-      "time"      : "2020-01-30 17:26:44",
-      "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "q"         : "2"
-    ]
+    def actualFields = SystemParticipantResultFactory.newSet("time", "input_model", "q")
+
     when:
-    Try<SystemParticipantResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, WecResult))
+    Try<SystemParticipantResult, FactoryException> result = resultFactory.validate(actualFields, WecResult)
 
     then:
     result.failure
-    result.exception.get().cause.message == "The provided fields [inputModel, q, time] with data \n" +
-        "{inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,\n" +
-        "q -> 2,\n" +
-        "time -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +
+    result.exception.get().message == "The provided fields [input_model, q, time] are invalid for instance of 'WecResult'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'WecResult' are possible (NOT case-sensitive!):\n" +
-        "0: [inputModel, p, q, time]\n" +
-        "1: [inputModel, p, q, time, uuid]\n"
+        "0: [inputModel, p, q, time] or [input_model, p, q, time]\n" +
+        "1: [inputModel, p, q, time, uuid] or [input_model, p, q, time, uuid]\n"
   }
 
   def "A SystemParticipantResultFactory should be performant"() {
@@ -159,7 +153,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     expect: "that the factory should not need more than 3 seconds for processing 10.000 entities"
     Long startTime = System.currentTimeMillis()
     10000.times {
-      resultFactory.get(new SimpleEntityData(parameter, StorageResult))
+      resultFactory.get(new EntityData(parameter, StorageResult))
     }
     BigDecimal elapsedTime = (System
         .currentTimeMillis() - startTime) / 1000.0

@@ -78,8 +78,8 @@ public class StandardUnits {
   /** Voltage angle variation per tap (for transformers) in ° (arc degree) */
   public static final Unit<Angle> DPHI_TAP = DEGREE_GEOM;
   /**
-   * Gradient, with which a system participant can change it's set point (with regard to rated
-   * active power = rated apparent power * rated power factor) in %/h
+   * Gradient, with which a system participant can change its set point (with regard to rated active
+   * power = rated apparent power * rated power factor) in %/h
    */
   public static final Unit<DimensionlessRate> ACTIVE_POWER_GRADIENT = PERCENT_PER_HOUR;
   /** Efficiency of a process in % */

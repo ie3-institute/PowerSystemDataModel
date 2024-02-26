@@ -37,16 +37,48 @@ A synoptic overview of both classes' attributes is given here:
 
 ## Attributes, Units and Remarks
 
-| Attribute               | Unit | Remarks                                           |
-|:------------------------|:-----|:--------------------------------------------------|
-| gridName                | --   | Human readable identifier                         |
-| rawGrid                 | --   | see below                                         |
-| systemParticipants      | --   | see below                                         |
-| graphics                | --   | see below                                         |
-| subGridTopologyGraph    | --   | topology of sub grids - only `JointGridContainer` |
-| predominantVoltageLevel | --   | main voltage level - only `SubGridContainer`      |
-| subnet                  | --   | sub grid number - only `SubGridContainer`         |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
 
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - gridName
+     - –
+     - Human readable identifier
+
+   * - rawGrid
+     - –
+     - see below
+
+   * - systemParticipants
+     - –
+     - see below
+
+   * - graphics
+     - –
+     - see below
+
+   * - subGridTopologyGraph
+     - –
+     - topology of sub grids - only
+       ``JointGridContainer``
+
+   * - predominantVoltageLevel
+     - –
+     - main voltage level - only
+       ``SubGridContainer``
+
+   * - subnet
+     - –
+     - sub grid number - only
+       ``SubGridContainer``
+
+```
 
 ### RawGridElements
 This sub container simply holds:

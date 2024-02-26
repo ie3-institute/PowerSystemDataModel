@@ -6,15 +6,13 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,7 +22,7 @@ import java.util.stream.Stream;
  */
 public abstract class TimeSeriesMappingSource {
 
-  private final TimeSeriesMappingFactory mappingFactory;
+  protected final TimeSeriesMappingFactory mappingFactory;
 
   protected TimeSeriesMappingSource() {
     this.mappingFactory = new TimeSeriesMappingFactory();
@@ -35,7 +33,7 @@ public abstract class TimeSeriesMappingSource {
    *
    * @return That mapping
    */
-  public Map<UUID, UUID> getMapping() {
+  public Map<UUID, UUID> getMapping() throws SourceException {
     return getMappingSourceData()
         .map(this::createMappingEntry)
         .filter(Try::isSuccess)
@@ -50,7 +48,7 @@ public abstract class TimeSeriesMappingSource {
    * @param modelIdentifier Identifier of the model
    * @return An {@link Optional} to the time series identifier
    */
-  public Optional<UUID> getTimeSeriesUuid(UUID modelIdentifier) {
+  public Optional<UUID> getTimeSeriesUuid(UUID modelIdentifier) throws SourceException {
     return Optional.ofNullable(getMapping().get(modelIdentifier));
   }
 
@@ -59,13 +57,16 @@ public abstract class TimeSeriesMappingSource {
    *
    * @return Stream of maps
    */
-  public abstract Stream<Map<String, String>> getMappingSourceData();
+  public abstract Stream<Map<String, String>> getMappingSourceData() throws SourceException;
+
+  /** Returns the option for fields found in the source */
+  public abstract Optional<Set<String>> getSourceFields() throws SourceException;
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   private Try<MappingEntry, FactoryException> createMappingEntry(
       Map<String, String> fieldToValues) {
-    SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
+    EntityData entityData = new EntityData(fieldToValues, MappingEntry.class);
     return mappingFactory.get(entityData);
   }
 

@@ -21,9 +21,12 @@ public class GraphicValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a graphic input if: <br>
-   * - it is not null <br>
-   * - its graphic layer is not null <br>
+   * Validates a graphic input if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>its graphic layer is not null
+   * </ul>
    *
    * <p>A "distribution" method, that forwards the check request to specific implementations to
    * fulfill the checking task, based on the class of the given object.
@@ -59,8 +62,11 @@ public class GraphicValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a line graphic input if: <br>
-   * - its path is not null
+   * Validates a line graphic input if:
+   *
+   * <ul>
+   *   <li>its path is not null
+   * </ul>
    *
    * @param lineGraphicInput LineGraphicInput to validate
    */
@@ -74,9 +80,12 @@ public class GraphicValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a node graphic input if: <br>
-   * - its node is not null <br>
-   * - its point is not null
+   * Validates a node graphic input if:
+   *
+   * <ul>
+   *   <li>its node is not null
+   *   <li>its point is not null
+   * </ul>
    *
    * @param nodeGraphicInput NodeGraphicInput to validate
    */

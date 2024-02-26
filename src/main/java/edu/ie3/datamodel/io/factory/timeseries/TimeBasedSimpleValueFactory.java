@@ -25,7 +25,7 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   /* Energy / Power */
   private static final String ACTIVE_POWER = "p";
   private static final String REACTIVE_POWER = "q";
-  private static final String HEAT_DEMAND = "heatdemand";
+  private static final String HEAT_DEMAND = "heatDemand";
 
   private final TimeUtil timeUtil;
 
@@ -87,24 +87,24 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleTimeBasedValueData<V> data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams = newSet(UUID, TIME);
 
-    if (EnergyPriceValue.class.isAssignableFrom(data.getTargetClass())) {
+    if (EnergyPriceValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.add(PRICE);
-    } else if (HeatAndSValue.class.isAssignableFrom(data.getTargetClass())) {
+    } else if (HeatAndSValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, REACTIVE_POWER, HEAT_DEMAND));
-    } else if (HeatAndPValue.class.isAssignableFrom(data.getTargetClass())) {
+    } else if (HeatAndPValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, HEAT_DEMAND));
-    } else if (HeatDemandValue.class.isAssignableFrom(data.getTargetClass())) {
+    } else if (HeatDemandValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.add(HEAT_DEMAND);
-    } else if (SValue.class.isAssignableFrom(data.getTargetClass())) {
+    } else if (SValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, REACTIVE_POWER));
-    } else if (PValue.class.isAssignableFrom(data.getTargetClass())) {
+    } else if (PValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.add(ACTIVE_POWER);
     } else {
       throw new FactoryException(
-          "The given factory cannot handle target class '" + data.getTargetClass() + "'.");
+          "The given factory cannot handle target class '" + entityClass + "'.");
     }
 
     return Collections.singletonList(minConstructorParams);

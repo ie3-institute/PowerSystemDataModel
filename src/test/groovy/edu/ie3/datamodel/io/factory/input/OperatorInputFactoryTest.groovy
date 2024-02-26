@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.input
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.SimpleEntityData
+import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.utils.Try
 import spock.lang.Specification
@@ -33,7 +33,7 @@ class OperatorInputFactoryTest extends Specification {
     def inputClass = OperatorInput
 
     when:
-    Try<OperatorInput, FactoryException> input = inputFactory.get(new SimpleEntityData(parameter, inputClass))
+    Try<OperatorInput, FactoryException> input = inputFactory.get(new EntityData(parameter, inputClass))
 
     then:
     input.success

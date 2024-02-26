@@ -6,14 +6,13 @@
 package edu.ie3.datamodel.io.factory.input
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.utils.Try
+import edu.ie3.test.common.GridTestData
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-import edu.ie3.test.common.GridTestData
 
 import java.time.ZonedDateTime
 
@@ -85,10 +84,12 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
     def typeInput = Mock(Transformer2WTypeInput)
 
     when:
-    inputFactory.get(new TypedConnectorInputEntityData<Transformer2WTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+    Try<Transformer2WInput, FactoryException> input = inputFactory.get(new TypedConnectorInputEntityData<Transformer2WTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
     then:
-    def e = thrown(IllegalArgumentException)
-    e.message == "nodeA must be on the higher voltage side of the transformer"
+    input.failure
+    def e = input.exception.get()
+    e.cause.class == IllegalArgumentException
+    e.cause.message == "nodeA must be on the higher voltage side of the transformer"
   }
 }

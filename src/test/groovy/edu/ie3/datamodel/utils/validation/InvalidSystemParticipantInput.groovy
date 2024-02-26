@@ -13,7 +13,7 @@ import java.time.ZonedDateTime
 
 class InvalidSystemParticipantInput extends SystemParticipantInput {
   InvalidSystemParticipantInput(NodeInput node) {
-    super(UUID.randomUUID(), "invalid_system_participant", node, CosPhiFixed.CONSTANT_CHARACTERISTIC)
+    super(UUID.randomUUID(), "invalid_system_participant", node, CosPhiFixed.CONSTANT_CHARACTERISTIC, null)
   }
 
   @Override

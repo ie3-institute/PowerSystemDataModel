@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
@@ -18,6 +19,13 @@ import tech.units.indriya.ComparableQuantity;
  * combined primary or foreign keys.
  */
 public interface IdCoordinateSource {
+
+  /**
+   * Method to retrieve the fields found in the source.
+   *
+   * @return an option for the found fields
+   */
+  Optional<Set<String>> getSourceFields() throws SourceException;
 
   /**
    * Get the matching coordinate for the given ID
@@ -126,7 +134,14 @@ public interface IdCoordinateSource {
       Point point = distance.getCoordinateB();
 
       // check for bounding box
-      if (!topLeft && (point.getX() < coordinate.getX() && point.getY() > coordinate.getY())) {
+      if (coordinate.equalsExact(point, 1e-6)) {
+        // if current point is matching the given coordinate, we need to return only the current
+        // point
+        resultingDistances.clear();
+        resultingDistances.add(distance);
+        return resultingDistances;
+      } else if (!topLeft
+          && (point.getX() < coordinate.getX() && point.getY() > coordinate.getY())) {
         resultingDistances.add(distance);
         topLeft = true;
       } else if (!topRight
@@ -141,13 +156,6 @@ public interface IdCoordinateSource {
           && (point.getX() > coordinate.getX() && point.getY() < coordinate.getY())) {
         resultingDistances.add(distance);
         bottomRight = true;
-      } else if (coordinate.equalsExact(point, 1e-6)) {
-        // if current point is matching the given coordinate, we need to return only the current
-        // point
-
-        resultingDistances.clear();
-        resultingDistances.add(distance);
-        return resultingDistances;
       } else {
         other.add(distance);
       }

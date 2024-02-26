@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
 import java.time.ZonedDateTime;
@@ -15,8 +15,8 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
 public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
-  private static final String VMAG = "vmag";
-  private static final String VANG = "vang";
+  private static final String VMAG = "vMag";
+  private static final String VANG = "vAng";
 
   public NodeResultFactory() {
     super(NodeResult.class);
@@ -33,7 +33,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData entityData) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, VMAG, VANG);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
@@ -41,7 +41,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   }
 
   @Override
-  protected NodeResult buildModel(SimpleEntityData data) {
+  protected NodeResult buildModel(EntityData data) {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Dimensionless> vMagValue =

@@ -21,7 +21,7 @@ public class IconIdCoordinateFactory extends IdCoordinateFactory {
   private static final String COORDINATE_ID = "id";
   private static final String LONG = "longitude";
   private static final String LAT = "latitude";
-  private static final String TYPE = "coordinatetype";
+  private static final String TYPE = "coordinateType";
 
   @Override
   protected Pair<Integer, Point> buildModel(SimpleFactoryData data) {
@@ -32,7 +32,7 @@ public class IconIdCoordinateFactory extends IdCoordinateFactory {
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleFactoryData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     return Collections.singletonList(newSet(COORDINATE_ID, LAT, LONG, TYPE));
   }
 

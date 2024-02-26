@@ -42,12 +42,12 @@ public class CsvFileConnector implements DataConnector {
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
 
   private final FileNamingStrategy fileNamingStrategy;
-  private final Path baseDirectoryName;
+  private final Path baseDirectory;
 
   private static final String FILE_ENDING = ".csv";
 
-  public CsvFileConnector(Path baseDirectoryName, FileNamingStrategy fileNamingStrategy) {
-    this.baseDirectoryName = baseDirectoryName;
+  public CsvFileConnector(Path baseDirectory, FileNamingStrategy fileNamingStrategy) {
+    this.baseDirectory = baseDirectory;
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
@@ -61,7 +61,7 @@ public class CsvFileConnector implements DataConnector {
     /* If it is not available, build and register one */
     try {
       CsvFileDefinition fileDefinition = buildFileDefinition(clz, headerElements, csvSep);
-      BufferedCsvWriter newWriter = initWriter(baseDirectoryName, fileDefinition);
+      BufferedCsvWriter newWriter = initWriter(baseDirectory, fileDefinition);
 
       entityWriters.put(clz, newWriter);
       return newWriter;
@@ -81,7 +81,7 @@ public class CsvFileConnector implements DataConnector {
     /* If it is not available, build and register one */
     try {
       CsvFileDefinition fileDefinition = buildFileDefinition(timeSeries, headerElements, csvSep);
-      BufferedCsvWriter newWriter = initWriter(baseDirectoryName, fileDefinition);
+      BufferedCsvWriter newWriter = initWriter(baseDirectory, fileDefinition);
 
       timeSeriesWriters.put(timeSeries.getUuid(), newWriter);
       return newWriter;
@@ -159,42 +159,15 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
-   * Initializes a file reader for the given class that should be read in. The expected file name is
-   * determined based on {@link FileNamingStrategy} of the this {@link CsvFileConnector} instance
+   * Initializes a file reader for the given file name.
    *
-   * @param clz the class of the entity that should be read
-   * @return the reader that contains information about the file to be read in
-   * @throws FileNotFoundException If the matching file cannot be found
-   */
-  public BufferedReader initReader(Class<? extends UniqueEntity> clz)
-      throws FileNotFoundException, ConnectorException {
-    try {
-      Path filePath =
-          fileNamingStrategy
-              .getFilePath(clz)
-              .orElseThrow(
-                  () ->
-                      new ConnectorException(
-                          "Cannot find a naming strategy for class '"
-                              + clz.getSimpleName()
-                              + "'."));
-      return initReader(filePath);
-    } catch (ConnectorException e) {
-      throw new ConnectorException(
-          "Cannot initialize reader for entity '" + clz.getSimpleName() + "'.", e);
-    }
-  }
-
-  /**
-   * Initializes a file reader for the given file name. Use {@link
-   * CsvFileConnector#initReader(Class)} for files that actually correspond to concrete entities.
-   *
-   * @param filePath sub directory tree starting from base folder, including file name
+   * @param filePath path of file starting from base folder, including file name but not file
+   *     extension
    * @return the reader that contains information about the file to be read in
    * @throws FileNotFoundException if no file with the provided file name can be found
    */
   public BufferedReader initReader(Path filePath) throws FileNotFoundException {
-    File fullPath = baseDirectoryName.resolve(filePath.toString() + FILE_ENDING).toFile();
+    File fullPath = baseDirectory.resolve(filePath.toString() + FILE_ENDING).toFile();
     return new BufferedReader(
         new InputStreamReader(new FileInputStream(fullPath), StandardCharsets.UTF_8), 16384);
   }
@@ -234,10 +207,9 @@ public class CsvFileConnector implements DataConnector {
    * @return A set of relative paths to time series files, with respect to the base folder path
    */
   private Set<Path> getIndividualTimeSeriesFilePaths() {
-    Path baseDirectoryPath = baseDirectoryName.resolve(baseDirectoryName);
-    try (Stream<Path> pathStream = Files.walk(baseDirectoryPath)) {
+    try (Stream<Path> pathStream = Files.walk(baseDirectory)) {
       return pathStream
-          .map(baseDirectoryPath::relativize)
+          .map(baseDirectory::relativize)
           .filter(
               path -> {
                 Path withoutEnding =
@@ -252,18 +224,6 @@ public class CsvFileConnector implements DataConnector {
       log.error("Unable to determine time series files readers for time series.", e);
       return Collections.emptySet();
     }
-  }
-
-  /**
-   * Initialises a reader to get grip on the file that contains mapping information between
-   * coordinate id and actual coordinate
-   *
-   * @return A {@link BufferedReader}
-   * @throws FileNotFoundException If the file is not present
-   */
-  public BufferedReader initIdCoordinateReader() throws FileNotFoundException {
-    Path filePath = Path.of(fileNamingStrategy.getIdCoordinateEntityName());
-    return initReader(filePath);
   }
 
   /**

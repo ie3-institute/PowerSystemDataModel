@@ -27,6 +27,29 @@ class WecInputTest extends Specification {
       assert qCharacteristics == wec.qCharacteristics
       assert type == SystemParticipantTestData.wecType
       assert marketReaction
+      assert em == Optional.of(SystemParticipantTestData.emInput)
+    }
+  }
+
+  def "Scaling a WecInput via builder should work as expected"() {
+    given:
+    def wec = SystemParticipantTestData.wecInput
+
+    when:
+    def alteredUnit = wec.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == wec.uuid
+      assert operationTime == wec.operationTime
+      assert operator == wec.operator
+      assert id == wec.id
+      assert qCharacteristics == wec.qCharacteristics
+      assert type.sRated == wec.type.sRated * 2d
+      assert type.rotorArea == wec.type.rotorArea * 2d
+      assert type.hubHeight == wec.type.hubHeight
+      assert marketReaction == wec.marketReaction
+      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

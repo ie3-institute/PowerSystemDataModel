@@ -5,9 +5,11 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.PvInput
@@ -17,10 +19,8 @@ import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
-
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import javax.measure.quantity.Dimensionless
 
 class PvInputFactoryTest extends Specification implements FactoryTestHelper {
   def "A PvInputFactory should contain exactly the expected class for parsing"() {
@@ -54,10 +54,11 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
     def inputClass = PvInput
     def nodeInput = Mock(NodeInput)
     def operatorInput = Mock(OperatorInput)
+    def emUnit = Mock(EmInput)
 
     when:
     Try<PvInput, FactoryException> input = inputFactory.get(
-        new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
+        new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput, emUnit))
 
     then:
     input.success
@@ -77,6 +78,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
+      assert em == Optional.of(emUnit)
       assert albedo == Double.parseDouble(parameter["albedo"])
       assert azimuth == getQuant(parameter["azimuth"], StandardUnits.AZIMUTH)
       assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)

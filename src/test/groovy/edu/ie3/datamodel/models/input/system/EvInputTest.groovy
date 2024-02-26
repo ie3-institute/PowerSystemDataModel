@@ -26,6 +26,28 @@ class EvInputTest extends Specification {
       assert id == ev.id
       assert qCharacteristics == ev.qCharacteristics
       assert type == SystemParticipantTestData.evTypeInput
+      assert em == Optional.of(SystemParticipantTestData.emInput)
+    }
+  }
+
+  def "Scaling an EvInput via builder should work as expected"() {
+    given:
+    def ev = SystemParticipantTestData.evInput
+
+    when:
+    def alteredUnit = ev.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == ev.uuid
+      assert operationTime == ev.operationTime
+      assert operator == ev.operator
+      assert id == ev.id
+      assert qCharacteristics == ev.qCharacteristics
+      assert type.sRated == ev.type.sRated * 2d
+      assert type.eStorage == ev.type.eStorage * 2d
+      assert type.eCons == ev.type.eCons * 2d
+      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

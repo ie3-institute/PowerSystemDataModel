@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
@@ -19,6 +21,8 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -52,13 +56,20 @@ public class CsvWeatherSource extends WeatherSource {
       Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       IdCoordinateSource idCoordinateSource,
-      TimeBasedWeatherValueFactory weatherFactory) {
+      TimeBasedWeatherValueFactory weatherFactory)
+      throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     coordinateToTimeSeries = getWeatherTimeSeries();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  /** Returns an empty optional for now. */
+  @Override
+  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
+    return Optional.empty();
+  }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
@@ -120,7 +131,8 @@ public class CsvWeatherSource extends WeatherSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
+  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries()
+      throws SourceException {
     /* Get only weather time series meta information */
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
         dataSource
@@ -138,7 +150,8 @@ public class CsvWeatherSource extends WeatherSource {
    */
   private Map<Point, IndividualTimeSeries<WeatherValue>> readWeatherTimeSeries(
       Set<CsvIndividualTimeSeriesMetaInformation> weatherMetaInformation,
-      CsvFileConnector connector) {
+      CsvFileConnector connector)
+      throws SourceException {
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
     Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
         this::buildWeatherValue;
@@ -146,7 +159,8 @@ public class CsvWeatherSource extends WeatherSource {
     for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       // we need a reader for each file
       try (BufferedReader reader = connector.initReader(data.getFullFilePath())) {
-        buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+        buildStreamWithFieldsToAttributesMap(reader)
+            .getOrThrow()
             .map(fieldToValueFunction)
             .flatMap(Optional::stream)
             .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
@@ -166,18 +180,26 @@ public class CsvWeatherSource extends WeatherSource {
                   }
                 });
       } catch (FileNotFoundException e) {
-        log.error("Cannot read file {}. File not found!", data.getFullFilePath());
+        throw new SourceException(
+            "Cannot read file " + data.getFullFilePath() + ". File not found!", e);
       } catch (IOException e) {
-        log.error("Cannot read file {}. Exception: {}", data.getFullFilePath(), e);
+        throw new SourceException("Cannot read file " + data.getFullFilePath() + ".", e);
+      } catch (ValidationException e) {
+        throw new SourceException("Validation failed for file " + data.getFullFilePath() + ".", e);
       }
     }
     return weatherTimeSeries;
   }
 
-  private Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+  private Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
+      BufferedReader bufferedReader) throws ValidationException {
+    Class<? extends UniqueEntity> entityClass = TimeBasedValue.class;
+
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
+
+      // validating read file
+      weatherFactory.validate(Set.of(headline), WeatherValue.class).getOrThrow();
 
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
@@ -194,14 +216,12 @@ public class CsvWeatherSource extends WeatherSource {
       return dataSource
           .distinctRowsWithLog(
               allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
-          .parallelStream();
-
+          .map(Set::parallelStream);
     } catch (IOException e) {
-      log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+      return Failure.of(
+          new SourceException(
+              "Cannot read file to build entity '" + entityClass.getSimpleName() + "'.", e));
     }
-
-    return Stream.empty();
   }
 
   /**

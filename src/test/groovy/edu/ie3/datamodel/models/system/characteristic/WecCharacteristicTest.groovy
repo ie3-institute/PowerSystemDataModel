@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
+import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
@@ -14,9 +17,6 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Speed
-
-import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class WecCharacteristicTest extends Specification {
   @Shared
