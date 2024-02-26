@@ -26,7 +26,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     resultingThermalBusesWoOperator.size() == 1
-    def thermalBusWoOp = resultingThermalBusesWoOperator.values().first()
+    def thermalBusWoOp = resultingThermalBusesWoOperator.first()
     thermalBusWoOp.uuid == sptd.thermalBus.uuid
     thermalBusWoOp.id == sptd.thermalBus.id
     thermalBusWoOp.operator == sptd.thermalBus.operator
@@ -38,7 +38,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     resultingThermalBuses.size() == 1
-    def thermalBus = resultingThermalBuses.values().first()
+    def thermalBus = resultingThermalBuses.first()
     thermalBus.uuid == sptd.thermalBus.uuid
     thermalBus.id == sptd.thermalBus.id
     thermalBus.operator == sptd.thermalBus.operator
@@ -104,7 +104,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     resultingThermalHouseWoOperator.size() == 1
-    with(resultingThermalHouseWoOperator.values().first()) {
+    with(resultingThermalHouseWoOperator.first()) {
       uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
       id == ThermalUnitInputTestData.thermalHouseInput.id
       operator == ThermalUnitInputTestData.thermalHouseInput.operator
@@ -124,7 +124,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     resultingThermalHouse.size() == 1
-    with(resultingThermalHouse.values().first()) {
+    with(resultingThermalHouse.first()) {
       uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
       id == ThermalUnitInputTestData.thermalHouseInput.id
       operator == ThermalUnitInputTestData.thermalHouseInput.operator

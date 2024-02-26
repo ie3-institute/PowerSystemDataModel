@@ -5,7 +5,12 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.*;
+import static edu.ie3.datamodel.utils.CollectionUtils.toMap;
+
+import edu.ie3.datamodel.exceptions.FailedValidationException;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.SystemParticipantsException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -17,7 +22,10 @@ import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import edu.ie3.datamodel.utils.Try;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
@@ -158,8 +166,8 @@ public class SystemParticipantSource extends EntitySource {
     Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits();
 
     /// go on with the thermal assets
-    Map<UUID, ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
-    Map<UUID, ThermalStorageInput> thermalStorages =
+    Set<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
+    Set<ThermalStorageInput> thermalStorages =
         thermalSource.getThermalStorages(operators, thermalBuses);
 
     Try<Set<FixedFeedInInput>, SourceException> fixedFeedInInputs =
@@ -592,7 +600,7 @@ public class SystemParticipantSource extends EntitySource {
   public Set<ChpInput> getChpPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits(operators);
-    Map<UUID, ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
+    Set<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
     return getChpPlants(
         operators,
         rawGridSource.getNodes(operators),
@@ -616,9 +624,8 @@ public class SystemParticipantSource extends EntitySource {
    * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @param types a map of UUID to object- and uuid-unique {@link ChpTypeInput} entities
-   * @param thermalBuses a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
-   * @param thermalStorages a map of UUID to object- and uuid-unique {@link ThermalStorageInput}
-   *     entities
+   * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
+   * @param thermalStorages a set of object- and uuid-unique {@link ThermalStorageInput} entities
    * @return a set of object- and uuid-unique {@link ChpInput} entities
    */
   public Set<ChpInput> getChpPlants(
@@ -626,15 +633,15 @@ public class SystemParticipantSource extends EntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, EmInput> emUnits,
       Map<UUID, ChpTypeInput> types,
-      Map<UUID, ThermalBusInput> thermalBuses,
-      Map<UUID, ThermalStorageInput> thermalStorages)
+      Set<ThermalBusInput> thermalBuses,
+      Set<ThermalStorageInput> thermalStorages)
       throws SourceException {
     return unpackSet(
         chpEntityStream(
                 buildTypedSystemParticipantEntityData(
                     ChpInput.class, operators, nodes, emUnits, types),
-                thermalStorages,
-                thermalBuses)
+                toMap(thermalStorages),
+                toMap(thermalBuses))
             .map(chpInputFactory::get),
         ChpInput.class);
   }
@@ -672,13 +679,13 @@ public class SystemParticipantSource extends EntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, EmInput> emUnits,
       Map<UUID, HpTypeInput> types,
-      Map<UUID, ThermalBusInput> thermalBuses)
+      Set<ThermalBusInput> thermalBuses)
       throws SourceException {
     return unpackSet(
         hpEntityStream(
                 buildTypedSystemParticipantEntityData(
                     HpInput.class, operators, nodes, emUnits, types),
-                thermalBuses)
+                toMap(thermalBuses))
             .map(hpInputFactory::get),
         HpInput.class);
   }

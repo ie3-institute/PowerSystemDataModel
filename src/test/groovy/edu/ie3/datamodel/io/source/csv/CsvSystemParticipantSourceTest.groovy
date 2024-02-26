@@ -95,15 +95,15 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def operatorMap = map([sptd.operator])
     def nodeMap = map([sptd.participantNode])
     def emUnitsMap = map([sptd.emInput])
-    def thermalBusMap = map([sptd.thermalBus])
-    def thermalStorageMap = map([sptd.thermalStorage])
+    def thermalBus = [sptd.thermalBus] as Set
+    def thermalStorage = [sptd.thermalStorage] as Set
 
     expect:
-    def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(operatorMap, nodeMap, emUnitsMap, map([sptd.hpTypeInput]), thermalBusMap), SourceException)
+    def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(operatorMap, nodeMap, emUnitsMap, map([sptd.hpTypeInput]), thermalBus), SourceException)
     heatPumps.success
     heatPumps.data.get() == [sptd.hpInput] as Set
 
-    def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(operatorMap, nodeMap, emUnitsMap, map([sptd.chpTypeInput]), thermalBusMap, thermalStorageMap), SourceException)
+    def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(operatorMap, nodeMap, emUnitsMap, map([sptd.chpTypeInput]), thermalBus, thermalStorage), SourceException)
     chpUnits.success
     chpUnits.data.get() == [sptd.chpInput] as Set
 
@@ -152,7 +152,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def emUnitsMap = map([sptd.emInput])
 
     expect:
-    def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(map(operators), nodeMap, emUnitsMap, map(types), map(thermalBuses)), SourceException)
+    def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(map(operators), nodeMap, emUnitsMap, map(types), thermalBuses as Set), SourceException)
 
     heatPumps.failure
     heatPumps.exception.get().class == SourceException
@@ -178,7 +178,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def emUnitsMap = map([sptd.emInput])
 
     expect:
-    def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(map(operators), nodeMap, emUnitsMap, map(types), map(thermalBuses), map(thermalStorages)), SourceException)
+    def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(map(operators), nodeMap, emUnitsMap, map(types), thermalBuses as Set, thermalStorages as Set), SourceException)
 
     chpUnits.failure
     chpUnits.exception.get().class == SourceException
@@ -186,10 +186,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     where:
     operators                | types                | thermalBuses               | thermalStorages                || resultingSet
     []                       | [sptd.chpInput.type] | [sptd.chpInput.thermalBus] | [sptd.chpInput.thermalStorage] || [new ChpInput(sptd.chpInput.uuid, sptd.chpInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.chpInput.operationTime, sptd.chpInput.node, sptd.chpInput.thermalBus, sptd.chpInput.qCharacteristics, sptd.emInput, sptd.chpInput.type, sptd.chpInput.thermalStorage, sptd.chpInput.marketReaction)]
-    []                       | []                   | []                         | [] as List                     || []
-    []                       | []                   | []                         | [] as List                     || []
-    [sptd.chpInput.operator] | []                   | []                         | [] as List                     || []
-    [sptd.chpInput.operator] | [sptd.chpInput.type] | []                         | [] as List                     || []
+    []                       | []                   | []                         | []                             || []
+    []                       | []                   | []                         | []                             || []
+    [sptd.chpInput.operator] | []                   | []                         | []                             || []
+    [sptd.chpInput.operator] | [sptd.chpInput.type] | []                         | []                             || []
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from invalid ev input file as expected"() {
