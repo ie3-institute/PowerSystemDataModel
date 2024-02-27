@@ -7,16 +7,16 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.Factory;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
-import edu.ie3.datamodel.models.input.IdCoordinatePair;
+import edu.ie3.datamodel.models.input.IdCoordinateInput;
 
 /**
  * Abstract class definition for a factory, that is able to build single mapping entries from
  * coordinate identifier to actual coordinate
  */
 public abstract class IdCoordinateFactory
-    extends Factory<IdCoordinatePair, SimpleFactoryData, IdCoordinatePair> {
+    extends Factory<IdCoordinateInput, SimpleFactoryData, IdCoordinateInput> {
   protected IdCoordinateFactory() {
-    super(IdCoordinatePair.class);
+    super(IdCoordinateInput.class);
   }
 
   /** @return the field id for the coordinate id */

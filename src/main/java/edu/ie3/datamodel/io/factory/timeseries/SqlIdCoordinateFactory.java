@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
-import edu.ie3.datamodel.models.input.IdCoordinatePair;
+import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +23,7 @@ public class SqlIdCoordinateFactory extends IdCoordinateFactory {
   private final WKBReader reader = new WKBReader();
 
   @Override
-  protected IdCoordinatePair buildModel(SimpleFactoryData data) {
+  protected IdCoordinateInput buildModel(SimpleFactoryData data) {
     try {
       int coordinateId = data.getInt(COORDINATE_ID);
       byte[] byteArr = WKBReader.hexToBytes(data.getField(COORDINATE));
@@ -31,7 +31,7 @@ public class SqlIdCoordinateFactory extends IdCoordinateFactory {
       Coordinate coordinate = reader.read(byteArr).getCoordinate();
 
       Point point = GeoUtils.buildPoint(coordinate);
-      return IdCoordinatePair.of(coordinateId, point);
+      return new IdCoordinateInput(coordinateId, point);
 
     } catch (ParseException e) {
       throw new FactoryException(e);

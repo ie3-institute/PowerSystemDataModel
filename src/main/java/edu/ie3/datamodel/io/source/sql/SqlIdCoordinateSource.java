@@ -13,7 +13,7 @@ import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
-import edu.ie3.datamodel.models.input.IdCoordinatePair;
+import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.datamodel.models.value.CoordinateValue;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.geo.CoordinateDistance;
@@ -66,7 +66,7 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
                     .map(
                         fields ->
                             factory
-                                .validate(fields, IdCoordinatePair.class)
+                                .validate(fields, IdCoordinateInput.class)
                                 .transformF(SourceException::new))
                     .orElse(Try.Success.empty()))
         .getOrThrow();
@@ -201,10 +201,10 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
     fieldToValues.remove("distance");
 
     SimpleFactoryData simpleFactoryData =
-        new SimpleFactoryData(fieldToValues, IdCoordinatePair.class);
+        new SimpleFactoryData(fieldToValues, IdCoordinateInput.class);
 
-    IdCoordinatePair pair = factory.get(simpleFactoryData).getOrThrow();
-    return new CoordinateValue(pair.getKey(), pair.getValue());
+    IdCoordinateInput idCoordinate = factory.get(simpleFactoryData).getOrThrow();
+    return new CoordinateValue(idCoordinate.id(), idCoordinate.point());
   }
 
   private List<CoordinateValue> executeQueryToList(

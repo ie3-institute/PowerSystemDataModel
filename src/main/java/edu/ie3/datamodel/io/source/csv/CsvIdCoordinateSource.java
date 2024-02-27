@@ -11,7 +11,7 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
-import edu.ie3.datamodel.models.input.IdCoordinatePair;
+import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
 import edu.ie3.datamodel.utils.validation.UniquenessValidationUtils;
@@ -24,7 +24,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.quantity.Length;
-import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
@@ -65,13 +64,13 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    * @return Mapping from coordinate id to coordinate
    */
   private Map<Integer, Point> setupIdToCoordinateMap() throws SourceException {
-    List<IdCoordinatePair> pairs =
+    List<IdCoordinateInput> idCoordinates =
         buildStreamWithFieldsToAttributesMap()
             .map(
                 data ->
                     data.map(
                             fieldToValues ->
-                                new SimpleFactoryData(fieldToValues, IdCoordinatePair.class))
+                                new SimpleFactoryData(fieldToValues, IdCoordinateInput.class))
                         .map(factory::get))
             .flatMap(
                 s -> Try.scanStream(s, "Pair<Integer, Point>").transformF(SourceException::new))
@@ -80,12 +79,13 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
 
     try {
       // check the uniqueness of the source
-      UniquenessValidationUtils.checkIdCoordinateUniqueness(pairs);
+      UniquenessValidationUtils.checkIdCoordinateUniqueness(idCoordinates);
     } catch (DuplicateEntitiesException de) {
       throw new SourceException("Due to: ", de);
     }
 
-    return pairs.stream().collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+    return idCoordinates.stream()
+        .collect(Collectors.toMap(IdCoordinateInput::id, IdCoordinateInput::point));
   }
 
   /**
@@ -187,7 +187,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
       // validating read file
-      factory.validate(Set.of(headline), IdCoordinatePair.class).getOrThrow();
+      factory.validate(Set.of(headline), IdCoordinateInput.class).getOrThrow();
 
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.

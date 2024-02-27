@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
-import edu.ie3.datamodel.models.input.IdCoordinatePair;
+import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -24,11 +24,11 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
   private static final String LAT_ROT = "latRot";
 
   @Override
-  protected IdCoordinatePair buildModel(SimpleFactoryData data) {
+  protected IdCoordinateInput buildModel(SimpleFactoryData data) {
     int coordinateId = data.getInt(COORDINATE_ID);
     double lat = data.getDouble(LAT_GEO);
     double lon = data.getDouble(LONG_GEO);
-    return IdCoordinatePair.of(coordinateId, lat, lon);
+    return new IdCoordinateInput(coordinateId, lat, lon);
   }
 
   @Override

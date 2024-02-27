@@ -10,7 +10,7 @@ import edu.ie3.datamodel.io.source.TimeSeriesMappingSource.MappingEntry;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.IdCoordinatePair;
+import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -31,8 +31,8 @@ public class UniquenessValidationUtils extends ValidationUtils {
       entity -> Set.of(entity.getTime(), entity.getInputModel());
   protected static final FieldSetSupplier<MappingEntry> mappingFieldSupplier =
       entity -> Set.of(entity.participant());
-  protected static final FieldSetSupplier<IdCoordinatePair> idCoordinateSupplier =
-      pair -> Set.of(pair.getKey(), pair.getValue());
+  protected static final FieldSetSupplier<IdCoordinateInput> idCoordinateSupplier =
+      entity -> Set.of(entity.id(), entity.point());
   protected static final FieldSetSupplier<TimeBasedValue<WeatherValue>> weatherValueFieldSupplier =
       entity -> Set.of(entity.getTime(), entity.getValue().getCoordinate());
 
@@ -96,7 +96,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated
    */
-  public static void checkIdCoordinateUniqueness(Collection<IdCoordinatePair> entities)
+  public static void checkIdCoordinateUniqueness(Collection<IdCoordinateInput> entities)
       throws DuplicateEntitiesException {
     checkUniqueness(entities, idCoordinateSupplier).getOrThrow();
   }
