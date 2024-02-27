@@ -33,11 +33,6 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
         String csvRow, String csvSep) {
       return super.parseCsvRow(csvRow, csvSep)
     }
-
-    String[] oldFieldVals(
-        String csvSep, String csvRow) {
-      return super.oldFieldVals(csvSep, csvRow)
-    }
   }
 
   @Shared

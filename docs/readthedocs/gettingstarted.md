@@ -3,7 +3,6 @@ Welcome, dear fellow of bottom up power system modelling!
 This section is meant to give you some help getting hands on our project.
 If you feel, something is missing, please contact us!
 
-
 ## Requirements
 
 Java > v 17
@@ -24,7 +23,6 @@ On [Maven central](https://search.maven.org/artifact/com.github.ie3-institute/Po
   <version>2.1.0</version>
 </dependency>
 ```
-
 
 ### Snapshot releases
 

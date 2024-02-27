@@ -11,16 +11,14 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -43,13 +41,6 @@ public class CsvDataSource implements DataSource {
   protected final CsvFileConnector connector;
 
   private final FileNamingStrategy fileNamingStrategy;
-
-  /**
-   * @deprecated ensures downward compatibility with old csv data format. Can be removed when
-   *     support for old csv format is removed. *
-   */
-  @Deprecated(since = "1.1.0", forRemoval = true)
-  private boolean notYetLoggedWarning = true;
 
   public CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
@@ -90,6 +81,11 @@ public class CsvDataSource implements DataSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+  /** Returns the set {@link FileNamingStrategy}. */
+  public FileNamingStrategy getNamingStrategy() {
+    return fileNamingStrategy;
+  }
+
   /**
    * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
    * the csv row string based and zip it together with the headline. This method does not contain
@@ -108,13 +104,13 @@ public class CsvDataSource implements DataSource {
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     try {
-      String[] finalFieldVals = parseCsvRow(csvRow, csvSep);
+      String[] fieldVals = parseCsvRow(csvRow, csvSep);
       insensitiveFieldsToAttributes.putAll(
-          IntStream.range(0, finalFieldVals.length)
+          IntStream.range(0, fieldVals.length)
               .boxed()
               .collect(
                   Collectors.toMap(
-                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> finalFieldVals[v])));
+                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
 
       if (insensitiveFieldsToAttributes.size() != headline.length) {
         Set<String> fieldsToAttributesKeySet = insensitiveFieldsToAttributes.keySet();
@@ -155,30 +151,6 @@ public class CsvDataSource implements DataSource {
                     .replaceAll("\"{2}", "\"")
                     .trim())
         .toArray(String[]::new);
-  }
-
-  /**
-   * Extracts all strings from the provided csvRow matching the provided regexString and returns a
-   * list of strings in the order of their appearance in the csvRow string
-   *
-   * @param regexString regex string that should be searched for
-   * @param csvRow csv row string that should be searched in for the regex string
-   * @return a list of strings matching the provided regex in the order of their appearance in the
-   *     provided csv row string
-   */
-  private List<String> extractMatchingStrings(String regexString, String csvRow) {
-    Pattern pattern = Pattern.compile(regexString);
-    Matcher matcher = pattern.matcher(csvRow);
-
-    ArrayList<String> matchingList = new ArrayList<>();
-    while (matcher.find()) {
-      matchingList.add(matcher.group());
-    }
-    return matchingList;
-  }
-
-  public FileNamingStrategy getNamingStrategy() {
-    return fileNamingStrategy;
   }
 
   /**
