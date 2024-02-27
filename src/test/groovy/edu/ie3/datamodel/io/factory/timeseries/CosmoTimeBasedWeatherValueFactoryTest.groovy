@@ -33,7 +33,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
-    def expectedResults = new TimeBasedValue(UUID.fromString("980f7714-8def-479f-baae-4deed6c8d6d1"),
+    def expectedResults = new TimeBasedValue(
         time, new WeatherValue(coordinate,
         Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
@@ -66,7 +66,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
-    def expectedResults = new TimeBasedValue(UUID.fromString("980f7714-8def-479f-baae-4deed6c8d6d1"),
+    def expectedResults = new TimeBasedValue(
         time, new WeatherValue(coordinate,
         Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),

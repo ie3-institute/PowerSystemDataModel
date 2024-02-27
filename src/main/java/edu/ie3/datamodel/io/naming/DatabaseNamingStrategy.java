@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import java.util.Optional;
 
 /** A naming strategy for database entities */
@@ -42,7 +42,7 @@ public class DatabaseNamingStrategy {
     return TIME_SERIES_PREFIX + columnScheme.getScheme();
   }
 
-  public Optional<String> getEntityName(Class<? extends UniqueEntity> cls) {
+  public Optional<String> getEntityName(Class<? extends Entity> cls) {
     return entityPersistenceNamingStrategy.getEntityName(cls);
   }
 }

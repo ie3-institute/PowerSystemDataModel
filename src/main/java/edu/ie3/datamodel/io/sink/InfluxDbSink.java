@@ -10,7 +10,7 @@ import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -67,7 +67,7 @@ public class InfluxDbSink implements OutputDataSink {
   }
 
   @Override
-  public <C extends UniqueEntity> void persist(C entity) throws ProcessorProviderException {
+  public <C extends Entity> void persist(C entity) throws ProcessorProviderException {
     Set<Point> points = extractPoints(entity);
     // writes only the exact one point instead of unnecessarily wrapping it in BatchPoints
     if (points.size() == 1) write(points.iterator().next());
@@ -75,7 +75,7 @@ public class InfluxDbSink implements OutputDataSink {
   }
 
   @Override
-  public <C extends UniqueEntity> void persistAll(Collection<C> entities)
+  public <C extends Entity> void persistAll(Collection<C> entities)
       throws ProcessorProviderException {
     Set<Point> points = new HashSet<>();
     for (C entity : entities) {
@@ -199,8 +199,7 @@ public class InfluxDbSink implements OutputDataSink {
    * @param <C> bounded to be all unique entities, but logs an error and returns an empty Set if it
    *     does not extend {@link ResultEntity} or {@link TimeSeries}
    */
-  private <C extends UniqueEntity> Set<Point> extractPoints(C entity)
-      throws ProcessorProviderException {
+  private <C extends Entity> Set<Point> extractPoints(C entity) throws ProcessorProviderException {
     Set<Point> points = new HashSet<>();
     /* Distinguish between result models and time series */
     if (entity instanceof ResultEntity resultEntity) {

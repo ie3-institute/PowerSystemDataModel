@@ -31,33 +31,10 @@ public class ChpResult extends SystemParticipantWithHeatResult {
     super(time, inputModel, p, q, qDot);
   }
 
-  /**
-   * Standard constructor which allows uuid provision
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param p active power output normally provided in MW
-   * @param q reactive power output normally provided in MVAr
-   * @param qDot thermal power output normally provided in MW
-   */
-  public ChpResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q,
-      ComparableQuantity<Power> qDot) {
-    super(uuid, time, inputModel, p, q, qDot);
-  }
-
   @Override
   public String toString() {
     return "ChpResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

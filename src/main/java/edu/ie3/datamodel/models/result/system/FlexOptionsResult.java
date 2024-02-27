@@ -56,30 +56,6 @@ public class FlexOptionsResult extends ResultEntity {
     this.pMax = pMax;
   }
 
-  /**
-   * Standard constructor without uuid generation.
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param pRef active power that was suggested for regular usage by the system participant
-   * @param pMin active minimal power that was determined by the system participant
-   * @param pMax active maximum power that was determined by the system participant
-   */
-  public FlexOptionsResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Power> pRef,
-      ComparableQuantity<Power> pMin,
-      ComparableQuantity<Power> pMax) {
-    super(uuid, time, inputModel);
-    this.pRef = pRef;
-    this.pMin = pMin;
-    this.pMax = pMax;
-  }
-
   public ComparableQuantity<Power> getpRef() {
     return pRef;
   }
@@ -95,9 +71,7 @@ public class FlexOptionsResult extends ResultEntity {
   @Override
   public String toString() {
     return "FlexOptionsResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

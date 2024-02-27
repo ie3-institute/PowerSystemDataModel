@@ -120,7 +120,17 @@ public abstract class Try<T, E extends Exception> {
    */
   public static <D, E extends Exception> List<E> getExceptions(
       Collection<Try<? extends D, E>> tries) {
-    return tries.stream().filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
+    return getExceptions(tries.stream());
+  }
+
+  /**
+   * Method to retrieve the exceptions from all {@link Failure} objects.
+   *
+   * @param tries stream of {@link Try} objects
+   * @return a list of {@link Exception}'s
+   */
+  public static <D, E extends Exception> List<E> getExceptions(Stream<Try<? extends D, E>> tries) {
+    return tries.filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
   }
 
   /**

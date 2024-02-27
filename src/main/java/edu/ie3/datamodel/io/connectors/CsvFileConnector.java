@@ -12,7 +12,7 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
@@ -37,8 +37,7 @@ import org.slf4j.LoggerFactory;
 public class CsvFileConnector implements DataConnector {
   private static final Logger log = LoggerFactory.getLogger(CsvFileConnector.class);
 
-  private final Map<Class<? extends UniqueEntity>, BufferedCsvWriter> entityWriters =
-      new HashMap<>();
+  private final Map<Class<? extends Entity>, BufferedCsvWriter> entityWriters = new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
 
   private final FileNamingStrategy fileNamingStrategy;
@@ -52,7 +51,7 @@ public class CsvFileConnector implements DataConnector {
   }
 
   public synchronized BufferedCsvWriter getOrInitWriter(
-      Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep)
+      Class<? extends Entity> clz, String[] headerElements, String csvSep)
       throws ConnectorException {
     /* Try to the the right writer */
     BufferedCsvWriter predefinedWriter = entityWriters.get(clz);
@@ -146,8 +145,7 @@ public class CsvFileConnector implements DataConnector {
    * @param <C> Type of class
    * @throws IOException If closing of writer fails.
    */
-  public synchronized <C extends UniqueEntity> void closeEntityWriter(Class<C> clz)
-      throws IOException {
+  public synchronized <C extends Entity> void closeEntityWriter(Class<C> clz) throws IOException {
     Optional<BufferedCsvWriter> maybeWriter = Optional.ofNullable(entityWriters.get(clz));
     if (maybeWriter.isPresent()) {
       log.debug("Remove reference to entity writer for class '{}'.", clz);
@@ -259,7 +257,7 @@ public class CsvFileConnector implements DataConnector {
    * @throws ConnectorException If the definition cannot be determined
    */
   private CsvFileDefinition buildFileDefinition(
-      Class<? extends UniqueEntity> clz, String[] headLineElements, String csvSep)
+      Class<? extends Entity> clz, String[] headLineElements, String csvSep)
       throws ConnectorException {
     Path directoryPath = fileNamingStrategy.getDirectoryPath(clz).orElse(Path.of(""));
     String fileName =

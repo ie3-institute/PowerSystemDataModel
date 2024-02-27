@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated contributing.md [#737](https://github.com/ie3-institute/PowerSystemDataModel/issues/737)
 - Don't throw exceptions for not yet implemented validations [#879](https://github.com/ie3-institute/PowerSystemDataModel/issues/879)
 - `CsvDataSource` throws exceptions on error [#954](https://github.com/ie3-institute/PowerSystemDataModel/issues/954)
+- Removing `uuid` as required column from input and result time series [#826](https://github.com/ie3-institute/PowerSystemDataModel/issues/826)
 
 ## [4.1.0] - 2023-11-02
 

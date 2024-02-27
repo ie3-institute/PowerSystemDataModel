@@ -89,8 +89,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
                       Collectors.toSet()));
       return coordinateToValues.entrySet().stream()
           .collect(
-              Collectors.toMap(
-                  Map.Entry::getKey, e -> new IndividualTimeSeries<>(null, e.getValue())));
+              Collectors.toMap(Map.Entry::getKey, e -> new IndividualTimeSeries<>(e.getValue())));
     }
   }
 
@@ -113,7 +112,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
           Set<TimeBasedValue<WeatherValue>> timeBasedValues =
               filterEmptyOptionals(optValues).collect(Collectors.toSet());
           IndividualTimeSeries<WeatherValue> timeSeries =
-              new IndividualTimeSeries<>(null, timeBasedValues);
+              new IndividualTimeSeries<>(timeBasedValues);
           coordinateToTimeSeries.put(entry.getKey(), timeSeries);
         }
       }
@@ -154,7 +153,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
       Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
           optTimeBasedValueStream(queryResult);
       return new IndividualTimeSeries<>(
-          null, filterEmptyOptionals(optValues).collect(Collectors.toSet()));
+          filterEmptyOptionals(optValues).collect(Collectors.toSet()));
     }
   }
 

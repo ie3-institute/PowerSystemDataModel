@@ -78,7 +78,7 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
    * @return the most recent available value before or at the given time step as a TimeBasedValue
    */
   public Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time) {
-    return getPreviousDateTime(time).map(this::getTimeBasedValue).map(Optional::get);
+    return getPreviousDateTime(time).flatMap(this::getTimeBasedValue);
   }
 
   /**
@@ -88,7 +88,7 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
    * @return the next available value after or at the given time step as a TimeBasedValue
    */
   public Optional<TimeBasedValue<V>> getNextTimeBasedValue(ZonedDateTime time) {
-    return getNextDateTime(time).map(this::getTimeBasedValue).map(Optional::get);
+    return getNextDateTime(time).flatMap(this::getTimeBasedValue);
   }
 
   /**
