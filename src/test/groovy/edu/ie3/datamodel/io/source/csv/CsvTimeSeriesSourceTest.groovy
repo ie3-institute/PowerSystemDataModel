@@ -25,10 +25,11 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The csv time series source is able to build time based values from simple data"() {
     given:
-    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def timePattern = "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'"
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue, timePattern)
     def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-    def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
+    def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern)
     def fieldToValue = [
       "uuid" : "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time" : timeUtil.toString(time),
@@ -62,9 +63,10 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
   def "The factory method in csv time series source builds a time series source for all supported column types"() {
     given:
     def metaInformation = new CsvIndividualTimeSeriesMetaInformation(uuid, columnScheme, path)
+    def timePattern = "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'"
 
     when:
-    def actual = CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation)
+    def actual = CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation, timePattern)
 
     then:
     actual.timeSeries.entries.size() == amountOfEntries

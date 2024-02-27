@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.datamodel.utils.Try;
+import edu.ie3.util.TimeUtil;
 import edu.ie3.util.interval.ClosedInterval;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
@@ -44,13 +45,39 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
+    return getSource(
+        csvSep,
+        folderPath,
+        fileNamingStrategy,
+        metaInformation,
+        TimeUtil.withDefaults.getDtfPattern());
+  }
+
+  /**
+   * Factory method to build a source from given meta information
+   *
+   * @param csvSep the separator string for csv columns
+   * @param folderPath path to the folder holding the time series files
+   * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
+   * @param metaInformation The given meta information
+   * @param dtfPattern The date time format pattern for the time based value factory
+   * @throws SourceException If the given meta information are not supported
+   * @return The source
+   */
+  public static CsvTimeSeriesSource<? extends Value> getSource(
+      String csvSep,
+      Path folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      CsvIndividualTimeSeriesMetaInformation metaInformation,
+      String dtfPattern)
+      throws SourceException {
     if (!TimeSeriesUtils.isSchemeAccepted(metaInformation.getColumnScheme()))
       throw new SourceException(
           "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
 
     Class<? extends Value> valClass = metaInformation.getColumnScheme().getValueClass();
 
-    return create(csvSep, folderPath, fileNamingStrategy, metaInformation, valClass);
+    return create(csvSep, folderPath, fileNamingStrategy, metaInformation, valClass, dtfPattern);
   }
 
   private static <T extends Value> CsvTimeSeriesSource<T> create(
@@ -58,8 +85,10 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation,
-      Class<T> valClass) {
-    TimeBasedSimpleValueFactory<T> valueFactory = new TimeBasedSimpleValueFactory<>(valClass);
+      Class<T> valClass,
+      String dtfPattern) {
+    TimeBasedSimpleValueFactory<T> valueFactory =
+        new TimeBasedSimpleValueFactory<>(valClass, dtfPattern);
     return new CsvTimeSeriesSource<>(
         csvSep,
         folderPath,
