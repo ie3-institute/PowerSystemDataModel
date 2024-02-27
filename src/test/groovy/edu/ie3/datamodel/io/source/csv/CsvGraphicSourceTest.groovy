@@ -44,8 +44,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A CsvGraphicSource should process invalid input data as expected when requested to provide an instance of GraphicElements"() {
     given:
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
-    def rawGridSource =
-    new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
+    def rawGridSource = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
       @Override
       Map<UUID, LineInput> getLines() {
         return Collections.emptyMap()
