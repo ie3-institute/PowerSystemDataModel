@@ -9,21 +9,16 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.util.Objects;
-import java.util.UUID;
 
 /** Unique entry to a {@link LoadProfileInput} */
 public class LoadProfileEntry extends TimeSeriesEntry<PValue> {
   private final DayOfWeek dayOfWeek;
   private final int quarterHourOfDay;
 
-  public LoadProfileEntry(UUID uuid, PValue value, DayOfWeek dayOfWeek, int quarterHourOfDay) {
-    super(uuid, value);
+  public LoadProfileEntry(PValue value, DayOfWeek dayOfWeek, int quarterHourOfDay) {
+    super(value);
     this.dayOfWeek = dayOfWeek;
     this.quarterHourOfDay = quarterHourOfDay;
-  }
-
-  public LoadProfileEntry(PValue value, DayOfWeek dayOfWeek, int quarterHourOfDay) {
-    this(UUID.randomUUID(), value, dayOfWeek, quarterHourOfDay);
   }
 
   public DayOfWeek getDayOfWeek() {
@@ -51,9 +46,7 @@ public class LoadProfileEntry extends TimeSeriesEntry<PValue> {
   @Override
   public String toString() {
     return "LoadProfileEntry{"
-        + "uuid="
-        + getUuid()
-        + ", dayOfWeek="
+        + "dayOfWeek="
         + dayOfWeek
         + ", quarterHourOfDay="
         + quarterHourOfDay

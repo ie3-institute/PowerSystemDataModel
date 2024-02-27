@@ -34,32 +34,10 @@ public class StorageResult extends ElectricalEnergyStorageResult {
     super(time, inputModel, p, q, soc);
   }
 
-  /**
-   * Standard constructor with automatic uuid generation.
-   *
-   * @param uuid Unique identifier
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param p active power output normally provided in MW
-   * @param q reactive power output normally provided in MVAr
-   * @param soc the current state of charge of the storage
-   */
-  public StorageResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q,
-      ComparableQuantity<Dimensionless> soc) {
-    super(uuid, time, inputModel, p, q, soc);
-  }
-
   @Override
   public String toString() {
     return "StorageResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

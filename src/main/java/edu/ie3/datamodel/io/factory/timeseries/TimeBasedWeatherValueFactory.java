@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
  */
 public abstract class TimeBasedWeatherValueFactory
     extends TimeBasedValueFactory<TimeBasedWeatherValueData, WeatherValue> {
-  protected static final String UUID = "uuid";
   protected static final String TIME = "time";
   protected static final String COORDINATE_ID = "coordinateId";
 

@@ -149,7 +149,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
                   .flatMap(Optional::stream)
                   .collect(Collectors.toSet());
           IndividualTimeSeries<WeatherValue> weatherTimeSeries =
-              new IndividualTimeSeries<>(null, weatherInputs);
+              new IndividualTimeSeries<>(weatherInputs);
           coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
         }
       } else logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);

@@ -66,7 +66,6 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
     Point coordinate = data.getCoordinate();
-    java.util.UUID uuid = data.getUUID(UUID);
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
         data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
@@ -86,6 +85,6 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             temperature,
             windDirection,
             windVelocity);
-    return new TimeBasedValue<>(uuid, time, weatherValue);
+    return new TimeBasedValue<>(time, weatherValue);
   }
 }

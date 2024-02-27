@@ -29,17 +29,6 @@ public abstract class ElectricalEnergyStorageResult extends SystemParticipantRes
     this.soc = soc.to(StandardUnits.SOC);
   }
 
-  protected ElectricalEnergyStorageResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q,
-      ComparableQuantity<Dimensionless> soc) {
-    super(uuid, time, inputModel, p, q);
-    this.soc = soc.to(StandardUnits.SOC);
-  }
-
   public ComparableQuantity<Dimensionless> getSoc() {
     return soc;
   }
@@ -60,9 +49,7 @@ public abstract class ElectricalEnergyStorageResult extends SystemParticipantRes
   @Override
   public String toString() {
     return "ElectricalEnergyStorageResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

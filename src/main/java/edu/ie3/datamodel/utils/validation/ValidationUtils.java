@@ -11,20 +11,18 @@ import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.GridContainer;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
-import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
@@ -294,53 +292,5 @@ public class ValidationUtils {
     if (!malformedQuantities.isEmpty()) {
       throw new InvalidEntityException(msg + ": " + malformedQuantities, entity);
     }
-  }
-
-  /**
-   * Predicate that can be used to filter elements based on a given Function
-   *
-   * @param keyExtractor the function that should be used for the filter operations
-   * @param <T> the type of the returning predicate
-   * @return the filter predicate that filters based on the provided function
-   */
-  public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-    Set<Object> seen = ConcurrentHashMap.newKeySet();
-    return t -> seen.add(keyExtractor.apply(t));
-  }
-
-  /**
-   * Method to check for duplicate fields in a set of {@link UniqueEntity}.
-   *
-   * @param entities to be checked
-   * @param supplier for the field
-   * @return a list of {@link Try}.
-   * @param <E> type of the {@link UniqueEntity}
-   * @param <F> type of the field
-   */
-  protected static <E extends UniqueEntity, F>
-      List<Try<Void, DuplicateEntitiesException>> checkForDuplicates(
-          Collection<E> entities, FieldSupplier<E, F> supplier) {
-    Map<F, List<E>> duplicates =
-        entities.stream().collect(Collectors.groupingBy(supplier::getField));
-
-    return duplicates.entrySet().stream()
-        .filter(e -> e.getValue().size() > 1)
-        .map(
-            duplicate ->
-                Failure.ofVoid(
-                    new DuplicateEntitiesException(
-                        duplicate.getKey().getClass().getSimpleName(), duplicate.getValue())))
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * Supplier for unique entity fields that returns a field of type F given an entity of type E.
-   *
-   * @param <E> type of unique entity
-   * @param <F> type of field
-   */
-  @FunctionalInterface
-  protected interface FieldSupplier<E extends UniqueEntity, F> {
-    F getField(E entity);
   }
 }

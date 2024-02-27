@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.sink;
 import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.connectors.DataConnector;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
@@ -38,7 +38,7 @@ public interface DataSink {
    * @param <C> bounded to be all unique entities. Handling of specific entities is normally then
    *     executed by a specific {@link EntityProcessor}
    */
-  <C extends UniqueEntity> void persist(C entity) throws ProcessorProviderException;
+  <C extends Entity> void persist(C entity) throws ProcessorProviderException;
 
   /**
    * Should implement the entry point of a data sink to persist multiple entities in a collection.
@@ -52,8 +52,7 @@ public interface DataSink {
    * @param <C> bounded to be all unique entities. Handling of specific entities is normally then
    *     executed by a specific {@link EntityProcessor}
    */
-  <C extends UniqueEntity> void persistAll(Collection<C> entities)
-      throws ProcessorProviderException;
+  <C extends Entity> void persistAll(Collection<C> entities) throws ProcessorProviderException;
 
   /**
    * Should implement the handling of a whole time series. Therefore the single entries have to be

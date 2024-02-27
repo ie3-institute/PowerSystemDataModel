@@ -16,10 +16,6 @@ Result of (mainly) domestic loads.
      - Unit
      - Remarks
 
-   * - uuid
-     - --
-     - uuid for the result entity
-
    * - time
      - --
      - date and time for the produced result

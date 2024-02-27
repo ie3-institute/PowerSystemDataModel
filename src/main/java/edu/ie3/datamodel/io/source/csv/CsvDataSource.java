@@ -9,24 +9,16 @@ import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
-import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.LongAdder;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -50,13 +42,6 @@ public class CsvDataSource implements DataSource {
 
   private final FileNamingStrategy fileNamingStrategy;
 
-  /**
-   * @deprecated ensures downward compatibility with old csv data format. Can be removed when
-   *     support for old csv format is removed. *
-   */
-  @Deprecated(since = "1.1.0", forRemoval = true)
-  private boolean notYetLoggedWarning = true;
-
   public CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
@@ -64,7 +49,7 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass)
+  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass)
       throws SourceException {
     return getSourceFields(getFilePath(entityClass).getOrThrow());
   }
@@ -89,12 +74,17 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass)
+  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
       throws SourceException {
     return buildStreamWithFieldsToAttributesMap(entityClass, true).getOrThrow();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  /** Returns the set {@link FileNamingStrategy}. */
+  public FileNamingStrategy getNamingStrategy() {
+    return fileNamingStrategy;
+  }
 
   /**
    * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
@@ -113,35 +103,14 @@ public class CsvDataSource implements DataSource {
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    // todo when replacing deprecated workaround code below add final modifier before parseCsvRow as
-    // well as remove
-    //  'finalFieldVals' and notYetLoggedWarning below!
-    String[] fieldVals = parseCsvRow(csvRow, csvSep);
-
-    // start workaround for deprecated data model processing
-    if (fieldVals.length != headline.length) {
-      // try to parse old structure
-      fieldVals = oldFieldVals(csvSep, csvRow);
-      // if this works log a warning to inform the user that this will not work much longer,
-      // otherwise parsing will fail regularly as expected below
-      if (fieldVals.length == headline.length && notYetLoggedWarning) {
-        notYetLoggedWarning = false;
-        log.warn(
-            "You are using an outdated version of the data "
-                + "model with invalid formatted csv rows. This is okay for now, but please updated your files, as the "
-                + "support for the old model will be removed soon.");
-      }
-    }
-    // end workaround for deprecated data model processing
-
     try {
-      String[] finalFieldVals = fieldVals;
+      String[] fieldVals = parseCsvRow(csvRow, csvSep);
       insensitiveFieldsToAttributes.putAll(
           IntStream.range(0, fieldVals.length)
               .boxed()
               .collect(
                   Collectors.toMap(
-                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> finalFieldVals[v])));
+                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
 
       if (insensitiveFieldsToAttributes.size() != headline.length) {
         Set<String> fieldsToAttributesKeySet = insensitiveFieldsToAttributes.keySet();
@@ -185,106 +154,6 @@ public class CsvDataSource implements DataSource {
   }
 
   /**
-   * Build an array of from the provided csv row string considering special cases where geoJson or
-   * {@link edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput} are provided
-   * in the csv row string.
-   *
-   * @param csvSep the column separator of the csv row string
-   * @param csvRow the csv row string
-   * @return an array with one entry per column of the provided csv row string
-   * @deprecated only left for downward compatibility. Will be removed in a major release
-   */
-  @Deprecated(since = "1.1.0", forRemoval = true)
-  protected String[] oldFieldVals(String csvSep, String csvRow) {
-
-    /*geo json support*/
-    final String geoJsonRegex = "\\{.+?}}}";
-    final String geoReplacement = "geoJSON";
-
-    /*characteristic input support */
-    final String charInputRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{[^}]++}";
-    final String charReplacement = "charRepl";
-
-    /*removes double double quotes*/
-    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow.replace("\"\"", "\""));
-    List<String> charList = extractMatchingStrings(charInputRegex, csvRow.replace("\"\"", "\""));
-
-    AtomicInteger geoCounter = new AtomicInteger(0);
-    AtomicInteger charCounter = new AtomicInteger(0);
-
-    return Arrays.stream(
-            csvRow
-                .replaceAll(charInputRegex, charReplacement)
-                .replaceAll(geoJsonRegex, geoReplacement)
-                .replaceAll("\"*", "") // remove all quotes from
-                .split(csvSep, -1))
-        .map(
-            fieldVal -> {
-              String returningFieldVal = fieldVal;
-              if (fieldVal.equalsIgnoreCase(geoReplacement)) {
-                returningFieldVal = geoList.get(geoCounter.getAndIncrement());
-              }
-              if (fieldVal.equalsIgnoreCase(charReplacement)) {
-                returningFieldVal = charList.get(charCounter.getAndIncrement());
-              }
-              return returningFieldVal.trim();
-            })
-        .toArray(String[]::new);
-  }
-
-  /**
-   * Extracts all strings from the provided csvRow matching the provided regexString and returns a
-   * list of strings in the order of their appearance in the csvRow string
-   *
-   * @param regexString regex string that should be searched for
-   * @param csvRow csv row string that should be searched in for the regex string
-   * @return a list of strings matching the provided regex in the order of their appearance in the
-   *     provided csv row string
-   */
-  private List<String> extractMatchingStrings(String regexString, String csvRow) {
-    Pattern pattern = Pattern.compile(regexString);
-    Matcher matcher = pattern.matcher(csvRow);
-
-    ArrayList<String> matchingList = new ArrayList<>();
-    while (matcher.find()) {
-      matchingList.add(matcher.group());
-    }
-    return matchingList;
-  }
-
-  /**
-   * Returns a predicate that can be used to filter optionals of {@link UniqueEntity}s and keep
-   * track on the number of elements that have been empty optionals. This filter let only pass
-   * optionals that are non-empty. Example usage:
-   *
-   * <pre>{@code
-   * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
-   * }</pre>
-   *
-   * @param entityClass entity class that should be used as they key in the provided counter map
-   * @param invalidElementsCounterMap a map that counts the number of empty optionals and maps it to
-   *     the provided entity clas
-   * @param <T> the type of the entity
-   * @return a predicate that can be used to filter and count empty optionals
-   */
-  protected <T extends UniqueEntity> Predicate<Optional<T>> isPresentCollectIfNot(
-      Class<? extends UniqueEntity> entityClass,
-      ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
-    return o -> {
-      if (o.isPresent()) {
-        return true;
-      } else {
-        invalidElementsCounterMap.computeIfAbsent(entityClass, k -> new LongAdder()).increment();
-        return false;
-      }
-    };
-  }
-
-  public FileNamingStrategy getNamingStrategy() {
-    return fileNamingStrategy;
-  }
-
-  /**
    * Tries to open a file reader based on the provided entity class and hands it over for further
    * processing.
    *
@@ -294,7 +163,7 @@ public class CsvDataSource implements DataSource {
    *     mapping (fieldName to fieldValue)
    */
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, boolean allowFileNotExisting) {
+      Class<? extends Entity> entityClass, boolean allowFileNotExisting) {
     return getFilePath(entityClass)
         .flatMap(
             path -> buildStreamWithFieldsToAttributesMap(entityClass, path, allowFileNotExisting));
@@ -310,8 +179,9 @@ public class CsvDataSource implements DataSource {
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
-  protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, Path filePath, boolean allowFileNotExisting) {
+  protected <T extends Entity>
+      Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
+          Class<T> entityClass, Path filePath, boolean allowFileNotExisting) {
     try (BufferedReader reader = connector.initReader(filePath)) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
@@ -319,14 +189,7 @@ public class CsvDataSource implements DataSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
-
-      return distinctRowsWithLog(
-              allRows,
-              fieldToValues -> fieldToValues.get("uuid"),
-              entityClass.getSimpleName(),
-              "UUID")
-          .map(Set::parallelStream);
+      return Success.of(csvRowFieldValueMapping(reader, headline).parallelStream());
     } catch (FileNotFoundException e) {
       if (allowFileNotExisting) {
         log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
@@ -341,7 +204,7 @@ public class CsvDataSource implements DataSource {
     }
   }
 
-  private Try<Path, SourceException> getFilePath(Class<? extends UniqueEntity> entityClass) {
+  private Try<Path, SourceException> getFilePath(Class<? extends Entity> entityClass) {
     return Try.from(
         fileNamingStrategy.getFilePath(entityClass),
         () ->
@@ -349,6 +212,13 @@ public class CsvDataSource implements DataSource {
                 "Cannot find a naming strategy for class '" + entityClass.getSimpleName() + "'."));
   }
 
+  /**
+   * Method to return a row to field value mapping from a csv file.
+   *
+   * @param reader for the file
+   * @param headline of the file
+   * @return a list of mapping
+   */
   protected List<Map<String, String>> csvRowFieldValueMapping(
       BufferedReader reader, String[] headline) {
     return reader
@@ -357,64 +227,5 @@ public class CsvDataSource implements DataSource {
         .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
         .filter(map -> !map.isEmpty())
         .toList();
-  }
-
-  /**
-   * Returns a collection of maps each representing a row in csv file that can be used to built one
-   * entity. The uniqueness of each row is doubled checked by a) that no duplicated rows are
-   * returned that are full (1:1) matches and b) that no rows are returned that have the same
-   * composite key, which gets extracted by the provided extractor. As both cases destroy uniqueness
-   * constraints, an empty set is returned to indicate that these data cannot be processed safely
-   * and the error is logged. For case a), only the duplicates are filtered out and a set with
-   * unique rows is returned.
-   *
-   * @param allRows collection of rows of a csv file an entity should be built from
-   * @param keyExtractor Function, that extracts the key from field to value mapping, that is meant
-   *     to be unique
-   * @param entityDescriptor Colloquial descriptor of the entity, the data is foreseen for (for
-   *     debug String)
-   * @param keyDescriptor Colloquial descriptor of the key, that is meant to be unique (for debug
-   *     String)
-   * @return a try of either a set containing only unique rows or an exception if at least two rows
-   *     with the same UUID but different field values exist
-   */
-  protected Try<Set<Map<String, String>>, SourceException> distinctRowsWithLog(
-      Collection<Map<String, String>> allRows,
-      final Function<Map<String, String>, String> keyExtractor,
-      String entityDescriptor,
-      String keyDescriptor) {
-    Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
-    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
-    // case a)
-    if (allRows.size() != allRowsSet.size()) {
-      log.warn(
-          "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
-          entityDescriptor,
-          (allRows.size() - allRowsSet.size()));
-    }
-
-    /* Check for rows with the same key based on the provided key extractor function */
-    Set<Map<String, String>> distinctIdSet =
-        allRowsSet.parallelStream()
-            .filter(ValidationUtils.distinctByKey(keyExtractor))
-            .collect(Collectors.toSet());
-    if (distinctIdSet.size() != allRowsSet.size()) {
-      allRowsSet.removeAll(distinctIdSet);
-      String affectedCoordinateIds =
-          allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
-
-      // if this happens, we return a failure
-      return Failure.of(
-          new SourceException(
-              "'"
-                  + entityDescriptor
-                  + "' entities with duplicated "
-                  + keyDescriptor
-                  + " key, but different field "
-                  + "values found! Please review the corresponding input file! Affected primary keys: "
-                  + affectedCoordinateIds));
-    }
-
-    return Success.of(allRowsSet);
   }
 }

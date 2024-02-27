@@ -37,9 +37,7 @@ public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsRes
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, P_REF, P_MIN, P_MAX);
-    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
-
-    return Arrays.asList(minConstructorParams, optionalFields);
+    return List.of(minConstructorParams);
   }
 
   @Override
@@ -50,11 +48,6 @@ public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsRes
     ComparableQuantity<Power> pMin = data.getQuantity(P_MIN, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_RESULT);
 
-    Optional<UUID> uuidOpt =
-        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
-
-    return uuidOpt
-        .map(uuid -> new FlexOptionsResult(uuid, zdtTime, inputModelUuid, pRef, pMin, pMax))
-        .orElseGet(() -> new FlexOptionsResult(zdtTime, inputModelUuid, pRef, pMin, pMax));
+    return new FlexOptionsResult(zdtTime, inputModelUuid, pRef, pMin, pMax);
   }
 }

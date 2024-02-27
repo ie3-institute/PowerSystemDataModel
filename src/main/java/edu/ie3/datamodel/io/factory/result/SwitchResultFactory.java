@@ -31,24 +31,17 @@ public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, CLOSED);
-    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
-
-    return Arrays.asList(minConstructorParams, optionalFields);
+    return List.of(minConstructorParams);
   }
 
   @Override
   protected SwitchResult buildModel(EntityData data) {
-    Optional<UUID> uuidOpt =
-        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModel = data.getUUID(INPUT_MODEL);
 
     final boolean closed = data.getBoolean(CLOSED);
 
-    return uuidOpt
-        .map(uuid -> new SwitchResult(uuid, time, inputModel, closed))
-        .orElseGet(() -> new SwitchResult(time, inputModel, closed));
+    return new SwitchResult(time, inputModel, closed);
   }
 }

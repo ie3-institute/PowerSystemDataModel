@@ -16,10 +16,6 @@ This model is currently only a dummy implementation of an electric vehicle charg
      - Unit
      - Remarks
 
-   * - uuid
-     - --
-     - uuid for the result entity
-
    * - time
      - --
      - date and time for the produced result

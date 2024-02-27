@@ -32,15 +32,15 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> constructorParams = newSet(ENTITY_UUID, ENTITY_ID, B, G, R, X, I_MAX, V_RATED);
+    Set<String> constructorParams = newSet(UUID, ID, B, G, R, X, I_MAX, V_RATED);
 
     return Collections.singletonList(constructorParams);
   }
 
   @Override
   protected LineTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.getField(ENTITY_ID);
+    UUID uuid = data.getUUID(UUID);
+    String id = data.getField(ID);
     ComparableQuantity<SpecificConductance> b =
         data.getQuantity(B, StandardUnits.SUSCEPTANCE_PER_LENGTH);
     ComparableQuantity<SpecificConductance> g =
