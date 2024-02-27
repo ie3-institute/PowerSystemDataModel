@@ -206,6 +206,12 @@ public class BmInput extends SystemParticipantInput implements HasType {
     }
 
     @Override
+    public BmInputCopyBuilder scale(Double factor) {
+      this.type = this.type.copy().scale(factor).build();
+      return this;
+    }
+
+    @Override
     public BmInput build() {
       return new BmInput(
           getUuid(),

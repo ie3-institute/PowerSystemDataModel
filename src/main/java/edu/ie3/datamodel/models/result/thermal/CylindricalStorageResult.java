@@ -39,28 +39,6 @@ public class CylindricalStorageResult extends ThermalStorageResult {
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
 
-  /**
-   * Constructs the result with
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param energy Currently stored energy
-   * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
-   * @param fillLevel Fill level of the storage
-   */
-  public CylindricalStorageResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Energy> energy,
-      ComparableQuantity<Power> qDot,
-      ComparableQuantity<Dimensionless> fillLevel) {
-    super(uuid, time, inputModel, energy, qDot);
-    this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
-  }
-
   public ComparableQuantity<Dimensionless> getFillLevel() {
     return fillLevel;
   }
@@ -86,9 +64,7 @@ public class CylindricalStorageResult extends ThermalStorageResult {
   @Override
   public String toString() {
     return "CylindricalStorageResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

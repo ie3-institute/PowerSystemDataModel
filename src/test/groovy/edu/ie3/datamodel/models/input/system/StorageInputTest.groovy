@@ -29,4 +29,25 @@ class StorageInputTest extends Specification {
       assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
+
+  def "Scaling a StorageInput via builder should work as expected"() {
+    given:
+    def storageInput = SystemParticipantTestData.storageInput
+
+    when:
+    def alteredUnit = storageInput.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == storageInput.uuid
+      assert operationTime == storageInput.operationTime
+      assert operator == storageInput.operator
+      assert id == storageInput.id
+      assert qCharacteristics == storageInput.qCharacteristics
+      assert type.sRated == storageInput.type.sRated * 2d
+      assert type.eStorage == storageInput.type.eStorage * 2d
+      assert type.pMax == storageInput.type.pMax * 2d
+      assert em == Optional.of(SystemParticipantTestData.emInput)
+    }
+  }
 }

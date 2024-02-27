@@ -5,23 +5,20 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
-import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.utils.validation.ValidationUtils;
+import edu.ie3.datamodel.models.Entity;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.LongAdder;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -45,44 +42,50 @@ public class CsvDataSource implements DataSource {
   protected final String csvSep;
   protected final CsvFileConnector connector;
 
-  protected CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
+  private final FileNamingStrategy fileNamingStrategy;
+
+  /**
+   * @deprecated ensures downward compatibility with old csv data format. Can be removed when
+   *     support for old csv format is removed. *
+   */
+  @Deprecated(since = "1.1.0", forRemoval = true)
+  private boolean notYetLoggedWarning = true;
+
+  public CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
+    this.fileNamingStrategy = fileNamingStrategy;
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<? extends UniqueEntity> entityClass)
+  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass)
       throws SourceException {
-    return getSourceFields(() -> connector.initReader(entityClass));
+    return getSourceFields(getFilePath(entityClass).getOrThrow());
   }
 
-  public Optional<Set<String>> getSourceFields(ReaderSupplier readerSupplier)
-      throws SourceException {
-    try (BufferedReader reader = readerSupplier.get()) {
+  /**
+   * @param filePath path of file starting from base folder, including file name but not file
+   *     extension
+   * @return The source field names as a set, if file exists
+   * @throws SourceException on error while reading the source file
+   */
+  public Optional<Set<String>> getSourceFields(Path filePath) throws SourceException {
+    try (BufferedReader reader = connector.initReader(filePath)) {
       return Optional.of(
           Arrays.stream(parseCsvRow(reader.readLine(), csvSep)).collect(Collectors.toSet()));
     } catch (FileNotFoundException e) {
       // A file not existing can be acceptable in many cases, and is handled elsewhere.
       log.debug("The source for the given entity couldn't be found! Cause: {}", e.getMessage());
       return Optional.empty();
-    } catch (ConnectorException | IOException e) {
+    } catch (IOException e) {
       throw new SourceException("Error while trying to read source", e);
     }
   }
 
-  public interface ReaderSupplier {
-    BufferedReader get() throws FileNotFoundException, ConnectorException;
-  }
-
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector);
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-  public BufferedReader createReader(Path filePath) throws FileNotFoundException {
-    return connector.initReader(filePath);
+  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
+      throws SourceException {
+    return buildStreamWithFieldsToAttributesMap(entityClass, true).getOrThrow();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -174,53 +177,24 @@ public class CsvDataSource implements DataSource {
     return matchingList;
   }
 
-  /**
-   * Returns a predicate that can be used to filter optionals of {@link UniqueEntity}s and keep
-   * track on the number of elements that have been empty optionals. This filter let only pass
-   * optionals that are non-empty. Example usage:
-   *
-   * <pre>{@code
-   * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
-   * }</pre>
-   *
-   * @param entityClass entity class that should be used as they key in the provided counter map
-   * @param invalidElementsCounterMap a map that counts the number of empty optionals and maps it to
-   *     the provided entity clas
-   * @param <T> the type of the entity
-   * @return a predicate that can be used to filter and count empty optionals
-   */
-  protected <T extends UniqueEntity> Predicate<Optional<T>> isPresentCollectIfNot(
-      Class<? extends UniqueEntity> entityClass,
-      ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
-    return o -> {
-      if (o.isPresent()) {
-        return true;
-      } else {
-        invalidElementsCounterMap.computeIfAbsent(entityClass, k -> new LongAdder()).increment();
-        return false;
-      }
-    };
+  public FileNamingStrategy getNamingStrategy() {
+    return fileNamingStrategy;
   }
 
   /**
-   * Tries to open a file reader from the connector based on the provided entity class and hands it
-   * over for further processing.
+   * Tries to open a file reader based on the provided entity class and hands it over for further
+   * processing.
    *
    * @param entityClass the entity class that should be build and that is used to get the
    *     corresponding reader
-   * @param connector the connector that should be used to get the reader from
    * @return a parallel stream of maps, where each map represents one row of the csv file with the
    *     mapping (fieldName to fieldValue)
    */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
-    try {
-      return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
-    } catch (FileNotFoundException | ConnectorException e) {
-      log.warn(
-          "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-    }
-    return Stream.empty();
+  protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
+      Class<? extends Entity> entityClass, boolean allowFileNotExisting) {
+    return getFilePath(entityClass)
+        .flatMap(
+            path -> buildStreamWithFieldsToAttributesMap(entityClass, path, allowFileNotExisting));
   }
 
   /**
@@ -229,32 +203,50 @@ public class CsvDataSource implements DataSource {
    * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
    * @param entityClass the entity class that should be build
-   * @param bufferedReader the reader to use
-   * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName to fieldValue)
+   * @param filePath the path of the file to read
+   * @return a try containing either a parallel stream of maps, where each map represents one row of
+   *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
-    try (BufferedReader reader = bufferedReader) {
+  protected <T extends Entity>
+      Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
+          Class<T> entityClass, Path filePath, boolean allowFileNotExisting) {
+    try (BufferedReader reader = connector.initReader(filePath)) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
-
-      return distinctRowsWithLog(
-          allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
-          .parallelStream();
+      return Success.of(csvRowFieldValueMapping(reader, headline).parallelStream());
+    } catch (FileNotFoundException e) {
+      if (allowFileNotExisting) {
+        log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
+        return Success.of(Stream.empty());
+      } else {
+        return Failure.of(new SourceException("Unable to find file '" + filePath + "'.", e));
+      }
     } catch (IOException e) {
-      log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+      return Failure.of(
+          new SourceException(
+              "Cannot read file to build entity '" + entityClass.getSimpleName() + "'", e));
     }
-
-    return Stream.empty();
   }
 
+  private Try<Path, SourceException> getFilePath(Class<? extends Entity> entityClass) {
+    return Try.from(
+        fileNamingStrategy.getFilePath(entityClass),
+        () ->
+            new SourceException(
+                "Cannot find a naming strategy for class '" + entityClass.getSimpleName() + "'."));
+  }
+
+  /**
+   * Method to return a row to field value mapping from a csv file.
+   *
+   * @param reader for the file
+   * @param headline of the file
+   * @return a list of mapping
+   */
   protected List<Map<String, String>> csvRowFieldValueMapping(
       BufferedReader reader, String[] headline) {
     return reader
@@ -263,63 +255,5 @@ public class CsvDataSource implements DataSource {
         .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
         .filter(map -> !map.isEmpty())
         .toList();
-  }
-
-  /**
-   * Returns a collection of maps each representing a row in csv file that can be used to built one
-   * entity. The uniqueness of each row is doubled checked by a) that no duplicated rows are
-   * returned that are full (1:1) matches and b) that no rows are returned that have the same
-   * composite key, which gets extracted by the provided extractor. As both cases destroy uniqueness
-   * constraints, an empty set is returned to indicate that these data cannot be processed safely
-   * and the error is logged. For case a), only the duplicates are filtered out and a set with
-   * unique rows is returned.
-   *
-   * @param allRows collection of rows of a csv file an entity should be built from
-   * @param keyExtractor Function, that extracts the key from field to value mapping, that is meant
-   *     to be unique
-   * @param entityDescriptor Colloquial descriptor of the entity, the data is foreseen for (for
-   *     debug String)
-   * @param keyDescriptor Colloquial descriptor of the key, that is meant to be unique (for debug
-   *     String)
-   * @return either a set containing only unique rows or an empty set if at least two rows with the
-   *     same UUID but different field values exist
-   */
-  protected Set<Map<String, String>> distinctRowsWithLog(
-      Collection<Map<String, String>> allRows,
-      final Function<Map<String, String>, String> keyExtractor,
-      String entityDescriptor,
-      String keyDescriptor) {
-    Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
-    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
-    // case a)
-    if (allRows.size() != allRowsSet.size()) {
-      log.warn(
-          "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
-          entityDescriptor,
-          (allRows.size() - allRowsSet.size()));
-    }
-
-    /* Check for rows with the same key based on the provided key extractor function */
-    Set<Map<String, String>> distinctIdSet =
-        allRowsSet.parallelStream()
-            .filter(ValidationUtils.distinctByKey(keyExtractor))
-            .collect(Collectors.toSet());
-    if (distinctIdSet.size() != allRowsSet.size()) {
-      allRowsSet.removeAll(distinctIdSet);
-      String affectedCoordinateIds =
-          allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
-      log.error(
-          """
-              '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
-              Affected primary keys:
-              {}""",
-          entityDescriptor,
-          keyDescriptor,
-          affectedCoordinateIds);
-      // if this happens, we return an empty set to prevent further processing
-      return new HashSet<>();
-    }
-
-    return allRowsSet;
   }
 }

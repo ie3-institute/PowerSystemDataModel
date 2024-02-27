@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ public class FlatDirectoryHierarchy implements FileHierarchy {
    * @return An Option to the regarding sub directory as a string
    */
   @Override
-  public Optional<Path> getSubDirectory(Class<? extends UniqueEntity> cls) {
+  public Optional<Path> getSubDirectory(Class<? extends Entity> cls) {
     return Optional.empty();
   }
 

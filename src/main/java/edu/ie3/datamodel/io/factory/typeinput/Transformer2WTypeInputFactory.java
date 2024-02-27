@@ -39,29 +39,16 @@ public class Transformer2WTypeInputFactory
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> constructorParams =
         newSet(
-            ENTITY_UUID,
-            ENTITY_ID,
-            R_SC,
-            X_SC,
-            S_RATED,
-            V_RATED_A,
-            V_RATED_B,
-            G_M,
-            B_M,
-            D_V,
-            D_PHI,
-            TAP_SIDE,
-            TAP_NEUTR,
-            TAP_MIN,
-            TAP_MAX);
+            UUID, ID, R_SC, X_SC, S_RATED, V_RATED_A, V_RATED_B, G_M, B_M, D_V, D_PHI, TAP_SIDE,
+            TAP_NEUTR, TAP_MIN, TAP_MAX);
 
     return Collections.singletonList(constructorParams);
   }
 
   @Override
   protected Transformer2WTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.getField(ENTITY_ID);
+    UUID uuid = data.getUUID(UUID);
+    String id = data.getField(ID);
     ComparableQuantity<ElectricResistance> rSc = data.getQuantity(R_SC, StandardUnits.RESISTANCE);
     ComparableQuantity<ElectricResistance> xSc = data.getQuantity(X_SC, StandardUnits.REACTANCE);
     ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);

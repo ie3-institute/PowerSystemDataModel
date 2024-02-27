@@ -18,7 +18,7 @@ ext {
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
   groovyBinaryVersion = "4.0.18"
-  testcontainersVersion = '1.19.4'
+  testcontainersVersion = '1.19.6'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -73,7 +73,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.14.11' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.14.12' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
@@ -83,19 +83,19 @@ dependencies {
   testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
 
   // logging
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.22.1')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.23.0')
   implementation 'org.apache.logging.log4j:log4j-api' // log4j
   implementation 'org.apache.logging.log4j:log4j-core' // log4j
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.24'
-  implementation 'com.couchbase.client:java-client:3.5.2'
-  runtimeOnly 'org.postgresql:postgresql:42.7.1' // postgresql jdbc driver required during runtime
+  implementation 'com.couchbase.client:java-client:3.5.3'
+  runtimeOnly 'org.postgresql:postgresql:42.7.2' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.15.1' // I/O functionalities
-  implementation 'org.apache.commons:commons-compress:1.25.0' // I/O functionalities
-  implementation 'org.apache.commons:commons-lang3:3.14.0'
+  implementation 'commons-codec:commons-codec:1.16.1' // needed by commons-compress
+  implementation 'org.apache.commons:commons-compress:1.26.0' // I/O functionalities
 }
 
 tasks.withType(JavaCompile) {

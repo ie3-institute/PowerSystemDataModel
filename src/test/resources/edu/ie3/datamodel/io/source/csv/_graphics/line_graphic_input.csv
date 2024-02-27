@@ -1,2 +1,2 @@
-uuid,graphic_layer,line,path
-ece86139-3238-4a35-9361-457ecb4258b0,main,91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,"{""type"":""LineString"",""coordinates"":[[0.0,0.0],[0.0,10]],""crs"":{""type"":""name"",""properties"":{""name"":""EPSG:4326""}}}"
+uuid,id,graphic_layer,line,path
+ece86139-3238-4a35-9361-457ecb4258b0,line_graphic_1,main,91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,"{""type"":""LineString"",""coordinates"":[[0.0,0.0],[0.0,10]],""crs"":{""type"":""name"",""properties"":{""name"":""EPSG:4326""}}}"

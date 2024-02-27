@@ -16,10 +16,6 @@ Result of a cylindrical thermal storage using a fluent to store thermal energy.
      - Unit
      - Remarks
 
-   * - uuid
-     - --
-     - uuid for the result entity
-
    * - time
      - --
      - date and time for the produced result

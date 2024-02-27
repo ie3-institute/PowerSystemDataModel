@@ -38,25 +38,6 @@ public abstract class SystemParticipantResult extends ResultEntity {
   }
 
   /**
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param p active power output normally provided in MW
-   * @param q reactive power output normally provided in MVAr
-   */
-  protected SystemParticipantResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) {
-    super(uuid, time, inputModel);
-    this.p = p;
-    this.q = q;
-  }
-
-  /**
    * Active power output of the decentralised energy resource asset. Convention: Generated powers
    * are given in negative values.
    *
@@ -101,9 +82,7 @@ public abstract class SystemParticipantResult extends ResultEntity {
   @Override
   public String toString() {
     return "SystemParticipantResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

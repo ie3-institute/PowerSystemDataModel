@@ -15,7 +15,7 @@ import javax.measure.quantity.Length
 class IdCoordinateSourceMock implements IdCoordinateSource {
 
   @Override
-  Optional<Set<String>> getSourceFields(Class<?> entityClass) throws SourceException {
+  Optional<Set<String>> getSourceFields() throws SourceException {
     return Optional.empty()
   }
 

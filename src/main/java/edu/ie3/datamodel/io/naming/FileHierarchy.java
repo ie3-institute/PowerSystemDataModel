@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ public interface FileHierarchy {
    * @param cls Class to define the sub directory for
    * @return An Option to the regarding sub directory as a string
    */
-  Optional<Path> getSubDirectory(Class<? extends UniqueEntity> cls);
+  Optional<Path> getSubDirectory(Class<? extends Entity> cls);
 
   /**
    * Determines the base directory.

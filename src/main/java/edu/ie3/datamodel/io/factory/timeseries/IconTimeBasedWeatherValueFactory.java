@@ -24,7 +24,7 @@ import tech.units.indriya.unit.Units;
 
 /**
  * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
- * value mapping in the column scheme, ie<sup>3</sup> uses to store it's data from German Federal
+ * value mapping in the column scheme, ie<sup>3</sup> uses to store its data from German Federal
  * Weather Service's ICON-EU model
  */
 public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
@@ -83,17 +83,12 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "sobsrad",
             "t131m");
 
-    Set<String> minParametersWithUuid = expandSet(minParameters, UUID);
-    Set<String> allParametersWithUuid = expandSet(allParameters, UUID);
-
-    return Arrays.asList(
-        minParameters, allParameters, minParametersWithUuid, allParametersWithUuid);
+    return Arrays.asList(minParameters, allParameters);
   }
 
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
     Point coordinate = data.getCoordinate();
-    java.util.UUID uuid = data.containsKey(UUID) ? data.getUUID(UUID) : java.util.UUID.randomUUID();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
         data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
@@ -111,7 +106,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             temperature,
             windDirection,
             windVelocity);
-    return new TimeBasedValue<>(uuid, time, weatherValue);
+    return new TimeBasedValue<>(time, weatherValue);
   }
 
   /**

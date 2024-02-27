@@ -97,6 +97,21 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
+   * Method to create a {@link Try} object from Optional.
+   *
+   * @param opt The optional
+   * @param exception Supplier function that supplies an exception if Optional is empty
+   * @return a try object
+   * @param <T> type of data
+   * @param <E> type of exception
+   */
+  public static <T, E extends Exception> Try<T, E> from(
+      Optional<T> opt, ExceptionSupplier<E> exception) {
+    return opt.map(data -> (Try<T, E>) Success.<T, E>of(data))
+        .orElseGet(() -> new Failure<>(exception.get()));
+  }
+
+  /**
    * Method to retrieve the exceptions from all {@link Failure} objects.
    *
    * @param tries collection of {@link Try} objects
@@ -104,7 +119,17 @@ public abstract class Try<T, E extends Exception> {
    */
   public static <D, E extends Exception> List<E> getExceptions(
       Collection<Try<? extends D, E>> tries) {
-    return tries.stream().filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
+    return getExceptions(tries.stream());
+  }
+
+  /**
+   * Method to retrieve the exceptions from all {@link Failure} objects.
+   *
+   * @param tries stream of {@link Try} objects
+   * @return a list of {@link Exception}'s
+   */
+  public static <D, E extends Exception> List<E> getExceptions(Stream<Try<? extends D, E>> tries) {
+    return tries.filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
   }
 
   /**
@@ -247,6 +272,17 @@ public abstract class Try<T, E extends Exception> {
       Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc);
 
   /**
+   * Method to convert a {@link Try} object to a common type.
+   *
+   * @param successFunc that will be used to transform the data to the new type
+   * @param failureFunc that will be used to transform the exception to the new type
+   * @return the new type
+   * @param <U> new type
+   */
+  public abstract <U> U convert(
+      Function<? super T, ? extends U> successFunc, Function<E, U> failureFunc);
+
+  /**
    * If this is a Success, the value is returned, otherwise given default is returned.
    *
    * @param defaultData the value to be returned, if this is a failure.
@@ -332,6 +368,11 @@ public abstract class Try<T, E extends Exception> {
     public <U, R extends Exception> Try<U, R> transform(
         Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
       return new Success<>(successFunc.apply(data));
+    }
+
+    @Override
+    public <U> U convert(Function<? super T, ? extends U> successFunc, Function<E, U> failureFunc) {
+      return successFunc.apply(data);
     }
 
     @Override
@@ -462,6 +503,11 @@ public abstract class Try<T, E extends Exception> {
     public <U, R extends Exception> Try<U, R> transform(
         Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
       return Failure.of(failureFunc.apply(exception));
+    }
+
+    @Override
+    public <U> U convert(Function<? super T, ? extends U> successFunc, Function<E, U> failureFunc) {
+      return failureFunc.apply(exception);
     }
 
     @Override

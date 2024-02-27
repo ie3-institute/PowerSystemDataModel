@@ -200,6 +200,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
       eCons == sptd.evTypeInput.eCons
       sRated == sptd.evTypeInput.sRated
       cosPhiRated == sptd.evTypeInput.cosPhiRated
+      sRatedDC == sptd.evTypeInput.sRatedDC
     }
   }
 }

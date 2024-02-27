@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implementing missing typical methods in `Try` [#970](https://github.com/ie3-institute/PowerSystemDataModel/issues/970)
 - Added log warning when using `SwitchInputs` with `parallelDevices` parameter [#840](https://github.com/ie3-institute/PowerSystemDataModel/issues/840)
 - Validation for `EvcsInput` [#1000](https://github.com/ie3-institute/PowerSystemDataModel/issues/1000)
+- Scaling method in system participant copy builders [#1011](https://github.com/ie3-institute/PowerSystemDataModel/issues/1011)
+- Added separate field for maximum power limit for DC to evtype [#876](https://github.com/ie3-institute/PowerSystemDataModel/issues/876)
+- Added test for invalid input data in `CsvRawGridSource` [#1021](https://github.com/ie3-institute/PowerSystemDataModel/issues/1021)
 
 ### Fixed
 - Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
@@ -19,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed thermal-house-documentation [#873](https://github.com/ie3-institute/PowerSystemDataModel/issues/873)
 - Fixed ElectricVehicle Documentation [#875](https://github.com/ie3-institute/PowerSystemDataModel/issues/875)
 - Fixed Equal behavior of `ConnectorResult` [#1001](https://github.com/ie3-institute/PowerSystemDataModel/issues/1001) 
+- Fixed test for invalid input data in `CsvGraphicSource` [#1022](https://github.com/ie3-institute/PowerSystemDataModel/issues/1022)
 
 ### Changed
 - Changing from comparing strings to comparing uuids in `EntitySource.findFirstEntityByUuid` [#829](https://github.com/ie3-institute/PowerSystemDataModel/issues/829)
@@ -33,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored and abstracted `EntitySource`s and `EntityData` creation [#969](https://github.com/ie3-institute/PowerSystemDataModel/issues/969)
 - Updated contributing.md [#737](https://github.com/ie3-institute/PowerSystemDataModel/issues/737)
 - Don't throw exceptions for not yet implemented validations [#879](https://github.com/ie3-institute/PowerSystemDataModel/issues/879)
+- `CsvDataSource` throws exceptions on error [#954](https://github.com/ie3-institute/PowerSystemDataModel/issues/954)
+- Removing `uuid` as required column from input and result time series [#826](https://github.com/ie3-institute/PowerSystemDataModel/issues/826)
 - Removing the support for the old csv format that was marked `deprecated` back in version `1.1.0` [#795](https://github.com/ie3-institute/PowerSystemDataModel/issues/795)
 
 ## [4.1.0] - 2023-11-02

@@ -21,7 +21,6 @@ import java.util.Locale;
  */
 abstract class ResultEntityFactory<T extends ResultEntity> extends EntityFactory<T, EntityData> {
 
-  protected static final String ENTITY_UUID = "uuid";
   protected static final String TIME = "time";
   protected static final String INPUT_MODEL = "inputModel";
 
