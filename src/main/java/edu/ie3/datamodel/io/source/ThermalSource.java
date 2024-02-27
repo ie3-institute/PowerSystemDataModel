@@ -5,10 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.utils.CollectionUtils.toMap;
-
 import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.input.*;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -18,6 +17,7 @@ import edu.ie3.datamodel.utils.Try;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,9 +67,9 @@ public class ThermalSource extends EntitySource {
    * manually, as {@link ThermalBusInput#equals(Object)} is NOT restricted on the uuid of {@link
    * ThermalBusInput}.
    *
-   * @return a set of object- and uuid-unique {@link ThermalBusInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
    */
-  public Set<ThermalBusInput> getThermalBuses() throws SourceException {
+  public Map<UUID, ThermalBusInput> getThermalBuses() throws SourceException {
     return getThermalBuses(typeSource.getOperators());
   }
 
@@ -89,12 +89,12 @@ public class ThermalSource extends EntitySource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @return a set of object- and uuid-unique {@link ThermalBusInput} entities
+   * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
    */
-  public Set<ThermalBusInput> getThermalBuses(Map<UUID, OperatorInput> operators)
+  public Map<UUID, ThermalBusInput> getThermalBuses(Map<UUID, OperatorInput> operators)
       throws SourceException {
-    return unpackSet(
+    return unpackMap(
         buildAssetInputEntityData(ThermalBusInput.class, operators)
             .map(thermalBusInputFactory::get),
         ThermalBusInput.class);
@@ -109,12 +109,11 @@ public class ThermalSource extends EntitySource {
    * manually, as {@link ThermalStorageInput#equals(Object)} is NOT restricted on the uuid of {@link
    * ThermalStorageInput}.
    *
-   * @return a set of object- and uuid-unique {@link ThermalStorageInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalStorageInput} entities
    */
-  public Set<ThermalStorageInput> getThermalStorages() throws SourceException {
+  public Map<UUID, ThermalStorageInput> getThermalStorages() throws SourceException {
     return getCylindricalStorages().stream()
-        .map(e -> (ThermalStorageInput) e)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
   }
 
   /**
@@ -132,16 +131,15 @@ public class ThermalSource extends EntitySource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
    * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
-   * @return a set of object- and uuid-unique {@link ThermalStorageInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalStorageInput} entities
    */
-  public Set<ThermalStorageInput> getThermalStorages(
-      Map<UUID, OperatorInput> operators, Set<ThermalBusInput> thermalBuses)
+  public Map<UUID, ThermalStorageInput> getThermalStorages(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
     return getCylindricalStorages(operators, thermalBuses).stream()
-        .map(e -> (ThermalStorageInput) e)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
   }
 
   /**
@@ -152,11 +150,11 @@ public class ThermalSource extends EntitySource {
    * manually, as {@link ThermalHouseInput#equals(Object)} is NOT restricted on the uuid of {@link
    * ThermalHouseInput}.
    *
-   * @return a set of object- and uuid-unique {@link ThermalHouseInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalHouseInput} entities
    */
-  public Set<ThermalHouseInput> getThermalHouses() throws SourceException {
+  public Map<UUID, ThermalHouseInput> getThermalHouses() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
-    Set<ThermalBusInput> thermalBuses = getThermalBuses();
+    Map<UUID, ThermalBusInput> thermalBuses = getThermalBuses();
 
     return getThermalHouses(operators, thermalBuses);
   }
@@ -177,14 +175,14 @@ public class ThermalSource extends EntitySource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
    * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
-   * @return a set of object- and uuid-unique {@link ThermalHouseInput} entities
+   * @return a map of UUID to object- and uuid-unique {@link ThermalHouseInput} entities
    */
-  public Set<ThermalHouseInput> getThermalHouses(
-      Map<UUID, OperatorInput> operators, Set<ThermalBusInput> thermalBuses)
+  public Map<UUID, ThermalHouseInput> getThermalHouses(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
-    return unpackSet(
+    return unpackMap(
         thermalUnitInputEntityDataStream(
                 buildAssetInputEntityData(ThermalHouseInput.class, operators), thermalBuses)
             .map(thermalHouseInputFactory::get),
@@ -203,7 +201,7 @@ public class ThermalSource extends EntitySource {
    */
   public Set<CylindricalStorageInput> getCylindricalStorages() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
-    Set<ThermalBusInput> thermalBuses = getThermalBuses();
+    Map<UUID, ThermalBusInput> thermalBuses = getThermalBuses();
 
     return getCylindricalStorages(operators, thermalBuses);
   }
@@ -224,12 +222,12 @@ public class ThermalSource extends EntitySource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
    * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
    * @return a set of object- and uuid-unique {@link CylindricalStorageInput} entities
    */
   public Set<CylindricalStorageInput> getCylindricalStorages(
-      Map<UUID, OperatorInput> operators, Set<ThermalBusInput> thermalBuses)
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
     return unpackSet(
         thermalUnitInputEntityDataStream(
@@ -252,10 +250,7 @@ public class ThermalSource extends EntitySource {
   private static Stream<Try<ThermalUnitInputEntityData, SourceException>>
       thermalUnitInputEntityDataStream(
           Stream<Try<AssetInputEntityData, SourceException>> assetInputEntityDataStream,
-          Set<ThermalBusInput> thermalBuses) {
-    // necessary for enrichEntityData
-    Map<UUID, ThermalBusInput> busses = toMap(thermalBuses);
-
+          Map<UUID, ThermalBusInput> thermalBuses) {
     return assetInputEntityDataStream
         .parallel()
         .map(
@@ -265,7 +260,7 @@ public class ThermalSource extends EntitySource {
                         enrichEntityData(
                             assetInputEntityData,
                             "thermalbus",
-                            busses,
+                            thermalBuses,
                             ThermalUnitInputEntityData::new)));
   }
 }

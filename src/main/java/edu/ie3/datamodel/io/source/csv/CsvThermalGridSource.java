@@ -64,13 +64,16 @@ public class CsvThermalGridSource {
     }
 
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
-    Set<ThermalBusInput> buses = thermalSource.getThermalBuses();
+    Map<UUID, ThermalBusInput> buses = thermalSource.getThermalBuses();
 
-    Try<Set<ThermalHouseInput>, SourceException> houses =
-        Try.of(() -> thermalSource.getThermalHouses(operators, buses), SourceException.class);
-
-    Try<Set<ThermalStorageInput>, SourceException> storages =
-        Try.of(() -> thermalSource.getThermalStorages(operators, buses), SourceException.class);
+    // calling Map.values() because we want to map the inputs to their thermal bus
+    Try<Collection<ThermalHouseInput>, SourceException> houses =
+        Try.of(
+            () -> thermalSource.getThermalHouses(operators, buses).values(), SourceException.class);
+    Try<Collection<ThermalStorageInput>, SourceException> storages =
+        Try.of(
+            () -> thermalSource.getThermalStorages(operators, buses).values(),
+            SourceException.class);
 
     List<? extends Exception> exceptions = Try.getExceptions(houses, storages);
 
@@ -86,7 +89,7 @@ public class CsvThermalGridSource {
       Map<ThermalBusInput, Set<ThermalStorageInput>> storageInputs =
           groupBy(storages.getOrThrow(), ThermalUnitInput::getThermalBus);
 
-      return buses.stream()
+      return buses.values().stream()
           .map(
               bus -> {
                 Set<ThermalHouseInput> h = houseInputs.getOrDefault(bus, emptySet());

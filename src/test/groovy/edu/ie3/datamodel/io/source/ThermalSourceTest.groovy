@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source
 
+import static edu.ie3.test.helper.EntityMap.map
+
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ThermalUnitInputEntityData
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -13,6 +15,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput
 import edu.ie3.datamodel.utils.Try
 import spock.lang.Specification
 
+import java.util.stream.Collectors
 import java.util.stream.Stream
 
 class ThermalSourceTest extends Specification {
@@ -31,7 +34,7 @@ class ThermalSourceTest extends Specification {
     def assetInputEntityData = Stream.of(new Try.Success(new AssetInputEntityData(validFieldsToAttributes, ThermalUnitInput, operator)))
 
     when:
-    def resultingDataOpt = ThermalSource.thermalUnitInputEntityDataStream(assetInputEntityData, thermalBuses as Set).toList()
+    def resultingDataOpt = ThermalSource.thermalUnitInputEntityDataStream(assetInputEntityData, map(thermalBuses)).collect(Collectors.toList())
 
     then:
     resultingDataOpt.size() == 1
