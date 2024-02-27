@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -71,7 +71,7 @@ public class FileNamingStrategy {
    * @param cls Targeted class of the given file
    * @return An optional sub path to the actual file
    */
-  public Optional<Path> getFilePath(Class<? extends UniqueEntity> cls) {
+  public Optional<Path> getFilePath(Class<? extends Entity> cls) {
     return FileUtils.of(getEntityName(cls), getDirectoryPath(cls));
   }
 
@@ -115,7 +115,7 @@ public class FileNamingStrategy {
    * @param cls Targeted class of the given file
    * @return An optional sub directory path
    */
-  public Optional<Path> getDirectoryPath(Class<? extends UniqueEntity> cls) {
+  public Optional<Path> getDirectoryPath(Class<? extends Entity> cls) {
     Optional<Path> maybeDirectoryName = fileHierarchy.getSubDirectory(cls);
     if (maybeDirectoryName.isEmpty()) {
       logger.debug("Cannot determine directory name for class '{}'.", cls);
@@ -275,7 +275,7 @@ public class FileNamingStrategy {
    * @param cls Targeted class of the given file
    * @return The name of the entity
    */
-  public Optional<String> getEntityName(Class<? extends UniqueEntity> cls) {
+  public Optional<String> getEntityName(Class<? extends Entity> cls) {
     return entityPersistenceNamingStrategy.getEntityName(cls);
   }
 

@@ -39,37 +39,10 @@ public class Transformer2WResult extends TransformerResult {
     super(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
   }
 
-  /**
-   * Standard constructor which allows uuid provision
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param iAMag electric current magnitude @ port A, normally provided in Ampere
-   * @param iAAng electric current angle @ Port A in degree
-   * @param iBMag electric current magnitude @ port B, normally provided in Ampere
-   * @param iBAng electric current angle @ Port B in degree
-   * @param tapPos Current position of the tap changer
-   */
-  public Transformer2WResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag,
-      ComparableQuantity<Angle> iAAng,
-      ComparableQuantity<ElectricCurrent> iBMag,
-      ComparableQuantity<Angle> iBAng,
-      int tapPos) {
-    super(uuid, time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
-  }
-
   @Override
   public String toString() {
     return "Transformer2WResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

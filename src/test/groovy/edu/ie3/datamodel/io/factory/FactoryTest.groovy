@@ -87,7 +87,7 @@ class FactoryTest extends Specification {
 
     @Override
     protected String buildModel(SimpleFactoryData data) {
-      return null
+      return ""
     }
 
     @Override

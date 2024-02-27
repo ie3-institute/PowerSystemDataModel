@@ -128,7 +128,6 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
       "windDirection"    : "15.1617"
     ]
     def expectedValue = new TimeBasedValue(
-        UUID.fromString("71a79f59-eebf-40c1-8358-ba7414077d57"),
         TimeUtil.withDefaults.toZonedDateTime("2020-10-16 12:40:42"),
         new WeatherValue(
         defaultCoordinate,

@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes an operator, that operates assets */
-public class OperatorInput extends InputEntity {
+public class OperatorInput extends UniqueInputEntity {
 
   public static final OperatorInput NO_OPERATOR_ASSIGNED =
       new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED");

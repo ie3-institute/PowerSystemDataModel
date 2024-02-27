@@ -12,6 +12,7 @@ import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.EmInput
+import edu.ie3.datamodel.models.input.IdCoordinateInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -65,6 +66,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       OperatorInput,
       RandomLoadParameters,
       TimeSeriesMappingSource.MappingEntry,
+      IdCoordinateInput,
       /* - AssetInput */
       NodeInput,
       LineInput,
@@ -165,7 +167,6 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 
     then:
     headerResults == [
-      "uuid",
       "inputModel",
       "p",
       "q",
@@ -192,7 +193,6 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 
     then:
     headerResults == [
-      "uuid",
       "price",
       "time"
     ] as String[]
@@ -212,18 +212,17 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       new ResultEntityProcessor(EvResult)
     ], [] as Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>)
 
-    Map expectedMap = ["uuid"      : "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+    Map expectedMap = [
       "inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
       "p"         : "0.01",
       "q"         : "0.01",
       "time"      : "2020-01-30T17:26:44Z[UTC]"]
 
     when:
-    UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
     Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-    PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+    PvResult pvResult = new PvResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 
     and:
     Try<Map<String, String>, ProcessorProviderException> result = provider.handleEntity(pvResult)
@@ -232,11 +231,11 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     result.success
     Map<String, String> resultMap = result.data.get()
 
-    resultMap.size() == 5
+    resultMap.size() == 4
     resultMap == expectedMap
 
     when:
-    Try<Map<String, String>, ProcessorProviderException> entityTry = provider.handleEntity(new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
+    Try<Map<String, String>, ProcessorProviderException> entityTry = provider.handleEntity(new WecResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
 
     then:
     entityTry.failure

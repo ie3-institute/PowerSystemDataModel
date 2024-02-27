@@ -7,8 +7,8 @@ package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
@@ -43,7 +43,6 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT);
-    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     if (entityClass.equals(ThermalHouseResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, INDOOR_TEMPERATURE);
@@ -51,51 +50,30 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
       minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
     }
 
-    return Arrays.asList(minConstructorParams, optionalFields);
+    return List.of(minConstructorParams);
   }
 
   @Override
   protected ThermalUnitResult buildModel(EntityData data) {
-    Class<? extends UniqueEntity> clazz = data.getTargetClass();
+    Class<? extends Entity> clazz = data.getTargetClass();
 
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND);
-    Optional<UUID> uuidOpt =
-        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     if (clazz.equals(ThermalHouseResult.class)) {
       ComparableQuantity<Temperature> indoorTemperature =
           data.getQuantity(INDOOR_TEMPERATURE, StandardUnits.TEMPERATURE);
 
-      return uuidOpt
-          .map(
-              uuid ->
-                  new ThermalHouseResult(
-                      uuid, zdtTime, inputModelUuid, qDotQuantity, indoorTemperature))
-          .orElseGet(
-              () ->
-                  new ThermalHouseResult(zdtTime, inputModelUuid, qDotQuantity, indoorTemperature));
+      return new ThermalHouseResult(zdtTime, inputModelUuid, qDotQuantity, indoorTemperature);
     } else if (clazz.equals(CylindricalStorageResult.class)) {
       ComparableQuantity<Energy> energyQuantity =
           data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT);
       ComparableQuantity<Dimensionless> fillLevelQuantity =
           data.getQuantity(FILL_LEVEL, StandardUnits.FILL_LEVEL);
 
-      return uuidOpt
-          .map(
-              uuid ->
-                  new CylindricalStorageResult(
-                      uuid,
-                      zdtTime,
-                      inputModelUuid,
-                      energyQuantity,
-                      qDotQuantity,
-                      fillLevelQuantity))
-          .orElseGet(
-              () ->
-                  new CylindricalStorageResult(
-                      zdtTime, inputModelUuid, energyQuantity, qDotQuantity, fillLevelQuantity));
+      return new CylindricalStorageResult(
+          zdtTime, inputModelUuid, energyQuantity, qDotQuantity, fillLevelQuantity);
     } else {
       throw new FactoryException("Cannot process " + clazz.getSimpleName() + ".class.");
     }

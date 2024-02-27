@@ -5,14 +5,14 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
-import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
 import java.util.UUID;
 import org.locationtech.jts.geom.LineString;
 
 /** Describes the graphic data belonging to grid assets */
-public abstract class GraphicInput extends InputEntity {
+public abstract class GraphicInput extends UniqueInputEntity {
   /** Description of the graphic layer, this graphic is located on */
   private final String graphicLayer;
   /** A graphic representation as path */

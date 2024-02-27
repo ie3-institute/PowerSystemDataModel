@@ -40,14 +40,12 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     valueClass       || expectedFields
     EnergyPriceValue || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         PRICE
       ] as Set
     ]
     SValue           || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         ACTIVE_POWER,
         REACTIVE_POWER
@@ -55,14 +53,12 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     ]
     PValue || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         ACTIVE_POWER
       ] as Set
     ]
     HeatAndSValue || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         ACTIVE_POWER,
         REACTIVE_POWER,
@@ -71,7 +67,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     ]
     HeatAndPValue || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         ACTIVE_POWER,
         HEAT_DEMAND
@@ -79,7 +74,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     ]
     HeatDemandValue || [
       [
-        TimeBasedSimpleValueFactory.UUID,
         TIME,
         HEAT_DEMAND
       ] as Set
@@ -110,7 +104,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "price": "52.4"
     ], EnergyPriceValue)
     def expected = new TimeBasedValue(
-        UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
         new EnergyPriceValue(Quantities.getQuantity(52.4, StandardUnits.ENERGY_PRICE))
         )
@@ -131,7 +124,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "heatDemand": "8.0"
     ], HeatAndSValue)
     def expected = new TimeBasedValue(
-        UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
         new HeatAndSValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(165.0, StandardUnits.REACTIVE_POWER_IN), Quantities.getQuantity(8.0, StandardUnits.HEAT_DEMAND))
         )
@@ -151,7 +143,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "heatDemand": "8.0"
     ], HeatAndPValue)
     def expected = new TimeBasedValue(
-        UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
         new HeatAndPValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(8.0, StandardUnits.HEAT_DEMAND))
         )
@@ -170,7 +161,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "heatDemand": "8.0"
     ], HeatDemandValue)
     def expected = new TimeBasedValue(
-        UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
         new HeatDemandValue(Quantities.getQuantity(8.0, StandardUnits.HEAT_DEMAND))
         )
@@ -190,7 +180,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "q": "165.0"
     ], SValue)
     def expected = new TimeBasedValue(
-        UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
         new SValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(165.0, StandardUnits.REACTIVE_POWER_IN))
         )
@@ -209,7 +198,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "p": "500.0"
     ], PValue)
     def expected = new TimeBasedValue(
-        UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
         new PValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN))
         )

@@ -8,8 +8,8 @@ package edu.ie3.datamodel.io.extractor;
 import edu.ie3.datamodel.exceptions.ExtractorException;
 import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.Logger;
@@ -30,9 +30,9 @@ public final class Extractor {
     throw new IllegalStateException("Utility classes cannot be instantiated");
   }
 
-  public static Set<InputEntity> extractElements(NestedEntity nestedEntity)
+  public static Set<UniqueInputEntity> extractElements(NestedEntity nestedEntity)
       throws ExtractorException {
-    CopyOnWriteArrayList<InputEntity> resultingList = new CopyOnWriteArrayList<>();
+    CopyOnWriteArrayList<UniqueInputEntity> resultingList = new CopyOnWriteArrayList<>();
     if (nestedEntity instanceof HasNodes nestedHasNode) {
       resultingList.addAll(nestedHasNode.allNodes());
     }

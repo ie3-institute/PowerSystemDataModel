@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
+import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.datamodel.models.value.CoordinateValue;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.geo.CoordinateDistance;
@@ -21,7 +22,6 @@ import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.util.*;
 import javax.measure.quantity.Length;
-import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
@@ -65,7 +65,9 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
                 fieldsOpt
                     .map(
                         fields ->
-                            factory.validate(fields, Pair.class).transformF(SourceException::new))
+                            factory
+                                .validate(fields, IdCoordinateInput.class)
+                                .transformF(SourceException::new))
                     .orElse(Try.Success.empty()))
         .getOrThrow();
 
@@ -198,10 +200,11 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
   private CoordinateValue createCoordinateValue(Map<String, String> fieldToValues) {
     fieldToValues.remove("distance");
 
-    SimpleFactoryData simpleFactoryData = new SimpleFactoryData(fieldToValues, Pair.class);
+    SimpleFactoryData simpleFactoryData =
+        new SimpleFactoryData(fieldToValues, IdCoordinateInput.class);
 
-    Pair<Integer, Point> pair = factory.get(simpleFactoryData).getOrThrow();
-    return new CoordinateValue(pair.getKey(), pair.getValue());
+    IdCoordinateInput idCoordinate = factory.get(simpleFactoryData).getOrThrow();
+    return new CoordinateValue(idCoordinate.id(), idCoordinate.point());
   }
 
   private List<CoordinateValue> executeQueryToList(

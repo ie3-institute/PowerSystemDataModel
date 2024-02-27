@@ -232,7 +232,6 @@ class InfluxDbSinkIT extends Specification {
   static def mapMatchesLineResultEntity(Map<String, String> fieldMap, LineResult lineResult) {
     def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
     timeUtil.toZonedDateTime(fieldMap.get("time")) == lineResult.getTime()
-    fieldMap.get("uuid") == lineResult.getUuid().toString()
     fieldMap.get("input_model") == lineResult.getInputModel().toString()
     def iAMagStr = fieldMap.get("iAMag")
     def iAAngStr = fieldMap.get("iAAng")
@@ -252,7 +251,6 @@ class InfluxDbSinkIT extends Specification {
   static def mapMatchesChpResultEntity(Map<String, String> fieldMap, ChpResult chpResult) {
     def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
     timeUtil.toZonedDateTime(fieldMap.get("time")) == chpResult.getTime()
-    fieldMap.get("uuid") == chpResult.getUuid().toString()
     fieldMap.get("input_model") == chpResult.getInputModel().toString()
     def pStr = fieldMap.get("p")
     def qStr = fieldMap.get("q")
@@ -265,7 +263,6 @@ class InfluxDbSinkIT extends Specification {
   static def mapMatchesTimeBasedValue(Map<String, String> fieldMap, TimeBasedValue<PValue> pVal) {
     def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
     timeUtil.toZonedDateTime(fieldMap.get("time")) == pVal.getTime()
-    fieldMap.get("uuid") == pVal.getUuid().toString()
     def pStr = fieldMap.get("p")
     if(pStr == null || pStr.empty) pVal.getValue().getP() == Optional.empty()
     else Double.parseDouble(pStr) == pVal.getValue().getP().get().getValue()

@@ -9,7 +9,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
@@ -41,8 +41,7 @@ public class EntityData extends FactoryData {
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    */
-  public EntityData(
-      Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
+  public EntityData(Map<String, String> fieldsToAttributes, Class<? extends Entity> entityClass) {
     super(fieldsToAttributes, entityClass);
   }
 
@@ -57,8 +56,8 @@ public class EntityData extends FactoryData {
 
   @Override
   @SuppressWarnings("unchecked cast")
-  public Class<? extends UniqueEntity> getTargetClass() {
-    return (Class<? extends UniqueEntity>) super.getTargetClass();
+  public Class<? extends Entity> getTargetClass() {
+    return (Class<? extends Entity>) super.getTargetClass();
   }
 
   /**
