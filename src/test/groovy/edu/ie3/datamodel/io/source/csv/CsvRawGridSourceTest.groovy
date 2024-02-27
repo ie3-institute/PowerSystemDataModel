@@ -617,6 +617,6 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     Exception ex = rawGridElements.exception.get()
     ex.class == SourceException
-    ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Linked nodeA with UUID 4ca90220-74c2-4369-9afa-a18bf068840d was not found for entity")
+    ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Linked nodeA")
   }
 }
