@@ -18,12 +18,10 @@ import java.util.Objects;
 public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
     implements Comparable<TimeBasedValue<? extends Value>> {
   private final ZonedDateTime time;
-  private final T value;
 
   public TimeBasedValue(ZonedDateTime time, T value) {
     super(value);
     this.time = time;
-    this.value = value;
   }
 
   public ZonedDateTime getTime() {
