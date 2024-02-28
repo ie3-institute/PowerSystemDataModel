@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import static edu.ie3.datamodel.utils.CollectionUtils.groupBy;
 import static java.util.Collections.emptySet;
 
 import edu.ie3.datamodel.exceptions.SourceException;
@@ -22,6 +21,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvThermalGridSource {
@@ -85,9 +85,11 @@ public class CsvThermalGridSource {
       // filtered and thrown before
 
       Map<ThermalBusInput, Set<ThermalHouseInput>> houseInputs =
-          groupBy(houses.getOrThrow(), ThermalUnitInput::getThermalBus);
+          houses.getOrThrow().stream()
+              .collect(Collectors.groupingBy(ThermalUnitInput::getThermalBus, Collectors.toSet()));
       Map<ThermalBusInput, Set<ThermalStorageInput>> storageInputs =
-          groupBy(storages.getOrThrow(), ThermalUnitInput::getThermalBus);
+          storages.getOrThrow().stream()
+              .collect(Collectors.groupingBy(ThermalUnitInput::getThermalBus, Collectors.toSet()));
 
       return buses.values().stream()
           .map(

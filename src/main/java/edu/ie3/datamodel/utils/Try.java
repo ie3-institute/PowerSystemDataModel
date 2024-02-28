@@ -8,7 +8,6 @@ package edu.ie3.datamodel.utils;
 import static java.util.stream.Collectors.partitioningBy;
 
 import edu.ie3.datamodel.exceptions.FailureException;
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.TryException;
 import java.util.*;
 import java.util.function.Function;
@@ -594,7 +593,7 @@ public abstract class Try<T, E extends Exception> {
    */
   @FunctionalInterface
   public interface TrySupplier<T, E extends Exception> {
-    T get() throws E, SourceException;
+    T get() throws E;
   }
 
   /**
