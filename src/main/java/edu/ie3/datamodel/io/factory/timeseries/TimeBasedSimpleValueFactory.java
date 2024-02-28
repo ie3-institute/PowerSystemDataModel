@@ -12,8 +12,8 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.TimeUtil;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class TimeBasedSimpleValueFactory<V extends Value>
@@ -29,12 +29,14 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private final TimeUtil timeUtil;
 
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
-    this(valueClasses, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
+    super(valueClasses);
+    this.timeUtil = TimeUtil.withDefaults;
   }
 
-  public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses, String timePattern) {
+  public TimeBasedSimpleValueFactory(
+      Class<? extends V> valueClasses, DateTimeFormatter dateTimeFormatter) {
     super(valueClasses);
-    timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern);
+    this.timeUtil = new TimeUtil(dateTimeFormatter);
   }
 
   /**

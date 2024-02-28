@@ -7,8 +7,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
-import java.time.ZoneId;
-import java.util.*;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Abstract factory to handle the conversion from "flat" field to value mapping onto actual {@link
@@ -22,11 +21,13 @@ public abstract class TimeBasedWeatherValueFactory
   protected final TimeUtil timeUtil;
 
   protected TimeBasedWeatherValueFactory() {
-    this("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
+    super(WeatherValue.class);
+    this.timeUtil = TimeUtil.withDefaults;
   }
 
-  protected TimeBasedWeatherValueFactory(String timePattern) {
-    this(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern));
+  protected TimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
+    super(WeatherValue.class);
+    this.timeUtil = new TimeUtil(dateTimeFormatter);
   }
 
   protected TimeBasedWeatherValueFactory(TimeUtil timeUtil) {

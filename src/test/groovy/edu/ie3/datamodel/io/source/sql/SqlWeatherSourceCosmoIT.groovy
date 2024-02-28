@@ -45,7 +45,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     assert res.stderr.empty
 
     def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-    def weatherFactory = new CosmoTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
+    def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     source = new SqlWeatherSource(connector, CosmoWeatherTestData.coordinateSource, schemaName, weatherTableName, weatherFactory)
   }
 
@@ -69,7 +69,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     optTimeBasedValue.empty
   }
 
-  def "A SqlWeatherSource can read multiple timeseries values for multiple coordinates"() {
+  def "A SqlWeatherSource can read multiple time series values for multiple coordinates"() {
     given:
     def coordinates = [
       CosmoWeatherTestData.COORDINATE_193186,

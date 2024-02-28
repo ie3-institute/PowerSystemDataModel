@@ -36,8 +36,8 @@ class SystemParticipantTestData {
 
   // general participant data
   static final OperationTime operationTime = OperationTime.builder()
-  .withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31"))
-  .withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
+  .withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24T15:11:31Z"))
+  .withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25T15:11:31Z")).build()
   static final OperatorInput operator = new OperatorInput(
   UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
   public static final NodeInput participantNode = GridTestData.nodeA

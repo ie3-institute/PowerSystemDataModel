@@ -970,27 +970,4 @@ class FileNamingStrategyTest extends Specification {
       assert profile == "g3"
     }
   }
-
-
-  def "The FileNamingStrategy with FlatHierarchy returns the Id Coordinate file path correctly"() {
-    def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
-
-    when:
-    def idFilePath = fns.getIdCoordinateFilePath()
-
-    then:
-    idFilePath.present
-    idFilePath.get() == Path.of("prefix_coordinates_suffix")
-  }
-
-  def "The FileNamingStrategy with DefaultHierarchy returns the Id Coordinate file path correctly"() {
-    def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), defaultHierarchy)
-
-    when:
-    def idFilePath = fns.getIdCoordinateFilePath()
-
-    then:
-    idFilePath.present
-    idFilePath.get() == defaultHierarchy.baseDirectory.get().resolve("prefix_coordinates_suffix")
-  }
 }

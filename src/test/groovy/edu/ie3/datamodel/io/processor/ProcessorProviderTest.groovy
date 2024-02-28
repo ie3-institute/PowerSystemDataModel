@@ -216,13 +216,13 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       "inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
       "p"         : "0.01",
       "q"         : "0.01",
-      "time"      : "2020-01-30T17:26:44Z[UTC]"]
+      "time"      : "2020-01-30T17:26:44Z"]
 
     when:
     UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
     Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-    PvResult pvResult = new PvResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+    PvResult pvResult = new PvResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
 
     and:
     Try<Map<String, String>, ProcessorProviderException> result = provider.handleEntity(pvResult)
@@ -235,7 +235,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     resultMap == expectedMap
 
     when:
-    Try<Map<String, String>, ProcessorProviderException> entityTry = provider.handleEntity(new WecResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
+    Try<Map<String, String>, ProcessorProviderException> entityTry = provider.handleEntity(new WecResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q))
 
     then:
     entityTry.failure
