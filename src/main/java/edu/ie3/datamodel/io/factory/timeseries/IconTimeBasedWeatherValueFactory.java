@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
@@ -37,10 +36,6 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
 
   public IconTimeBasedWeatherValueFactory() {
     super();
-  }
-
-  public IconTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
-    super(timeUtil);
   }
 
   public IconTimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
