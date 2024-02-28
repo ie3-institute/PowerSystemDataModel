@@ -622,8 +622,9 @@ public class SystemParticipantSource extends EntitySource {
    * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @param types a map of UUID to object- and uuid-unique {@link ChpTypeInput} entities
-   * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
-   * @param thermalStorages a set of object- and uuid-unique {@link ThermalStorageInput} entities
+   * @param thermalBuses a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
+   * @param thermalStorages a map of UUID to object- and uuid-unique {@link ThermalStorageInput}
+   *     entities
    * @return a set of object- and uuid-unique {@link ChpInput} entities
    */
   public Set<ChpInput> getChpPlants(
