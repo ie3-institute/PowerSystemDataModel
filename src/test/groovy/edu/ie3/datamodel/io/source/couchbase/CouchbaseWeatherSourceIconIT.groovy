@@ -70,7 +70,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
         couchbaseContainer.password,
         Duration.ofSeconds(20))
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-    def weatherFactory = new IconTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
+    def weatherFactory = new IconTimeBasedWeatherValueFactory()
     source = new CouchbaseWeatherSource(connector, IconWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
   }
 

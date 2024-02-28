@@ -46,7 +46,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     assert res.stderr.empty
 
     def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
-    def weatherFactory = new CosmoTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
+    def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     source = new InfluxDbWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory)
   }
 

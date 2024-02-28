@@ -73,7 +73,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         couchbaseContainer.password,
         Duration.ofSeconds(20))
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-    def weatherFactory = new CosmoTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
+    def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
   }
 

@@ -72,7 +72,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
   def "A time based weather value factory for ICON column scheme builds a single time based value correctly"() {
     given:
-    def factory = new IconTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
+    def factory = new IconTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_67775
 
     def parameter = [
