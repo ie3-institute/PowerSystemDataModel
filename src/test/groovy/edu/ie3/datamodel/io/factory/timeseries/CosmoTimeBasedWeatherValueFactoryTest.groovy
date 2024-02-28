@@ -17,9 +17,9 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series with missing values"() {
     given:
-    def factory = new CosmoTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
+    def factory = new CosmoTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     Map<String, String> parameter = [
       "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
@@ -50,9 +50,9 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
     given:
-    def factory = new CosmoTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
+    def factory = new CosmoTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     Map<String, String> parameter = [
       "time"             : TimeUtil.withDefaults.toString(time),

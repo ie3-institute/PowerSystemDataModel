@@ -51,15 +51,15 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualEnergyPriceTimeSeriesProcessed = [
     [
-      "time"	: "2020-04-02T10:00Z[UTC]",
+      "time"	: "2020-04-02T10:00:00Z",
       "price"	: "5.0"
     ] as LinkedHashMap,
     [
-      "time"	: "2020-04-02T10:15Z[UTC]",
+      "time"	: "2020-04-02T10:15:00Z",
       "price"	: "15.0"
     ] as LinkedHashMap,
     [
-      "time"	: "2020-04-02T10:30Z[UTC]",
+      "time"	: "2020-04-02T10:30:00Z",
       "price"	: "10.0"
     ] as LinkedHashMap
   ] as Set
@@ -90,15 +90,15 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualTemperatureTimeSeriesProcessed = [
     [
-      "time"			: "2020-04-02T10:00Z[UTC]",
+      "time"			: "2020-04-02T10:00:00Z",
       "temperature"	: "5.0"
     ] as LinkedHashMap,
     [
-      "time"			: "2020-04-02T10:15Z[UTC]",
+      "time"			: "2020-04-02T10:15:00Z",
       "temperature"	: "15.0"
     ] as LinkedHashMap,
     [
-      "time"			: "2020-04-02T10:30Z[UTC]",
+      "time"			: "2020-04-02T10:30:00Z",
       "temperature"	: "10.0"
     ] as LinkedHashMap
   ] as Set
@@ -121,17 +121,17 @@ trait TimeSeriesTestData {
   Set<LinkedHashMap<String, String>>  individualWindTimeSeriesProcessed = [
     [
       "direction"	: "5.0",
-      "time"		: "2020-04-02T10:00Z[UTC]",
+      "time"		: "2020-04-02T10:00:00Z",
       "velocity"	: "10.0"
     ] as LinkedHashMap,
     [
       "direction"	: "15.0",
-      "time"		: "2020-04-02T10:15Z[UTC]",
+      "time"		: "2020-04-02T10:15:00Z",
       "velocity"	: "20.0"
     ] as LinkedHashMap,
     [
       "direction"	: "10.0",
-      "time"		: "2020-04-02T10:30Z[UTC]",
+      "time"		: "2020-04-02T10:30:00Z",
       "velocity"	: "15.0"
     ] as LinkedHashMap
   ] as Set
@@ -155,17 +155,17 @@ trait TimeSeriesTestData {
     [
       "directIrradiance"		: "5.0",
       "diffuseIrradiance"	: "10.0",
-      "time"					: "2020-04-02T10:00Z[UTC]"
+      "time"					: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "directIrradiance"		: "15.0",
       "diffuseIrradiance"	: "20.0",
-      "time"					: "2020-04-02T10:15Z[UTC]"
+      "time"					: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "directIrradiance"		: "10.0",
       "diffuseIrradiance"	: "15.0",
-      "time"					: "2020-04-02T10:30Z[UTC]"
+      "time"					: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -209,7 +209,7 @@ trait TimeSeriesTestData {
       "directIrradiance"		: "5.0",
       "direction"				: "5.0",
       "temperature"			: "5.0",
-      "time"					: "2020-04-02T10:00Z[UTC]",
+      "time"					: "2020-04-02T10:00:00Z",
       "velocity"				: "10.0"
     ] as LinkedHashMap,
     [
@@ -218,7 +218,7 @@ trait TimeSeriesTestData {
       "directIrradiance"		: "15.0",
       "direction"				: "15.0",
       "temperature"			: "15.0",
-      "time"					: "2020-04-02T10:15Z[UTC]",
+      "time"					: "2020-04-02T10:15:00Z",
       "velocity"				: "20.0"
     ] as LinkedHashMap,
     [
@@ -227,7 +227,7 @@ trait TimeSeriesTestData {
       "directIrradiance"		: "10.0",
       "direction"				: "10.0",
       "temperature"			: "10.0",
-      "time"					: "2020-04-02T10:30Z[UTC]",
+      "time"					: "2020-04-02T10:30:00Z",
       "velocity"				: "15.0"
     ] as LinkedHashMap
   ] as Set
@@ -250,15 +250,15 @@ trait TimeSeriesTestData {
   Set<LinkedHashMap<String, String>>  individualHeatDemandTimeSeriesProcessed = [
     [
       "heatDemand"	: "5.0",
-      "time"			: "2020-04-02T10:00Z[UTC]"
+      "time"			: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "heatDemand"	: "15.0",
-      "time"			: "2020-04-02T10:15Z[UTC]"
+      "time"			: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "heatDemand"	: "10.0",
-      "time"			: "2020-04-02T10:30Z[UTC]"
+      "time"			: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -280,15 +280,15 @@ trait TimeSeriesTestData {
   Set<LinkedHashMap<String, String>>  individualPTimeSeriesProcessed = [
     [
       "p"		: "5.0",
-      "time"	: "2020-04-02T10:00Z[UTC]"
+      "time"	: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "p"		: "15.0",
-      "time"	: "2020-04-02T10:15Z[UTC]"
+      "time"	: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "p"		: "10.0",
-      "time"	: "2020-04-02T10:30Z[UTC]"
+      "time"	: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -311,17 +311,17 @@ trait TimeSeriesTestData {
     [
       "heatDemand"	: "10.0",
       "p"				: "5.0",
-      "time"			: "2020-04-02T10:00Z[UTC]"
+      "time"			: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "heatDemand"	: "20.0",
       "p"				: "15.0",
-      "time"			: "2020-04-02T10:15Z[UTC]"
+      "time"			: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "heatDemand"	: "15.0",
       "p"				: "10.0",
-      "time"			: "2020-04-02T10:30Z[UTC]"
+      "time"			: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -344,17 +344,17 @@ trait TimeSeriesTestData {
     [
       "p"		: "5.0",
       "q"		: "10.0",
-      "time"	: "2020-04-02T10:00Z[UTC]"
+      "time"	: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "p"		: "15.0",
       "q"		: "20.0",
-      "time"	: "2020-04-02T10:15Z[UTC]"
+      "time"	: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "p"		: "10.0",
       "q"		: "15.0",
-      "time"	: "2020-04-02T10:30Z[UTC]"
+      "time"	: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -378,19 +378,19 @@ trait TimeSeriesTestData {
       "heatDemand"	: "15.0",
       "p"				: "5.0",
       "q"				: "10.0",
-      "time"			: "2020-04-02T10:00Z[UTC]"
+      "time"			: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
       "heatDemand"	: "25.0",
       "p"				: "15.0",
       "q"				: "20.0",
-      "time"			: "2020-04-02T10:15Z[UTC]"
+      "time"			: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
       "heatDemand"	: "20.0",
       "p"				: "10.0",
       "q"				: "15.0",
-      "time"			: "2020-04-02T10:30Z[UTC]"
+      "time"			: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
