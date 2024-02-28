@@ -22,7 +22,7 @@ public abstract class TimeBasedWeatherValueFactory
 
   protected TimeBasedWeatherValueFactory() {
     super(WeatherValue.class);
-    this.timeUtil = new TimeUtil(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    this.timeUtil = TimeUtil.withDefaults;
   }
 
   protected TimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
