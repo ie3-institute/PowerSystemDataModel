@@ -5,26 +5,20 @@
 */
 package edu.ie3.datamodel.models.timeseries;
 
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.value.Value;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * This is an abstract class describing a unique entry to a time series
  *
  * @param <V> Type of the contained value
  */
-public abstract class TimeSeriesEntry<V extends Value> extends UniqueEntity {
+public abstract class TimeSeriesEntry<V extends Value> implements Entity {
   protected final V value;
 
-  protected TimeSeriesEntry(UUID uuid, V value) {
-    super(uuid);
-    this.value = value;
-  }
-
   protected TimeSeriesEntry(V value) {
-    this(UUID.randomUUID(), value);
+    this.value = value;
   }
 
   public V getValue() {
@@ -48,6 +42,6 @@ public abstract class TimeSeriesEntry<V extends Value> extends UniqueEntity {
 
   @Override
   public String toString() {
-    return "TimeSeriesEntry{" + "uuid=" + getUuid() + ", value=" + value + '}';
+    return "TimeSeriesEntry{" + "value=" + value + '}';
   }
 }

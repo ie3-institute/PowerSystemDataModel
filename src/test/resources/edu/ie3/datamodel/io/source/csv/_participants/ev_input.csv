@@ -1,2 +1,2 @@
 uuid,id,node,operates_from,operates_until,operator,q_characteristics,type,em
-a17be20f-c7a7-471d-8ffe-015487c9d022,test_evInput,4ca90220-74c2-4369-9afa-a18bf068840d,2020-03-24T15:11:31Z[UTC],2020-03-25T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,"cosPhiFixed:{(0.00,0.95)}",5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,977157f4-25e5-4c72-bf34-440edc778792
+a17be20f-c7a7-471d-8ffe-015487c9d022,test_evInput,4ca90220-74c2-4369-9afa-a18bf068840d,2020-03-24T15:11:31Z,2020-03-25T15:11:31Z,8f9682df-0744-4b58-a122-f0dc730f6510,"cosPhiFixed:{(0.00,0.95)}",5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,977157f4-25e5-4c72-bf34-440edc778792

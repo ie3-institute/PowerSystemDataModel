@@ -6,12 +6,12 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.io.Serializable;
 import java.util.List;
 
 /** Represents an aggregation of different entities */
-public interface InputContainer<T extends InputEntity> extends Serializable {
+public interface InputContainer<T extends UniqueInputEntity> extends Serializable {
 
   /** @return unmodifiable List of all entities */
   List<T> allEntitiesAsList();
@@ -26,7 +26,7 @@ public interface InputContainer<T extends InputEntity> extends Serializable {
    * @version 3.1
    * @since 14.02.23
    */
-  interface InputContainerCopyBuilder<T extends InputEntity> {
+  interface InputContainerCopyBuilder<T extends UniqueInputEntity> {
 
     /** Returns the altered {@link InputContainer} */
     InputContainer<T> build() throws ValidationException;

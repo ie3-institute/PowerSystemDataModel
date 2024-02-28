@@ -5,24 +5,25 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
+import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.validation.UniquenessValidationUtils;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.quantity.Length;
-import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
@@ -38,8 +39,6 @@ import tech.units.indriya.unit.Units;
 public class CsvIdCoordinateSource implements IdCoordinateSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvIdCoordinateSource.class);
-
-  private static final String COORDINATE_ID_MAPPING = "coordinate id mapping";
 
   /** Mapping in both ways (id -> coordinate) and (coordinate -> id) have to be unique */
   private final Map<Integer, Point> idToCoordinate;
@@ -65,14 +64,28 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
    * @return Mapping from coordinate id to coordinate
    */
   private Map<Integer, Point> setupIdToCoordinateMap() throws SourceException {
-    return buildStreamWithFieldsToAttributesMap()
-        .map(
-            data ->
-                data.map(fieldToValues -> new SimpleFactoryData(fieldToValues, Pair.class))
-                    .map(factory::get))
-        .flatMap(s -> Try.scanStream(s, "Pair<Integer, Point>").transformF(SourceException::new))
-        .map(s -> s.collect(Collectors.toMap(Pair::getKey, Pair::getValue)))
-        .getOrThrow();
+    List<IdCoordinateInput> idCoordinates =
+        buildStreamWithFieldsToAttributesMap()
+            .map(
+                data ->
+                    data.map(
+                            fieldToValues ->
+                                new SimpleFactoryData(fieldToValues, IdCoordinateInput.class))
+                        .map(factory::get))
+            .flatMap(
+                s -> Try.scanStream(s, "Pair<Integer, Point>").transformF(SourceException::new))
+            .getOrThrow()
+            .toList();
+
+    try {
+      // check the uniqueness of the source
+      UniquenessValidationUtils.checkIdCoordinateUniqueness(idCoordinates);
+    } catch (DuplicateEntitiesException de) {
+      throw new SourceException("Due to: ", de);
+    }
+
+    return idCoordinates.stream()
+        .collect(Collectors.toMap(IdCoordinateInput::id, IdCoordinateInput::point));
   }
 
   /**
@@ -185,32 +198,13 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
       // validating read file
-      factory.validate(Set.of(headline), Pair.class).getOrThrow();
+      factory.validate(Set.of(headline), IdCoordinateInput.class).getOrThrow();
 
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows =
-          dataSource.csvRowFieldValueMapping(reader, headline);
-
-      Function<Map<String, String>, String> idExtractor =
-          fieldToValues -> fieldToValues.get(factory.getIdField());
-      Try<Set<Map<String, String>>, SourceException> withDistinctCoordinateId =
-          dataSource.distinctRowsWithLog(
-              allRows, idExtractor, COORDINATE_ID_MAPPING, "coordinate id");
-      Function<Map<String, String>, String> coordinateExtractor =
-          fieldToValues ->
-              fieldToValues
-                  .get(factory.getLatField())
-                  .concat(fieldToValues.get(factory.getLonField()));
-
-      return withDistinctCoordinateId
-          .flatMap(
-              set ->
-                  dataSource.distinctRowsWithLog(
-                      set, coordinateExtractor, COORDINATE_ID_MAPPING, "coordinate"))
-          .map(Set::parallelStream);
+      return Success.of(dataSource.csvRowFieldValueMapping(reader, headline).parallelStream());
     } catch (IOException e) {
       return Failure.of(
           new SourceException("Cannot read the file for coordinate id to coordinate mapping.", e));

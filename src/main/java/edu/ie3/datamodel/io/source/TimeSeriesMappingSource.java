@@ -39,7 +39,7 @@ public abstract class TimeSeriesMappingSource {
         .filter(Try::isSuccess)
         .map(t -> (Success<MappingEntry, FactoryException>) t)
         .map(Success::get)
-        .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
+        .collect(Collectors.toMap(MappingEntry::participant, MappingEntry::timeSeries));
   }
 
   /**
@@ -73,47 +73,23 @@ public abstract class TimeSeriesMappingSource {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /** Class to represent one entry within the participant to time series mapping */
-  public static class MappingEntry extends InputEntity {
-    private final UUID participant;
-    private final UUID timeSeries;
-
-    public MappingEntry(UUID uuid, UUID participant, UUID timeSeries) {
-      super(uuid);
-      this.participant = participant;
-      this.timeSeries = timeSeries;
-    }
-
-    public UUID getParticipant() {
-      return participant;
-    }
-
-    public UUID getTimeSeries() {
-      return timeSeries;
-    }
+  public record MappingEntry(UUID participant, UUID timeSeries) implements InputEntity {
 
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
       if (!(o instanceof MappingEntry that)) return false;
-      if (!super.equals(o)) return false;
       return participant.equals(that.participant) && timeSeries.equals(that.timeSeries);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(super.hashCode(), participant, timeSeries);
+      return Objects.hash(participant, timeSeries);
     }
 
     @Override
     public String toString() {
-      return "MappingEntry{"
-          + "uuid="
-          + getUuid()
-          + ", participant="
-          + participant
-          + ", timeSeries="
-          + timeSeries
-          + '}';
+      return "MappingEntry{" + "participant=" + participant + ", timeSeries=" + timeSeries + '}';
     }
   }
 }

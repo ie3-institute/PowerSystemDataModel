@@ -16,10 +16,6 @@ Representation of all kinds of connectors.
      - Unit
      - Remarks
 
-   * - uuid
-     - --
-     - uuid for the result entity
-
    * - time
      - ZonedDateTime
      - date and time for the produced result

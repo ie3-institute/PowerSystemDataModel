@@ -53,7 +53,7 @@ repositories {
 dependencies {
 
   //	 ie³ power system utils
-  implementation 'com.github.ie3-institute:PowerSystemUtils:2.0'
+  implementation 'com.github.ie3-institute:PowerSystemUtils:2.2'
 
   implementation 'tech.units:indriya:2.2'
 
@@ -96,7 +96,6 @@ dependencies {
   implementation 'commons-io:commons-io:2.15.1' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.16.1' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.26.0' // I/O functionalities
-  implementation 'org.apache.commons:commons-lang3:3.14.0'
 }
 
 tasks.withType(JavaCompile) {

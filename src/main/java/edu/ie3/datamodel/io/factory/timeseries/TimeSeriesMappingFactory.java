@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 
 public class TimeSeriesMappingFactory
     extends EntityFactory<TimeSeriesMappingSource.MappingEntry, EntityData> {
-  private static final String UUID = "uuid";
   private static final String PARTICIPANT = "participant";
   private static final String TIME_SERIES = "timeSeries";
 
@@ -28,14 +27,13 @@ public class TimeSeriesMappingFactory
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     return Collections.singletonList(
-        Stream.of(UUID, PARTICIPANT, TIME_SERIES).collect(Collectors.toSet()));
+        Stream.of(PARTICIPANT, TIME_SERIES).collect(Collectors.toSet()));
   }
 
   @Override
   protected TimeSeriesMappingSource.MappingEntry buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
     UUID participant = data.getUUID(PARTICIPANT);
     UUID timeSeries = data.getUUID(TIME_SERIES);
-    return new TimeSeriesMappingSource.MappingEntry(uuid, participant, timeSeries);
+    return new TimeSeriesMappingSource.MappingEntry(participant, timeSeries);
   }
 }

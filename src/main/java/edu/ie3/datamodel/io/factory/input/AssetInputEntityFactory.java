@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
-import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -22,12 +22,10 @@ import java.util.*;
  * @since 19.02.20
  */
 public abstract class AssetInputEntityFactory<T extends AssetInput, D extends AssetInputEntityData>
-    extends EntityFactory<T, D> {
+    extends UniqueEntityFactory<T, D> {
 
-  private static final String UUID = "uuid";
   private static final String OPERATES_FROM = "operatesFrom";
   private static final String OPERATES_UNTIL = "operatesUntil";
-  private static final String ID = "id";
 
   protected AssetInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);

@@ -34,26 +34,6 @@ public abstract class SystemParticipantWithHeatResult extends SystemParticipantR
   }
 
   /**
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param p active power output normally provided in MW
-   * @param q reactive power output normally provided in MVAr
-   * @param qDot thermal power output normally provided in MW
-   */
-  protected SystemParticipantWithHeatResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q,
-      ComparableQuantity<Power> qDot) {
-    super(uuid, time, inputModel, p, q);
-    this.qDot = qDot;
-  }
-
-  /**
    * Thermal power output of the decentralised energy resource asset. Convention: Generated powers
    * are given in negative values.
    *
@@ -80,9 +60,7 @@ public abstract class SystemParticipantWithHeatResult extends SystemParticipantR
   @Override
   public String toString() {
     return "SystemParticipantWithHeatResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()
