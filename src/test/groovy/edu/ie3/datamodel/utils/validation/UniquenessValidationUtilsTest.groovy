@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.utils.validation
 
-import static edu.ie3.datamodel.utils.validation.DummyAssetInput.of
 import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
@@ -54,8 +53,8 @@ class UniquenessValidationUtilsTest extends Specification {
     UUID uuid = UUID.fromString("4b931d0a-f564-4555-b576-905c9b9f42d0")
 
     Set<DummyAssetInput> notUniqueEntities = [
-      of(uuid, "first"),
-      of(uuid, "second")
+      valid(uuid, "first"),
+      valid(uuid, "second")
     ]
 
     when:

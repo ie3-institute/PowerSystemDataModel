@@ -18,7 +18,7 @@ class DummyAssetInput extends AssetInput {
     super(uuid, id)
   }
 
-  static DummyAssetInput of(UUID uuid, String id) {
+  static DummyAssetInput valid(UUID uuid, String id) {
     return new DummyAssetInput(uuid, id)
   }
 

@@ -59,6 +59,8 @@ public class CsvJointGridContainerSource {
     try {
       typeSource.validate();
       rawGridSource.validate();
+      thermalSource.validate();
+      emSource.validate();
       systemParticipantSource.validate();
       graphicSource.validate();
     } catch (ValidationException ve) {
@@ -84,7 +86,7 @@ public class CsvJointGridContainerSource {
         Try.of(() -> graphicSource.getGraphicElements(nodes, lines), SourceException.class);
 
     List<? extends Exception> exceptions =
-        Try.getExceptions(List.of(rawGridElements, systemParticipants, graphicElements));
+        Try.getExceptions(rawGridElements, systemParticipants, graphicElements);
 
     if (!exceptions.isEmpty()) {
       throw new SourceException(
