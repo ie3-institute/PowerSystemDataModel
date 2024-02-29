@@ -23,7 +23,6 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
     when:
     TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     Map expectedSourceMapping = [
-      "uuid": FieldSourceToMethod.FieldSource.ENTRY,
       "price": FieldSourceToMethod.FieldSource.VALUE,
       "time": FieldSourceToMethod.FieldSource.ENTRY]
 
@@ -40,7 +39,6 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
       }
       /* Also test the logic of TimeSeriesProcessor#buildFieldToSource, because it is invoked during instantiation */
       assert processor.headerElements == [
-        "uuid",
         "price",
         "time"
       ] as String[]
@@ -81,7 +79,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
     where:
     source || expectedFieldNames
-    FieldSourceToMethod.FieldSource.ENTRY || ["uuid", "time"]
+    FieldSourceToMethod.FieldSource.ENTRY || ["time"]
     FieldSourceToMethod.FieldSource.VALUE || ["price"]
   }
 
@@ -89,7 +87,6 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
     given:
     TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     Map<String, String> expected = Processor.putUuidFirst([
-      "uuid" : "9e4dba1b-f3bb-4e40-bd7e-2de7e81b7704",
       "price": "5.0",
       "time" : "2020-04-02 10:00:00"
     ]

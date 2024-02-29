@@ -12,13 +12,12 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.TimeUtil;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class TimeBasedSimpleValueFactory<V extends Value>
     extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {
-  private static final String UUID = "uuid";
   private static final String TIME = "time";
   /* Energy price */
   private static final String PRICE = "price";
@@ -30,12 +29,14 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private final TimeUtil timeUtil;
 
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
-    this(valueClasses, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
+    super(valueClasses);
+    this.timeUtil = TimeUtil.withDefaults;
   }
 
-  public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses, String timePattern) {
+  public TimeBasedSimpleValueFactory(
+      Class<? extends V> valueClasses, DateTimeFormatter dateTimeFormatter) {
     super(valueClasses);
-    timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern);
+    this.timeUtil = new TimeUtil(dateTimeFormatter);
   }
 
   /**
@@ -49,7 +50,6 @@ public class TimeBasedSimpleValueFactory<V extends Value>
 
   @Override
   protected TimeBasedValue<V> buildModel(SimpleTimeBasedValueData<V> data) {
-    UUID uuid = data.getUUID(UUID);
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     V value;
 
@@ -83,12 +83,12 @@ public class TimeBasedSimpleValueFactory<V extends Value>
           "The given factory cannot handle target class '" + data.getTargetClass() + "'.");
     }
 
-    return new TimeBasedValue<>(uuid, time, value);
+    return new TimeBasedValue<>(time, value);
   }
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> minConstructorParams = newSet(UUID, TIME);
+    Set<String> minConstructorParams = newSet(TIME);
 
     if (EnergyPriceValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.add(PRICE);

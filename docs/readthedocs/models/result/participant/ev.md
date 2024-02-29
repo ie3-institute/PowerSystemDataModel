@@ -16,10 +16,6 @@ Result of an electric vehicle, that is occasionally connected to the grid via an
      - Unit
      - Remarks
 
-   * - uuid
-     - --
-     - uuid for the result entity
-
    * - time
      - --
      - date and time for the produced result
@@ -30,15 +26,15 @@ Result of an electric vehicle, that is occasionally connected to the grid via an
 
    * - p
      - MW
-     -
+     - 
 
    * - q
      - MVAr
-     -
+     - 
 
    * - soc
      - %
-     -
+     - 
 
 ```
 

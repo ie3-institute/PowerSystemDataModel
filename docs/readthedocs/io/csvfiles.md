@@ -99,7 +99,7 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 Let's spend a few more words on the individual time series:
 Those files are meant to carry different types of content - one might give information about wholesale market prices,
 the other is a record of power values provided by a real system.
-To be able to understand, what's inside of the file, the *columnScheme* part of the file name gives insight of it's
+To be able to understand, what's inside of the file, the *columnScheme* part of the file name gives insight of its
 content.
 
 For example, you have an IndividualTimeSeries CSV file for energy prices, then you use the key `c` from the table below

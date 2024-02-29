@@ -17,10 +17,6 @@ This reflects a simple shoe box with transmission losses
      - Unit
      - Remarks
 
-   * - uuid
-     - --
-     - uuid for the result entity
-
    * - time
      - --
      - date and time for the produced result
@@ -35,7 +31,7 @@ This reflects a simple shoe box with transmission losses
 
    * - indoorTemperature
      - °C
-     -
+     - 
 
 ```
 

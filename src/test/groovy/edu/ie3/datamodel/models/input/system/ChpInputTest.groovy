@@ -29,6 +29,31 @@ class ChpInputTest extends Specification {
       assert thermalStorage == SystemParticipantTestData.thermalStorage
       assert marketReaction
       assert type == SystemParticipantTestData.chpTypeInput
+      assert em == Optional.of(SystemParticipantTestData.emInput)
+    }
+  }
+
+  def "Scaling a ChpInput via builder should work as expected"() {
+    given:
+    def chpInput = SystemParticipantTestData.chpInput
+
+    when:
+    def alteredUnit = chpInput.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == chpInput.uuid
+      assert operationTime == chpInput.operationTime
+      assert operator == chpInput.operator
+      assert id == chpInput.id
+      assert qCharacteristics == chpInput.qCharacteristics
+      assert thermalBus == chpInput.thermalBus
+      assert thermalStorage == chpInput.thermalStorage
+      assert marketReaction == chpInput.marketReaction
+      assert type.sRated == chpInput.type.sRated * 2d
+      assert type.pThermal == chpInput.type.pThermal * 2d
+      assert type.pOwn == chpInput.type.pOwn * 2d
+      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

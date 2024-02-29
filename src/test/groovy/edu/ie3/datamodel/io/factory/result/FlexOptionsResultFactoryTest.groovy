@@ -28,7 +28,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     given: "a system participant factory and model data"
     def resultFactory = new FlexOptionsResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30 17:26:44",
+      "time"      : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
       "pref"      : "2",
       "pmin"      : "-1",
@@ -62,7 +62,6 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     input.failure
     input.exception.get().message == "The provided fields [input_model, p_min, p_ref, time] are invalid for instance of 'FlexOptionsResult'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'FlexOptionsResult' are possible (NOT case-sensitive!):\n" +
-        "0: [inputModel, pMax, pMin, pRef, time] or [input_model, p_max, p_min, p_ref, time]\n" +
-        "1: [inputModel, pMax, pMin, pRef, time, uuid] or [input_model, p_max, p_min, p_ref, time, uuid]\n"
+        "0: [inputModel, pMax, pMin, pRef, time] or [input_model, p_max, p_min, p_ref, time]\n"
   }
 }

@@ -74,4 +74,26 @@ class ThermalHouseInputTest extends Specification {
     thermalHouseInput.upperTemperatureLimit == Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
     thermalHouseInput.lowerTemperatureLimit == Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
   }
+
+  def "Scaling a ThermalHouseInput via builder should work as expected"() {
+    given:
+    def thermalHouseInput = ThermalUnitInputTestData.thermalHouseInput
+
+    when:
+    def alteredUnit = thermalHouseInput.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == thermalHouseInput.uuid
+      assert id == thermalHouseInput.id
+      assert operator == thermalHouseInput.operator
+      assert operationTime == thermalHouseInput.operationTime
+      assert thermalBus == thermalHouseInput.thermalBus
+      assert ethLosses == thermalHouseInput.ethLosses * 2d
+      assert ethCapa == thermalHouseInput.ethCapa * 2d
+      assert targetTemperature == thermalHouseInput.targetTemperature
+      assert upperTemperatureLimit == thermalHouseInput.upperTemperatureLimit
+      assert lowerTemperatureLimit == thermalHouseInput.lowerTemperatureLimit
+    }
+  }
 }

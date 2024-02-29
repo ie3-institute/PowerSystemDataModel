@@ -9,7 +9,7 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
@@ -193,7 +193,7 @@ public class EntityPersistenceNamingStrategy {
    * @param cls Targeted class of the given entity
    * @return The name of the entity
    */
-  public Optional<String> getEntityName(Class<? extends UniqueEntity> cls) {
+  public Optional<String> getEntityName(Class<? extends Entity> cls) {
     if (InputEntity.class.isAssignableFrom(cls))
       return getInputEntityName(cls.asSubclass(InputEntity.class));
     if (ResultEntity.class.isAssignableFrom(cls))

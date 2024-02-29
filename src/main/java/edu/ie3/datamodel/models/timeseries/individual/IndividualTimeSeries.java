@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** Describes a TimeSeries with individual values per time step */
@@ -16,12 +17,18 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
   /** Maps a time to its respective value to retrieve faster */
   private final Map<ZonedDateTime, TimeBasedValue<V>> timeToValue;
 
+  public IndividualTimeSeries(Set<TimeBasedValue<V>> values) {
+    super(values);
+
+    timeToValue =
+        values.stream().collect(Collectors.toMap(TimeBasedValue::getTime, Function.identity()));
+  }
+
   public IndividualTimeSeries(UUID uuid, Set<TimeBasedValue<V>> values) {
     super(uuid, values);
 
     timeToValue =
-        values.stream()
-            .collect(Collectors.toMap(TimeBasedValue::getTime, timeBasedValue -> timeBasedValue));
+        values.stream().collect(Collectors.toMap(TimeBasedValue::getTime, Function.identity()));
   }
 
   /**
@@ -75,6 +82,6 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
 
   @Override
   public String toString() {
-    return "IndividualTimeSeries{" + "uuid=" + getUuid() + ", #entries=" + timeToValue.size() + '}';
+    return "IndividualTimeSeries{" + ", #entries=" + timeToValue.size() + '}';
   }
 }

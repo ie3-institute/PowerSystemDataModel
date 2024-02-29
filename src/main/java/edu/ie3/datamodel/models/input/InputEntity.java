@@ -1,17 +1,11 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2024. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input;
 
-import edu.ie3.datamodel.models.UniqueEntity;
-import java.util.UUID;
+import edu.ie3.datamodel.models.Entity;
 
-/** Functionless class to describe that all subclasses are input classes */
-public abstract class InputEntity extends UniqueEntity {
-
-  protected InputEntity(UUID uuid) {
-    super(uuid);
-  }
-}
+/** Interface to describe all input entities. */
+public interface InputEntity extends Entity {}

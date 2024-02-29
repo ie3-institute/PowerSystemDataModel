@@ -10,6 +10,8 @@ import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.exceptions.TryException
 import spock.lang.Specification
 
+import java.util.stream.Stream
+
 class TryTest extends Specification {
 
   def "A method can be applied to a try object"() {
@@ -159,6 +161,30 @@ class TryTest extends Specification {
     TryException ex = thrown(TryException)
     ex.cause.class == SourceException
     ex.cause.message == "source exception"
+  }
+
+  def "A Success is created from a non-empty Optional"() {
+    given:
+    def opt = Optional.of("Test")
+
+    when:
+    def actualTry = Try.from(opt, () -> new FailureException("failure"))
+
+    then:
+    actualTry.success
+    actualTry.data.get() == "Test"
+  }
+
+  def "A Failure is created from an empty Optional"() {
+    given:
+    def opt = Optional.<String>empty()
+
+    when:
+    def actualTry = Try.from(opt, () -> new FailureException("failure"))
+
+    then:
+    actualTry.failure
+    actualTry.exception.get().getMessage() == "failure"
   }
 
   def "A void method can be applied to a try object"() {
@@ -315,6 +341,33 @@ class TryTest extends Specification {
     transform.exception.get().class == Exception
     flatMapS.exception.get() == failure.get()
     flatMapF.exception.get() == failure.get()
+  }
+
+  def "The convert method should work correctly for successes"() {
+    given:
+    Try<Stream<Integer>, SourceException> success = new Try.Success(Stream.of(1, 2, 3))
+
+    when:
+    List<Try<Integer, SourceException>> converted = success.convert(d -> d.map(r -> Try.Success.of(r)).toList(), e -> [Try.Failure.of(e)] )
+
+    then:
+    converted.size() == 3
+    converted.get(0).data.get() == 1
+    converted.get(1).data.get() == 2
+    converted.get(2).data.get() == 3
+  }
+
+  def "The convert method should work correctly for failures"() {
+    given:
+    SourceException exception = new SourceException("exception")
+    Try<Stream<Integer>, SourceException> failure = new Try.Failure<>(exception)
+
+    when:
+    List<Try<Integer, SourceException>> converted = failure.convert(d -> d.map(r -> Try.Success.of(r)).toList(), e -> [Try.Failure.of(e)] )
+
+    then:
+    converted.size() == 1
+    converted.get(0).exception.get() == exception
   }
 
   def "The getOrElse method should work as expected on a success"() {

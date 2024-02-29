@@ -23,7 +23,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import java.util.List;
 
 /**
- * Processes all {@link InputEntity}s and it's child classes
+ * Processes all {@link InputEntity}s and its child classes
  *
  * @version 0.1
  * @since 23.03.20
@@ -37,6 +37,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           OperatorInput.class,
           RandomLoadParameters.class,
           TimeSeriesMappingSource.MappingEntry.class,
+          IdCoordinateInput.class,
           /* - AssetInput */
           NodeInput.class,
           LineInput.class,

@@ -39,8 +39,8 @@ class GridTestData {
   public static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
   public static final OperationTime defaultOperationTime = OperationTime.builder().
-  withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).
-  withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
+  withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24T15:11:31Z")).
+  withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25T15:11:31Z")).build()
 
   public static final OperatorInput profBroccoli = new OperatorInput(
   UUID.fromString("f15105c4-a2de-4ab8-a621-4bc98e372d92"),
