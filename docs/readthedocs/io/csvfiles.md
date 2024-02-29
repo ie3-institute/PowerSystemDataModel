@@ -119,7 +119,7 @@ The CSV file must then have the appropriate format for the key `c` :
 The CSV file requires a unique identification number.
 The UUID (Universally Unique Identifier) can be created [here](https://www.uuidgenerator.net/).
 You can also use the Method `java.util.UUID#randomUUID` to create a UUID.
-This is the uuid from the example above `2fcb3e53-b94a-4b96-bea4-c469e499f1a1`.
+This is the UUID from the example above `2fcb3e53-b94a-4b96-bea4-c469e499f1a1`.
 
 The following keys are supported until now:
 ```{eval-rst}
