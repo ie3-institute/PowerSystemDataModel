@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Formatting Spotless Groovy import order [#960](https://github.com/ie3-institute/PowerSystemDataModel/issues/960)
 - Implementing missing typical methods in `Try` [#970](https://github.com/ie3-institute/PowerSystemDataModel/issues/970)
+- Added log warning when using `SwitchInputs` with `parallelDevices` parameter [#840](https://github.com/ie3-institute/PowerSystemDataModel/issues/840)
+- Validation for `EvcsInput` [#1000](https://github.com/ie3-institute/PowerSystemDataModel/issues/1000)
+- Scaling method in system participant copy builders [#1011](https://github.com/ie3-institute/PowerSystemDataModel/issues/1011)
+- Added separate field for maximum power limit for DC to evtype [#876](https://github.com/ie3-institute/PowerSystemDataModel/issues/876)
+- Added test for invalid input data in `CsvRawGridSource` [#1021](https://github.com/ie3-institute/PowerSystemDataModel/issues/1021)
+- Added `CsvThermalGridSource` [#1009](https://github.com/ie3-institute/PowerSystemDataModel/issues/1009)
 - Enhance documentation for CSV timeseries [#825](https://github.com/ie3-institute/PowerSystemDataModel/issues/825)
 
 ### Fixed
