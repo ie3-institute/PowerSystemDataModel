@@ -79,7 +79,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PowerSystemUnits.PU), Quantities.getQuantity(1d, PowerSystemUnits.PU))
         ] as TreeSet)
       }
-      assert em == Optional.of(emUnit)
+      assert controllingEm == Optional.of(emUnit)
       assert type == ChargingPointTypeUtils.HouseholdSocket
       assert chargingPoints == Integer.parseInt(parameter["chargingpoints"])
       assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])

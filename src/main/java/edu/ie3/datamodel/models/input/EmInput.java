@@ -5,13 +5,14 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.io.extractor.HasEm;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EmInput extends AssetInput {
+public class EmInput extends AssetInput implements HasEm {
 
   /** Reference to the control strategy to be used for this model */
   private final String controlStrategy;
@@ -92,7 +93,7 @@ public class EmInput extends AssetInput {
         + getUuid()
         + ", id='"
         + getId()
-        + ", operator="
+        + "', operator="
         + getOperator().getUuid()
         + ", operationTime="
         + getOperationTime()
@@ -100,7 +101,12 @@ public class EmInput extends AssetInput {
         + getControlStrategy()
         + ", parentEm="
         + getParentEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
-        + '}';
+        + "}";
+  }
+
+  @Override
+  public Optional<EmInput> getControllingEm() {
+    return Optional.ofNullable(parentEm);
   }
 
   public static class EmInputCopyBuilder extends AssetInputCopyBuilder<EmInputCopyBuilder> {

@@ -162,7 +162,7 @@ class InputEntityProcessorTest extends Specification {
       "operator"        : SystemParticipantTestData.fixedFeedInInput.operator.getUuid().toString(),
       "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "sRated"          : SystemParticipantTestData.fixedFeedInInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString(),
-      "em"              : SystemParticipantTestData.fixedFeedInInput.em.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+      "controllingEm"   : SystemParticipantTestData.fixedFeedInInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
     PvInput          | SystemParticipantTestData.pvInput          || [
       "uuid"            : SystemParticipantTestData.pvInput.uuid.toString(),
@@ -181,7 +181,7 @@ class InputEntityProcessorTest extends Specification {
       "operator"        : SystemParticipantTestData.pvInput.operator.getUuid().toString(),
       "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "sRated"          : SystemParticipantTestData.pvInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString(),
-      "em"              : SystemParticipantTestData.pvInput.em.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+      "controllingEm"   : SystemParticipantTestData.pvInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
     WecInput         | SystemParticipantTestData.wecInput         || [
       "uuid"            : SystemParticipantTestData.wecInput.uuid.toString(),
@@ -193,7 +193,7 @@ class InputEntityProcessorTest extends Specification {
       "operator"        : SystemParticipantTestData.wecInput.operator.uuid.toString(),
       "qCharacteristics": SystemParticipantTestData.cosPhiPSerialized,
       "type"            : SystemParticipantTestData.wecInput.type.uuid.toString(),
-      "em"              : SystemParticipantTestData.wecInput.em.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+      "controllingEm"   : SystemParticipantTestData.wecInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
     ChpInput         | SystemParticipantTestData.chpInput         || [
       "uuid"            : SystemParticipantTestData.chpInput.uuid.toString(),
@@ -207,7 +207,7 @@ class InputEntityProcessorTest extends Specification {
       "thermalBus"      : SystemParticipantTestData.chpInput.thermalBus.uuid.toString(),
       "thermalStorage"  : SystemParticipantTestData.chpInput.thermalStorage.uuid.toString(),
       "type"            : SystemParticipantTestData.chpInput.type.uuid.toString(),
-      "em"              : SystemParticipantTestData.chpInput.em.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+      "controllingEm"   : SystemParticipantTestData.chpInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
     BmInput          | SystemParticipantTestData.bmInput          || [
       "uuid"            : SystemParticipantTestData.bmInput.uuid.toString(),
@@ -221,7 +221,7 @@ class InputEntityProcessorTest extends Specification {
       "operator"        : SystemParticipantTestData.bmInput.operator.uuid.toString(),
       "qCharacteristics": SystemParticipantTestData.qVSerialized,
       "type"            : SystemParticipantTestData.bmInput.type.uuid.toString(),
-      "em"              : SystemParticipantTestData.bmInput.em.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+      "controllingEm"   : SystemParticipantTestData.bmInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
     EvInput          | SystemParticipantTestData.evInput          || [
       "uuid"            : SystemParticipantTestData.evInput.uuid.toString(),
@@ -232,7 +232,7 @@ class InputEntityProcessorTest extends Specification {
       "operator"        : SystemParticipantTestData.evInput.operator.getUuid().toString(),
       "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "type"            : SystemParticipantTestData.evInput.type.getUuid().toString(),
-      "em"              : SystemParticipantTestData.evInput.em.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+      "controllingEm"   : SystemParticipantTestData.evInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
 
     LoadInput        | SystemParticipantTestData.loadInput        || [
@@ -248,7 +248,7 @@ class InputEntityProcessorTest extends Specification {
       "qCharacteristics"   : SystemParticipantTestData.cosPhiFixedSerialized,
       "sRated"             : SystemParticipantTestData.loadInput.sRated.getValue().doubleValue().toString(),
       "loadProfile"		   : SystemParticipantTestData.loadInput.loadProfile.key,
-      "em"                 : SystemParticipantTestData.loadInput.em.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+      "controllingEm"      : SystemParticipantTestData.loadInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
     StorageInput     | SystemParticipantTestData.storageInput     || [
       "uuid"            : SystemParticipantTestData.storageInput.uuid.toString(),
@@ -259,7 +259,7 @@ class InputEntityProcessorTest extends Specification {
       "operator"        : SystemParticipantTestData.storageInput.operator.uuid.toString(),
       "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "type"            : SystemParticipantTestData.storageInput.type.uuid.toString(),
-      "em"              : SystemParticipantTestData.storageInput.em.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+      "controllingEm"   : SystemParticipantTestData.storageInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
     HpInput          | SystemParticipantTestData.hpInput          || [
       "uuid"            : SystemParticipantTestData.hpInput.uuid.toString(),
@@ -271,7 +271,7 @@ class InputEntityProcessorTest extends Specification {
       "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "thermalBus"      : SystemParticipantTestData.hpInput.thermalBus.uuid.toString(),
       "type"            : SystemParticipantTestData.hpInput.type.uuid.toString(),
-      "em"              : SystemParticipantTestData.hpInput.em.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+      "controllingEm"   : SystemParticipantTestData.hpInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
     EvcsInput | SystemParticipantTestData.evcsInput || [
       "uuid"            : SystemParticipantTestData.evcsInput.uuid.toString(),
@@ -286,7 +286,7 @@ class InputEntityProcessorTest extends Specification {
       "chargingPoints"  : SystemParticipantTestData.evcsInput.chargingPoints.toString(),
       "locationType"    : SystemParticipantTestData.evcsInput.locationType.name(),
       "v2gSupport"      : SystemParticipantTestData.evcsInput.v2gSupport.toString(),
-      "em"              : SystemParticipantTestData.evcsInput.em.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+      "controllingEm"   : SystemParticipantTestData.evcsInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
   }
 

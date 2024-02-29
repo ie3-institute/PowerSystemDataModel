@@ -54,7 +54,7 @@ class EmInputTest extends Specification {
         SystemParticipantTestData.emInput.uuid +
         ", id='" +
         SystemParticipantTestData.emInput.id +
-        ", operator=" +
+        "', operator=" +
         SystemParticipantTestData.emInput.operator.uuid +
         ", operationTime=" +
         SystemParticipantTestData.emInput.operationTime +
@@ -62,7 +62,7 @@ class EmInputTest extends Specification {
         SystemParticipantTestData.emInput.controlStrategy +
         ", parentEm=" +
         SystemParticipantTestData.parentEm.uuid +
-        '}'
+        "}"
   }
 
   def "A EmInput copy method should work as expected"() {

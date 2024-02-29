@@ -27,7 +27,7 @@ class WecInputTest extends Specification {
       assert qCharacteristics == wec.qCharacteristics
       assert type == SystemParticipantTestData.wecType
       assert marketReaction
-      assert em == Optional.of(SystemParticipantTestData.emInput)
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -49,7 +49,7 @@ class WecInputTest extends Specification {
       assert type.rotorArea == wec.type.rotorArea * 2d
       assert type.hubHeight == wec.type.hubHeight
       assert marketReaction == wec.marketReaction
-      assert em == Optional.of(SystemParticipantTestData.emInput)
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

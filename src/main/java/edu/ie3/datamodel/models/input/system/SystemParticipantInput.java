@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.io.extractor.HasEm;
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -16,7 +17,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import java.util.*;
 
 /** Describes a system asset that is connected to a node */
-public abstract class SystemParticipantInput extends AssetInput implements HasNodes {
+public abstract class SystemParticipantInput extends AssetInput implements HasNodes, HasEm {
 
   /** The node that the asset is connected to */
   private final NodeInput node;
@@ -28,7 +29,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * Optional {@link EmInput} that is controlling this system participant. If null, this system
    * participant is not em-controlled.
    */
-  private final EmInput em;
+  private final EmInput controllingEm;
 
   /**
    * Constructor for an operated system participant
@@ -52,7 +53,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     super(uuid, id, operator, operationTime);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
-    this.em = em;
+    this.controllingEm = em;
   }
 
   /**
@@ -73,7 +74,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     super(uuid, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
-    this.em = em;
+    this.controllingEm = em;
   }
 
   public NodeInput getNode() {
@@ -84,13 +85,20 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     return qCharacteristics;
   }
 
+  /*
   public Optional<EmInput> getEm() {
     return Optional.ofNullable(em);
   }
+   */
 
   @Override
   public List<NodeInput> allNodes() {
     return Collections.singletonList(node);
+  }
+
+  @Override
+  public Optional<EmInput> getControllingEm() {
+    return Optional.ofNullable(controllingEm);
   }
 
   @Override
@@ -103,12 +111,12 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     if (!super.equals(o)) return false;
     return Objects.equals(node, that.node)
         && Objects.equals(qCharacteristics, that.qCharacteristics)
-        && Objects.equals(em, that.em);
+        && Objects.equals(controllingEm, that.controllingEm);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), node, qCharacteristics, em);
+    return Objects.hash(super.hashCode(), node, qCharacteristics, controllingEm);
   }
 
   @Override
@@ -127,7 +135,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
         + ", qCharacteristics='"
         + qCharacteristics
         + "', em="
-        + getEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
+        + getControllingEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
         + '}';
   }
 
@@ -150,7 +158,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       super(entity);
       this.node = entity.getNode();
       this.qCharacteristics = entity.getqCharacteristics();
-      this.em = entity.getEm().orElse(null);
+      this.em = entity.getControllingEm().orElse(null);
     }
 
     public B node(NodeInput node) {

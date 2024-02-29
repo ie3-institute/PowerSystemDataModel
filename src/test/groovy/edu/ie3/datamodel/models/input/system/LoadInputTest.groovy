@@ -41,7 +41,7 @@ class LoadInputTest extends Specification {
       assert eConsAnnual == Quantities.getQuantity(6000, KILOWATTHOUR)
       assert sRated == Quantities.getQuantity(0d, KILOVOLTAMPERE)
       assert cosPhiRated == 0.8d
-      assert em == Optional.of(SystemParticipantTestData.emInput)
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -65,7 +65,7 @@ class LoadInputTest extends Specification {
       assert eConsAnnual == loadInput.eConsAnnual * 2d
       assert sRated == loadInput.sRated * 2d
       assert cosPhiRated == loadInput.cosPhiRated
-      assert em == Optional.of(SystemParticipantTestData.emInput)
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }
