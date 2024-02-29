@@ -49,6 +49,9 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
   }
 
   @Override
+  public abstract ThermalUnitInputCopyBuilder<?> copy();
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof ThermalUnitInput that)) return false;
@@ -81,8 +84,7 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
    * Abstract class for all builders that build child entities of abstract class {@link
    * ThermalUnitInput}
    */
-  protected abstract static class ThermalUnitInputCopyBuilder<
-          B extends ThermalUnitInput.ThermalUnitInputCopyBuilder<B>>
+  public abstract static class ThermalUnitInputCopyBuilder<B extends ThermalUnitInputCopyBuilder<B>>
       extends AssetInputCopyBuilder<B> {
 
     private ThermalBusInput thermalBus;
@@ -100,6 +102,8 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
     protected ThermalBusInput getThermalBus() {
       return thermalBus;
     }
+
+    public abstract B scale(Double factor);
 
     @Override
     public abstract ThermalUnitInput build();

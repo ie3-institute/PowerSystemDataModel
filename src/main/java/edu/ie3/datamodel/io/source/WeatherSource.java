@@ -101,7 +101,7 @@ public abstract class WeatherSource {
     for (Map.Entry<Point, Set<TimeBasedValue<WeatherValue>>> entry :
         coordinateToValues.entrySet()) {
       Set<TimeBasedValue<WeatherValue>> values = entry.getValue();
-      IndividualTimeSeries<WeatherValue> timeSeries = new IndividualTimeSeries<>(null, values);
+      IndividualTimeSeries<WeatherValue> timeSeries = new IndividualTimeSeries<>(values);
       coordinateToTimeSeriesMap.put(entry.getKey(), timeSeries);
     }
     return coordinateToTimeSeriesMap;
@@ -125,7 +125,8 @@ public abstract class WeatherSource {
                   fieldsToAttributes.remove("tid");
                   Optional<TimeBasedWeatherValueData> data =
                       toTimeBasedWeatherValueData(fieldsToAttributes);
-                  return factory.get(data.get());
+                  return factory.get(
+                      Try.from(data, () -> new SourceException("Missing data in: " + data)));
                 }),
             "TimeBasedValue<WeatherValue>")
         .transform(Stream::toList, SourceException::new)

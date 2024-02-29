@@ -30,20 +30,6 @@ public class SwitchResult extends ResultEntity {
     this.closed = closed;
   }
 
-  /**
-   * Standard constructor which allows uuid provision
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param closed true if switch is closed, false if switch is open
-   */
-  public SwitchResult(UUID uuid, ZonedDateTime time, UUID inputModel, boolean closed) {
-    super(uuid, time, inputModel);
-    this.closed = closed;
-  }
-
   public boolean getClosed() {
     return closed;
   }
@@ -69,9 +55,7 @@ public class SwitchResult extends ResultEntity {
   @Override
   public String toString() {
     return "SwitchResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

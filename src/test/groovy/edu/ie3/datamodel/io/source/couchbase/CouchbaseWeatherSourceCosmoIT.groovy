@@ -24,7 +24,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 import java.time.Duration
-import java.time.ZoneId
+
 
 @Testcontainers
 class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
@@ -73,7 +73,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         couchbaseContainer.password,
         Duration.ofSeconds(20))
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-    def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
+    def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
   }
 

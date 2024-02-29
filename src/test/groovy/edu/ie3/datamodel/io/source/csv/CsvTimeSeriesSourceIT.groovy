@@ -39,7 +39,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
     then:
     def ex = thrown(SourceException)
-    ex.message == "Unable to find a file with path '" + filePath + "'."
+    ex.message == "Unable to find file '" + filePath + "'."
     ex.cause.class == FileNotFoundException
   }
 

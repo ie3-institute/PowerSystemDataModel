@@ -60,6 +60,12 @@ Model of (mainly) domestic loads.
      - --
      - Rated power factor
 
+   * - em
+     - --
+     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       | this system participant. Field can be empty or missing, if this participant
+       | is not controlled.
+
 ```
 
 ## Caveats
@@ -71,7 +77,7 @@ If you found something, please contact us!
 
 ## Load Profiles
 
-The {code}`LoadProfile` is an interface, that forces it's implementing classes to have a {code}`String` *key*
+The {code}`LoadProfile` is an interface, that forces its implementing classes to have a {code}`String` *key*
 and being able to parse a {code}`String` to a {code}`LoadProfile`.
 Its only purpose is to give note, which load profile has to be used by the simulation.
 The actual profile has to be provided by the simulation itself.

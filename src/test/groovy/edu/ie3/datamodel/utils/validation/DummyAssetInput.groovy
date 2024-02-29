@@ -14,6 +14,14 @@ class DummyAssetInput extends AssetInput {
     super(UUID.randomUUID(), id)
   }
 
+  DummyAssetInput(UUID uuid, String id) {
+    super(uuid, id)
+  }
+
+  static DummyAssetInput of(UUID uuid, String id) {
+    return new DummyAssetInput(uuid, id)
+  }
+
   static DummyAssetInput valid(String id) {
     return new DummyAssetInput(id)
   }

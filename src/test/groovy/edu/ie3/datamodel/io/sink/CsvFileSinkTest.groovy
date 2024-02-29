@@ -17,6 +17,7 @@ import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -25,7 +26,6 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
-import edu.ie3.datamodel.models.input.system.EmInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
@@ -45,7 +45,6 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
-import edu.ie3.test.common.EnergyManagementTestData
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SampleJointGrid
 import edu.ie3.test.common.SystemParticipantTestData
@@ -143,19 +142,18 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         new FileNamingStrategy(),
         ",")
 
-    UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
     Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-    PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    WecResult wecResult = new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    EvcsResult evcsResult = new EvcsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    EmResult emResult = new EmResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+    PvResult pvResult = new PvResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    WecResult wecResult = new WecResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    EvcsResult evcsResult = new EvcsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    EmResult emResult = new EmResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
 
     Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
-    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, pRef, pMin, pMax)
+    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
 
     when:
     csvFileSink.persistAll([
@@ -171,7 +169,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
       ThermalUnitInputTestData.thermalHouseInput,
       SystemParticipantTestData.evcsInput,
       SystemParticipantTestData.loadInput,
-      EnergyManagementTestData.emInput
+      SystemParticipantTestData.emInput
     ])
     csvFileSink.shutdown()
 
@@ -252,6 +250,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         OperationTime.notLimited(),
         Mock(NodeInput),
         new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
+        Mock(EmInput),
         0.2,
         Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
         Quantities.getQuantity(95d, PERCENT),

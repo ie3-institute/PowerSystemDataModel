@@ -38,26 +38,6 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
     this.energy = energy.to(StandardUnits.ENERGY_RESULT);
   }
 
-  /**
-   * Constructs the result with
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param energy Currently stored energy
-   * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
-   */
-  protected ThermalStorageResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Energy> energy,
-      ComparableQuantity<Power> qDot) {
-    super(uuid, time, inputModel, qDot);
-    this.energy = energy.to(StandardUnits.ENERGY_RESULT);
-  }
-
   public ComparableQuantity<Energy> getEnergy() {
     return energy;
   }
@@ -83,9 +63,7 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
   @Override
   public String toString() {
     return "ThermalStorageResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

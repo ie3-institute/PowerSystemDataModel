@@ -14,6 +14,8 @@ import edu.ie3.datamodel.io.factory.input.Transformer3WInputEntityData
 import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData
 import edu.ie3.datamodel.io.source.RawGridSource
 import edu.ie3.datamodel.io.source.TypeSource
+import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
@@ -42,8 +44,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
       "id"			    : "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"	: "2020-03-24 15:11:31",
-      "operatesUntil"	: "2020-03-24 15:11:31",
+      "operatesFrom"	: "2020-03-24T15:11:31Z",
+      "operatesUntil"	: "2020-03-24T15:11:31Z",
       "nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"			: "47d29df0-ba2d-4d23-8e75-c82229c5c758",
       "closed"		    : "true"
@@ -53,8 +55,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
       "id"			    : "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"	: "2020-03-24 15:11:31",
-      "operatesUntil"	: "2020-03-24 15:11:31",
+      "operatesFrom"	: "2020-03-24T15:11:31Z",
+      "operatesUntil"	: "2020-03-24T15:11:31Z",
       "closed"		    : "true"
     ]
 
@@ -83,8 +85,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
       "id"			: "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"	: "2020-03-24 15:11:31",
-      "operatesUntil"	: "2020-03-24 15:11:31",
+      "operatesFrom"	: "2020-03-24T15:11:31Z",
+      "operatesUntil"	: "2020-03-24T15:11:31Z",
       "nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"			: "620d35fc-34f8-48af-8020-3897fe75add7",
       "closed"		: "true"
@@ -109,8 +111,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
       "id"			: "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"	: "2020-03-24 15:11:31",
-      "operatesUntil"	: "2020-03-24 15:11:31",
+      "operatesFrom"	: "2020-03-24T15:11:31Z",
+      "operatesUntil"	: "2020-03-24T15:11:31Z",
       "nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"			: "47d29df0-ba2d-4d23-8e75-c82229c5c758",
       "closed"		: "true"
@@ -119,8 +121,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"				: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id"				: "test_lineCtoD",
       "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"		: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "nodeA"				: "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
       "nodeB"				: "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
       "parallelDevices"	: "2",
@@ -137,8 +139,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
         "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
         "id"			: "test_switch_AtoB",
         "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-        "operatesFrom"	: "2020-03-24 15:11:31",
-        "operatesUntil"	: "2020-03-24 15:11:31",
+        "operatesFrom"	: "2020-03-24T15:11:31Z",
+        "operatesUntil"	: "2020-03-24T15:11:31Z",
         "closed"		: "true"
       ],
       SwitchInput,
@@ -149,8 +151,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
         "uuid"				: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
         "id"				: "test_lineCtoD",
         "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-        "operatesFrom"		: "2020-03-24 15:11:31",
-        "operatesUntil"		: "2020-03-24 15:11:31",
+        "operatesFrom"		: "2020-03-24T15:11:31Z",
+        "operatesUntil"		: "2020-03-24T15:11:31Z",
         "parallelDevices"	: "2",
         "type"				: "3bed3eb3-9790-4874-89b5-a5434d408088",
         "length"			: "0.003",
@@ -188,8 +190,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"             	: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id"               	: "test_lineCtoD",
       "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"     	: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"     	: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "parallelDevices"  	: "2",
       "type"             	: "3bed3eb3-9790-4874-89b5-a5434d408088",
       "length"           	: "0.003",
@@ -204,8 +206,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"             	: "92ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id"               	: "test_line_AtoB",
       "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"     	: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"     	: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "parallelDevices"  	: "2",
       "type"             	: "3bed3eb3-9790-4874-89b5-a5434d408088",
       "length"           	: "0.003",
@@ -221,8 +223,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
         "uuid"             	: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
         "id"               	: "test_lineCtoD",
         "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-        "operatesFrom"     	: "2020-03-24 15:11:31",
-        "operatesUntil"		: "2020-03-24 15:11:31",
+        "operatesFrom"     	: "2020-03-24T15:11:31Z",
+        "operatesUntil"		: "2020-03-24T15:11:31Z",
         "parallelDevices"  	: "2",
         "length"           	: "0.003",
         "geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
@@ -237,8 +239,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
         "uuid"             	: "92ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
         "id"               	: "test_line_AtoB",
         "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-        "operatesFrom"     	: "2020-03-24 15:11:31",
-        "operatesUntil"		: "2020-03-24 15:11:31",
+        "operatesFrom"     	: "2020-03-24T15:11:31Z",
+        "operatesUntil"		: "2020-03-24T15:11:31Z",
         "parallelDevices"  	: "2",
         "length"           	: "0.003",
         "geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
@@ -269,8 +271,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
       "id"				: "3w_test",
       "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"		: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "nodeC"				: "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
       "parallelDevices"	: "1",
       "tapPos"			: "0",
@@ -284,8 +286,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
       "id"				: "3w_test",
       "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"		: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "nodeC"				: "bd8927b4-0ca9-4dd3-b645-468e6e433160",
       "parallelDevices"	: "1",
       "tapPos"			: "0",
@@ -306,8 +308,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
       "id"				: "3w_test",
       "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"		: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "parallelDevices"	: "1",
       "tapPos"			: "0",
       "autoTap"			: "true"
@@ -588,5 +590,33 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "the optional is empty"
     actual.allEntitiesAsList().empty
+  }
+
+  def "A CsvRawGridSource should process invalid input data as expected when requested to provide an instance of RawGridElements"() {
+    given:
+    def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    def rawGridSource =
+    new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
+      @Override
+      Map<UUID, NodeInput> getNodes() {
+        return Collections.emptyMap()
+      }
+
+      @Override
+      Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) {
+        return Collections.emptyMap()
+      }
+    }
+
+    when:
+    def rawGridElements = Try.of(() -> rawGridSource.gridData, SourceException)
+
+    then:
+    rawGridElements.failure
+    rawGridElements.data == Optional.empty()
+
+    Exception ex = rawGridElements.exception.get()
+    ex.class == SourceException
+    ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Linked nodeA")
   }
 }

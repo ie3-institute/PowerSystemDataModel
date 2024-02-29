@@ -28,6 +28,28 @@ class HpInputTest extends Specification {
       assert qCharacteristics == hpInput.qCharacteristics
       assert thermalBus == SystemParticipantTestData.thermalBus
       assert type == SystemParticipantTestData.hpTypeInput
+      assert em == Optional.of(SystemParticipantTestData.emInput)
+    }
+  }
+
+  def "Scaling a HpInput via builder should work as expected"() {
+    given:
+    def hpInput = SystemParticipantTestData.hpInput
+
+    when:
+    def alteredUnit = hpInput.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == hpInput.uuid
+      assert operationTime == hpInput.operationTime
+      assert operator == hpInput.operator
+      assert id == hpInput.id
+      assert qCharacteristics == hpInput.qCharacteristics
+      assert thermalBus == hpInput.thermalBus
+      assert type.sRated == hpInput.type.sRated * 2d
+      assert type.pThermal == hpInput.type.pThermal * 2d
+      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

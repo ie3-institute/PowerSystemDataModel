@@ -8,6 +8,7 @@ package edu.ie3.test.common
 import static edu.ie3.datamodel.models.StandardUnits.*
 
 import edu.ie3.datamodel.models.OperationTime
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.container.SystemParticipants
@@ -35,8 +36,8 @@ class SystemParticipantTestData {
 
   // general participant data
   static final OperationTime operationTime = OperationTime.builder()
-  .withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31"))
-  .withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
+  .withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24T15:11:31Z"))
+  .withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25T15:11:31Z")).build()
   static final OperatorInput operator = new OperatorInput(
   UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
   public static final NodeInput participantNode = GridTestData.nodeA
@@ -55,6 +56,25 @@ class SystemParticipantTestData {
   private static final ComparableQuantity<EnergyPrice> opex = Quantities.getQuantity(50d, ENERGY_PRICE)
   static final ComparableQuantity<Dimensionless> etaConv = Quantities.getQuantity(98d, EFFICIENCY)
 
+  // EmInput
+  public static final String emControlStrategy = "self_optimization"
+  public static final EmInput parentEm = new EmInput(
+  UUID.fromString("897bfc17-8e54-43d0-8d98-740786fd94dd"),
+  "test_parentEmInput",
+  SystemParticipantTestData.operator,
+  SystemParticipantTestData.operationTime,
+  emControlStrategy,
+  null
+  )
+
+  public static final EmInput emInput = new EmInput(
+  UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
+  "test_emInput",
+  SystemParticipantTestData.operator,
+  SystemParticipantTestData.operationTime,
+  emControlStrategy,
+  parentEm
+  )
 
   // FixedFeedInput
   public static final FixedFeedInInput fixedFeedInInput = new FixedFeedInInput(
@@ -64,6 +84,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  emInput,
   sRated,
   cosPhiRated
   )
@@ -81,6 +102,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  emInput,
   albedo,
   azimuth,
   etaConv,
@@ -117,6 +139,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiP,
+  emInput,
   wecType,
   false
   )
@@ -172,6 +195,7 @@ class SystemParticipantTestData {
   participantNode,
   thermalBus,
   cosPhiFixed,
+  emInput,
   chpTypeInput,
   thermalStorage,
   false
@@ -198,6 +222,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   qV,
+  emInput,
   bmTypeInput,
   false,
   false,
@@ -207,6 +232,7 @@ class SystemParticipantTestData {
   // EV
   private static final ComparableQuantity<Energy> eStorage = Quantities.getQuantity(100, ENERGY_IN)
   private static final ComparableQuantity<SpecificEnergy> eCons = Quantities.getQuantity(5, ENERGY_PER_DISTANCE)
+  private static final ComparableQuantity<Power> sRatedDC = Quantities.getQuantity(20,ACTIVE_POWER_IN )
   public static final EvTypeInput evTypeInput = new EvTypeInput(
   typeUuid,
   "test_evTypeInput",
@@ -215,7 +241,8 @@ class SystemParticipantTestData {
   eStorage,
   eCons,
   sRated,
-  cosPhiRated)
+  cosPhiRated,
+  sRatedDC)
   public static final EvInput evInput = new EvInput(
   UUID.fromString("a17be20f-c7a7-471d-8ffe-015487c9d022"),
   "test_evInput",
@@ -223,6 +250,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  emInput,
   evTypeInput
   )
 
@@ -236,6 +264,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  emInput,
   standardLoadProfile,
   false,
   eConsAnnual,
@@ -272,6 +301,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  emInput,
   storageTypeInput
   )
 
@@ -294,6 +324,7 @@ class SystemParticipantTestData {
   participantNode,
   thermalBus,
   cosPhiFixed,
+  emInput,
   hpTypeInput
   )
 
@@ -306,6 +337,7 @@ class SystemParticipantTestData {
   operationTime,
   participantNode,
   cosPhiFixed,
+  emInput,
   ChargingPointTypeUtils.HouseholdSocket,
   4,
   cosPhiRated,

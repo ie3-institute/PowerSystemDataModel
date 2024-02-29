@@ -41,6 +41,31 @@ class LoadInputTest extends Specification {
       assert eConsAnnual == Quantities.getQuantity(6000, KILOWATTHOUR)
       assert sRated == Quantities.getQuantity(0d, KILOVOLTAMPERE)
       assert cosPhiRated == 0.8d
+      assert em == Optional.of(SystemParticipantTestData.emInput)
+    }
+  }
+
+  def "Scaling a LoadInput via builder should work as expected"() {
+    given:
+    def loadInput = SystemParticipantTestData.loadInput
+
+    when:
+    def alteredUnit = loadInput.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == loadInput.uuid
+      assert operationTime == loadInput.operationTime
+      assert operator == loadInput.operator
+      assert id == loadInput.id
+      assert loadProfile == loadInput.loadProfile
+      assert dsm == loadInput.dsm
+      assert node == loadInput.node
+      assert qCharacteristics == loadInput.qCharacteristics
+      assert eConsAnnual == loadInput.eConsAnnual * 2d
+      assert sRated == loadInput.sRated * 2d
+      assert cosPhiRated == loadInput.cosPhiRated
+      assert em == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

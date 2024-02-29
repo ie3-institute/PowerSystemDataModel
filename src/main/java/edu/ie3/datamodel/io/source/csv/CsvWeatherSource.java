@@ -5,6 +5,10 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkWeatherUniqueness;
+
+import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
@@ -14,12 +18,15 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.utils.ExceptionUtils;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.*;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -53,7 +60,8 @@ public class CsvWeatherSource extends WeatherSource {
       Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       IdCoordinateSource idCoordinateSource,
-      TimeBasedWeatherValueFactory weatherFactory) {
+      TimeBasedWeatherValueFactory weatherFactory)
+      throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     coordinateToTimeSeries = getWeatherTimeSeries();
@@ -127,7 +135,8 @@ public class CsvWeatherSource extends WeatherSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
+  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries()
+      throws SourceException {
     /* Get only weather time series meta information */
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
         dataSource
@@ -145,7 +154,8 @@ public class CsvWeatherSource extends WeatherSource {
    */
   private Map<Point, IndividualTimeSeries<WeatherValue>> readWeatherTimeSeries(
       Set<CsvIndividualTimeSeriesMetaInformation> weatherMetaInformation,
-      CsvFileConnector connector) {
+      CsvFileConnector connector)
+      throws SourceException {
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
     Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
         this::buildWeatherValue;
@@ -153,7 +163,8 @@ public class CsvWeatherSource extends WeatherSource {
     for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       // we need a reader for each file
       try (BufferedReader reader = connector.initReader(data.getFullFilePath())) {
-        buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+        buildStreamWithFieldsToAttributesMap(reader)
+            .getOrThrow()
             .map(fieldToValueFunction)
             .flatMap(Optional::stream)
             .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
@@ -173,19 +184,36 @@ public class CsvWeatherSource extends WeatherSource {
                   }
                 });
       } catch (FileNotFoundException e) {
-        log.error("Cannot read file {}. File not found!", data.getFullFilePath());
+        throw new SourceException(
+            "Cannot read file " + data.getFullFilePath() + ". File not found!", e);
       } catch (IOException e) {
-        log.error("Cannot read file {}. Exception: {}", data.getFullFilePath(), e);
-      } catch (ValidationException ve) {
-        log.error("Validation failed for file {}. Exception: {}", data.getFullFilePath(), ve);
+        throw new SourceException("Cannot read file " + data.getFullFilePath() + ".", e);
+      } catch (ValidationException e) {
+        throw new SourceException("Validation failed for file " + data.getFullFilePath() + ".", e);
       }
     }
-    return weatherTimeSeries;
+
+    // checking the uniqueness before returning the time series
+    List<DuplicateEntitiesException> exceptions =
+        Try.getExceptions(
+            weatherTimeSeries.values().stream()
+                .map(
+                    ts ->
+                        Try.ofVoid(
+                            () -> checkWeatherUniqueness(ts.getEntries()),
+                            DuplicateEntitiesException.class)));
+
+    if (exceptions.isEmpty()) {
+      return weatherTimeSeries;
+    } else {
+      throw new SourceException("Due to: " + ExceptionUtils.getMessages(exceptions));
+    }
   }
 
-  private Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader)
-      throws ValidationException {
+  private Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
+      BufferedReader bufferedReader) throws ValidationException {
+    Class<? extends Entity> entityClass = TimeBasedValue.class;
+
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
@@ -196,25 +224,12 @@ public class CsvWeatherSource extends WeatherSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows =
-          dataSource.csvRowFieldValueMapping(reader, headline);
-
-      Function<Map<String, String>, String> timeCoordinateIdExtractor =
-          fieldToValues ->
-              fieldToValues
-                  .get(weatherFactory.getTimeFieldString())
-                  .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
-      return dataSource
-          .distinctRowsWithLog(
-              allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
-          .parallelStream();
-
+      return Success.of(dataSource.csvRowFieldValueMapping(reader, headline).parallelStream());
     } catch (IOException e) {
-      log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+      return Failure.of(
+          new SourceException(
+              "Cannot read file to build entity '" + entityClass.getSimpleName() + "'.", e));
     }
-
-    return Stream.empty();
   }
 
   /**
