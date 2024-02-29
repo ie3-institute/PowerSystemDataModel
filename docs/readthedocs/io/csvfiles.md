@@ -106,10 +106,19 @@ For example, you have an IndividualTimeSeries CSV file for energy prices, then y
 for columnScheme `its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1.csv`.
 The CSV file must then have the appropriate format for the key `c` :
 
-`"uuid";"time";"price"` <br> `45bd936f-524a-4d59-8978-31ccf37fa230;2020-01-01T00:00:00Z;100.0`
+```{eval-rst}
+.. list-table::
+   :widths: auto
+   :header-rows: 0
+   
+   * - ``time,price``
+   * - 2020-01-01T00:00:00Z;100.0
+   
+```
 
 The CSV file requires a unique identification number.
 The UUID (Universally Unique Identifier) can be created [here](https://www.uuidgenerator.net/).
+You can also use the Method `java.util.UUID#randomUUID` to create a UUID.
 This is the uuid from the example above `2fcb3e53-b94a-4b96-bea4-c469e499f1a1`.
 
 The following keys are supported until now:
@@ -122,25 +131,25 @@ The following keys are supported until now:
      - Information and supported head line
    * - c
      - | An energy price (e.g. in €/MWh; c stands for charge).
-       | Permissible head line: ``uuid,time,price``
+       | Permissible head line: ``time,price``
    * - p
      - | Active power
-       | Permissible head line: ``uuid,time,p``
+       | Permissible head line: ``time,p``
    * - pq
      - | Active and reactive power
-       | Permissible head line: ``uuid,time,p,q``
+       | Permissible head line: ``time,p,q``
    * - h
      - | Heat power demand
-       | Permissible head line: ``uuid,time,h``
+       | Permissible head line: ``time,h``
    * - ph
      - | Active and heat power
-       | Permissible head line: ``uuid,time,p,h``
+       | Permissible head line: ``time,p,h``
    * - pqh
      - | Active, reactive and heat power
-       | Permissible head line: ``uuid,time,p,q,h``
+       | Permissible head line: ``time,p,q,h``
    * - weather
      - | Weather information
-       | Permissible head line: ``uuid,time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
+       | Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
 
 ```
 
