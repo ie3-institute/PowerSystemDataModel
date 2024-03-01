@@ -7,11 +7,21 @@ coordinates.
 
 ## Information
 
-| Attribute    | Remarks                                                        |
-|:-------------|:---------------------------------------------------------------|
-| `Id`         | An integer value for identifying the coordinate.               |
-| `Coordiante` | Geographical information presented as `Lat/long` of a `Point`. |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
+   :header-rows: 0
+    
+   * - Attribute
+     - Remarks
+   
+   * - Id
+     - An integer value for identifying the coordinate. 
+   
+   * - Coordinate
+     - Geographical information presented as `Lat/long` of a `Point`.
 
+```
 
 
 ## Known implementations:

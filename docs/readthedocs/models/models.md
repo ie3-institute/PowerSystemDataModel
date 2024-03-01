@@ -100,7 +100,6 @@ Model classes you can use to describe a data set as input to power system simula
 maxdepth: 1
 ---
 input/operator
-input/idcoordinate
 ```
 
 ### Grid Related Models
