@@ -27,7 +27,7 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 ```{eval-rst}
 .. list-table::
    :widths: auto
-   :header-rows: 0
+   :header-rows: 1
 
    * - Model
      - File Name
@@ -67,7 +67,7 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
    * - load
      - *prefix_* load_input *_suffix*
    * - photovoltaic power plant
-     - *prefix_* pc_input *_suffix*
+     - *prefix_* pv_input *_suffix*
    * - electrical energy storage
      - | *prefix_* storage_input *_suffix*
        | *prefix_* storage_type_input *_suffix*
@@ -86,7 +86,7 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 ```{eval-rst}
 .. list-table::
    :widths: 50 50
-   :header-rows: 0
+   :header-rows: 1
 
    * - Model
      - File Name
@@ -106,14 +106,9 @@ For example, you have an IndividualTimeSeries CSV file for energy prices, then y
 for columnScheme `its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1.csv`.
 The CSV file must then have the appropriate format for the key `c` :
 
-```{eval-rst}
-.. list-table::
-   :widths: auto
-   :header-rows: 0
-   
-   * - ``time,price``
-   * - 2020-01-01T00:00:00Z;100.0
-   
+```
+   time,price
+   2020-01-01T00:00:00Z,100.0
 ```
 
 The CSV file requires a unique identification number.
@@ -125,7 +120,7 @@ The following keys are supported until now:
 ```{eval-rst}
 .. list-table::
    :widths: auto
-   :header-rows: 0
+   :header-rows: 1
 
    * - Key
      - Information and supported head line
@@ -158,7 +153,7 @@ The following keys are supported until now:
 ```{eval-rst}
 .. list-table::
    :widths: auto
-   :header-rows: 0
+   :header-rows: 1
 
    * - Model
      - File Name
