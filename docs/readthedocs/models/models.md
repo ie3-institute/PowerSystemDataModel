@@ -105,6 +105,7 @@ input/idcoordinate
 
 ### Grid Related Models
 
+#### Electric Grid
 ```{toctree}
 ---
 maxdepth: 1
@@ -118,6 +119,17 @@ input/grid/transformer2w
 input/grid/transformer3w
 input/grid/measurementunit
 input/grid/gridcontainer
+```
+
+#### Thermal Grid
+
+```{toctree}
+---
+maxdepth: 1
+---
+input/thermal/thermalbus
+input/thermal/thermalhouse
+input/thermal/cylindricalstorage
 ```
 
 ### Participant Related Models
@@ -137,10 +149,14 @@ input/participant/load
 input/participant/pv
 input/participant/storage
 input/participant/wec
-input/participant/thermalbus
-input/participant/thermalhouse
-input/participant/cylindricalstorage
-input/participant/em
+```
+
+### Energy Management Related Models
+```{toctree}
+---
+maxdepth: 1
+---
+input/em
 ```
 
 ### Additional Data
