@@ -95,7 +95,7 @@ public class EmInput extends AssetInput implements HasEm {
         + getOperationTime()
         + ", controlStrategy="
         + getControlStrategy()
-        + ", parentEm="
+        + ", controllingEm="
         + getControllingEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
         + "}";
   }
