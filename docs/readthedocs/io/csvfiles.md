@@ -106,7 +106,7 @@ For example, you have an IndividualTimeSeries CSV file for energy prices, then y
 for columnScheme `its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1.csv`.
 The CSV file must then have the appropriate format for the key `c` :
 
-```
+```text
    time,price
    2020-01-01T00:00:00Z,100.0
 ```
