@@ -51,10 +51,8 @@ public final class Extractor {
     if (nestedEntity instanceof HasLine nestedHasLine) {
       resultingList.add(nestedHasLine.getLine());
     }
-    if (nestedEntity instanceof HasEm nestedHasEms) {
-      if (nestedHasEms.getControllingEm().isPresent()) {
-        resultingList.add(nestedHasEms.getControllingEm().get());
-      }
+    if (nestedEntity instanceof HasEm nestedHasEms && nestedHasEms.getControllingEm().isPresent()) {
+      resultingList.add(nestedHasEms.getControllingEm().get());
     }
 
     if (resultingList.contains(null)) {
