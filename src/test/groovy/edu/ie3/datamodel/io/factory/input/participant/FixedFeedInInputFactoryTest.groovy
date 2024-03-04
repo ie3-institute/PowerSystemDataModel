@@ -69,7 +69,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert em == Optional.of(emUnit)
+      assert controllingEm == Optional.of(emUnit)
       assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
       assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
     }

@@ -151,7 +151,7 @@ public class ChpInput extends SystemParticipantInput
         + ", qCharacteristics='"
         + getqCharacteristics()
         + "', em="
-        + getEm()
+        + getControllingEm()
         + ", thermalBus="
         + thermalBus.getUuid()
         + ", type="

@@ -116,7 +116,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
         + ", qCharacteristics='"
         + getqCharacteristics()
         + "', em="
-        + getEm()
+        + getControllingEm()
         + ", sRated="
         + sRated
         + ", cosphiRated="
