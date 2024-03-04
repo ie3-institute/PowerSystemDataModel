@@ -80,6 +80,11 @@ abstract class WeatherTestData {
     List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
       throw new UnsupportedOperationException("This method is not supported!")
     }
+
+    @Override
+    List<CoordinateDistance> findCornerPoints(Point coordinate, ComparableQuantity<Length> distance) {
+      throw new UnsupportedOperationException("This method is not supported!")
+    }
   }
 
   public static final IdCoordinateSource coordinateSource = new DummyIdCoordinateSource()
