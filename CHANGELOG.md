@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed some tests no failing when they should [#958](https://github.com/ie3-institute/PowerSystemDataModel/issues/958)
 - Fixed thermal-house-documentation [#873](https://github.com/ie3-institute/PowerSystemDataModel/issues/873)
 - Fixed ElectricVehicle Documentation [#875](https://github.com/ie3-institute/PowerSystemDataModel/issues/875)
-- Fixed Equal behavior of `ConnectorResult` [#1001](https://github.com/ie3-institute/PowerSystemDataModel/issues/1001)
+- Fixed Equal behavior of `ConnectorResult` [#1001](https://github.com/ie3-institute/PowerSystemDataModel/issues/1001) 
 - Fixed test for invalid input data in `CsvGraphicSource` [#1022](https://github.com/ie3-institute/PowerSystemDataModel/issues/1022)
 
 ### Changed
@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changes to Energy Management inputs:
   - `EmInput` should not be connected to the grid [#955](https://github.com/ie3-institute/PowerSystemDataModel/issues/955)
   - System participants now reference the em entity [#957](https://github.com/ie3-institute/PowerSystemDataModel/issues/957)
-- Enhancing the error message for coordinate sources with invalid column names [#670](https://github.com/ie3-institute/PowerSystemDataModel/issues/670)
+- Enhancing the error message for coordinate sources with invalid column names [#670](https://github.com/ie3-institute/PowerSystemDataModel/issues/670) 
 - Allowing for additional unused columns in sources [#839](https://github.com/ie3-institute/PowerSystemDataModel/issues/839)
 - Improving column name validation to only run once per source [#849](https://github.com/ie3-institute/PowerSystemDataModel/issues/849)
 - Refactored and abstracted `EntitySource`s and `EntityData` creation [#969](https://github.com/ie3-institute/PowerSystemDataModel/issues/969)
@@ -65,7 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed wrong rated power unit hint [#804](https://github.com/ie3-institute/PowerSystemDataModel/issues/804)
-- Fixed wrong hash code generation of ConnectorResult [#817](https://github.com/ie3-institute/PowerSystemDataModel/issues/817)
+- Fixed wrong hash code generation of ConnectorResult [#817](https://github.com/ie3-institute/PowerSystemDataModel/issues/817) 
 - Fixed wrong path for timeSeriesMapping [#886](https://github.com/ie3-institute/PowerSystemDataModel/issues/886)
 
 ### Changed
@@ -128,7 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BREAKING: PvInput Model parameter name height changed to elevationAngle [#393](https://github.com/ie3-institute/PowerSystemDataModel/issues/393) :warning:
 - BREAKING: Transformer's no load susceptance needs to be zero or negative to pass model validation [#378](https://github.com/ie3-institute/PowerSystemDataModel/issues/378)
   - All input data sets for version < 3.0.0 need to be altered!
-- Deprecating (as part of [#513](https://github.com/ie3-institute/PowerSystemDataModel/issues/513)):
+- Deprecating (as part of [#513](https://github.com/ie3-institute/PowerSystemDataModel/issues/513)): 
   - `edu.ie3.datamodel.io.csv.timeseries.ColumnScheme`
   - `edu.ie3.datamodel.io.csv.FileNameMetaInformation`
   - `edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation`
@@ -218,10 +218,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 -   BREAKING: Removed deprecated code parts
-        -   Intermingled builder pattern and constructors in `SubGridGate`
-        -   `TarballUtils` that have been transferred to `FileIOUtils` in [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
-        -   `FileNamingStrategy` that has been transferred to `EntityPersistenceNamingStrategy`
-        -   `EvCharacteristicInput` and `TimeSeriesContainer` that shouldn't be used anymore
+	-   Intermingled builder pattern and constructors in `SubGridGate`
+	-   `TarballUtils` that have been transferred to `FileIOUtils` in [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
+	-   `FileNamingStrategy` that has been transferred to `EntityPersistenceNamingStrategy`
+	-   `EvCharacteristicInput` and `TimeSeriesContainer` that shouldn't be used anymore
 
 ### Fixed
 -   InfluxDbConnector now keeps session instead of creating a new one each call
@@ -256,7 +256,7 @@ most of the commonly known power flow calculations
 
 ### Changed
 -   Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
--   Modifications in `LineInput` and `GraphicInput` constructors to make `LineStrings` with two exactly equal 
+-   Modifications in `LineInput` and `GraphicInput` constructors to make `LineStrings` with two exactly equal
 coordinates or multiple exactly equal coordinates possible
 -   Extended functionality of `GridAndGeoUtils`
 - `CsvFileConnector` is now set up to process either UniqueEntities or only by file name
