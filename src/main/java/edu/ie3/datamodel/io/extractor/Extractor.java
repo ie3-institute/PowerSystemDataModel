@@ -52,9 +52,7 @@ public final class Extractor {
       resultingList.add(nestedHasLine.getLine());
     }
     if (nestedEntity instanceof HasEm nestedHasEms) {
-      if (nestedHasEms.getControllingEm().isPresent()) {
-        resultingList.add(nestedHasEms.getControllingEm().get());
-      }
+      nestedHasEms.getControllingEm().ifPresent(resultingList::add);
     }
 
     if (resultingList.contains(null)) {
