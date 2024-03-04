@@ -95,7 +95,7 @@ public interface IdCoordinateSource {
   default List<CoordinateDistance> calculateCoordinateDistances(
       Point coordinate, int n, Collection<Point> coordinates) {
     if (coordinates != null && !coordinates.isEmpty()) {
-      SortedSet<CoordinateDistance> sortedDistances =
+      List<CoordinateDistance> sortedDistances =
           GeoUtils.calcOrderedCoordinateDistances(coordinate, coordinates);
       return restrictToBoundingBox(coordinate, sortedDistances, n);
     } else {
