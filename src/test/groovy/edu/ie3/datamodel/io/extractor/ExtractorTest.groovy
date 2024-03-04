@@ -58,7 +58,7 @@ class ExtractorTest extends Specification {
       sptd.fixedFeedInInput.operator,
       sptd.fixedFeedInInput.node.operator,
       sptd.fixedFeedInInput.controllingEm.get(),
-      sptd.fixedFeedInInput.controllingEm.get().parentEm.get()
+      sptd.fixedFeedInInput.controllingEm.get().controllingEm.get()
     ]
 
     sptd.wecInput              || [
@@ -67,7 +67,7 @@ class ExtractorTest extends Specification {
       sptd.wecInput.operator,
       sptd.wecInput.node.operator,
       sptd.wecInput.controllingEm.get(),
-      sptd.wecInput.controllingEm.get().parentEm.get()
+      sptd.wecInput.controllingEm.get().controllingEm.get()
     ]
     sptd.chpInput              || [
       sptd.chpInput.node,
@@ -78,7 +78,7 @@ class ExtractorTest extends Specification {
       sptd.chpInput.thermalStorage.thermalBus,
       sptd.chpInput.thermalStorage.thermalBus.operator,
       sptd.chpInput.controllingEm.get(),
-      sptd.chpInput.controllingEm.get().parentEm.get()
+      sptd.chpInput.controllingEm.get().controllingEm.get()
     ]
     sptd.bmInput               || [
       sptd.bmInput.node,
@@ -86,7 +86,7 @@ class ExtractorTest extends Specification {
       sptd.bmInput.operator,
       sptd.bmInput.node.operator,
       sptd.bmInput.controllingEm.get(),
-      sptd.bmInput.controllingEm.get().parentEm.get()
+      sptd.bmInput.controllingEm.get().controllingEm.get()
     ]
     sptd.evInput               || [
       sptd.evInput.node,
@@ -94,7 +94,7 @@ class ExtractorTest extends Specification {
       sptd.evInput.operator,
       sptd.evInput.node.operator,
       sptd.evInput.controllingEm.get(),
-      sptd.evInput.controllingEm.get().parentEm.get()
+      sptd.evInput.controllingEm.get().controllingEm.get()
     ]
     sptd.storageInput          || [
       sptd.storageInput.node,
@@ -102,7 +102,7 @@ class ExtractorTest extends Specification {
       sptd.storageInput.operator,
       sptd.storageInput.node.operator,
       sptd.storageInput.controllingEm.get(),
-      sptd.storageInput.controllingEm.get().parentEm.get()
+      sptd.storageInput.controllingEm.get().controllingEm.get()
     ]
     sptd.hpInput               || [
       sptd.hpInput.node,
@@ -112,7 +112,7 @@ class ExtractorTest extends Specification {
       sptd.hpInput.thermalBus.operator,
       sptd.hpInput.node.operator,
       sptd.hpInput.controllingEm.get(),
-      sptd.hpInput.controllingEm.get().parentEm.get()
+      sptd.hpInput.controllingEm.get().controllingEm.get()
     ]
 
     gtd.lineGraphicCtoD        || [
@@ -168,7 +168,7 @@ class ExtractorTest extends Specification {
       sptd.fixedFeedInInput.node,
       sptd.fixedFeedInInput.node.operator,
       sptd.fixedFeedInInput.controllingEm.get(),
-      sptd.fixedFeedInInput.controllingEm.get().parentEm.get(),
+      sptd.fixedFeedInInput.controllingEm.get().controllingEm.get(),
       sptd.fixedFeedInInput.controllingEm.get().operator
     ] as Set
   }

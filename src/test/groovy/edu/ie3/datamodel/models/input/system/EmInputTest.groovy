@@ -86,7 +86,7 @@ class EmInputTest extends Specification {
       assert operator == emInput.operator
       assert id == emInput.id
       assert controlStrategy == newStrat
-      assert parentEm == Optional.of(givenParentEm)
+      assert controllingEm == Optional.of(givenParentEm)
     }
   }
 }

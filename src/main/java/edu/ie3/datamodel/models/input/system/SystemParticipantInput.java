@@ -85,12 +85,6 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     return qCharacteristics;
   }
 
-  /*
-  public Optional<EmInput> getEm() {
-    return Optional.ofNullable(em);
-  }
-   */
-
   @Override
   public List<NodeInput> allNodes() {
     return Collections.singletonList(node);
@@ -134,7 +128,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
         + node.getUuid()
         + ", qCharacteristics='"
         + qCharacteristics
-        + "', em="
+        + "', controllingEm="
         + getControllingEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
         + '}';
   }
