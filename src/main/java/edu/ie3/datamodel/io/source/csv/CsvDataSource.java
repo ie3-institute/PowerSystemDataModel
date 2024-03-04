@@ -7,7 +7,11 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
+import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.utils.Try;
@@ -17,8 +21,10 @@ import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -26,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Parent class of all .csv file related sources containing methods and fields consumed by allmost
+ * Parent class of all .csv file related sources containing methods and fields consumed by almost
  * all implementations of .csv file related sources.
  *
  * @version 0.1
@@ -44,7 +50,7 @@ public class CsvDataSource implements DataSource {
 
   public CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
-    this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
+    this.connector = new CsvFileConnector(folderPath);
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
@@ -85,6 +91,63 @@ public class CsvDataSource implements DataSource {
   public FileNamingStrategy getNamingStrategy() {
     return fileNamingStrategy;
   }
+
+  /**
+   * Receive the information for specific time series. They are given back filtered by the column
+   * scheme in order to allow for accounting the different content types.
+   *
+   * @param columnSchemes the column schemes to initialize readers for. If no scheme is given, all
+   *     possible readers will be initialized.
+   * @return A mapping from column scheme to the individual time series meta information
+   */
+  public Map<UUID, CsvIndividualTimeSeriesMetaInformation>
+      getCsvIndividualTimeSeriesMetaInformation(final ColumnScheme... columnSchemes) {
+    return getIndividualTimeSeriesFilePaths().parallelStream()
+        .map(
+            filePath -> {
+              /* Extract meta information from file path and enhance it with the file path itself */
+              IndividualTimeSeriesMetaInformation metaInformation =
+                  fileNamingStrategy.individualTimeSeriesMetaInformation(filePath.toString());
+              return new CsvIndividualTimeSeriesMetaInformation(
+                  metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
+            })
+        .filter(
+            metaInformation ->
+                columnSchemes == null
+                    || columnSchemes.length == 0
+                    || Stream.of(columnSchemes)
+                        .anyMatch(scheme -> scheme.equals(metaInformation.getColumnScheme())))
+        .collect(Collectors.toMap(TimeSeriesMetaInformation::getUuid, Function.identity()));
+  }
+
+  /**
+   * Returns a set of relative paths strings to time series files, with respect to the base folder
+   * path
+   *
+   * @return A set of relative paths to time series files, with respect to the base folder path
+   */
+  protected Set<Path> getIndividualTimeSeriesFilePaths() {
+    Path baseDirectory = connector.getBaseDirectory();
+    try (Stream<Path> pathStream = Files.walk(baseDirectory)) {
+      return pathStream
+          .map(baseDirectory::relativize)
+          .filter(
+              path -> {
+                Path withoutEnding =
+                    Path.of(FileNamingStrategy.removeFileNameEnding(path.toString()));
+                return fileNamingStrategy
+                    .getIndividualTimeSeriesPattern()
+                    .matcher(withoutEnding.toString())
+                    .matches();
+              })
+          .collect(Collectors.toSet());
+    } catch (IOException e) {
+      log.error("Unable to determine time series files readers for time series.", e);
+      return Collections.emptySet();
+    }
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
