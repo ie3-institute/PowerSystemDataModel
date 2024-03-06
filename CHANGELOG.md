@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed ElectricVehicle Documentation [#875](https://github.com/ie3-institute/PowerSystemDataModel/issues/875)
 - Fixed Equal behavior of `ConnectorResult` [#1001](https://github.com/ie3-institute/PowerSystemDataModel/issues/1001) 
 - Fixed test for invalid input data in `CsvGraphicSource` [#1022](https://github.com/ie3-institute/PowerSystemDataModel/issues/1022)
+- Fixed `equals` of `ResultEntity` and `TimeSeriesEntry` [#1037](https://github.com/ie3-institute/PowerSystemDataModel/issues/1037)
 
 ### Changed
 - Changing from comparing strings to comparing uuids in `EntitySource.findFirstEntityByUuid` [#829](https://github.com/ie3-institute/PowerSystemDataModel/issues/829)
