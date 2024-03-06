@@ -9,7 +9,6 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -41,6 +40,7 @@ import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
@@ -969,28 +969,5 @@ class FileNamingStrategyTest extends Specification {
       assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
       assert profile == "g3"
     }
-  }
-
-
-  def "The FileNamingStrategy with FlatHierarchy returns the Id Coordinate file path correctly"() {
-    def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
-
-    when:
-    def idFilePath = fns.getIdCoordinateFilePath()
-
-    then:
-    idFilePath.present
-    idFilePath.get() == Path.of("prefix_coordinates_suffix")
-  }
-
-  def "The FileNamingStrategy with DefaultHierarchy returns the Id Coordinate file path correctly"() {
-    def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), defaultHierarchy)
-
-    when:
-    def idFilePath = fns.getIdCoordinateFilePath()
-
-    then:
-    idFilePath.present
-    idFilePath.get() == defaultHierarchy.baseDirectory.get().resolve("prefix_coordinates_suffix")
   }
 }

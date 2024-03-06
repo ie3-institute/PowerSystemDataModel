@@ -18,9 +18,11 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -50,7 +52,8 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       SqlDataSource sqlDataSource,
       UUID timeSeriesUuid,
       Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
+      TimeBasedSimpleValueFactory<V> factory)
+      throws SourceException {
     super(valueClass, factory);
     this.dataSource = sqlDataSource;
 
@@ -62,6 +65,16 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     final ColumnScheme columnScheme = ColumnScheme.parse(valueClass).orElseThrow();
     final String tableName =
         sqlDataSource.databaseNamingStrategy.getTimeSeriesEntityName(columnScheme);
+
+    Try.of(() -> dataSource.getSourceFields(tableName), SourceException.class)
+        .flatMap(
+            fieldsOpt ->
+                fieldsOpt
+                    .map(
+                        fields ->
+                            factory.validate(fields, valueClass).transformF(SourceException::new))
+                    .orElse(Try.Success.empty()))
+        .getOrThrow();
 
     String dbTimeColumnName =
         sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
@@ -88,7 +101,8 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       DatabaseNamingStrategy namingStrategy,
       UUID timeSeriesUuid,
       Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
+      TimeBasedSimpleValueFactory<V> factory)
+      throws SourceException {
     this(
         new SqlDataSource(connector, schemaName, namingStrategy),
         timeSeriesUuid,
@@ -103,7 +117,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @param schemaName the database schema to use
    * @param namingStrategy the database entity naming strategy to use
    * @param metaInformation the time series meta information
-   * @param timePattern the pattern of time values
+   * @param dateTimeFormatter the DateTimeFormatter of time values
    * @return a SqlTimeSeriesSource for given time series table
    * @throws SourceException if the column scheme is not supported
    */
@@ -112,7 +126,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       String schemaName,
       DatabaseNamingStrategy namingStrategy,
       IndividualTimeSeriesMetaInformation metaInformation,
-      String timePattern)
+      DateTimeFormatter dateTimeFormatter)
       throws SourceException {
     if (!TimeSeriesUtils.isSchemeAccepted(metaInformation.getColumnScheme()))
       throw new SourceException(
@@ -121,7 +135,12 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     Class<? extends Value> valClass = metaInformation.getColumnScheme().getValueClass();
 
     return create(
-        connector, schemaName, namingStrategy, metaInformation.getUuid(), valClass, timePattern);
+        connector,
+        schemaName,
+        namingStrategy,
+        metaInformation.getUuid(),
+        valClass,
+        dateTimeFormatter);
   }
 
   private static <T extends Value> SqlTimeSeriesSource<T> create(
@@ -130,9 +149,10 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       DatabaseNamingStrategy namingStrategy,
       UUID timeSeriesUuid,
       Class<T> valClass,
-      String timePattern) {
+      DateTimeFormatter dateTimeFormatter)
+      throws SourceException {
     TimeBasedSimpleValueFactory<T> valueFactory =
-        new TimeBasedSimpleValueFactory<>(valClass, timePattern);
+        new TimeBasedSimpleValueFactory<>(valClass, dateTimeFormatter);
     return new SqlTimeSeriesSource<>(
         connector, schemaName, namingStrategy, timeSeriesUuid, valClass, valueFactory);
   }

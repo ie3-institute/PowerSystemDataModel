@@ -1,2 +1,2 @@
-uuid,capex,cosphi_rated,e_cons,e_storage,id,opex,s_rated
-5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,100.0,0.95,5.0,100.0,test_evTypeInput,50.0,25.0
+uuid,capex,cos_phi_rated,e_cons,e_storage,id,opex,s_rated,s_rated_dc
+5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,100.0,0.95,5.0,100.0,test_evTypeInput,50.0,25.0,20.0

@@ -12,7 +12,7 @@ import spock.lang.Specification
 
 class EvcsInputTest extends Specification {
 
-  def "A EvCsInput copy method should work as expected"() {
+  def "An EvcsInput copy method should work as expected"() {
     given:
     def evcsInput = SystemParticipantTestData.evcsInput
 
@@ -36,6 +36,30 @@ class EvcsInputTest extends Specification {
       assert chargingPoints == 1
       assert locationType == EvcsLocationType.CHARGING_HUB_HIGHWAY
       assert v2gSupport
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+    }
+  }
+
+  def "Scaling an EvcsInput via builder should work as expected"() {
+    given:
+    def evcsInput = SystemParticipantTestData.evcsInput
+
+    when:
+    def alteredUnit = evcsInput.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == evcsInput.uuid
+      assert operationTime == evcsInput.operationTime
+      assert operator == evcsInput.operator
+      assert id == evcsInput.id
+      assert qCharacteristics == evcsInput.qCharacteristics
+      assert type.sRated == evcsInput.type.sRated * 2d
+      assert cosPhiRated == evcsInput.cosPhiRated
+      assert chargingPoints == evcsInput.chargingPoints
+      assert locationType == evcsInput.locationType
+      assert v2gSupport == evcsInput.v2gSupport
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

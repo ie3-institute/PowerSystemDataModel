@@ -20,6 +20,7 @@ import org.testcontainers.spock.Testcontainers
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.time.Duration
 import java.time.ZoneId
 
 @Testcontainers
@@ -29,8 +30,10 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
   BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
 
   @Shared
-  CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.0.2").withBucket(bucketDefinition)
+  CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.6.0")
+  .withBucket(bucketDefinition)
   .withExposedPorts(8091, 8092, 8093, 8094, 11210)
+  .withStartupAttempts(3) // 3 attempts because startup (node renaming) sometimes fails when executed too early
 
   @Shared
   CouchbaseWeatherSource source
@@ -59,9 +62,15 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
         "--dataset", "file:///home/weather_icon.json")
 
-    def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
+    // increased timeout to deal with CI under high load
+    def connector = new CouchbaseConnector(
+        couchbaseContainer.connectionString,
+        bucketDefinition.name,
+        couchbaseContainer.username,
+        couchbaseContainer.password,
+        Duration.ofSeconds(20))
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-    def weatherFactory = new IconTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
+    def weatherFactory = new IconTimeBasedWeatherValueFactory()
     source = new CouchbaseWeatherSource(connector, IconWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
   }
 

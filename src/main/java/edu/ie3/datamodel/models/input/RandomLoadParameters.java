@@ -14,7 +14,7 @@ import java.util.UUID;
  * sampled for each quarter hour of a day, subdivided into workdays, Saturdays and Sundays. In
  * general the GEV is described by the three parameters "location", "scale" and "shape"
  */
-public class RandomLoadParameters extends InputEntity {
+public class RandomLoadParameters extends UniqueInputEntity {
 
   /** The respective quarter hour of the day */
   private final int quarterHour;

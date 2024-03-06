@@ -5,15 +5,15 @@
  */
 package edu.ie3.datamodel.models.input.system
 
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR
+
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR
 
 
 class LoadInputTest extends Specification {
@@ -41,6 +41,31 @@ class LoadInputTest extends Specification {
       assert eConsAnnual == Quantities.getQuantity(6000, KILOWATTHOUR)
       assert sRated == Quantities.getQuantity(0d, KILOVOLTAMPERE)
       assert cosPhiRated == 0.8d
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+    }
+  }
+
+  def "Scaling a LoadInput via builder should work as expected"() {
+    given:
+    def loadInput = SystemParticipantTestData.loadInput
+
+    when:
+    def alteredUnit = loadInput.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == loadInput.uuid
+      assert operationTime == loadInput.operationTime
+      assert operator == loadInput.operator
+      assert id == loadInput.id
+      assert loadProfile == loadInput.loadProfile
+      assert dsm == loadInput.dsm
+      assert node == loadInput.node
+      assert qCharacteristics == loadInput.qCharacteristics
+      assert eConsAnnual == loadInput.eConsAnnual * 2d
+      assert sRated == loadInput.sRated * 2d
+      assert cosPhiRated == loadInput.cosPhiRated
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

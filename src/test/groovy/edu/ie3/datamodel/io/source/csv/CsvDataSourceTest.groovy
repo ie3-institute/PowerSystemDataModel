@@ -6,22 +6,13 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
-import edu.ie3.datamodel.models.UniqueEntity
-import edu.ie3.datamodel.models.input.NodeInput
-import edu.ie3.test.common.SystemParticipantTestData as sptd
-
+import edu.ie3.datamodel.models.input.system.LoadInput
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Path
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.LongAdder
-import java.util.function.Function
-import java.util.stream.Collectors
 
-class CsvDataSourceTest extends Specification {
-  @Shared
-  Function<Map<String, String>, String> uuidExtractor = { fieldToValues -> fieldToValues.get("uuid") }
+class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
   // Using a groovy bug to gain access to private methods in superclass:
   // by default, we cannot access private methods with parameters from abstract parent classes, introducing a
@@ -38,19 +29,9 @@ class CsvDataSourceTest extends Specification {
       return super.buildFieldsToAttributes(csvRow, headline)
     }
 
-    def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
-        Class<T> entityClass, Collection<Map<String, String>> allRows) {
-      return super.distinctRowsWithLog(allRows, uuidExtractor, entityClass.simpleName, "UUID")
-    }
-
     String[] parseCsvRow(
         String csvRow, String csvSep) {
       return super.parseCsvRow(csvRow, csvSep)
-    }
-
-    String[] oldFieldVals(
-        String csvSep, String csvRow) {
-      return super.oldFieldVals(csvSep, csvRow)
     }
   }
 
@@ -67,9 +48,39 @@ class CsvDataSourceTest extends Specification {
   def "A DataSource should contain a valid connector after initialization"() {
     expect:
     dummyCsvSource.connector != null
-    dummyCsvSource.connector.baseDirectoryName == testBaseFolderPath
+    dummyCsvSource.connector.baseDirectory == testBaseFolderPath
     dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
     dummyCsvSource.connector.entityWriters.isEmpty()
+  }
+
+  def "A CsvDataSource should return column names from a valid CSV file as expected"() {
+    given:
+    DummyCsvSource source = new DummyCsvSource(csvSep, participantsFolderPath, fileNamingStrategy)
+
+    expect:
+    source.getSourceFields(LoadInput).get() == [
+      "operates_from",
+      "node",
+      "s_rated",
+      "cos_phi_rated",
+      "load_profile",
+      "id",
+      "operates_until",
+      "uuid",
+      "q_characteristics",
+      "e_cons_annual",
+      "operator",
+      "dsm",
+      "em"
+    ] as Set
+  }
+
+  def "A CsvDataSource should return an empty result when retrieving column names for a non-existing CSV file"() {
+    given:
+    def path = Path.of("this/path/does-not-exist")
+
+    expect:
+    dummyCsvSource.getSourceFields(path).isEmpty()
   }
 
   def "A CsvDataSource should build a valid fields to attributes map with valid data as expected"() {
@@ -86,7 +97,7 @@ class CsvDataSourceTest extends Specification {
       "olmcharacteristic",
       "cosPhiFixed"
     ] as String[]
-    def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,olm:{(0.0,1.0)},cosPhiFixed:{(0.0,1.0)}"
+    def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\",\"cosPhiFixed:{(0.0,1.0)}\""
 
     expect:
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
@@ -103,109 +114,18 @@ class CsvDataSourceTest extends Specification {
     ]
   }
 
-  def "A CsvDataSource should be able to handle deprecated invalid csvRows correctly"() {
-    expect:
-    dummyCsvSource.oldFieldVals(csvSep, csvRow) as List == resultingArray
-
-    where:
-    csvSep | csvRow                                                                                                                                                                                                                                                                                                                                                                                                              || resultingArray
-    ","    | "4ca90220-74c2-4369-9afa-a18bf068840d,{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}},node_a,2020-03-25T15:11:31Z[UTC],2020-03-24T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0,olm:{(0.00,1.00)},cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"                                                     || [
-      "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
-      "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "true",
-      "1",
-      "1.0",
-      "Höchstspannung",
-      "380.0",
-      "olm:{(0.00,1.00)}",
-      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
-    ]
-    ","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z[UTC]\",\"2020-03-24T15:11:31Z[UTC]\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
-      "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
-      "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "true",
-      "1",
-      "1.0",
-      "Höchstspannung",
-      "380.0",
-      "olm:{(0.00,1.00)}",
-      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
-    ]
-    ";"    | "4ca90220-74c2-4369-9afa-a18bf068840d;cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)};{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}};node_a;2020-03-25T15:11:31Z[UTC];2020-03-24T15:11:31Z[UTC];8f9682df-0744-4b58-a122-f0dc730f6510;true;1;1.0;Höchstspannung;380.0;olm:{(0.00,1.00)};cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"            || [
-      "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}",
-      "{(0.0,1.0),(0.9,1.0),(1.2,-0.3)};{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
-      "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "true",
-      "1",
-      "1.0",
-      "Höchstspannung",
-      "380.0",
-      "olm:{(0.00,1.00)}",
-      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
-    ]
-    ";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z[UTC]\";\"2020-03-24T15:11:31Z[UTC]\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
-      "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
-      "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "true",
-      "1",
-      "1.0",
-      "Höchstspannung",
-      "380.0",
-      "olm:{(0.00,1.00)}",
-      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
-    ]
-    ","    | "66275bfd-978b-4974-9f73-f270165a6351,Standard,f18a5a9b-6d45-4843-be12-be6d12de0e6b,{\"type\":\"LineString\",\"coordinates\":[[7.4116482,51.4843281],[7.4116482,51.4843281]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}},{\"type\":\"Point\",\"coordinates\":[0.25423729,0.75409836],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:0\"}}}\""                                  || [
-      "66275bfd-978b-4974-9f73-f270165a6351",
-      "Standard",
-      "f18a5a9b-6d45-4843-be12-be6d12de0e6b",
-      "{\"type\":\"LineString\",\"coordinates\":[[7.4116482,51.4843281],[7.4116482,51.4843281]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "{\"type\":\"Point\",\"coordinates\":[0.25423729,0.75409836],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:0\"}}}"
-    ]
-    ","    | "4ca90220-74c2-4369-9afa-a18bf068840d,{\"\"type\"\":\"\"Point\"\",\"\"coordinates\"\":[7.411111,51.492528],\"\"crs\"\":{\"\"type\"\":\"\"name\"\",\"\"properties\"\":{\"\"name\"\":\"\"EPSG:4326\"\"}}},node_a,2020-03-25T15:11:31Z[UTC],2020-03-24T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0,\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\""         || [
-      "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
-      "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "true",
-      "1",
-      "1.0",
-      "Höchstspannung",
-      "380.0",
-      "olm:{(0.00,1.00)}",
-      "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
-    ]
-  }
-
   def "A CsvDataSource should be able to handle a variety of different csvRows correctly"() {
     expect:
     dummyCsvSource.parseCsvRow(csvRow, csvSep) as List == resultingArray
 
     where:
     csvSep | csvRow                                                                                                                                                                                                                                                                                                                                                                                                              || resultingArray
-    ","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z[UTC]\",\"2020-03-24T15:11:31Z[UTC]\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+    ","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z\",\"2020-03-24T15:11:31Z\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
+      "2020-03-25T15:11:31Z",
+      "2020-03-24T15:11:31Z",
       "8f9682df-0744-4b58-a122-f0dc730f6510",
       "true",
       "1",
@@ -215,12 +135,12 @@ class CsvDataSourceTest extends Specification {
       "olm:{(0.00,1.00)}",
       "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
     ]
-    ";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z[UTC]\";\"2020-03-24T15:11:31Z[UTC]\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+    ";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z\";\"2020-03-24T15:11:31Z\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
-      "2020-03-25T15:11:31Z[UTC]",
-      "2020-03-24T15:11:31Z[UTC]",
+      "2020-03-25T15:11:31Z",
+      "2020-03-24T15:11:31Z",
       "8f9682df-0744-4b58-a122-f0dc730f6510",
       "true",
       "1",
@@ -354,106 +274,5 @@ class CsvDataSourceTest extends Specification {
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too less columns"
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too much columns"
-  }
-
-  def "A CsvDataSource should collect be able to collect empty optionals when asked to do so"() {
-
-    given:
-    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> emptyCollector = new ConcurrentHashMap<>()
-    def nodeInputOptionals = [
-      Optional.of(sptd.hpInput.node),
-      Optional.empty(),
-      Optional.of(sptd.chpInput.node)
-    ]
-
-    when:
-    def resultingList = nodeInputOptionals.stream().filter(dummyCsvSource.isPresentCollectIfNot(NodeInput, emptyCollector)).collect(Collectors.toList())
-
-    then:
-    emptyCollector.size() == 1
-    emptyCollector.get(NodeInput).toInteger() == 1
-
-    resultingList.size() == 2
-    resultingList.get(0) == Optional.of(sptd.hpInput.node)
-    resultingList.get(1) == Optional.of(sptd.chpInput.node)
-  }
-
-  def "A CsvDataSource should return a given collection of csv row mappings as distinct rows collection correctly"() {
-
-    given:
-    def nodeInputRow = [
-      "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "id"            : "node_a",
-      "operates_until": "2020-03-25T15:11:31Z[UTC]",
-      "operates_from" : "2020-03-24T15:11:31Z[UTC]",
-      "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "slack"         : "true",
-      "subnet"        : "1",
-      "v_target"      : "1.0",
-      "volt_lvl"      : "Höchstspannung",
-      "v_rated"       : "380"
-    ]
-
-    when:
-    def allRows = [nodeInputRow]* noOfEntities
-    def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
-
-    then:
-    distinctRows.size() == distinctSize
-    distinctRows[0] == firstElement
-
-    where:
-    noOfEntities || distinctSize || firstElement
-    0            || 0            || null
-    10           || 1            || ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "id"            : "node_a",
-      "operates_until": "2020-03-25T15:11:31Z[UTC]",
-      "operates_from" : "2020-03-24T15:11:31Z[UTC]",
-      "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "slack"         : "true",
-      "subnet"        : "1",
-      "v_target"      : "1.0",
-      "volt_lvl"      : "Höchstspannung",
-      "v_rated"       : "380"]
-  }
-
-  def "A CsvDataSource should return an empty set of csv row mappings if the provided collection of mappings contains duplicated UUIDs with different data"() {
-
-    given:
-    def nodeInputRow1 = [
-      "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "id"            : "node_a",
-      "operates_until": "2020-03-25T15:11:31Z[UTC]",
-      "operates_from" : "2020-03-24T15:11:31Z[UTC]",
-      "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "slack"         : "true",
-      "subnet"        : "1",
-      "v_target"      : "1.0",
-      "volt_lvl"      : "Höchstspannung",
-      "v_rated"       : "380"
-    ]
-    def nodeInputRow2 = [
-      "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-      "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "id"            : "node_b",
-      "operates_until": "2020-03-25T15:11:31Z[UTC]",
-      "operates_from" : "2020-03-24T15:11:31Z[UTC]",
-      "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "slack"         : "true",
-      "subnet"        : "1",
-      "v_target"      : "1.0",
-      "volt_lvl"      : "Höchstspannung",
-      "v_rated"       : "380"
-    ]
-
-    when:
-    def allRows = [nodeInputRow1, nodeInputRow2]* 10
-    def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
-
-    then:
-    distinctRows.size() == 0
   }
 }

@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.test.helper.EntityMap.map
+
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData
@@ -12,6 +14,8 @@ import edu.ie3.datamodel.io.factory.input.Transformer3WInputEntityData
 import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData
 import edu.ie3.datamodel.io.source.RawGridSource
 import edu.ie3.datamodel.io.source.TypeSource
+import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
@@ -40,8 +44,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
       "id"			    : "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"	: "2020-03-24 15:11:31",
-      "operatesUntil"	: "2020-03-24 15:11:31",
+      "operatesFrom"	: "2020-03-24T15:11:31Z",
+      "operatesUntil"	: "2020-03-24T15:11:31Z",
       "nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"			: "47d29df0-ba2d-4d23-8e75-c82229c5c758",
       "closed"		    : "true"
@@ -51,25 +55,27 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
       "id"			    : "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"	: "2020-03-24 15:11:31",
-      "operatesUntil"	: "2020-03-24 15:11:31",
+      "operatesFrom"	: "2020-03-24T15:11:31Z",
+      "operatesUntil"	: "2020-03-24T15:11:31Z",
       "closed"		    : "true"
     ]
 
-    def validAssetEntityInputData = new AssetInputEntityData(fieldsToAttributes, SwitchInput)
+    def validAssetEntityInputData = Stream.of(Try.Success.of(new AssetInputEntityData(fieldsToAttributes, SwitchInput)))
 
-    def nodes = [rgtd.nodeA, rgtd.nodeB]
+    def nodes = map([rgtd.nodeA, rgtd.nodeB])
 
     when: "the source tries to convert it"
-    def connectorDataOption = source.buildUntypedConnectorInputEntityData(validAssetEntityInputData, nodes)
+    def connectorDataOption = source.untypedConnectorEntityDataStream(validAssetEntityInputData, nodes)
 
     then: "everything is fine"
-    connectorDataOption.success
-    connectorDataOption.data.get().with {
-      assert fieldsToValues == expectedFieldsToAttributes
-      assert targetClass == SwitchInput
-      assert nodeA == rgtd.nodeA
-      assert nodeB == rgtd.nodeB
+    connectorDataOption.forEach { actualTry ->
+      assert actualTry.isSuccess()
+      actualTry.data.get().with {
+        assert fieldsToValues == expectedFieldsToAttributes
+        assert targetClass == SwitchInput
+        assert nodeA == rgtd.nodeA
+        assert nodeB == rgtd.nodeB
+      }
     }
   }
 
@@ -79,44 +85,44 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
       "id"			: "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"	: "2020-03-24 15:11:31",
-      "operatesUntil"	: "2020-03-24 15:11:31",
+      "operatesFrom"	: "2020-03-24T15:11:31Z",
+      "operatesUntil"	: "2020-03-24T15:11:31Z",
       "nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"			: "620d35fc-34f8-48af-8020-3897fe75add7",
       "closed"		: "true"
     ]
 
-    def validAssetEntityInputData = new AssetInputEntityData(fieldsToAttributes, SwitchInput)
+    def validAssetEntityInputData = Stream.of(Try.Success.of(new AssetInputEntityData(fieldsToAttributes, SwitchInput)))
 
-    def nodes = [rgtd.nodeA, rgtd.nodeB]
+    def nodes = map([rgtd.nodeA, rgtd.nodeB])
 
     when: "the source tries to convert it"
-    def connectorDataOption = source.buildUntypedConnectorInputEntityData(validAssetEntityInputData, nodes)
+    def connectorDataOption = source.untypedConnectorEntityDataStream(validAssetEntityInputData, nodes)
 
-    then: "it returns en empty Optional"
-    connectorDataOption.failure
+    then: "it returns a Failure"
+    connectorDataOption.allMatch(Try::isFailure)
   }
 
 
   def "The CsvRawGridSource is able to convert a stream of valid AssetInputEntityData to ConnectorInputEntityData"() {
     given: "valid input data"
     def validStream = Stream.of(
-    new AssetInputEntityData([
+    Try.Success.of(new AssetInputEntityData([
       "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
       "id"			: "test_switch_AtoB",
       "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"	: "2020-03-24 15:11:31",
-      "operatesUntil"	: "2020-03-24 15:11:31",
+      "operatesFrom"	: "2020-03-24T15:11:31Z",
+      "operatesUntil"	: "2020-03-24T15:11:31Z",
       "nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"			: "47d29df0-ba2d-4d23-8e75-c82229c5c758",
       "closed"		: "true"
-    ], SwitchInput),
-    new AssetInputEntityData([
+    ], SwitchInput)),
+    Try.Success.of(new AssetInputEntityData([
       "uuid"				: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id"				: "test_lineCtoD",
       "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"		: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "nodeA"				: "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
       "nodeB"				: "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
       "parallelDevices"	: "2",
@@ -126,15 +132,15 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "olmCharacteristic"	: "olm:{(0.0,1.0)}"
     ],
     LineInput)
-    )
+    ))
 
     def expectedSet = [
       new ConnectorInputEntityData([
         "uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
         "id"			: "test_switch_AtoB",
         "operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-        "operatesFrom"	: "2020-03-24 15:11:31",
-        "operatesUntil"	: "2020-03-24 15:11:31",
+        "operatesFrom"	: "2020-03-24T15:11:31Z",
+        "operatesUntil"	: "2020-03-24T15:11:31Z",
         "closed"		: "true"
       ],
       SwitchInput,
@@ -145,8 +151,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
         "uuid"				: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
         "id"				: "test_lineCtoD",
         "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-        "operatesFrom"		: "2020-03-24 15:11:31",
-        "operatesUntil"		: "2020-03-24 15:11:31",
+        "operatesFrom"		: "2020-03-24T15:11:31Z",
+        "operatesUntil"		: "2020-03-24T15:11:31Z",
         "parallelDevices"	: "2",
         "type"				: "3bed3eb3-9790-4874-89b5-a5434d408088",
         "length"			: "0.003",
@@ -159,151 +165,33 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       )
     ] as Set
 
-    def nodes = [
+    def nodes = map([
       rgtd.nodeA,
       rgtd.nodeB,
       rgtd.nodeC,
       rgtd.nodeD
-    ]
+    ])
 
     when: "the source tries to convert it"
-    def actualSet = source.buildUntypedConnectorInputEntityData(validStream, nodes).collect(Collectors.toSet())
+    def actualSet = source.untypedConnectorEntityDataStream(validStream, nodes).collect(Collectors.toSet())
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
-    actualSet.every {
-      it.success
-    }
+    def result = Try.scanCollection(actualSet, List)
 
-    actualSet.stream().map { it.data.get() }.toList().containsAll(expectedSet)
-  }
-
-  def "The CsvRawGridSource is able to add a type to untyped ConnectorInputEntityData correctly"() {
-    given: "valid input data"
-    def validConnectorEntityData = new ConnectorInputEntityData([
-      "uuid"             	: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"               	: "test_lineCtoD",
-      "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"     	: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
-      "parallelDevices"  	: "2",
-      "type"         		: "3bed3eb3-9790-4874-89b5-a5434d408088",
-      "length"           	: "0.003",
-      "geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
-      "olmCharacteristic"	: "olm:{(0.0,1.0)}"
-    ],
-    LineInput,
-    rgtd.nodeC,
-    rgtd.nodeD
-    )
-
-    def expectedTypedEntityData = new TypedConnectorInputEntityData([
-      "uuid"             	: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"               	: "test_lineCtoD",
-      "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"     	: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
-      "parallelDevices"  	: "2",
-      "length"           	: "0.003",
-      "geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
-      "olmCharacteristic"	: "olm:{(0.0,1.0)}"
-    ],
-    LineInput,
-    rgtd.nodeC,
-    rgtd.nodeD,
-    rgtd.lineTypeInputCtoD
-    )
-
-    when: "the source tries to convert it"
-    def actual = source.addTypeToEntityData(validConnectorEntityData, rgtd.lineTypeInputCtoD)
-
-    then: "everything is fine"
-    actual == expectedTypedEntityData
-  }
-
-  def "The CsvRawGridSource is able to find and add a type to untyped ConnectorInputEntityData correctly"() {
-    given: "valid input data"
-    def validConnectorEntityData = new ConnectorInputEntityData([
-      "uuid"             	: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"               	: "test_lineCtoD",
-      "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"     	: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
-      "parallelDevices"  	: "2",
-      "type"             	: "3bed3eb3-9790-4874-89b5-a5434d408088",
-      "length"           	: "0.003",
-      "geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
-      "olmCharacteristic"	: "olm:{(0.0,1.0)}"
-    ],
-    LineInput,
-    rgtd.nodeC,
-    rgtd.nodeD
-    )
-
-    def expectedTypedEntityData = new TypedConnectorInputEntityData([
-      "uuid"             	: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"               	: "test_lineCtoD",
-      "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"     	: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
-      "parallelDevices"  	: "2",
-      "length"           	: "0.003",
-      "geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
-      "olmCharacteristic"	: "olm:{(0.0,1.0)}"
-    ],
-    LineInput,
-    rgtd.nodeC,
-    rgtd.nodeD,
-    rgtd.lineTypeInputCtoD
-    )
-
-    def availableTypes = [rgtd.lineTypeInputCtoD]
-
-    when: "the source tries to convert it"
-    def actual = source.findAndAddType(validConnectorEntityData, availableTypes)
-
-    then: "everything is fine"
-    actual.success
-    actual.data.get() == expectedTypedEntityData
-  }
-
-  def "The CsvRawGridSource is able to identify ConnectorInputEntityData data with non matching type requirements correctly"() {
-    given: "valid input data"
-    def validConnectorEntityData = new ConnectorInputEntityData([
-      "uuid"             	: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"               	: "test_lineCtoD",
-      "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"     	: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
-      "parallelDevices"  	: "2",
-      "type"             	: "fd5b128d-ed35-4355-94b6-7518c55425fe",
-      "length"           	: "0.003",
-      "geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
-      "olmCharacteristic"	: "olm:{(0.0,1.0)}"
-    ],
-    LineInput,
-    rgtd.nodeC,
-    rgtd.nodeD
-    )
-
-    def availableTypes = [rgtd.lineTypeInputCtoD]
-
-    when: "the source tries to convert it"
-    def actual = source.findAndAddType(validConnectorEntityData, availableTypes)
-
-    then: "everything is fine"
-    actual.failure
+    result.success
+    result.data.get().toList().containsAll(expectedSet)
   }
 
   def "The CsvRawGridSource is able to convert a stream of valid ConnectorInputEntityData to TypedConnectorInputEntityData"() {
     given: "valid input data"
-    def validStream = Stream.of(new Try.Success<>(
+    def validStream = Stream.of(Try.Success.of(
     new ConnectorInputEntityData([
       "uuid"             	: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id"               	: "test_lineCtoD",
       "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"     	: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"     	: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "parallelDevices"  	: "2",
       "type"             	: "3bed3eb3-9790-4874-89b5-a5434d408088",
       "length"           	: "0.003",
@@ -314,12 +202,12 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     rgtd.nodeC,
     rgtd.nodeD
     )),
-    new Try.Success<>(new ConnectorInputEntityData([
+    Try.Success.of(new ConnectorInputEntityData([
       "uuid"             	: "92ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id"               	: "test_line_AtoB",
       "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"     	: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"     	: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "parallelDevices"  	: "2",
       "type"             	: "3bed3eb3-9790-4874-89b5-a5434d408088",
       "length"           	: "0.003",
@@ -335,8 +223,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
         "uuid"             	: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
         "id"               	: "test_lineCtoD",
         "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-        "operatesFrom"     	: "2020-03-24 15:11:31",
-        "operatesUntil"		: "2020-03-24 15:11:31",
+        "operatesFrom"     	: "2020-03-24T15:11:31Z",
+        "operatesUntil"		: "2020-03-24T15:11:31Z",
         "parallelDevices"  	: "2",
         "length"           	: "0.003",
         "geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
@@ -351,8 +239,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
         "uuid"             	: "92ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
         "id"               	: "test_line_AtoB",
         "operator"         	: "8f9682df-0744-4b58-a122-f0dc730f6510",
-        "operatesFrom"     	: "2020-03-24 15:11:31",
-        "operatesUntil"		: "2020-03-24 15:11:31",
+        "operatesFrom"     	: "2020-03-24T15:11:31Z",
+        "operatesUntil"		: "2020-03-24T15:11:31Z",
         "parallelDevices"  	: "2",
         "length"           	: "0.003",
         "geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
@@ -364,98 +252,17 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       )
     ]
 
-    def availableTypes = [rgtd.lineTypeInputCtoD]
+    def availableTypes = map([rgtd.lineTypeInputCtoD])
 
     when: "the source tries to convert it"
-    def actualSet = source.buildTypedConnectorEntityData(validStream, availableTypes).collect(Collectors.toSet())
+    def actualSet = source.typedConnectorEntityDataStream(validStream, availableTypes).collect(Collectors.toSet())
 
     then: "everything is fine"
     actualSet.size() == expectedSet.size()
-    actualSet.every {
-      it.success
-    }
-    actualSet.stream().map {
-      it.data.get()
-    }.toList().containsAll(expectedSet)
-  }
+    def result = Try.scanCollection(actualSet, List)
 
-  def "The CsvRawGridSource is able to add the third node for a three winding transformer correctly"() {
-    given: "valid input data"
-    def typedEntityData = new TypedConnectorInputEntityData([
-      "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
-      "id"				: "3w_test",
-      "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
-      "nodeC"				: "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
-      "parallelDevices"	: "1",
-      "tapPos"			: "0",
-      "autoTap"			: "true"
-    ],
-    Transformer3WInput,
-    rgtd.nodeA,
-    rgtd.nodeB,
-    rgtd.transformerTypeAtoBtoC)
-
-    def expected = new Transformer3WInputEntityData([
-      "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
-      "id"				: "3w_test",
-      "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
-      "parallelDevices"	: "1",
-      "tapPos"			: "0",
-      "autoTap"			: "true"
-    ],
-    Transformer3WInput,
-    rgtd.nodeA,
-    rgtd.nodeB,
-    rgtd.nodeC,
-    rgtd.transformerTypeAtoBtoC)
-
-    def availableNodes = [
-      rgtd.nodeA,
-      rgtd.nodeB,
-      rgtd.nodeC
-    ]
-
-    when: "the sources tries to add the node"
-    def actual = source.addThirdNode(typedEntityData, availableNodes)
-
-    then: "everything is fine"
-    actual.success
-    actual.data.get() == expected
-  }
-
-  def "The CsvRawGridSource is NOT able to add the third node for a three winding transformer, if it is not available"() {
-    given: "valid input data"
-    def typedEntityData = new TypedConnectorInputEntityData([
-      "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
-      "id"				: "3w_test",
-      "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
-      "nodeC"				: "bd8927b4-0ca9-4dd3-b645-468e6e433160",
-      "parallelDevices"	: "1",
-      "tapPos"			: "0",
-      "autoTap"			: "true"
-    ],
-    Transformer3WInput,
-    rgtd.nodeA,
-    rgtd.nodeB,
-    rgtd.transformerTypeAtoBtoC)
-
-    def availableNodes = [
-      rgtd.nodeA,
-      rgtd.nodeB,
-      rgtd.nodeC
-    ]
-
-    when: "the sources tries to add the node"
-    def actual = source.addThirdNode(typedEntityData, availableNodes)
-
-    then: "everything is fine"
-    actual.failure
+    result.success
+    result.data.get().toList().containsAll(expectedSet)
   }
 
   def "The CsvRawGridSource is able to add the third node for a three winding transformer to a stream of candidates"() {
@@ -464,8 +271,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
       "id"				: "3w_test",
       "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"		: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "nodeC"				: "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
       "parallelDevices"	: "1",
       "tapPos"			: "0",
@@ -479,8 +286,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
       "id"				: "3w_test",
       "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"		: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "nodeC"				: "bd8927b4-0ca9-4dd3-b645-468e6e433160",
       "parallelDevices"	: "1",
       "tapPos"			: "0",
@@ -491,18 +298,18 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     rgtd.nodeB,
     rgtd.transformerTypeAtoBtoC), SourceException))
 
-    def availableNodes = [
+    def availableNodes = map([
       rgtd.nodeA,
       rgtd.nodeB,
       rgtd.nodeC
-    ]
+    ])
 
     def expected = new Transformer3WInputEntityData([
       "uuid"				: "cc327469-7d56-472b-a0df-edbb64f90e8f",
       "id"				: "3w_test",
       "operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
-      "operatesFrom"		: "2020-03-24 15:11:31",
-      "operatesUntil"		: "2020-03-24 15:11:31",
+      "operatesFrom"		: "2020-03-24T15:11:31Z",
+      "operatesUntil"		: "2020-03-24T15:11:31Z",
       "parallelDevices"	: "1",
       "tapPos"			: "0",
       "autoTap"			: "true"
@@ -514,7 +321,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     rgtd.transformerTypeAtoBtoC)
 
     when: "the sources tries to add nodes"
-    def actualSet = source.buildTransformer3WEntityData(inputStream, availableNodes).collect(Collectors.toSet())
+    def actualSet = source.transformer3WEntityDataStream(inputStream, availableNodes).collect(Collectors.toSet())
     def successes = actualSet.stream().filter {
       it.success
     }.toList()
@@ -544,8 +351,11 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     then: "all nodes are there"
     actualSet.size() == expectedSet.size()
 
-    actualSet.each {actual ->
-      def expected = expectedSet.find {it.uuid == actual.uuid}
+    actualSet.each { entry ->
+      def actual = entry.value
+      def expected = expectedSet.find {
+        it.uuid == actual.uuid
+      }
       assert expected != null
 
       actual.with {
@@ -622,7 +432,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "all lines are there"
     actualSet.size() == expectedSet.size()
-    actualSet.each {actual ->
+    actualSet.each { entry ->
+      def actual = entry.value
       def expected = expectedSet.find {it.uuid == actual.uuid}
       assert expected != null
 
@@ -739,7 +550,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     then: "all elements are there"
     actual != null
     actual.with {
-      /* It's okay, to only test the uuids, because content is tested with the other test mehtods */
+      /* It's okay, to only test the uuids, because content is tested with the other test methods */
       assert nodes.size() == expected.nodes.size()
       assert nodes.each {entry -> expected.nodes.contains({it.uuid == entry.uuid})}
       assert lines.size() == expected.lines.size()
@@ -779,5 +590,33 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     then: "the optional is empty"
     actual.allEntitiesAsList().empty
+  }
+
+  def "A CsvRawGridSource should process invalid input data as expected when requested to provide an instance of RawGridElements"() {
+    given:
+    def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    def rawGridSource =
+    new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
+      @Override
+      Map<UUID, NodeInput> getNodes() {
+        return Collections.emptyMap()
+      }
+
+      @Override
+      Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) {
+        return Collections.emptyMap()
+      }
+    }
+
+    when:
+    def rawGridElements = Try.of(() -> rawGridSource.gridData, SourceException)
+
+    then:
+    rawGridElements.failure
+    rawGridElements.data == Optional.empty()
+
+    Exception ex = rawGridElements.exception.get()
+    ex.class == SourceException
+    ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Linked nodeA")
   }
 }

@@ -18,22 +18,26 @@ We designed the models in a way, that does not allow for adaptions of the repres
 objects.
 Thereby you can be sure, that your models are *thread-safe* and no unwanted or unobserved changes are made.
 
-**Copyable** <br>
+**Clonability** <br>
 With the general design principle of immutability, entity modifications (e.g. updates of field values) can become
 hard and annoying. To avoid generating methods to update each field value, we provide an adapted version of the
 [Builder pattern](https://en.wikipedia.org/wiki/Builder_pattern/) to make entity modifications as easy as possible.
-Each entity holds it's own copy builder class, which follows the same inheritance as the entity class itself. With a
-call of `.copy()` on an entity instance a builder instance is returned, that allows for modification of fields and
-can be terminated with `.build()` which will return an instance of the entity with modified field values as required.
-For the moment, this pattern is only implemented for a small amount of `AssetInput` entities (all entities held by a
-`GridContainer` except thermal units to be precise), but we plan to extend this capability to all input entities in the
-future.
+Each entity holds its own copy builder class, which follows the same inheritance as the entity class itself. With a
+call of `.copy()` on an entity instance a builder instance is returned, which allows for modification of fields and
+can be terminated with `.build()`. This will return an instance of the entity with modified field values as indicated.
+For the moment, this pattern is only implemented for a limited set of entities, but we plan to extend this capability 
+to all input entities in the future.
+
+**Scaling entity properties** <br>
+Using the copy builders (as described above) we provide a convenience method that helps with scaling system 
+participants and respective type inputs. Scaling entities tries to preserve proportions that are related to power. 
+This means that capacity, consumption etc. are scaled with the same factor as power.
 
 **Single Point of Truth** <br>
 Throughout all models you can be sure, that no information is given twice, reducing the possibility to have ambiguous
 information in your simulation set up.
 "Missing" information can be received through the grids relational information - e.g. if you intend to model a wind
-energy converter in detail, you may find information of it's geographical location in the model of it's common
+energy converter in detail, you may find information of its geographical location in the model of its common
 coupling point ([node](/models/input/grid/node)).
 
 **Harmonized Units System** <br>
@@ -100,6 +104,7 @@ input/operator
 
 ### Grid Related Models
 
+#### Electric Grid
 ```{toctree}
 ---
 maxdepth: 1
@@ -113,6 +118,17 @@ input/grid/transformer2w
 input/grid/transformer3w
 input/grid/measurementunit
 input/grid/gridcontainer
+```
+
+#### Thermal Grid
+
+```{toctree}
+---
+maxdepth: 1
+---
+input/thermal/thermalbus
+input/thermal/thermalhouse
+input/thermal/cylindricalstorage
 ```
 
 ### Participant Related Models
@@ -132,9 +148,14 @@ input/participant/load
 input/participant/pv
 input/participant/storage
 input/participant/wec
-input/participant/thermalbus
-input/participant/thermalhouse
-input/participant/cylindricalstorage
+```
+
+### Energy Management Related Models
+```{toctree}
+---
+maxdepth: 1
+---
+input/em
 ```
 
 ### Additional Data

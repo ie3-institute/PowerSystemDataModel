@@ -40,6 +40,15 @@ public abstract class WeatherSource {
     this.weatherFactory = weatherFactory;
   }
 
+  /**
+   * Method to retrieve the fields found in the source.
+   *
+   * @param entityClass class of the source
+   * @return an option for fields found in the source
+   */
+  public abstract <C extends WeatherValue> Optional<Set<String>> getSourceFields(
+      Class<C> entityClass) throws SourceException;
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
@@ -92,7 +101,7 @@ public abstract class WeatherSource {
     for (Map.Entry<Point, Set<TimeBasedValue<WeatherValue>>> entry :
         coordinateToValues.entrySet()) {
       Set<TimeBasedValue<WeatherValue>> values = entry.getValue();
-      IndividualTimeSeries<WeatherValue> timeSeries = new IndividualTimeSeries<>(null, values);
+      IndividualTimeSeries<WeatherValue> timeSeries = new IndividualTimeSeries<>(values);
       coordinateToTimeSeriesMap.put(entry.getKey(), timeSeries);
     }
     return coordinateToTimeSeriesMap;
@@ -116,7 +125,8 @@ public abstract class WeatherSource {
                   fieldsToAttributes.remove("tid");
                   Optional<TimeBasedWeatherValueData> data =
                       toTimeBasedWeatherValueData(fieldsToAttributes);
-                  return factory.get(data.get());
+                  return factory.get(
+                      Try.from(data, () -> new SourceException("Missing data in: " + data)));
                 }),
             "TimeBasedValue<WeatherValue>")
         .transform(Stream::toList, SourceException::new)

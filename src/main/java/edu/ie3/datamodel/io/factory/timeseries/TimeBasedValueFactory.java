@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.value.Value;
  */
 public abstract class TimeBasedValueFactory<D extends TimeBasedValueData<V>, V extends Value>
     extends Factory<V, D, TimeBasedValue<V>> {
+
   protected TimeBasedValueFactory(Class<? extends V>... valueClasses) {
     super(valueClasses);
   }

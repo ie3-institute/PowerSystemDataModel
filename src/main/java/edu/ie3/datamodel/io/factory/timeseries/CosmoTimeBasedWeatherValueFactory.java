@@ -12,6 +12,7 @@ import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -26,18 +27,18 @@ import tech.units.indriya.ComparableQuantity;
  * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
  */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
-  private static final String DIFFUSE_IRRADIANCE = "diffuseirradiance";
-  private static final String DIRECT_IRRADIANCE = "directirradiance";
+  private static final String DIFFUSE_IRRADIANCE = "diffuseIrradiance";
+  private static final String DIRECT_IRRADIANCE = "directIrradiance";
   private static final String TEMPERATURE = "temperature";
-  private static final String WIND_DIRECTION = "winddirection";
-  private static final String WIND_VELOCITY = "windvelocity";
+  private static final String WIND_DIRECTION = "windDirection";
+  private static final String WIND_VELOCITY = "windVelocity";
 
   public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
   }
 
-  public CosmoTimeBasedWeatherValueFactory(String timePattern) {
-    super(timePattern);
+  public CosmoTimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
+    super(dateTimeFormatter);
   }
 
   public CosmoTimeBasedWeatherValueFactory() {
@@ -50,11 +51,10 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   }
 
   @Override
-  protected List<Set<String>> getFields(TimeBasedWeatherValueData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams =
         newSet(
-            UUID,
-            TIME,
+            COORDINATE_ID,
             DIFFUSE_IRRADIANCE,
             DIRECT_IRRADIANCE,
             TEMPERATURE,
@@ -66,7 +66,6 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
     Point coordinate = data.getCoordinate();
-    java.util.UUID uuid = data.getUUID(UUID);
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
         data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
@@ -86,6 +85,6 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             temperature,
             windDirection,
             windVelocity);
-    return new TimeBasedValue<>(uuid, time, weatherValue);
+    return new TimeBasedValue<>(time, weatherValue);
   }
 }

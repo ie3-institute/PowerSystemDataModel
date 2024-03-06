@@ -10,6 +10,10 @@ public abstract class ValidationException extends Exception {
     super(s);
   }
 
+  protected ValidationException(Throwable throwable) {
+    super(throwable);
+  }
+
   protected ValidationException(String s, Throwable throwable) {
     super(s, throwable);
   }

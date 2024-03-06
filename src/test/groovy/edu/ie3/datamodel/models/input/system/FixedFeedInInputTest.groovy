@@ -29,6 +29,27 @@ class FixedFeedInInputTest extends Specification {
       assert qCharacteristics == ffIn.qCharacteristics
       assert sRated == Quantities.getQuantity(10d, PowerSystemUnits.VOLTAMPERE)
       assert cosPhiRated == 0.8d
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+    }
+  }
+
+  def "Scaling a FixedFeedInInput via builder should work as expected"() {
+    given:
+    def ffIn = SystemParticipantTestData.fixedFeedInInput
+
+    when:
+    def alteredUnit = ffIn.copy().scale(2d).build()
+
+    then:
+    alteredUnit.with {
+      assert uuid == ffIn.uuid
+      assert operationTime == ffIn.operationTime
+      assert operator == ffIn.operator
+      assert id == ffIn.id
+      assert qCharacteristics == ffIn.qCharacteristics
+      assert sRated == ffIn.sRated * 2d
+      assert cosPhiRated == ffIn.cosPhiRated
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

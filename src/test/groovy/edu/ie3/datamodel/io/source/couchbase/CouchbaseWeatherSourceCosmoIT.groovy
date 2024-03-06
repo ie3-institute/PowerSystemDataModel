@@ -23,7 +23,8 @@ import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.time.ZoneId
+import java.time.Duration
+
 
 @Testcontainers
 class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
@@ -32,9 +33,10 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
   BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
 
   @Shared
-  CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.0.2")
+  CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.6.0")
   .withBucket(bucketDefinition)
   .withExposedPorts(8091, 8092, 8093, 8094, 11210)
+  .withStartupAttempts(3) // 3 attempts because startup (node renaming) sometimes fails when executed too early
 
   @Shared
   CouchbaseWeatherSource source
@@ -63,9 +65,15 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
         "--dataset", "file:///home/weather_cosmo.json")
 
-    def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
+    // increased timeout to deal with CI under high load
+    def connector = new CouchbaseConnector(
+        couchbaseContainer.connectionString,
+        bucketDefinition.name,
+        couchbaseContainer.username,
+        couchbaseContainer.password,
+        Duration.ofSeconds(20))
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-    def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
+    def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
   }
 

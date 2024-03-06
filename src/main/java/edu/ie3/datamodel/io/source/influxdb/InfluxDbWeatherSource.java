@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.influxdb;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -47,9 +48,27 @@ public class InfluxDbWeatherSource extends WeatherSource {
   public InfluxDbWeatherSource(
       InfluxDbConnector connector,
       IdCoordinateSource idCoordinateSource,
-      TimeBasedWeatherValueFactory weatherValueFactory) {
+      TimeBasedWeatherValueFactory weatherValueFactory)
+      throws SourceException {
     super(idCoordinateSource, weatherValueFactory);
     this.connector = connector;
+
+    Try.of(() -> getSourceFields(WeatherValue.class), SourceException.class)
+        .flatMap(
+            fieldsOpt ->
+                fieldsOpt
+                    .map(
+                        fields ->
+                            weatherFactory
+                                .validate(fields, WeatherValue.class)
+                                .transformF(SourceException::new))
+                    .orElse(Try.Success.empty()))
+        .getOrThrow();
+  }
+
+  @Override
+  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
+    return connector.getSourceFields();
   }
 
   @Override
@@ -70,8 +89,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
                       Collectors.toSet()));
       return coordinateToValues.entrySet().stream()
           .collect(
-              Collectors.toMap(
-                  Map.Entry::getKey, e -> new IndividualTimeSeries<>(null, e.getValue())));
+              Collectors.toMap(Map.Entry::getKey, e -> new IndividualTimeSeries<>(e.getValue())));
     }
   }
 
@@ -94,7 +112,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
           Set<TimeBasedValue<WeatherValue>> timeBasedValues =
               filterEmptyOptionals(optValues).collect(Collectors.toSet());
           IndividualTimeSeries<WeatherValue> timeSeries =
-              new IndividualTimeSeries<>(null, timeBasedValues);
+              new IndividualTimeSeries<>(timeBasedValues);
           coordinateToTimeSeries.put(entry.getKey(), timeSeries);
         }
       }
@@ -135,7 +153,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
       Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
           optTimeBasedValueStream(queryResult);
       return new IndividualTimeSeries<>(
-          null, filterEmptyOptionals(optValues).collect(Collectors.toSet()));
+          filterEmptyOptionals(optValues).collect(Collectors.toSet()));
     }
   }
 
@@ -159,8 +177,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
                   fieldToValue.entrySet().stream()
                       .collect(
                           Collectors.toMap(
-                              entry ->
-                                  StringUtils.snakeCaseToCamelCase(entry.getKey()).toLowerCase(),
+                              entry -> StringUtils.snakeCaseToCamelCase(entry.getKey()),
                               Map.Entry::getValue));
 
               /* Add a random UUID if necessary */
@@ -225,6 +242,6 @@ public class InfluxDbWeatherSource extends WeatherSource {
    */
   protected Stream<TimeBasedValue<WeatherValue>> filterEmptyOptionals(
       Stream<Optional<TimeBasedValue<WeatherValue>>> elements) {
-    return elements.flatMap(Optional::stream).map(TimeBasedValue.class::cast);
+    return elements.flatMap(Optional::stream);
   }
 }

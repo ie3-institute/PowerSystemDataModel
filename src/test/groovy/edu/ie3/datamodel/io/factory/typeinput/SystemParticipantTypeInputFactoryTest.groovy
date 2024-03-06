@@ -5,8 +5,11 @@
  */
 package edu.ie3.datamodel.io.factory.typeinput
 
+import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.SimpleEntityData
+import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.*
@@ -17,9 +20,6 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Speed
-
-import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class SystemParticipantTypeInputFactoryTest extends Specification implements FactoryTestHelper {
 
@@ -52,11 +52,12 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
       "estorage":	"7",
       "econs":	"8",
+      "srateddc":	"9",
     ]
     def typeInputClass = EvTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -72,6 +73,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
       assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
       assert eCons == getQuant(parameter["econs"], StandardUnits.ENERGY_PER_DISTANCE)
+      assert sRatedDC == getQuant(parameter["srateddc"], StandardUnits.ACTIVE_POWER_IN)
     }
   }
 
@@ -91,7 +93,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = HpTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -125,7 +127,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = BmTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -163,7 +165,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = WecTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -210,7 +212,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = ChpTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -253,7 +255,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     def typeInputClass = StorageTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
 
     then:
     typeInput.success
@@ -280,40 +282,15 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
   def "A SystemParticipantTypeInputFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
     def typeInputFactory = new SystemParticipantTypeInputFactory()
-    Map<String, String> parameter = [
-      "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id":	        "blablub",
-      "capex":        "3",
-      "opex":	        "4",
-      "srated":       "5",
-      "cosPhiRated":	    "6",
-      "estorage":	    "6",
-      "pmin":	        "7",
-      "pmax":	        "8",
-      "eta":	        "9",
-      "dod":	        "10",
-      "lifetime":	    "11"
-    ]
+    def actualFields = SystemParticipantTypeInputFactory.newSet("uuid", "id", "capex", "opex", "srated", "cosPhiRated", "estorage", "pmin", "pmax", "eta", "dod", "lifetime",)
 
     when:
-    Try<SystemParticipantTypeInput, FactoryException> input = typeInputFactory.get(new SimpleEntityData(parameter, StorageTypeInput))
+    def input = typeInputFactory.validate(actualFields, StorageTypeInput)
 
     then:
     input.failure
-    input.exception.get().cause.message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
-        "{capex -> 3,\n" +
-        "cosPhiRated -> 6,\n" +
-        "dod -> 10,\n" +
-        "estorage -> 6,\n" +
-        "eta -> 9,\n" +
-        "id -> blablub,\n" +
-        "lifetime -> 11,\n" +
-        "opex -> 4,\n" +
-        "pmax -> 8,\n" +
-        "pmin -> 7,\n" +
-        "srated -> 5,\n" +
-        "uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
+    input.exception.get().message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] are invalid for instance of 'StorageTypeInput'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
-        "0: [activepowergradient, capex, cosphirated, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, uuid]\n"
+        "0: [activePowerGradient, capex, cosPhiRated, dod, eStorage, eta, id, lifeCycle, lifeTime, opex, pMax, sRated, uuid] or [active_power_gradient, capex, cos_phi_rated, dod, e_storage, eta, id, life_cycle, life_time, opex, p_max, s_rated, uuid]\n"
   }
 }

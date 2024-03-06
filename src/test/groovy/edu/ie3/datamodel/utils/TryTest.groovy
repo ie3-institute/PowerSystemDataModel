@@ -10,6 +10,8 @@ import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.exceptions.TryException
 import spock.lang.Specification
 
+import java.util.stream.Stream
+
 class TryTest extends Specification {
 
   def "A method can be applied to a try object"() {
@@ -55,12 +57,10 @@ class TryTest extends Specification {
     }, FailureException)
 
     then:
-    Exception ex = thrown()
-    ex.class == TryException
+    TryException ex = thrown(TryException)
     ex.message == "Wrongly caught exception: "
-    Throwable cause = ex.cause
-    cause.class == SourceException
-    cause.message == "source exception"
+    ex.cause.class == SourceException
+    ex.cause.message == "source exception"
   }
 
   def "A failure is returned when using Failure#ofVoid() with an exception"() {
@@ -102,12 +102,10 @@ class TryTest extends Specification {
     }, FailureException)
 
     then:
-    Exception ex = thrown()
-    ex.class == TryException
+    TryException ex = thrown(TryException)
     ex.message == "Wrongly caught exception: "
-    Throwable cause = ex.cause
-    cause.class == SourceException
-    cause.message == "source exception"
+    ex.cause.class == SourceException
+    ex.cause.message == "source exception"
   }
 
   def "A Try object can be creates by a boolean and an exception"() {
@@ -160,11 +158,33 @@ class TryTest extends Specification {
     Try.ofVoid(FailureException, one, two)
 
     then:
-    Exception ex = thrown()
-    ex.class == TryException
-    Throwable cause = ex.cause
-    cause.class == SourceException
-    cause.message == "source exception"
+    TryException ex = thrown(TryException)
+    ex.cause.class == SourceException
+    ex.cause.message == "source exception"
+  }
+
+  def "A Success is created from a non-empty Optional"() {
+    given:
+    def opt = Optional.of("Test")
+
+    when:
+    def actualTry = Try.from(opt, () -> new FailureException("failure"))
+
+    then:
+    actualTry.success
+    actualTry.data.get() == "Test"
+  }
+
+  def "A Failure is created from an empty Optional"() {
+    given:
+    def opt = Optional.<String>empty()
+
+    when:
+    def actualTry = Try.from(opt, () -> new FailureException("failure"))
+
+    then:
+    actualTry.failure
+    actualTry.exception.get().getMessage() == "failure"
   }
 
   def "A void method can be applied to a try object"() {
@@ -241,16 +261,28 @@ class TryTest extends Specification {
     scan.data.get().size() == 3
   }
 
-  def "The getOrThrow method should work as expected"() {
+  def "The getOrThrow method should work as expected on a success"() {
+    given:
+    def value = "some value"
+    Try<String, SourceException> success = new Try.Success<>(value)
+
+    when:
+    def result = success.getOrThrow()
+
+    then:
+    noExceptionThrown()
+    result == value
+  }
+
+  def "The getOrThrow method should work as expected on a failure"() {
     given:
     Try<String, SourceException> failure = new Try.Failure<>(new SourceException("source exception"))
 
     when:
-    failure.orThrow
+    failure.getOrThrow()
 
     then:
-    Exception ex = thrown()
-    ex.class == SourceException
+    SourceException ex = thrown(SourceException)
     ex.message == "source exception"
   }
 
@@ -309,6 +341,135 @@ class TryTest extends Specification {
     transform.exception.get().class == Exception
     flatMapS.exception.get() == failure.get()
     flatMapF.exception.get() == failure.get()
+  }
+
+  def "The convert method should work correctly for successes"() {
+    given:
+    Try<Stream<Integer>, SourceException> success = new Try.Success(Stream.of(1, 2, 3))
+
+    when:
+    List<Try<Integer, SourceException>> converted = success.convert(d -> d.map(r -> Try.Success.of(r)).toList(), e -> [Try.Failure.of(e)] )
+
+    then:
+    converted.size() == 3
+    converted.get(0).data.get() == 1
+    converted.get(1).data.get() == 2
+    converted.get(2).data.get() == 3
+  }
+
+  def "The convert method should work correctly for failures"() {
+    given:
+    SourceException exception = new SourceException("exception")
+    Try<Stream<Integer>, SourceException> failure = new Try.Failure<>(exception)
+
+    when:
+    List<Try<Integer, SourceException>> converted = failure.convert(d -> d.map(r -> Try.Success.of(r)).toList(), e -> [Try.Failure.of(e)] )
+
+    then:
+    converted.size() == 1
+    converted.get(0).exception.get() == exception
+  }
+
+  def "The getOrElse method should work as expected on a success"() {
+    given:
+    def value = "some value"
+    Try<String, SourceException> success = new Try.Success<>(value)
+
+    when:
+    def result = success.getOrElse(() -> "other")
+
+    then:
+    result == value
+  }
+
+  def "The getOrElse method should work as expected on a failure"() {
+    given:
+    Try<String, SourceException> failure = new Try.Failure<>(new SourceException("source exception"))
+    def defaultString = "other"
+
+    when:
+    def result = failure.getOrElse(() -> defaultString)
+
+    then:
+    result == defaultString
+  }
+
+  def "The orElse method should work as expected on a success"() {
+    given:
+    def otherSuccess = new Try.Success<>("other success")
+    def otherFailure = new Try.Failure<>(new SourceException("other failure"))
+    Try<String, SourceException> success = new Try.Success<>("some value")
+
+    when:
+    def result1 = success.orElse(() -> otherSuccess)
+    def result2 = success.orElse(() -> otherFailure)
+
+    then:
+    result1 == success
+    result2 == success
+  }
+
+  def "The orElse method should work as expected on a failure"() {
+    given:
+    def otherSuccess = new Try.Success<>("other success")
+    def otherFailure = new Try.Failure<>(new SourceException("other failure"))
+    Try<String, SourceException> failure = new Try.Failure<>(new SourceException("source exception"))
+
+    when:
+    def result1 = failure.orElse(() -> otherSuccess)
+    def result2 = failure.orElse(() -> otherFailure)
+
+    then:
+    result1 == otherSuccess
+    result2 == otherFailure
+  }
+
+  def "The toOptional method should work as expected on a success"() {
+    given:
+    def value = "some value"
+    Try<String, SourceException> success = new Try.Success<>(value)
+
+    when:
+    def result = success.toOptional()
+
+    then:
+    result == Optional.of(value)
+  }
+
+  def "The toOptional method should work as expected on a failure"() {
+    given:
+    Try<String, SourceException> failure = new Try.Failure<>(new SourceException("some failure"))
+
+    when:
+    def result = failure.toOptional()
+
+    then:
+    result == Optional.empty()
+  }
+
+  def "The equals and hashCode method should work as expected on a success"() {
+    given:
+    def value = "some value"
+    Try<String, SourceException> success1 = new Try.Success<>(value)
+    Try<String, SourceException> success2 = new Try.Success<>(value)
+    Try<String, SourceException> success3 = new Try.Success<>("other value")
+
+    expect:
+    success1 == success2
+    success1.hashCode() == success2.hashCode()
+    success1 != success3
+    success1.hashCode() != success3.hashCode()
+  }
+
+  def "The equals and hashCode method should work as expected on a failure"() {
+    given:
+    // exceptions usually do not implement #equals, this is difficult to test
+    Try<String, SourceException> failure1 = new Try.Failure<>(new SourceException("some failure"))
+    Try<String, SourceException> failure2 = new Try.Failure<>(new SourceException("other failure"))
+
+    expect:
+    failure1 != failure2
+    failure1.hashCode() != failure2.hashCode()
   }
 
   def "All exceptions of a collection of try objects should be returned"() {

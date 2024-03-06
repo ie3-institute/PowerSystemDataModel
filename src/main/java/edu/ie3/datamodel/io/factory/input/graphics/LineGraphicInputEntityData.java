@@ -31,6 +31,18 @@ public class LineGraphicInputEntityData extends EntityData {
     this.line = line;
   }
 
+  /**
+   * Creates a new LineGraphicInputEntityData object based on a given {@link EntityData} object and
+   * a line
+   *
+   * @param entityData The EntityData object to enhance
+   * @param line Referenced electrical line
+   */
+  public LineGraphicInputEntityData(EntityData entityData, LineInput line) {
+    super(entityData);
+    this.line = line;
+  }
+
   public LineInput getLine() {
     return line;
   }

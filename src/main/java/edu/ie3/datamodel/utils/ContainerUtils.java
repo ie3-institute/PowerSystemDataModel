@@ -291,7 +291,7 @@ public class ContainerUtils {
 
   /**
    * Filters all raw grid elements for the provided subnet. For each transformer all nodes (and not
-   * only the the node of the grid the transformer is located in) are added as well. Two winding
+   * only the node of the grid the transformer is located in) are added as well. Two winding
    * transformers are counted, if the low voltage node is in the queried subnet. Three winding
    * transformers are counted, as long as any of the three nodes is in the queried subnet.
    *
@@ -358,7 +358,7 @@ public class ContainerUtils {
   public static SystemParticipants filterForSubnet(SystemParticipants input, int subnet) {
     Set<BmInput> bmPlants = filterParticipants(input.getBmPlants(), subnet);
     Set<ChpInput> chpPlants = filterParticipants(input.getChpPlants(), subnet);
-    Set<EvcsInput> evcsInputs = filterParticipants(input.getEvCS(), subnet);
+    Set<EvcsInput> evcsInputs = filterParticipants(input.getEvcs(), subnet);
     Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
     Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
     Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
@@ -366,7 +366,6 @@ public class ContainerUtils {
     Set<PvInput> pvs = filterParticipants(input.getPvPlants(), subnet);
     Set<StorageInput> storages = filterParticipants(input.getStorages(), subnet);
     Set<WecInput> wecPlants = filterParticipants(input.getWecPlants(), subnet);
-    Set<EmInput> emSystems = filterParticipants(input.getEmSystems(), subnet);
 
     return new SystemParticipants(
         bmPlants,
@@ -378,8 +377,7 @@ public class ContainerUtils {
         loads,
         pvs,
         storages,
-        wecPlants,
-        emSystems);
+        wecPlants);
   }
 
   /**

@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.processor;
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.factory.input.NodeInputFactory;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
-import edu.ie3.datamodel.models.ControlStrategy;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -19,6 +18,7 @@ import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.util.TimeUtil;
 import edu.ie3.util.exceptions.QuantityException;
 import java.beans.Introspector;
 import java.lang.reflect.InvocationTargetException;
@@ -236,10 +236,12 @@ public abstract class Processor<T> {
           ((Optional<?>) methodReturnObject)
               .map(
                   o -> {
-                    if (o instanceof Quantity<?>) {
+                    if (o instanceof Quantity<?> quantity) {
                       return Try.of(
-                          () -> handleQuantity((Quantity<?>) o, fieldName),
+                          () -> handleQuantity(quantity, fieldName),
                           EntityProcessorException.class);
+                    } else if (o instanceof UniqueEntity entity) {
+                      return Try.of(entity::getUuid, EntityProcessorException.class);
                     } else {
                       return Failure.of(
                           new EntityProcessorException(
@@ -274,8 +276,8 @@ public abstract class Processor<T> {
           "TimeSeries",
           "Transformer2WTypeInput",
           "Transformer3WTypeInput",
-          "WecTypeInput" -> resultStringBuilder.append(
-          ((UniqueEntity) methodReturnObject).getUuid());
+          "WecTypeInput",
+          "EmInput" -> resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
       case "OperatorInput" -> resultStringBuilder.append(
           ((OperatorInput) methodReturnObject).getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
               ? ""
@@ -289,9 +291,6 @@ public abstract class Processor<T> {
           "ReactivePowerCharacteristic",
           "CharacteristicInput" -> resultStringBuilder.append(
           ((CharacteristicInput<?, ?>) methodReturnObject).serialize());
-      case "UUID[]" -> resultStringBuilder.append(processUUIDArray((UUID[]) methodReturnObject));
-      case "ControlStrategy" -> resultStringBuilder.append(
-          ((ControlStrategy) methodReturnObject).getKey());
       default -> throw new EntityProcessorException(
           "Unable to process value for attribute/field '"
               + fieldName
@@ -372,12 +371,6 @@ public abstract class Processor<T> {
   protected abstract Try<String, QuantityException> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName);
 
-  protected String processUUIDArray(UUID[] uuids) {
-    StringBuilder strb = new StringBuilder();
-    for (UUID uuid : uuids) strb.append(uuid.toString()).append(" ");
-    return strb.toString().strip();
-  }
-
   /**
    * Handling of elements of type {@link OperationTime}
    *
@@ -408,10 +401,10 @@ public abstract class Processor<T> {
    * manually BEFORE calling this method!
    *
    * @param zonedDateTime representation of the ZonedDateTime
-   * @return string representation of the ZonedDateTime
+   * @return ISO 8601 conform string representation of the ZonedDateTime
    */
   protected String processZonedDateTime(ZonedDateTime zonedDateTime) {
-    return zonedDateTime.toString();
+    return TimeUtil.withDefaults.toString(zonedDateTime);
   }
 
   /**

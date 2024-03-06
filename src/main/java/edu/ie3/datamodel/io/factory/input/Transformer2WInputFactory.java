@@ -16,8 +16,8 @@ public class Transformer2WInputFactory
     extends ConnectorInputEntityFactory<
         Transformer2WInput, TypedConnectorInputEntityData<Transformer2WTypeInput>> {
 
-  private static final String TAP_POS = "tappos";
-  private static final String AUTO_TAP = "autotap";
+  private static final String TAP_POS = "tapPos";
+  private static final String AUTO_TAP = "autoTap";
 
   public Transformer2WInputFactory() {
     super(Transformer2WInput.class);

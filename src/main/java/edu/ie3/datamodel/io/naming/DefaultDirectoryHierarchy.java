@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
@@ -192,7 +192,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
    * @return An Option to the regarding sub directory as a string
    */
   @Override
-  public Optional<Path> getSubDirectory(Class<? extends UniqueEntity> cls) {
+  public Optional<Path> getSubDirectory(Class<? extends Entity> cls) {
     /* Go through all sub directories and check, if the given class belongs to one of the classes mapped to the sub directories. */
     Optional<SubDirectories> maybeSubDirectory =
         Arrays.stream(SubDirectories.values())

@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.SubGridContainer;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
 import edu.ie3.util.geo.GeoUtils;
 import edu.ie3.util.quantities.QuantityUtil;
 import java.util.ArrayList;
@@ -44,8 +43,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a connector if: <br>
-   * - it is not null <br>
+   * Validates a connector if:
+   *
+   * <ul>
+   *   <li>it is not null
+   * </ul>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object.
    *
@@ -73,25 +76,25 @@ public class ConnectorValidationUtils extends ValidationUtils {
     } else if (SwitchInput.class.isAssignableFrom(connector.getClass())) {
       exceptions.add(checkSwitch((SwitchInput) connector));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new InvalidEntityException(
-                  "Validation failed due to: ", buildNotImplementedException(connector))));
+      logNotImplemented(connector);
     }
 
     return exceptions;
   }
 
   /**
-   * Validates a line if: <br>
-   * - {@link ConnectorValidationUtils#checkLineType(LineTypeInput)} confirms valid type properties
-   * <br>
-   * - it does not connect the same node <br>
-   * - it connects nodes in the same subnet <br>
-   * - it connects nodes in the same voltage level <br>
-   * - its line length has a positive value <br>
-   * - its length equals the sum of calculated distances between points of LineString <br>
-   * - its coordinates of start and end point equal coordinates of nodes
+   * Validates a line if:
+   *
+   * <ul>
+   *   <li>{@link ConnectorValidationUtils#checkLineType(LineTypeInput)} confirms valid type
+   *       properties
+   *   <li>it does not connect the same node
+   *   <li>it connects nodes in the same subnet
+   *   <li>it connects nodes in the same voltage level
+   *   <li>its line length has a positive value
+   *   <li>its length equals the sum of calculated distances between points of LineString
+   *   <li>its coordinates of start and end point equal coordinates of nodes
+   * </ul>
    *
    * @param line Line to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -116,14 +119,17 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a line type if: <br>
-   * - it is not null <br>
-   * - B is greater/equal to 0 (Phase-to-ground susceptance per length) <br>
-   * - G is greater/equal to 0 (Phase-to-ground conductance per length) <br>
-   * - R is greater 0 (Phase resistance per length) <br>
-   * - X is greater 0 (Phase reactance per length) <br>
-   * - iMax is greater 0 (Maximum permissible current) <br>
-   * - vRated is greater 0 (Rated voltage)
+   * Validates a line type if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>B is greater/equal to 0 (Phase-to-ground susceptance per length)
+   *   <li>G is greater/equal to 0 (Phase-to-ground conductance per length)
+   *   <li>R is greater 0 (Phase resistance per length)
+   *   <li>X is greater 0 (Phase reactance per length)
+   *   <li>iMax is greater 0 (Maximum permissible current)
+   *   <li>vRated is greater 0 (Rated voltage)
+   * </ul>
    *
    * @param lineType Line type to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -150,13 +156,16 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a transformer2W if: <br>
-   * - {@link ConnectorValidationUtils#checkTransformer2WType(Transformer2WTypeInput)} confirms a
-   * valid type properties <br>
-   * - its tap position is within bounds <br>
-   * - it connects different subnets <br>
-   * - it connects different voltage levels <br>
-   * - its rated voltages match the voltages at the nodes
+   * Validates a transformer2W if:
+   *
+   * <ul>
+   *   <li>{@link ConnectorValidationUtils#checkTransformer2WType(Transformer2WTypeInput)} confirms
+   *       a valid type properties
+   *   <li>its tap position is within bounds
+   *   <li>it connects different subnets
+   *   <li>it connects different voltage levels
+   *   <li>its rated voltages match the voltages at the nodes
+   * </ul>
    *
    * @param transformer2W Transformer2W to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -180,19 +189,22 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a transformer2W type if: <br>
-   * - it is not null <br>
-   * - rSc is greater 0 (short circuit resistance) <br>
-   * - xSc is greater 0 (short circuit impedance) <br>
-   * - gM is greater/equal to 0 (no load conductance) <br>
-   * - bM is less/equal to 0 (no load susceptance)<br>
-   * - sRated is greater 0 (rated apparent power) <br>
-   * - vRatedA is greater 0 (rated voltage at higher voltage terminal) <br>
-   * - vRatedB is greater 0 (rated voltage at lower voltage terminal) <br>
-   * - dV is between 0% and 100% (voltage magnitude increase per tap position <br>
-   * - dPhi is greater/equal to 0 (voltage angle increase per tap position) <br>
-   * - neutral tap position is between min and max tap position <br>
-   * - minimum tap position is smaller than maximum tap position
+   * Validates a transformer2W type if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>rSc is greater 0 (short circuit resistance)
+   *   <li>xSc is greater 0 (short circuit impedance)
+   *   <li>gM is greater/equal to 0 (no load conductance)
+   *   <li>bM is less/equal to 0 (no load susceptance)
+   *   <li>sRated is greater 0 (rated apparent power)
+   *   <li>vRatedA is greater 0 (rated voltage at higher voltage terminal)
+   *   <li>vRatedB is greater 0 (rated voltage at lower voltage terminal)
+   *   <li>dV is between 0% and 100% (voltage magnitude increase per tap position
+   *   <li>dPhi is greater/equal to 0 (voltage angle increase per tap position)
+   *   <li>neutral tap position is between min and max tap position
+   *   <li>minimum tap position is smaller than maximum tap position
+   * </ul>
    *
    * @param transformer2WType Transformer2W type to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -233,13 +245,16 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a transformer3W if: <br>
-   * - {@link ConnectorValidationUtils#checkTransformer3WType(Transformer3WTypeInput)} confirm a
-   * valid type <br>
-   * - its tap position is within bounds <br>
-   * - it connects different subnets <br>
-   * - it connects different voltage levels <br>
-   * - its rated voltages match the voltages at the nodes
+   * Validates a transformer3W if:
+   *
+   * <ul>
+   *   <li>{@link ConnectorValidationUtils#checkTransformer3WType(Transformer3WTypeInput)} confirm a
+   *       valid type
+   *   <li>its tap position is within bounds
+   *   <li>it connects different subnets
+   *   <li>it connects different voltage levels
+   *   <li>its rated voltages match the voltages at the nodes
+   * </ul>
    *
    * @param transformer3W Transformer3W to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -284,18 +299,21 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a transformer3W type if: <br>
-   * - it is not null <br>
-   * - rScA, rScB, rScC are greater 0 (short circuit resistance in branches A,B,C) <br>
-   * - xScA, xScB, xScC are greater 0 (short circuit impedance in branches A,B,C) <br>
-   * - gM is greater/equal to 0 (no load conductance) <br>
-   * - bM is less/equal to 0 (no load susceptance) <br>
-   * - sRatedA, sRatedB, sRatedC are greater 0 (rated apparent power in branches A,B,C) <br>
-   * - vRatedA, vRatedB, vRatedC are greater 0 (rated voltage at higher node A,B,C) <br>
-   * - dV is between 0% and 100% (voltage magnitude increase per tap position <br>
-   * - dPhi is greater/equal to 0 (voltage angle increase per tap position) <br>
-   * - neutral tap position is between min and max tap position <br>
-   * - minimum tap position is smaller than maximum tap position <br>
+   * Validates a transformer3W type if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>rScA, rScB, rScC are greater 0 (short circuit resistance in branches A,B,C)
+   *   <li>xScA, xScB, xScC are greater 0 (short circuit impedance in branches A,B,C)
+   *   <li>gM is greater/equal to 0 (no load conductance)
+   *   <li>bM is less/equal to 0 (no load susceptance)
+   *   <li>sRatedA, sRatedB, sRatedC are greater 0 (rated apparent power in branches A,B,C)
+   *   <li>vRatedA, vRatedB, vRatedC are greater 0 (rated voltage at higher node A,B,C)
+   *   <li>dV is between 0% and 100% (voltage magnitude increase per tap position
+   *   <li>dPhi is greater/equal to 0 (voltage angle increase per tap position)
+   *   <li>neutral tap position is between min and max tap position
+   *   <li>minimum tap position is smaller than maximum tap position
+   * </ul>
    *
    * @param transformer3WType Transformer type to validate
    * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
@@ -342,8 +360,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a switch if: <br>
-   * - its connected nodes are in the same voltage level
+   * Validates a switch if:
+   *
+   * <ul>
+   *   <li>its connected nodes are in the same voltage level
+   * </ul>
    *
    * @param switchInput Switch to validate
    * @return a try object either containing an {@link InvalidEntityException} or an empty Success

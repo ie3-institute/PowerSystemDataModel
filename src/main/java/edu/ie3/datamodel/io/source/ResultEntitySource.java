@@ -5,7 +5,11 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
+import edu.ie3.datamodel.exceptions.FailedValidationException;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
@@ -16,9 +20,12 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
-import java.util.Optional;
+import edu.ie3.datamodel.utils.Try;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link ResultEntity} container
@@ -37,7 +44,7 @@ public class ResultEntitySource extends EntitySource {
   private final FlexOptionsResultFactory flexOptionsResultFactory;
 
   public ResultEntitySource(DataSource dataSource) {
-    this.dataSource = dataSource;
+    super(dataSource);
 
     // init factories
     this.systemParticipantResultFactory = new SystemParticipantResultFactory();
@@ -48,16 +55,51 @@ public class ResultEntitySource extends EntitySource {
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
-  public ResultEntitySource(DataSource dataSource, String dtfPattern) {
-    this.dataSource = dataSource;
+  public ResultEntitySource(DataSource dataSource, DateTimeFormatter dateTimeFormatter) {
+    super(dataSource);
 
     // init factories
-    this.systemParticipantResultFactory = new SystemParticipantResultFactory(dtfPattern);
+    this.systemParticipantResultFactory = new SystemParticipantResultFactory(dateTimeFormatter);
     this.thermalResultFactory = new ThermalResultFactory();
     this.switchResultFactory = new SwitchResultFactory();
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    List<Try<Void, ValidationException>> participantResults =
+        new ArrayList<>(
+            Stream.of(
+                    LoadResult.class,
+                    FixedFeedInResult.class,
+                    BmResult.class,
+                    PvResult.class,
+                    ChpResult.class,
+                    WecResult.class,
+                    StorageResult.class,
+                    EvcsResult.class,
+                    EvResult.class,
+                    HpResult.class,
+                    EmResult.class)
+                .map(c -> validate(c, systemParticipantResultFactory))
+                .toList());
+
+    participantResults.addAll(
+        List.of(
+            validate(ThermalHouseResult.class, thermalResultFactory),
+            validate(CylindricalStorageResult.class, thermalResultFactory),
+            validate(SwitchResult.class, switchResultFactory),
+            validate(NodeResult.class, nodeResultFactory),
+            validate(LineResult.class, connectorResultFactory),
+            validate(Transformer2WResult.class, connectorResultFactory),
+            validate(Transformer3WResult.class, connectorResultFactory),
+            validate(FlexOptionsResult.class, flexOptionsResultFactory)));
+
+    Try.scanCollection(participantResults, Void.class)
+        .transformF(FailedValidationException::new)
+        .getOrThrow();
   }
 
   /**
@@ -69,7 +111,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link NodeResult} entities
    */
-  public Set<NodeResult> getNodeResults() {
+  public Set<NodeResult> getNodeResults() throws SourceException {
     return getResultEntities(NodeResult.class, nodeResultFactory);
   }
 
@@ -83,7 +125,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link SwitchResult} entities
    */
-  public Set<SwitchResult> getSwitchResults() {
+  public Set<SwitchResult> getSwitchResults() throws SourceException {
     return getResultEntities(SwitchResult.class, switchResultFactory);
   }
 
@@ -96,7 +138,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link LineResult} entities
    */
-  public Set<LineResult> getLineResults() {
+  public Set<LineResult> getLineResults() throws SourceException {
     return getResultEntities(LineResult.class, connectorResultFactory);
   }
 
@@ -110,7 +152,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link Transformer2WResult} entities
    */
-  public Set<Transformer2WResult> getTransformer2WResultResults() {
+  public Set<Transformer2WResult> getTransformer2WResultResults() throws SourceException {
     return getResultEntities(Transformer2WResult.class, connectorResultFactory);
   }
 
@@ -124,7 +166,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link Transformer3WResult} entities
    */
-  public Set<Transformer3WResult> getTransformer3WResultResults() {
+  public Set<Transformer3WResult> getTransformer3WResultResults() throws SourceException {
     return getResultEntities(Transformer3WResult.class, connectorResultFactory);
   }
 
@@ -138,7 +180,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link FlexOptionsResult} entities
    */
-  public Set<FlexOptionsResult> getFlexOptionsResults() {
+  public Set<FlexOptionsResult> getFlexOptionsResults() throws SourceException {
     return getResultEntities(FlexOptionsResult.class, flexOptionsResultFactory);
   }
 
@@ -151,7 +193,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link LoadResult} entities
    */
-  public Set<LoadResult> getLoadResults() {
+  public Set<LoadResult> getLoadResults() throws SourceException {
     return getResultEntities(LoadResult.class, systemParticipantResultFactory);
   }
 
@@ -164,7 +206,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link PvResult} entities
    */
-  public Set<PvResult> getPvResults() {
+  public Set<PvResult> getPvResults() throws SourceException {
     return getResultEntities(PvResult.class, systemParticipantResultFactory);
   }
 
@@ -178,7 +220,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link FixedFeedInResult} entities
    */
-  public Set<FixedFeedInResult> getFixedFeedInResults() {
+  public Set<FixedFeedInResult> getFixedFeedInResults() throws SourceException {
     return getResultEntities(FixedFeedInResult.class, systemParticipantResultFactory);
   }
 
@@ -191,7 +233,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link BmResult} entities
    */
-  public Set<BmResult> getBmResults() {
+  public Set<BmResult> getBmResults() throws SourceException {
     return getResultEntities(BmResult.class, systemParticipantResultFactory);
   }
 
@@ -204,7 +246,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link ChpResult} entities
    */
-  public Set<ChpResult> getChpResults() {
+  public Set<ChpResult> getChpResults() throws SourceException {
     return getResultEntities(ChpResult.class, systemParticipantResultFactory);
   }
 
@@ -217,7 +259,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link WecResult} entities
    */
-  public Set<WecResult> getWecResults() {
+  public Set<WecResult> getWecResults() throws SourceException {
     return getResultEntities(WecResult.class, systemParticipantResultFactory);
   }
 
@@ -231,7 +273,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link StorageResult} entities
    */
-  public Set<StorageResult> getStorageResults() {
+  public Set<StorageResult> getStorageResults() throws SourceException {
     return getResultEntities(StorageResult.class, systemParticipantResultFactory);
   }
 
@@ -244,7 +286,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link EvcsResult} entities
    */
-  public Set<EvcsResult> getEvcsResults() {
+  public Set<EvcsResult> getEvcsResults() throws SourceException {
     return getResultEntities(EvcsResult.class, systemParticipantResultFactory);
   }
 
@@ -257,7 +299,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link EvResult} entities
    */
-  public Set<EvResult> getEvResults() {
+  public Set<EvResult> getEvResults() throws SourceException {
     return getResultEntities(EvResult.class, systemParticipantResultFactory);
   }
 
@@ -270,7 +312,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link HpResult} entities
    */
-  public Set<HpResult> getHpResults() {
+  public Set<HpResult> getHpResults() throws SourceException {
     return getResultEntities(HpResult.class, systemParticipantResultFactory);
   }
 
@@ -284,7 +326,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link CylindricalStorageResult} entities
    */
-  public Set<CylindricalStorageResult> getCylindricalStorageResult() {
+  public Set<CylindricalStorageResult> getCylindricalStorageResult() throws SourceException {
     return getResultEntities(CylindricalStorageResult.class, thermalResultFactory);
   }
 
@@ -298,7 +340,7 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link ThermalHouseResult} entities
    */
-  public Set<ThermalHouseResult> getThermalHouseResults() {
+  public Set<ThermalHouseResult> getThermalHouseResults() throws SourceException {
     return getResultEntities(ThermalHouseResult.class, thermalResultFactory);
   }
 
@@ -311,32 +353,28 @@ public class ResultEntitySource extends EntitySource {
    *
    * @return a set of object and uuid unique {@link EmResult} entities
    */
-  public Set<EmResult> getEmResults() {
+  public Set<EmResult> getEmResults() throws SourceException {
     return getResultEntities(EmResult.class, systemParticipantResultFactory);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  private <T extends ResultEntity> Set<T> getResultEntities(
-      Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
-    return simpleEntityDataStream(entityClass)
-        .map(
-            entityData ->
-                factory
-                    .get(entityData)
-                    .getData()
-                    .flatMap(loadResult -> cast(entityClass, loadResult)))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-  }
 
-  private <T extends ResultEntity> Optional<T> cast(
-      Class<T> entityClass, ResultEntity resultEntity) {
-    if (resultEntity.getClass().equals(entityClass)) {
-      // safe here as a) type is checked and b) csv data stream already filters non-fitting input
-      // data
-      return Optional.of(entityClass.cast(resultEntity));
-    } else {
-      return Optional.empty();
-    }
+  /**
+   * Build and cast entities to the correct type, since result factories outputs result entities of
+   * some general type.
+   *
+   * @param entityClass
+   * @param factory
+   * @return
+   * @param <T>
+   */
+  @SuppressWarnings("unchecked")
+  private <T extends ResultEntity> Set<T> getResultEntities(
+      Class<T> entityClass, EntityFactory<? extends ResultEntity, EntityData> factory)
+      throws SourceException {
+    return unpackSet(
+        buildEntityData(entityClass)
+            .map(entityData -> factory.get(entityData).map(data -> (T) data)),
+        entityClass);
   }
 }

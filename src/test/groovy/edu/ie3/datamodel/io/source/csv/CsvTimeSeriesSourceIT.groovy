@@ -5,17 +5,17 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import java.nio.file.Path
-
 import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 
 import edu.ie3.datamodel.exceptions.SourceException
-import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.models.value.HeatAndPValue
 import edu.ie3.util.interval.ClosedInterval
 import spock.lang.Shared
 import spock.lang.Specification
+
+import java.nio.file.Path
 
 class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
@@ -39,7 +39,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
     then:
     def ex = thrown(SourceException)
-    ex.message == "Unable to find a file with path '" + filePath + "'."
+    ex.message == "Unable to find file '" + filePath + "'."
     ex.cause.class == FileNotFoundException
   }
 

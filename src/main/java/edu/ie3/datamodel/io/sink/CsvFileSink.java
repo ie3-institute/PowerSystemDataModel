@@ -13,7 +13,7 @@ import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
@@ -38,11 +38,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sink that provides all capabilities to write {@link UniqueEntity}s to .csv-files. Be careful
- * about using methods other than {@link #persistJointGrid(JointGridContainer)} because all other
- * methods <b>do not check</b> for duplicate entries but only dump the data they received. In
- * contrast, when using {@link #persistJointGrid(JointGridContainer)}, all nested entities get
- * extracted first and then dumped individually without any duplicate lines.
+ * Sink that provides all capabilities to write {@link Entity}s to .csv-files. Be careful about
+ * using methods other than {@link #persistJointGrid(JointGridContainer)} because all other methods
+ * <b>do not check</b> for duplicate entries but only dump the data they received. In contrast, when
+ * using {@link #persistJointGrid(JointGridContainer)}, all nested entities get extracted first and
+ * then dumped individually without any duplicate lines.
  *
  * @version 0.1
  * @since 19.03.20
@@ -99,14 +99,14 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   }
 
   @Override
-  public <T extends UniqueEntity> void persistAll(Collection<T> entities) {
+  public <T extends Entity> void persistAll(Collection<T> entities) {
     for (T entity : entities) {
       persist(entity);
     }
   }
 
   @Override
-  public <T extends UniqueEntity> void persist(T entity) {
+  public <T extends Entity> void persist(T entity) {
     /* Distinguish between "regular" input / result models and time series */
     if (entity instanceof InputEntity inputEntity) {
       persistIncludeNested(inputEntity);
@@ -170,7 +170,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     SystemParticipants systemParticipants = jointGridContainer.getSystemParticipants();
     Set<BmInput> bmPlants = systemParticipants.getBmPlants();
     Set<ChpInput> chpPlants = systemParticipants.getChpPlants();
-    Set<EvcsInput> evCS = systemParticipants.getEvCS();
+    Set<EvcsInput> evcs = systemParticipants.getEvcs();
     Set<EvInput> evs = systemParticipants.getEvs();
     Set<FixedFeedInInput> fixedFeedIns = systemParticipants.getFixedFeedIns();
     Set<HpInput> heatPumps = systemParticipants.getHeatPumps();
@@ -178,7 +178,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     Set<PvInput> pvPlants = systemParticipants.getPvPlants();
     Set<StorageInput> storages = systemParticipants.getStorages();
     Set<WecInput> wecPlants = systemParticipants.getWecPlants();
-    Set<EmInput> emSystems = systemParticipants.getEmSystems();
 
     // get graphic elements (just for better readability, we could also just get them directly
     // below)
@@ -211,15 +210,14 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 measurementUnits,
                 bmPlants,
                 chpPlants,
-                evCS,
+                evcs,
                 evs,
                 fixedFeedIns,
                 heatPumps,
                 loads,
                 pvPlants,
                 storages,
-                wecPlants,
-                emSystems)
+                wecPlants)
             .flatMap(Collection::stream)
             .map(Extractor::extractOperator)
             .flatMap(Optional::stream)
@@ -288,7 +286,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param entity the entity to write
    * @param <C> bounded to be all unique entities
    */
-  private <C extends UniqueEntity> void write(C entity) {
+  private <C extends Entity> void write(C entity) {
     try {
       LinkedHashMap<String, String> entityFieldData =
           processorProvider.handleEntity(entity).map(this::csvEntityFieldData).getOrThrow();

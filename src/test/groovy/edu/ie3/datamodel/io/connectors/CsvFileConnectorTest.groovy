@@ -6,11 +6,11 @@
 package edu.ie3.datamodel.io.connectors
 
 import edu.ie3.datamodel.exceptions.ConnectorException
-import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
-import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.CsvFileDefinition
+import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -33,6 +33,9 @@ class CsvFileConnectorTest extends Specification {
   Path tmpDirectory
 
   @Shared
+  FileNamingStrategy fileNamingStrategy
+
+  @Shared
   CsvFileConnector cfc
 
   @Shared
@@ -43,7 +46,8 @@ class CsvFileConnectorTest extends Specification {
 
   def setupSpec() {
     tmpDirectory = Files.createTempDirectory("psdm_csv_file_connector_")
-    cfc = new CsvFileConnector(tmpDirectory, new FileNamingStrategy())
+    fileNamingStrategy = new FileNamingStrategy()
+    cfc = new CsvFileConnector(tmpDirectory, fileNamingStrategy)
     def gridPaths = [Path.of("node_input.csv")]
     timeSeriesPaths = [
       "its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf.csv",
@@ -110,11 +114,8 @@ class CsvFileConnectorTest extends Specification {
   }
 
   def "The csv file connector throws an Exception, if the foreseen file cannot be found"() {
-    given:
-    def cfc = new CsvFileConnector(tmpDirectory, new FileNamingStrategy(new EntityPersistenceNamingStrategy(), new DefaultDirectoryHierarchy(tmpDirectory, "test")))
-
     when:
-    cfc.initReader(NodeInput)
+    cfc.initReader(tmpDirectory.resolve("path-does-not-exist"))
 
     then:
     thrown(FileNotFoundException)
@@ -122,7 +123,8 @@ class CsvFileConnectorTest extends Specification {
 
   def "The csv file connector initializes a reader without Exception, if the foreseen file is apparent"() {
     when:
-    cfc.initReader(NodeInput)
+    def filePath = fileNamingStrategy.getFilePath(NodeInput).orElseThrow()
+    cfc.initReader(filePath)
 
     then:
     noExceptionThrown()
@@ -238,7 +240,7 @@ class CsvFileConnectorTest extends Specification {
 
     and: "credible input"
     def entries = [
-      new TimeBasedValue(UUID.fromString("5bac1c86-19d1-4145-8dae-f207a1346916"), ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
+      new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
     ] as SortedSet
     def timeSeries = Mock(IndividualTimeSeries)
     timeSeries.uuid >> UUID.fromString("0c03ce9f-ab0e-4715-bc13-f9d903f26dbf")
@@ -263,7 +265,7 @@ class CsvFileConnectorTest extends Specification {
 
     and: "credible input"
     def entries = [
-      new TimeBasedValue(UUID.fromString("5bac1c86-19d1-4145-8dae-f207a1346916"), ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
+      new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
     ] as SortedSet
     def timeSeries = Mock(IndividualTimeSeries)
     timeSeries.uuid >> UUID.fromString("0c03ce9f-ab0e-4715-bc13-f9d903f26dbf")

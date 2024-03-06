@@ -5,16 +5,10 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.models.result.system.EmResult
-import edu.ie3.datamodel.models.result.system.FlexOptionsResult
-
-import java.nio.file.Path
-
+import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import edu.ie3.datamodel.models.input.system.EmInput
-import edu.ie3.datamodel.models.input.system.LoadInput
+
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
@@ -23,6 +17,7 @@ import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -32,13 +27,16 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
+import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
+import edu.ie3.datamodel.models.result.system.EmResult
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.EvcsResult
+import edu.ie3.datamodel.models.result.system.FlexOptionsResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.WecResult
 import edu.ie3.datamodel.models.timeseries.TimeSeries
@@ -48,8 +46,8 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
 import edu.ie3.test.common.GridTestData
-import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.SampleJointGrid
+import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.util.TimeUtil
@@ -58,6 +56,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
+import java.nio.file.Path
 import javax.measure.Quantity
 import javax.measure.quantity.Power
 
@@ -143,19 +142,18 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         new FileNamingStrategy(),
         ",")
 
-    UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
     Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-    PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    WecResult wecResult = new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    EvcsResult evcsResult = new EvcsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    EmResult emResult = new EmResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+    PvResult pvResult = new PvResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    WecResult wecResult = new WecResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    EvcsResult evcsResult = new EvcsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    EmResult emResult = new EmResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
 
     Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
-    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, pRef, pMin, pMax)
+    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
 
     when:
     csvFileSink.persistAll([
@@ -242,6 +240,41 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("its_weather_4fcbdfcd-4ff0-46dd-b0df-f3af7ae3ed98.csv").toFile().exists()
   }
 
+  def "A valid CsvFileSink is able to persist an InputEntity with multiple nested entities."() {
+    given:
+    def csvFileSink = new CsvFileSink(testBaseFolderPath)
+    def nestedInput = new PvInput(
+        UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
+        "test_pvInput",
+        OperatorInput.NO_OPERATOR_ASSIGNED,
+        OperationTime.notLimited(),
+        GridTestData.nodeA,
+        new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
+        SystemParticipantTestData.emInput,
+        0.2,
+        Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
+        Quantities.getQuantity(95d, PERCENT),
+        Quantities.getQuantity(41.01871871948242, DEGREE_GEOM),
+        0.8999999761581421,
+        1,
+        false,
+        Quantities.getQuantity(25d, KILOVOLTAMPERE),
+        0.95
+        )
+
+    when:
+    csvFileSink.persist(nestedInput)
+
+    then:
+    testBaseFolderPath.toFile().exists()
+    testBaseFolderPath.resolve("pv_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("node_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("em_input.csv").toFile().exists()
+
+    cleanup:
+    csvFileSink.shutdown()
+  }
+
   def "A valid CsvFileSink is able to persist an InputEntity without persisting the nested elements"() {
     given:
     def csvFileSink = new CsvFileSink(testBaseFolderPath)
@@ -252,6 +285,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         OperationTime.notLimited(),
         Mock(NodeInput),
         new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
+        Mock(EmInput),
         0.2,
         Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
         Quantities.getQuantity(95d, PERCENT),

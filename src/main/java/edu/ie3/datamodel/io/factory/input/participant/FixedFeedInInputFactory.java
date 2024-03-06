@@ -5,21 +5,22 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 public class FixedFeedInInputFactory
-    extends SystemParticipantInputEntityFactory<FixedFeedInInput, NodeAssetInputEntityData> {
+    extends SystemParticipantInputEntityFactory<FixedFeedInInput, SystemParticipantEntityData> {
 
-  private static final String S_RATED = "srated";
-  private static final String COSPHI_RATED = "cosphirated";
+  private static final String S_RATED = "sRated";
+  private static final String COSPHI_RATED = "cosPhiRated";
 
   public FixedFeedInInputFactory() {
     super(FixedFeedInInput.class);
@@ -32,17 +33,18 @@ public class FixedFeedInInputFactory
 
   @Override
   protected FixedFeedInInput buildModel(
-      NodeAssetInputEntityData data,
-      java.util.UUID uuid,
+      SystemParticipantEntityData data,
+      UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
+    final EmInput em = data.getEm().orElse(null);
     final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     final double cosPhiRated = data.getDouble(COSPHI_RATED);
 
     return new FixedFeedInInput(
-        uuid, id, operator, operationTime, node, qCharacteristics, sRated, cosPhiRated);
+        uuid, id, operator, operationTime, node, qCharacteristics, em, sRated, cosPhiRated);
   }
 }

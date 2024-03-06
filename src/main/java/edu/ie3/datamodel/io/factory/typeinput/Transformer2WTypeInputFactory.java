@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import java.util.Collections;
@@ -17,51 +17,38 @@ import tech.units.indriya.ComparableQuantity;
 
 public class Transformer2WTypeInputFactory
     extends AssetTypeInputEntityFactory<Transformer2WTypeInput> {
-  private static final String R_SC = "rsc";
-  private static final String X_SC = "xsc";
-  private static final String S_RATED = "srated";
-  private static final String V_RATED_A = "vrateda";
-  private static final String V_RATED_B = "vratedb";
-  private static final String G_M = "gm";
-  private static final String B_M = "bm";
-  private static final String D_V = "dv";
-  private static final String D_PHI = "dphi";
-  private static final String TAP_SIDE = "tapside";
-  private static final String TAP_NEUTR = "tapneutr";
-  private static final String TAP_MIN = "tapmin";
-  private static final String TAP_MAX = "tapmax";
+  private static final String R_SC = "rSc";
+  private static final String X_SC = "xSc";
+  private static final String S_RATED = "sRated";
+  private static final String V_RATED_A = "vRatedA";
+  private static final String V_RATED_B = "vRatedB";
+  private static final String G_M = "gM";
+  private static final String B_M = "bM";
+  private static final String D_V = "dV";
+  private static final String D_PHI = "dPhi";
+  private static final String TAP_SIDE = "tapSide";
+  private static final String TAP_NEUTR = "tapNeutr";
+  private static final String TAP_MIN = "tapMin";
+  private static final String TAP_MAX = "tapMax";
 
   public Transformer2WTypeInputFactory() {
     super(Transformer2WTypeInput.class);
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> constructorParams =
         newSet(
-            ENTITY_UUID,
-            ENTITY_ID,
-            R_SC,
-            X_SC,
-            S_RATED,
-            V_RATED_A,
-            V_RATED_B,
-            G_M,
-            B_M,
-            D_V,
-            D_PHI,
-            TAP_SIDE,
-            TAP_NEUTR,
-            TAP_MIN,
-            TAP_MAX);
+            UUID, ID, R_SC, X_SC, S_RATED, V_RATED_A, V_RATED_B, G_M, B_M, D_V, D_PHI, TAP_SIDE,
+            TAP_NEUTR, TAP_MIN, TAP_MAX);
 
     return Collections.singletonList(constructorParams);
   }
 
   @Override
-  protected Transformer2WTypeInput buildModel(SimpleEntityData data) {
-    UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.getField(ENTITY_ID);
+  protected Transformer2WTypeInput buildModel(EntityData data) {
+    UUID uuid = data.getUUID(UUID);
+    String id = data.getField(ID);
     ComparableQuantity<ElectricResistance> rSc = data.getQuantity(R_SC, StandardUnits.RESISTANCE);
     ComparableQuantity<ElectricResistance> xSc = data.getQuantity(X_SC, StandardUnits.REACTANCE);
     ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);

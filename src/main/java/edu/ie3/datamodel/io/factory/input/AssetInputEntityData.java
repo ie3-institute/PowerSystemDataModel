@@ -45,6 +45,18 @@ public class AssetInputEntityData extends EntityData {
     this.operator = operator;
   }
 
+  /**
+   * Creates a new AssetInputEntityData object based on a given {@link EntityData} object and given
+   * operator
+   *
+   * @param entityData The entity data object to use attributes of
+   * @param operator The operator input to use
+   */
+  public AssetInputEntityData(EntityData entityData, OperatorInput operator) {
+    super(entityData);
+    this.operator = operator;
+  }
+
   public OperatorInput getOperatorInput() {
     return operator;
   }

@@ -24,12 +24,15 @@ public class NodeValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a node if: <br>
-   * - it is not null <br>
-   * - voltage level is not null and valid <br>
-   * - target voltage is larger than zero and smaller than two <br>
-   * - subnet number is larger than zero <br>
-   * - geoPosition is not null
+   * Validates a node if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>voltage level is not null and valid
+   *   <li>target voltage is larger than zero and smaller than two
+   *   <li>subnet number is larger than zero
+   *   <li>geoPosition is not null
+   * </ul>
    *
    * @param node Node to validate
    * @return a list of try objects either containing an {@link ValidationException} or an empty

@@ -18,10 +18,8 @@ public abstract class FactoryData {
 
   protected FactoryData(Map<String, String> fieldsToAttributes, Class<?> targetClass) {
     // this does the magic: case-insensitive get/set calls on keys
-    TreeMap<String, String> insensitiveFieldsToAttributes =
-        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    insensitiveFieldsToAttributes.putAll(fieldsToAttributes);
-    this.fieldsToAttributes = insensitiveFieldsToAttributes;
+    this.fieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    this.fieldsToAttributes.putAll(fieldsToAttributes);
     this.targetClass = targetClass;
   }
 
@@ -132,29 +130,6 @@ public abstract class FactoryData {
       throw new FactoryException(
           String.format(
               "Exception while trying to parse UUID of field \"%s\" with value \"%s\"",
-              field, getField(field)),
-          iae);
-    }
-  }
-
-  /**
-   * Parses and returns an array of UUIDs from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
-   *
-   * @param field field name
-   * @return UUID
-   */
-  public UUID[] getUUIDs(String field) {
-    try {
-      String fieldValue = getField(field);
-      if (fieldValue.trim().isEmpty()) return new UUID[0];
-
-      String[] uuidFields = fieldValue.split(" ");
-      return Arrays.stream(uuidFields).map(UUID::fromString).toArray(UUID[]::new);
-    } catch (IllegalArgumentException iae) {
-      throw new FactoryException(
-          String.format(
-              "Exception while trying to parse UUIDs of field \"%s\" with value \"%s\"",
               field, getField(field)),
           iae);
     }
