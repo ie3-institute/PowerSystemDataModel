@@ -49,7 +49,6 @@ public abstract class ResultEntity implements Entity {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
     ResultEntity that = (ResultEntity) o;
     return time.equals(that.time) && inputModel.equals(that.inputModel);
   }
