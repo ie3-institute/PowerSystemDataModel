@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Fixed
+- Fixed `equals` of `ResultEntity` and `TimeSeriesEntry` [#1037](https://github.com/ie3-institute/PowerSystemDataModel/issues/1037)
+
 ## [5.0.0] - 2024-03-06
 
 ### Added
