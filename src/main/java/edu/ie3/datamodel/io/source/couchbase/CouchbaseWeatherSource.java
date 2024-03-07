@@ -19,7 +19,6 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -91,30 +90,16 @@ public class CouchbaseWeatherSource extends WeatherSource {
       String coordinateIdColumnName,
       String keyPrefix,
       TimeBasedWeatherValueFactory weatherFactory,
-      String timeStampPattern)
-      throws SourceException {
+      String timeStampPattern) {
     super(idCoordinateSource, weatherFactory);
     this.connector = connector;
     this.coordinateIdColumnName = coordinateIdColumnName;
     this.keyPrefix = keyPrefix;
     this.timeStampPattern = timeStampPattern;
-
-    // validating
-    Try.of(() -> getSourceFields(WeatherValue.class), SourceException.class)
-        .flatMap(
-            fieldsOpt ->
-                fieldsOpt
-                    .map(
-                        fields ->
-                            weatherFactory
-                                .validate(fields, WeatherValue.class)
-                                .transformF(SourceException::new))
-                    .orElse(Try.Success.empty()))
-        .getOrThrow();
   }
 
   @Override
-  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
+  public Optional<Set<String>> getSourceFields() {
     return connector.getSourceFields();
   }
 

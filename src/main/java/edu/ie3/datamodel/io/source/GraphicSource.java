@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 08.04.20
  */
-public class GraphicSource extends EntitySource {
+public class GraphicSource extends AssetEntitySource {
   // general fields
   private final TypeSource typeSource;
   private final RawGridSource rawGridSource;
@@ -55,8 +55,8 @@ public class GraphicSource extends EntitySource {
   public void validate() throws ValidationException {
     Try.scanStream(
             Stream.of(
-                validate(NodeGraphicInput.class, nodeGraphicInputFactory),
-                validate(LineGraphicInput.class, lineGraphicInputFactory)),
+                validate(NodeGraphicInput.class, dataSource, nodeGraphicInputFactory),
+                validate(LineGraphicInput.class, dataSource, lineGraphicInputFactory)),
             "Validation")
         .transformF(FailedValidationException::new)
         .getOrThrow();
@@ -162,7 +162,7 @@ public class GraphicSource extends EntitySource {
    */
   protected Stream<Try<NodeGraphicInputEntityData, SourceException>> buildNodeGraphicEntityData(
       Map<UUID, NodeInput> nodes) {
-    return buildEntityData(NodeGraphicInput.class)
+    return buildEntityData(NodeGraphicInput.class, dataSource)
         .map(
             entityDataTry ->
                 entityDataTry.flatMap(
@@ -188,7 +188,7 @@ public class GraphicSource extends EntitySource {
    */
   protected Stream<Try<LineGraphicInputEntityData, SourceException>> buildLineGraphicEntityData(
       Map<UUID, LineInput> lines) {
-    return buildEntityData(LineGraphicInput.class)
+    return buildEntityData(LineGraphicInput.class, dataSource)
         .map(
             entityDataTry ->
                 entityDataTry.flatMap(

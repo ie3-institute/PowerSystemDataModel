@@ -28,9 +28,9 @@ import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Shared
 import spock.lang.Specification
 
-class EntitySourceTest extends Specification {
+class AssetEntitySourceTest extends Specification {
 
-  private final class DummyEntitySource extends EntitySource {
+  private final class DummyEntitySource extends AssetEntitySource {
     DummyEntitySource(CsvDataSource dataSource) {
       super(dataSource)
     }

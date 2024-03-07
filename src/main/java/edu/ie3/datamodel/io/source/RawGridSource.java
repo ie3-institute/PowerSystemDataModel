@@ -26,7 +26,7 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 08.04.20
  */
-public class RawGridSource extends EntitySource {
+public class RawGridSource extends AssetEntitySource {
 
   // field names
   protected static final String NODE_A = "nodeA";
@@ -61,12 +61,12 @@ public class RawGridSource extends EntitySource {
   public void validate() throws ValidationException {
     Try.scanStream(
             Stream.of(
-                validate(NodeInput.class, nodeInputFactory),
-                validate(LineInput.class, lineInputFactory),
-                validate(Transformer2WInput.class, transformer2WInputFactory),
-                validate(Transformer3WInput.class, transformer3WInputFactory),
-                validate(SwitchInput.class, switchInputFactory),
-                validate(MeasurementUnitInput.class, measurementUnitInputFactory)),
+                validate(NodeInput.class, dataSource, nodeInputFactory),
+                validate(LineInput.class, dataSource, lineInputFactory),
+                validate(Transformer2WInput.class, dataSource, transformer2WInputFactory),
+                validate(Transformer3WInput.class, dataSource, transformer3WInputFactory),
+                validate(SwitchInput.class, dataSource, switchInputFactory),
+                validate(MeasurementUnitInput.class, dataSource, measurementUnitInputFactory)),
             "Validation")
         .transformF(FailedValidationException::new)
         .getOrThrow();
