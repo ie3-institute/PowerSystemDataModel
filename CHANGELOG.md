@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+## [5.0.1] - 2024-03-07
+
+### Fixed
+- Fixed `equals` of `ResultEntity` and `TimeSeriesEntry` [#1037](https://github.com/ie3-institute/PowerSystemDataModel/issues/1037)
+
 ## [5.0.0] - 2024-03-06
 
 ### Added
@@ -272,7 +277,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.1...HEAD
+[5.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.0...5.0.1
 [4.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.1.0...5.0.0
 [4.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/3.0.0...4.0.0
