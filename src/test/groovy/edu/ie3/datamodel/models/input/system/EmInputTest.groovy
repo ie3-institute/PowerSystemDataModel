@@ -54,15 +54,15 @@ class EmInputTest extends Specification {
         SystemParticipantTestData.emInput.uuid +
         ", id='" +
         SystemParticipantTestData.emInput.id +
-        ", operator=" +
+        "', operator=" +
         SystemParticipantTestData.emInput.operator.uuid +
         ", operationTime=" +
         SystemParticipantTestData.emInput.operationTime +
         ", controlStrategy=" +
         SystemParticipantTestData.emInput.controlStrategy +
-        ", parentEm=" +
+        ", controllingEm=" +
         SystemParticipantTestData.parentEm.uuid +
-        '}'
+        "}"
   }
 
   def "A EmInput copy method should work as expected"() {
@@ -86,7 +86,7 @@ class EmInputTest extends Specification {
       assert operator == emInput.operator
       assert id == emInput.id
       assert controlStrategy == newStrat
-      assert parentEm == Optional.of(givenParentEm)
+      assert controllingEm == Optional.of(givenParentEm)
     }
   }
 }

@@ -119,7 +119,7 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
         + ", qCharacteristics='"
         + getqCharacteristics()
         + "', em="
-        + getEm()
+        + getControllingEm()
         + ", type="
         + type.getUuid()
         + ", thermalBus="

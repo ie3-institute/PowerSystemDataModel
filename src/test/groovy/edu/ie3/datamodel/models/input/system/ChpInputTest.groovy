@@ -29,7 +29,7 @@ class ChpInputTest extends Specification {
       assert thermalStorage == SystemParticipantTestData.thermalStorage
       assert marketReaction
       assert type == SystemParticipantTestData.chpTypeInput
-      assert em == Optional.of(SystemParticipantTestData.emInput)
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -53,7 +53,7 @@ class ChpInputTest extends Specification {
       assert type.sRated == chpInput.type.sRated * 2d
       assert type.pThermal == chpInput.type.pThermal * 2d
       assert type.pOwn == chpInput.type.pOwn * 2d
-      assert em == Optional.of(SystemParticipantTestData.emInput)
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

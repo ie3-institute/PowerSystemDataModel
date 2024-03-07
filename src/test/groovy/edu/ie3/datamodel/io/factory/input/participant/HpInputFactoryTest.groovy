@@ -72,7 +72,7 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert em == Optional.of(emUnit)
+      assert controllingEm == Optional.of(emUnit)
       assert type == typeInput
       assert thermalBus == thermalBusInput
     }

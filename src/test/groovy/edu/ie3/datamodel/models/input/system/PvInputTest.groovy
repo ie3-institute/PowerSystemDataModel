@@ -41,7 +41,7 @@ class PvInputTest extends Specification {
       assert elevationAngle == Quantities.getQuantity(50, DEGREE_GEOM)
       assert kG == 10
       assert kT == 5
-      assert em == Optional.of(SystemParticipantTestData.emInput)
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -68,7 +68,7 @@ class PvInputTest extends Specification {
       assert elevationAngle == pvInput.elevationAngle
       assert kG == pvInput.kG
       assert kT == pvInput.kT
-      assert em == Optional.of(SystemParticipantTestData.emInput)
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

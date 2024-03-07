@@ -18,7 +18,7 @@ ext {
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
   groovyBinaryVersion = "4.0.19"
-  testcontainersVersion = '1.19.6'
+  testcontainersVersion = '1.19.7'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -53,7 +53,7 @@ repositories {
 dependencies {
 
   //	 ie³ power system utils
-  implementation 'com.github.ie3-institute:PowerSystemUtils:2.2'
+  implementation 'com.github.ie3-institute:PowerSystemUtils:2.2.1'
 
   implementation 'tech.units:indriya:2.2'
 

@@ -240,6 +240,41 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("its_weather_4fcbdfcd-4ff0-46dd-b0df-f3af7ae3ed98.csv").toFile().exists()
   }
 
+  def "A valid CsvFileSink is able to persist an InputEntity with multiple nested entities."() {
+    given:
+    def csvFileSink = new CsvFileSink(testBaseFolderPath)
+    def nestedInput = new PvInput(
+        UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
+        "test_pvInput",
+        OperatorInput.NO_OPERATOR_ASSIGNED,
+        OperationTime.notLimited(),
+        GridTestData.nodeA,
+        new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
+        SystemParticipantTestData.emInput,
+        0.2,
+        Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
+        Quantities.getQuantity(95d, PERCENT),
+        Quantities.getQuantity(41.01871871948242, DEGREE_GEOM),
+        0.8999999761581421,
+        1,
+        false,
+        Quantities.getQuantity(25d, KILOVOLTAMPERE),
+        0.95
+        )
+
+    when:
+    csvFileSink.persist(nestedInput)
+
+    then:
+    testBaseFolderPath.toFile().exists()
+    testBaseFolderPath.resolve("pv_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("node_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("em_input.csv").toFile().exists()
+
+    cleanup:
+    csvFileSink.shutdown()
+  }
+
   def "A valid CsvFileSink is able to persist an InputEntity without persisting the nested elements"() {
     given:
     def csvFileSink = new CsvFileSink(testBaseFolderPath)

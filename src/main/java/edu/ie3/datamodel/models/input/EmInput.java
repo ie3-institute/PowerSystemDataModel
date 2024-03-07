@@ -5,13 +5,14 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.io.extractor.HasEm;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EmInput extends AssetInput {
+public class EmInput extends AssetInput implements HasEm {
 
   /** Reference to the control strategy to be used for this model */
   private final String controlStrategy;
@@ -20,7 +21,7 @@ public class EmInput extends AssetInput {
    * Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
    * unit is not em-controlled.
    */
-  private final EmInput parentEm;
+  private final EmInput controllingEm;
 
   /**
    * Constructor for an operated energy management system
@@ -30,7 +31,7 @@ public class EmInput extends AssetInput {
    * @param operator of the asset
    * @param operationTime time for which the entity is operated
    * @param emControlStrategy the control strategy
-   * @param parentEm The {@link EmInput} controlling this em unit. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable.
    */
   public EmInput(
       UUID uuid,
@@ -38,10 +39,10 @@ public class EmInput extends AssetInput {
       OperatorInput operator,
       OperationTime operationTime,
       String emControlStrategy,
-      EmInput parentEm) {
+      EmInput controllingEm) {
     super(uuid, id, operator, operationTime);
     this.controlStrategy = emControlStrategy;
-    this.parentEm = parentEm;
+    this.controllingEm = controllingEm;
   }
 
   /**
@@ -50,20 +51,16 @@ public class EmInput extends AssetInput {
    * @param uuid of the input entity
    * @param id of the asset
    * @param emControlStrategy the control strategy
-   * @param parentEm The {@link EmInput} controlling this em unit. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable.
    */
-  public EmInput(UUID uuid, String id, String emControlStrategy, EmInput parentEm) {
+  public EmInput(UUID uuid, String id, String emControlStrategy, EmInput controllingEm) {
     super(uuid, id);
     this.controlStrategy = emControlStrategy;
-    this.parentEm = parentEm;
+    this.controllingEm = controllingEm;
   }
 
   public String getControlStrategy() {
     return controlStrategy;
-  }
-
-  public Optional<EmInput> getParentEm() {
-    return Optional.ofNullable(parentEm);
   }
 
   @Override
@@ -77,12 +74,12 @@ public class EmInput extends AssetInput {
     if (!(o instanceof EmInput emInput)) return false;
     if (!super.equals(o)) return false;
     return Objects.equals(controlStrategy, emInput.controlStrategy)
-        && Objects.equals(parentEm, emInput.parentEm);
+        && Objects.equals(controllingEm, emInput.controllingEm);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), controlStrategy, parentEm);
+    return Objects.hash(super.hashCode(), controlStrategy, controllingEm);
   }
 
   @Override
@@ -92,15 +89,20 @@ public class EmInput extends AssetInput {
         + getUuid()
         + ", id='"
         + getId()
-        + ", operator="
+        + "', operator="
         + getOperator().getUuid()
         + ", operationTime="
         + getOperationTime()
         + ", controlStrategy="
         + getControlStrategy()
-        + ", parentEm="
-        + getParentEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
-        + '}';
+        + ", controllingEm="
+        + getControllingEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
+        + "}";
+  }
+
+  @Override
+  public Optional<EmInput> getControllingEm() {
+    return Optional.ofNullable(controllingEm);
   }
 
   public static class EmInputCopyBuilder extends AssetInputCopyBuilder<EmInputCopyBuilder> {
@@ -112,7 +114,7 @@ public class EmInput extends AssetInput {
     protected EmInputCopyBuilder(EmInput entity) {
       super(entity);
       this.controlStrategy = entity.getControlStrategy();
-      this.parentEm = entity.parentEm;
+      this.parentEm = entity.controllingEm;
     }
 
     public EmInputCopyBuilder controlStrategy(String controlStrategy) {
