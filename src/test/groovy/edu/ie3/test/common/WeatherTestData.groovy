@@ -6,6 +6,7 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
 import edu.ie3.util.geo.CoordinateDistance
@@ -19,7 +20,7 @@ import javax.measure.quantity.Length
 
 abstract class WeatherTestData {
 
-  static final class DummyIdCoordinateSource implements CsvTestDataMeta, IdCoordinateSource {
+  static final class DummyIdCoordinateSource extends IdCoordinateSource implements CsvTestDataMeta {
 
     @Override
     Optional<Set<String>> getSourceFields() throws SourceException {
@@ -79,6 +80,10 @@ abstract class WeatherTestData {
     @Override
     List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
       throw new UnsupportedOperationException("This method is not supported!")
+    }
+
+    @Override
+    void validate() throws ValidationException {
     }
   }
 

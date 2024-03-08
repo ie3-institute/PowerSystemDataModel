@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
@@ -20,12 +21,17 @@ import java.util.stream.Stream;
  * This interface describes basic function to handle mapping between models and their respective
  * time series
  */
-public abstract class TimeSeriesMappingSource {
+public abstract class TimeSeriesMappingSource extends EntitySource {
 
   protected final TimeSeriesMappingFactory mappingFactory;
 
   protected TimeSeriesMappingSource() {
     this.mappingFactory = new TimeSeriesMappingFactory();
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    validate(MappingEntry.class, this::getSourceFields, mappingFactory);
   }
 
   /**

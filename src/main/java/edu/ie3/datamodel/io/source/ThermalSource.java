@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 08.04.20
  */
-public class ThermalSource extends EntitySource {
+public class ThermalSource extends AssetEntitySource {
   // general fields
   private final TypeSource typeSource;
 
@@ -51,9 +51,9 @@ public class ThermalSource extends EntitySource {
   public void validate() throws ValidationException {
     Try.scanStream(
             Stream.of(
-                validate(ThermalBusInput.class, thermalBusInputFactory),
-                validate(CylindricalStorageInput.class, cylindricalStorageInputFactory),
-                validate(ThermalHouseInput.class, thermalHouseInputFactory)),
+                validate(ThermalBusInput.class, dataSource, thermalBusInputFactory),
+                validate(CylindricalStorageInput.class, dataSource, cylindricalStorageInputFactory),
+                validate(ThermalHouseInput.class, dataSource, thermalHouseInputFactory)),
             "Validation")
         .transformF(FailedValidationException::new)
         .getOrThrow();

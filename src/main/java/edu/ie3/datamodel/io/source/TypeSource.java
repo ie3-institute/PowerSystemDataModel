@@ -46,8 +46,10 @@ public class TypeSource extends EntitySource {
   private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
   private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
 
+  private final DataSource dataSource;
+
   public TypeSource(DataSource dataSource) {
-    super(dataSource);
+    this.dataSource = dataSource;
 
     this.operatorInputFactory = new OperatorInputFactory();
     this.transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
@@ -67,15 +69,15 @@ public class TypeSource extends EntitySource {
                     WecTypeInput.class,
                     ChpTypeInput.class,
                     StorageTypeInput.class)
-                .map(c -> validate(c, systemParticipantTypeInputFactory))
+                .map(c -> validate(c, dataSource, systemParticipantTypeInputFactory))
                 .toList());
 
     participantResults.addAll(
         List.of(
-            validate(OperatorInput.class, operatorInputFactory),
-            validate(LineTypeInput.class, lineTypeInputFactory),
-            validate(Transformer2WTypeInput.class, transformer2WTypeInputFactory),
-            validate(Transformer3WTypeInput.class, transformer3WTypeInputFactory)));
+            validate(OperatorInput.class, dataSource, operatorInputFactory),
+            validate(LineTypeInput.class, dataSource, lineTypeInputFactory),
+            validate(Transformer2WTypeInput.class, dataSource, transformer2WTypeInputFactory),
+            validate(Transformer3WTypeInput.class, dataSource, transformer3WTypeInputFactory)));
 
     Try.scanCollection(participantResults, Void.class)
         .transformF(FailedValidationException::new)
@@ -94,7 +96,8 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, Transformer2WTypeInput> getTransformer2WTypes() throws SourceException {
     return unpackMap(
-        buildEntityData(Transformer2WTypeInput.class).map(transformer2WTypeInputFactory::get),
+        buildEntityData(Transformer2WTypeInput.class, dataSource)
+            .map(transformer2WTypeInputFactory::get),
         Transformer2WTypeInput.class);
   }
 
@@ -109,7 +112,8 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, OperatorInput> getOperators() throws SourceException {
     return unpackMap(
-        buildEntityData(OperatorInput.class).map(operatorInputFactory::get), OperatorInput.class);
+        buildEntityData(OperatorInput.class, dataSource).map(operatorInputFactory::get),
+        OperatorInput.class);
   }
 
   /**
@@ -123,7 +127,8 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, LineTypeInput> getLineTypes() throws SourceException {
     return unpackMap(
-        buildEntityData(LineTypeInput.class).map(lineTypeInputFactory::get), LineTypeInput.class);
+        buildEntityData(LineTypeInput.class, dataSource).map(lineTypeInputFactory::get),
+        LineTypeInput.class);
   }
 
   /**
@@ -138,7 +143,8 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, Transformer3WTypeInput> getTransformer3WTypes() throws SourceException {
     return unpackMap(
-        buildEntityData(Transformer3WTypeInput.class).map(transformer3WTypeInputFactory::get),
+        buildEntityData(Transformer3WTypeInput.class, dataSource)
+            .map(transformer3WTypeInputFactory::get),
         Transformer3WTypeInput.class);
   }
 
@@ -240,6 +246,7 @@ public class TypeSource extends EntitySource {
   @SuppressWarnings("unchecked")
   private <T extends AssetTypeInput> Stream<Try<T, FactoryException>> buildEntities(
       Class<T> entityClass, EntityFactory<? extends UniqueInputEntity, EntityData> factory) {
-    return buildEntityData(entityClass).map(data -> (Try<T, FactoryException>) factory.get(data));
+    return buildEntityData(entityClass, dataSource)
+        .map(data -> (Try<T, FactoryException>) factory.get(data));
   }
 }

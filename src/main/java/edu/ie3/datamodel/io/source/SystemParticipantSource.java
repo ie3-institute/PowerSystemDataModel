@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * Implementation that provides the capability to build entities of type {@link
  * SystemParticipantInput} as well as {@link SystemParticipants} container.
  */
-public class SystemParticipantSource extends EntitySource {
+public class SystemParticipantSource extends AssetEntitySource {
 
   private static final String THERMAL_STORAGE = "thermalstorage";
   private static final String THERMAL_BUS = "thermalbus";
@@ -83,16 +83,16 @@ public class SystemParticipantSource extends EntitySource {
   public void validate() throws ValidationException {
     Try.scanStream(
             Stream.of(
-                validate(BmInput.class, bmInputFactory),
-                validate(ChpInput.class, chpInputFactory),
-                validate(EvInput.class, evInputFactory),
-                validate(FixedFeedInInput.class, fixedFeedInInputFactory),
-                validate(HpInput.class, hpInputFactory),
-                validate(LoadInput.class, loadInputFactory),
-                validate(PvInput.class, pvInputFactory),
-                validate(StorageInput.class, storageInputFactory),
-                validate(WecInput.class, wecInputFactory),
-                validate(EvcsInput.class, evcsInputFactory)),
+                validate(BmInput.class, dataSource, bmInputFactory),
+                validate(ChpInput.class, dataSource, chpInputFactory),
+                validate(EvInput.class, dataSource, evInputFactory),
+                validate(FixedFeedInInput.class, dataSource, fixedFeedInInputFactory),
+                validate(HpInput.class, dataSource, hpInputFactory),
+                validate(LoadInput.class, dataSource, loadInputFactory),
+                validate(PvInput.class, dataSource, pvInputFactory),
+                validate(StorageInput.class, dataSource, storageInputFactory),
+                validate(WecInput.class, dataSource, wecInputFactory),
+                validate(EvcsInput.class, dataSource, evcsInputFactory)),
             "Validation")
         .transformF(FailedValidationException::new)
         .getOrThrow();

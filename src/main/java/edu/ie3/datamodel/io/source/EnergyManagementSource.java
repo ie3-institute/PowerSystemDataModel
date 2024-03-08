@@ -21,7 +21,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EnergyManagementSource extends EntitySource {
+public class EnergyManagementSource extends AssetEntitySource {
 
   private final TypeSource typeSource;
 
@@ -34,7 +34,7 @@ public class EnergyManagementSource extends EntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    validate(EmInput.class, emInputFactory).getOrThrow();
+    validate(EmInput.class, dataSource, emInputFactory).getOrThrow();
   }
 
   /**
@@ -73,9 +73,9 @@ public class EnergyManagementSource extends EntitySource {
 
   /**
    * Since each EM can itself be controlled by another EM, it does not suffice to link {@link
-   * EmInput}s via {@link EntitySource#optionallyEnrichEntityData} as we do for system participants
-   * in {@link SystemParticipantSource}. Instead, we use a recursive approach, starting with EMs at
-   * root level (which are not EM-controlled themselves).
+   * EmInput}s via {@link AssetEntitySource#optionallyEnrichEntityData} as we do for system
+   * participants in {@link SystemParticipantSource}. Instead, we use a recursive approach, starting
+   * with EMs at root level (which are not EM-controlled themselves).
    *
    * @param assetEntityDataStream the data stream of {@link AssetInputEntityData} {@link Try}
    *     objects
