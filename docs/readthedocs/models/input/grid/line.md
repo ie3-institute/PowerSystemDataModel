@@ -29,7 +29,7 @@ Representation of an AC line.
 
    * - x
      - Ω / km
-     - Phase resistance per length
+     - Phase reactance per length
 
    * - g
      - µS / km
@@ -37,7 +37,7 @@ Representation of an AC line.
 
    * - b
      - µS / km
-     - Phase-to-ground conductance per length
+     - Phase-to-ground susceptance per length
 
    * - iMax
      - A
