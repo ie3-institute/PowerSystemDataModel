@@ -20,7 +20,7 @@ import java.util.UUID;
  * @param <D> Type of data class that is required for entity creation
  * @since 19.02.20
  */
-abstract class ConnectorInputEntityFactory<
+public abstract class ConnectorInputEntityFactory<
         T extends ConnectorInput, D extends ConnectorInputEntityData>
     extends AssetInputEntityFactory<T, D> {
 
@@ -31,6 +31,7 @@ abstract class ConnectorInputEntityFactory<
    */
   protected static final String PARALLEL_DEVICES = "parallelDevices";
 
+  @SafeVarargs
   protected ConnectorInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }

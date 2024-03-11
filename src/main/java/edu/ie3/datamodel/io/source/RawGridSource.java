@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.*;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
@@ -14,8 +15,9 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -27,11 +29,6 @@ import java.util.stream.Stream;
  * @since 08.04.20
  */
 public class RawGridSource extends AssetEntitySource {
-
-  // field names
-  protected static final String NODE_A = "nodeA";
-  protected static final String NODE_B = "nodeB";
-  protected static final String TYPE = "type";
 
   // general fields
   private final TypeSource typeSource;
@@ -203,9 +200,12 @@ public class RawGridSource extends AssetEntitySource {
    * @return a map of UUID to object- and uuid-unique {@link NodeInput} entities
    */
   public Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) throws SourceException {
-    return unpackMap(
-        buildAssetInputEntityData(NodeInput.class, operators).map(nodeInputFactory::get),
-        NodeInput.class);
+    return getEntities(
+            NodeInput.class,
+            dataSource,
+            nodeInputFactory,
+            data -> assetEnricher.apply(data, operators))
+        .collect(toMap());
   }
 
   /**
@@ -247,10 +247,9 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, LineTypeInput> lineTypeInputs)
       throws SourceException {
-    return unpackMap(
-        buildTypedEntityData(LineInput.class, operators, nodes, lineTypeInputs)
-            .map(lineInputFactory::get),
-        LineInput.class);
+    return getTypedConnectorEntities(
+            LineInput.class, dataSource, lineInputFactory, operators, nodes, lineTypeInputs)
+        .collect(toMap());
   }
 
   /**
@@ -294,10 +293,14 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, Transformer2WTypeInput> transformer2WTypes)
       throws SourceException {
-    return unpackSet(
-        buildTypedEntityData(Transformer2WInput.class, operators, nodes, transformer2WTypes)
-            .map(transformer2WInputFactory::get),
-        Transformer2WInput.class);
+    return getTypedConnectorEntities(
+            Transformer2WInput.class,
+            dataSource,
+            transformer2WInputFactory,
+            operators,
+            nodes,
+            transformer2WTypes)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -341,13 +344,22 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, Transformer3WTypeInput> transformer3WTypes)
       throws SourceException {
-    return unpackSet(
-        transformer3WEntityDataStream(
-                buildTypedEntityData(
-                    Transformer3WInput.class, operators, nodes, transformer3WTypes),
-                nodes)
-            .map(transformer3WInputFactory::get),
-        Transformer3WInput.class);
+
+    Function<Try<EntityData, SourceException>, Try<Transformer3WInputEntityData, SourceException>>
+        builder =
+            data ->
+                connectorEnricher
+                    .andThen(
+                        enrichedData ->
+                            biEnrich(
+                                enrichedData,
+                                buildEnrichment(enrichedData, "nodeC", nodes),
+                                buildEnrichment(enrichedData, TYPE, transformer3WTypes),
+                                Transformer3WInputEntityData::new))
+                    .apply(data, operators, nodes);
+
+    return getEntities(Transformer3WInput.class, dataSource, transformer3WInputFactory, builder)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -385,9 +397,12 @@ public class RawGridSource extends AssetEntitySource {
    */
   public Set<SwitchInput> getSwitches(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
-    return unpackSet(
-        buildUntypedEntityData(SwitchInput.class, operators, nodes).map(switchInputFactory::get),
-        SwitchInput.class);
+    return getEntities(
+            SwitchInput.class,
+            dataSource,
+            switchInputFactory,
+            data -> connectorEnricher.apply(data, operators, nodes))
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -426,103 +441,11 @@ public class RawGridSource extends AssetEntitySource {
    */
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
-    return unpackSet(
-        buildNodeAssetEntityData(MeasurementUnitInput.class, operators, nodes)
-            .map(measurementUnitInputFactory::get),
-        MeasurementUnitInput.class);
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-  /**
-   * Enriches the Stream of tries on {@link Transformer3WInputEntityData} with the information of
-   * the internal node.
-   *
-   * @param typedConnectorEntityDataStream Stream of already typed input entity data
-   * @param nodes Yet available nodes
-   * @return A stream of {@link Try} on enriched data
-   */
-  protected Stream<Try<Transformer3WInputEntityData, SourceException>>
-      transformer3WEntityDataStream(
-          Stream<Try<TypedConnectorInputEntityData<Transformer3WTypeInput>, SourceException>>
-              typedConnectorEntityDataStream,
-          Map<UUID, NodeInput> nodes) {
-    return typedConnectorEntityDataStream
-        .parallel()
-        .map(
-            typedEntityDataOpt ->
-                typedEntityDataOpt.flatMap(
-                    typeEntityData ->
-                        enrichEntityData(
-                            typeEntityData, "nodeC", nodes, Transformer3WInputEntityData::new)));
-  }
-
-  private <T extends ConnectorInput, A extends AssetTypeInput>
-      Stream<Try<TypedConnectorInputEntityData<A>, SourceException>> buildTypedEntityData(
-          Class<T> entityClass,
-          Map<UUID, OperatorInput> operators,
-          Map<UUID, NodeInput> nodes,
-          Map<UUID, A> types) {
-    return typedConnectorEntityDataStream(
-        buildUntypedEntityData(entityClass, operators, nodes), types);
-  }
-
-  /**
-   * Enriches the given untyped entity data with the equivalent asset type. If this is not possible,
-   * a {@link Failure} is returned.
-   *
-   * @param connectorEntityDataStream Stream of untyped entity data
-   * @param availableTypes Yet available asset types
-   * @param <T> Type of the asset type
-   * @return Stream of {@link Try} to enhanced data
-   */
-  protected <T extends AssetTypeInput>
-      Stream<Try<TypedConnectorInputEntityData<T>, SourceException>> typedConnectorEntityDataStream(
-          Stream<Try<ConnectorInputEntityData, SourceException>> connectorEntityDataStream,
-          Map<UUID, T> availableTypes) {
-    return connectorEntityDataStream
-        .parallel()
-        .map(
-            noTypeEntityDataOpt ->
-                noTypeEntityDataOpt.flatMap(
-                    noTypeEntityData ->
-                        enrichEntityData(
-                            noTypeEntityData,
-                            TYPE,
-                            availableTypes,
-                            TypedConnectorInputEntityData::new)));
-  }
-
-  public <T extends ConnectorInput>
-      Stream<Try<ConnectorInputEntityData, SourceException>> buildUntypedEntityData(
-          Class<T> entityClass, Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) {
-    return untypedConnectorEntityDataStream(
-        buildAssetInputEntityData(entityClass, operators), nodes);
-  }
-
-  /**
-   * Converts a stream of {@link AssetInputEntityData} in connection with a collection of known
-   * {@link NodeInput}s to a stream of {@link ConnectorInputEntityData}.
-   *
-   * @param assetInputEntityDataStream Input stream of {@link AssetInputEntityData}
-   * @param nodes A collection of known nodes
-   * @return A stream on {@link Try} to matching {@link ConnectorInputEntityData}
-   */
-  protected Stream<Try<ConnectorInputEntityData, SourceException>> untypedConnectorEntityDataStream(
-      Stream<Try<AssetInputEntityData, SourceException>> assetInputEntityDataStream,
-      Map<UUID, NodeInput> nodes) {
-    return assetInputEntityDataStream
-        .parallel()
-        .map(
-            assetInputEntityDataTry ->
-                assetInputEntityDataTry.flatMap(
-                    assetInputEntityData ->
-                        enrichEntityData(
-                            assetInputEntityData,
-                            NODE_A,
-                            nodes,
-                            NODE_B,
-                            nodes,
-                            ConnectorInputEntityData::new)));
+    return getEntities(
+            MeasurementUnitInput.class,
+            dataSource,
+            measurementUnitInputFactory,
+            data -> nodeAssetEnricher.apply(data, operators, nodes))
+        .collect(Collectors.toSet());
   }
 }

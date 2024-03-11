@@ -10,10 +10,12 @@ import static java.util.stream.Collectors.partitioningBy;
 import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.TryException;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class Try<T, E extends Exception> {
   // static utility methods
@@ -272,6 +274,28 @@ public abstract class Try<T, E extends Exception> {
       Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc);
 
   /**
+   * Method for zipping two tries.
+   *
+   * @param that other try
+   * @return a try of a pair.
+   * @param <R> type of others data
+   */
+  public <R> Try<Pair<T, R>, E> zip(Try<R, E> that) {
+    return zip(that, Pair::of);
+  }
+
+  /**
+   * Method for zipping two tries.
+   *
+   * @param that other try
+   * @param zipper function for zipping the two data types
+   * @return a try of type {@link P}.
+   * @param <R> type of others data
+   * @param <P> type of zipped data
+   */
+  public abstract <R, P> Try<P, E> zip(Try<R, E> that, BiFunction<T, R, P> zipper);
+
+  /**
    * Method to convert a {@link Try} object to a common type.
    *
    * @param successFunc that will be used to transform the data to the new type
@@ -368,6 +392,11 @@ public abstract class Try<T, E extends Exception> {
     public <U, R extends Exception> Try<U, R> transform(
         Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
       return new Success<>(successFunc.apply(data));
+    }
+
+    @Override
+    public <R, P> Try<P, E> zip(Try<R, E> that, BiFunction<T, R, P> zipper) {
+      return that.map(thatData -> zipper.apply(data, thatData));
     }
 
     @Override
@@ -503,6 +532,11 @@ public abstract class Try<T, E extends Exception> {
     public <U, R extends Exception> Try<U, R> transform(
         Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc) {
       return Failure.of(failureFunc.apply(exception));
+    }
+
+    @Override
+    public <R, P> Try<P, E> zip(Try<R, E> that, BiFunction<T, R, P> zipper) {
+      return Failure.of(exception);
     }
 
     @Override

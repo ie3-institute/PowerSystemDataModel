@@ -8,8 +8,6 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
@@ -25,6 +23,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -372,11 +372,10 @@ public class ResultEntitySource extends EntitySource {
    */
   @SuppressWarnings("unchecked")
   private <T extends ResultEntity> Set<T> getResultEntities(
-      Class<T> entityClass, EntityFactory<? extends ResultEntity, EntityData> factory)
+      Class<T> entityClass, ResultEntityFactory<? extends ResultEntity> factory)
       throws SourceException {
-    return unpackSet(
-        buildEntityData(entityClass, dataSource)
-            .map(entityData -> factory.get(entityData).map(data -> (T) data)),
-        entityClass);
+    return getEntities(
+            entityClass, dataSource, (ResultEntityFactory<T>) factory, Function.identity())
+        .collect(Collectors.toSet());
   }
 }

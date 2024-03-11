@@ -68,14 +68,15 @@ public class EnergyManagementSource extends AssetEntitySource {
    * @return a map of UUID to {@link EmInput} entities
    */
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
-    return createEmInputs(buildAssetInputEntityData(EmInput.class, operators));
+    return createEmInputs(
+        buildEntityData(EmInput.class, dataSource, data -> assetEnricher.apply(data, operators)));
   }
 
   /**
    * Since each EM can itself be controlled by another EM, it does not suffice to link {@link
-   * EmInput}s via {@link AssetEntitySource#optionallyEnrichEntityData} as we do for system
-   * participants in {@link SystemParticipantSource}. Instead, we use a recursive approach, starting
-   * with EMs at root level (which are not EM-controlled themselves).
+   * EmInput}s via {@link EntitySource#buildEnrichmentWithDefault} as we do for system participants
+   * in {@link SystemParticipantSource}. Instead, we use a recursive approach, starting with EMs at
+   * root level (which are not EM-controlled themselves).
    *
    * @param assetEntityDataStream the data stream of {@link AssetInputEntityData} {@link Try}
    *     objects

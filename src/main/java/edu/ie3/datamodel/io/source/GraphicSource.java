@@ -22,8 +22,10 @@ import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
@@ -118,15 +120,19 @@ public class GraphicSource extends AssetEntitySource {
 
   public Set<NodeGraphicInput> getNodeGraphicInput(Map<UUID, NodeInput> nodes)
       throws SourceException {
-    return unpackSet(
-        buildNodeGraphicEntityData(nodes).map(nodeGraphicInputFactory::get),
-        NodeGraphicInput.class);
+    return toSet(
+        getEntities(
+            NodeGraphicInput.class,
+            dataSource,
+            nodeGraphicInputFactory,
+            data ->
+                enrich(data, buildEnrichment(data, NODE, nodes), NodeGraphicInputEntityData::new)));
   }
 
   /**
    * If the set of {@link LineInput} entities is not exhaustive for all available {@link
    * LineGraphicInput} entities or if an error during the building process occurs a {@link
-   * SourceException} is thrown, else all entities that have been able to be built are returned.
+   * SourceException} is thrown, else all entities that have been able to be build are returned.
    */
   public Set<LineGraphicInput> getLineGraphicInput() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -137,63 +143,13 @@ public class GraphicSource extends AssetEntitySource {
 
   public Set<LineGraphicInput> getLineGraphicInput(Map<UUID, LineInput> lines)
       throws SourceException {
-    return unpackSet(
-        buildLineGraphicEntityData(lines).map(lineGraphicInputFactory::get),
-        LineGraphicInput.class);
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  // build EntityData
-
-  /**
-   * Builds a stream of {@link NodeGraphicInputEntityData} instances that can be consumed by a
-   * {@link NodeGraphicInputFactory} to build instances of {@link NodeGraphicInput} entities. This
-   * method depends on corresponding instances of {@link NodeInput} entities that are represented by
-   * a corresponding {@link NodeGraphicInput} entity. The determination of matching {@link
-   * NodeInput} and {@link NodeGraphicInput} entities is carried out by the UUID of the {@link
-   * NodeInput} entity. Hence it is crucial to only pass over collections that are pre-checked for
-   * the uniqueness of the UUIDs of the nodes they contain. No further sanity checks are included in
-   * this method. If no UUID of a {@link NodeInput} entity can be found for a {@link
-   * NodeGraphicInputEntityData} instance, a {@link Failure} is included in the stream and warning
-   * is logged.
-   *
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @return a stream of tries of {@link NodeGraphicInput} entities
-   */
-  protected Stream<Try<NodeGraphicInputEntityData, SourceException>> buildNodeGraphicEntityData(
-      Map<UUID, NodeInput> nodes) {
-    return buildEntityData(NodeGraphicInput.class, dataSource)
-        .map(
-            entityDataTry ->
-                entityDataTry.flatMap(
-                    entityData ->
-                        enrichEntityData(
-                            entityData, NODE, nodes, NodeGraphicInputEntityData::new)));
-  }
-
-  /**
-   * Builds a stream of {@link LineGraphicInputEntityData} instances that can be consumed by a
-   * {@link LineGraphicInputFactory} to build instances of {@link LineGraphicInput} entities. This
-   * method depends on corresponding instances of {@link LineInput} entities that are represented by
-   * a corresponding {@link LineGraphicInput} entity. The determination of matching {@link
-   * LineInput} and {@link LineGraphicInput} entities is carried out by the UUID of the {@link
-   * LineInput} entity. Hence it is crucial to only pass over collections that are pre-checked for
-   * the uniqueness of the UUIDs of the nodes they contain. No further sanity checks are included in
-   * this method. If no UUID of a {@link LineInput} entity can be found for a {@link
-   * LineGraphicInputEntityData} instance, a {@link Failure} is included in the stream and warning
-   * is logged.
-   *
-   * @param lines a map of UUID to object- and uuid-unique {@link LineInput} entities
-   * @return a stream of tries of {@link LineGraphicInput} entities
-   */
-  protected Stream<Try<LineGraphicInputEntityData, SourceException>> buildLineGraphicEntityData(
-      Map<UUID, LineInput> lines) {
-    return buildEntityData(LineGraphicInput.class, dataSource)
-        .map(
-            entityDataTry ->
-                entityDataTry.flatMap(
-                    entityData ->
-                        enrichEntityData(
-                            entityData, "line", lines, LineGraphicInputEntityData::new)));
+    return toSet(
+        getEntities(
+            LineGraphicInput.class,
+            dataSource,
+            lineGraphicInputFactory,
+            data ->
+                enrich(
+                    data, buildEnrichment(data, "line", lines), LineGraphicInputEntityData::new)));
   }
 }
