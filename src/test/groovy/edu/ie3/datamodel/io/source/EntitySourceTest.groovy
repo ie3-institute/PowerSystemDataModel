@@ -135,7 +135,7 @@ class EntitySourceTest extends Specification {
     given:
     def entityData = new EntityData(["operator": ""], NodeInput)
     def pair = Pair.of(entityData, GridTestData.profBroccoli)
-    def fcn = builder(["operator"], AssetInputEntityData::new)
+    def fcn = enrich(["operator"], AssetInputEntityData::new)
 
     when:
     def result = fcn.apply(pair)

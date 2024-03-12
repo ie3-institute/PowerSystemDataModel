@@ -196,7 +196,7 @@ public abstract class EntitySource {
             .zip(
                 extract(entityData, fieldName, entities)
                     .orElse(() -> Try.Success.of(defaultEntity)))
-            .map(builder(List.of(fieldName), fcn));
+            .map(enrich(List.of(fieldName), fcn));
   }
 
   /**
@@ -215,7 +215,7 @@ public abstract class EntitySource {
     return entityData ->
         entityData
             .zip(extract(entityData, fieldName, entities))
-            .map(builder(List.of(fieldName), fcn));
+            .map(enrich(List.of(fieldName), fcn));
   }
 
   /**
@@ -246,12 +246,11 @@ public abstract class EntitySource {
                 extract(entityData, fieldName1, entities1)
                     .zip(extract(entityData, fieldName2, entities2)))
             .map(
-                builder(
+                enrich(
                     List.of(fieldName1, fieldName2),
                     (data, pair) -> fcn.apply(data, pair.getKey(), pair.getValue())));
   }
 
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   /**
    * Method to build an {@link EntityData}.
    *
@@ -262,7 +261,7 @@ public abstract class EntitySource {
    * @param <T> type of entities
    * @param <R> type of returned entity data
    */
-  private static <E extends EntityData, T, R extends EntityData> Function<Pair<E, T>, R> builder(
+  protected static <E extends EntityData, T, R extends EntityData> Function<Pair<E, T>, R> enrich(
       List<String> fieldNames, BiFunction<E, T, R> fcn) {
     return pair -> {
       E data = pair.getKey();
@@ -276,6 +275,8 @@ public abstract class EntitySource {
       return fcn.apply(data, entities);
     };
   }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
   /**
    * Method to unpack a stream of tries.
