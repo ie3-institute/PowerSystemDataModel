@@ -99,7 +99,7 @@ public class GraphicSource extends AssetEntitySource {
 
     if (!exceptions.isEmpty()) {
       throw new GraphicSourceException(
-          exceptions.size() + "error(s) occurred while initializing graphic elements. ",
+          exceptions.size() + " error(s) occurred while initializing graphic elements. ",
           exceptions);
     } else {
       // if everything is fine, return a GraphicElements instance
@@ -120,13 +120,12 @@ public class GraphicSource extends AssetEntitySource {
 
   public Set<NodeGraphicInput> getNodeGraphicInput(Map<UUID, NodeInput> nodes)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             NodeGraphicInput.class,
             dataSource,
             nodeGraphicInputFactory,
-            data ->
-                enrich(data, buildEnrichment(data, NODE, nodes), NodeGraphicInputEntityData::new)));
+            enrich(NODE, nodes, NodeGraphicInputEntityData::new))
+        .collect(toSet());
   }
 
   /**
@@ -143,13 +142,11 @@ public class GraphicSource extends AssetEntitySource {
 
   public Set<LineGraphicInput> getLineGraphicInput(Map<UUID, LineInput> lines)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             LineGraphicInput.class,
             dataSource,
             lineGraphicInputFactory,
-            data ->
-                enrich(
-                    data, buildEnrichment(data, "line", lines), LineGraphicInputEntityData::new)));
+            enrich("line", lines, LineGraphicInputEntityData::new))
+        .collect(toSet());
   }
 }

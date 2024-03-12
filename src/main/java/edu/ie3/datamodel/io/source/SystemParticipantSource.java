@@ -10,6 +10,7 @@ import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.SystemParticipantsException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 /**
@@ -59,15 +60,15 @@ public class SystemParticipantSource extends AssetEntitySource {
           EntityData, OperatorInput, NodeInput, EmInput, SystemParticipantEntityData>
       participantEnricher =
           (data, operators, nodes, emUnits) ->
-              nodeAssetEnricher
+              assetEnricher
+                  .andThen(enrich(NODE, nodes, NodeAssetInputEntityData::new))
                   .andThen(
-                      enrichedData ->
-                          enrich(
-                              enrichedData,
-                              buildEnrichment(
-                                  enrichedData, SystemParticipantInputEntityFactory.EM, emUnits),
-                              SystemParticipantEntityData::new))
-                  .apply(data, operators, nodes);
+                      enrichWithDefault(
+                          SystemParticipantInputEntityFactory.EM,
+                          emUnits,
+                          null,
+                          SystemParticipantEntityData::new))
+                  .apply(data, operators);
 
   public SystemParticipantSource(
       TypeSource typeSource,
@@ -283,12 +284,12 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<FixedFeedInInput> getFixedFeedIns(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             FixedFeedInInput.class,
             dataSource,
             fixedFeedInInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits)));
+            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+        .collect(toSet());
   }
 
   /**
@@ -328,12 +329,12 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<PvInput> getPvPlants(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             PvInput.class,
             dataSource,
             pvInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits)));
+            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+        .collect(toSet());
   }
 
   /**
@@ -373,12 +374,12 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<LoadInput> getLoads(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             LoadInput.class,
             dataSource,
             loadInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits)));
+            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+        .collect(toSet());
   }
 
   /**
@@ -418,12 +419,12 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<EvcsInput> getEvcs(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             EvcsInput.class,
             dataSource,
             evcsInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits)));
+            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+        .collect(toSet());
   }
 
   /**
@@ -468,12 +469,13 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, EmInput> emUnits,
       Map<UUID, BmTypeInput> types)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             BmInput.class,
             dataSource,
             bmInputFactory,
-            data -> enrich(participantEnricher.apply(data, operators, nodes, emUnits), types)));
+            data ->
+                participantEnricher.andThen(enrich(types)).apply(data, operators, nodes, emUnits))
+        .collect(toSet());
   }
 
   /**
@@ -520,12 +522,13 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, EmInput> emUnits,
       Map<UUID, StorageTypeInput> types)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             StorageInput.class,
             dataSource,
             storageInputFactory,
-            data -> enrich(participantEnricher.apply(data, operators, nodes, emUnits), types)));
+            data ->
+                participantEnricher.andThen(enrich(types)).apply(data, operators, nodes, emUnits))
+        .collect(toSet());
   }
 
   /**
@@ -570,12 +573,13 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, EmInput> emUnits,
       Map<UUID, WecTypeInput> types)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             WecInput.class,
             dataSource,
             wecInputFactory,
-            data -> enrich(participantEnricher.apply(data, operators, nodes, emUnits), types)));
+            data ->
+                participantEnricher.andThen(enrich(types)).apply(data, operators, nodes, emUnits))
+        .collect(toSet());
   }
 
   /**
@@ -619,12 +623,13 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, EmInput> emUnits,
       Map<UUID, EvTypeInput> types)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             EvInput.class,
             dataSource,
             evInputFactory,
-            data -> enrich(participantEnricher.apply(data, operators, nodes, emUnits), types)));
+            data ->
+                participantEnricher.andThen(enrich(types)).apply(data, operators, nodes, emUnits))
+        .collect(toSet());
   }
 
   public Set<ChpInput> getChpPlants() throws SourceException {
@@ -668,20 +673,20 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, ThermalStorageInput> thermalStorages)
       throws SourceException {
 
-    Function<Try<EntityData, SourceException>, Try<ChpInputEntityData, SourceException>> builder =
+    TryFunction<EntityData, ChpInputEntityData> builder =
         data ->
             participantEnricher
-                .andThen(participantData -> enrich(participantData, types))
+                .andThen(enrich(types))
                 .andThen(
-                    typedData ->
-                        biEnrich(
-                            typedData,
-                            buildEnrichment(typedData, THERMAL_BUS, thermalBuses),
-                            buildEnrichment(typedData, THERMAL_STORAGE, thermalStorages),
-                            ChpInputEntityData::new))
+                    biEnrich(
+                        THERMAL_BUS,
+                        thermalBuses,
+                        THERMAL_STORAGE,
+                        thermalStorages,
+                        ChpInputEntityData::new))
                 .apply(data, operators, nodes, emUnits);
 
-    return toSet(getEntities(ChpInput.class, dataSource, chpInputFactory, builder));
+    return getEntities(ChpInput.class, dataSource, chpInputFactory, builder).collect(toSet());
   }
 
   public Set<HpInput> getHeatPumps() throws SourceException {
@@ -720,33 +725,28 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
 
-    Function<Try<EntityData, SourceException>, Try<HpInputEntityData, SourceException>> builder =
+    TryFunction<EntityData, HpInputEntityData> builder =
         data ->
             participantEnricher
-                .andThen(participantData -> enrich(participantData, types))
-                .andThen(
-                    typedData ->
-                        enrich(
-                            typedData,
-                            buildEnrichment(typedData, THERMAL_BUS, thermalBuses),
-                            HpInputEntityData::new))
+                .andThen(enrich(types))
+                .andThen(enrich(THERMAL_BUS, thermalBuses, HpInputEntityData::new))
                 .apply(data, operators, nodes, emUnits);
-    return toSet(getEntities(HpInput.class, dataSource, hpInputFactory, builder));
+    return getEntities(HpInput.class, dataSource, hpInputFactory, builder).collect(toSet());
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
-   * Method for enriching {@link SystemParticipantEntityData} with types.
+   * Builds a function for enriching {@link SystemParticipantEntityData} with types.
    *
-   * @param data to enrich
    * @param types all known types
    * @return a typed entity data
    * @param <T> type of types
    */
   private static <T extends SystemParticipantTypeInput, D extends SystemParticipantEntityData>
-      Try<SystemParticipantTypedEntityData<T>, SourceException> enrich(
-          Try<D, SourceException> data, Map<UUID, T> types) {
-    return enrich(data, buildEnrichment(data, TYPE, types), SystemParticipantTypedEntityData::new);
+      TryFunction<D, SystemParticipantTypedEntityData<T>> enrich(Map<UUID, T> types) {
+    BiFunction<D, T, SystemParticipantTypedEntityData<T>> fcn =
+        SystemParticipantTypedEntityData::new;
+    return entityData -> enrich(TYPE, types, fcn).apply(entityData);
   }
 }

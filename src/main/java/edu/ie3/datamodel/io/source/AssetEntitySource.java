@@ -10,14 +10,13 @@ import static edu.ie3.datamodel.models.input.OperatorInput.NO_OPERATOR_ASSIGNED;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.input.*;
-import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantEntityData;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
-import edu.ie3.datamodel.utils.Try;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,22 +39,16 @@ public abstract class AssetEntitySource extends EntitySource {
   protected static final EnrichFunction<EntityData, OperatorInput, AssetInputEntityData>
       assetEnricher =
           (data, operators) ->
-              enrich(
-                  data,
-                  buildEnrichmentWithDefault(data, OPERATOR, operators, NO_OPERATOR_ASSIGNED),
-                  AssetInputEntityData::new);
+              enrichWithDefault(
+                      OPERATOR, operators, NO_OPERATOR_ASSIGNED, AssetInputEntityData::new)
+                  .apply(data);
 
   protected static final BiEnrichFunction<
           EntityData, OperatorInput, NodeInput, NodeAssetInputEntityData>
       nodeAssetEnricher =
           (data, operators, nodes) ->
               assetEnricher
-                  .andThen(
-                      enrichedData ->
-                          enrich(
-                              enrichedData,
-                              buildEnrichment(enrichedData, NODE, nodes),
-                              NodeAssetInputEntityData::new))
+                  .andThen(enrich(NODE, nodes, NodeAssetInputEntityData::new))
                   .apply(data, operators);
 
   protected static final BiEnrichFunction<
@@ -63,13 +56,7 @@ public abstract class AssetEntitySource extends EntitySource {
       connectorEnricher =
           (data, operators, nodes) ->
               assetEnricher
-                  .andThen(
-                      assetData ->
-                          biEnrich(
-                              assetData,
-                              buildEnrichment(data, NODE_A, nodes),
-                              buildEnrichment(data, NODE_B, nodes),
-                              ConnectorInputEntityData::new))
+                  .andThen(biEnrich(NODE_A, nodes, NODE_B, nodes, ConnectorInputEntityData::new))
                   .apply(data, operators);
 
   protected AssetEntitySource(DataSource dataSource) {
@@ -92,7 +79,7 @@ public abstract class AssetEntitySource extends EntitySource {
    * @param <T> type of asset types
    * @throws SourceException if an error happens during reading
    */
-  protected <E extends ConnectorInput, T extends AssetTypeInput>
+  protected static <E extends ConnectorInput, T extends AssetTypeInput>
       Stream<E> getTypedConnectorEntities(
           Class<E> entityClass,
           DataSource dataSource,
@@ -105,23 +92,19 @@ public abstract class AssetEntitySource extends EntitySource {
         entityClass,
         dataSource,
         factory,
-        data ->
-            connectorEnricher
-                .andThen(connectorData -> enrich(connectorData, types))
-                .apply(data, operators, nodes));
+        data -> connectorEnricher.andThen(enrich(types)).apply(data, operators, nodes));
   }
 
   /**
-   * Method for enriching {@link SystemParticipantEntityData} with types.
+   * Builds a function for enriching {@link ConnectorInputEntityData} with types.
    *
-   * @param data to enrich
    * @param types all known types
    * @return a typed entity data
    * @param <T> type of types
    */
   private static <T extends AssetTypeInput, D extends ConnectorInputEntityData>
-      Try<TypedConnectorInputEntityData<T>, SourceException> enrich(
-          Try<D, SourceException> data, Map<UUID, T> types) {
-    return enrich(data, buildEnrichment(data, TYPE, types), TypedConnectorInputEntityData::new);
+      TryFunction<D, TypedConnectorInputEntityData<T>> enrich(Map<UUID, T> types) {
+    BiFunction<D, T, TypedConnectorInputEntityData<T>> fcn = TypedConnectorInputEntityData::new;
+    return entityData -> enrich(TYPE, types, fcn).apply(entityData);
   }
 }

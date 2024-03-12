@@ -16,8 +16,6 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.utils.Try;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -300,7 +298,7 @@ public class RawGridSource extends AssetEntitySource {
             operators,
             nodes,
             transformer2WTypes)
-        .collect(Collectors.toSet());
+        .collect(toSet());
   }
 
   /**
@@ -344,22 +342,20 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, Transformer3WTypeInput> transformer3WTypes)
       throws SourceException {
-
-    Function<Try<EntityData, SourceException>, Try<Transformer3WInputEntityData, SourceException>>
-        builder =
-            data ->
-                connectorEnricher
-                    .andThen(
-                        enrichedData ->
-                            biEnrich(
-                                enrichedData,
-                                buildEnrichment(enrichedData, "nodeC", nodes),
-                                buildEnrichment(enrichedData, TYPE, transformer3WTypes),
-                                Transformer3WInputEntityData::new))
-                    .apply(data, operators, nodes);
+    TryFunction<EntityData, Transformer3WInputEntityData> builder =
+        data ->
+            connectorEnricher
+                .andThen(
+                    biEnrich(
+                        "nodeC",
+                        nodes,
+                        TYPE,
+                        transformer3WTypes,
+                        Transformer3WInputEntityData::new))
+                .apply(data, operators, nodes);
 
     return getEntities(Transformer3WInput.class, dataSource, transformer3WInputFactory, builder)
-        .collect(Collectors.toSet());
+        .collect(toSet());
   }
 
   /**
@@ -402,7 +398,7 @@ public class RawGridSource extends AssetEntitySource {
             dataSource,
             switchInputFactory,
             data -> connectorEnricher.apply(data, operators, nodes))
-        .collect(Collectors.toSet());
+        .collect(toSet());
   }
 
   /**
@@ -446,6 +442,6 @@ public class RawGridSource extends AssetEntitySource {
             dataSource,
             measurementUnitInputFactory,
             data -> nodeAssetEnricher.apply(data, operators, nodes))
-        .collect(Collectors.toSet());
+        .collect(toSet());
   }
 }

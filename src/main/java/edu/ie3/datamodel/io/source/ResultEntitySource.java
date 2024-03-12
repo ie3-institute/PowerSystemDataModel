@@ -23,7 +23,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -374,8 +373,7 @@ public class ResultEntitySource extends EntitySource {
   private <T extends ResultEntity> Set<T> getResultEntities(
       Class<T> entityClass, ResultEntityFactory<? extends ResultEntity> factory)
       throws SourceException {
-    return getEntities(
-            entityClass, dataSource, (ResultEntityFactory<T>) factory, Function.identity())
+    return getEntities(entityClass, dataSource, (ResultEntityFactory<T>) factory, t -> t)
         .collect(Collectors.toSet());
   }
 }

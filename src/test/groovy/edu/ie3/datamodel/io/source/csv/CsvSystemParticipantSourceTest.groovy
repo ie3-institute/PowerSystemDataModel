@@ -10,8 +10,6 @@ import static edu.ie3.test.helper.EntityMap.map
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.exceptions.SystemParticipantsException
 import edu.ie3.datamodel.io.source.*
-import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Specification
@@ -79,9 +77,9 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     Exception ex = systemParticipants.exception.get()
     ex.class == SystemParticipantsException
     ex.message.startsWith("10 error(s) occurred while initializing system participants.  " +
-    "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"FixedFeedInInput\" data, one is: " +
-    "edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: " +
-    "Linked node with UUID 4ca90220-74c2-4369-9afa-a18bf068840d was not found for entity AssetInputEntityData")
+    "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within " +
+    "\"FixedFeedInInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: " +
+    "edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.")
   }
 
   def "A SystemParticipantSource with csv input should return data from valid input file as expected"() {
@@ -159,7 +157,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     operators               | types               | thermalBuses              || resultingSize | resultingSet
-    []                      | [sptd.hpInput.type] | [sptd.hpInput.thermalBus] || 1             | [new HpInput(sptd.hpInput.uuid, sptd.hpInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.hpInput.operationTime, sptd.hpInput.node, sptd.hpInput.thermalBus, sptd.hpInput.qCharacteristics, sptd.emInput, sptd.hpInput.type)]
     []                      | []                  | []                        || 0             | []
     []                      | []                  | []                        || 0             | []
     [sptd.hpInput.operator] | []                  | []                        || 0             | []
@@ -185,7 +182,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     operators                | types                | thermalBuses               | thermalStorages                || resultingSet
-    []                       | [sptd.chpInput.type] | [sptd.chpInput.thermalBus] | [sptd.chpInput.thermalStorage] || [new ChpInput(sptd.chpInput.uuid, sptd.chpInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.chpInput.operationTime, sptd.chpInput.node, sptd.chpInput.thermalBus, sptd.chpInput.qCharacteristics, sptd.emInput, sptd.chpInput.type, sptd.chpInput.thermalStorage, sptd.chpInput.marketReaction)]
     []                       | []                   | []                         | [] as List                     || []
     []                       | []                   | []                         | [] as List                     || []
     [sptd.chpInput.operator] | []                   | []                         | [] as List                     || []
@@ -211,7 +207,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     operators               | types               || resultingSet
-    []                      | [sptd.evInput.type] || [new EvInput(sptd.evInput.uuid, sptd.evInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.evInput.operationTime, sptd.evInput.node, sptd.evInput.qCharacteristics, sptd.emInput, sptd.evInput.type)]
     [sptd.evInput.operator] | []                  || []
     []                      | []                  || []
   }
@@ -235,7 +230,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     operators                | types                || resultingSet
-    []                       | [sptd.wecInput.type] || [new WecInput(sptd.wecInput.uuid, sptd.wecInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.wecInput.operationTime, sptd.wecInput.node, sptd.wecInput.qCharacteristics, sptd.emInput, sptd.wecInput.type, sptd.wecInput.marketReaction)]
     [sptd.wecInput.operator] | []                   || []
     []                       | []                   || []
   }
@@ -259,7 +253,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     operators                    | types                    || resultingSet
-    []                           | [sptd.storageInput.type] || [new StorageInput(sptd.storageInput.uuid, sptd.storageInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.storageInput.operationTime, sptd.storageInput.node, sptd.storageInput.qCharacteristics, sptd.emInput, sptd.storageInput.type)]
     [sptd.storageInput.operator] | []                       || []
     []                           | []                       || []
   }
@@ -283,7 +276,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     operators               | types               || resultingSet
-    []                      | [sptd.bmInput.type] || [new BmInput(sptd.bmInput.uuid, sptd.bmInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.bmInput.operationTime, sptd.bmInput.node, sptd.bmInput.qCharacteristics, sptd.emInput, sptd.bmInput.type, sptd.bmInput.marketReaction, sptd.bmInput.costControlled, sptd.bmInput.feedInTariff)]
     [sptd.bmInput.operator] | []                  || []
     []                      | []                  || []
     []                      | []                  || []
@@ -307,7 +299,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     nodes                 | operators                 || resultingSet
-    [sptd.evcsInput.node] | []                        || [new EvcsInput(sptd.evcsInput.uuid, sptd.evcsInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.evcsInput.operationTime, sptd.evcsInput.node, sptd.evcsInput.qCharacteristics, sptd.emInput, sptd.evcsInput.type, sptd.evcsInput.chargingPoints, sptd.evcsInput.cosPhiRated, sptd.evcsInput.locationType, sptd.evcsInput.v2gSupport)]
     []                    | [sptd.evcsInput.operator] || []
     []                    | []                        || []
   }
@@ -330,7 +321,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     nodes                 | operators                 || resultingSet
-    [sptd.loadInput.node] | []                        || [new LoadInput(sptd.loadInput.uuid, sptd.loadInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.loadInput.operationTime, sptd.loadInput.node, sptd.loadInput.qCharacteristics, sptd.emInput, sptd.loadInput.loadProfile, sptd.loadInput.dsm, sptd.loadInput.eConsAnnual, sptd.loadInput.sRated, sptd.loadInput.cosPhiRated)]
     []                    | [sptd.loadInput.operator] || []
     []                    | []                        || []
   }
@@ -353,7 +343,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     nodes               | operators               || resultingSet
-    [sptd.pvInput.node] | []                      || [new PvInput(sptd.pvInput.uuid, sptd.pvInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.pvInput.operationTime, sptd.pvInput.node, sptd.pvInput.qCharacteristics, sptd.emInput, sptd.pvInput.albedo, sptd.pvInput.azimuth, sptd.pvInput.etaConv, sptd.pvInput.elevationAngle, sptd.pvInput.kG, sptd.pvInput.kT, sptd.pvInput.marketReaction, sptd.pvInput.sRated, sptd.pvInput.cosPhiRated)]
     []                  | [sptd.pvInput.operator] || []
     []                  | []                      || []
   }
@@ -375,9 +364,8 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     sysParts.exception.get().class == SourceException
 
     where:
-    nodes                        | operators                                || resultingSet
-    [sptd.fixedFeedInInput.node] | [] as List                               || [new FixedFeedInInput(sptd.fixedFeedInInput.uuid, sptd.fixedFeedInInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics, sptd.emInput, sptd.fixedFeedInInput.sRated, sptd.fixedFeedInInput.cosPhiRated)]
-    []                           | [sptd.fixedFeedInInput.operator] as List || []
-    []                           | [] as List                               || []
+    nodes                        | operators                        || resultingSet
+    []                           | [sptd.fixedFeedInInput.operator] || []
+    []                           | []                               || []
   }
 }

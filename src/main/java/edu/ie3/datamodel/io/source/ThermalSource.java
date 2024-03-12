@@ -42,12 +42,7 @@ public class ThermalSource extends AssetEntitySource {
       thermalUnitEnricher =
           (data, operators, buses) ->
               assetEnricher
-                  .andThen(
-                      assetData ->
-                          enrich(
-                              assetData,
-                              buildEnrichment(assetData, "thermalbus", buses),
-                              ThermalUnitInputEntityData::new))
+                  .andThen(enrich("thermalbus", buses, ThermalUnitInputEntityData::new))
                   .apply(data, operators);
 
   public ThermalSource(TypeSource typeSource, DataSource dataSource) {
@@ -242,11 +237,11 @@ public class ThermalSource extends AssetEntitySource {
   public Set<CylindricalStorageInput> getCylindricalStorages(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
-    return toSet(
-        getEntities(
+    return getEntities(
             CylindricalStorageInput.class,
             dataSource,
             cylindricalStorageInputFactory,
-            data -> thermalUnitEnricher.apply(data, operators, thermalBuses)));
+            data -> thermalUnitEnricher.apply(data, operators, thermalBuses))
+        .collect(toSet());
   }
 }
