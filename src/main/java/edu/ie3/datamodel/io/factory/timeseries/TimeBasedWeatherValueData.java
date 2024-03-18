@@ -11,6 +11,7 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
+import java.util.Optional;
 
 public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> {
 
@@ -32,8 +33,13 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
   }
 
   @Override
-  public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
-    return getField(field).isEmpty() ? null : super.getQuantity(field, unit);
+  public <Q extends Quantity<Q>> Optional<ComparableQuantity<Q>> getQuantity(String field, Unit<Q> unit) {
+    ComparableQuantity<Q> quantity = super.getQuantity(field, unit);
+    if (quantity == null) {
+      return Optional.empty();
+    } else {
+      return Optional.of(quantity);
+    }
   }
 
   @Override
