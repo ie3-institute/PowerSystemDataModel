@@ -118,7 +118,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
         + ", qCharacteristics='"
         + getqCharacteristics()
         + "', em="
-        + getEm()
+        + getControllingEm()
         + ", type="
         + type.getUuid()
         + ", marketReaction="

@@ -5,7 +5,7 @@ plugins {
   id 'signing'
   id 'pmd' // code check, working on source code
   id 'com.diffplug.spotless' version '6.25.0' //code format
-  id 'com.github.spotbugs' version '6.0.8' // code check, working on byte code
+  id 'com.github.spotbugs' version '6.0.9' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
@@ -17,8 +17,8 @@ ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
-  groovyBinaryVersion = "4.0.18"
-  testcontainersVersion = '1.19.6'
+  groovyBinaryVersion = "4.0.20"
+  testcontainersVersion = '1.19.7'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -53,7 +53,7 @@ repositories {
 dependencies {
 
   //	 ie³ power system utils
-  implementation 'com.github.ie3-institute:PowerSystemUtils:2.2'
+  implementation 'com.github.ie3-institute:PowerSystemUtils:2.2.1'
 
   implementation 'tech.units:indriya:2.2'
 
@@ -83,19 +83,19 @@ dependencies {
   testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
 
   // logging
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.23.0')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.23.1')
   implementation 'org.apache.logging.log4j:log4j-api' // log4j
   implementation 'org.apache.logging.log4j:log4j-core' // log4j
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.24'
-  implementation 'com.couchbase.client:java-client:3.5.3'
-  runtimeOnly 'org.postgresql:postgresql:42.7.2' // postgresql jdbc driver required during runtime
+  implementation 'com.couchbase.client:java-client:3.6.0'
+  runtimeOnly 'org.postgresql:postgresql:42.7.3' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.15.1' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.16.1' // needed by commons-compress
-  implementation 'org.apache.commons:commons-compress:1.26.0' // I/O functionalities
+  implementation 'org.apache.commons:commons-compress:1.26.1' // I/O functionalities
 }
 
 tasks.withType(JavaCompile) {

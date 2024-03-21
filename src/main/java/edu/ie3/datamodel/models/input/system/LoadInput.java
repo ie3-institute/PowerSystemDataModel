@@ -255,7 +255,7 @@ public class LoadInput extends SystemParticipantInput {
         + ", qCharacteristics='"
         + getqCharacteristics()
         + "', em="
-        + getEm()
+        + getControllingEm()
         + ", dsm="
         + dsm
         + ", eConsAnnual="

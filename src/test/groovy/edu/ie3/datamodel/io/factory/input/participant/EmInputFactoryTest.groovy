@@ -55,7 +55,7 @@ class EmInputFactoryTest extends Specification {
       assert operator == operatorInput
       assert id == parameter["id"]
       assert controlStrategy == parameter["controlstrategy"]
-      assert parentEm == Optional.of(parentEmUnit)
+      assert controllingEm == Optional.of(parentEmUnit)
     }
   }
 
@@ -88,7 +88,7 @@ class EmInputFactoryTest extends Specification {
       assert operator == operatorInput
       assert id == parameter["id"]
       assert controlStrategy == parameter["controlstrategy"]
-      assert parentEm == Optional.empty()
+      assert controllingEm == Optional.empty()
     }
   }
 
