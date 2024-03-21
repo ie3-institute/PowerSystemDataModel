@@ -105,6 +105,7 @@ public class SqlWeatherSource extends WeatherSource {
             dataSource.executeQuery(
                 queryTimeInterval,
                 ps -> {
+                  TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
                   ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
@@ -131,6 +132,7 @@ public class SqlWeatherSource extends WeatherSource {
             dataSource.executeQuery(
                 queryTimeIntervalAndCoordinates,
                 ps -> {
+                  TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
                   Array coordinateIdArr =
                       ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
                   ps.setArray(1, coordinateIdArr);
