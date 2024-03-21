@@ -39,7 +39,7 @@ public class CsvTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     // retrieve only the desired time series
     this.timeSeriesMetaInformation =
-        dataSource.connector.getCsvIndividualTimeSeriesMetaInformation(
+        dataSource.getCsvIndividualTimeSeriesMetaInformation(
             TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
   }
 
