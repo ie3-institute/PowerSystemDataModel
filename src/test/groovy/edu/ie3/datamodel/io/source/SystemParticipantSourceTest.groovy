@@ -7,115 +7,45 @@ package edu.ie3.datamodel.io.source
 
 import static edu.ie3.test.helper.EntityMap.map
 
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
-import edu.ie3.datamodel.io.factory.input.participant.ChpInputEntityData
-import edu.ie3.datamodel.io.factory.input.participant.HpInputEntityData
+import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData
 import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantEntityData
-import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantTypedEntityData
-import edu.ie3.datamodel.models.input.system.ChpInput
-import edu.ie3.datamodel.models.input.system.HpInput
-import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
-import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
+import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.LineInput
+import edu.ie3.datamodel.models.input.system.EvInput
 import edu.ie3.datamodel.utils.Try
-import edu.ie3.test.common.SystemParticipantTestData
+import edu.ie3.test.common.GridTestData
+import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Specification
-
-import java.util.stream.Stream
 
 class SystemParticipantSourceTest extends Specification {
 
-  def "A SystemParticipantSource should build system participant entity from valid and invalid input data as expected"() {
+  def "An SystemParticipantSource participantEnricher should work as expected"() {
     given:
-    def nodeAssetInputEntityData = Stream.of(new Try.Success<>(new NodeAssetInputEntityData(fieldsToAttributes, ChpInput, SystemParticipantTestData.chpInput.operator, SystemParticipantTestData.chpInput.node)))
+    def entityData = new ConnectorInputEntityData(["operators": "", "node": sptd.participantNode.uuid.toString(), "em": sptd.emInput.uuid.toString()], LineInput, GridTestData.nodeA, GridTestData.nodeB)
+    def operators = map([OperatorInput.NO_OPERATOR_ASSIGNED])
+    def nodes = map([sptd.participantNode])
+    def emUnits = map([sptd.emInput])
 
     when:
-    def sysPartEntityDataStream = SystemParticipantSource.systemParticipantEntityStream(nodeAssetInputEntityData, map(emUnits))
+    def actual = SystemParticipantSource.participantEnricher.apply(new Try.Success<>(entityData), operators, nodes, emUnits)
 
     then:
-    def element = sysPartEntityDataStream.findFirst().get()
-    element.success == resultIsPresent
-    element.data.ifPresent({
-      typedEntityData ->
-      assert (typedEntityData == resultData)
-    })
-
-    where:
-    emUnits                             | fieldsToAttributes                             || resultIsPresent || resultData
-    []                                  | ["em": "977157f4-25e5-4c72-bf34-440edc778792"] || false           || null
-    [SystemParticipantTestData.emInput] | ["bla": "foo"]                                 || true            || new SystemParticipantEntityData(["bla": "foo"], ChpInput, SystemParticipantTestData.chpInput.operator, SystemParticipantTestData.chpInput.node, null)
-    [SystemParticipantTestData.emInput] | [:]                                            || true            || new SystemParticipantEntityData([:], ChpInput, SystemParticipantTestData.chpInput.operator, SystemParticipantTestData.chpInput.node, null)
-    [SystemParticipantTestData.emInput] | ["em": "977157f4-25e5-4c72-bf34-440edc778793"] || false           || null
-    [SystemParticipantTestData.emInput] | ["em": "977157f4-25e5-4c72-bf34-440edc778792"] || true            || new SystemParticipantEntityData([:], ChpInput, SystemParticipantTestData.chpInput.operator, SystemParticipantTestData.chpInput.node, SystemParticipantTestData.emInput)
+    actual.success
+    actual.data.get().operatorInput == OperatorInput.NO_OPERATOR_ASSIGNED
+    actual.data.get().node == sptd.participantNode
+    actual.data.get().em == Optional.of(sptd.emInput)
   }
 
-  def "A SystemParticipantSource should build typed entity from valid and invalid input data as expected"() {
+  def "An SystemParticipantSource can enrich SystemParticipantEntityData with SystemParticipantTypeInput correctly"() {
     given:
-    def systemParticipantEntityData = Stream.of(new Try.Success<>(new SystemParticipantEntityData(fieldsToAttributes, ChpInput, SystemParticipantTestData.chpInput.operator, SystemParticipantTestData.chpInput.node, null)))
+    def entityData = new SystemParticipantEntityData(["type": sptd.evTypeInput.uuid.toString()], EvInput, sptd.evInput.node, sptd.emInput)
+    def types = map([sptd.evTypeInput])
 
     when:
-    def typedEntityDataStream = SystemParticipantSource.typedSystemParticipantEntityStream(systemParticipantEntityData, map(types))
+    def actual = SystemParticipantSource.enrich(types).apply(new Try.Success<>(entityData))
 
     then:
-    def element = typedEntityDataStream.findFirst().get()
-    element.success == resultIsPresent
-    element.data.ifPresent({
-      typedEntityData ->
-      assert (typedEntityData == resultData)
-    })
-
-    where:
-    types                                    | fieldsToAttributes                               || resultIsPresent || resultData
-    []                                       | ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || false           || null
-    [SystemParticipantTestData.chpTypeInput] | ["bla": "foo"]                                   || false           || null
-    [SystemParticipantTestData.chpTypeInput] | [:]                                              || false           || null
-    [SystemParticipantTestData.chpTypeInput] | ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb9"] || false           || null
-    [SystemParticipantTestData.chpTypeInput] | ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true            || new SystemParticipantTypedEntityData<>([:], ChpInput, SystemParticipantTestData.chpInput.operator, SystemParticipantTestData.chpInput.node, null, SystemParticipantTestData.chpTypeInput)
-  }
-
-  def "A SystemParticipantSource should build hp input entity from valid and invalid input data as expected"() {
-    given:
-    def sysPartTypedEntityData = Stream.of(new Try.Success<>(new SystemParticipantTypedEntityData<>(fieldsToAttributes, HpInput, SystemParticipantTestData.hpInput.operator, SystemParticipantTestData.hpInput.node, SystemParticipantTestData.emInput, SystemParticipantTestData.hpTypeInput)))
-
-    when:
-    def hpInputEntityDataOpt = SystemParticipantSource.hpEntityStream(sysPartTypedEntityData, map(thermalBuses))
-
-    then:
-    def element = hpInputEntityDataOpt.findFirst().get()
-    element.success == resultIsPresent
-    element.data.ifPresent({
-      hpInputEntityData ->
-      assert (hpInputEntityData == resultData)
-    })
-
-    where:
-    thermalBuses                                   | fieldsToAttributes                                     || resultIsPresent || resultData
-    []                                             | ["thermalBus": "0d95d7f2-49fb-4d49-8636-383a5220384e"] || false           || null
-    [SystemParticipantTestData.hpInput.thermalBus] | ["bla": "foo"]                                         || false           || null
-    [SystemParticipantTestData.hpInput.thermalBus] | [:]                                                    || false           || null
-    [SystemParticipantTestData.hpInput.thermalBus] | ["thermalBus": "0d95d7f2-49fb-4d49-8636-383a5220384f"] || false           || null
-    [SystemParticipantTestData.hpInput.thermalBus] | ["thermalBus": "0d95d7f2-49fb-4d49-8636-383a5220384e"] || true            || new HpInputEntityData([:], SystemParticipantTestData.hpInput.operator, SystemParticipantTestData.hpInput.node, SystemParticipantTestData.emInput, SystemParticipantTestData.hpTypeInput, SystemParticipantTestData.hpInput.thermalBus)
-  }
-
-  def "A SystemParticipantSource should build chp input entity from valid and invalid input data as expected"(List<ThermalStorageInput> thermalStorages, List<ThermalBusInput> thermalBuses, Map<String, String> fieldsToAttributes, boolean resultIsPresent, ChpInputEntityData resultData) {
-    given:
-    def sysPartTypedEntityData = Stream.of(new Try.Success<>(new SystemParticipantTypedEntityData<>(fieldsToAttributes, ChpInput, SystemParticipantTestData.chpInput.operator, SystemParticipantTestData.chpInput.node, SystemParticipantTestData.emInput, SystemParticipantTestData.chpTypeInput)))
-
-    when:
-    def hpInputEntityDataOpt = SystemParticipantSource.chpEntityStream(sysPartTypedEntityData, map(thermalStorages), map(thermalBuses))
-
-    then:
-    def element = hpInputEntityDataOpt.findFirst().get()
-    element.success == resultIsPresent
-    element.data.ifPresent({
-      hpInputEntityData ->
-      assert (hpInputEntityData == resultData)
-    })
-
-    where:
-    thermalStorages                                     | thermalBuses                                    | fieldsToAttributes                                                                                               || resultIsPresent | resultData
-    []                                                  | []                                              | ["thermalBus": "0d95d7f2-49fb-4d49-8636-383a5220384e", "thermalStorage": "8851813b-3a7d-4fee-874b-4df9d724e4b3"] || false           | null
-    [SystemParticipantTestData.chpInput.thermalStorage] | [SystemParticipantTestData.chpInput.thermalBus] | ["bla": "foo"]                                                                                                   || false           | null
-    [SystemParticipantTestData.chpInput.thermalStorage] | [SystemParticipantTestData.chpInput.thermalBus] | [:]                                                                                                              || false           | null
-    [SystemParticipantTestData.chpInput.thermalStorage] | [SystemParticipantTestData.chpInput.thermalBus] | ["thermalBus": "0d95d7f2-49fb-4d49-8636-383a5220384e", "thermalStorage": "8851813b-3a7d-4fee-874b-4df9d724e4b3"] || true            | new ChpInputEntityData([:], SystemParticipantTestData.chpInput.operator, SystemParticipantTestData.chpInput.node, SystemParticipantTestData.emInput, SystemParticipantTestData.chpTypeInput, SystemParticipantTestData.chpInput.thermalBus, SystemParticipantTestData.chpInput.thermalStorage)
+    actual.success
+    actual.data.get().typeInput == sptd.evTypeInput
   }
 }

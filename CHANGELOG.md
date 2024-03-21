@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+
+
+### Fixed
+
+
+### Changed
+- Make `EntitySource` completely static [#975](https://github.com/ie3-institute/PowerSystemDataModel/issues/975)
+- Abstract commonly used functionality from `EntitySource` [#981](https://github.com/ie3-institute/PowerSystemDataModel/issues/981)
+
+
 ## [5.0.1] - 2024-03-07
 
 ### Fixed

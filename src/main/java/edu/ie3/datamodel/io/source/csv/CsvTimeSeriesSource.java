@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -27,6 +28,7 @@ import java.util.stream.Stream;
 public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final IndividualTimeSeries<V> timeSeries;
   private final CsvDataSource dataSource;
+  private final Path filePath;
 
   /**
    * Factory method to build a source from given meta information
@@ -58,7 +60,8 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation,
-      Class<T> valClass) {
+      Class<T> valClass)
+      throws SourceException {
     TimeBasedSimpleValueFactory<T> valueFactory = new TimeBasedSimpleValueFactory<>(valClass);
     return new CsvTimeSeriesSource<>(
         csvSep,
@@ -88,9 +91,16 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       UUID timeSeriesUuid,
       Path filePath,
       Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
+      TimeBasedSimpleValueFactory<V> factory)
+      throws SourceException {
     super(valueClass, factory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
+
+    // validate
+    this.filePath = filePath;
+    Try.ofVoid(this::validate, ValidationException.class)
+        .transformF(SourceException::new)
+        .getOrThrow();
 
     /* Read in the full time series */
     try {
@@ -103,6 +113,11 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
               + "'. Please check arguments!",
           e);
     }
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    validate(valueClass, () -> dataSource.getSourceFields(filePath), valueFactory);
   }
 
   @Override
