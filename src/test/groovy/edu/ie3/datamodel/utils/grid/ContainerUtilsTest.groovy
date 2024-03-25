@@ -298,6 +298,69 @@ class ContainerUtilsTest extends Specification {
     ] as Set                 || [] as Set
   }
 
+  def "The container utils filter raw grid elements with all connected transformers correctly for a given subnet"() {
+    when:
+    RawGridElements actual = ContainerUtils.filterForSubnet(complexTopology.rawGrid, subnet, true)
+
+    then:
+    actual.nodes == expectedNodes
+    actual.transformer2Ws == expectedTransformers2W
+    actual.transformer3Ws == expectedTransformers3W
+
+    where:
+    subnet || expectedNodes || expectedTransformers2W  || expectedTransformers3W
+    1      || [
+      ComplexTopology.nodeA,
+      ComplexTopology.nodeB,
+      ComplexTopology.nodeC
+    ] as Set || [] as Set || [
+      ComplexTopology.transformerAtoBtoC
+    ] as Set
+    2      || [
+      ComplexTopology.nodeA,
+      ComplexTopology.nodeB,
+      ComplexTopology.nodeC
+    ] as Set || [
+      ComplexTopology.transformerBtoD,
+      ComplexTopology.transformerBtoE
+    ] as Set || [
+      ComplexTopology.transformerAtoBtoC
+    ] as Set
+    3      || [
+      ComplexTopology.nodeA,
+      ComplexTopology.nodeB,
+      ComplexTopology.nodeC
+    ] as Set || [
+      ComplexTopology.transformerCtoF,
+      ComplexTopology.transformerCtoG,
+      ComplexTopology.transformerCtoE
+    ] as Set || [
+      ComplexTopology.transformerAtoBtoC
+    ] as Set
+    4      || [
+      ComplexTopology.nodeB,
+      ComplexTopology.nodeD
+    ] as Set || [
+      ComplexTopology.transformerBtoD
+    ] as Set || [] as Set
+    5      || [
+      ComplexTopology.nodeB,
+      ComplexTopology.nodeC,
+      ComplexTopology.nodeE
+    ] as Set || [
+      ComplexTopology.transformerBtoE,
+      ComplexTopology.transformerCtoE
+    ] as Set || [] as Set
+    6      || [
+      ComplexTopology.nodeC,
+      ComplexTopology.nodeF,
+      ComplexTopology.nodeG
+    ] as Set || [
+      ComplexTopology.transformerCtoF,
+      ComplexTopology.transformerCtoG
+    ] as Set || [] as Set
+  }
+
   /* TODO: Extend testing data so that,
    *   - filtering of system participants can be tested
    *   - filtering of graphic elements can be tested */

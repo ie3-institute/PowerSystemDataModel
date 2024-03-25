@@ -9,7 +9,6 @@ import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.TopologyException;
 import edu.ie3.datamodel.graph.SubGridGate;
 import edu.ie3.datamodel.graph.SubGridTopologyGraph;
-import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.ConnectorPort;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
@@ -67,37 +66,6 @@ public class JointGridContainerUtils extends ContainerUtils {
 
     return new JointGridContainer(
         gridName, rawGrid, systemParticipants, graphicElements, subGridTopologyGraph);
-  }
-
-  /**
-   * Updates the provided {@link JointGridContainer} with the provided mapping of old to new {@link
-   * NodeInput} entities. When used, one carefully has to check that the mapping is valid. No
-   * further sanity checks are provided and if an invalid mapping is passed in, unexpected behavior
-   * might occur. All entities holding reference to the old nodes are updates with this method.
-   *
-   * <p>If the geoPosition of one transformer node is altered, all other transformer nodes
-   * geoPositions are updated as well based on the update definition defined in {@link
-   * #updateTransformers(Set, Set, Map)} as by convention transformer nodes always needs to have the
-   * same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
-   * trafoDtoG - nodeG all affected transformer nodes geoPosition is set to the same location as
-   * defined by the update rule defined in {@link #updateTransformers(Set, Set, Map)}
-   *
-   * @param grid the grid that should be updated
-   * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
-   * @return a copy of the provided grid with updated nodes as provided
-   */
-  public static JointGridContainer updateGridWithNodes(
-      JointGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes)
-      throws InvalidGridException {
-    UpdatedEntities updatedEntities =
-        updateEntities(
-            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
-
-    return new JointGridContainer(
-        grid.getGridName(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

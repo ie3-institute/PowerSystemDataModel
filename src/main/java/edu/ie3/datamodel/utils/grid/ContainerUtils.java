@@ -37,7 +37,7 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /** Class that provides utilities for {@link GridContainer}. */
-public class ContainerUtils extends ContainerNodeUpdateUtil {
+public class ContainerUtils {
   private static final Logger log = LoggerFactory.getLogger(ContainerUtils.class);
 
   protected ContainerUtils() {
@@ -185,6 +185,73 @@ public class ContainerUtils extends ContainerNodeUpdateUtil {
             .collect(Collectors.toSet());
 
     return new RawGridElements(nodes, lines, transformer2w, transformer3w, switches, measurements);
+  }
+
+  /**
+   * Filters all raw grid elements for the provided subnet. For each transformer all nodes (and not
+   * only the node of the grid the transformer is located in) are added as well. If specified this
+   * method includes all connected transformers with their nodes.
+   *
+   * @param input The model to filter
+   * @param subnet The filter criterion
+   * @return A {@link RawGridElements} filtered for the subnet
+   */
+  public static RawGridElements filterForSubnet(
+      RawGridElements input, int subnet, boolean includeAllTransformers) {
+    if (!includeAllTransformers) {
+      return filterForSubnet(input, subnet);
+    } else {
+      Set<NodeInput> nodes =
+          input.getNodes().stream()
+              .filter(node -> node.getSubnet() == subnet)
+              .collect(Collectors.toSet());
+
+      Set<LineInput> lines =
+          input.getLines().stream()
+              .filter(line -> line.getNodeB().getSubnet() == subnet)
+              .collect(Collectors.toSet());
+
+      Set<Transformer2WInput> transformer2w =
+          input.getTransformer2Ws().stream()
+              .filter(
+                  transformer ->
+                      transformer.getNodeA().getSubnet() == subnet
+                          || transformer.getNodeB().getSubnet() == subnet)
+              .collect(Collectors.toSet());
+      /* Add the higher voltage node to the set of nodes */
+      nodes.addAll(
+          transformer2w.stream().map(Transformer2WInput::getNodeA).collect(Collectors.toSet()));
+
+      Set<Transformer3WInput> transformer3w =
+          input.getTransformer3Ws().stream()
+              .filter(
+                  transformer ->
+                      transformer.getNodeA().getSubnet() == subnet
+                          || transformer.getNodeB().getSubnet() == subnet
+                          || transformer.getNodeC().getSubnet() == subnet)
+              .collect(Collectors.toSet());
+      /* Add all nodes of a three winding transformer node to the set of nodes */
+      nodes.addAll(
+          transformer3w.stream()
+              .flatMap(
+                  transformer ->
+                      Stream.of(
+                          transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()))
+              .collect(Collectors.toSet()));
+
+      Set<SwitchInput> switches =
+          input.getSwitches().stream()
+              .filter(switcher -> switcher.getNodeB().getSubnet() == subnet)
+              .collect(Collectors.toSet());
+
+      Set<MeasurementUnitInput> measurements =
+          input.getMeasurementUnits().stream()
+              .filter(measurement -> measurement.getNode().getSubnet() == subnet)
+              .collect(Collectors.toSet());
+
+      return new RawGridElements(
+          nodes, lines, transformer2w, transformer3w, switches, measurements);
+    }
   }
 
   /**

@@ -22,7 +22,7 @@ public class ExceptionUtils {
    * @param exceptions list of exceptions
    * @return str containing the messages
    */
-  public static String getMessages(List<? extends Exception> exceptions) {
+  public static String getMessages(Collection<? extends Exception> exceptions) {
     return exceptions.stream()
         .map(Throwable::getMessage)
         .reduce("", (a, b) -> a + "\n " + b)

@@ -25,42 +25,6 @@ public class SubGridContainerUtils extends ContainerUtils {
   }
 
   /**
-   * Updates the provided {@link SubGridContainer} with the provided mapping of old to new {@link
-   * NodeInput} entities. When used, one carefully has to check that the mapping is valid. No
-   * further sanity checks are provided and if an invalid mapping is passed in, unexpected behavior
-   * might occur. Furthermore, if the subgrid to be updated is part of a {@link JointGridContainer}
-   * it is highly advised NOT to update a single subgrid, but the whole joint grid, because in case
-   * of transformer node updates on a single subgrid, inconsistency of the overall joint grid might
-   * occur. To update the whole joint grid use {@link
-   * JointGridContainerUtils#updateGridWithNodes(JointGridContainer, Map)}
-   *
-   * <p>If the geoPosition of one transformer node is altered, all other transformer nodes
-   * geoPositions are updated as well based on the update definition defined in {@link
-   * #updateTransformers(Set, Set, Map)} as by convention transformer nodes always needs to have the
-   * same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
-   * trafoDtoG - nodeG all affected transformer nodes geoPosition is set to the same location as
-   * defined by the update rule defined in {@link #updateTransformers(Set, Set, Map)}
-   *
-   * @param grid the grid that should be updated
-   * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
-   * @return a copy of the provided grid with updated nodes as provided
-   */
-  public static SubGridContainer updateGridWithNodes(
-      SubGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {
-
-    UpdatedEntities updatedEntities =
-        updateEntities(
-            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
-
-    return new SubGridContainer(
-        grid.getGridName(),
-        grid.getSubnet(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
-  }
-
-  /**
    * Returns a copy {@link SubGridContainer} based on the provided subgrid with a certain set of
    * nodes marked as slack nodes. In general, the grid is modified in a way that slack nodes are
    * added at transformer nodes based on assumptions about the grid, as well as all other affect
