@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.utils;
+package edu.ie3.datamodel.utils.grid;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
@@ -13,13 +13,14 @@ import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
+import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
 
 public class ContainerNodeUpdateUtil {
 
-  private ContainerNodeUpdateUtil() {
+  protected ContainerNodeUpdateUtil() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
   }
 
@@ -43,76 +44,10 @@ public class ContainerNodeUpdateUtil {
   public static GridContainer updateGridWithNodes(
       GridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {
     if (grid instanceof JointGridContainer jointGridContainer) {
-      return updateGridWithNodes(jointGridContainer, oldToNewNodes);
+      return JointGridContainerUtils.updateGridWithNodes(jointGridContainer, oldToNewNodes);
     } else {
-      return updateGridWithNodes((SubGridContainer) grid, oldToNewNodes);
+      return SubGridContainerUtils.updateGridWithNodes((SubGridContainer) grid, oldToNewNodes);
     }
-  }
-
-  /**
-   * Updates the provided {@link JointGridContainer} with the provided mapping of old to new {@link
-   * NodeInput} entities. When used, one carefully has to check that the mapping is valid. No
-   * further sanity checks are provided and if an invalid mapping is passed in, unexpected behavior
-   * might occur. All entities holding reference to the old nodes are updates with this method.
-   *
-   * <p>If the geoPosition of one transformer node is altered, all other transformer nodes
-   * geoPositions are updated as well based on the update definition defined in {@link
-   * #updateTransformers(Set, Set, Map)} as by convention transformer nodes always needs to have the
-   * same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
-   * trafoDtoG - nodeG all affected transformer nodes geoPosition is set to the same location as
-   * defined by the update rule defined in {@link #updateTransformers(Set, Set, Map)}
-   *
-   * @param grid the grid that should be updated
-   * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
-   * @return a copy of the provided grid with updated nodes as provided
-   */
-  public static JointGridContainer updateGridWithNodes(
-      JointGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes)
-      throws InvalidGridException {
-    UpdatedEntities updatedEntities =
-        updateEntities(
-            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
-
-    return new JointGridContainer(
-        grid.getGridName(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
-  }
-
-  /**
-   * Updates the provided {@link SubGridContainer} with the provided mapping of old to new {@link
-   * NodeInput} entities. When used, one carefully has to check that the mapping is valid. No
-   * further sanity checks are provided and if an invalid mapping is passed in, unexpected behavior
-   * might occur. Furthermore, if the subgrid to be updated is part of a {@link JointGridContainer}
-   * it is highly advised NOT to update a single subgrid, but the whole joint grid, because in case
-   * of transformer node updates on a single subgrid, inconsistency of the overall joint grid might
-   * occur. To update the whole joint grid use {@link #updateGridWithNodes(JointGridContainer, Map)}
-   *
-   * <p>If the geoPosition of one transformer node is altered, all other transformer nodes
-   * geoPositions are updated as well based on the update definition defined in {@link
-   * #updateTransformers(Set, Set, Map)} as by convention transformer nodes always needs to have the
-   * same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
-   * trafoDtoG - nodeG all affected transformer nodes geoPosition is set to the same location as
-   * defined by the update rule defined in {@link #updateTransformers(Set, Set, Map)}
-   *
-   * @param grid the grid that should be updated
-   * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
-   * @return a copy of the provided grid with updated nodes as provided
-   */
-  public static SubGridContainer updateGridWithNodes(
-      SubGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {
-
-    UpdatedEntities updatedEntities =
-        updateEntities(
-            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
-
-    return new SubGridContainer(
-        grid.getGridName(),
-        grid.getSubnet(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
   }
 
   /**
@@ -125,7 +60,7 @@ public class ContainerNodeUpdateUtil {
    * @return instance of {@link UpdatedEntities} with copies of the provided grid parts with updated
    *     nodes as provided
    */
-  private static UpdatedEntities updateEntities(
+  protected static UpdatedEntities updateEntities(
       RawGridElements rawGridElements,
       SystemParticipants systemParticipants,
       GraphicElements graphicElements,
@@ -158,7 +93,7 @@ public class ContainerNodeUpdateUtil {
    * @param lines the previously already updated lines
    * @return copy of the provided graphic elements with updated nodes as provided
    */
-  private static GraphicElements updateGraphicElementsWithNodes(
+  protected static GraphicElements updateGraphicElementsWithNodes(
       GraphicElements graphics, Map<NodeInput, NodeInput> oldToNewNodes, Set<LineInput> lines) {
 
     Set<NodeGraphicInput> updatedNodeGraphics =
@@ -205,7 +140,7 @@ public class ContainerNodeUpdateUtil {
    * @param oldToNewNodes mapping of old nodes to their corresponding new or updated nodes
    * @return copy of the provided system participants with updated nodes as provided
    */
-  private static SystemParticipants updateSystemParticipantsWithNodes(
+  protected static SystemParticipants updateSystemParticipantsWithNodes(
       SystemParticipants systemParticipants, Map<NodeInput, NodeInput> oldToNewNodes) {
 
     List<SystemParticipantInput> sysParts =
@@ -230,7 +165,7 @@ public class ContainerNodeUpdateUtil {
    * @return instance of {@link RawGridElementsNodeUpdateResult} with all entity data necessary for
    *     further updates
    */
-  private static RawGridElementsNodeUpdateResult updateRawGridElementsWithNodes(
+  protected static RawGridElementsNodeUpdateResult updateRawGridElementsWithNodes(
       RawGridElements rawGridElements, Map<NodeInput, NodeInput> oldToNewNodes) {
 
     /* update 2w and 3w transformers */
@@ -315,7 +250,7 @@ public class ContainerNodeUpdateUtil {
    * @param updatedOldToNewNodes mapping of old nodes to their corresponding new or updated nodes
    * @return copy of the provided line set with updated nodes if affected
    */
-  private static Set<LineInput> updateLines(
+  protected static Set<LineInput> updateLines(
       Set<LineInput> lines, Map<NodeInput, NodeInput> updatedOldToNewNodes) {
     return lines.stream()
         .map(
@@ -360,7 +295,7 @@ public class ContainerNodeUpdateUtil {
    * @param oldToNewNodes mapping of old nodes to their corresponding new or updated nodes
    * @return instance of {@link TransformerNodeUpdateResult}
    */
-  private static TransformerNodeUpdateResult updateTransformers(
+  protected static TransformerNodeUpdateResult updateTransformers(
       Set<Transformer2WInput> transformer2Ws,
       Set<Transformer3WInput> transformer3Ws,
       Map<NodeInput, NodeInput> oldToNewNodes) {
@@ -442,7 +377,7 @@ public class ContainerNodeUpdateUtil {
    * @param leadGeoPosition the leading geoPosition that should be set to all transformer nodes
    * @return copy of the provided transformer set with updated nodes if affected
    */
-  private static Set<Transformer2WInput> update2wTransformers(
+  protected static Set<Transformer2WInput> update2wTransformers(
       Set<Transformer2WInput> transformer2Ws,
       Map<NodeInput, NodeInput> oldToNewNodes,
       Point leadGeoPosition) {
@@ -488,7 +423,7 @@ public class ContainerNodeUpdateUtil {
    * @param leadGeoPosition the leading geoPosition that should be set to all transformer nodes
    * @return copy of the provided transformer set with updated nodes if affected
    */
-  private static Set<Transformer3WInput> update3wTransformers(
+  protected static Set<Transformer3WInput> update3wTransformers(
       Set<Transformer3WInput> transformer3Ws,
       Map<NodeInput, NodeInput> oldToNewNodes,
       Point leadGeoPosition) {
@@ -551,7 +486,7 @@ public class ContainerNodeUpdateUtil {
    * @param affectedTrafoNodes already affected transformer nodes
    * @return set of all affected transformer nodes
    */
-  private static Set<NodeInput> findAllRelatedTransformerNodes(
+  protected static Set<NodeInput> findAllRelatedTransformerNodes(
       Set<Transformer2WInput> transformer2Ws,
       Set<Transformer3WInput> transformer3Ws,
       Map<NodeInput, NodeInput> oldToNewNodes,
@@ -589,7 +524,7 @@ public class ContainerNodeUpdateUtil {
     }
   }
 
-  private static List<NodeInput> sortNodesByVoltageLevel(Set<NodeInput> nodes) {
+  protected static List<NodeInput> sortNodesByVoltageLevel(Set<NodeInput> nodes) {
     List<NodeInput> allNodes = new ArrayList<>(nodes);
     allNodes.sort(
         (o1, o2) ->
@@ -605,7 +540,7 @@ public class ContainerNodeUpdateUtil {
    * updates when updating the transformers. Hence, for further processing it is advised to use the
    * updatedOldToNewNodes instead of the original ones.
    */
-  private record TransformerNodeUpdateResult(
+  protected record TransformerNodeUpdateResult(
       Set<Transformer2WInput> updatedTransformer2WInputs,
       Set<Transformer3WInput> updatedTransformer3WInputs,
       Map<NodeInput, NodeInput> updatedOldToNewNodes) {}
@@ -617,11 +552,11 @@ public class ContainerNodeUpdateUtil {
    * Hence, for further processing it is advised to use the updatedOldToNewNodes instead of the
    * original ones
    */
-  private record RawGridElementsNodeUpdateResult(
+  protected record RawGridElementsNodeUpdateResult(
       RawGridElements rawGridElements, Map<NodeInput, NodeInput> updatedOldToNewNodes) {}
 
   /** Wrapper class for updated entities hold by an instance of {@link GridContainer} */
-  private record UpdatedEntities(
+  protected record UpdatedEntities(
       RawGridElements rawGridElements,
       SystemParticipants systemParticipants,
       GraphicElements graphicElements) {}

@@ -16,9 +16,9 @@ import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
-import edu.ie3.datamodel.utils.ContainerUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.grid.ContainerUtils;
 import java.util.*;
 import java.util.stream.Stream;
 

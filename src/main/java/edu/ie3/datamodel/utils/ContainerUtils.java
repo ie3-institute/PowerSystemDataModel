@@ -34,7 +34,12 @@ import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
-/** Offers functionality useful for grouping different models together */
+/**
+ * Offers functionality useful for grouping different models together
+ *
+ * @deprecated use {@link edu.ie3.datamodel.utils.grid.ContainerUtils} and subclasses instead.
+ */
+@Deprecated
 public class ContainerUtils {
 
   private static final Logger log = LoggerFactory.getLogger(ContainerUtils.class);
@@ -434,7 +439,8 @@ public class ContainerUtils {
         rawGrid.getTransformer2Ws().stream()
             .flatMap(
                 transformer ->
-                    ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
+                    edu.ie3.datamodel.utils.ContainerUtils.traverseAlongSwitchChain(
+                        transformer.getNodeA(), rawGrid)
                         .stream())
             .collect(Collectors.toSet()));
     gridNodes.removeAll(
@@ -445,12 +451,14 @@ public class ContainerUtils {
                     return Stream.of(transformer.getNodeB(), transformer.getNodeC());
                   else if (transformer.getNodeB().getSubnet() == subnet)
                     return Stream.concat(
-                        ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
+                        edu.ie3.datamodel.utils.ContainerUtils.traverseAlongSwitchChain(
+                            transformer.getNodeA(), rawGrid)
                             .stream(),
                         Stream.of(transformer.getNodeC(), transformer.getNodeInternal()));
                   else
                     return Stream.concat(
-                        ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
+                        edu.ie3.datamodel.utils.ContainerUtils.traverseAlongSwitchChain(
+                            transformer.getNodeA(), rawGrid)
                             .stream(),
                         Stream.of(transformer.getNodeB(), transformer.getNodeInternal()));
                 })
@@ -544,10 +552,12 @@ public class ContainerUtils {
       throws InvalidGridException {
     HashMap<Integer, SubGridContainer> subGrids = new HashMap<>(subnetNumbers.size());
     for (int subnetNumber : subnetNumbers) {
-      RawGridElements rawGridElements = ContainerUtils.filterForSubnet(rawGrid, subnetNumber);
+      RawGridElements rawGridElements =
+          edu.ie3.datamodel.utils.ContainerUtils.filterForSubnet(rawGrid, subnetNumber);
       SystemParticipants systemParticipantElements =
-          ContainerUtils.filterForSubnet(systemParticipants, subnetNumber);
-      GraphicElements graphicElements = ContainerUtils.filterForSubnet(graphics, subnetNumber);
+          edu.ie3.datamodel.utils.ContainerUtils.filterForSubnet(systemParticipants, subnetNumber);
+      GraphicElements graphicElements =
+          edu.ie3.datamodel.utils.ContainerUtils.filterForSubnet(graphics, subnetNumber);
 
       subGrids.put(
           subnetNumber,
@@ -738,10 +748,10 @@ public class ContainerUtils {
     List<SwitchInput> nextSwitches =
         switches.stream().filter(switcher -> switcher.allNodes().contains(startNode)).toList();
     switch (nextSwitches.size()) {
-      case 0:
+      case 0 -> {
         /* No further switch found -> Return the starting node */
-        break;
-      case 1:
+      }
+      case 1 -> {
         /* One next switch has been found -> Travel in this direction */
         SwitchInput nextSwitch = nextSwitches.get(0);
         Optional<NodeInput> candidateNodes =
@@ -762,11 +772,10 @@ public class ContainerUtils {
           newSwitches.remove(nextSwitch);
           traveledNodes.addAll(traverseAlongSwitchChain(nextNode, newSwitches, newNodesToExclude));
         }
-        break;
-      default:
-        throw new IllegalArgumentException(
-            "Cannot traverse along switch chain, as there is a junction included at node "
-                + startNode);
+      }
+      default -> throw new IllegalArgumentException(
+          "Cannot traverse along switch chain, as there is a junction included at node "
+              + startNode);
     }
     return traveledNodes;
   }
