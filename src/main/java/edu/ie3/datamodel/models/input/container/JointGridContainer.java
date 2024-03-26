@@ -7,7 +7,7 @@ package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.graph.SubGridTopologyGraph;
-import edu.ie3.datamodel.utils.grid.JointGridContainerUtils;
+import edu.ie3.datamodel.utils.JointGridContainerUtils;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

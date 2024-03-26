@@ -47,6 +47,17 @@ class GridTestData {
   "Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli"
   )
 
+  public static final LineTypeInput lineTypeInputCtoD = new LineTypeInput(
+  UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
+  "lineType_AtoB",
+  Quantities.getQuantity(0.00322d, CONDUCTANCE_PER_LENGTH),
+  Quantities.getQuantity(0d, SUSCEPTANCE_PER_LENGTH),
+  Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
+  Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+  Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
+  Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
+  )
+
   public static final Transformer2WTypeInput transformerTypeBtoD = new Transformer2WTypeInput(
   UUID.fromString("202069a7-bcf8-422c-837c-273575220c8a"),
   "HS-MS_1",
@@ -314,18 +325,6 @@ class GridTestData {
   nodeA,
   nodeB,
   true
-  )
-
-  public static final LineTypeInput lineTypeInputCtoD = new LineTypeInput(
-  UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
-  "lineType_AtoB",
-  Quantities.getQuantity(0.00322d, CONDUCTANCE_PER_LENGTH),
-  Quantities.getQuantity(0d, SUSCEPTANCE_PER_LENGTH),
-  Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
-  Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
-  Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
-  Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
-
   )
 
   public static final LineInput lineCtoD = new LineInput(

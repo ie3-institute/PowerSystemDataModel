@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.utils.grid
+package edu.ie3.datamodel.utils
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
@@ -237,9 +237,71 @@ class ContainerUtilsTest extends Specification {
     ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes) == [1, 2, 3, 4, 5, 6] as Set
   }
 
-
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // grid filter utils
+
+  def "The container utils filter connectors correctly for a given subnet"() {
+    given:
+    def rawGrid = new RawGridElements(
+        [] as Set,
+        [
+          ComplexTopology.lineAtoB,
+          ComplexTopology.lineCtoD,
+          ComplexTopology.lineFtoG
+        ] as Set,
+        [
+          ComplexTopology.transformerBtoD,
+          ComplexTopology.transformerBtoE,
+          ComplexTopology.transformerCtoE,
+          ComplexTopology.transformerCtoF,
+          ComplexTopology.transformerCtoG
+        ] as Set,
+        [
+          ComplexTopology.transformerAtoBtoC
+        ] as Set,
+        [] as Set,
+        [] as Set
+        )
+
+    when:
+    RawGridElements actual = ContainerUtils.filterConnectors(rawGrid, subnet)
+
+    then:
+    actual.nodes == expectedLines
+    actual.transformer2Ws == expectedTransformers2W
+    actual.transformer3Ws == expectedTransformers3W
+    actual.switches == expectedSwitches
+
+    where:
+    subnet || expectedLines || expectedTransformers2W                   || expectedTransformers3W                      ||expectedSwitches
+    1      || [] as Set     || [] as Set                                || [
+      ComplexTopology.transformerAtoBtoC
+    ] as Set || [] as Set
+    2      || [] as Set     || [
+      ComplexTopology.transformerBtoD,
+      ComplexTopology.transformerBtoE
+    ] as Set                                                            || [
+      ComplexTopology.transformerAtoBtoC
+    ] as Set || [] as Set
+    3      || [] as Set     || [
+      ComplexTopology.transformerCtoE,
+      ComplexTopology.transformerCtoF,
+      ComplexTopology.transformerCtoG
+    ] as Set                                                            || [
+      ComplexTopology.transformerAtoBtoC
+    ] as Set || [] as Set
+    4      || [] as Set     || [
+      ComplexTopology.transformerBtoD
+    ] as Set || [] as Set                                   || [] as Set
+    5      || [] as Set     || [
+      ComplexTopology.transformerBtoE,
+      ComplexTopology.transformerCtoE
+    ] as Set                                                            || [] as Set                                   || [] as Set
+    6      || [] as Set     || [
+      ComplexTopology.transformerCtoF,
+      ComplexTopology.transformerCtoG
+    ] as Set                                                            || [] as Set                                   || [] as Set
+  }
 
   def "The container utils filter raw grid elements correctly for a given subnet"() {
     when:
@@ -298,14 +360,9 @@ class ContainerUtilsTest extends Specification {
     ] as Set                 || [] as Set
   }
 
-  def "The container utils filter connectors correctly for a given subnet"() {
-  }
-
-
   /* TODO: Extend testing data so that,
    *   - filtering of system participants can be tested
    *   - filtering of graphic elements can be tested */
-
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // grid graph utils

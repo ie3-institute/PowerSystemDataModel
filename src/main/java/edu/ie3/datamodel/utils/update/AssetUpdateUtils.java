@@ -3,12 +3,10 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.utils.grid;
+package edu.ie3.datamodel.utils.update;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.MissingTypeException;
-import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
@@ -17,12 +15,11 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.datamodel.utils.TypeUtils;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
 import javax.measure.quantity.Power;
@@ -30,66 +27,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
-/** Utilities for updating {@link GridContainer}. */
-public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
-  private ContainerUpdateUtils() {
+/** Utilities for updating {@link AssetInput}s. */
+public class AssetUpdateUtils {
+  private static final Logger log = LoggerFactory.getLogger(AssetUpdateUtils.class);
+
+  private AssetUpdateUtils() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
   }
 
-  private static final Logger log = LoggerFactory.getLogger(ContainerUpdateUtils.class);
-
-  private static final Function<NodeInput, ComparableQuantity<ElectricPotential>> rating =
+  public static final Function<NodeInput, ComparableQuantity<ElectricPotential>> rating =
       node -> node.getVoltLvl().getNominalVoltage();
 
-  /**
-   * Method for updating the voltage level of one subnet. This method will automatically adjust the
-   * types of {@link ConnectorInput}s. If the new type requires a different amount of {@link
-   * ConnectorInput#getParallelDevices()}, this number is also automatically adjusted.
-   *
-   * @param container with at least one subnet
-   * @param subnet number of the subgrid
-   * @param newLevel new voltage level of the subnet
-   * @param types all known types
-   * @return a grid container with the updated subgrid
-   */
-  public static JointGridContainer updateSubgridVoltage(
-      JointGridContainer container, int subnet, VoltageLevel newLevel, Types types)
-      throws MissingTypeException, InvalidGridException {
-
-    // entities with updated voltage levels
-    UpdatedEntities updatedEntities = updateVoltage(container, subnet, newLevel, types);
-
-    return new JointGridContainer(
-        container.getGridName(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
-  }
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  // methods for updating nodes
 
   /**
-   * Method for updating the voltage level of one subnet. This method will automatically adjust the
-   * types of {@link ConnectorInput}s. If the new type requires a different amount of {@link
-   * ConnectorInput#getParallelDevices()}, this number is also automatically adjusted.
+   * Method for changing the given {@link VoltageLevel} of a set of {@link NodeInput}s.
    *
-   * @param container with at least one subnet
-   * @param subnet number of the subgrid
-   * @param newLevel new voltage level of the subnet
-   * @param types all known types
-   * @return a grid container with the updated subgrid
+   * <p>NOTE: This method will only change the voltage level without any checks.
+   *
+   * @param nodes given nodes
+   * @param newLvl the new voltage level
+   * @return a map: old to new nodes
    */
-  public static SubGridContainer updateSubgridVoltage(
-      SubGridContainer container, int subnet, VoltageLevel newLevel, Types types)
-      throws MissingTypeException, InvalidGridException {
-
-    // entities with updated voltage levels
-    UpdatedEntities updatedEntities = updateVoltage(container, subnet, newLevel, types);
-
-    return new SubGridContainer(
-        container.getGridName(),
-        container.getSubnet(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
+  public static Map<NodeInput, NodeInput> updateNodes(Set<NodeInput> nodes, VoltageLevel newLvl) {
+    return nodes.parallelStream()
+        .map(node -> Map.entry(node, node.copy().voltLvl(newLvl).build()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -148,7 +112,7 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
       ComparableQuantity<ElectricPotential> vRated,
       Collection<LineTypeInput> types)
       throws MissingTypeException {
-    List<LineTypeInput> suitableTypes = TypeUtils.findSuitableTypes(types, vRated);
+    List<LineTypeInput> suitableTypes = TypeUtils.findSuitableLineTypes(types, vRated);
 
     if (suitableTypes.isEmpty()) {
       // throws an exception if no line type is suitable for the required voltage rating
@@ -159,14 +123,20 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
         .map(suitableType -> line.copy().type(suitableType).build())
         .orElseGet(
             () -> {
-              LineTypeInput type = suitableTypes.get(suitableTypes.size() - 1);
-              int parallelDevices = TypeUtils.calculateNeededParallelDevices(type, iMin);
+              LineTypeInput type =
+                  Collections.max(
+                      suitableTypes,
+                      Comparator.comparingDouble(o -> o.getiMax().getValue().doubleValue()));
+              int parallelDevices = calculateNeededParallelDevices(type, iMin);
 
-              log.debug(
-                  "Increased the number of parallel devices of line '{}' to {} in order to carry a current of '{}'.",
-                  line.getUuid(),
-                  parallelDevices,
-                  iMin);
+              if (line.getParallelDevices() != parallelDevices) {
+                log.debug(
+                    "Increased the number of parallel devices of line '{}' from {} to {} in order to carry a current of '{}'.",
+                    line.getUuid(),
+                    line.getParallelDevices(),
+                    parallelDevices,
+                    iMin);
+              }
 
               return line.copy().type(type).parallelDevices(parallelDevices).build();
             });
@@ -246,26 +216,35 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
       Collection<Transformer2WTypeInput> types)
       throws MissingTypeException {
     List<Transformer2WTypeInput> suitableTypes =
-        TypeUtils.findSuitableTypes(types, vRatedA, vRatedB);
+        TypeUtils.findSuitableTransformerTypes(types, vRatedA, vRatedB);
 
     if (suitableTypes.isEmpty()) {
       // throws an exception if no transformer type is suitable for the required voltage ratings
       throw new MissingTypeException(
-          "No suitable two winding transformer type found for rating: " + vRatedA + ", " + vRatedB);
+          "No suitable two winding transformer type found for rating: "
+              + vRatedA
+              + " -> "
+              + vRatedB);
     }
 
-    return TypeUtils.findSuitableTransformerType(types, sMin)
+    return TypeUtils.findSuitableTransformerType(suitableTypes, sMin)
         .map(suitableType -> transformer.copy().type(suitableType).build())
         .orElseGet(
             () -> {
-              Transformer2WTypeInput type = suitableTypes.get(suitableTypes.size() - 1);
-              int parallelDevices = TypeUtils.calculateNeededParallelDevices(type, sMin);
+              Transformer2WTypeInput type =
+                  Collections.max(
+                      suitableTypes,
+                      Comparator.comparingDouble(o -> o.getsRated().getValue().doubleValue()));
+              int parallelDevices = calculateNeededParallelDevices(type, sMin);
 
-              log.debug(
-                  "Increased the number of parallel devices of two winding transformer '{}' to {} in order to carry a power of '{}'.",
-                  transformer.getUuid(),
-                  parallelDevices,
-                  sMin);
+              if (transformer.getParallelDevices() != parallelDevices) {
+                log.debug(
+                    "Increased the number of parallel devices of two winding transformer '{}' from {} to {} in order to carry a power of '{}'.",
+                    transformer.getUuid(),
+                    transformer.getParallelDevices(),
+                    parallelDevices,
+                    sMin);
+              }
 
               return transformer.copy().type(type).parallelDevices(parallelDevices).build();
             });
@@ -371,222 +350,95 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
       Collection<Transformer3WTypeInput> types)
       throws MissingTypeException {
     List<Transformer3WTypeInput> suitableTypes =
-        TypeUtils.findSuitableTypes(types, vRatedA, vRatedB, vRatedC);
+        TypeUtils.findSuitableTransformerTypes(types, vRatedA, vRatedB, vRatedC);
 
     if (suitableTypes.isEmpty()) {
       // throws an exception if no transformer type is suitable for the required voltage ratings
       throw new MissingTypeException(
           "No suitable three winding transformer type found for rating: "
               + vRatedA
-              + ", "
-              + vRatedB);
+              + " -> "
+              + vRatedB
+              + " -> "
+              + vRatedC);
     }
 
-    return TypeUtils.findSuitableTransformerType(types, sMinA, sMinB, sMinC)
+    return TypeUtils.findSuitableTransformerType(suitableTypes, sMinA, sMinB, sMinC)
         .map(suitableType -> transformer.copy().type(suitableType).build())
         .orElseGet(
             () -> {
-              Transformer3WTypeInput type = suitableTypes.get(suitableTypes.size() - 1);
-              int parallelDevices =
-                  TypeUtils.calculateNeededParallelDevices(type, sMinA, sMinB, sMinC);
+              Transformer3WTypeInput type =
+                  Collections.max(
+                      suitableTypes,
+                      Comparator.comparingDouble(o -> o.getsRatedA().getValue().doubleValue()));
+              int parallelDevices = calculateNeededParallelDevices(type, sMinA, sMinB, sMinC);
 
-              log.debug(
-                  "Increased the number of parallel devices of three winding transformer '{}' to {} in order to carry a power of '{}, {}, {}'.",
-                  transformer.getUuid(),
-                  parallelDevices,
-                  sMinA,
-                  sMinB,
-                  sMinC);
+              if (transformer.getParallelDevices() != parallelDevices) {
+                log.debug(
+                    "Increased the number of parallel devices of three winding transformer '{}' from {} to {} in order to carry a power of '{}, {}, {}'.",
+                    transformer.getUuid(),
+                    transformer.getParallelDevices(),
+                    parallelDevices,
+                    sMinA,
+                    sMinB,
+                    sMinC);
+              }
 
               return transformer.copy().type(type).parallelDevices(parallelDevices).build();
             });
   }
 
-  /**
-   * Method for updating all connector in the given {@link RawGridElements}.
-   *
-   * @param rawGridElements given raw grid elements
-   * @param connectorIds uuids of all connectors that need to be updated
-   * @param types all known types
-   * @return an {@link UpdatedConnectors}
-   * @throws MissingTypeException if a required type is missing
-   */
-  protected static UpdatedConnectors updatedConnectors(
-      RawGridElements rawGridElements, Set<UUID> connectorIds, Types types)
-      throws MissingTypeException {
-    // updating lines
-    Set<LineInput> updatedLines = new HashSet<>();
-    for (LineInput line : rawGridElements.getLines()) {
-      if (connectorIds.contains(line.getUuid())) {
-        updatedLines.add(updateLineVoltage(line, rating.apply(line.getNodeA()), types.lineTypes));
-      } else {
-        updatedLines.add(line);
-      }
-    }
-
-    // updating two winding transformers
-    Set<Transformer2WInput> updatedTransformer2Ws = new HashSet<>();
-    for (Transformer2WInput transformer2W : rawGridElements.getTransformer2Ws()) {
-      if (connectorIds.contains(transformer2W.getUuid())) {
-        updatedTransformer2Ws.add(
-            updateTransformerVoltage(
-                transformer2W,
-                rating.apply(transformer2W.getNodeA()),
-                rating.apply(transformer2W.getNodeB()),
-                types.transformer2WTypes));
-      } else {
-        updatedTransformer2Ws.add(transformer2W);
-      }
-    }
-
-    // updating three winding transformers
-    Set<Transformer3WInput> updatedTransformer3Ws = new HashSet<>();
-    for (Transformer3WInput transformer3W : rawGridElements.getTransformer3Ws()) {
-      if (connectorIds.contains(transformer3W.getUuid())) {
-        updatedTransformer3Ws.add(
-            updateTransformerVoltage(
-                transformer3W,
-                rating.apply(transformer3W.getNodeA()),
-                rating.apply(transformer3W.getNodeB()),
-                rating.apply(transformer3W.getNodeC()),
-                types.transformer3WTypes));
-      } else {
-        updatedTransformer3Ws.add(transformer3W);
-      }
-    }
-
-    return new UpdatedConnectors(updatedLines, updatedTransformer2Ws, updatedTransformer3Ws);
-  }
-
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // methods for changing subnet voltage
+  // methods for calculating parallel devices count
 
   /**
-   * Method for changing the given {@link VoltageLevel} of a set of {@link NodeInput}s.
+   * Method for calculating the needed amount of {@link ConnectorInput#getParallelDevices()} in
+   * order to carry the required minimum current.
    *
-   * <p>NOTE: This method will only change the voltage level without any checks.
-   *
-   * @param nodes given nodes
-   * @param newLvl the new voltage level
-   * @return a map: old to new nodes
+   * @param type line type containing a maximum current that can be carried
+   * @param iMin minimal required current
+   * @return an amount of parallel devices
    */
-  public static Map<NodeInput, NodeInput> enhanceVoltage(
-      Set<NodeInput> nodes, VoltageLevel newLvl) {
-    return nodes.parallelStream()
-        .map(node -> Map.entry(node, node.copy().voltLvl(newLvl).build()))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  public static int calculateNeededParallelDevices(
+      LineTypeInput type, ComparableQuantity<ElectricCurrent> iMin) {
+    double quotient = iMin.divide(type.getiMax()).getValue().doubleValue();
+    return (int) Math.ceil(quotient);
   }
 
   /**
-   * Method for updating the voltage level for the given subnet. This method will also update the
-   * types for all connected {@link ConnectorInput}s.
+   * Method for calculating the needed amount of {@link ConnectorInput#getParallelDevices()} in
+   * order to carry the required minimum power.
    *
-   * @param container grid container
-   * @param subnet number of the subnet
-   * @param newLevel new voltage level of the subnet
-   * @param types all known types
-   * @return a {@link UpdatedEntities}
-   * @throws MissingTypeException if a required type is missing
+   * @param type transformer type with a power rating
+   * @param sMin minimal required power
+   * @return an amount of parallel devices
    */
-  protected static UpdatedEntities updateVoltage(
-      GridContainer container, int subnet, VoltageLevel newLevel, Types types)
-      throws MissingTypeException {
-
-    /* RawGridElements */
-    RawGridElementsNodeUpdateResult updateResult =
-        updateVoltage(container.getRawGrid(), subnet, newLevel, types);
-
-    RawGridElements updatedRawGridElements = updateResult.rawGridElements();
-    Map<NodeInput, NodeInput> updatedOldToNewNodes = updateResult.updatedOldToNewNodes();
-
-    /* SystemParticipants */
-    SystemParticipants updatedSystemParticipants =
-        updateSystemParticipantsWithNodes(container.getSystemParticipants(), updatedOldToNewNodes);
-
-    /* GraphicElements */
-    GraphicElements updateGraphicElements =
-        updateGraphicElementsWithNodes(
-            container.getGraphics(), updatedOldToNewNodes, updatedRawGridElements.getLines());
-
-    return new UpdatedEntities(
-        updatedRawGridElements, updatedSystemParticipants, updateGraphicElements);
+  public static int calculateNeededParallelDevices(
+      Transformer2WTypeInput type, ComparableQuantity<Power> sMin) {
+    double quotient = sMin.divide(type.getsRated()).getValue().doubleValue();
+    return (int) Math.ceil(quotient);
   }
 
   /**
-   * Method for updating the voltage level for the given subnet. This method will also update the
-   * types for all connected {@link ConnectorInput}s.
+   * Method for calculating the needed amount of {@link ConnectorInput#getParallelDevices()} in
+   * order to carry the required minimum power for all ports.
    *
-   * @param rawGridElements to be updated
-   * @param subnet number of subnet
-   * @param newLevel new voltage level of the subnet
-   * @param types all known types
-   * @return a {@link RawGridElementsNodeUpdateResult}
-   * @throws MissingTypeException if a required type is missing
+   * @param type transformer type with a power ratings for all ports
+   * @param sMinA minimal required power of port A
+   * @param sMinB minimal required power of port B
+   * @param sMinC minimal required power of port C
+   * @return an amount of parallel devices
    */
-  protected static RawGridElementsNodeUpdateResult updateVoltage(
-      RawGridElements rawGridElements, int subnet, VoltageLevel newLevel, Types types)
-      throws MissingTypeException {
-    Set<NodeInput> inSubnet =
-        rawGridElements.getNodes().stream()
-            .filter(node -> node.getSubnet() == subnet)
-            .collect(Collectors.toSet());
-    Map<NodeInput, NodeInput> oldToNew = enhanceVoltage(inSubnet, newLevel);
+  public static int calculateNeededParallelDevices(
+      Transformer3WTypeInput type,
+      ComparableQuantity<Power> sMinA,
+      ComparableQuantity<Power> sMinB,
+      ComparableQuantity<Power> sMinC) {
+    double quotientA = sMinA.divide(type.getsRatedA()).getValue().doubleValue();
+    double quotientB = sMinB.divide(type.getsRatedB()).getValue().doubleValue();
+    double quotientC = sMinC.divide(type.getsRatedC()).getValue().doubleValue();
 
-    // result after updating node voltages
-    RawGridElementsNodeUpdateResult rawGridUpdateResult =
-        updateRawGridElementsWithNodes(rawGridElements, oldToNew);
-
-    RawGridElements updatedRawGridElements = rawGridUpdateResult.rawGridElements();
-    Map<NodeInput, NodeInput> updatedOldToNewNodes = rawGridUpdateResult.updatedOldToNewNodes();
-
-    // getting the uuids of all connectors that needs to be updated
-    Set<UUID> connectorIds =
-        getConnectorIds(ContainerUtils.filterConnectors(rawGridElements, subnet));
-
-    UpdatedConnectors updatedConnectors =
-        updatedConnectors(updatedRawGridElements, connectorIds, types);
-
-    RawGridElements finalRawGridElements =
-        new RawGridElements(
-            rawGridElements.getNodes(),
-            updatedConnectors.lines,
-            updatedConnectors.transformer2Ws,
-            updatedConnectors.transformer3Ws,
-            rawGridElements.getSwitches(),
-            rawGridElements.getMeasurementUnits());
-
-    return new RawGridElementsNodeUpdateResult(finalRawGridElements, updatedOldToNewNodes);
+    double min = Math.max(Math.max(quotientA, quotientB), quotientC);
+    return (int) Math.ceil(min);
   }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // general utils
-
-  /**
-   * @param rawGridElements raw grid elements
-   * @return a set of all connector uuids
-   */
-  protected static Set<UUID> getConnectorIds(RawGridElements rawGridElements) {
-    return Stream.of(
-            rawGridElements.getLines(),
-            rawGridElements.getTransformer2Ws(),
-            rawGridElements.getTransformer3Ws())
-        .flatMap(Collection::stream)
-        .map(UniqueEntity::getUuid)
-        .collect(Collectors.toSet());
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // records
-
-  /** Record containing all {@link AssetTypeInput}s. */
-  public record Types(
-      Set<LineTypeInput> lineTypes,
-      Set<Transformer2WTypeInput> transformer2WTypes,
-      Set<Transformer3WTypeInput> transformer3WTypes) {}
-
-  /** Record containing all updated {@link ConnectorInput}s. */
-  protected record UpdatedConnectors(
-      Set<LineInput> lines,
-      Set<Transformer2WInput> transformer2Ws,
-      Set<Transformer3WInput> transformer3Ws) {}
 }

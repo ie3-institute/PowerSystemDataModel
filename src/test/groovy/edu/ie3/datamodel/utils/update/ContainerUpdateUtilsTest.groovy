@@ -3,29 +3,29 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.utils.grid
+package edu.ie3.datamodel.utils.update
 
 import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
 import edu.ie3.datamodel.models.input.container.SystemParticipants
+import edu.ie3.datamodel.utils.ContainerUtils
 import edu.ie3.test.common.ComplexTopology
 import spock.lang.Specification
 
-class SubGridContainerUtilsTest extends Specification {
+class ContainerUpdateUtilsTest extends Specification {
 
-
-  def "The container util returns copy of provided subgrids with slack nodes marked as expected"() {
+  def "The container util returns copy of provided sub grids with slack nodes marked as expected"() {
     given:
     String gridName = ComplexTopology.grid.gridName
-    Set<Integer> subNetNumbers = SubGridContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
+    Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
     RawGridElements rawGridInput= ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipantsInput = ComplexTopology.grid.systemParticipants
     GraphicElements graphicsInput = ComplexTopology.grid.graphics
 
     HashMap<Integer, SubGridContainer> unmodifiedSubGrids = ComplexTopology.expectedSubGrids
 
-    HashMap<Integer, SubGridContainer> subgrids = SubGridContainerUtils.buildSubGridContainers(
+    HashMap<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
         gridName,
         subNetNumbers,
         rawGridInput,
@@ -33,7 +33,7 @@ class SubGridContainerUtilsTest extends Specification {
         graphicsInput)
 
     when:
-    def computableSubgrids = subgrids.collectEntries {[(it.key): SubGridContainerUtils.withTrafoNodeAsSlack(it.value)]} as HashMap<Integer, SubGridContainer>
+    def computableSubgrids = subgrids.collectEntries {[(it.key): ContainerUpdateUtils.withTrafoNodeAsSlack(it.value)]} as HashMap<Integer, SubGridContainer>
 
     then:
     computableSubgrids.size() == 6
@@ -77,4 +77,17 @@ class SubGridContainerUtilsTest extends Specification {
       }
     }
   }
+
+
+
+
+
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  // methods for changing subnet voltage
+
+
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  // general utils
 }

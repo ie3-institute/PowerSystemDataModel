@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.utils.grid;
+package edu.ie3.datamodel.utils;
 
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOMETRE;
 import static java.lang.Math.pow;
@@ -24,7 +24,6 @@ import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
-import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.*;
 import java.util.function.Predicate;
@@ -130,6 +129,46 @@ public class ContainerUtils {
   // grid filter utils
 
   /**
+   * Filters all connectors and returns the connectors that are connected to the subnet.
+   *
+   * @param input The model to filter
+   * @param subnet The filter criterion
+   * @return A {@link RawGridElements} containing only the connected {@link ConnectorInput}s
+   */
+  public static RawGridElements filterConnectors(RawGridElements input, int subnet) {
+    Set<LineInput> lines =
+        input.getLines().stream()
+            .filter(line -> line.getNodeB().getSubnet() == subnet)
+            .collect(Collectors.toSet());
+
+    Predicate<TransformerInput> filter =
+        transformer ->
+            !transformer.allNodes().stream()
+                .filter(node -> node.getSubnet() == subnet)
+                .toList()
+                .isEmpty();
+
+    Set<Transformer2WInput> transformer2Ws =
+        input.getTransformer2Ws().stream().filter(filter).collect(Collectors.toSet());
+
+    Set<Transformer3WInput> transformer3Ws =
+        input.getTransformer3Ws().stream().filter(filter).collect(Collectors.toSet());
+
+    Set<SwitchInput> switches =
+        input.getSwitches().stream()
+            .filter(s -> s.getNodeB().getSubnet() == subnet)
+            .collect(Collectors.toSet());
+
+    return new RawGridElements(
+        Collections.emptySet(),
+        lines,
+        transformer2Ws,
+        transformer3Ws,
+        switches,
+        Collections.emptySet());
+  }
+
+  /**
    * Filters all raw grid elements for the provided subnet. For each transformer all nodes (and not
    * only the node of the grid the transformer is located in) are added as well. Two winding
    * transformers are counted, if the low voltage node is in the queried subnet. Three winding
@@ -186,46 +225,6 @@ public class ContainerUtils {
             .collect(Collectors.toSet());
 
     return new RawGridElements(nodes, lines, transformer2w, transformer3w, switches, measurements);
-  }
-
-  /**
-   * Filters all connectors and returns the connectors that are connected to the subnet.
-   *
-   * @param input The model to filter
-   * @param subnet The filter criterion
-   * @return A {@link RawGridElements} containing only the connected {@link ConnectorInput}s
-   */
-  public static RawGridElements filterConnectors(RawGridElements input, int subnet) {
-    Set<LineInput> lines =
-        input.getLines().stream()
-            .filter(line -> line.getNodeB().getSubnet() == subnet)
-            .collect(Collectors.toSet());
-
-    Predicate<TransformerInput> filter =
-        transformer ->
-            transformer.allNodes().stream()
-                .filter(node -> node.getSubnet() == subnet)
-                .toList()
-                .isEmpty();
-
-    Set<Transformer2WInput> transformer2Ws =
-        input.getTransformer2Ws().stream().filter(filter).collect(Collectors.toSet());
-
-    Set<Transformer3WInput> transformer3Ws =
-        input.getTransformer3Ws().stream().filter(filter).collect(Collectors.toSet());
-
-    Set<SwitchInput> switches =
-        input.getSwitches().stream()
-            .filter(s -> s.getNodeB().getSubnet() == subnet)
-            .collect(Collectors.toSet());
-
-    return new RawGridElements(
-        Collections.emptySet(),
-        lines,
-        transformer2Ws,
-        transformer3Ws,
-        switches,
-        Collections.emptySet());
   }
 
   /**
