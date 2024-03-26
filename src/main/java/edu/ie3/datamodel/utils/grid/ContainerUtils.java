@@ -27,6 +27,7 @@ import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.quantity.ElectricResistance;
@@ -188,70 +189,43 @@ public class ContainerUtils {
   }
 
   /**
-   * Filters all raw grid elements for the provided subnet. For each transformer all nodes (and not
-   * only the node of the grid the transformer is located in) are added as well. If specified this
-   * method includes all connected transformers with their nodes.
+   * Filters all connectors and returns the connectors that are connected to the subnet.
    *
    * @param input The model to filter
    * @param subnet The filter criterion
-   * @return A {@link RawGridElements} filtered for the subnet
+   * @return A {@link RawGridElements} containing only the connected {@link ConnectorInput}s
    */
-  public static RawGridElements filterForSubnet(
-      RawGridElements input, int subnet, boolean includeAllTransformers) {
-    if (!includeAllTransformers) {
-      return filterForSubnet(input, subnet);
-    } else {
-      Set<NodeInput> nodes =
-          input.getNodes().stream()
-              .filter(node -> node.getSubnet() == subnet)
-              .collect(Collectors.toSet());
+  public static RawGridElements filterConnectors(RawGridElements input, int subnet) {
+    Set<LineInput> lines =
+        input.getLines().stream()
+            .filter(line -> line.getNodeB().getSubnet() == subnet)
+            .collect(Collectors.toSet());
 
-      Set<LineInput> lines =
-          input.getLines().stream()
-              .filter(line -> line.getNodeB().getSubnet() == subnet)
-              .collect(Collectors.toSet());
+    Predicate<TransformerInput> filter =
+        transformer ->
+            transformer.allNodes().stream()
+                .filter(node -> node.getSubnet() == subnet)
+                .toList()
+                .isEmpty();
 
-      Set<Transformer2WInput> transformer2w =
-          input.getTransformer2Ws().stream()
-              .filter(
-                  transformer ->
-                      transformer.getNodeA().getSubnet() == subnet
-                          || transformer.getNodeB().getSubnet() == subnet)
-              .collect(Collectors.toSet());
-      /* Add the higher voltage node to the set of nodes */
-      nodes.addAll(
-          transformer2w.stream().map(Transformer2WInput::getNodeA).collect(Collectors.toSet()));
+    Set<Transformer2WInput> transformer2Ws =
+        input.getTransformer2Ws().stream().filter(filter).collect(Collectors.toSet());
 
-      Set<Transformer3WInput> transformer3w =
-          input.getTransformer3Ws().stream()
-              .filter(
-                  transformer ->
-                      transformer.getNodeA().getSubnet() == subnet
-                          || transformer.getNodeB().getSubnet() == subnet
-                          || transformer.getNodeC().getSubnet() == subnet)
-              .collect(Collectors.toSet());
-      /* Add all nodes of a three winding transformer node to the set of nodes */
-      nodes.addAll(
-          transformer3w.stream()
-              .flatMap(
-                  transformer ->
-                      Stream.of(
-                          transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()))
-              .collect(Collectors.toSet()));
+    Set<Transformer3WInput> transformer3Ws =
+        input.getTransformer3Ws().stream().filter(filter).collect(Collectors.toSet());
 
-      Set<SwitchInput> switches =
-          input.getSwitches().stream()
-              .filter(switcher -> switcher.getNodeB().getSubnet() == subnet)
-              .collect(Collectors.toSet());
+    Set<SwitchInput> switches =
+        input.getSwitches().stream()
+            .filter(s -> s.getNodeB().getSubnet() == subnet)
+            .collect(Collectors.toSet());
 
-      Set<MeasurementUnitInput> measurements =
-          input.getMeasurementUnits().stream()
-              .filter(measurement -> measurement.getNode().getSubnet() == subnet)
-              .collect(Collectors.toSet());
-
-      return new RawGridElements(
-          nodes, lines, transformer2w, transformer3w, switches, measurements);
-    }
+    return new RawGridElements(
+        Collections.emptySet(),
+        lines,
+        transformer2Ws,
+        transformer3Ws,
+        switches,
+        Collections.emptySet());
   }
 
   /**
