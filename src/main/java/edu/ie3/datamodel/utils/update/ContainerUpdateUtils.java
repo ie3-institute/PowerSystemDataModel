@@ -10,6 +10,7 @@ import static edu.ie3.datamodel.utils.update.AssetUpdateUtils.*;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.MissingTypeException;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
@@ -17,13 +18,13 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.*;
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
+import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.measure.quantity.ElectricPotential;
 import tech.units.indriya.ComparableQuantity;
 
@@ -41,31 +42,42 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
           connector.allNodes().stream().anyMatch(node -> node.getSubnet() == subnet);
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // methods for updating grid containers
+  // method for updating grid containers
 
   /**
-   * This method can be used to update a given {@link JointGridContainer} with elements from another
-   * {@link GridContainer}. For elements that are common in both grid containers, the element in the
-   * second container is used in the returned grid container.
+   * Method to update the given grid with a list of asset updates.
    *
-   * <p>OPTIONAL: If specified all elements that only occur in the second container are added
-   *
-   * @param toUpdate first container that should be updated
-   * @param updatedElements second container that may container updated elements
-   * @param addMissing if {@code true} elements that only occur in the second container are added to
-   *     the returned grid container
+   * @param grid that should be updated
+   * @param assets list of asset updates
    * @return a new {@link JointGridContainer}
+   * @throws InvalidGridException if the joint grid cannot be build
    */
-  public static JointGridContainer update(
-      JointGridContainer toUpdate, GridContainer updatedElements, boolean addMissing)
+  public static JointGridContainer updateAssets(GridContainer grid, List<AssetInput> assets)
       throws InvalidGridException {
-    UpdatedEntities updatedEntities = updateContainers(toUpdate, updatedElements, addMissing);
+    return updateGrid(
+            grid,
+            ContainerUtils.buildJointGrid(
+                grid.getGridName(), assets, Collections.emptyList(), Collections.emptyList()),
+            false)
+        .build(grid.getGridName());
+  }
 
-    return new JointGridContainer(
-        toUpdate.getGridName(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
+  /**
+   * Method to update the given grid with a list of participant updates.
+   *
+   * @param grid that should be updated
+   * @param participants list of participant updates
+   * @return a new {@link JointGridContainer}
+   * @throws InvalidGridException if the joint grid cannot be build
+   */
+  public static JointGridContainer updateParticipants(
+      GridContainer grid, List<SystemParticipantInput> participants) throws InvalidGridException {
+    return updateGrid(
+            grid,
+            ContainerUtils.buildJointGrid(
+                grid.getGridName(), Collections.emptyList(), participants, Collections.emptyList()),
+            false)
+        .build(grid.getGridName());
   }
 
   /**
@@ -73,233 +85,76 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
    * types of {@link ConnectorInput}s. If the new type requires a different amount of {@link
    * ConnectorInput#getParallelDevices()}, this number is also automatically adjusted.
    *
-   * @param container with at least one subnet
+   * @param grid with at least one subnet
    * @param subnet number of the subgrid
    * @param newLevel new voltage level of the subnet
    * @param types all known types
    * @return a grid container with the updated subgrid
    */
   public static JointGridContainer updateSubgridVoltage(
-      JointGridContainer container, int subnet, VoltageLevel newLevel, Types types)
+      JointGridContainer grid, int subnet, VoltageLevel newLevel, Types types)
       throws MissingTypeException, InvalidGridException {
-
     // entities with updated voltage levels
-    UpdatedEntities updatedEntities = updateVoltage(container, subnet, newLevel, types);
-
-    return new JointGridContainer(
-        container.getGridName(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
-  }
-
-  /**
-   * Method for updating the voltage level of one subnet. This method will automatically adjust the
-   * types of {@link ConnectorInput}s. If the new type requires a different amount of {@link
-   * ConnectorInput#getParallelDevices()}, this number is also automatically adjusted.
-   *
-   * @param container with at least one subnet
-   * @param subnet number of the subgrid
-   * @param newLevel new voltage level of the subnet
-   * @param types all known types
-   * @return a grid container with the updated subgrid
-   */
-  public static SubGridContainer updateSubgridVoltage(
-      SubGridContainer container, int subnet, VoltageLevel newLevel, Types types)
-      throws MissingTypeException, InvalidGridException {
-
-    // entities with updated voltage levels
-    UpdatedEntities updatedEntities = updateVoltage(container, subnet, newLevel, types);
-
-    return new SubGridContainer(
-        container.getGridName(),
-        container.getSubnet(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
-  }
-
-  /**
-   * Returns a copy {@link SubGridContainer} based on the provided subgrid with a certain set of
-   * nodes marked as slack nodes. In general, the grid is modified in a way that slack nodes are
-   * added at transformer nodes based on assumptions about the grid, as well as all other affect
-   * entities of the grid are accordingly.
-   *
-   * <p>This step is necessary for power flow calculations, as by default, when the container is
-   * derived from {@link JointGridContainer}, only the original slack nodes are incorporated in the
-   * different sub containers. Thereby, most of the standard power flow calculations cannot be
-   * carried out right away.
-   *
-   * <p>The following modifications are made:
-   *
-   * <ul>
-   *   <li>2 winding transformer handling
-   *       <ul>
-   *         <li>high voltage nodes are marked as slack nodes
-   *         <li>high voltage nodes in the {@link RawGridElements#getNodes()} set are replaced with
-   *             the new slack marked high voltage nodes
-   *         <li>high voltage nodes as part of {@link GraphicElements#getNodeGraphics()} are
-   *             replaced with the new slack marked high voltage nodes
-   *       </ul>
-   *   <li>3 winding transformer handling
-   *       <ul>
-   *         <li>if node a is located in this subgrid, no changes on 3 winding transformer nodes are
-   *             made
-   *         <li>if node b or c is located in this grid, the transformers internal node is marked as
-   *             slack node and if node a is marked as slack node, this node is unmarked as slack
-   *             node
-   *         <li>if node a got unmarked as slack, the {@link RawGridElements#getNodes()} gets
-   *             adapted accordingly
-   *         <li>in any case the internal node of the transformer is added to the {@link
-   *             RawGridElements#getNodes()} set
-   *       </ul>
-   * </ul>
-   *
-   * @param subGridContainer the subgrid container to be altered
-   * @return a copy of the given {@link SubGridContainer} with transformer nodes marked as slack
-   */
-  public static SubGridContainer withTrafoNodeAsSlack(final SubGridContainer subGridContainer)
-      throws InvalidGridException {
-
-    // transformer 3w
-    Map<NodeInput, NodeInput> oldToNewTrafo3WANodes = new HashMap<>();
-    Map<Transformer3WInput, NodeInput> newTrafos3wToInternalNode =
-        subGridContainer.getRawGrid().getTransformer3Ws().stream()
-            .map(
-                oldTrafo3w -> {
-                  AbstractMap.SimpleEntry<Transformer3WInput, NodeInput> resTrafo3wToInternal;
-                  if (oldTrafo3w.getNodeA().getSubnet() == subGridContainer.getSubnet()) {
-                    // node A is part of this subgrid -> no slack needed
-                    // internal node is needed for node admittance matrix and will be added
-
-                    // add the same transformer again to the new transformer set as nothing has
-                    // changed for this transformer
-                    resTrafo3wToInternal =
-                        new AbstractMap.SimpleEntry<>(oldTrafo3w, oldTrafo3w.getNodeInternal());
-
-                  } else {
-                    // node B or C is part of this subgrid -> internal node becomes the new slack
-
-                    // if node A is marked as slack, unmark it as slack
-                    NodeInput oldTrafo3wNodeA = oldTrafo3w.getNodeA();
-                    NodeInput newNodeA =
-                        oldTrafo3wNodeA.isSlack()
-                            ? oldTrafo3wNodeA.copy().slack(false).build()
-                            : oldTrafo3w.getNodeA();
-
-                    // we need to take care for this node in our node sets afterwards
-                    // (needs to be replaced by the new nodeA which might have been a slack before)
-                    oldToNewTrafo3WANodes.put(oldTrafo3w.getNodeA(), newNodeA);
-
-                    // create an update version of this transformer with internal node as slack and
-                    // add it to the newTrafos3wToInternalNode set
-                    Transformer3WInput newTrafo3w =
-                        oldTrafo3w.copy().nodeA(newNodeA).internalSlack(true).build();
-
-                    // add the slack
-                    resTrafo3wToInternal =
-                        new AbstractMap.SimpleEntry<>(newTrafo3w, newTrafo3w.getNodeInternal());
-                  }
-                  return resTrafo3wToInternal;
-                })
-            .collect(
-                Collectors.toMap(
-                    AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
-
-    // get old transformer2w high voltage nodes (nodeA)
-    Map<NodeInput, NodeInput> oldToNewTrafo2WANodes =
-        subGridContainer.getRawGrid().getTransformer2Ws().stream()
-            .map(
-                oldTrafo2w -> {
-                  NodeInput oldNodeA = oldTrafo2w.getNodeA();
-                  NodeInput newNodeA = oldNodeA.copy().slack(true).build();
-
-                  return new AbstractMap.SimpleEntry<>(oldNodeA, newNodeA);
-                })
-            .distinct()
-            .collect(
-                Collectors.toMap(
-                    AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
-
-    // build the updated 2w transformer with nodeA as slack and add it to our new set
-    Set<Transformer2WInput> newTrafos2w =
-        subGridContainer.getRawGrid().getTransformer2Ws().stream()
-            .map(
-                oldTrafo2w -> {
-                  NodeInput newNodeA = oldToNewTrafo2WANodes.get(oldTrafo2w.getNodeA());
-                  return oldTrafo2w.copy().nodeA(newNodeA).build();
-                })
-            .collect(Collectors.toSet());
-
-    // update node input graphics (2 winding transformers and 3 winding transformers)
-    /// map old to new
-    Map<NodeGraphicInput, NodeGraphicInput> oldToNewNodeGraphics =
-        subGridContainer.getGraphics().getNodeGraphics().stream()
-            .filter(nodeGraphic -> oldToNewTrafo2WANodes.containsKey(nodeGraphic.getNode()))
-            .filter(nodeGraphic -> oldToNewTrafo3WANodes.containsKey(nodeGraphic.getNode()))
-            .map(
-                oldNodeGraphic -> {
-                  NodeInput newNode =
-                      oldToNewTrafo2WANodes.containsKey(oldNodeGraphic.getNode())
-                          ? oldToNewTrafo2WANodes.get(oldNodeGraphic.getNode())
-                          : oldToNewTrafo3WANodes.get(oldNodeGraphic.getNode());
-
-                  return new AbstractMap.SimpleEntry<>(
-                      oldNodeGraphic, oldNodeGraphic.copy().node(newNode).build());
-                })
-            .collect(
-                Collectors.toMap(
-                    AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
-
-    /// remove old node graphics, add new ones
-    Set<NodeGraphicInput> newNodeGraphics =
-        Stream.concat(
-                // filter old ones
-                subGridContainer.getGraphics().getNodeGraphics().stream()
-                    .filter(nodeGraphic -> !oldToNewNodeGraphics.containsKey(nodeGraphic)),
-                // add the new trafo2w ones
-                oldToNewNodeGraphics.values().stream())
-            .collect(Collectors.toSet());
-
-    // update nodes in raw grid by removing the old transformer nodes and add all new ones
-    Set<NodeInput> newNodes =
-        Stream.concat(
-                // filter the old ones (trafo2w, trafo3wToBeRemoved)
-                subGridContainer.getRawGrid().getNodes().stream()
-                    .filter(node -> !oldToNewTrafo2WANodes.containsKey(node))
-                    .filter(node -> !oldToNewTrafo3WANodes.containsKey(node)),
-                // add the new ones (trafo2w, trafo3w internal and updated trafo3w nodeA (previous
-                // slacks))
-                Stream.concat(
-                    oldToNewTrafo2WANodes.values().stream(),
-                    Stream.concat(
-                        newTrafos3wToInternalNode.values().stream(),
-                        oldToNewTrafo3WANodes.values().stream())))
-            .collect(Collectors.toSet());
-
-    return new SubGridContainer(
-        subGridContainer.getGridName(),
-        subGridContainer.getSubnet(),
-        new RawGridElements(
-            newNodes,
-            subGridContainer.getRawGrid().getLines(),
-            newTrafos2w,
-            // HashSet$KeySet is not serializable, thus create new set
-            new HashSet<>(newTrafos3wToInternalNode.keySet()),
-            subGridContainer.getRawGrid().getSwitches(),
-            subGridContainer.getRawGrid().getMeasurementUnits()),
-        subGridContainer.getSystemParticipants(),
-        new GraphicElements(newNodeGraphics, subGridContainer.getGraphics().getLineGraphics()));
+    return updateVoltage(grid, subnet, newLevel, types).build(grid.getGridName());
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // methods for changing subnet voltage
+  // common update methods
+
+  /**
+   * This method can be used to update a given {@link GridContainer} with elements from another
+   * {@link GridContainer}. For elements that are common in both grid containers, the element in the
+   * second container is used in the returned grid container.
+   *
+   * <p>This method uses the {@link GridContainer#getGridName()} of the first container as its
+   * returned grid name
+   *
+   * <p>OPTIONAL: If specified all elements that only occur in the second container are added
+   *
+   * @param grid container to update
+   * @param updatedElements container with updated elements
+   * @param addMissing if false the first container is just updated
+   * @return a {@link UpdatedEntities}
+   */
+  protected static UpdatedEntities updateGrid(
+      GridContainer grid, GridContainer updatedElements, boolean addMissing) {
+    RawGridElements rawGridElementsToUpdate = grid.getRawGrid();
+    RawGridElements rawGridElementsMaybeUpdate = updatedElements.getRawGrid();
+
+    // updating all elements
+    RawGridElements updatedRawGridElements =
+        new RawGridElements(
+            combineElements(
+                rawGridElementsToUpdate.allEntitiesAsList(),
+                rawGridElementsMaybeUpdate.allEntitiesAsList(),
+                addMissing));
+
+    SystemParticipants updatedParticipants =
+        new SystemParticipants(
+            combineElements(
+                grid.getSystemParticipants().allEntitiesAsList(),
+                updatedElements.getSystemParticipants().allEntitiesAsList(),
+                addMissing));
+
+    GraphicElements updatedGraphicElements =
+        new GraphicElements(
+            combineElements(
+                grid.getGraphics().allEntitiesAsList(),
+                updatedElements.getGraphics().allEntitiesAsList(),
+                addMissing));
+
+    // updating the nodes
+    Map<NodeInput, NodeInput> updatedNodes =
+        getUpdateMap(rawGridElementsToUpdate.getNodes(), rawGridElementsMaybeUpdate.getNodes());
+    return updateEntities(
+        updatedRawGridElements, updatedParticipants, updatedGraphicElements, updatedNodes);
+  }
 
   /**
    * Method for updating the voltage level for the given subnet. This method will also update the
    * types for all connected {@link ConnectorInput}s.
    *
-   * @param container grid container
+   * @param grid grid container
    * @param subnet number of the subnet
    * @param newLevel new voltage level of the subnet
    * @param types all known types
@@ -307,51 +162,17 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
    * @throws MissingTypeException if a required type is missing
    */
   protected static UpdatedEntities updateVoltage(
-      GridContainer container, int subnet, VoltageLevel newLevel, Types types)
-      throws MissingTypeException {
-    /* RawGridElements */
-    RawGridElementsNodeUpdateResult updateResult =
-        updateVoltage(container.getRawGrid(), subnet, newLevel, types);
-
-    RawGridElements updatedRawGridElements = updateResult.rawGridElements();
-    Map<NodeInput, NodeInput> updatedOldToNewNodes = updateResult.updatedOldToNewNodes();
-
-    /* SystemParticipants */
-    SystemParticipants updatedSystemParticipants =
-        updateSystemParticipantsWithNodes(container.getSystemParticipants(), updatedOldToNewNodes);
-
-    /* GraphicElements */
-    GraphicElements updateGraphicElements =
-        updateGraphicElementsWithNodes(
-            container.getGraphics(), updatedOldToNewNodes, updatedRawGridElements.getLines());
-
-    return new UpdatedEntities(
-        updatedRawGridElements, updatedSystemParticipants, updateGraphicElements);
-  }
-
-  /**
-   * Method for updating the voltage level for the given subnet. This method will also update the
-   * types for all connected {@link ConnectorInput}s.
-   *
-   * @param rawGridElements to be updated
-   * @param subnet number of subnet
-   * @param newLevel new voltage level of the subnet
-   * @param types all known types
-   * @return a {@link RawGridElementsNodeUpdateResult}
-   * @throws MissingTypeException if a required type is missing
-   */
-  protected static RawGridElementsNodeUpdateResult updateVoltage(
-      RawGridElements rawGridElements, int subnet, VoltageLevel newLevel, Types types)
+      GridContainer grid, int subnet, VoltageLevel newLevel, Types types)
       throws MissingTypeException {
     Set<NodeInput> inSubnet =
-        rawGridElements.getNodes().stream()
+        grid.getRawGrid().getNodes().stream()
             .filter(node -> node.getSubnet() == subnet)
             .collect(Collectors.toSet());
     Map<NodeInput, NodeInput> oldToNew = updateNodes(inSubnet, newLevel);
 
     // result after updating node voltages
     RawGridElementsNodeUpdateResult rawGridUpdateResult =
-        updateRawGridElementsWithNodes(rawGridElements, oldToNew);
+        updateRawGridElementsWithNodes(grid.getRawGrid(), oldToNew);
 
     RawGridElements updatedRawGridElements = rawGridUpdateResult.rawGridElements();
     Map<NodeInput, NodeInput> updatedOldToNewNodes = rawGridUpdateResult.updatedOldToNewNodes();
@@ -368,8 +189,21 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
             updatedRawGridElements.getSwitches(),
             updatedRawGridElements.getMeasurementUnits());
 
-    return new RawGridElementsNodeUpdateResult(finalRawGridElements, updatedOldToNewNodes);
+    /* SystemParticipants */
+    SystemParticipants updatedSystemParticipants =
+        updateSystemParticipantsWithNodes(grid.getSystemParticipants(), updatedOldToNewNodes);
+
+    /* GraphicElements */
+    GraphicElements updateGraphicElements =
+        updateGraphicElementsWithNodes(
+            grid.getGraphics(), updatedOldToNewNodes, finalRawGridElements.getLines());
+
+    return new UpdatedEntities(
+        finalRawGridElements, updatedSystemParticipants, updateGraphicElements);
   }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  // general utils
 
   /**
    * Updates the types of all line inside the given subnet. All other lines are just returned.
@@ -453,51 +287,6 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
     }
 
     return updatedTransformers;
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // general utils
-
-  /**
-   * Method to update a {@link GridContainer} with another.
-   *
-   * @param toUpdate container to update
-   * @param updatedElements container with updated elements
-   * @param addMissing if false the first container is just updated
-   * @return a {@link UpdatedEntities}
-   */
-  protected static UpdatedEntities updateContainers(
-      GridContainer toUpdate, GridContainer updatedElements, boolean addMissing) {
-    RawGridElements rawGridElementsToUpdate = toUpdate.getRawGrid();
-    RawGridElements rawGridElementsMaybeUpdate = updatedElements.getRawGrid();
-
-    // updating all elements
-    RawGridElements updatedRawGridElements =
-        new RawGridElements(
-            combineElements(
-                rawGridElementsToUpdate.allEntitiesAsList(),
-                rawGridElementsMaybeUpdate.allEntitiesAsList(),
-                addMissing));
-
-    SystemParticipants updatedParticipants =
-        new SystemParticipants(
-            combineElements(
-                toUpdate.getSystemParticipants().allEntitiesAsList(),
-                updatedElements.getSystemParticipants().allEntitiesAsList(),
-                addMissing));
-
-    GraphicElements updatedGraphicElements =
-        new GraphicElements(
-            combineElements(
-                toUpdate.getGraphics().allEntitiesAsList(),
-                updatedElements.getGraphics().allEntitiesAsList(),
-                addMissing));
-
-    // updating the nodes
-    Map<NodeInput, NodeInput> updatedNodes =
-        getUpdateMap(rawGridElementsToUpdate.getNodes(), rawGridElementsMaybeUpdate.getNodes());
-    return updateEntities(
-        updatedRawGridElements, updatedParticipants, updatedGraphicElements, updatedNodes);
   }
 
   /**

@@ -57,75 +57,40 @@ class ContainerUpdateUtilsTest extends Specification {
     changedContainer = SampleJointGrid.grid().copy().rawGrid(changedRawGrid).build()
   }
 
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // methods for updating grid containers
+  // common update methods
 
-
-  def "The ContainerUtils returns copy of provided sub grids with slack nodes marked as expected"() {
+  def "The ContainerUtils can update a grid container with another correctly"() {
     given:
-    String gridName = ComplexTopology.grid.gridName
-    Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
-    RawGridElements rawGridInput= ComplexTopology.grid.rawGrid
-    SystemParticipants systemParticipantsInput = ComplexTopology.grid.systemParticipants
-    GraphicElements graphicsInput = ComplexTopology.grid.graphics
+    def jointGrid = SampleJointGrid.grid()
 
-    HashMap<Integer, SubGridContainer> unmodifiedSubGrids = ComplexTopology.expectedSubGrids
+    def expectedLineChanges = new HashSet(changedLines)
+    expectedLineChanges.add( jointGrid.rawGrid.lines.find { it.getId() == "lineEtoF" }.copy().nodeA(changedNodeE).build())
 
-    HashMap<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
-        gridName,
-        subNetNumbers,
-        rawGridInput,
-        systemParticipantsInput,
-        graphicsInput)
+    def expectedNodes = ContainerUpdateUtils.combineElements(jointGrid.rawGrid.nodes, [changedNodeE] as Set, addMissing).toSet()
+    def expectedLines = ContainerUpdateUtils.combineElements(jointGrid.rawGrid.lines, expectedLineChanges, addMissing).toSet()
+
 
     when:
-    def computableSubgrids = subgrids.collectEntries {[(it.key): ContainerUpdateUtils.withTrafoNodeAsSlack(it.value)]} as HashMap<Integer, SubGridContainer>
+    def actual = ContainerUpdateUtils.updateGrid(jointGrid, changedContainer, addMissing)
+
 
     then:
-    computableSubgrids.size() == 6
-    computableSubgrids.each {
-      SubGridContainer computableSubGrid = it.value
-      SubGridContainer unmodifiedSubGrid = unmodifiedSubGrids.get(it.key)
+    actual.rawGridElements().allEntitiesAsList().size() == expectedSize
 
-      computableSubGrid.with {
-        assert subnet == unmodifiedSubGrid.subnet
-        assert predominantVoltageLevel == unmodifiedSubGrid.predominantVoltageLevel
+    actual.rawGridElements().nodes == expectedNodes
+    actual.rawGridElements().lines == expectedLines
 
-        // 2 winding transformer hv nodes must be marked as slacks
-        rawGrid.transformer2Ws.each {
-          def trafo2w = it
-          trafo2w.with {
-            assert nodeA.slack
-          }
-        }
+    actual.systemParticipants() == jointGrid.systemParticipants
+    actual.graphicElements() == jointGrid.graphics
 
-        // all adapted trafo2w nodes must be part of the nodes set
-        assert rawGrid.nodes.containsAll(rawGrid.transformer2Ws.collect{it.nodeA})
 
-        // 3 winding transformer slack nodes must be mapped correctly
-        rawGrid.transformer3Ws.each {
-          def trafo3w = it
-          if(trafo3w.nodeA.subnet == subnet) {
-            // subnet 1 is highest grid in test set + trafo 3w -> nodeA must be slack
-            assert subnet == 1 ? trafo3w.nodeA.slack : !trafo3w.nodeA.slack
-            assert !trafo3w.nodeInternal.slack
-            assert rawGrid.nodes.contains(trafo3w.nodeInternal)
-          } else {
-            assert trafo3w.nodeInternal.slack
-            assert !trafo3w.nodeA.slack
-            assert !trafo3w.nodeB.slack
-            assert !trafo3w.nodeC.slack
-            assert rawGrid.nodes.contains(trafo3w.nodeInternal)
-          }
-        }
-
-        assert systemParticipants == unmodifiedSubGrid.systemParticipants
-      }
-    }
+    where:
+    addMissing || expectedSize
+    false      || 15
+    true       || 16
   }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // methods for changing subnet voltage
 
   def "The ContainerUtils can update a subgrid voltage correctly"() {
     given:
@@ -184,73 +149,9 @@ class ContainerUpdateUtilsTest extends Specification {
     updatedGrid.graphicElements() == jointGrid.graphics
   }
 
-  def "The ContainerUtils can update a raw grid voltage correctly"() {
-    given:
-    def rawGrid = SampleJointGrid.grid().rawGrid
-    def types = new ContainerUpdateUtils.Types(
-        TypeTestData.lineTypes(),
-        TypeTestData.transformer2WTypes(),
-        TypeTestData.transformer3WTypes()
-        )
 
-    def changedNodeD = SampleJointGrid.nodeD.copy().voltLvl(MV_20KV).build()
-    def changedNodeE = SampleJointGrid.nodeE.copy().voltLvl(MV_20KV).build()
-    def changedNodeF = SampleJointGrid.nodeF.copy().voltLvl(MV_20KV).build()
-
-    def expectedNodes = [
-      SampleJointGrid.nodeA,
-      SampleJointGrid.nodeB,
-      SampleJointGrid.nodeC,
-      changedNodeD,
-      changedNodeE,
-      changedNodeF,
-      SampleJointGrid.nodeG,
-    ] as Set
-
-    def expectedLines = [
-      SampleJointGrid.lineAB,
-      SampleJointGrid.lineAC,
-      SampleJointGrid.lineBC,
-      SampleJointGrid.lineDE.copy().nodeA(changedNodeD).nodeB(changedNodeE).type(TypeTestData.lineType20kV_400).build(),
-      SampleJointGrid.lineDF.copy().nodeA(changedNodeD).nodeB(changedNodeF).type(TypeTestData.lineType20kV_400).build(),
-      SampleJointGrid.lineEF.copy().nodeA(changedNodeE).nodeB(changedNodeF).type(TypeTestData.lineType20kV_400).build()
-    ] as Set
-
-
-    def expectedTransformer2Ws =  [
-      SampleJointGrid.transformerDtoA.copy().nodeA(changedNodeD).type(TypeTestData.transformerType20kV_LV_10).build(),
-      SampleJointGrid.transformerGtoD.copy().nodeB(changedNodeD).type(TypeTestData.transformerTypeHV_20kV_40).build()
-    ] as Set
-
-    when:
-    def updated = ContainerUpdateUtils.updateVoltage(rawGrid, 2, MV_20KV, types)
-
-    then:
-    Map<NodeInput, NodeInput> updatedOldToNew = updated.updatedOldToNewNodes()
-    updatedOldToNew.keySet() == [
-      SampleJointGrid.nodeA,
-      SampleJointGrid.nodeD,
-      SampleJointGrid.nodeE,
-      SampleJointGrid.nodeF,
-      SampleJointGrid.nodeG
-    ] as Set
-
-    updatedOldToNew.values().toSet() == [
-      SampleJointGrid.nodeA,
-      changedNodeD,
-      changedNodeE,
-      changedNodeF,
-      SampleJointGrid.nodeG
-    ] as Set
-
-    RawGridElements rawGridElements = updated.rawGridElements()
-    rawGridElements.nodes == expectedNodes
-    rawGridElements.lines == expectedLines
-    rawGridElements.transformer2Ws == expectedTransformer2Ws
-    rawGridElements.transformer3Ws == rawGrid.transformer3Ws
-    rawGridElements.switches == rawGrid.switches
-    rawGridElements.measurementUnits == rawGrid.measurementUnits
-  }
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  // general utils
 
   def "The ContainerUtils can update a line voltages correctly"() {
     given:
@@ -301,41 +202,6 @@ class ContainerUpdateUtilsTest extends Specification {
 
     then:
     actual[0].type == TypeTestData.transformerTypeEHV_20kV_10kV
-  }
-
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // general utils
-
-  def "The ContainerUtils can update a grid container with another correctly"() {
-    given:
-    def jointGrid = SampleJointGrid.grid()
-
-    def expectedLineChanges = new HashSet(changedLines)
-    expectedLineChanges.add( jointGrid.rawGrid.lines.find { it.getId() == "lineEtoF" }.copy().nodeA(changedNodeE).build())
-
-    def expectedNodes = ContainerUpdateUtils.combineElements(jointGrid.rawGrid.nodes, [changedNodeE] as Set, addMissing).toSet()
-    def expectedLines = ContainerUpdateUtils.combineElements(jointGrid.rawGrid.lines, expectedLineChanges, addMissing).toSet()
-
-
-    when:
-    def actual = ContainerUpdateUtils.updateContainers(jointGrid, changedContainer, addMissing)
-
-
-    then:
-    actual.rawGridElements().allEntitiesAsList().size() == expectedSize
-
-    actual.rawGridElements().nodes == expectedNodes
-    actual.rawGridElements().lines == expectedLines
-
-    actual.systemParticipants() == jointGrid.systemParticipants
-    actual.graphicElements() == jointGrid.graphics
-
-
-    where:
-    addMissing || expectedSize
-    false      || 15
-    true       || 16
   }
 
   def "The ContainerUtils can combine two collections of elements correctly"() {

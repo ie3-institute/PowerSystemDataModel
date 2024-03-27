@@ -13,10 +13,12 @@ import static tech.units.indriya.unit.Units.OHM;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.TopologyException;
 import edu.ie3.datamodel.graph.*;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
@@ -812,6 +814,31 @@ public class ContainerUtils {
 
     return new JointGridContainer(
         gridName, rawGrid, systemParticipants, graphicElements, subGridTopologyGraph);
+  }
+
+  /**
+   * Uses the given lists to build {@link RawGridElements}, {@link SystemParticipants} and {@link
+   * GraphicElements}. After that these input containers are combined to a {@link
+   * JointGridContainer}.
+   *
+   * @param gridName of the build grid
+   * @param assets for the build grid
+   * @param participants for the build grid
+   * @param graphics for the build grid
+   * @return a new {@link JointGridContainer}
+   * @throws InvalidGridException if the joint grid cannot be build
+   */
+  public static JointGridContainer buildJointGrid(
+      String gridName,
+      List<AssetInput> assets,
+      List<SystemParticipantInput> participants,
+      List<GraphicInput> graphics)
+      throws InvalidGridException {
+    return new JointGridContainer(
+        gridName,
+        new RawGridElements(assets),
+        new SystemParticipants(participants),
+        new GraphicElements(graphics));
   }
 
   /**

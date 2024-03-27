@@ -22,6 +22,7 @@ import edu.ie3.datamodel.models.input.container.*
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
 import edu.ie3.test.common.ComplexTopology
 import edu.ie3.test.common.GridTestData
+import edu.ie3.test.common.SampleJointGrid
 import edu.ie3.test.helper.DoubleTestHelper
 import spock.lang.Shared
 import spock.lang.Specification
@@ -433,6 +434,21 @@ class ContainerUtilsTest extends Specification {
 
     then:
     actual == expected
+  }
+
+  def "The container utils can be a joint model from inputs correctly"() {
+    given:
+    def jointGrid = SampleJointGrid.grid()
+
+    def assets = jointGrid.rawGrid.allEntitiesAsList()
+    def participants = jointGrid.systemParticipants.allEntitiesAsList()
+    def graphics = jointGrid.graphics.allEntitiesAsList()
+
+    when:
+    def actual = ContainerUtils.buildJointGrid(jointGrid.gridName, assets, participants, graphics)
+
+    then:
+    actual == jointGrid
   }
 
   def "The container utils build a valid distance weighted graph model correctly"(){

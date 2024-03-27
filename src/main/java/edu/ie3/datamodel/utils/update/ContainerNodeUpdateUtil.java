@@ -74,15 +74,9 @@ public class ContainerNodeUpdateUtil {
   public static JointGridContainer updateGridWithNodes(
       JointGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes)
       throws InvalidGridException {
-    UpdatedEntities updatedEntities =
-        updateEntities(
-            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
-
-    return new JointGridContainer(
-        grid.getGridName(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
+    return updateEntities(
+            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes)
+        .build(grid.getGridName());
   }
 
   /**
@@ -107,17 +101,9 @@ public class ContainerNodeUpdateUtil {
    */
   public static SubGridContainer updateGridWithNodes(
       SubGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {
-
-    UpdatedEntities updatedEntities =
-        updateEntities(
-            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
-
-    return new SubGridContainer(
-        grid.getGridName(),
-        grid.getSubnet(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
+    return updateEntities(
+            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes)
+        .build(grid.getGridName(), grid.getSubnet());
   }
 
   /**
@@ -629,5 +615,29 @@ public class ContainerNodeUpdateUtil {
   protected record UpdatedEntities(
       RawGridElements rawGridElements,
       SystemParticipants systemParticipants,
-      GraphicElements graphicElements) {}
+      GraphicElements graphicElements) {
+    /**
+     * Build a joint grid.
+     *
+     * @param gridName name of the grid
+     * @return a new {@link JointGridContainer}
+     * @throws InvalidGridException if the joint grid cannot be build
+     */
+    public JointGridContainer build(String gridName) throws InvalidGridException {
+      return new JointGridContainer(gridName, rawGridElements, systemParticipants, graphicElements);
+    }
+
+    /**
+     * Build a sub grid.
+     *
+     * @param gridName name of the grid
+     * @param subnet number of the subgrid
+     * @return a new {@link SubGridContainer}
+     * @throws InvalidGridException if the sub grid cannot be build
+     */
+    public SubGridContainer build(String gridName, int subnet) throws InvalidGridException {
+      return new SubGridContainer(
+          gridName, subnet, rawGridElements, systemParticipants, graphicElements);
+    }
+  }
 }
