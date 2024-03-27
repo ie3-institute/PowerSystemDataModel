@@ -13,6 +13,9 @@ import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.connector.LineCongestionResult;
+import edu.ie3.datamodel.models.result.connector.Transformer2WCongestionResult;
+import edu.ie3.datamodel.models.result.connector.Transformer3WCongestionResult;
 import edu.ie3.datamodel.models.result.connector.LineResult;
 import edu.ie3.datamodel.models.result.connector.SwitchResult;
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
@@ -42,6 +45,7 @@ public class ResultEntitySource extends EntitySource {
   private final NodeResultFactory nodeResultFactory;
   private final ConnectorResultFactory connectorResultFactory;
   private final FlexOptionsResultFactory flexOptionsResultFactory;
+  private final ConnectorCongestionResultFactory connectorCongestionResultFactory;
 
   public ResultEntitySource(DataSource dataSource) {
     super(dataSource);
@@ -53,6 +57,7 @@ public class ResultEntitySource extends EntitySource {
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
+    this.connectorCongestionResultFactory = new ConnectorCongestionResultFactory();
   }
 
   public ResultEntitySource(DataSource dataSource, DateTimeFormatter dateTimeFormatter) {
@@ -65,6 +70,7 @@ public class ResultEntitySource extends EntitySource {
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
+    this.connectorCongestionResultFactory = new ConnectorCongestionResultFactory(dateTimeFormatter);
   }
 
   @Override
@@ -95,7 +101,10 @@ public class ResultEntitySource extends EntitySource {
             validate(LineResult.class, connectorResultFactory),
             validate(Transformer2WResult.class, connectorResultFactory),
             validate(Transformer3WResult.class, connectorResultFactory),
-            validate(FlexOptionsResult.class, flexOptionsResultFactory)));
+            validate(FlexOptionsResult.class, flexOptionsResultFactory),
+            validate(LineCongestionResult.class, connectorCongestionResultFactory),
+            validate(Transformer2WCongestionResult.class, connectorCongestionResultFactory),
+            validate(Transformer3WCongestionResult.class, connectorCongestionResultFactory)));
 
     Try.scanCollection(participantResults, Void.class)
         .transformF(FailedValidationException::new)
@@ -355,6 +364,48 @@ public class ResultEntitySource extends EntitySource {
    */
   public Set<EmResult> getEmResults() throws SourceException {
     return getResultEntities(EmResult.class, systemParticipantResultFactory);
+  }
+
+  /**
+   * Returns a unique set of {@link LineCongestionResult} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link LineCongestionResult} which has to be checked
+   * manually, as {@link LineCongestionResult#equals(Object)} is NOT restricted by the uuid of
+   * {@link LineCongestionResult}.
+   *
+   * @return a set of object and uuid unique {@link LineCongestionResult} entities
+   */
+  public Set<LineCongestionResult> getLineCongestions() throws SourceException {
+    return getResultEntities(LineCongestionResult.class, connectorCongestionResultFactory);
+  }
+
+  /**
+   * Returns a unique set of {@link Transformer2WCongestionResult} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link Transformer2WCongestionResult} which has to
+   * be checked manually, as {@link Transformer2WCongestionResult#equals(Object)} is NOT restricted
+   * by the uuid of {@link Transformer2WCongestionResult}.
+   *
+   * @return a set of object and uuid unique {@link Transformer2WCongestionResult} entities
+   */
+  public Set<Transformer2WCongestionResult> getTransformer2WCongestions() throws SourceException {
+    return getResultEntities(Transformer2WCongestionResult.class, connectorCongestionResultFactory);
+  }
+
+  /**
+   * Returns a unique set of {@link Transformer3WCongestionResult} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link Transformer3WCongestionResult} which has to
+   * be checked manually, as {@link Transformer3WCongestionResult#equals(Object)} is NOT restricted
+   * by the uuid of {@link Transformer3WCongestionResult}.
+   *
+   * @return a set of object and uuid unique {@link Transformer3WCongestionResult} entities
+   */
+  public Set<Transformer3WCongestionResult> getTransformer3WCongestions() throws SourceException {
+    return getResultEntities(Transformer3WCongestionResult.class, connectorCongestionResultFactory);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

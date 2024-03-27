@@ -737,36 +737,36 @@ public class ContainerUtils {
     /* Get the switch, that is connected to the starting node and determine the next node */
     List<SwitchInput> nextSwitches =
         switches.stream().filter(switcher -> switcher.allNodes().contains(startNode)).toList();
-      switch (nextSwitches.size()) {
-          case 0 -> {
-            /* No further switch found -> Return the starting node */
-          }
-          case 1 -> {
-              /* One next switch has been found -> Travel in this direction */
-              SwitchInput nextSwitch = nextSwitches.get(0);
-              Optional<NodeInput> candidateNodes =
-                      nextSwitch.allNodes().stream().filter(node -> node != startNode).findFirst();
-              NodeInput nextNode =
-                      candidateNodes.orElseThrow(
-                              () ->
-                                      new IllegalArgumentException(
-                                              "There is no further node available at switch " + nextSwitch));
-              if (possibleJunctions.contains(nextNode)) {
-                  /* This is a junction, leading to another Connector than a switch */
-                  traveledNodes.addLast(nextNode);
-              } else {
-                  /* Add the traveled nodes to the nodes to be excluded, to avoid endless loops in cyclic switch topologies */
-                  HashSet<NodeInput> newNodesToExclude = new HashSet<>(possibleJunctions);
-                  newNodesToExclude.add(nextNode);
-                  HashSet<SwitchInput> newSwitches = new HashSet<>(switches);
-                  newSwitches.remove(nextSwitch);
-                  traveledNodes.addAll(traverseAlongSwitchChain(nextNode, newSwitches, newNodesToExclude));
-              }
-          }
-          default -> throw new IllegalArgumentException(
-                  "Cannot traverse along switch chain, as there is a junction included at node "
-                          + startNode);
+    switch (nextSwitches.size()) {
+      case 0 -> {
+        /* No further switch found -> Return the starting node */
       }
+      case 1 -> {
+        /* One next switch has been found -> Travel in this direction */
+        SwitchInput nextSwitch = nextSwitches.get(0);
+        Optional<NodeInput> candidateNodes =
+            nextSwitch.allNodes().stream().filter(node -> node != startNode).findFirst();
+        NodeInput nextNode =
+            candidateNodes.orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "There is no further node available at switch " + nextSwitch));
+        if (possibleJunctions.contains(nextNode)) {
+          /* This is a junction, leading to another Connector than a switch */
+          traveledNodes.addLast(nextNode);
+        } else {
+          /* Add the traveled nodes to the nodes to be excluded, to avoid endless loops in cyclic switch topologies */
+          HashSet<NodeInput> newNodesToExclude = new HashSet<>(possibleJunctions);
+          newNodesToExclude.add(nextNode);
+          HashSet<SwitchInput> newSwitches = new HashSet<>(switches);
+          newSwitches.remove(nextSwitch);
+          traveledNodes.addAll(traverseAlongSwitchChain(nextNode, newSwitches, newNodesToExclude));
+        }
+      }
+      default -> throw new IllegalArgumentException(
+          "Cannot traverse along switch chain, as there is a junction included at node "
+              + startNode);
+    }
     return traveledNodes;
   }
 

@@ -11,6 +11,9 @@ import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.connector.LineCongestionResult;
+import edu.ie3.datamodel.models.result.connector.Transformer2WCongestionResult;
+import edu.ie3.datamodel.models.result.connector.Transformer3WCongestionResult;
 import edu.ie3.datamodel.models.result.connector.LineResult;
 import edu.ie3.datamodel.models.result.connector.SwitchResult;
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
@@ -58,7 +61,10 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
           ThermalHouseResult.class,
           CylindricalStorageResult.class,
           EmResult.class,
-          FlexOptionsResult.class);
+          FlexOptionsResult.class,
+          LineCongestionResult.class,
+          Transformer2WCongestionResult.class,
+          Transformer3WCongestionResult.class);
 
   public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass)
       throws EntityProcessorException {
