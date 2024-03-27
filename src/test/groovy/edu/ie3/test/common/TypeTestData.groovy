@@ -115,7 +115,8 @@ class TypeTestData {
       transformerTypeHV_30kV_40,
       transformerTypeHV_20kV_40,
       transformerTypeHV_10kV_20,
-      transformerTypeHV_10kV_10
+      transformerTypeHV_10kV_10,
+      transformerType20kV_LV_10
     ] as Set
   }
 
@@ -141,6 +142,8 @@ class TypeTestData {
   public static final Transformer2WTypeInput transformerTypeHV_20kV_40 = buildTrafo(110d, 20d, 40000d)
   public static final Transformer2WTypeInput transformerTypeHV_10kV_20 = buildTrafo(110d, 10d, 20000d)
   public static final Transformer2WTypeInput transformerTypeHV_10kV_10 = buildTrafo(110d, 10d, 10000d)
+  public static final Transformer2WTypeInput transformerType20kV_LV_10 = buildTrafo(20d, 0.4d, 7000d)
+
 
   public static final Transformer3WTypeInput transformerTypeEHV_HV_20kV = buildTrafo(380d, 110d, 20d, 120000d, 60000d, 40000d)
   public static final Transformer3WTypeInput transformerTypeEHV_20kV_10kV = buildTrafo(380d, 20d, 10d, 60000d, 40000d, 20000d)

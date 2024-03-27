@@ -7,7 +7,7 @@ package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.graph.SubGridTopologyGraph;
-import edu.ie3.datamodel.utils.JointGridContainerUtils;
+import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class JointGridContainer extends GridContainer {
 
     /* Build sub grid dependency */
     this.subGridTopologyGraph =
-        JointGridContainerUtils.buildSubGridTopologyGraph(
+        ContainerUtils.buildSubGridTopologyGraph(
             this.gridName, this.rawGrid, this.systemParticipants, this.graphics);
     checkSubGridTopologyGraph(subGridTopologyGraph);
   }

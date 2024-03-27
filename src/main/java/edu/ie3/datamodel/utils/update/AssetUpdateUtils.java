@@ -96,9 +96,6 @@ public class AssetUpdateUtils {
   /**
    * Method for updating the current and voltage rating of the given {@link LineInput}.
    *
-   * <p>NOTE: This method automatically increase the number of {@link
-   * ConnectorInput#getParallelDevices()} in order to fulfill the given current requirement.
-   *
    * @param line given line
    * @param iMin minimum required current
    * @param vRated rated voltage
@@ -119,36 +116,25 @@ public class AssetUpdateUtils {
       throw new MissingTypeException("No suitable line type found for rating: " + vRated);
     }
 
-    return TypeUtils.findSuitableLineType(suitableTypes, iMin)
-        .map(suitableType -> line.copy().type(suitableType).build())
-        .orElseGet(
-            () -> {
-              LineTypeInput type =
-                  Collections.max(
-                      suitableTypes,
-                      Comparator.comparingDouble(o -> o.getiMax().getValue().doubleValue()));
-              int parallelDevices = calculateNeededParallelDevices(type, iMin);
+    LineTypeInput type =
+        TypeUtils.findSuitableLineType(suitableTypes, iMin)
+            .orElseGet(
+                () ->
+                    Collections.max(
+                        suitableTypes,
+                        Comparator.comparingDouble(o -> o.getiMax().getValue().doubleValue())));
 
-              if (line.getParallelDevices() != parallelDevices) {
-                log.debug(
-                    "Increased the number of parallel devices of line '{}' from {} to {} in order to carry a current of '{}'.",
-                    line.getUuid(),
-                    line.getParallelDevices(),
-                    parallelDevices,
-                    iMin);
-              }
+    if (type.getiMax().isLessThan(iMin)) {
+      log.debug("The line may not be able to carry the given current. Needed: '{}'", iMin);
+    }
 
-              return line.copy().type(type).parallelDevices(parallelDevices).build();
-            });
+    return line.copy().type(type).build();
   }
 
   /**
    * Method for updating rated power of the given {@link Transformer2WInput}.For changing the power
    * and voltage rating use {@link #updateTransformer(Transformer2WInput, ComparableQuantity,
    * ComparableQuantity, ComparableQuantity, Collection)} instead.
-   *
-   * <p>NOTE: This method automatically increase the number of {@link
-   * ConnectorInput#getParallelDevices()} in order to fulfill the given power requirement.
    *
    * @param transformer given two winding transformer
    * @param sMin minimum rated power
@@ -174,9 +160,6 @@ public class AssetUpdateUtils {
    * power and voltage rating use {@link #updateTransformer(Transformer2WInput, ComparableQuantity,
    * ComparableQuantity, ComparableQuantity, Collection)} instead.
    *
-   * <p>NOTE: This method automatically increase the number of {@link
-   * ConnectorInput#getParallelDevices()} in order to fulfill the given power requirement.
-   *
    * @param transformer given three winding transformer
    * @param vRatedA rated voltage at port A
    * @param vRatedB rated voltage at port B
@@ -196,9 +179,6 @@ public class AssetUpdateUtils {
 
   /**
    * Method for updating the power and voltage rating of the given {@link Transformer2WInput}.
-   *
-   * <p>NOTE: This method automatically increase the number of {@link
-   * ConnectorInput#getParallelDevices()} in order to fulfill the given power requirement.
    *
    * @param transformer given two winding transformer
    * @param sMin minimum required power
@@ -227,27 +207,19 @@ public class AssetUpdateUtils {
               + vRatedB);
     }
 
-    return TypeUtils.findSuitableTransformerType(suitableTypes, sMin)
-        .map(suitableType -> transformer.copy().type(suitableType).build())
-        .orElseGet(
-            () -> {
-              Transformer2WTypeInput type =
-                  Collections.max(
-                      suitableTypes,
-                      Comparator.comparingDouble(o -> o.getsRated().getValue().doubleValue()));
-              int parallelDevices = calculateNeededParallelDevices(type, sMin);
+    Transformer2WTypeInput type =
+        TypeUtils.findSuitableTransformerType(suitableTypes, sMin)
+            .orElseGet(
+                () ->
+                    Collections.max(
+                        suitableTypes,
+                        Comparator.comparingDouble(o -> o.getsRated().getValue().doubleValue())));
 
-              if (transformer.getParallelDevices() != parallelDevices) {
-                log.debug(
-                    "Increased the number of parallel devices of two winding transformer '{}' from {} to {} in order to carry a power of '{}'.",
-                    transformer.getUuid(),
-                    transformer.getParallelDevices(),
-                    parallelDevices,
-                    sMin);
-              }
+    if (type.getsRated().isLessThan(sMin)) {
+      log.debug("The transformer may not be able to carry the given power. Needed: '{}'", sMin);
+    }
 
-              return transformer.copy().type(type).parallelDevices(parallelDevices).build();
-            });
+    return transformer.copy().type(type).build();
   }
 
   /**
@@ -255,9 +227,6 @@ public class AssetUpdateUtils {
    * and voltage rating use {@link #updateTransformer(Transformer3WInput, ComparableQuantity,
    * ComparableQuantity, ComparableQuantity, ComparableQuantity, ComparableQuantity,
    * ComparableQuantity, Collection)} instead.
-   *
-   * <p>NOTE: This method automatically increase the number of {@link
-   * ConnectorInput#getParallelDevices()} in order to fulfill the given power requirement.
    *
    * @param transformer given three winding transformer
    * @param sMinA minimum required power at port A
@@ -291,9 +260,6 @@ public class AssetUpdateUtils {
    * ComparableQuantity, ComparableQuantity, ComparableQuantity, ComparableQuantity,
    * ComparableQuantity, Collection)} instead.
    *
-   * <p>NOTE: This method automatically increase the number of {@link
-   * ConnectorInput#getParallelDevices()} in order to fulfill the given power requirement.
-   *
    * @param transformer given three winding transformer
    * @param vRatedA rated voltage at port A
    * @param vRatedB rated voltage at port B
@@ -324,9 +290,6 @@ public class AssetUpdateUtils {
 
   /**
    * Method for updating the power and voltage rating of the given {@link Transformer3WInput}.
-   *
-   * <p>NOTE: This method automatically increase the number of {@link
-   * ConnectorInput#getParallelDevices()} in order to fulfill the given power requirement.
    *
    * @param transformer given three winding transformer
    * @param sMinA minimum required power at port A
@@ -363,29 +326,23 @@ public class AssetUpdateUtils {
               + vRatedC);
     }
 
-    return TypeUtils.findSuitableTransformerType(suitableTypes, sMinA, sMinB, sMinC)
-        .map(suitableType -> transformer.copy().type(suitableType).build())
-        .orElseGet(
-            () -> {
-              Transformer3WTypeInput type =
-                  Collections.max(
-                      suitableTypes,
-                      Comparator.comparingDouble(o -> o.getsRatedA().getValue().doubleValue()));
-              int parallelDevices = calculateNeededParallelDevices(type, sMinA, sMinB, sMinC);
+    Transformer3WTypeInput type =
+        TypeUtils.findSuitableTransformerType(suitableTypes, sMinA, sMinB, sMinC)
+            .orElseGet(
+                () ->
+                    Collections.max(
+                        suitableTypes,
+                        Comparator.comparingDouble(o -> o.getsRatedA().getValue().doubleValue())));
 
-              if (transformer.getParallelDevices() != parallelDevices) {
-                log.debug(
-                    "Increased the number of parallel devices of three winding transformer '{}' from {} to {} in order to carry a power of '{}, {}, {}'.",
-                    transformer.getUuid(),
-                    transformer.getParallelDevices(),
-                    parallelDevices,
-                    sMinA,
-                    sMinB,
-                    sMinC);
-              }
+    if (type.getsRatedA().isLessThan(sMinA)) {
+      log.debug(
+          "The transformer may not be able to carry the given power. Needed: '{}', '{}', '{}'",
+          sMinA,
+          sMinB,
+          sMinC);
+    }
 
-              return transformer.copy().type(type).parallelDevices(parallelDevices).build();
-            });
+    return transformer.copy().type(type).build();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

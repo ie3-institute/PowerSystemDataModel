@@ -12,18 +12,15 @@ import edu.ie3.datamodel.exceptions.MissingTypeException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.ConnectorInput;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
-import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,6 +35,89 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
 
   private static final Function<NodeInput, ComparableQuantity<ElectricPotential>> rating =
       node -> node.getVoltLvl().getNominalVoltage();
+
+  private static final BiFunction<ConnectorInput, Integer, Boolean> connectedToSubnet =
+      (connector, subnet) ->
+          connector.allNodes().stream().anyMatch(node -> node.getSubnet() == subnet);
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  // methods for updating grid containers
+
+  /**
+   * This method can be used to update a given {@link JointGridContainer} with elements from another
+   * {@link GridContainer}. For elements that are common in both grid containers, the element in the
+   * second container is used in the returned grid container.
+   *
+   * <p>OPTIONAL: If specified all elements that only occur in the second container are added
+   *
+   * @param toUpdate first container that should be updated
+   * @param updatedElements second container that may container updated elements
+   * @param addMissing if {@code true} elements that only occur in the second container are added to
+   *     the returned grid container
+   * @return a new {@link JointGridContainer}
+   */
+  public static JointGridContainer update(
+      JointGridContainer toUpdate, GridContainer updatedElements, boolean addMissing)
+      throws InvalidGridException {
+    UpdatedEntities updatedEntities = updateContainers(toUpdate, updatedElements, addMissing);
+
+    return new JointGridContainer(
+        toUpdate.getGridName(),
+        updatedEntities.rawGridElements(),
+        updatedEntities.systemParticipants(),
+        updatedEntities.graphicElements());
+  }
+
+  /**
+   * Method for updating the voltage level of one subnet. This method will automatically adjust the
+   * types of {@link ConnectorInput}s. If the new type requires a different amount of {@link
+   * ConnectorInput#getParallelDevices()}, this number is also automatically adjusted.
+   *
+   * @param container with at least one subnet
+   * @param subnet number of the subgrid
+   * @param newLevel new voltage level of the subnet
+   * @param types all known types
+   * @return a grid container with the updated subgrid
+   */
+  public static JointGridContainer updateSubgridVoltage(
+      JointGridContainer container, int subnet, VoltageLevel newLevel, Types types)
+      throws MissingTypeException, InvalidGridException {
+
+    // entities with updated voltage levels
+    UpdatedEntities updatedEntities = updateVoltage(container, subnet, newLevel, types);
+
+    return new JointGridContainer(
+        container.getGridName(),
+        updatedEntities.rawGridElements(),
+        updatedEntities.systemParticipants(),
+        updatedEntities.graphicElements());
+  }
+
+  /**
+   * Method for updating the voltage level of one subnet. This method will automatically adjust the
+   * types of {@link ConnectorInput}s. If the new type requires a different amount of {@link
+   * ConnectorInput#getParallelDevices()}, this number is also automatically adjusted.
+   *
+   * @param container with at least one subnet
+   * @param subnet number of the subgrid
+   * @param newLevel new voltage level of the subnet
+   * @param types all known types
+   * @return a grid container with the updated subgrid
+   */
+  public static SubGridContainer updateSubgridVoltage(
+      SubGridContainer container, int subnet, VoltageLevel newLevel, Types types)
+      throws MissingTypeException, InvalidGridException {
+
+    // entities with updated voltage levels
+    UpdatedEntities updatedEntities = updateVoltage(container, subnet, newLevel, types);
+
+    return new SubGridContainer(
+        container.getGridName(),
+        container.getSubnet(),
+        updatedEntities.rawGridElements(),
+        updatedEntities.systemParticipants(),
+        updatedEntities.graphicElements());
+  }
 
   /**
    * Returns a copy {@link SubGridContainer} based on the provided subgrid with a certain set of
@@ -212,57 +292,6 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
         new GraphicElements(newNodeGraphics, subGridContainer.getGraphics().getLineGraphics()));
   }
 
-  /**
-   * Method for updating the voltage level of one subnet. This method will automatically adjust the
-   * types of {@link ConnectorInput}s. If the new type requires a different amount of {@link
-   * ConnectorInput#getParallelDevices()}, this number is also automatically adjusted.
-   *
-   * @param container with at least one subnet
-   * @param subnet number of the subgrid
-   * @param newLevel new voltage level of the subnet
-   * @param types all known types
-   * @return a grid container with the updated subgrid
-   */
-  public static JointGridContainer updateSubgridVoltage(
-      JointGridContainer container, int subnet, VoltageLevel newLevel, Types types)
-      throws MissingTypeException, InvalidGridException {
-
-    // entities with updated voltage levels
-    UpdatedEntities updatedEntities = updateVoltage(container, subnet, newLevel, types);
-
-    return new JointGridContainer(
-        container.getGridName(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
-  }
-
-  /**
-   * Method for updating the voltage level of one subnet. This method will automatically adjust the
-   * types of {@link ConnectorInput}s. If the new type requires a different amount of {@link
-   * ConnectorInput#getParallelDevices()}, this number is also automatically adjusted.
-   *
-   * @param container with at least one subnet
-   * @param subnet number of the subgrid
-   * @param newLevel new voltage level of the subnet
-   * @param types all known types
-   * @return a grid container with the updated subgrid
-   */
-  public static SubGridContainer updateSubgridVoltage(
-      SubGridContainer container, int subnet, VoltageLevel newLevel, Types types)
-      throws MissingTypeException, InvalidGridException {
-
-    // entities with updated voltage levels
-    UpdatedEntities updatedEntities = updateVoltage(container, subnet, newLevel, types);
-
-    return new SubGridContainer(
-        container.getGridName(),
-        container.getSubnet(),
-        updatedEntities.rawGridElements(),
-        updatedEntities.systemParticipants(),
-        updatedEntities.graphicElements());
-  }
-
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // methods for changing subnet voltage
 
@@ -280,7 +309,6 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
   protected static UpdatedEntities updateVoltage(
       GridContainer container, int subnet, VoltageLevel newLevel, Types types)
       throws MissingTypeException {
-
     /* RawGridElements */
     RawGridElementsNodeUpdateResult updateResult =
         updateVoltage(container.getRawGrid(), subnet, newLevel, types);
@@ -328,96 +356,220 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
     RawGridElements updatedRawGridElements = rawGridUpdateResult.rawGridElements();
     Map<NodeInput, NodeInput> updatedOldToNewNodes = rawGridUpdateResult.updatedOldToNewNodes();
 
-    // getting the uuids of all connectors that needs to be updated
-    Set<UUID> connectorIds =
-        getConnectorIds(ContainerUtils.filterConnectors(rawGridElements, subnet));
-
-    UpdatedConnectors updatedConnectors =
-        updatedConnectors(updatedRawGridElements, connectorIds, types);
-
+    // updated all connector to the new voltage level
     RawGridElements finalRawGridElements =
         new RawGridElements(
-            rawGridElements.getNodes(),
-            updatedConnectors.lines,
-            updatedConnectors.transformer2Ws,
-            updatedConnectors.transformer3Ws,
-            rawGridElements.getSwitches(),
-            rawGridElements.getMeasurementUnits());
+            updatedRawGridElements.getNodes(),
+            updateLineVoltages(updatedRawGridElements.getLines(), subnet, types.lineTypes),
+            updateTransformer2WVoltages(
+                updatedRawGridElements.getTransformer2Ws(), subnet, types.transformer2WTypes),
+            updateTransformer3WVoltages(
+                updatedRawGridElements.getTransformer3Ws(), subnet, types.transformer3WTypes),
+            updatedRawGridElements.getSwitches(),
+            updatedRawGridElements.getMeasurementUnits());
 
     return new RawGridElementsNodeUpdateResult(finalRawGridElements, updatedOldToNewNodes);
+  }
+
+  /**
+   * Updates the types of all line inside the given subnet. All other lines are just returned.
+   *
+   * @param lines all lines
+   * @param subnet number of subnet
+   * @param types all known line types
+   * @return a set of updated lines
+   * @throws MissingTypeException if no suitable type was found
+   */
+  protected static Set<LineInput> updateLineVoltages(
+      Set<LineInput> lines, int subnet, Set<LineTypeInput> types) throws MissingTypeException {
+    Set<LineInput> updatedLines = new HashSet<>();
+    for (LineInput line : lines) {
+      if (connectedToSubnet.apply(line, subnet)) {
+        updatedLines.add(updateLineVoltage(line, rating.apply(line.getNodeA()), types));
+      } else {
+        updatedLines.add(line);
+      }
+    }
+
+    return updatedLines;
+  }
+
+  /**
+   * Updates the types of all transformers connected the given subnet. All other transformers are
+   * just returned.
+   *
+   * @param transformers all lines
+   * @param subnet number of subnet
+   * @param types all known transformer types
+   * @return a set of updated transformers
+   * @throws MissingTypeException if no suitable type was found
+   */
+  protected static Set<Transformer2WInput> updateTransformer2WVoltages(
+      Set<Transformer2WInput> transformers, int subnet, Set<Transformer2WTypeInput> types)
+      throws MissingTypeException {
+    Set<Transformer2WInput> updatedTransformers = new HashSet<>();
+    for (Transformer2WInput transformer : transformers) {
+      if (connectedToSubnet.apply(transformer, subnet)) {
+        updatedTransformers.add(
+            updateTransformerVoltage(
+                transformer,
+                rating.apply(transformer.getNodeA()),
+                rating.apply(transformer.getNodeB()),
+                types));
+      } else {
+        updatedTransformers.add(transformer);
+      }
+    }
+
+    return updatedTransformers;
+  }
+
+  /**
+   * Updates the types of all transformers connected the given subnet. All other transformers are
+   * just returned.
+   *
+   * @param transformers all lines
+   * @param subnet number of subnet
+   * @param types all known transformer types
+   * @return a set of updated transformers
+   * @throws MissingTypeException if no suitable type was found
+   */
+  protected static Set<Transformer3WInput> updateTransformer3WVoltages(
+      Set<Transformer3WInput> transformers, int subnet, Set<Transformer3WTypeInput> types)
+      throws MissingTypeException {
+    Set<Transformer3WInput> updatedTransformers = new HashSet<>();
+    for (Transformer3WInput transformer : transformers) {
+      if (connectedToSubnet.apply(transformer, subnet)) {
+        updatedTransformers.add(
+            updateTransformerVoltage(
+                transformer,
+                rating.apply(transformer.getNodeA()),
+                rating.apply(transformer.getNodeB()),
+                rating.apply(transformer.getNodeC()),
+                types));
+      } else {
+        updatedTransformers.add(transformer);
+      }
+    }
+
+    return updatedTransformers;
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // general utils
 
   /**
-   * Method for updating all connector in the given {@link RawGridElements}.
+   * Method to update a {@link GridContainer} with another.
    *
-   * @param rawGridElements given raw grid elements
-   * @param connectorIds uuids of all connectors that need to be updated
-   * @param types all known types
-   * @return an {@link UpdatedConnectors}
-   * @throws MissingTypeException if a required type is missing
+   * @param toUpdate container to update
+   * @param updatedElements container with updated elements
+   * @param addMissing if false the first container is just updated
+   * @return a {@link UpdatedEntities}
    */
-  protected static UpdatedConnectors updatedConnectors(
-      RawGridElements rawGridElements, Set<UUID> connectorIds, Types types)
-      throws MissingTypeException {
-    // updating lines
-    Set<LineInput> updatedLines = new HashSet<>();
-    for (LineInput line : rawGridElements.getLines()) {
-      if (connectorIds.contains(line.getUuid())) {
-        updatedLines.add(updateLineVoltage(line, rating.apply(line.getNodeA()), types.lineTypes));
-      } else {
-        updatedLines.add(line);
-      }
-    }
+  protected static UpdatedEntities updateContainers(
+      GridContainer toUpdate, GridContainer updatedElements, boolean addMissing) {
+    RawGridElements rawGridElementsToUpdate = toUpdate.getRawGrid();
+    RawGridElements rawGridElementsMaybeUpdate = updatedElements.getRawGrid();
 
-    // updating two winding transformers
-    Set<Transformer2WInput> updatedTransformer2Ws = new HashSet<>();
-    for (Transformer2WInput transformer2W : rawGridElements.getTransformer2Ws()) {
-      if (connectorIds.contains(transformer2W.getUuid())) {
-        updatedTransformer2Ws.add(
-            updateTransformerVoltage(
-                transformer2W,
-                rating.apply(transformer2W.getNodeA()),
-                rating.apply(transformer2W.getNodeB()),
-                types.transformer2WTypes));
-      } else {
-        updatedTransformer2Ws.add(transformer2W);
-      }
-    }
+    // updating all elements
+    RawGridElements updatedRawGridElements =
+        new RawGridElements(
+            combineElements(
+                rawGridElementsToUpdate.allEntitiesAsList(),
+                rawGridElementsMaybeUpdate.allEntitiesAsList(),
+                addMissing));
 
-    // updating three winding transformers
-    Set<Transformer3WInput> updatedTransformer3Ws = new HashSet<>();
-    for (Transformer3WInput transformer3W : rawGridElements.getTransformer3Ws()) {
-      if (connectorIds.contains(transformer3W.getUuid())) {
-        updatedTransformer3Ws.add(
-            updateTransformerVoltage(
-                transformer3W,
-                rating.apply(transformer3W.getNodeA()),
-                rating.apply(transformer3W.getNodeB()),
-                rating.apply(transformer3W.getNodeC()),
-                types.transformer3WTypes));
-      } else {
-        updatedTransformer3Ws.add(transformer3W);
-      }
-    }
+    SystemParticipants updatedParticipants =
+        new SystemParticipants(
+            combineElements(
+                toUpdate.getSystemParticipants().allEntitiesAsList(),
+                updatedElements.getSystemParticipants().allEntitiesAsList(),
+                addMissing));
 
-    return new UpdatedConnectors(updatedLines, updatedTransformer2Ws, updatedTransformer3Ws);
+    GraphicElements updatedGraphicElements =
+        new GraphicElements(
+            combineElements(
+                toUpdate.getGraphics().allEntitiesAsList(),
+                updatedElements.getGraphics().allEntitiesAsList(),
+                addMissing));
+
+    // updating the nodes
+    Map<NodeInput, NodeInput> updatedNodes =
+        getUpdateMap(rawGridElementsToUpdate.getNodes(), rawGridElementsMaybeUpdate.getNodes());
+    return updateEntities(
+        updatedRawGridElements, updatedParticipants, updatedGraphicElements, updatedNodes);
   }
 
   /**
-   * @param rawGridElements raw grid elements
-   * @return a set of all connector uuids
+   * Method to combine two collections of elements. Elements of the second collection have a higher
+   * priority. If `addMissing` is set to {@code false} the elements of the first collection are just
+   * updated with the second collection.
+   *
+   * @param first collection
+   * @param second collection
+   * @param addMissing if true sll elements of the second collection are in the returned collection
+   * @return a combined list
+   * @param <T> type of elements
    */
-  protected static Set<UUID> getConnectorIds(RawGridElements rawGridElements) {
-    return Stream.of(
-            rawGridElements.getLines(),
-            rawGridElements.getTransformer2Ws(),
-            rawGridElements.getTransformer3Ws())
-        .flatMap(Collection::stream)
-        .map(UniqueEntity::getUuid)
-        .collect(Collectors.toSet());
+  protected static <T extends UniqueEntity> List<T> combineElements(
+      Collection<T> first, Collection<T> second, boolean addMissing) {
+    Map<UUID, T> mapOld =
+        first.stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
+    Map<UUID, T> mapNew =
+        second.stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
+
+    Set<UUID> uuids = new HashSet<>(mapOld.keySet());
+
+    // add missing uuids
+    if (addMissing) {
+      uuids.addAll(mapNew.keySet());
+    }
+
+    return uuids.stream()
+        .map(
+            e -> {
+              if (mapNew.containsKey(e)) {
+                return mapNew.get(e);
+              } else {
+                return mapOld.get(e);
+              }
+            })
+        .toList();
+  }
+
+  /**
+   * Method to check to given collections for updates. This method uses {@link
+   * UniqueEntity#getUuid()} to get common elements and then uses {@link UniqueEntity#equals} to
+   * check if the element was updated.
+   *
+   * @param elements collection with elements
+   * @param maybeUpdates collection that may contain updated elements
+   * @return a map: old to updated element
+   * @param <T> type of element
+   */
+  protected static <T extends UniqueEntity> Map<T, T> getUpdateMap(
+      Collection<T> elements, Collection<T> maybeUpdates) {
+    Map<UUID, T> first =
+        elements.stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
+    Set<UUID> firstIds = first.keySet();
+    Map<UUID, T> second =
+        maybeUpdates.stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
+
+    Map<T, T> updateMap = new HashMap<>();
+
+    second.keySet().stream()
+        .filter(firstIds::contains)
+        .forEach(
+            uuid -> {
+              T one = first.get(uuid);
+              T two = second.get(uuid);
+
+              if (!one.equals(two)) {
+                updateMap.put(one, two);
+              }
+            });
+
+    return updateMap;
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -428,10 +580,4 @@ public class ContainerUpdateUtils extends ContainerNodeUpdateUtil {
       Set<LineTypeInput> lineTypes,
       Set<Transformer2WTypeInput> transformer2WTypes,
       Set<Transformer3WTypeInput> transformer3WTypes) {}
-
-  /** Record containing all updated {@link ConnectorInput}s. */
-  protected record UpdatedConnectors(
-      Set<LineInput> lines,
-      Set<Transformer2WInput> transformer2Ws,
-      Set<Transformer3WInput> transformer3Ws) {}
 }

@@ -75,7 +75,7 @@ class AssetUpdateUtilsTest extends Specification {
       assert it.operationTime == line.operationTime
       assert it.nodeA == line.nodeA
       assert it.nodeB == line.nodeB
-      assert it.parallelDevices == expectedParallelDevices
+      assert it.parallelDevices == line.parallelDevices
       assert it.type == expectedType
       assert it.length == line.length
       assert it.geoPosition == line.geoPosition
@@ -83,10 +83,10 @@ class AssetUpdateUtilsTest extends Specification {
     }
 
     where:
-    value || expectedType                  || expectedParallelDevices
-    121   || TypeTestData.lineType400V_170 || 2
-    171   || TypeTestData.lineType400V_170 || 2
-    500   || TypeTestData.lineType400V_170 || 3
+    value || expectedType
+    121   || TypeTestData.lineType400V_170
+    171   || TypeTestData.lineType400V_170
+    500   || TypeTestData.lineType400V_170
   }
 
   def "The AssetUpdateUtils should update line voltage correctly"() {
@@ -134,7 +134,7 @@ class AssetUpdateUtilsTest extends Specification {
       assert it.operationTime == line.operationTime
       assert it.nodeA == line.nodeA
       assert it.nodeB == line.nodeB
-      assert it.parallelDevices == expectedParallelDevices
+      assert it.parallelDevices == line.parallelDevices
       assert it.type == expectedType
       assert it.length == line.length
       assert it.geoPosition == line.geoPosition
@@ -142,11 +142,11 @@ class AssetUpdateUtilsTest extends Specification {
     }
 
     where:
-    current       || potential       || expectedType                    || expectedParallelDevices
-    current(500d) || potential(380d) || TypeTestData.lineType380kV_1300 || 2
-    current(500d) || potential(20d)  || TypeTestData.lineType20kV_400   || 2
-    current(500d) || potential(10d)  || TypeTestData.lineType10kV_500   || 2
-    current(500d) || potential(0.4d) || TypeTestData.lineType400V_170   || 3
+    current       || potential       || expectedType
+    current(500d) || potential(380d) || TypeTestData.lineType380kV_1300
+    current(500d) || potential(20d)  || TypeTestData.lineType20kV_400
+    current(500d) || potential(10d)  || TypeTestData.lineType10kV_500
+    current(500d) || potential(0.4d) || TypeTestData.lineType400V_170
   }
 
   def "The AssetUpdateUtils should throw a MissingTypeException if no suitable line type was found"() {
@@ -178,17 +178,17 @@ class AssetUpdateUtilsTest extends Specification {
       assert it.operationTime == transformer.operationTime
       assert it.nodeA == transformer.nodeA
       assert it.nodeB == transformer.nodeB
-      assert it.parallelDevices == expectedParallelDevices
+      assert it.parallelDevices == transformer.parallelDevices
       assert it.type == expectedType
       assert it.tapPos == transformer.tapPos
       assert it.autoTap == transformer.autoTap
     }
 
     where:
-    value  || expectedType                         || expectedParallelDevices
-    10001d || TypeTestData.transformerTypeHV_10kV_20 || 1
-    20000d || TypeTestData.transformerTypeHV_10kV_20 || 1
-    20001d || TypeTestData.transformerTypeHV_10kV_20 || 2
+    value  || expectedType
+    10001d || TypeTestData.transformerTypeHV_10kV_20
+    20000d || TypeTestData.transformerTypeHV_10kV_20
+    20001d || TypeTestData.transformerTypeHV_10kV_20
   }
 
   def "The AssetUpdateUtils should update transformator2W voltage correctly"() {
@@ -236,18 +236,18 @@ class AssetUpdateUtilsTest extends Specification {
       assert it.operationTime == transformer.operationTime
       assert it.nodeA == transformer.nodeA
       assert it.nodeB == transformer.nodeB
-      assert it.parallelDevices == expectedParallelDevices
+      assert it.parallelDevices == transformer.parallelDevices
       assert it.type == expectedType
       assert it.tapPos == transformer.tapPos
       assert it.autoTap == transformer.autoTap
     }
 
     where:
-    power         || vRatedA         || vRatedB         || expectedType                            || expectedParallelDevices
-    power(40001d) || potential(380d) || potential(110d) || TypeTestData.transformerTypeEHV_HV_40   || 2
-    power(50000d) || potential(110d) || potential(30d)  || TypeTestData.transformerTypeHV_30kV_40  || 2
-    power(35000d) || potential(110d) || potential(20d)  || TypeTestData.transformerTypeHV_20kV_40  || 1
-    power(16000d) || potential(110d) || potential(10d)  || TypeTestData.transformerTypeHV_10kV_20  || 1
+    power         || vRatedA         || vRatedB         || expectedType
+    power(40001d) || potential(380d) || potential(110d) || TypeTestData.transformerTypeEHV_HV_40
+    power(50000d) || potential(110d) || potential(30d)  || TypeTestData.transformerTypeHV_30kV_40
+    power(35000d) || potential(110d) || potential(20d)  || TypeTestData.transformerTypeHV_20kV_40
+    power(16000d) || potential(110d) || potential(10d)  || TypeTestData.transformerTypeHV_10kV_20
   }
 
   def "The AssetUpdateUtils should throw a MissingTypeException if no suitable transformator2W type was found"() {
@@ -282,18 +282,16 @@ class AssetUpdateUtilsTest extends Specification {
       assert it.nodeA == transformer.nodeA
       assert it.nodeB == transformer.nodeB
       assert it.nodeC == transformer.nodeC
-      assert it.parallelDevices == expectedParallelDevices
+      assert it.parallelDevices == transformer.parallelDevices
       assert it.type == expectedType
       assert it.tapPos == transformer.tapPos
       assert it.autoTap == transformer.autoTap
     }
 
     where:
-    valueA  || valueB || valueC || expectedType                            || expectedParallelDevices
-    120000d || 60000d || 40000d || TypeTestData.transformerTypeEHV_HV_20kV || 1
-    120001d || 60000d || 40000d || TypeTestData.transformerTypeEHV_HV_20kV || 2
-    120000d || 60001d || 40000d || TypeTestData.transformerTypeEHV_HV_20kV || 2
-    120000d || 60001d || 80001d || TypeTestData.transformerTypeEHV_HV_20kV || 3
+    valueA  || valueB || valueC || expectedType
+    120000d || 60000d || 40000d || TypeTestData.transformerTypeEHV_HV_20kV
+    120001d || 60000d || 40000d || TypeTestData.transformerTypeEHV_HV_20kV
   }
 
   def "The AssetUpdateUtils should update transformator3W voltage correctly"() {
@@ -313,17 +311,17 @@ class AssetUpdateUtilsTest extends Specification {
       assert it.nodeA == transformer.nodeA
       assert it.nodeB == transformer.nodeB
       assert it.nodeC == transformer.nodeC
-      assert it.parallelDevices == expectedParallelDevices
+      assert it.parallelDevices == transformer.parallelDevices
       assert it.type == expectedType
       assert it.tapPos == transformer.tapPos
       assert it.autoTap == transformer.autoTap
     }
 
     where:
-    valueA || valueB || valueC || expectedType                              || expectedParallelDevices
-    380d   || 110d   || 20d    || TypeTestData.transformerTypeEHV_HV_20kV   || 1
-    380d   || 20d    || 10d    || TypeTestData.transformerTypeEHV_20kV_10kV || 2
-    110d   || 20d    || 10d    || TypeTestData.transformerTypeHV_20kV_10kV  || 3
+    valueA || valueB || valueC || expectedType
+    380d   || 110d   || 20d    || TypeTestData.transformerTypeEHV_HV_20kV
+    380d   || 20d    || 10d    || TypeTestData.transformerTypeEHV_20kV_10kV
+    110d   || 20d    || 10d    || TypeTestData.transformerTypeHV_20kV_10kV
   }
 
   def "The AssetUpdateUtils should update transformator3W power and voltage correctly"() {
@@ -343,20 +341,17 @@ class AssetUpdateUtilsTest extends Specification {
       assert it.nodeA == transformer.nodeA
       assert it.nodeB == transformer.nodeB
       assert it.nodeC == transformer.nodeC
-      assert it.parallelDevices == expectedParallelDevices
+      assert it.parallelDevices == transformer.parallelDevices
       assert it.type == expectedType
       assert it.tapPos == transformer.tapPos
       assert it.autoTap == transformer.autoTap
     }
 
     where:
-    powerA        || powerB        || powerC        || vRatedA         || vRatedB         || vRatedC        || expectedType                              || expectedParallelDevices
-    power(40000d) || power(40000d) || power(40001d) || potential(380d) || potential(110d) || potential(20d) || TypeTestData.transformerTypeEHV_HV_20kV   || 2
-    power(40000d) || power(40000d) || power(20000d) || potential(380d) || potential(20d)  || potential(10d) || TypeTestData.transformerTypeEHV_20kV_10kV || 1
-    power(40000d) || power(40001d) || power(20000d) || potential(380d) || potential(20d)  || potential(10d) || TypeTestData.transformerTypeEHV_20kV_10kV || 2
-    power(40000d) || power(30000d) || power(20000d) || potential(110d) || potential(20d)  || potential(10d) || TypeTestData.transformerTypeHV_20kV_10kV  || 1
-    power(50000d) || power(30000d) || power(20000d) || potential(110d) || potential(20d)  || potential(10d) || TypeTestData.transformerTypeHV_20kV_10kV  || 1
-    power(40000d) || power(40000d) || power(40000d) || potential(110d) || potential(20d)  || potential(10d) || TypeTestData.transformerTypeHV_20kV_10kV  || 2
+    powerA        || powerB        || powerC        || vRatedA         || vRatedB         || vRatedC        || expectedType
+    power(40000d) || power(40000d) || power(40001d) || potential(380d) || potential(110d) || potential(20d) || TypeTestData.transformerTypeEHV_HV_20kV
+    power(40000d) || power(40000d) || power(20000d) || potential(380d) || potential(20d)  || potential(10d) || TypeTestData.transformerTypeEHV_20kV_10kV
+    power(40000d) || power(30000d) || power(20000d) || potential(110d) || potential(20d)  || potential(10d) || TypeTestData.transformerTypeHV_20kV_10kV
   }
 
   def "The AssetUpdateUtils should throw a MissingTypeException if no suitable transformator3W type was found"() {
