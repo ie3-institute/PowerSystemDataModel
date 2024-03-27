@@ -13,10 +13,12 @@ import static tech.units.indriya.unit.Units.OHM;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.TopologyException;
 import edu.ie3.datamodel.graph.*;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
@@ -738,10 +740,10 @@ public class ContainerUtils {
     List<SwitchInput> nextSwitches =
         switches.stream().filter(switcher -> switcher.allNodes().contains(startNode)).toList();
     switch (nextSwitches.size()) {
-      case 0:
+      case 0 -> {
         /* No further switch found -> Return the starting node */
-        break;
-      case 1:
+      }
+      case 1 -> {
         /* One next switch has been found -> Travel in this direction */
         SwitchInput nextSwitch = nextSwitches.get(0);
         Optional<NodeInput> candidateNodes =
@@ -762,11 +764,10 @@ public class ContainerUtils {
           newSwitches.remove(nextSwitch);
           traveledNodes.addAll(traverseAlongSwitchChain(nextNode, newSwitches, newNodesToExclude));
         }
-        break;
-      default:
-        throw new IllegalArgumentException(
-            "Cannot traverse along switch chain, as there is a junction included at node "
-                + startNode);
+      }
+      default -> throw new IllegalArgumentException(
+          "Cannot traverse along switch chain, as there is a junction included at node "
+              + startNode);
     }
     return traveledNodes;
   }
@@ -813,6 +814,31 @@ public class ContainerUtils {
 
     return new JointGridContainer(
         gridName, rawGrid, systemParticipants, graphicElements, subGridTopologyGraph);
+  }
+
+  /**
+   * Uses the given lists to build {@link RawGridElements}, {@link SystemParticipants} and {@link
+   * GraphicElements}. After that these input containers are combined to a {@link
+   * JointGridContainer}.
+   *
+   * @param gridName of the build grid
+   * @param assets for the build grid
+   * @param participants for the build grid
+   * @param graphics for the build grid
+   * @return a new {@link JointGridContainer}
+   * @throws InvalidGridException if the joint grid cannot be build
+   */
+  public static JointGridContainer buildJointGrid(
+      String gridName,
+      List<AssetInput> assets,
+      List<SystemParticipantInput> participants,
+      List<GraphicInput> graphics)
+      throws InvalidGridException {
+    return new JointGridContainer(
+        gridName,
+        new RawGridElements(assets),
+        new SystemParticipants(participants),
+        new GraphicElements(graphics));
   }
 
   /**
