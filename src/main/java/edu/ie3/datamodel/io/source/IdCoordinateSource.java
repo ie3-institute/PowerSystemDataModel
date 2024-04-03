@@ -94,9 +94,9 @@ public interface IdCoordinateSource {
   default List<CoordinateDistance> calculateCoordinateDistances(
       Point coordinate, int n, Collection<Point> coordinates) {
     if (coordinates != null && !coordinates.isEmpty()) {
-      return GeoUtils.calcOrderedCoordinateDistances(coordinate, coordinates).stream()
-          .limit(n)
-          .toList();
+          return GeoUtils.calcOrderedCoordinateDistances(coordinate, coordinates).stream()
+                  .limit(n)
+                  .toList();
     } else {
       return Collections.emptyList();
     }

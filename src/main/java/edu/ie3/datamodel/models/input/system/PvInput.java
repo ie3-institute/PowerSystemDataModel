@@ -221,7 +221,7 @@ public class PvInput extends SystemParticipantInput {
         + ", qCharacteristics='"
         + getqCharacteristics()
         + "', em="
-        + getEm()
+        + getControllingEm()
         + ", albedo="
         + albedo
         + ", azimuth="
