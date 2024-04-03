@@ -46,7 +46,7 @@ class IdCoordinateSourceTest extends Specification {
     ]
 
     when:
-    SortedSet<CoordinateDistance> distances = GeoUtils.calcOrderedCoordinateDistances(point0, points)
+    List<CoordinateDistance> distances = GeoUtils.calcOrderedCoordinateDistances(point0, points)
     List<CoordinateDistance> result = coordinateSourceMock.findCornerPoints(point0, distances)
 
     then:
@@ -62,7 +62,7 @@ class IdCoordinateSourceTest extends Specification {
     List<Point> withExactMatch = new ArrayList<>(points)
     withExactMatch.addAll(matchingPoint)
 
-    SortedSet<CoordinateDistance> distances = GeoUtils.calcOrderedCoordinateDistances(point0, withExactMatch)
+    List<CoordinateDistance> distances = GeoUtils.calcOrderedCoordinateDistances(point0, withExactMatch)
     List<CoordinateDistance> result = coordinateSourceMock.findCornerPoints(point0, distances)
 
     then:
