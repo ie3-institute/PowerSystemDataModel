@@ -51,7 +51,7 @@ class IdCoordinateSourceTest extends Specification {
 
     then:
     result.size() == expectedPoints.size()
-    result.collect { it.coordinateB }.containsAll(expectedPoints)
+    result*.coordinateB.containsAll(expectedPoints)
   }
 
   def "IdCoordinateSource should return only one point if the starting coordinate exactly matched the found coordinate"() {
