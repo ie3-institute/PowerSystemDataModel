@@ -182,6 +182,37 @@ public class CouchbaseWeatherSource extends WeatherSource {
     }
   }
 
+  @Override
+  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time) {
+    String query = createQueryStringForFollowingTimeKeys(time);
+    CompletableFuture<QueryResult> futureResult = connector.query(query);
+    QueryResult queryResult = futureResult.join();
+    List<JsonObject> jsonWeatherInputs = Collections.emptyList();
+    try {
+      jsonWeatherInputs = queryResult.rowsAsObject();
+    } catch (DecodingFailureException ex) {
+      logger.error("Querying weather inputs failed!", ex);
+    }
+    if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
+
+      Map<Point, Set<TimeBasedValue<WeatherValue>>> timeBasedValues =
+          jsonWeatherInputs.stream()
+              .map(this::toTimeBasedWeatherValue)
+              .flatMap(Optional::stream)
+              .filter(t -> t.getTime().isAfter(time))
+              .collect(
+                  Collectors.groupingBy(t -> t.getValue().getCoordinate(), Collectors.toSet()));
+
+      return timeBasedValues.entrySet().stream()
+          .collect(
+              Collectors.toMap(
+                  Map.Entry::getKey,
+                  t -> t.getValue().stream().map(TimeBasedValue::getTime).sorted().toList()));
+    }
+
+    return Collections.emptyMap();
+  }
+
   /**
    * Generates a key for weather documents with the pattern: {@code
    * weather::<coordinate_id>::<time>}
@@ -213,6 +244,19 @@ public class CouchbaseWeatherSource extends WeatherSource {
         " WHERE META().id >= '" + generateWeatherKey(timeInterval.getLower(), coordinateId);
     whereClause +=
         "' AND META().id <= '" + generateWeatherKey(timeInterval.getUpper(), coordinateId) + "'";
+    return basicQuery + whereClause;
+  }
+
+  /**
+   * Create a query string to search for all time keys that comes after the given time.
+   *
+   * @param time given timestamp
+   * @return the query string
+   */
+  public String createQueryStringForFollowingTimeKeys(ZonedDateTime time) {
+    String basicQuery =
+        "SELECT " + connector.getBucketName() + ".* FROM " + connector.getBucketName();
+    String whereClause = " WHERE META().id > '" + generateWeatherKey(time, 0) + "'";
     return basicQuery + whereClause;
   }
 

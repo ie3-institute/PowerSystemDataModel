@@ -84,9 +84,9 @@ abstract class WeatherTestData {
 
   public static final IdCoordinateSource coordinateSource = new DummyIdCoordinateSource()
 
-  public static final COORDINATE_193186 = coordinateSource.getCoordinate(193186).get()
-  public static final COORDINATE_193187 = coordinateSource.getCoordinate(193187).get()
-  public static final COORDINATE_193188 = coordinateSource.getCoordinate(193188).get()
-  public static final COORDINATE_67775 = coordinateSource.getCoordinate(67775).get()
-  public static final COORDINATE_67776 = coordinateSource.getCoordinate(67776).get()
+  public static final Point COORDINATE_193186 = coordinateSource.getCoordinate(193186).get()
+  public static final Point COORDINATE_193187 = coordinateSource.getCoordinate(193187).get()
+  public static final Point COORDINATE_193188 = coordinateSource.getCoordinate(193188).get()
+  public static final Point COORDINATE_67775 = coordinateSource.getCoordinate(67775).get()
+  public static final Point COORDINATE_67776 = coordinateSource.getCoordinate(67776).get()
 }

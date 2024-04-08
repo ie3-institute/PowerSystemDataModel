@@ -133,6 +133,46 @@ public class InfluxDbWeatherSource extends WeatherSource {
     }
   }
 
+  @Override
+  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time) {
+    try (InfluxDB session = connector.getSession()) {
+      String query = createQueryStringForTimeKeysAfter(time);
+      QueryResult queryResult = session.query(new Query(query));
+      Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
+          optTimeBasedValueStream(queryResult);
+      Set<TimeBasedValue<WeatherValue>> timeBasedValues =
+          filterEmptyOptionals(optValues).collect(Collectors.toSet());
+      Map<Point, Set<TimeBasedValue<WeatherValue>>> coordinateToValues =
+          timeBasedValues.stream()
+              .collect(
+                  Collectors.groupingBy(
+                      timeBasedWeatherValue -> timeBasedWeatherValue.getValue().getCoordinate(),
+                      Collectors.toSet()));
+
+      return coordinateToValues.entrySet().stream()
+          .collect(
+              Collectors.toMap(
+                  Map.Entry::getKey,
+                  e -> e.getValue().stream().map(TimeBasedValue::getTime).sorted().toList()));
+    }
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate) {
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
+    if (coordinateId.isEmpty()) {
+      return Collections.emptyList();
+    }
+    try (InfluxDB session = connector.getSession()) {
+      String query = createQueryStringForTimeKeysAfterWithCoordinate(time, coordinateId.get());
+      QueryResult queryResult = session.query(new Query(query));
+
+      return filterEmptyOptionals(optTimeBasedValueStream(queryResult))
+          .map(TimeBasedValue::getTime)
+          .toList();
+    }
+  }
+
   /**
    * Return the weather for the given time interval AND coordinate
    *
@@ -214,6 +254,19 @@ public class InfluxDbWeatherSource extends WeatherSource {
     return BASIC_QUERY_STRING + WHERE + createTimeConstraint(timeInterval);
   }
 
+  private String createQueryStringForTimeKeysAfter(ZonedDateTime time) {
+    return BASIC_QUERY_STRING + WHERE + createTimeConstraintAfter(time);
+  }
+
+  private String createQueryStringForTimeKeysAfterWithCoordinate(
+      ZonedDateTime time, int coordinateId) {
+    return BASIC_QUERY_STRING
+        + WHERE
+        + createCoordinateConstraintString(coordinateId)
+        + AND
+        + createTimeConstraintAfter(time);
+  }
+
   private String createTimeConstraint(ClosedInterval<ZonedDateTime> timeInterval) {
     return weatherFactory.getTimeFieldString()
         + " >= "
@@ -228,6 +281,12 @@ public class InfluxDbWeatherSource extends WeatherSource {
     return weatherFactory.getTimeFieldString()
         + "="
         + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
+  }
+
+  private String createTimeConstraintAfter(ZonedDateTime time) {
+    return weatherFactory.getTimeFieldString()
+        + " > "
+        + time.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
 
   private String createCoordinateConstraintString(int coordinateId) {

@@ -11,8 +11,10 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
+import edu.ie3.test.common.IconWeatherTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
+import edu.ie3.util.TimeUtil
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
@@ -152,5 +154,21 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
     coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
     equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries_193186)
+  }
+
+  def "A InfluxDbWeatherSource returns all time keys after a given time key correctly"() {
+    given:
+    def time = TimeUtil.withDefaults.toZonedDateTime("2020-04-28T15:00:00+00:00")
+    def TIME_16H = time.plusHours(1)
+    def TIME_17H = time.plusHours(2)
+
+    when:
+    def actual = source.getTimeKeysAfter(time)
+
+    then:
+    actual.size() == 2
+
+    actual.get(IconWeatherTestData.COORDINATE_193186) == [TIME_16H, TIME_17H]
+    actual.get(IconWeatherTestData.COORDINATE_193187) == [TIME_16H]
   }
 }

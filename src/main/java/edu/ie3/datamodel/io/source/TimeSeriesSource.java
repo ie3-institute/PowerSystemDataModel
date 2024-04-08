@@ -51,4 +51,12 @@ public abstract class TimeSeriesSource<V extends Value> {
       throws SourceException;
 
   public abstract Optional<V> getValue(ZonedDateTime time) throws SourceException;
+
+  /**
+   * Method to return all time keys after a given timestamp.
+   *
+   * @param time given time
+   * @return a list of time keys
+   */
+  public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time);
 }

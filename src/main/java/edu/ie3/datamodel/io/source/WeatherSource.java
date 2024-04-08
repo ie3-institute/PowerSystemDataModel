@@ -28,8 +28,6 @@ public abstract class WeatherSource {
 
   protected TimeBasedWeatherValueFactory weatherFactory;
 
-  protected Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries;
-
   protected IdCoordinateSource idCoordinateSource;
 
   protected static final String COORDINATE_ID = "coordinateid";
@@ -60,6 +58,14 @@ public abstract class WeatherSource {
 
   public abstract Optional<TimeBasedValue<WeatherValue>> getWeather(
       ZonedDateTime date, Point coordinate) throws SourceException;
+
+  public abstract Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
+      throws SourceException;
+
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
+      throws SourceException {
+    return getTimeKeysAfter(time).getOrDefault(coordinate, Collections.emptyList());
+  }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

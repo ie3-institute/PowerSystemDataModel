@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
+import edu.ie3.test.common.IconWeatherTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
@@ -148,5 +149,21 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
+  }
+
+  def "A CouchbaseWeatherSource returns all time keys after a given time key correctly"() {
+    given:
+    def time = TimeUtil.withDefaults.toZonedDateTime("2020-04-28T15:00:00+00:00")
+    def TIME_16H = time.plusHours(1)
+    def TIME_17H = time.plusHours(2)
+
+    when:
+    def actual = source.getTimeKeysAfter(time)
+
+    then:
+    actual.size() == 2
+
+    actual.get(IconWeatherTestData.COORDINATE_193186) == [TIME_16H, TIME_17H]
+    actual.get(IconWeatherTestData.COORDINATE_193187) == [TIME_16H]
   }
 }
