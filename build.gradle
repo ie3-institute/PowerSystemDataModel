@@ -93,7 +93,7 @@ dependencies {
   implementation 'com.couchbase.client:java-client:3.6.1'
   runtimeOnly 'org.postgresql:postgresql:42.7.3' // postgresql jdbc driver required during runtime
 
-  implementation 'commons-io:commons-io:2.16.0' // I/O functionalities
+  implementation 'commons-io:commons-io:2.16.1' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.16.1' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.26.1' // I/O functionalities
 }
