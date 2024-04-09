@@ -153,7 +153,7 @@ public class SqlConnector implements DataConnector {
           return rs.next();
         } catch (SQLException e) {
           log.error("Exception at extracting next ResultSet: ", e);
-          throw new RuntimeException(e);
+          return false;
         }
       }
 
