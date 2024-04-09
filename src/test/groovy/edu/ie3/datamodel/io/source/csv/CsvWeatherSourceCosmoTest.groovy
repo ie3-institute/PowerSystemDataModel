@@ -17,7 +17,6 @@ import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
 import edu.ie3.test.common.CosmoWeatherTestData
-import edu.ie3.test.common.IconWeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.geo.GeoUtils
@@ -229,9 +228,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 
   def "The CsvWeatherSource returns all time keys after a given time key correctly"() {
     given:
-    def time = TimeUtil.withDefaults.toZonedDateTime("2020-04-28T15:00:00+00:00")
-    def time_16h = time.plusHours(1)
-    def time_17h = time.plusHours(2)
+    def time = CosmoWeatherTestData.TIME_15H
 
     when:
     def actual = source.getTimeKeysAfter(time)
@@ -239,8 +236,11 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     then:
     actual.size() == 3
 
-    actual.get(IconWeatherTestData.COORDINATE_193186) == [time_16h, time_17h]
-    actual.get(IconWeatherTestData.COORDINATE_193187) == [time_16h]
-    actual.get(IconWeatherTestData.COORDINATE_193188) == []
+    actual.get(CosmoWeatherTestData.COORDINATE_193186) == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+    actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
+    actual.get(CosmoWeatherTestData.COORDINATE_193188) == []
   }
 }

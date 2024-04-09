@@ -11,7 +11,6 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
-import edu.ie3.test.common.IconWeatherTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
@@ -143,9 +142,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
   def "A SqlWeatherSource returns all time keys after a given time key correctly"() {
     given:
-    def time = TimeUtil.withDefaults.toZonedDateTime("2020-04-28T15:00:00+00:00")
-    def time_16h = time.plusHours(1)
-    def time_17h = time.plusHours(2)
+    def time = CosmoWeatherTestData.TIME_15H
 
     when:
     def actual = source.getTimeKeysAfter(time)
@@ -153,7 +150,10 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     then:
     actual.size() == 2
 
-    actual.get(IconWeatherTestData.COORDINATE_193186) == [time_16h, time_17h]
-    actual.get(IconWeatherTestData.COORDINATE_193187) == [time_16h]
+    actual.get(CosmoWeatherTestData.COORDINATE_193186) == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+    actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
   }
 }
