@@ -48,6 +48,15 @@ public class VoltageLevel implements Serializable {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    VoltageLevel that = (VoltageLevel) o;
+    return this.nominalVoltage.isEquivalentTo(that.nominalVoltage);
+  }
+
+  @Override
   public String toString() {
     return "VoltageLevel{" + "id='" + id + '\'' + ", nominalVoltage=" + nominalVoltage + '}';
   }
