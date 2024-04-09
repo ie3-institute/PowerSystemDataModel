@@ -9,6 +9,8 @@ import edu.ie3.util.StringUtils;
 import edu.ie3.util.TimeUtil;
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +68,9 @@ public class SqlConnector implements DataConnector {
    */
   public int executeUpdate(String updateQuery) {
     try (Statement stmt = getConnection().createStatement()) {
-      return stmt.executeUpdate(updateQuery);
+      int res = stmt.executeUpdate(updateQuery);
+      getConnection().commit();
+      return res;
     } catch (SQLException e) {
       log.error(String.format("Error at execution of query \"%1.127s\": ", updateQuery), e);
       return -1;
@@ -85,7 +89,8 @@ public class SqlConnector implements DataConnector {
   }
 
   /**
-   * Establishes and returns a database connection
+   * Establishes and returns a database connection. The {@link Connection#getAutoCommit()} is set to
+   * {@code false}.
    *
    * @param reuseConnection should the connection be used again, if it is still valid? If not, a new
    *     connection will be established
@@ -98,6 +103,7 @@ public class SqlConnector implements DataConnector {
         if (connection != null) connection.close();
 
         connection = DriverManager.getConnection(jdbcUrl, connectionProps);
+        connection.setAutoCommit(false);
       } catch (SQLException e) {
         throw new SQLException("Could not establish connection: ", e);
       }
@@ -115,21 +121,47 @@ public class SqlConnector implements DataConnector {
   }
 
   /**
-   * Extracts all field to value maps from the ResultSet, one for each row
+   * Method to execute a {@link PreparedStatement} and return its result as a stream.
    *
-   * @param rs the ResultSet to use
-   * @return a list of field maps
+   * @param ps to execute
+   * @param fetchSize used for {@link PreparedStatement#setFetchSize(int)}
+   * @return a stream of maps
+   * @throws SQLException if an exception occurred while executing the query
    */
-  public List<Map<String, String>> extractFieldMaps(ResultSet rs) {
-    List<Map<String, String>> fieldMaps = new ArrayList<>();
-    try {
-      while (rs.next()) {
-        fieldMaps.add(extractFieldMap(rs));
+  public Stream<Map<String, String>> toStream(PreparedStatement ps, int fetchSize)
+      throws SQLException {
+    ps.setFetchSize(fetchSize);
+    Iterator<Map<String, String>> sqlIterator = getSqlIterator(ps.executeQuery());
+
+    return StreamSupport.stream(
+        Spliterators.spliteratorUnknownSize(
+            sqlIterator, Spliterator.NONNULL | Spliterator.IMMUTABLE),
+        true);
+  }
+
+  /**
+   * Returns an {@link Iterator} for the given {@link ResultSet}.
+   *
+   * @param rs given result set
+   * @return an iterator
+   */
+  public Iterator<Map<String, String>> getSqlIterator(ResultSet rs) {
+    return new Iterator<>() {
+      @Override
+      public boolean hasNext() {
+        try {
+          return rs.next();
+        } catch (SQLException e) {
+          log.error("Exception at extracting next ResultSet: ", e);
+          throw new RuntimeException(e);
+        }
       }
-    } catch (SQLException e) {
-      log.error("Exception at extracting ResultSet: ", e);
-    }
-    return fieldMaps;
+
+      @Override
+      public Map<String, String> next() {
+        return extractFieldMap(rs);
+      }
+    };
   }
 
   /**

@@ -121,16 +121,15 @@ class SqlConnectorIT extends Specification implements TestContainerHelper {
   def "A SQL connector is able to extract all field to value maps from result set"() {
     given:
     def preparedStatement = connector.getConnection(false).prepareStatement("SELECT * FROM public.test;")
-    def resultSet = preparedStatement.executeQuery()
 
     when:
-    def actual = connector.extractFieldMaps(resultSet)
+    def actual = connector.toStream(preparedStatement, 1).toList()
 
     then:
     actual.size() == 2
 
     cleanup:
-    resultSet.close()
+    preparedStatement.close()
   }
 
   def "A SQL connector shuts down correctly, if no connection was opened"() {

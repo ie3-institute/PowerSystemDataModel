@@ -125,7 +125,6 @@ public class SqlDataSource implements DataSource {
       ResultSet rs =
           connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
       Set<String> columnNames = new HashSet<>();
-
       while (rs.next()) {
         String name = rs.getString("COLUMN_NAME");
         columnNames.add(StringUtils.snakeCaseToCamelCase(name));
@@ -177,11 +176,15 @@ public class SqlDataSource implements DataSource {
    * table name.
    */
   protected Stream<Map<String, String>> executeQuery(String query, AddParams addParams) {
-    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
+    try {
+      PreparedStatement ps = connector.getConnection().prepareStatement(query);
       addParams.addParams(ps);
 
-      ResultSet resultSet = ps.executeQuery();
-      return connector.extractFieldMaps(resultSet).stream();
+      Stream<Map<String, String>> stream = connector.toStream(ps, 1000);
+
+      // don't work with `try with resource`, but is necessary to get results
+      ps.closeOnCompletion();
+      return stream;
     } catch (SQLException e) {
       log.error("Error during execution of query {}", query, e);
     }
