@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.voltagelevels;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.measure.quantity.ElectricPotential;
 import tech.units.indriya.ComparableQuantity;
 
@@ -54,6 +55,11 @@ public class VoltageLevel implements Serializable {
 
     VoltageLevel that = (VoltageLevel) o;
     return this.nominalVoltage.isEquivalentTo(that.nominalVoltage);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, nominalVoltage);
   }
 
   @Override
