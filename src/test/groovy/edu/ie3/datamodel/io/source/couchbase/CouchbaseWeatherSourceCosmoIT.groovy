@@ -154,8 +154,8 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
   def "A CouchbaseWeatherSource returns all time keys after a given time key correctly"() {
     given:
     def time = TimeUtil.withDefaults.toZonedDateTime("2020-04-28T15:00:00+00:00")
-    def TIME_16H = time.plusHours(1)
-    def TIME_17H = time.plusHours(2)
+    def time_16h = time.plusHours(1)
+    def time_17h = time.plusHours(2)
 
     when:
     def actual = source.getTimeKeysAfter(time)
@@ -163,7 +163,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     then:
     actual.size() == 2
 
-    actual.get(IconWeatherTestData.COORDINATE_193186) == [TIME_16H, TIME_17H]
-    actual.get(IconWeatherTestData.COORDINATE_193187) == [TIME_16H]
+    actual.get(IconWeatherTestData.COORDINATE_193186) == [time_16h, time_17h]
+    actual.get(IconWeatherTestData.COORDINATE_193187) == [time_16h]
   }
 }

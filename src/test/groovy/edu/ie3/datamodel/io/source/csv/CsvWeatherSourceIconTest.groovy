@@ -21,8 +21,6 @@ import org.locationtech.jts.geom.Point
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.time.ZonedDateTime
-
 class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
 
   @Shared
