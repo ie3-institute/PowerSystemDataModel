@@ -5,11 +5,11 @@ plugins {
   id 'signing'
   id 'pmd' // code check, working on source code
   id 'com.diffplug.spotless' version '6.25.0' //code format
-  id 'com.github.spotbugs' version '6.0.9' // code check, working on byte code
+  id 'com.github.spotbugs' version '6.0.10' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "4.4.1.3373" // sonarqube
+  id "org.sonarqube" version "5.0.0.4638" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
@@ -73,7 +73,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.14.12' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.14.13' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
@@ -90,10 +90,10 @@ dependencies {
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.24'
-  implementation 'com.couchbase.client:java-client:3.6.0'
+  implementation 'com.couchbase.client:java-client:3.6.1'
   runtimeOnly 'org.postgresql:postgresql:42.7.3' // postgresql jdbc driver required during runtime
 
-  implementation 'commons-io:commons-io:2.15.1' // I/O functionalities
+  implementation 'commons-io:commons-io:2.16.1' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.16.1' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.26.1' // I/O functionalities
 }
