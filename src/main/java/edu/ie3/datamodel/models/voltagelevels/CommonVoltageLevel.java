@@ -80,6 +80,7 @@ public class CommonVoltageLevel extends VoltageLevel {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
 
     CommonVoltageLevel that = (CommonVoltageLevel) o;
     return this.voltageRange.equals(that.voltageRange);
