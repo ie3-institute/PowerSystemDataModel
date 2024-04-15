@@ -48,9 +48,9 @@ public class CsvDataSource implements DataSource {
 
   private final FileNamingStrategy fileNamingStrategy;
 
-  public CsvDataSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvDataSource(String csvSep, Path directoryPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
-    this.connector = new CsvFileConnector(folderPath);
+    this.connector = new CsvFileConnector(directoryPath);
     this.fileNamingStrategy = fileNamingStrategy;
   }
 

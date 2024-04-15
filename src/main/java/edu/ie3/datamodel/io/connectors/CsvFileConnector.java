@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.datamodel.exceptions.ConnectorException;
-import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
 import edu.ie3.datamodel.io.csv.CsvFileDefinition;
@@ -14,7 +13,6 @@ import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
-import edu.ie3.datamodel.utils.Try.TrySupplier;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -48,27 +46,25 @@ public class CsvFileConnector implements DataConnector {
   }
 
   public synchronized BufferedCsvWriter getOrInitWriter(
-      Class<? extends Entity> clz, TrySupplier<CsvFileDefinition, FileException> supplier)
-      throws ConnectorException {
+      Class<? extends Entity> clz, CsvFileDefinition fileDefinition) throws ConnectorException {
     /* Try to the right writer */
     BufferedCsvWriter predefinedWriter = entityWriters.get(clz);
     if (predefinedWriter != null) return predefinedWriter;
 
     /* If it is not available, build and register one */
     try {
-      BufferedCsvWriter newWriter = initWriter(baseDirectory, supplier.get());
+      BufferedCsvWriter newWriter = initWriter(baseDirectory, fileDefinition);
 
       entityWriters.put(clz, newWriter);
       return newWriter;
-    } catch (ConnectorException | FileException | IOException e) {
+    } catch (ConnectorException | IOException e) {
       throw new ConnectorException(
           "Can neither find suitable writer nor build the correct one in CsvFileConnector.", e);
     }
   }
 
   public synchronized <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      BufferedCsvWriter getOrInitWriter(
-          T timeSeries, TrySupplier<CsvFileDefinition, FileException> supplier)
+      BufferedCsvWriter getOrInitWriter(T timeSeries, CsvFileDefinition fileDefinition)
           throws ConnectorException {
     /* Try to the right writer */
     BufferedCsvWriter predefinedWriter = timeSeriesWriters.get(timeSeries.getUuid());
@@ -76,11 +72,11 @@ public class CsvFileConnector implements DataConnector {
 
     /* If it is not available, build and register one */
     try {
-      BufferedCsvWriter newWriter = initWriter(baseDirectory, supplier.get());
+      BufferedCsvWriter newWriter = initWriter(baseDirectory, fileDefinition);
 
       timeSeriesWriters.put(timeSeries.getUuid(), newWriter);
       return newWriter;
-    } catch (ConnectorException | FileException | IOException e) {
+    } catch (ConnectorException | IOException e) {
       throw new ConnectorException(
           "Can neither find suitable writer nor build the correct one in CsvFileConnector.", e);
     }
@@ -127,8 +123,7 @@ public class CsvFileConnector implements DataConnector {
     Optional<BufferedCsvWriter> maybeWriter = Optional.ofNullable(timeSeriesWriters.get(uuid));
     if (maybeWriter.isPresent()) {
       log.debug("Remove reference to time series writer for UUID '{}'.", uuid);
-      timeSeriesWriters.remove(uuid);
-      maybeWriter.get().close();
+      timeSeriesWriters.remove(uuid).close();
     } else {
       log.warn("No writer found for time series '{}'.", uuid);
     }
@@ -145,8 +140,7 @@ public class CsvFileConnector implements DataConnector {
     Optional<BufferedCsvWriter> maybeWriter = Optional.ofNullable(entityWriters.get(clz));
     if (maybeWriter.isPresent()) {
       log.debug("Remove reference to entity writer for class '{}'.", clz);
-      entityWriters.remove(clz);
-      maybeWriter.get().close();
+      entityWriters.remove(clz).close();
     } else {
       log.warn("No writer found for class '{}'.", clz);
     }

@@ -251,13 +251,13 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
       BufferedCsvWriter writer =
           connector.getOrInitWriter(
               timeSeries,
-              () -> new CsvFileDefinition(timeSeries, headerElements, csvSep, fileNamingStrategy));
+              new CsvFileDefinition(timeSeries, headerElements, csvSep, fileNamingStrategy));
       persistTimeSeries(timeSeries, writer);
       connector.closeTimeSeriesWriter(timeSeries.getUuid());
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element.", e);
-    } catch (ConnectorException e) {
+    } catch (ConnectorException | FileException e) {
       log.error("Exception occurred during acquisition of writer.", e);
     } catch (IOException e) {
       log.error("Exception occurred during closing of writer.", e);
@@ -299,14 +299,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
       BufferedCsvWriter writer =
           connector.getOrInitWriter(
               entity.getClass(),
-              () ->
-                  new CsvFileDefinition(
-                      entity.getClass(), headerElements, csvSep, fileNamingStrategy));
+              new CsvFileDefinition(entity.getClass(), headerElements, csvSep, fileNamingStrategy));
       writer.write(entityFieldData);
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element.", e);
-    } catch (ConnectorException e) {
+    } catch (ConnectorException | FileException e) {
       log.error("Exception occurred during retrieval of writer. Cannot write this element.", e);
     } catch (IOException e) {
       log.error("Exception occurred during writing of this element. Cannot write this element.", e);

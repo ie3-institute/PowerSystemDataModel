@@ -70,7 +70,7 @@ class CsvFileConnectorTest extends Specification {
 
     when:
     /* The head line is of no interest here */
-    connector.getOrInitWriter(NodeInput, () -> new CsvFileDefinition(NodeInput, [] as String[], ",", fileNamingStrategy))
+    connector.getOrInitWriter(NodeInput, new CsvFileDefinition(NodeInput, [] as String[], ",", fileNamingStrategy))
 
     then:
     noExceptionThrown()
@@ -89,7 +89,7 @@ class CsvFileConnectorTest extends Specification {
 
     when:
     /* The head line is of no interest here */
-    connector.getOrInitWriter(NodeInput, () -> new CsvFileDefinition(NodeInput, [] as String[], ",", fileNamingStrategy))
+    connector.getOrInitWriter(NodeInput, new CsvFileDefinition(NodeInput, [] as String[], ",", fileNamingStrategy))
 
     then:
     noExceptionThrown()
