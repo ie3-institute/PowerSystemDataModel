@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
-
+- Enhancing `VoltageLevel` with `equals` method [#1063](https://github.com/ie3-institute/PowerSystemDataModel/issues/1063)
 
 ### Fixed
 
@@ -34,7 +34,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added test for invalid input data in `CsvRawGridSource` [#1021](https://github.com/ie3-institute/PowerSystemDataModel/issues/1021)
 - Added `CsvThermalGridSource` [#1009](https://github.com/ie3-institute/PowerSystemDataModel/issues/1009)
 - Enhance documentation for CSV timeseries [#825](https://github.com/ie3-institute/PowerSystemDataModel/issues/825)
-- Enhancing `VoltageLevel` with `equals` method [#1063](https://github.com/ie3-institute/PowerSystemDataModel/issues/1063)
 
 ### Fixed
 - Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
