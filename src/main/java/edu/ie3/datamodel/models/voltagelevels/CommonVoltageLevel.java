@@ -7,10 +7,7 @@ package edu.ie3.datamodel.models.voltagelevels;
 
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.util.interval.RightOpenInterval;
-import java.util.Collections;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import javax.measure.quantity.ElectricPotential;
 import tech.units.indriya.ComparableQuantity;
 
@@ -77,6 +74,21 @@ public class CommonVoltageLevel extends VoltageLevel {
               + voltageRange
               + "), but are inconsistent.");
     return idCovered; /* voltage covered is always true, otherwise the exception would have been thrown. */
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+
+    CommonVoltageLevel that = (CommonVoltageLevel) o;
+    return this.voltageRange.equals(that.voltageRange);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), synonymousIds, voltageRange);
   }
 
   @Override
