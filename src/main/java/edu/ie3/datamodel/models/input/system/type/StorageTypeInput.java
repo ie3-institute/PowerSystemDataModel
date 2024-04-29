@@ -27,12 +27,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<DimensionlessRate> activePowerGradient;
   /** Efficiency of the charging and discharging process (typically in %) */
   private final ComparableQuantity<Dimensionless> eta;
-  /** Minimum permissible depth of discharge (typically in %) */
-  private final ComparableQuantity<Dimensionless> dod;
-  /** Maximum life time of the storage (typically in h) */
-  private final ComparableQuantity<Time> lifeTime;
-  /** Maximum amount of full charging cycles */
-  private final int lifeCycle;
+
 
   /**
    * @param uuid of the input entity
@@ -45,9 +40,6 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
    * @param pMax maximum permissible active power of the integrated inverter
    * @param activePowerGradient maximum permissible gradient of active power change
    * @param eta efficiency of the charging and discharging process
-   * @param dod maximum permissible depth of discharge
-   * @param lifeTime maximum life time of the storage
-   * @param lifeCycle maximum amount of full charging/discharging cycles
    */
   public StorageTypeInput(
       UUID uuid,
@@ -59,34 +51,16 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       double cosPhiRated,
       ComparableQuantity<Power> pMax,
       ComparableQuantity<DimensionlessRate> activePowerGradient,
-      ComparableQuantity<Dimensionless> eta,
-      ComparableQuantity<Dimensionless> dod,
-      ComparableQuantity<Time> lifeTime,
-      int lifeCycle) {
+      ComparableQuantity<Dimensionless> eta) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
     this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
     this.eta = eta.to(StandardUnits.EFFICIENCY);
-    this.dod = dod.to(StandardUnits.DOD);
-    this.lifeTime = lifeTime.to(StandardUnits.LIFE_TIME);
-    this.lifeCycle = lifeCycle;
   }
 
   public ComparableQuantity<Dimensionless> getEta() {
     return eta;
-  }
-
-  public ComparableQuantity<Dimensionless> getDod() {
-    return dod;
-  }
-
-  public ComparableQuantity<Time> getLifeTime() {
-    return lifeTime;
-  }
-
-  public int getLifeCycle() {
-    return lifeCycle;
   }
 
   public ComparableQuantity<Energy> geteStorage() {
@@ -106,19 +80,16 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     if (this == o) return true;
     if (!(o instanceof StorageTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    return lifeCycle == that.lifeCycle
-        && eStorage.equals(that.eStorage)
+    return eStorage.equals(that.eStorage)
         && pMax.equals(that.pMax)
         && activePowerGradient.equals(that.activePowerGradient)
-        && eta.equals(that.eta)
-        && dod.equals(that.dod)
-        && lifeTime.equals(that.lifeTime);
+        && eta.equals(that.eta);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(), eStorage, pMax, activePowerGradient, eta, dod, lifeTime, lifeCycle);
+        super.hashCode(), eStorage, pMax, activePowerGradient, eta);
   }
 
   @Override
@@ -144,12 +115,6 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
         + activePowerGradient
         + ", eta="
         + eta
-        + ", dod="
-        + dod
-        + ", lifeTime="
-        + lifeTime
-        + ", lifeCycle="
-        + lifeCycle
         + '}';
   }
 }

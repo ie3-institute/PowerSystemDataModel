@@ -53,9 +53,6 @@ public class SystemParticipantTypeInputFactory
   // StorageTypeInput
   private static final String P_MAX = "pmax";
   private static final String ETA = "eta";
-  private static final String DOD = "dod";
-  private static final String LIFETIME = "lifetime";
-  private static final String LIFECYCLE = "lifecycle";
 
   // WecTypeInput
   private static final String CP_CHARACTERISTIC = "cpCharacteristic";
@@ -95,10 +92,7 @@ public class SystemParticipantTypeInputFactory
               E_STORAGE,
               P_MAX,
               ACTIVE_POWER_GRADIENT,
-              ETA,
-              DOD,
-              LIFETIME,
-              LIFECYCLE);
+              ETA);
     }
 
     return Collections.singletonList(constructorParameters);
@@ -240,9 +234,6 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<DimensionlessRate> activePowerGradient =
         data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     ComparableQuantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
-    ComparableQuantity<Dimensionless> dod = data.getQuantity(DOD, StandardUnits.DOD);
-    ComparableQuantity<Time> lifeTime = data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME);
-    int lifeCycle = data.getInt(LIFECYCLE);
 
     return new StorageTypeInput(
         uuid,
@@ -254,9 +245,6 @@ public class SystemParticipantTypeInputFactory
         cosPhi,
         pMax,
         activePowerGradient,
-        eta,
-        dod,
-        lifeTime,
-        lifeCycle);
+        eta);
   }
 }
