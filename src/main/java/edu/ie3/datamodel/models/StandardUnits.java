@@ -101,12 +101,8 @@ public class StandardUnits {
       KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
   /** Thermal transmission through an insulation in kW/K */
   public static final Unit<ThermalConductance> THERMAL_TRANSMISSION = KILOWATT_PER_KELVIN;
-  /** Depth of discharge in % */
-  public static final Unit<Dimensionless> DOD = PERCENT;
   /** State of charge in % */
   public static final Unit<Dimensionless> SOC = PERCENT;
-  /** Life time of a system in h */
-  public static final Unit<Time> LIFE_TIME = HOUR;
   /** Area covered by the rotor of a wind energy converter in m² */
   public static final Unit<Area> ROTOR_AREA = SQUARE_METRE;
   /** Height of the hub of an wind energy converter in metre */

@@ -245,10 +245,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       "estorage"              : "6",
       "pmax"                  : "8",
       "activepowergradient"   : "1",
-      "eta"                   : "9",
-      "dod"                   : "10",
-      "lifetime"              : "11",
-      "lifecycle"             : "12"
+      "eta"                   : "9"
     ]
     def typeInputClass = StorageTypeInput
 
@@ -271,9 +268,6 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
       assert activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
       assert eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
-      assert dod == getQuant(parameter["dod"], StandardUnits.DOD)
-      assert lifeTime == getQuant(parameter["lifetime"], StandardUnits.LIFE_TIME)
-      assert lifeCycle == Integer.parseInt(parameter["lifecycle"])
     }
   }
 
@@ -290,9 +284,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       "estorage":	    "6",
       "pmin":	        "7",
       "pmax":	        "8",
-      "eta":	        "9",
-      "dod":	        "10",
-      "lifetime":	    "11"
+      "eta":	        "9"
     ]
 
     when:
@@ -300,20 +292,18 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
     then:
     input.failure
-    input.exception.get().cause.message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
+    input.exception.get().cause.message == "The provided fields [capex, cosPhiRated, estorage, eta, id, opex, pmax, pmin, srated, uuid] with data \n" +
         "{capex -> 3,\n" +
         "cosPhiRated -> 6,\n" +
-        "dod -> 10,\n" +
         "estorage -> 6,\n" +
         "eta -> 9,\n" +
         "id -> blablub,\n" +
-        "lifetime -> 11,\n" +
         "opex -> 4,\n" +
         "pmax -> 8,\n" +
         "pmin -> 7,\n" +
         "srated -> 5,\n" +
         "uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
-        "0: [activepowergradient, capex, cosphirated, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, uuid]\n"
+        "0: [activepowergradient, capex, cosphirated, estorage, eta, id, opex, pmax, srated, uuid]\n"
   }
 }
