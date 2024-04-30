@@ -411,7 +411,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     where:
     invalidStorageType                                                                                                                                                                                                                           || expectedException
     new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, Quantities.getQuantity(110, EFFICIENCY))                                                                                  || new InvalidEntityException("Efficiency of the electrical converter of StorageTypeInput must be between 0% and 100%", invalidStorageType)
-    new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, Quantities.getQuantity(-15, ACTIVE_POWER_IN), Quantities.getQuantity(-100, ACTIVE_POWER_GRADIENT), eta) || new InvalidEntityException("The following quantities have to be zero or positive: -15 kW, -100 %/h, -10.5 h", invalidStorageType)
+    new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, Quantities.getQuantity(-15, ACTIVE_POWER_IN), Quantities.getQuantity(-100, ACTIVE_POWER_GRADIENT), eta) || new InvalidEntityException("The following quantities have to be zero or positive: -15 kW, -100 %/h", invalidStorageType)
     new StorageTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), sRated, cosPhiRated, pMax, cpRate, eta)                                                                                          || new InvalidEntityException("The following quantities have to be positive: 0 kWh", invalidStorageType)
   }
 

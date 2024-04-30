@@ -482,13 +482,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a StorageTypeInput if:
    *
    * <ul>
-   *   <li>its permissible amount of full cycles is not negative
    *   <li>its efficiency of the electrical converter is between 0% and 100%
-   *   <li>its maximum permissible depth of discharge is between 0% and 100%
    *   <li>its active power gradient is not negative
    *   <li>its battery capacity is positive
    *   <li>its maximum permissible active power (in-feed or consumption) is not negative
-   *   <li>its permissible hours of full use is not negative
    * </ul>
    *
    * @param storageTypeInput StorageTypeInput to validate
