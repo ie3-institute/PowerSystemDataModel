@@ -160,17 +160,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
       activePowerGradient == sptd.storageTypeInput.activePowerGradient
       eta == sptd.storageTypeInput.eta
     }
-    def storageTypes = typeSource.storageTypes
-    storageTypes.first().uuid == sptd.storageTypeInput.uuid
-    storageTypes.first().id == sptd.storageTypeInput.id
-    storageTypes.first().capex == sptd.storageTypeInput.capex
-    storageTypes.first().opex == sptd.storageTypeInput.opex
-    storageTypes.first().eStorage == sptd.storageTypeInput.eStorage
-    storageTypes.first().sRated == sptd.storageTypeInput.sRated
-    storageTypes.first().cosPhiRated == sptd.storageTypeInput.cosPhiRated
-    storageTypes.first().pMax == sptd.storageTypeInput.pMax
-    storageTypes.first().activePowerGradient == sptd.storageTypeInput.activePowerGradient
-    storageTypes.first().eta == sptd.storageTypeInput.eta
   }
 
   def "A CsvTypeSource should read and handle valid wec type file as expected"() {
