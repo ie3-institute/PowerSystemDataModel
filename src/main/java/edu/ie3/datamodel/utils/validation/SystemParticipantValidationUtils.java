@@ -499,7 +499,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       StorageTypeInput storageTypeInput) {
     List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
 
-
     exceptions.addAll(
         Try.ofVoid(
             InvalidEntityException.class,
@@ -511,8 +510,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
             () ->
                 detectNegativeQuantities(
                     new Quantity<?>[] {
-                      storageTypeInput.getpMax(),
-                      storageTypeInput.getActivePowerGradient(),
+                      storageTypeInput.getpMax(), storageTypeInput.getActivePowerGradient(),
                     },
                     storageTypeInput),
             () ->

@@ -86,12 +86,7 @@ public class SystemParticipantTypeInputFactory
           expandSet(standardConstructorParams, ETA_EL, ETA_THERMAL, P_THERMAL, P_OWN);
     } else if (entityClass.equals(StorageTypeInput.class)) {
       constructorParameters =
-          expandSet(
-              standardConstructorParams,
-              E_STORAGE,
-              P_MAX,
-              ACTIVE_POWER_GRADIENT,
-              ETA);
+          expandSet(standardConstructorParams, E_STORAGE, P_MAX, ACTIVE_POWER_GRADIENT, ETA);
     }
 
     return Collections.singletonList(constructorParameters);
@@ -237,15 +232,6 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
 
     return new StorageTypeInput(
-        uuid,
-        id,
-        capEx,
-        opEx,
-        eStorage,
-        sRated,
-        cosPhi,
-        pMax,
-        activePowerGradient,
-        eta);
+        uuid, id, capEx, opEx, eStorage, sRated, cosPhi, pMax, activePowerGradient, eta);
   }
 }

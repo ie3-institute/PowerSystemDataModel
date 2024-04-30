@@ -28,7 +28,6 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Efficiency of the charging and discharging process (typically in %) */
   private final ComparableQuantity<Dimensionless> eta;
 
-
   /**
    * @param uuid of the input entity
    * @param id of this type of Storage
@@ -93,8 +92,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), eStorage, pMax, activePowerGradient, eta);
+    return Objects.hash(super.hashCode(), eStorage, pMax, activePowerGradient, eta);
   }
 
   @Override
@@ -145,9 +143,6 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       this.pMax = entity.getpMax();
       this.activePowerGradient = entity.getActivePowerGradient();
       this.eta = entity.getEta();
-      this.dod = entity.getDod();
-      this.lifeTime = entity.getLifeTime();
-      this.lifeCycle = entity.getLifeCycle();
     }
 
     public StorageTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
@@ -235,10 +230,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
           getCosPhiRated(),
           pMax,
           activePowerGradient,
-          eta,
-          dod,
-          lifeTime,
-          lifeCycle);
+          eta);
     }
 
     @Override
