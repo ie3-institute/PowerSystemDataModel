@@ -17,23 +17,23 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series with missing values"() {
     given:
-    def factory = new CosmoTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
+    def factory = new CosmoTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     Map<String, String> parameter = [
       "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
       "time"             : TimeUtil.withDefaults.toString(time),
-      "diffuseirradiance": "282.671997070312",
-      "directirradiance" : "286.872985839844",
+      "diffuseIrradiance": "282.671997070312",
+      "directIrradiance" : "286.872985839844",
       "temperature"      : "",
-      "winddirection"    : "0",
-      "windvelocity"     : "1.66103506088257"
+      "windDirection"    : "0",
+      "windVelocity"     : "1.66103506088257"
     ]
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
-    def expectedResults = new TimeBasedValue(UUID.fromString("980f7714-8def-479f-baae-4deed6c8d6d1"),
+    def expectedResults = new TimeBasedValue(
         time, new WeatherValue(coordinate,
         Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
@@ -50,23 +50,23 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
     given:
-    def factory = new CosmoTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
+    def factory = new CosmoTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     Map<String, String> parameter = [
       "time"             : TimeUtil.withDefaults.toString(time),
       "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
-      "diffuseirradiance": "282.671997070312",
-      "directirradiance" : "286.872985839844",
+      "diffuseIrradiance": "282.671997070312",
+      "directIrradiance" : "286.872985839844",
       "temperature"      : "278.019012451172",
-      "winddirection"    : "0",
-      "windvelocity"     : "1.66103506088257"
+      "windDirection"    : "0",
+      "windVelocity"     : "1.66103506088257"
     ]
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
-    def expectedResults = new TimeBasedValue(UUID.fromString("980f7714-8def-479f-baae-4deed6c8d6d1"),
+    def expectedResults = new TimeBasedValue(
         time, new WeatherValue(coordinate,
         Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),

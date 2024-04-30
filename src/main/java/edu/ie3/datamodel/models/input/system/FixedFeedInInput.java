@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
@@ -31,6 +32,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param sRated Rated apparent power
    * @param cosPhiRated Power factor
    */
@@ -41,9 +43,10 @@ public class FixedFeedInInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
   }
@@ -55,6 +58,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param sRated Rated apparent power
    * @param cosPhiRated Power factor
    */
@@ -63,9 +67,10 @@ public class FixedFeedInInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
-    super(uuid, id, node, qCharacteristics);
+    super(uuid, id, node, qCharacteristics, em);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
   }
@@ -110,7 +115,8 @@ public class FixedFeedInInput extends SystemParticipantInput {
         + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + '\''
+        + "', em="
+        + getControllingEm()
         + ", sRated="
         + sRated
         + ", cosphiRated="
@@ -138,6 +144,22 @@ public class FixedFeedInInput extends SystemParticipantInput {
       this.cosPhiRated = entity.getCosPhiRated();
     }
 
+    public FixedFeedInInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
+      this.sRated = sRated;
+      return this;
+    }
+
+    public FixedFeedInInputCopyBuilder cosPhiRated(double cosPhiRated) {
+      this.cosPhiRated = cosPhiRated;
+      return this;
+    }
+
+    @Override
+    public FixedFeedInInputCopyBuilder scale(Double factor) {
+      sRated(sRated.multiply(factor));
+      return this;
+    }
+
     @Override
     public FixedFeedInInput build() {
       return new FixedFeedInInput(
@@ -147,18 +169,9 @@ public class FixedFeedInInput extends SystemParticipantInput {
           getOperationTime(),
           getNode(),
           getqCharacteristics(),
+          getEm(),
           sRated,
           cosPhiRated);
-    }
-
-    public FixedFeedInInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
-      this.sRated = sRated;
-      return this;
-    }
-
-    public FixedFeedInInputCopyBuilder cosPhiRated(double cosPhiRated) {
-      this.cosPhiRated = cosPhiRated;
-      return this;
     }
 
     @Override

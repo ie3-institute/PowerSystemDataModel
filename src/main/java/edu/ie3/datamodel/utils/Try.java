@@ -11,6 +11,7 @@ import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.TryException;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -96,6 +97,21 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
+   * Method to create a {@link Try} object from Optional.
+   *
+   * @param opt The optional
+   * @param exception Supplier function that supplies an exception if Optional is empty
+   * @return a try object
+   * @param <T> type of data
+   * @param <E> type of exception
+   */
+  public static <T, E extends Exception> Try<T, E> from(
+      Optional<T> opt, ExceptionSupplier<E> exception) {
+    return opt.map(data -> (Try<T, E>) Success.<T, E>of(data))
+        .orElseGet(() -> new Failure<>(exception.get()));
+  }
+
+  /**
    * Method to retrieve the exceptions from all {@link Failure} objects.
    *
    * @param tries collection of {@link Try} objects
@@ -103,7 +119,28 @@ public abstract class Try<T, E extends Exception> {
    */
   public static <D, E extends Exception> List<E> getExceptions(
       Collection<Try<? extends D, E>> tries) {
-    return tries.stream().filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
+    return getExceptions(tries.stream());
+  }
+
+  /**
+   * Method to retrieve the exceptions from all {@link Failure} objects.
+   *
+   * @param tries stream of {@link Try} objects
+   * @return a list of {@link Exception}'s
+   */
+  public static <D, E extends Exception> List<E> getExceptions(Stream<Try<? extends D, E>> tries) {
+    return tries.filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
+  }
+
+  /**
+   * Method to retrieve the exceptions from all {@link Failure} objects.
+   *
+   * @param tries array of {@link Try} objects
+   * @return a list of {@link Exception}'s
+   */
+  @SafeVarargs
+  public static <D, E extends Exception> List<E> getExceptions(Try<? extends D, E>... tries) {
+    return Arrays.stream(tries).filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
   }
 
   /**
@@ -234,6 +271,41 @@ public abstract class Try<T, E extends Exception> {
   public abstract <U, R extends Exception> Try<U, R> transform(
       Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc);
 
+  /**
+   * Method to convert a {@link Try} object to a common type.
+   *
+   * @param successFunc that will be used to transform the data to the new type
+   * @param failureFunc that will be used to transform the exception to the new type
+   * @return the new type
+   * @param <U> new type
+   */
+  public abstract <U> U convert(
+      Function<? super T, ? extends U> successFunc, Function<E, U> failureFunc);
+
+  /**
+   * If this is a Success, the value is returned, otherwise given default is returned.
+   *
+   * @param defaultData the value to be returned, if this is a failure.
+   * @return the value of a success, otherwise {@code defaultData}
+   */
+  public abstract T getOrElse(Supplier<T> defaultData);
+
+  /**
+   * If this is a Success, it is returned, otherwise given default Try is returned.
+   *
+   * @param defaultTry the Try to be returned, if this is a failure.
+   * @return this try object if it is a Success, otherwise {@code defaultTry}
+   */
+  public abstract Try<T, E> orElse(Supplier<Try<T, E>> defaultTry);
+
+  /**
+   * Turns this Try into an {@link Optional} by returning the wrapped value if this is a success,
+   * and an empty optional if this is a failure.
+   *
+   * @return an optional of the value
+   */
+  public abstract Optional<T> toOptional();
+
   /** Implementation of {@link Try} class. This class is used to present a successful try. */
   public static final class Success<T, E extends Exception> extends Try<T, E> {
     private final T data;
@@ -298,6 +370,26 @@ public abstract class Try<T, E extends Exception> {
       return new Success<>(successFunc.apply(data));
     }
 
+    @Override
+    public <U> U convert(Function<? super T, ? extends U> successFunc, Function<E, U> failureFunc) {
+      return successFunc.apply(data);
+    }
+
+    @Override
+    public T getOrElse(Supplier<T> defaultData) {
+      return data;
+    }
+
+    @Override
+    public Try<T, E> orElse(Supplier<Try<T, E>> defaultTry) {
+      return this;
+    }
+
+    @Override
+    public Optional<T> toOptional() {
+      return Optional.of(data);
+    }
+
     /** Returns the stored data. */
     public T get() {
       return data;
@@ -323,6 +415,37 @@ public abstract class Try<T, E extends Exception> {
     @SuppressWarnings("unchecked")
     public static <E extends Exception> Success<Void, E> empty() {
       return (Success<Void, E>) emptySuccess;
+    }
+
+    /**
+     * Indicates whether some other object is "equal to" this {@code Success}. The other object is
+     * considered equal if:
+     *
+     * <ul>
+     *   <li>it is also a {@code Success} and;
+     *   <li>the values are "equal to" each other via {@code equals()}.
+     * </ul>
+     *
+     * @param obj an object to be tested for equality
+     * @return {@code true} if the other object is "equal to" this object otherwise {@code false}
+     */
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+
+      return obj instanceof Success<?, ?> other && Objects.equals(data, other.data);
+    }
+
+    /**
+     * Returns the hash code of the value.
+     *
+     * @return hash code value of the value
+     */
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(data);
     }
   }
 
@@ -382,6 +505,26 @@ public abstract class Try<T, E extends Exception> {
       return Failure.of(failureFunc.apply(exception));
     }
 
+    @Override
+    public <U> U convert(Function<? super T, ? extends U> successFunc, Function<E, U> failureFunc) {
+      return failureFunc.apply(exception);
+    }
+
+    @Override
+    public T getOrElse(Supplier<T> defaultData) {
+      return defaultData.get();
+    }
+
+    @Override
+    public Try<T, E> orElse(Supplier<Try<T, E>> defaultTry) {
+      return defaultTry.get();
+    }
+
+    @Override
+    public Optional<T> toOptional() {
+      return Optional.empty();
+    }
+
     /** Returns the thrown exception. */
     public E get() {
       return exception;
@@ -408,6 +551,37 @@ public abstract class Try<T, E extends Exception> {
      */
     public static <E extends Exception> Failure<Void, E> ofVoid(E exception) {
       return new Failure<>(exception);
+    }
+
+    /**
+     * Indicates whether some other object is "equal to" this {@code Failure}. The other object is
+     * considered equal if:
+     *
+     * <ul>
+     *   <li>it is also a {@code Failure} and;
+     *   <li>the exceptions are "equal to" each other via {@code equals()}.
+     * </ul>
+     *
+     * @param obj an object to be tested for equality
+     * @return {@code true} if the other object is "equal to" this object otherwise {@code false}
+     */
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+
+      return obj instanceof Failure<?, ?> other && Objects.equals(exception, other.exception);
+    }
+
+    /**
+     * Returns the hash code of the exception.
+     *
+     * @return hash code value of the exception
+     */
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(exception);
     }
   }
 

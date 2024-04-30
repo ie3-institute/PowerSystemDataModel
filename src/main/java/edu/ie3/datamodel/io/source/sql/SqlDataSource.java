@@ -9,7 +9,7 @@ import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -109,7 +109,38 @@ public class SqlDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass) {
+  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass) {
+    String tableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
+    return getSourceFields(tableName);
+  }
+
+  /**
+   * Method that uses the table name to retrieve all field names.
+   *
+   * @param tableName to be used
+   * @return an option for a set of found fields
+   */
+  public Optional<Set<String>> getSourceFields(String tableName) {
+    try {
+      ResultSet rs =
+          connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
+      Set<String> columnNames = new HashSet<>();
+
+      while (rs.next()) {
+        String name = rs.getString("COLUMN_NAME");
+        columnNames.add(StringUtils.snakeCaseToCamelCase(name));
+      }
+
+      return Optional.of(columnNames);
+    } catch (SQLException e) {
+      log.warn("The table '{}' couldn't be read and therefore not be validated!", tableName, e);
+      // FIXME only return empty if table not found. Throw exception if error occurred
+      return Optional.empty();
+    }
+  }
+
+  @Override
+  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass) {
     String explicitTableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
     return buildStreamByTableName(explicitTableName);
   }
@@ -122,7 +153,7 @@ public class SqlDataSource implements DataSource {
    * <p>(We cannot use {@link java.util.function.Function} here because it throws SQLException).
    */
   @FunctionalInterface
-  interface AddParams {
+  protected interface AddParams {
     /**
      * Enhance a PreparedStatement by inserting parameters for wildcards
      *
@@ -130,16 +161,6 @@ public class SqlDataSource implements DataSource {
      * @throws SQLException if anything goes wrong during preparation of the query
      */
     void addParams(PreparedStatement ps) throws SQLException;
-  }
-
-  /**
-   * Creates a stream with maps representing a data point in the SQL data source using an entity
-   * class.
-   */
-  protected Stream<Map<String, String>> buildStreamByEntityClass(
-      Class<? extends UniqueEntity> entityClass, AddParams addParams) {
-    String query = createBaseQueryString(schemaName, entityClass.getSimpleName());
-    return executeQuery(query, addParams);
   }
 
   /**

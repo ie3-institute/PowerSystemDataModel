@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Container object to denote a fully connected thermal "grid". As there are currently no branch
@@ -105,6 +106,18 @@ public record ThermalGrid(
      */
     public ThermalGridCopyBuilder storages(Set<ThermalStorageInput> storages) {
       this.storages = storages;
+      return this;
+    }
+
+    public ThermalGridCopyBuilder scale(Double factor) {
+      houses(
+          houses.stream()
+              .map(house -> house.copy().scale(factor).build())
+              .collect(Collectors.toSet()));
+      storages(
+          storages.stream()
+              .map(storage -> storage.copy().scale(factor).build())
+              .collect(Collectors.toSet()));
       return this;
     }
 

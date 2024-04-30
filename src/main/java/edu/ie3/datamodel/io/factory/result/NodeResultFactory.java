@@ -5,18 +5,19 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
 public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
-  private static final String VMAG = "vmag";
-  private static final String VANG = "vang";
+  private static final String VMAG = "vMag";
+  private static final String VANG = "vAng";
 
   public NodeResultFactory() {
     super(NodeResult.class);
@@ -26,32 +27,26 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
    * Create a new factory to build {@link NodeResult}s and utilize the given date time formatter
    * pattern to parse date time strings
    *
-   * @param dtfPattern Pattern to parse date time strings
+   * @param dateTimeFormatter to parse date time strings
    */
-  public NodeResultFactory(String dtfPattern) {
-    super(dtfPattern, NodeResult.class);
+  public NodeResultFactory(DateTimeFormatter dateTimeFormatter) {
+    super(dateTimeFormatter, NodeResult.class);
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData entityData) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, VMAG, VANG);
-    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
-
-    return Arrays.asList(minConstructorParams, optionalFields);
+    return List.of(minConstructorParams);
   }
 
   @Override
-  protected NodeResult buildModel(SimpleEntityData data) {
+  protected NodeResult buildModel(EntityData data) {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Dimensionless> vMagValue =
         data.getQuantity(VMAG, StandardUnits.VOLTAGE_MAGNITUDE);
     ComparableQuantity<Angle> vAngValue = data.getQuantity(VANG, StandardUnits.VOLTAGE_ANGLE);
-    Optional<UUID> uuidOpt =
-        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
-    return uuidOpt
-        .map(uuid -> new NodeResult(uuid, zdtTime, inputModelUuid, vMagValue, vAngValue))
-        .orElseGet(() -> new NodeResult(zdtTime, inputModelUuid, vMagValue, vAngValue));
+    return new NodeResult(zdtTime, inputModelUuid, vMagValue, vAngValue);
   }
 }

@@ -6,10 +6,13 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.FailedValidationException;
+import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.util.StringUtils;
 import java.util.*;
-import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * @param <R> Type of the intended return type (might differ slightly from target class (cf. {@link
  *     edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueFactory})).
  */
-public abstract class Factory<C, D extends FactoryData, R> {
+public abstract class Factory<C, D extends FactoryData, R> implements SourceValidator<C> {
   public static final Logger log = LoggerFactory.getLogger(Factory.class);
 
   private final List<Class<? extends C>> supportedClasses;
@@ -48,15 +51,10 @@ public abstract class Factory<C, D extends FactoryData, R> {
   public Try<R, FactoryException> get(D data) {
     isSupportedClass(data.getTargetClass());
 
-    // magic: case-insensitive get/set calls on set strings
-    final List<Set<String>> allFields = getFields(data);
-
     try {
-      validateParameters(data, allFields.toArray((IntFunction<Set<String>[]>) Set[]::new));
-
       // build the model
       return Success.of(buildModel(data));
-    } catch (FactoryException e) {
+    } catch (FactoryException | IllegalArgumentException e) {
       return Failure.of(
           new FactoryException(
               "An error occurred when creating instance of "
@@ -108,68 +106,98 @@ public abstract class Factory<C, D extends FactoryData, R> {
    * Returns list of sets of attribute names that the entity requires to be built. At least one of
    * these sets needs to be delivered for entity creation to be successful.
    *
-   * @param data EntityData (or subclass) containing the data
+   * @param entityClass class that can be used to specify the fields that are returned
    * @return list of possible attribute sets
    */
-  protected abstract List<Set<String>> getFields(D data);
+  protected abstract List<Set<String>> getFields(Class<?> entityClass);
 
   /**
-   * Validates the factory specific constructor parameters in two ways. 1) the biggest set of the
-   * provided field sets is compared against fields the class implements. If this test passes then
-   * we know for sure that the field names at least in the biggest constructor are equal to the
-   * provided factory strings 2) if 1) passes, the provided entity data (which is equal to the data
-   * e.g. read from the outside) is compared to all available constructor parameters provided by the
-   * fieldSets Array. If we find exactly one constructor, that matches the field names we can
-   * proceed. Otherwise a detailed exception message is thrown.
+   * Method to find and return additional fields that were found in a source and are not used by the
+   * data model. This method will return the minimal unused fields among all field sets, meaning
+   * that the set of actual fields is compared to the field set with the least unused fields.
    *
-   * @param data the entity containing at least the entity class as well a mapping of the provided
-   *     field name strings to its value (e.g. a headline of a csv to column values)
-   * @param fieldSets a set containing all available constructor combinations as field names
-   * @return the index of the set in the fieldSets array that fits the provided entity data
+   * @param actualFields found in the source
+   * @param validFieldSets that contains at least all fields found in the source
+   * @return a set of unused fields
    */
-  protected int validateParameters(D data, Set<String>... fieldSets) {
-    Map<String, String> fieldsToValues = data.getFieldsToValues();
+  protected Set<String> getUnusedFields(
+      Set<String> actualFields, List<Set<String>> validFieldSets) {
+    // checking for additional fields
+    // and returning the set with the least additional fields
+    return validFieldSets.stream()
+        .map(
+            s -> {
+              Set<String> set = new HashSet<>(actualFields);
+              set.removeAll(s);
+              return set;
+            })
+        .min(Comparator.comparing(Collection::size))
+        .orElse(Collections.emptySet());
+  }
 
-    // get all sets that match the fields to attributes
+  /**
+   * Method for validating the actual fields. The actual fields need to fully contain at least one
+   * of the sets returned by {@link #getFields(Class)}. If the actual fields don't contain all
+   * necessary fields, an {@link FactoryException} with a detail message is thrown. If the actual
+   * fields contain more fields than necessary, these fields are ignored.
+   *
+   * @param actualFields that were found
+   * @param entityClass of the build data
+   * @return either an exception wrapped by a {@link Failure} or an empty success
+   */
+  public Try<Void, ValidationException> validate(
+      Set<String> actualFields, Class<? extends C> entityClass) {
+    List<Set<String>> fieldSets = getFields(entityClass);
+    Set<String> harmonizedActualFields = toCamelCase(actualFields);
+
+    // comparing the actual fields to a list of possible fields (allows additional fields)
+    // if not all fields were found in a set, this set is filtered out
+    // all other fields are saved as a list
+    // allows snake, camel and mixed cases
     List<Set<String>> validFieldSets =
-        Arrays.stream(fieldSets).filter(x -> x.equals(fieldsToValues.keySet())).toList();
+        fieldSets.stream().filter(harmonizedActualFields::containsAll).toList();
 
-    if (validFieldSets.size() == 1) {
-      // if we can identify a unique parameter set for a constructor, we take it and return the
-      // index
-      Set<String> validFieldSet = validFieldSets.get(0);
-      return Arrays.asList(fieldSets).indexOf(validFieldSet);
-    } else {
+    if (validFieldSets.isEmpty()) {
       // build the exception string with extensive debug information
-      String providedFieldMapString =
-          fieldsToValues.keySet().stream()
-              .map(key -> key + " -> " + fieldsToValues.get(key))
-              .collect(Collectors.joining(",\n"));
-
-      String providedKeysString = "[" + String.join(", ", fieldsToValues.keySet()) + "]";
+      String providedKeysString = "[" + String.join(", ", actualFields) + "]";
 
       String possibleOptions = getFieldsString(fieldSets).toString();
 
-      throw new FactoryException(
-          "The provided fields "
-              + providedKeysString
-              + " with data \n{"
-              + providedFieldMapString
-              + "}"
-              + " are invalid for instance of "
-              + data.getTargetClass().getSimpleName()
-              + ". \nThe following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of '"
-              + data.getTargetClass().getSimpleName()
-              + "' are possible (NOT case-sensitive!):\n"
-              + possibleOptions);
+      return Failure.of(
+          new FailedValidationException(
+              "The provided fields "
+                  + providedKeysString
+                  + " are invalid for instance of '"
+                  + entityClass.getSimpleName()
+                  + "'. \nThe following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of '"
+                  + entityClass.getSimpleName()
+                  + "' are possible (NOT case-sensitive!):\n"
+                  + possibleOptions));
+    } else {
+      Set<String> unused = getUnusedFields(harmonizedActualFields, validFieldSets);
+
+      if (!unused.isEmpty()) {
+        log.debug(
+            "The following additional fields were found for entity class of '{}': {}",
+            entityClass.getSimpleName(),
+            unused);
+      }
+
+      return Success.empty();
     }
   }
 
-  protected static StringBuilder getFieldsString(Set<String>... fieldSets) {
+  protected static StringBuilder getFieldsString(List<Set<String>> fieldSets) {
     StringBuilder possibleOptions = new StringBuilder();
-    for (int i = 0; i < fieldSets.length; i++) {
-      Set<String> fieldSet = fieldSets[i];
-      String option = i + ": [" + String.join(", ", fieldSet) + "]\n";
+    for (int i = 0; i < fieldSets.size(); i++) {
+      Set<String> fieldSet = fieldSets.get(i);
+      String option =
+          i
+              + ": ["
+              + String.join(", ", fieldSet)
+              + "] or ["
+              + String.join(", ", toSnakeCase(fieldSet))
+              + "]\n";
       possibleOptions.append(option);
     }
     return possibleOptions;
@@ -177,12 +205,12 @@ public abstract class Factory<C, D extends FactoryData, R> {
 
   /**
    * Creates a new set of attribute names from given list of attributes. This method should always
-   * be used when returning attribute sets, i.e. through {@link #getFields(FactoryData)}.
+   * be used when returning attribute sets, i.e. through {@link #getFields(Class)}.
    *
    * @param attributes attribute names
    * @return new set exactly containing attribute names
    */
-  protected TreeSet<String> newSet(String... attributes) {
+  protected static TreeSet<String> newSet(String... attributes) {
     TreeSet<String> set = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     set.addAll(Arrays.asList(attributes));
     return set;
@@ -197,10 +225,28 @@ public abstract class Factory<C, D extends FactoryData, R> {
    * @param more attribute names to expand given set with
    * @return new set exactly containing given attribute set plus additional attributes
    */
-  protected TreeSet<String> expandSet(Set<String> attributeSet, String... more) {
+  protected static TreeSet<String> expandSet(Set<String> attributeSet, String... more) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     newSet.addAll(attributeSet);
     newSet.addAll(Arrays.asList(more));
+    return newSet;
+  }
+
+  protected static Set<String> toSnakeCase(Set<String> set) {
+    TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    newSet.addAll(set.stream().map(StringUtils::camelCaseToSnakeCase).toList());
+    return newSet;
+  }
+
+  protected static Set<String> toCamelCase(Set<String> set) {
+    TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    newSet.addAll(set.stream().map(StringUtils::snakeCaseToCamelCase).toList());
+    return newSet;
+  }
+
+  protected static Set<String> toLowerCase(Set<String> set) {
+    TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    newSet.addAll(set.stream().map(String::toLowerCase).toList());
     return newSet;
   }
 }

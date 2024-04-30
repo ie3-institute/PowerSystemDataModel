@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.SimpleEntityData
+import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.connector.ConnectorResult
 import edu.ie3.datamodel.models.result.connector.LineResult
@@ -35,7 +35,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
     given: "a connector result factory and model data"
     def resultFactory = new ConnectorResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30 17:26:44",
+      "time"      : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "iamag"     : "1.0",
       "iaang"     : "90",
@@ -53,7 +53,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
     }
 
     when:
-    Try<? extends ConnectorResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
+    Try<? extends ConnectorResult, FactoryException> result = resultFactory.get(new EntityData(parameter, modelClass))
 
     then:
     result.success

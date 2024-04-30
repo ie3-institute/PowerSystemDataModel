@@ -5,13 +5,12 @@
  */
 package edu.ie3.datamodel.utils
 
-import edu.ie3.util.geo.GeoUtils
-import edu.ie3.util.quantities.QuantityUtil
-import spock.lang.Shared
-
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.test.common.GridTestData
+import edu.ie3.util.geo.GeoUtils
+import edu.ie3.util.quantities.QuantityUtil
+import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 

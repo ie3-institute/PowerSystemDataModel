@@ -5,7 +5,8 @@
 */
 package edu.ie3.datamodel.utils;
 
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,14 +30,37 @@ public class ExceptionUtils {
   }
 
   /**
-   * Combines multiple {@link UniqueEntity} into a string.
+   * Creates a string containing multiple exception messages.
+   *
+   * @param exceptions list of exceptions
+   * @return str containing the messages
+   */
+  public static String getFullMessages(List<? extends Exception> exceptions) {
+    return exceptions.stream()
+        .map(e -> e.getMessage() + printStackTrace(e.getStackTrace()))
+        .reduce("", (a, b) -> a + "\n " + b)
+        .replaceFirst("\n ", "");
+  }
+
+  /**
+   * Combines multiple {@link Entity} into a string.
    *
    * @param entities to be combined
    * @return a string
    */
-  public static String combine(Collection<? extends UniqueEntity> entities) {
-    return "{"
-        + entities.stream().map(UniqueEntity::toString).collect(Collectors.joining(", "))
-        + "}";
+  public static String combine(Collection<? extends Entity> entities) {
+    return "{" + entities.stream().map(Entity::toString).collect(Collectors.joining(", ")) + "}";
+  }
+
+  /**
+   * Method for combining {@link StackTraceElement}s.
+   *
+   * @param elements to be combined
+   * @return a string
+   */
+  public static String printStackTrace(StackTraceElement... elements) {
+    return Arrays.stream(elements)
+        .map(StackTraceElement::toString)
+        .collect(Collectors.joining("\n  "));
   }
 }

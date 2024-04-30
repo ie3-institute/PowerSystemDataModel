@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
@@ -23,24 +23,24 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
   private static final String G = "g";
   private static final String R = "r";
   private static final String X = "x";
-  private static final String I_MAX = "imax";
-  private static final String V_RATED = "vrated";
+  private static final String I_MAX = "iMax";
+  private static final String V_RATED = "vRated";
 
   public LineTypeInputFactory() {
     super(LineTypeInput.class);
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData entityData) {
-    Set<String> constructorParams = newSet(ENTITY_UUID, ENTITY_ID, B, G, R, X, I_MAX, V_RATED);
+  protected List<Set<String>> getFields(Class<?> entityClass) {
+    Set<String> constructorParams = newSet(UUID, ID, B, G, R, X, I_MAX, V_RATED);
 
     return Collections.singletonList(constructorParams);
   }
 
   @Override
-  protected LineTypeInput buildModel(SimpleEntityData data) {
-    UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.getField(ENTITY_ID);
+  protected LineTypeInput buildModel(EntityData data) {
+    UUID uuid = data.getUUID(UUID);
+    String id = data.getField(ID);
     ComparableQuantity<SpecificConductance> b =
         data.getQuantity(B, StandardUnits.SUSCEPTANCE_PER_LENGTH);
     ComparableQuantity<SpecificConductance> g =

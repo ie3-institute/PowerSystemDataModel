@@ -6,9 +6,8 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.source.ResultEntitySource
-import spock.lang.Specification
-
 import edu.ie3.test.common.ResultEntityTestData as retd
+import spock.lang.Specification
 
 class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta {
 
@@ -42,7 +41,6 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
     chpResults.empty && hpResults.empty && evResults.empty && evcsResults.empty &&
         loadResults.empty && storageResults.empty && thermalHouseResults.empty && flexOptionsResults.empty
 
-    bmResults.first().uuid == retd.BM_UUID
     bmResults.first().inputModel == retd.BM_INPUT_MODEL
     bmResults.first().p == retd.BM_ACTIVE_POWER
     bmResults.first().q == retd.BM_REACTIVE_POWER

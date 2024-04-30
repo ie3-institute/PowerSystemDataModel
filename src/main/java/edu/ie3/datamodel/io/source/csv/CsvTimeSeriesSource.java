@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
@@ -18,9 +17,6 @@ import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -128,7 +124,8 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   /**
    * Attempts to read a time series with given unique identifier and file path. Single entries are
-   * obtained entries with the help of {@code fieldToValueFunction}.
+   * obtained entries with the help of {@code fieldToValueFunction}. If the file does not exist, an
+   * empty Stream is returned.
    *
    * @param timeSeriesUuid unique identifier of the time series
    * @param filePath path to the file to read
@@ -142,21 +139,14 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       Path filePath,
       Function<Map<String, String>, Try<TimeBasedValue<V>, FactoryException>> fieldToValueFunction)
       throws SourceException {
-    try (BufferedReader reader = dataSource.connector.initReader(filePath)) {
-      Try<Stream<TimeBasedValue<V>>, FailureException> timeBasedValues =
-          Try.scanStream(
-              dataSource
-                  .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-                  .map(fieldToValueFunction),
-              "TimeBasedValue<V>");
-      return new IndividualTimeSeries<>(
-          timeSeriesUuid, new HashSet<>(timeBasedValues.getOrThrow().toList()));
-    } catch (FileNotFoundException e) {
-      throw new SourceException("Unable to find a file with path '" + filePath + "'.", e);
-    } catch (IOException e) {
-      throw new SourceException("Error during reading of file'" + filePath + "'.", e);
-    } catch (FailureException e) {
-      throw new SourceException("Unable to build individual time series. ", e.getCause());
-    }
+    Try<Stream<TimeBasedValue<V>>, SourceException> timeBasedValues =
+        dataSource
+            .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, filePath, false)
+            .flatMap(
+                stream ->
+                    Try.scanStream(stream.map(fieldToValueFunction), "TimeBasedValue<V>")
+                        .transformF(SourceException::new));
+    return new IndividualTimeSeries<>(
+        timeSeriesUuid, new HashSet<>(timeBasedValues.getOrThrow().toList()));
   }
 }

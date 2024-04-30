@@ -23,9 +23,12 @@ class BufferedCsvWriterTest extends Specification {
   }
 
   def cleanupSpec() {
-    FileIOUtils.deleteRecursively(tmpDirectory)
+    try {
+      FileIOUtils.deleteRecursively(tmpDirectory)
+    } catch (IOException e) {
+      throw new FileException("Unable to delete recursively.", e)
+    }
   }
-
   def "The convenience constructor of the BufferedCsvWriter class works as expected."() {
     given:
     def baseDirectory = tmpDirectory

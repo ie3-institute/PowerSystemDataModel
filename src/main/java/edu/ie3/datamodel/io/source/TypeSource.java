@@ -5,19 +5,30 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.utils.Try;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link
@@ -36,7 +47,7 @@ public class TypeSource extends EntitySource {
   private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
 
   public TypeSource(DataSource dataSource) {
-    this.dataSource = dataSource;
+    super(dataSource);
 
     this.operatorInputFactory = new OperatorInputFactory();
     this.transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
@@ -45,160 +56,190 @@ public class TypeSource extends EntitySource {
     this.systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
   }
 
-  /**
-   * Returns a set of {@link Transformer2WTypeInput} instances. This set has to be unique in the
-   * sense of object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the
-   * provided {@link Transformer2WTypeInput} which has to be checked manually, as {@link
-   * Transformer2WTypeInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * Transformer2WTypeInput}.
-   *
-   * @return a set of object and uuid unique {@link Transformer2WTypeInput} entities
-   */
-  public Set<Transformer2WTypeInput> getTransformer2WTypes() throws SourceException {
-    return Try.scanCollection(
-            buildEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory),
-            Transformer2WTypeInput.class)
-        .transformF(SourceException::new)
+  @Override
+  public void validate() throws ValidationException {
+    List<Try<Void, ValidationException>> participantResults =
+        new ArrayList<>(
+            Stream.of(
+                    EvTypeInput.class,
+                    HpTypeInput.class,
+                    BmTypeInput.class,
+                    WecTypeInput.class,
+                    ChpTypeInput.class,
+                    StorageTypeInput.class)
+                .map(c -> validate(c, systemParticipantTypeInputFactory))
+                .toList());
+
+    participantResults.addAll(
+        List.of(
+            validate(OperatorInput.class, operatorInputFactory),
+            validate(LineTypeInput.class, lineTypeInputFactory),
+            validate(Transformer2WTypeInput.class, transformer2WTypeInputFactory),
+            validate(Transformer3WTypeInput.class, transformer3WTypeInputFactory)));
+
+    Try.scanCollection(participantResults, Void.class)
+        .transformF(FailedValidationException::new)
         .getOrThrow();
   }
 
   /**
-   * Returns a set of {@link OperatorInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link OperatorInput} which has to be checked manually, as {@link OperatorInput#equals(Object)}
-   * is NOT restricted on the uuid of {@link OperatorInput}.
+   * Returns a set of {@link Transformer2WTypeInput} instances within a map by UUID.
    *
-   * @return a set of object and uuid unique {@link OperatorInput} entities
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link Transformer2WTypeInput} which has to be checked
+   * manually, as {@link Transformer2WTypeInput#equals(Object)} is NOT restricted on the uuid of
+   * {@link Transformer2WTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link Transformer2WTypeInput} entities
    */
-  public Set<OperatorInput> getOperators() throws SourceException {
-    return Try.scanCollection(
-            buildEntities(OperatorInput.class, operatorInputFactory), OperatorInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+  public Map<UUID, Transformer2WTypeInput> getTransformer2WTypes() throws SourceException {
+    return unpackMap(
+        buildEntityData(Transformer2WTypeInput.class).map(transformer2WTypeInputFactory::get),
+        Transformer2WTypeInput.class);
   }
 
   /**
-   * Returns a set of {@link LineTypeInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link LineTypeInput} which has to be checked manually, as {@link LineTypeInput#equals(Object)}
-   * is NOT restricted on the uuid of {@link LineTypeInput}.
+   * Returns a set of {@link OperatorInput} instances within a map by UUID.
    *
-   * @return a set of object and uuid unique {@link LineTypeInput} entities
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link OperatorInput} which has to be checked manually, as
+   * {@link OperatorInput#equals(Object)} is NOT restricted on the uuid of {@link OperatorInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link OperatorInput} entities
    */
-  public Set<LineTypeInput> getLineTypes() throws SourceException {
-    return Try.scanCollection(
-            buildEntities(LineTypeInput.class, lineTypeInputFactory), LineTypeInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+  public Map<UUID, OperatorInput> getOperators() throws SourceException {
+    return unpackMap(
+        buildEntityData(OperatorInput.class).map(operatorInputFactory::get), OperatorInput.class);
   }
 
   /**
-   * Returns a set of {@link Transformer3WTypeInput} instances. This set has to be unique in the
-   * sense of object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the
-   * provided {@link Transformer3WTypeInput} which has to be checked manually, as {@link
-   * Transformer3WTypeInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * Transformer3WTypeInput}.
+   * Returns a set of {@link LineTypeInput} instances within a map by UUID.
    *
-   * @return a set of object and uuid unique {@link Transformer3WTypeInput} entities
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link LineTypeInput} which has to be checked manually, as
+   * {@link LineTypeInput#equals(Object)} is NOT restricted on the uuid of {@link LineTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
    */
-  public Set<Transformer3WTypeInput> getTransformer3WTypes() throws SourceException {
-    return Try.scanCollection(
-            buildEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory),
-            Transformer3WTypeInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+  public Map<UUID, LineTypeInput> getLineTypes() throws SourceException {
+    return unpackMap(
+        buildEntityData(LineTypeInput.class).map(lineTypeInputFactory::get), LineTypeInput.class);
   }
 
   /**
-   * Returns a set of {@link BmTypeInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link BmTypeInput} which has to be checked manually, as {@link BmTypeInput#equals(Object)} is
-   * NOT restricted on the uuid of {@link BmTypeInput}.
+   * Returns a set of {@link Transformer3WTypeInput} instances within a map by UUID.
    *
-   * @return a set of object and uuid unique {@link BmTypeInput} entities
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link Transformer3WTypeInput} which has to be checked
+   * manually, as {@link Transformer3WTypeInput#equals(Object)} is NOT restricted on the uuid of
+   * {@link Transformer3WTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link Transformer3WTypeInput} entities
    */
-  public Set<BmTypeInput> getBmTypes() throws SourceException {
-    return Try.scanCollection(
-            buildEntities(BmTypeInput.class, systemParticipantTypeInputFactory), BmTypeInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+  public Map<UUID, Transformer3WTypeInput> getTransformer3WTypes() throws SourceException {
+    return unpackMap(
+        buildEntityData(Transformer3WTypeInput.class).map(transformer3WTypeInputFactory::get),
+        Transformer3WTypeInput.class);
   }
 
   /**
-   * Returns a set of {@link ChpTypeInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link ChpTypeInput} which has to be checked manually, as {@link ChpTypeInput#equals(Object)}
-   * is NOT restricted on the uuid of {@link ChpTypeInput}.
+   * Returns a set of {@link BmTypeInput} instances within a map by UUID.
    *
-   * @return a set of object and uuid unique {@link ChpTypeInput} entities
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link BmTypeInput} which has to be checked manually, as
+   * {@link BmTypeInput#equals(Object)} is NOT restricted on the uuid of {@link BmTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link BmTypeInput} entities
    */
-  public Set<ChpTypeInput> getChpTypes() throws SourceException {
-    return Try.scanCollection(
-            buildEntities(ChpTypeInput.class, systemParticipantTypeInputFactory),
-            ChpTypeInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+  public Map<UUID, BmTypeInput> getBmTypes() throws SourceException {
+    return unpackMap(
+        buildEntities(BmTypeInput.class, systemParticipantTypeInputFactory), BmTypeInput.class);
   }
 
   /**
-   * Returns a set of {@link HpTypeInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link HpTypeInput} which has to be checked manually, as {@link HpTypeInput#equals(Object)} is
-   * NOT restricted on the uuid of {@link HpTypeInput}.
+   * Returns a set of {@link ChpTypeInput} instances within a map by UUID.
    *
-   * @return a set of object and uuid unique {@link HpTypeInput} entities
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link ChpTypeInput} which has to be checked manually, as
+   * {@link ChpTypeInput#equals(Object)} is NOT restricted on the uuid of {@link ChpTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link ChpTypeInput} entities
    */
-  public Set<HpTypeInput> getHpTypes() throws SourceException {
-    return Try.scanCollection(
-            buildEntities(HpTypeInput.class, systemParticipantTypeInputFactory), HpTypeInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+  public Map<UUID, ChpTypeInput> getChpTypes() throws SourceException {
+    return unpackMap(
+        buildEntities(ChpTypeInput.class, systemParticipantTypeInputFactory), ChpTypeInput.class);
   }
 
   /**
-   * Returns a set of {@link StorageTypeInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link StorageTypeInput} which has to be checked manually, as {@link
-   * StorageTypeInput#equals(Object)} is NOT restricted on the uuid of {@link StorageTypeInput}.
+   * Returns a set of {@link HpTypeInput} instances within a map by UUID.
    *
-   * @return a set of object and uuid unique {@link StorageTypeInput} entities
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link HpTypeInput} which has to be checked manually, as
+   * {@link HpTypeInput#equals(Object)} is NOT restricted on the uuid of {@link HpTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link HpTypeInput} entities
    */
-  public Set<StorageTypeInput> getStorageTypes() throws SourceException {
-    return Try.scanCollection(
-            buildEntities(StorageTypeInput.class, systemParticipantTypeInputFactory),
-            StorageTypeInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+  public Map<UUID, HpTypeInput> getHpTypes() throws SourceException {
+    return unpackMap(
+        buildEntities(HpTypeInput.class, systemParticipantTypeInputFactory), HpTypeInput.class);
   }
 
   /**
-   * Returns a set of {@link WecTypeInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link WecTypeInput} which has to be checked manually, as {@link WecTypeInput#equals(Object)}
-   * is NOT restricted on the uuid of {@link WecTypeInput}.
+   * Returns a set of {@link StorageTypeInput} instances within a map by UUID.
    *
-   * @return a set of object and uuid unique {@link WecTypeInput} entities
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link StorageTypeInput} which has to be checked manually, as
+   * {@link StorageTypeInput#equals(Object)} is NOT restricted on the uuid of {@link
+   * StorageTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link StorageTypeInput} entities
    */
-  public Set<WecTypeInput> getWecTypes() throws SourceException {
-    return Try.scanCollection(
-            buildEntities(WecTypeInput.class, systemParticipantTypeInputFactory),
-            WecTypeInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+  public Map<UUID, StorageTypeInput> getStorageTypes() throws SourceException {
+    return unpackMap(
+        buildEntities(StorageTypeInput.class, systemParticipantTypeInputFactory),
+        StorageTypeInput.class);
   }
 
   /**
-   * Returns a set of {@link EvTypeInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link EvTypeInput} which has to be checked manually, as {@link EvTypeInput#equals(Object)} is
-   * NOT restricted on the uuid of {@link EvTypeInput}.
+   * Returns a set of {@link WecTypeInput} instances within a map by UUID.
    *
-   * @return a set of object and uuid unique {@link EvTypeInput} entities
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link WecTypeInput} which has to be checked manually, as
+   * {@link WecTypeInput#equals(Object)} is NOT restricted on the uuid of {@link WecTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link WecTypeInput} entities
    */
-  public Set<EvTypeInput> getEvTypes() throws SourceException {
-    return Try.scanCollection(
-            buildEntities(EvTypeInput.class, systemParticipantTypeInputFactory), EvTypeInput.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
+  public Map<UUID, WecTypeInput> getWecTypes() throws SourceException {
+    return unpackMap(
+        buildEntities(WecTypeInput.class, systemParticipantTypeInputFactory), WecTypeInput.class);
+  }
+
+  /**
+   * Returns a set of {@link EvTypeInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link EvTypeInput} which has to be checked manually, as
+   * {@link EvTypeInput#equals(Object)} is NOT restricted on the uuid of {@link EvTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link EvTypeInput} entities
+   */
+  public Map<UUID, EvTypeInput> getEvTypes() throws SourceException {
+    return unpackMap(
+        buildEntities(EvTypeInput.class, systemParticipantTypeInputFactory), EvTypeInput.class);
+  }
+
+  /**
+   * Build and cast entities to the correct type, since {@link SystemParticipantTypeInputFactory}
+   * outputs {@link SystemParticipantTypeInput} of general type.
+   *
+   * @param entityClass The class of type input entity to build
+   * @param factory The factory to use to build the entity
+   * @return a stream of {@link Try}s containing the desired entities
+   * @param <T> The type of AssetType to return
+   */
+  @SuppressWarnings("unchecked")
+  private <T extends AssetTypeInput> Stream<Try<T, FactoryException>> buildEntities(
+      Class<T> entityClass, EntityFactory<? extends UniqueInputEntity, EntityData> factory) {
+    return buildEntityData(entityClass).map(data -> (Try<T, FactoryException>) factory.get(data));
   }
 }

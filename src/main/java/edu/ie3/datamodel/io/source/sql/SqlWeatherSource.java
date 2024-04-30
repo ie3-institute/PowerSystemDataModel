@@ -16,6 +16,7 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.sql.*;
 import java.time.ZonedDateTime;
@@ -30,6 +31,7 @@ public class SqlWeatherSource extends WeatherSource {
 
   private static final String WHERE = " WHERE ";
   private final String factoryCoordinateFieldName;
+  private final String tableName;
 
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
@@ -54,10 +56,24 @@ public class SqlWeatherSource extends WeatherSource {
       IdCoordinateSource idCoordinateSource,
       String schemaName,
       String weatherTableName,
-      TimeBasedWeatherValueFactory weatherFactory) {
+      TimeBasedWeatherValueFactory weatherFactory)
+      throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
     this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy());
+    this.tableName = weatherTableName;
+
+    Try.of(() -> getSourceFields(WeatherValue.class), SourceException.class)
+        .flatMap(
+            fieldsOpt ->
+                fieldsOpt
+                    .map(
+                        fields ->
+                            weatherFactory
+                                .validate(fields, WeatherValue.class)
+                                .transformF(SourceException::new))
+                    .orElse(Try.Success.empty()))
+        .getOrThrow();
 
     String dbTimeColumnName =
         dataSource.getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
@@ -73,6 +89,11 @@ public class SqlWeatherSource extends WeatherSource {
     this.queryTimeIntervalAndCoordinates =
         createQueryStringForTimeIntervalAndCoordinates(
             schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
+  }
+
+  @Override
+  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
+    return dataSource.getSourceFields(tableName);
   }
 
   @Override

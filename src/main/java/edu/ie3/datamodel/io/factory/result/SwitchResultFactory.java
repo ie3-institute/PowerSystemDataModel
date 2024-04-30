@@ -5,9 +5,10 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.result.connector.SwitchResult;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
@@ -22,32 +23,25 @@ public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
    * Create a new factory to build {@link SwitchResult}s and utilize the given date time formatter
    * pattern to parse date time strings
    *
-   * @param dtfPattern Pattern to parse date time strings
+   * @param dateTimeFormatter Pattern to parse date time strings
    */
-  public SwitchResultFactory(String dtfPattern) {
-    super(dtfPattern, SwitchResult.class);
+  public SwitchResultFactory(DateTimeFormatter dateTimeFormatter) {
+    super(dateTimeFormatter, SwitchResult.class);
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData data) {
-
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, CLOSED);
-    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
-
-    return Arrays.asList(minConstructorParams, optionalFields);
+    return List.of(minConstructorParams);
   }
 
   @Override
-  protected SwitchResult buildModel(SimpleEntityData data) {
-    Optional<UUID> uuidOpt =
-        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
+  protected SwitchResult buildModel(EntityData data) {
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModel = data.getUUID(INPUT_MODEL);
 
     final boolean closed = data.getBoolean(CLOSED);
 
-    return uuidOpt
-        .map(uuid -> new SwitchResult(uuid, time, inputModel, closed))
-        .orElseGet(() -> new SwitchResult(time, inputModel, closed));
+    return new SwitchResult(time, inputModel, closed);
   }
 }

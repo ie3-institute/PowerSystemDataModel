@@ -6,9 +6,8 @@
 package edu.ie3.datamodel.io.factory.timeseries
 
 import edu.ie3.datamodel.io.factory.SimpleFactoryData
+import edu.ie3.datamodel.models.input.IdCoordinateInput
 import edu.ie3.util.geo.GeoUtils
-import org.apache.commons.lang3.tuple.Pair
-import org.locationtech.jts.geom.Point
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -25,27 +24,14 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     def expectedFields = [
       "tid",
       "id",
-      "latrot",
-      "longrot",
-      "latgeo",
-      "longgeo"
+      "latRot",
+      "longRot",
+      "latGeo",
+      "longGeo"
     ] as Set
 
-    Map<String, String> parameter = [
-      "tid": "1",
-      "id": "106580",
-      "latgeo": "39.602772",
-      "longgeo": "1.279336",
-      "latrot": "-10",
-      "longrot": "-6.8125"
-    ]
-
-
-    def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
-
-
     when:
-    def actual = factory.getFields(validSimpleFactoryData)
+    def actual = factory.getFields(IdCoordinateInput)
 
     then:
     actual.size() == 1
@@ -54,22 +40,16 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 
   def "A COSMO id to coordinate factory refuses to build from invalid data"() {
     given:
-    Map<String, String> parameter  =  [
-      "tid": "1",
-      "id": "106580",
-      "latrot": "-10",
-      "longrot": "-6.8125"
-    ]
-
-    def invalidSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
+    def actualFields = CosmoIdCoordinateFactory.newSet("tid", "id", "latrot", "longrot")
 
     when:
-    def actual = factory.get(invalidSimpleFactoryData)
+    def actual = factory.validate(actualFields, IdCoordinateInput)
 
     then:
     actual.failure
-    actual.exception.get().cause.message.startsWith("The provided fields [id, latrot, longrot, tid] with data \n{id -> 106580,\nlatrot" +
-        " -> -10,\nlongrot -> -6.8125,\ntid -> 1} are invalid for instance of Pair.")
+    actual.exception.get().message == "The provided fields [id, latrot, longrot, tid] are invalid for instance of 'IdCoordinateInput'. \n" +
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'IdCoordinateInput' are possible (NOT case-sensitive!):\n" +
+        "0: [id, latGeo, latRot, longGeo, longRot, tid] or [id, lat_geo, lat_rot, long_geo, long_rot, tid]\n"
   }
 
   def "A COSMO id to coordinate factory builds model from valid data"() {
@@ -77,14 +57,14 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     Map<String, String> parameter = [
       "tid": "1",
       "id": "106580",
-      "latgeo": "39.602772",
-      "longgeo": "1.279336",
-      "latrot": "-10",
-      "longrot": "-6.8125"
+      "latGeo": "39.602772",
+      "longGeo": "1.279336",
+      "latRot": "-10",
+      "longRot": "-6.8125"
     ]
 
-    def validSimpleFactoryData = new SimpleFactoryData(parameter, Pair)
-    Pair<Integer, Point> expectedPair = Pair.of(106580, GeoUtils.buildPoint(39.602772, 1.279336))
+    def validSimpleFactoryData = new SimpleFactoryData(parameter, IdCoordinateInput)
+    IdCoordinateInput expectedIdCoordinate = new IdCoordinateInput(106580, GeoUtils.buildPoint(39.602772, 1.279336))
 
     when:
     def actual = factory.get(validSimpleFactoryData)
@@ -92,8 +72,8 @@ class CosmoIdCoordinateFactoryTest extends Specification {
     then:
     actual.success
     actual.data.get().with {
-      assert it.key == expectedPair.key
-      assert it.value.equalsExact(expectedPair.value, 1E-6)
+      assert it.id() == expectedIdCoordinate.id()
+      assert it.point().equalsExact(expectedIdCoordinate.point(), 1E-6)
     }
   }
 }

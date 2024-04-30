@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.system;
 import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
@@ -33,6 +34,7 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of HP
    */
   public HpInput(
@@ -43,8 +45,9 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
       HpTypeInput type) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.thermalBus = thermalBus;
     this.type = type;
   }
@@ -57,6 +60,7 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of HP
    */
   public HpInput(
@@ -65,8 +69,9 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
       HpTypeInput type) {
-    super(uuid, id, node, qCharacteristics);
+    super(uuid, id, node, qCharacteristics, em);
     this.thermalBus = thermalBus;
     this.type = type;
   }
@@ -113,7 +118,8 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
         + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + '\''
+        + "', em="
+        + getControllingEm()
         + ", type="
         + type.getUuid()
         + ", thermalBus="
@@ -140,6 +146,22 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       this.thermalBus = entity.getThermalBus();
     }
 
+    public HpInputCopyBuilder type(HpTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    public HpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
+      this.thermalBus = thermalBus;
+      return this;
+    }
+
+    @Override
+    public HpInputCopyBuilder scale(Double factor) {
+      type(type.copy().scale(factor).build());
+      return this;
+    }
+
     @Override
     public HpInput build() {
       return new HpInput(
@@ -150,17 +172,8 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
           getNode(),
           thermalBus,
           getqCharacteristics(),
+          getEm(),
           type);
-    }
-
-    public HpInputCopyBuilder type(HpTypeInput type) {
-      this.type = type;
-      return this;
-    }
-
-    public HpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
-      this.thermalBus = thermalBus;
-      return this;
     }
 
     @Override

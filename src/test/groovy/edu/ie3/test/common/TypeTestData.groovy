@@ -5,12 +5,12 @@
  */
 package edu.ie3.test.common
 
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static tech.units.indriya.unit.Units.*
+
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.*
 import tech.units.indriya.quantity.Quantities
-
-import static edu.ie3.util.quantities.PowerSystemUnits.*
-import static tech.units.indriya.unit.Units.*
 
 class TypeTestData extends GridTestData {
   public static final BmTypeInput bmType = new BmTypeInput(
@@ -45,7 +45,8 @@ class TypeTestData extends GridTestData {
   Quantities.getQuantity(100d, KILOWATTHOUR),
   Quantities.getQuantity(23d, KILOWATTHOUR_PER_KILOMETRE),
   Quantities.getQuantity(22d, KILOWATT),
-  0.9
+  0.9,
+  Quantities.getQuantity(20d, KILOWATT)
   )
 
   public static final HpTypeInput hpType = new HpTypeInput(
@@ -69,9 +70,6 @@ class TypeTestData extends GridTestData {
   Quantities.getQuantity(12.961, KILOWATT),
   Quantities.getQuantity(0.03, PU_PER_HOUR),
   Quantities.getQuantity(0.92, PU),
-  Quantities.getQuantity(20d, PERCENT),
-  Quantities.getQuantity(43800.0, HOUR),
-  100000
   )
 
   public static final WecCharacteristicInput wecCharacteristicInput = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")

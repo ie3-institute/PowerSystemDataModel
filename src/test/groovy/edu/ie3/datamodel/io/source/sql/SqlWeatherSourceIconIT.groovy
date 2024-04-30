@@ -44,7 +44,7 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
     assert res.stderr.empty
 
     def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-    def weatherFactory = new IconTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
+    def weatherFactory = new IconTimeBasedWeatherValueFactory()
     source = new SqlWeatherSource(connector, IconWeatherTestData.coordinateSource, schemaName, weatherTableName, weatherFactory)
   }
 

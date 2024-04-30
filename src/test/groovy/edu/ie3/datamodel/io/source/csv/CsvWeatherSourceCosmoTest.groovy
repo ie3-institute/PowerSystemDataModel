@@ -120,16 +120,15 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def fieldToValues = [
       "uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
       "time"             : "2020-10-16T12:40:42Z",
-      "coordinateid"     : "5",
-      "directirradiance" : "1.234",
-      "diffuseirradiance": "5.678",
+      "coordinateId"     : "5",
+      "directIrradiance" : "1.234",
+      "diffuseIrradiance": "5.678",
       "temperature"      : "9.1011",
-      "windvelocity"     : "12.1314",
-      "winddirection"    : "15.1617"
+      "windVelocity"     : "12.1314",
+      "windDirection"    : "15.1617"
     ]
     def expectedValue = new TimeBasedValue(
-        UUID.fromString("71a79f59-eebf-40c1-8358-ba7414077d57"),
-        TimeUtil.withDefaults.toZonedDateTime("2020-10-16 12:40:42"),
+        TimeUtil.withDefaults.toZonedDateTime("2020-10-16T12:40:42Z"),
         new WeatherValue(
         defaultCoordinate,
         new SolarIrradianceValue(
