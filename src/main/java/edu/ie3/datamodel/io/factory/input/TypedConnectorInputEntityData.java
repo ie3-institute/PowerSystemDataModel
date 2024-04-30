@@ -46,8 +46,8 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
   }
 
   /**
-   * Creates a new TypedConnectorInputEntityData object for an operable connector input input that
-   * input that needs a type input as well
+   * Creates a new TypedConnectorInputEntityData object for an operable connector input that needs a
+   * type input as well
    *
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
@@ -64,6 +64,18 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
       NodeInput nodeB,
       T type) {
     super(fieldsToAttributes, entityClass, operator, nodeA, nodeB);
+    this.type = type;
+  }
+
+  /**
+   * Creates a new TypedConnectorInputEntityData object based on a given {@link
+   * ConnectorInputEntityData} object and given type
+   *
+   * @param entityData The ConnectorInputEntityData object to enhance
+   * @param type type input
+   */
+  public TypedConnectorInputEntityData(ConnectorInputEntityData entityData, T type) {
+    super(entityData, entityData.getNodeA(), entityData.getNodeB());
     this.type = type;
   }
 

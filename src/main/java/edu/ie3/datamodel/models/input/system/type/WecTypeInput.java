@@ -75,6 +75,11 @@ public class WecTypeInput extends SystemParticipantTypeInput {
   }
 
   @Override
+  public WecTypeInputCopyBuilder copy() {
+    return new WecTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof WecTypeInput that)) return false;
@@ -114,5 +119,90 @@ public class WecTypeInput extends SystemParticipantTypeInput {
         + ", hubHeight="
         + hubHeight
         + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link WecTypeInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link WecTypeInput}
+   */
+  public static class WecTypeInputCopyBuilder
+      extends SystemParticipantTypeInputCopyBuilder<WecTypeInput.WecTypeInputCopyBuilder> {
+
+    private WecCharacteristicInput cpCharacteristic;
+    private ComparableQuantity<Dimensionless> etaConv;
+    private ComparableQuantity<Area> rotorArea;
+    private ComparableQuantity<Length> hubHeight;
+
+    private WecTypeInputCopyBuilder(WecTypeInput entity) {
+      super(entity);
+      this.cpCharacteristic = entity.getCpCharacteristic();
+      this.etaConv = entity.getEtaConv();
+      this.rotorArea = entity.getRotorArea();
+      this.hubHeight = entity.getHubHeight();
+    }
+
+    public WecTypeInputCopyBuilder setCpCharacteristic(WecCharacteristicInput cpCharacteristic) {
+      this.cpCharacteristic = cpCharacteristic;
+      return this;
+    }
+
+    public WecTypeInputCopyBuilder setEtaConv(ComparableQuantity<Dimensionless> etaConv) {
+      this.etaConv = etaConv;
+      return this;
+    }
+
+    public WecTypeInputCopyBuilder setRotorArea(ComparableQuantity<Area> rotorArea) {
+      this.rotorArea = rotorArea;
+      return this;
+    }
+
+    public WecTypeInputCopyBuilder setHubHeight(ComparableQuantity<Length> hubHeight) {
+      this.hubHeight = hubHeight;
+      return this;
+    }
+
+    public WecCharacteristicInput getCpCharacteristic() {
+      return cpCharacteristic;
+    }
+
+    public ComparableQuantity<Dimensionless> getEtaConv() {
+      return etaConv;
+    }
+
+    public ComparableQuantity<Area> getRotorArea() {
+      return rotorArea;
+    }
+
+    public ComparableQuantity<Length> getHubHeight() {
+      return hubHeight;
+    }
+
+    @Override
+    public WecTypeInput.WecTypeInputCopyBuilder scale(Double factor) {
+      setCapex(getCapex().multiply(factor));
+      setsRated(getsRated().multiply(factor));
+      setRotorArea(getRotorArea().multiply(factor));
+      return this;
+    }
+
+    @Override
+    public WecTypeInput build() {
+      return new WecTypeInput(
+          getUuid(),
+          getId(),
+          getCapex(),
+          getOpex(),
+          getsRated(),
+          getCosPhiRated(),
+          cpCharacteristic,
+          etaConv,
+          rotorArea,
+          hubHeight);
+    }
+
+    @Override
+    protected WecTypeInput.WecTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

@@ -11,20 +11,18 @@ import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.GridContainer;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
-import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
@@ -41,17 +39,14 @@ public class ValidationUtils {
   }
 
   /**
-   * Creates a new {@link NotImplementedException}, if there is no check available for the class of
-   * the given object
+   * Logs a warning, if there is no check available for the class of the given object.
    *
-   * @param obj Object, that cannot be checked
-   * @return Exception with predefined error string
+   * @param obj object, that cannot be checked
    */
-  protected static NotImplementedException buildNotImplementedException(Object obj) {
-    return new NotImplementedException(
-        String.format(
-            "Cannot validate object of class '%s', as no routine is implemented.",
-            obj.getClass().getSimpleName()));
+  protected static void logNotImplemented(Object obj) {
+    logger.warn(
+        "Cannot validate object of class '{}', as no routine is implemented.",
+        obj.getClass().getSimpleName());
   }
 
   /**
@@ -74,9 +69,7 @@ public class ValidationUtils {
     } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(checkAssetType((AssetTypeInput) obj));
     } else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(buildNotImplementedException(obj).getMessage())));
+      logNotImplemented(obj);
     }
 
     List<? extends ValidationException> list =
@@ -89,11 +82,15 @@ public class ValidationUtils {
   }
 
   /**
-   * Validates an asset if: <br>
-   * - it is not null <br>
-   * - its id is not null <br>
-   * - its operation time is not null <br>
-   * - in case operation time is limited, start time is before end time <br>
+   * Validates an asset if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>its id is not null
+   *   <li>its operation time is not null
+   *   <li>in case operation time is limited, start time is before end time
+   * </ul>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object.
    *
@@ -156,18 +153,19 @@ public class ValidationUtils {
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
       exceptions.addAll(ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput));
     else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(assetInput).getMessage())));
+      logNotImplemented(assetInput);
     }
 
     return exceptions;
   }
 
   /**
-   * Validates an asset type if: <br>
-   * - it is not null <br>
+   * Validates an asset type if:
+   *
+   * <ul>
+   *   <li>it is not null
+   * </ul>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object.
    *
@@ -207,10 +205,7 @@ public class ValidationUtils {
       exceptions.addAll(
           SystemParticipantValidationUtils.checkType((SystemParticipantTypeInput) assetTypeInput));
     else {
-      exceptions.add(
-          new Failure<>(
-              new FailedValidationException(
-                  buildNotImplementedException(assetTypeInput).getMessage())));
+      logNotImplemented(assetTypeInput);
     }
 
     return exceptions;
@@ -297,53 +292,5 @@ public class ValidationUtils {
     if (!malformedQuantities.isEmpty()) {
       throw new InvalidEntityException(msg + ": " + malformedQuantities, entity);
     }
-  }
-
-  /**
-   * Predicate that can be used to filter elements based on a given Function
-   *
-   * @param keyExtractor the function that should be used for the filter operations
-   * @param <T> the type of the returning predicate
-   * @return the filter predicate that filters based on the provided function
-   */
-  public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-    Set<Object> seen = ConcurrentHashMap.newKeySet();
-    return t -> seen.add(keyExtractor.apply(t));
-  }
-
-  /**
-   * Method to check for duplicate fields in a set of {@link UniqueEntity}.
-   *
-   * @param entities to be checked
-   * @param supplier for the field
-   * @return a list of {@link Try}.
-   * @param <E> type of the {@link UniqueEntity}
-   * @param <F> type of the field
-   */
-  protected static <E extends UniqueEntity, F>
-      List<Try<Void, DuplicateEntitiesException>> checkForDuplicates(
-          Collection<E> entities, FieldSupplier<E, F> supplier) {
-    Map<F, List<E>> duplicates =
-        entities.stream().collect(Collectors.groupingBy(supplier::getField));
-
-    return duplicates.entrySet().stream()
-        .filter(e -> e.getValue().size() > 1)
-        .map(
-            duplicate ->
-                Failure.ofVoid(
-                    new DuplicateEntitiesException(
-                        duplicate.getKey().getClass().getSimpleName(), duplicate.getValue())))
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * Supplier for unique entity fields that returns a field of type F given an entity of type E.
-   *
-   * @param <E> type of unique entity
-   * @param <F> type of field
-   */
-  @FunctionalInterface
-  protected interface FieldSupplier<E extends UniqueEntity, F> {
-    F getField(E entity);
   }
 }

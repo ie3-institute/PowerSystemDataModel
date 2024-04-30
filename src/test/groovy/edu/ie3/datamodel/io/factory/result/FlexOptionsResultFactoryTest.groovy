@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.SimpleEntityData
+import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
 import edu.ie3.datamodel.utils.Try
@@ -28,7 +28,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     given: "a system participant factory and model data"
     def resultFactory = new FlexOptionsResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30 17:26:44",
+      "time"      : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
       "pref"      : "2",
       "pmin"      : "-1",
@@ -36,7 +36,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     ]
 
     when:
-    Try<? extends FlexOptionsResult, FactoryException> result = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
+    Try<? extends FlexOptionsResult, FactoryException> result = resultFactory.get(new EntityData(parameter, FlexOptionsResult))
 
     then:
     result.success
@@ -53,25 +53,15 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
   def "A FlexOptionsResultFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
     def resultFactory = new FlexOptionsResultFactory()
-    Map<String, String> parameter = [
-      "time"      : "2020-01-30 17:26:44",
-      "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-      "pref"      : "2",
-      "pmin"      : "-1",
-    ]
+    def actualFields = FlexOptionsResultFactory.newSet("time", "input_model", "p_ref", "p_min")
 
     when:
-    Try<FlexOptionsResult, FactoryException> input = resultFactory.get(new SimpleEntityData(parameter, FlexOptionsResult))
+    Try<Void, FactoryException> input = resultFactory.validate(actualFields, FlexOptionsResult)
 
     then:
     input.failure
-    input.exception.get().cause.message == "The provided fields [inputModel, pmin, pref, time] with data \n" +
-        "{inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,\n" +
-        "pmin -> -1,\n" +
-        "pref -> 2,\n" +
-        "time -> 2020-01-30 17:26:44} are invalid for instance of FlexOptionsResult. \n" +
+    input.exception.get().message == "The provided fields [input_model, p_min, p_ref, time] are invalid for instance of 'FlexOptionsResult'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'FlexOptionsResult' are possible (NOT case-sensitive!):\n" +
-        "0: [inputModel, pmax, pmin, pref, time]\n" +
-        "1: [inputModel, pmax, pmin, pref, time, uuid]\n"
+        "0: [inputModel, pMax, pMin, pRef, time] or [input_model, p_max, p_min, p_ref, time]\n"
   }
 }

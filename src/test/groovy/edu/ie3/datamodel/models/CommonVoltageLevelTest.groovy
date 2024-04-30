@@ -5,15 +5,17 @@
  */
 package edu.ie3.datamodel.models
 
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
+import static tech.units.indriya.unit.Units.VOLT
+
 import edu.ie3.datamodel.exceptions.VoltageLevelException
 import edu.ie3.datamodel.models.voltagelevels.CommonVoltageLevel
+import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
+import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
 import edu.ie3.util.interval.RightOpenInterval
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
-import static tech.units.indriya.unit.Units.VOLT
 
 class CommonVoltageLevelTest extends Specification {
   @Shared
@@ -56,5 +58,25 @@ class CommonVoltageLevelTest extends Specification {
     then:
     VoltageLevelException ex = thrown()
     ex.message == "The provided id \"HS\" and rated voltage \"500 V\" could possibly meet the voltage level \"Niederspannung\" (Interval [0.0 kV, 10 kV)), but are inconsistent."
+  }
+
+  def "A common voltage level should test the equality correctly"() {
+    given:
+    def mv = GermanVoltageLevelUtils.MV_10KV
+
+    expect:
+    mv == new CommonVoltageLevel(
+        "MS",
+        Quantities.getQuantity(10d, KILOVOLT),
+        new HashSet<>(Arrays.asList("mv_10kV")),
+        new RightOpenInterval<>(Quantities.getQuantity(10d, KILOVOLT), Quantities.getQuantity(20d, KILOVOLT)))
+
+
+    mv != new CommonVoltageLevel("MS",
+        Quantities.getQuantity(10d, KILOVOLT),
+        new HashSet<>(Arrays.asList("mv")),
+        new RightOpenInterval<>(Quantities.getQuantity(10d, KILOVOLT), Quantities.getQuantity(19.9, KILOVOLT)))
+
+    mv != new VoltageLevel("mv", Quantities.getQuantity(10d, KILOVOLT))
   }
 }

@@ -62,6 +62,8 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     return cosPhiRated;
   }
 
+  public abstract SystemParticipantTypeInputCopyBuilder<?> copy();
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -94,5 +96,78 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
         + ", cosphiRated="
         + cosPhiRated
         + '}';
+  }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link
+   * SystemParticipantTypeInput}
+   */
+  public abstract static class SystemParticipantTypeInputCopyBuilder<
+          B extends SystemParticipantTypeInput.SystemParticipantTypeInputCopyBuilder<B>>
+      extends AssetTypeInput.AssetTypeInputCopyBuilder<B> {
+
+    private ComparableQuantity<Currency> capex;
+    private ComparableQuantity<EnergyPrice> opex;
+    private ComparableQuantity<Power> sRated;
+    private double cosPhiRated;
+
+    protected SystemParticipantTypeInputCopyBuilder(SystemParticipantTypeInput entity) {
+      super(entity);
+      this.capex = entity.getCapex();
+      this.opex = entity.getOpex();
+      this.sRated = entity.getsRated();
+      this.cosPhiRated = entity.getCosPhiRated();
+    }
+
+    public B setCapex(ComparableQuantity<Currency> capex) {
+      this.capex = capex;
+      return thisInstance();
+    }
+
+    public B setOpex(ComparableQuantity<EnergyPrice> opex) {
+      this.opex = opex;
+      return thisInstance();
+    }
+
+    public B setsRated(ComparableQuantity<Power> sRated) {
+      this.sRated = sRated;
+      return thisInstance();
+    }
+
+    public B setCosPhiRated(double cosPhiRated) {
+      this.cosPhiRated = cosPhiRated;
+      return thisInstance();
+    }
+
+    public ComparableQuantity<Currency> getCapex() {
+      return capex;
+    }
+
+    public ComparableQuantity<EnergyPrice> getOpex() {
+      return opex;
+    }
+
+    public ComparableQuantity<Power> getsRated() {
+      return sRated;
+    }
+
+    public double getCosPhiRated() {
+      return cosPhiRated;
+    }
+
+    /**
+     * Scales the type input entity in a way that tries to preserve proportions that are related to
+     * power. This means that capacity, consumption etc. are scaled with the same factor.
+     *
+     * @param factor The factor to scale with
+     * @return A copy builder with scaled relevant properties
+     */
+    public abstract B scale(Double factor);
+
+    @Override
+    public abstract SystemParticipantTypeInput build();
+
+    @Override
+    protected abstract B thisInstance();
   }
 }

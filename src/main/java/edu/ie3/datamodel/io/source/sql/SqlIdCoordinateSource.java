@@ -7,19 +7,21 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
+import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.datamodel.models.value.CoordinateValue;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.util.*;
 import javax.measure.quantity.Length;
-import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
@@ -40,18 +42,34 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
   private final String queryForBoundingBox;
   private final String queryForNearestPoints;
 
+  private final String coordinateTableName;
   private final SqlDataSource dataSource;
 
   private final SqlIdCoordinateFactory factory;
 
   public SqlIdCoordinateSource(
-      SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource) {
+      SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource)
+      throws SourceException {
     this.factory = factory;
     this.dataSource = dataSource;
+    this.coordinateTableName = coordinateTableName;
 
     String dbIdColumnName = dataSource.getDbColumnName(factory.getIdField(), coordinateTableName);
     String dbPointColumnName =
         dataSource.getDbColumnName(factory.getCoordinateField(), coordinateTableName);
+
+    // validating table
+    Try.of(this::getSourceFields, SourceException.class)
+        .flatMap(
+            fieldsOpt ->
+                fieldsOpt
+                    .map(
+                        fields ->
+                            factory
+                                .validate(fields, IdCoordinateInput.class)
+                                .transformF(SourceException::new))
+                    .orElse(Try.Success.empty()))
+        .getOrThrow();
 
     // setup queries
     this.basicQuery = createBaseQueryString(dataSource.schemaName, coordinateTableName);
@@ -76,11 +94,17 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
       SqlConnector connector,
       String schemaName,
       String coordinateTableName,
-      SqlIdCoordinateFactory factory) {
+      SqlIdCoordinateFactory factory)
+      throws SourceException {
     this(
         factory,
         coordinateTableName,
         new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy()));
+  }
+
+  @Override
+  public Optional<Set<String>> getSourceFields() {
+    return dataSource.getSourceFields(coordinateTableName);
   }
 
   @Override
@@ -176,10 +200,11 @@ public class SqlIdCoordinateSource implements IdCoordinateSource {
   private CoordinateValue createCoordinateValue(Map<String, String> fieldToValues) {
     fieldToValues.remove("distance");
 
-    SimpleFactoryData simpleFactoryData = new SimpleFactoryData(fieldToValues, Pair.class);
+    SimpleFactoryData simpleFactoryData =
+        new SimpleFactoryData(fieldToValues, IdCoordinateInput.class);
 
-    Pair<Integer, Point> pair = factory.get(simpleFactoryData).getOrThrow();
-    return new CoordinateValue(pair.getKey(), pair.getValue());
+    IdCoordinateInput idCoordinate = factory.get(simpleFactoryData).getOrThrow();
+    return new CoordinateValue(idCoordinate.id(), idCoordinate.point());
   }
 
   private List<CoordinateValue> executeQueryToList(

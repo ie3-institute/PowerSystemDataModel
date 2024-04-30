@@ -9,7 +9,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
@@ -24,12 +24,14 @@ import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * Internal API Contains data that is needed by an {@link EntityFactory} to generate an entity
+ * Data used by {@link EntityFactory} to create an instance of an entity than can be created based
+ * only on a mapping of fieldName to value. This class can be used whenever no additional data is
+ * needed, but also functions as a parent class for extensions.
  *
  * @version 0.1
  * @since 28.01.20
  */
-public abstract class EntityData extends FactoryData {
+public class EntityData extends FactoryData {
   private static final Logger logger = LoggerFactory.getLogger(EntityData.class);
   private static final GeoJsonReader geoJsonReader = new GeoJsonReader();
 
@@ -39,15 +41,23 @@ public abstract class EntityData extends FactoryData {
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    */
-  protected EntityData(
-      Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
+  public EntityData(Map<String, String> fieldsToAttributes, Class<? extends Entity> entityClass) {
     super(fieldsToAttributes, entityClass);
+  }
+
+  /**
+   * Creates a new EntityData object based on a given {@link FactoryData} object
+   *
+   * @param factoryData The factory data object to use attributes of
+   */
+  protected EntityData(FactoryData factoryData) {
+    super(factoryData.getFieldsToValues(), factoryData.getTargetClass());
   }
 
   @Override
   @SuppressWarnings("unchecked cast")
-  public Class<? extends UniqueEntity> getTargetClass() {
-    return (Class<? extends UniqueEntity>) super.getTargetClass();
+  public Class<? extends Entity> getTargetClass() {
+    return (Class<? extends Entity>) super.getTargetClass();
   }
 
   /**

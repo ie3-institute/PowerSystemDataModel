@@ -8,14 +8,14 @@ package edu.ie3.datamodel.io.factory.input;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.util.Map;
 import java.util.Objects;
 
 /**
- * Data used by all factories used to create instances of {@link
- * edu.ie3.datamodel.models.input.InputEntity}s holding one {@link NodeInput} entity, thus needing
- * additional information about the {@link edu.ie3.datamodel.models.input.NodeInput}, which cannot
- * be provided through the attribute map.
+ * Data used by all factories used to create instances of {@link UniqueInputEntity}s holding one
+ * {@link NodeInput} entity, thus needing additional information about the {@link NodeInput}, which
+ * cannot be provided through the attribute map.
  */
 public class NodeAssetInputEntityData extends AssetInputEntityData {
   private final NodeInput node;
@@ -50,6 +50,18 @@ public class NodeAssetInputEntityData extends AssetInputEntityData {
       OperatorInput operator,
       NodeInput node) {
     super(fieldsToAttributes, entityClass, operator);
+    this.node = node;
+  }
+
+  /**
+   * Creates a new NodeAssetInputEntityData object based on a given {@link AssetInputEntityData}
+   * object and given node
+   *
+   * @param assetInputEntityData The asset entity data object to use attributes of
+   * @param node input node
+   */
+  public NodeAssetInputEntityData(AssetInputEntityData assetInputEntityData, NodeInput node) {
+    super(assetInputEntityData, assetInputEntityData.getOperatorInput());
     this.node = node;
   }
 

@@ -119,7 +119,7 @@ package models {
                     - capex: ComparableQuantity<Currency> [€]
                     - opex: ComparableQuantity<EnergyPrice> [€/MWh]
                     - sRated: ComparableQuantity<Power> [kVA]
-                    - cosphiRated: Double
+                    - cosPhiRated: Double
                 }
                 SystemParticipantTypeInput --|> AssetTypeInput
 
@@ -203,7 +203,7 @@ package models {
 
             class FixedFeedInInput {
                 - sRated: ComparableQuantity<Power> [kVA]
-                - cosphiRated: double
+                - cosPhiRated: double
             }
             FixedFeedInInput --|> SystemParticipantInput
 

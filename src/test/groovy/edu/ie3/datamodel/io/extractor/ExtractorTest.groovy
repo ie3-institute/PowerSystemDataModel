@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.extractor
 
 import edu.ie3.datamodel.exceptions.ExtractorException
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
@@ -21,12 +20,12 @@ class ExtractorTest extends Specification {
   def "An Extractor should be able to extract an entity with nested elements correctly"() {
 
     expect:
-    println(nestedEntity)
     def result = Extractor.extractElements(nestedEntity) as Set
     result == expectedExtractedEntities as Set
 
     where:
     nestedEntity               || expectedExtractedEntities
+
     gtd.lineCtoD               || [
       gtd.lineCtoD.nodeA,
       gtd.lineCtoD.nodeB,
@@ -53,16 +52,22 @@ class ExtractorTest extends Specification {
       gtd.switchAtoB.nodeA.operator,
       gtd.switchAtoB.operator
     ]
+
     sptd.fixedFeedInInput      || [
       sptd.fixedFeedInInput.node,
       sptd.fixedFeedInInput.operator,
-      sptd.fixedFeedInInput.node.operator
+      sptd.fixedFeedInInput.node.operator,
+      sptd.fixedFeedInInput.controllingEm.get(),
+      sptd.fixedFeedInInput.controllingEm.get().controllingEm.get()
     ]
+
     sptd.wecInput              || [
       sptd.wecInput.node,
       sptd.wecInput.type,
       sptd.wecInput.operator,
-      sptd.wecInput.node.operator
+      sptd.wecInput.node.operator,
+      sptd.wecInput.controllingEm.get(),
+      sptd.wecInput.controllingEm.get().controllingEm.get()
     ]
     sptd.chpInput              || [
       sptd.chpInput.node,
@@ -71,25 +76,33 @@ class ExtractorTest extends Specification {
       sptd.chpInput.thermalBus,
       sptd.chpInput.thermalStorage,
       sptd.chpInput.thermalStorage.thermalBus,
-      sptd.chpInput.thermalStorage.thermalBus.operator
+      sptd.chpInput.thermalStorage.thermalBus.operator,
+      sptd.chpInput.controllingEm.get(),
+      sptd.chpInput.controllingEm.get().controllingEm.get()
     ]
     sptd.bmInput               || [
       sptd.bmInput.node,
       sptd.bmInput.type,
       sptd.bmInput.operator,
-      sptd.bmInput.node.operator
+      sptd.bmInput.node.operator,
+      sptd.bmInput.controllingEm.get(),
+      sptd.bmInput.controllingEm.get().controllingEm.get()
     ]
     sptd.evInput               || [
       sptd.evInput.node,
       sptd.evInput.type,
       sptd.evInput.operator,
-      sptd.evInput.node.operator
+      sptd.evInput.node.operator,
+      sptd.evInput.controllingEm.get(),
+      sptd.evInput.controllingEm.get().controllingEm.get()
     ]
     sptd.storageInput          || [
       sptd.storageInput.node,
       sptd.storageInput.type,
       sptd.storageInput.operator,
-      sptd.storageInput.node.operator
+      sptd.storageInput.node.operator,
+      sptd.storageInput.controllingEm.get(),
+      sptd.storageInput.controllingEm.get().controllingEm.get()
     ]
     sptd.hpInput               || [
       sptd.hpInput.node,
@@ -97,7 +110,9 @@ class ExtractorTest extends Specification {
       sptd.hpInput.operator,
       sptd.hpInput.thermalBus,
       sptd.hpInput.thermalBus.operator,
-      sptd.hpInput.node.operator
+      sptd.hpInput.node.operator,
+      sptd.hpInput.controllingEm.get(),
+      sptd.hpInput.controllingEm.get().controllingEm.get()
     ]
 
     gtd.lineGraphicCtoD        || [
@@ -146,12 +161,15 @@ class ExtractorTest extends Specification {
     given:
     def sampleFixedFeedInput = new FixedFeedInInput(UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a"), "test_fixedFeedInInput",
         OperatorInput.NO_OPERATOR_ASSIGNED,
-        sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics,
+        sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics, sptd.fixedFeedInInput.controllingEm.orElse(null),
         sptd.fixedFeedInInput.sRated,sptd.fixedFeedInInput.cosPhiRated)
     expect:
     Extractor.extractElements(sampleFixedFeedInput) as Set == [
       sptd.fixedFeedInInput.node,
-      sptd.fixedFeedInInput.node.operator
+      sptd.fixedFeedInInput.node.operator,
+      sptd.fixedFeedInInput.controllingEm.get(),
+      sptd.fixedFeedInInput.controllingEm.get().controllingEm.get(),
+      sptd.fixedFeedInInput.controllingEm.get().operator
     ] as Set
   }
 

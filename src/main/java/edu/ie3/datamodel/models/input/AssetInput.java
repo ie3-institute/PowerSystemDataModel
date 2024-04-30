@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes a grid asset under the assumption that every asset could be operable */
-public abstract class AssetInput extends InputEntity implements Operable {
+public abstract class AssetInput extends UniqueInputEntity implements Operable {
   /** Time for which the entity is operated */
   private final OperationTime operationTime;
   /** The operator of this asset */

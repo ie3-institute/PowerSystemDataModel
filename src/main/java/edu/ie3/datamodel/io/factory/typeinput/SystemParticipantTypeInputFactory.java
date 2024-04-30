@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.factory.typeinput;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
@@ -27,31 +27,31 @@ public class SystemParticipantTypeInputFactory
   // SystemParticipantTypeInput parameters
   private static final String CAP_EX = "capex";
   private static final String OP_EX = "opex";
-  private static final String S_RATED = "srated";
-  private static final String COS_PHI_RATED = "cosphirated";
+  private static final String S_RATED = "sRated";
+  private static final String COS_PHI_RATED = "cosPhiRated";
 
   // required in multiple types
-  private static final String ETA_CONV = "etaconv";
-  private static final String P_THERMAL = "pthermal";
-  private static final String E_STORAGE = "estorage";
+  private static final String ETA_CONV = "etaConv";
+  private static final String P_THERMAL = "pThermal";
+  private static final String E_STORAGE = "eStorage";
 
   // EvTypeInput
-  private static final String E_CONS = "econs";
-
+  private static final String E_CONS = "eCons";
+  private static final String S_RATEDDC = "sRatedDC";
   // BmTypeInput
-  private static final String ACTIVE_POWER_GRADIENT = "activepowergradient";
+  private static final String ACTIVE_POWER_GRADIENT = "activePowerGradient";
 
   // WecTypeInput
-  private static final String ROTOR_AREA = "rotorarea";
-  private static final String HUB_HEIGHT = "hubheight";
+  private static final String ROTOR_AREA = "rotorArea";
+  private static final String HUB_HEIGHT = "hubHeight";
 
   // ChpTypeInput
-  private static final String ETA_EL = "etael";
-  private static final String ETA_THERMAL = "etathermal";
-  private static final String P_OWN = "pown";
+  private static final String ETA_EL = "etaEl";
+  private static final String ETA_THERMAL = "etaThermal";
+  private static final String P_OWN = "pOwn";
 
   // StorageTypeInput
-  private static final String P_MAX = "pmax";
+  private static final String P_MAX = "pMax";
   private static final String ETA = "eta";
 
   // WecTypeInput
@@ -68,24 +68,23 @@ public class SystemParticipantTypeInputFactory
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData data) {
-    Set<String> standardConstructorParams =
-        newSet(ENTITY_UUID, ENTITY_ID, CAP_EX, OP_EX, S_RATED, COS_PHI_RATED);
+  protected List<Set<String>> getFields(Class<?> entityClass) {
+    Set<String> standardConstructorParams = newSet(UUID, ID, CAP_EX, OP_EX, S_RATED, COS_PHI_RATED);
 
     Set<String> constructorParameters = null;
-    if (data.getTargetClass().equals(EvTypeInput.class)) {
+    if (entityClass.equals(EvTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, E_STORAGE, E_CONS);
-    } else if (data.getTargetClass().equals(HpTypeInput.class)) {
+    } else if (entityClass.equals(HpTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, P_THERMAL);
-    } else if (data.getTargetClass().equals(BmTypeInput.class)) {
+    } else if (entityClass.equals(BmTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, ACTIVE_POWER_GRADIENT, ETA_CONV);
-    } else if (data.getTargetClass().equals(WecTypeInput.class)) {
+    } else if (entityClass.equals(WecTypeInput.class)) {
       constructorParameters =
           expandSet(standardConstructorParams, CP_CHARACTERISTIC, ETA_CONV, ROTOR_AREA, HUB_HEIGHT);
-    } else if (data.getTargetClass().equals(ChpTypeInput.class)) { // into new file
+    } else if (entityClass.equals(ChpTypeInput.class)) { // into new file
       constructorParameters =
           expandSet(standardConstructorParams, ETA_EL, ETA_THERMAL, P_THERMAL, P_OWN);
-    } else if (data.getTargetClass().equals(StorageTypeInput.class)) {
+    } else if (entityClass.equals(StorageTypeInput.class)) {
       constructorParameters =
           expandSet(
               standardConstructorParams,
@@ -99,9 +98,9 @@ public class SystemParticipantTypeInputFactory
   }
 
   @Override
-  protected SystemParticipantTypeInput buildModel(SimpleEntityData data) {
-    UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.getField(ENTITY_ID);
+  protected SystemParticipantTypeInput buildModel(EntityData data) {
+    UUID uuid = data.getUUID(UUID);
+    String id = data.getField(ID);
     ComparableQuantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
     ComparableQuantity<EnergyPrice> opEx = data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE);
     ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
@@ -126,7 +125,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildEvTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -138,11 +137,13 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<SpecificEnergy> eCons =
         data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
 
-    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi);
+    ComparableQuantity<Power> sRatedDC = data.getQuantity(S_RATEDDC, StandardUnits.ACTIVE_POWER_IN);
+
+    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC);
   }
 
   private SystemParticipantTypeInput buildHpTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -155,7 +156,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildBmTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -171,7 +172,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildWecTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -201,7 +202,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildChpTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -222,7 +223,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   private SystemParticipantTypeInput buildStorageTypeInput(
-      SimpleEntityData data,
+      EntityData data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,

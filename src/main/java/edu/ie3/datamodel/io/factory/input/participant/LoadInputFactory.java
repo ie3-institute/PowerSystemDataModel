@@ -6,14 +6,15 @@
 package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.LoadInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.profile.LoadProfile;
+import java.util.UUID;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import org.slf4j.Logger;
@@ -21,14 +22,14 @@ import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
 public class LoadInputFactory
-    extends SystemParticipantInputEntityFactory<LoadInput, NodeAssetInputEntityData> {
+    extends SystemParticipantInputEntityFactory<LoadInput, SystemParticipantEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(LoadInputFactory.class);
 
-  private static final String LOAD_PROFILE = "loadprofile";
+  private static final String LOAD_PROFILE = "loadProfile";
   private static final String DSM = "dsm";
-  private static final String E_CONS_ANNUAL = "econsannual";
-  private static final String S_RATED = "srated";
-  private static final String COS_PHI = "cosphirated";
+  private static final String E_CONS_ANNUAL = "eConsAnnual";
+  private static final String S_RATED = "sRated";
+  private static final String COS_PHI = "cosPhiRated";
 
   public LoadInputFactory() {
     super(LoadInput.class);
@@ -41,8 +42,8 @@ public class LoadInputFactory
 
   @Override
   protected LoadInput buildModel(
-      NodeAssetInputEntityData data,
-      java.util.UUID uuid,
+      SystemParticipantEntityData data,
+      UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
@@ -58,6 +59,7 @@ public class LoadInputFactory
           id);
       loadProfile = LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
     }
+    final EmInput em = data.getEm().orElse(null);
     final boolean dsm = data.getBoolean(DSM);
     final ComparableQuantity<Energy> eConsAnnual =
         data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN);
@@ -71,6 +73,7 @@ public class LoadInputFactory
         operationTime,
         node,
         qCharacteristics,
+        em,
         loadProfile,
         dsm,
         eConsAnnual,

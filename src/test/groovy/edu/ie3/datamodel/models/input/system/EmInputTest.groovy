@@ -5,11 +5,9 @@
  */
 package edu.ie3.datamodel.models.input.system
 
-import static edu.ie3.datamodel.models.ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY
-import edu.ie3.datamodel.models.ControlStrategy
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
-
 
 class EmInputTest extends Specification {
 
@@ -18,19 +16,15 @@ class EmInputTest extends Specification {
     def emInput = new EmInput(
         UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
         "test_emInput",
-        SystemParticipantTestData.participantNode,
-        SystemParticipantTestData.cosPhiFixed,
-        SystemParticipantTestData.connectedAssets,
-        SystemParticipantTestData.emControlStrategy
+        SystemParticipantTestData.emControlStrategy,
+        SystemParticipantTestData.parentEm
         )
 
     then:
     emInput.with {
       assert uuid == UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792")
       assert id == "test_emInput"
-      assert qCharacteristics == SystemParticipantTestData.cosPhiFixed
-      assert connectedAssets ==  SystemParticipantTestData.connectedAssets
-      assert controlStrategy.key == SystemParticipantTestData.emControlStrategy
+      assert controlStrategy == SystemParticipantTestData.emControlStrategy
     }
   }
 
@@ -60,32 +54,30 @@ class EmInputTest extends Specification {
         SystemParticipantTestData.emInput.uuid +
         ", id='" +
         SystemParticipantTestData.emInput.id +
-        ", operator=" +
+        "', operator=" +
         SystemParticipantTestData.emInput.operator.uuid +
         ", operationTime=" +
         SystemParticipantTestData.emInput.operationTime +
-        ", node=" +
-        SystemParticipantTestData.emInput.node.uuid +
-        ", qCharacteristics='" +
-        SystemParticipantTestData.emInput.qCharacteristics +
-        ", connectedAssets=" +
-        Arrays.toString(SystemParticipantTestData.emInput.connectedAssets) +
         ", controlStrategy=" +
         SystemParticipantTestData.emInput.controlStrategy +
-        '}'
+        ", controllingEm=" +
+        SystemParticipantTestData.parentEm.uuid +
+        "}"
   }
 
   def "A EmInput copy method should work as expected"() {
     given:
     def emInput = SystemParticipantTestData.emInput
-    def newConnectedAssets = [
-      UUID.randomUUID(),
-      UUID.randomUUID()
-    ] as UUID[]
-
+    def newStrat = "new_strat"
+    def givenParentEm = new EmInput(
+        UUID.fromString("cfc0639b-65bc-47e5-a8e5-82703de3c650"),
+        "testParent",
+        "controlStrat",
+        null
+        )
 
     when:
-    def alteredUnit = emInput.copy().connectedAssets(newConnectedAssets).controlStrategy(ControlStrategy.parse("")).build()
+    def alteredUnit = emInput.copy().controlStrategy(newStrat).parentEm(givenParentEm).build()
 
     then:
     alteredUnit.with {
@@ -93,9 +85,8 @@ class EmInputTest extends Specification {
       assert operationTime == emInput.operationTime
       assert operator == emInput.operator
       assert id == emInput.id
-      assert qCharacteristics == emInput.qCharacteristics
-      assert connectedAssets == newConnectedAssets
-      assert controlStrategy == NO_CONTROL_STRATEGY
+      assert controlStrategy == newStrat
+      assert controllingEm == Optional.of(givenParentEm)
     }
   }
 }

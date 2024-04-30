@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
-import edu.ie3.test.helper.TestContainerHelper
-
 import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 
 import edu.ie3.datamodel.exceptions.SourceException
@@ -15,6 +13,7 @@ import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.value.*
+import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.interval.ClosedInterval
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
@@ -22,6 +21,8 @@ import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
+
+import java.time.format.DateTimeFormatter
 
 @Testcontainers
 class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper {
@@ -37,6 +38,9 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
 
   @Shared
   DatabaseNamingStrategy namingStrategy
+
+  @Shared
+  DateTimeFormatter dateTimeFormatter
 
   static String schemaName = "public"
 
@@ -67,17 +71,17 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
         )
 
     namingStrategy = new DatabaseNamingStrategy()
+    dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
-    pSource = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, "yyyy-MM-dd HH:mm:ss")
+    pSource = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, dateTimeFormatter)
   }
 
   def "The factory method in SqlTimeSeriesSource builds a time series source for all supported column types"() {
     given:
     def metaInformation = new IndividualTimeSeriesMetaInformation(uuid, columnScheme)
-    def timePattern = "yyyy-MM-dd HH:mm:ss"
 
     when:
-    def source = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, timePattern)
+    def source = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, dateTimeFormatter)
     def timeSeries = source.timeSeries
 
     then:
@@ -100,10 +104,9 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
         UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"),
         ColumnScheme.WEATHER
         )
-    def timePattern = "yyyy-MM-dd HH:mm:ss"
 
     when:
-    SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, timePattern)
+    SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, dateTimeFormatter)
 
     then:
     def e = thrown(SourceException)

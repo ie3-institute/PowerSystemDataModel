@@ -46,35 +46,6 @@ public class Transformer3WResult extends TransformerResult {
     this.iCAng = iCAng;
   }
 
-  /**
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param iAMag electric current magnitude @ port A, normally provided in Ampere
-   * @param iAAng electric current angle @ Port A in degree
-   * @param iBMag electric current magnitude @ port B, normally provided in Ampere
-   * @param iBAng electric current angle @ Port B in degree
-   * @param iCMag electric current magnitude @ port C, normally provided in Ampere
-   * @param iCAng electric current angle @ Port C in degree
-   * @param tapPos the current position of the transformers tap changer
-   */
-  public Transformer3WResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag,
-      ComparableQuantity<Angle> iAAng,
-      ComparableQuantity<ElectricCurrent> iBMag,
-      ComparableQuantity<Angle> iBAng,
-      ComparableQuantity<ElectricCurrent> iCMag,
-      ComparableQuantity<Angle> iCAng,
-      int tapPos) {
-    super(uuid, time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
-    this.iCMag = iCMag;
-    this.iCAng = iCAng;
-  }
-
   public ComparableQuantity<ElectricCurrent> getiCMag() {
     return iCMag;
   }
@@ -108,9 +79,7 @@ public class Transformer3WResult extends TransformerResult {
   @Override
   public String toString() {
     return "Transformer3WResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

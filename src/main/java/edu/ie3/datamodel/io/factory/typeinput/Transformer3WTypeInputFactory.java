@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.Collections;
@@ -17,63 +17,45 @@ import tech.units.indriya.ComparableQuantity;
 
 public class Transformer3WTypeInputFactory
     extends AssetTypeInputEntityFactory<Transformer3WTypeInput> {
-  private static final String S_RATED_A = "srateda";
-  private static final String S_RATED_B = "sratedb";
-  private static final String S_RATED_C = "sratedc";
-  private static final String V_RATED_A = "vrateda";
-  private static final String V_RATED_B = "vratedb";
-  private static final String V_RATED_C = "vratedc";
-  private static final String R_SC_A = "rsca";
-  private static final String R_SC_B = "rscb";
-  private static final String R_SC_C = "rscc";
-  private static final String X_SC_A = "xsca";
-  private static final String X_SC_B = "xscb";
-  private static final String X_SC_C = "xscc";
-  private static final String G_M = "gm";
-  private static final String B_M = "bm";
-  private static final String D_V = "dv";
-  private static final String D_PHI = "dphi";
-  private static final String TAP_NEUTR = "tapneutr";
-  private static final String TAP_MIN = "tapmin";
-  private static final String TAP_MAX = "tapmax";
+  private static final String S_RATED_A = "sRatedA";
+  private static final String S_RATED_B = "sRatedB";
+  private static final String S_RATED_C = "sRatedC";
+  private static final String V_RATED_A = "vRatedA";
+  private static final String V_RATED_B = "vRatedB";
+  private static final String V_RATED_C = "vRatedC";
+  private static final String R_SC_A = "rScA";
+  private static final String R_SC_B = "rScB";
+  private static final String R_SC_C = "rScC";
+  private static final String X_SC_A = "xScA";
+  private static final String X_SC_B = "xScB";
+  private static final String X_SC_C = "xScC";
+  private static final String G_M = "gM";
+  private static final String B_M = "bM";
+  private static final String D_V = "dV";
+  private static final String D_PHI = "dPhi";
+  private static final String TAP_NEUTR = "tapNeutr";
+  private static final String TAP_MIN = "tapMin";
+  private static final String TAP_MAX = "tapMax";
 
   public Transformer3WTypeInputFactory() {
     super(Transformer3WTypeInput.class);
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData data) {
+  protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> constructorParams =
         newSet(
-            ENTITY_UUID,
-            ENTITY_ID,
-            S_RATED_A,
-            S_RATED_B,
-            S_RATED_C,
-            V_RATED_A,
-            V_RATED_B,
-            V_RATED_C,
-            R_SC_A,
-            R_SC_B,
-            R_SC_C,
-            X_SC_A,
-            X_SC_B,
-            X_SC_C,
-            G_M,
-            B_M,
-            D_V,
-            D_PHI,
-            TAP_NEUTR,
-            TAP_MIN,
+            UUID, ID, S_RATED_A, S_RATED_B, S_RATED_C, V_RATED_A, V_RATED_B, V_RATED_C, R_SC_A,
+            R_SC_B, R_SC_C, X_SC_A, X_SC_B, X_SC_C, G_M, B_M, D_V, D_PHI, TAP_NEUTR, TAP_MIN,
             TAP_MAX);
 
     return Collections.singletonList(constructorParams);
   }
 
   @Override
-  protected Transformer3WTypeInput buildModel(SimpleEntityData data) {
-    UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.getField(ENTITY_ID);
+  protected Transformer3WTypeInput buildModel(EntityData data) {
+    UUID uuid = data.getUUID(UUID);
+    String id = data.getField(ID);
     ComparableQuantity<Power> sRatedA = data.getQuantity(S_RATED_A, StandardUnits.S_RATED);
     ComparableQuantity<Power> sRatedB = data.getQuantity(S_RATED_B, StandardUnits.S_RATED);
     ComparableQuantity<Power> sRatedC = data.getQuantity(S_RATED_C, StandardUnits.S_RATED);
