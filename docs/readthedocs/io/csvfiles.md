@@ -81,6 +81,12 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 
 ```
 
+### Id Coordinate
+Csv id coordinate sources can have two different ways to represent their coordinate:
+1. ICON: Takes a `latitude` and a `longitude` column
+2. COSMO: Takes a `lat_rot`, a `long_rot`, a `lat_geo` and a `long_geo` column
+
+
 ### Time Series
 
 ```{eval-rst}

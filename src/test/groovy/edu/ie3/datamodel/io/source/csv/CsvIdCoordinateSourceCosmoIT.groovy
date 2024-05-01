@@ -206,4 +206,28 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
     then:
     actualDistances.size() == 1
   }
+
+  def "The CsvCoordinateSource will return less than four corner points if not enough points are within the given distance"() {
+    given:
+    def basePoint = GeoUtils.buildPoint(39.61, 1.38)
+    def distance = Quantities.getQuantity(10000, Units.METRE)
+
+    when:
+    def actualDistances = source.findCornerPoints(basePoint, distance)
+
+    then:
+    actualDistances.size() == 3
+  }
+
+  def "The CsvCoordinateSource will return one point if there is an exact match"() {
+    given:
+    def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+    def distance = Quantities.getQuantity(100, Units.METRE)
+
+    when:
+    def actualDistances = source.findCornerPoints(basePoint, distance)
+
+    then:
+    actualDistances.size() == 1
+  }
 }
