@@ -17,14 +17,39 @@ In addition to actual data, a mapping function has to be known.
 To be as flexible, as possible, the actual content of the time series is given as children of the `Value` class.
 The following different values are available:
 
-| Value Class            | Purpose                                                                                                       |
-|:-----------------------|:--------------------------------------------------------------------------------------------------------------|
-| `PValue`               | Electrical active power                                                                                       |
-| `SValue`               | Electrical active and reactive power                                                                          |
-| `HeatAndPValue`        | Combination of thermal power (e.g. in kW) <br> and electrical active power (e.g. in kW)                       |
-| `HeatAndSValue`        | Combination of thermal power (e.g. in kW) <br> and electrical active and reactive power (e.g. in kW and kVAr) |
-| `EnergyPriceValue`     | Wholesale market price (e.g. in € / MWh)                                                                      |
-| `SolarIrradianceValue` | Combination of diffuse and direct solar irradiance                                                            |
-| `TemperatureValue`     | Temperature information                                                                                       |
-| `WindValue`            | Combination of wind direction and wind velocity                                                               |
-| `WeatherValue`         | Combination of irradiance, temperature and wind information                                                   |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33
+   :header-rows: 1
+   
+   * - Value Class 
+     - Purpose
+   
+   * - `PValue`
+     - Electrical active power
+   
+   * - `SValue`
+     - Electrical active and reactive power
+     
+   * - `HeatAndPValue`
+     - Combination of thermal power (e.g. in kW) <br> and electrical active power (e.g. in kW)
+     
+   * - `HeatAndSValue`
+     -  Combination of thermal power (e.g. in kW) <br> and electrical active and reactive power (e.g. in kW and kVAr)
+     
+   * - `EnergyPriceValue`
+     - Wholesale market price (e.g. in € / MWh)
+      
+   * - `SolarIrradianceValue`
+     - Combination of diffuse and direct solar irradiance
+     
+   * - `TemperatureValue`
+     - Temperature information
+     
+   * - `WindValue`
+     - Combination of wind direction and wind velocity
+        
+   * - `WeatherValue`
+     - Combination of irradiance, temperature and wind information
+           
+```

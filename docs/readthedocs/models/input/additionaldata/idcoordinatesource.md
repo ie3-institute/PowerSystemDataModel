@@ -10,7 +10,7 @@ coordinates.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33
-   :header-rows: 0
+   :header-rows: 1
     
    * - Attribute
      - Remarks
