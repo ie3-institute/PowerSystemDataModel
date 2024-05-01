@@ -9,7 +9,7 @@ Representation of an electrical node, with no further distinction into bus bar, 
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
