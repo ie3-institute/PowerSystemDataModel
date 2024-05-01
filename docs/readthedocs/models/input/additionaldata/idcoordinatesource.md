@@ -7,11 +7,21 @@ coordinates.
 
 ## Information
 
-| Attribute    | Remarks                                                        |
-|:-------------|:---------------------------------------------------------------|
-| `Id`         | An integer value for identifying the coordinate.               |
-| `Coordiante` | Geographical information presented as `Lat/long` of a `Point`. |
+```{eval-rst}
+.. list-table::
+   :widths: 33 33
+   :header-rows: 1
+    
+   * - Attribute
+     - Remarks
+   
+   * - Id
+     - An integer value for identifying the coordinate. 
+   
+   * - Coordinate
+     - Geographical information presented as `Lat/long` of a `Point`.
 
+```
 
 
 ## Known implementations:
@@ -74,19 +84,17 @@ return less than n coordinates.
 
 
 ## Finding and returning the closest corner coordinates:
-In most cases we need four corner coordinates for our given coordinate. Therefor the 
-IdCoordinateSource contains a method that will use the calculated distances to find the closest 
-corner coordinates for the given coordinate.
+In most cases we need four corner coordinates for our given coordinate. Therefor the IdCoordinateSource contains methods
+that tries to return the corner points for a given coordinate. The max. number of corner points is specified by the
+implementation of the second method.
 
 ``` java
-    List<CoordinateDistance> restrictToBoundingBox(
-          Point coordinate,
-          Collection<CoordinateDistance> distances,
-          int numberOfPoints
-    )
+    List<CoordinateDistance> findCornerPoints(Point coordinate, ComparableQuantity<Length> distance)
+    List<CoordinateDistance> findCornerPoints(Point coordinate, Collection<CoordinateDistance> distances)
 ```
 
-For a given set of coordinates, the closest four corner coordinates plus more close points if n > 4
-are returned. If n < 4 the method will return the closest n corner coordinates. If the set of 
-coordinates contains a coordinate that matches the given coordinate, only this one coordinate is
-returned. If n > number of coordinates in the set, all coordinates are returned.
+1. This method can be used to return the corner points by specifying a maximum search distance.
+
+2. If a coordinate matches the given coordinate, only this coordinate is returned. If no coordinate matches the given 
+coordinate, this method tries to return four corner points.
+

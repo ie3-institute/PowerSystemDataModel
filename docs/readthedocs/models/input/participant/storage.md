@@ -11,7 +11,7 @@ Model of an ideal electrical battery energy storage.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
@@ -86,7 +86,7 @@ Model of an ideal electrical battery energy storage.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute

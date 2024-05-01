@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Changed
+- Improvements to the search for corner points in `IdCoordinateSource` [#1016](https://github.com/ie3-institute/PowerSystemDataModel/issues/1016)
 
 
 ## [5.0.1] - 2024-03-07
