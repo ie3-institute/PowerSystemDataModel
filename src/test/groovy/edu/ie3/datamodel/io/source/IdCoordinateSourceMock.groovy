@@ -51,6 +51,11 @@ class IdCoordinateSourceMock extends IdCoordinateSource {
   }
 
   @Override
+  List<CoordinateDistance> findCornerPoints(Point coordinate, ComparableQuantity<Length> distance) {
+    return Collections.emptyList()
+  }
+
+  @Override
   void validate() throws ValidationException {
   }
 }

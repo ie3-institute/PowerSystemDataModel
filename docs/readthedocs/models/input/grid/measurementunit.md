@@ -11,7 +11,7 @@ The measured information are indicated by boolean fields.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute

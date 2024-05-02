@@ -167,24 +167,36 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   @Override
   public List<CoordinateDistance> getClosestCoordinates(
       Point coordinate, int n, ComparableQuantity<Length> distance) {
+    List<Point> points = getCoordinatesInBoundingBox(coordinate, distance);
+    return calculateCoordinateDistances(coordinate, n, points);
+  }
+
+  @Override
+  public List<CoordinateDistance> findCornerPoints(
+      Point coordinate, ComparableQuantity<Length> distance) {
+    List<Point> points = getCoordinatesInBoundingBox(coordinate, distance);
+    return findCornerPoints(
+        coordinate, GeoUtils.calcOrderedCoordinateDistances(coordinate, points));
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  private List<Point> getCoordinatesInBoundingBox(
+      Point coordinate, ComparableQuantity<Length> distance) {
     Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
 
-    List<CoordinateValue> values =
-        executeQueryToList(
+    return executeQueryToList(
             queryForBoundingBox,
             ps -> {
               ps.setDouble(1, envelope.getMinX());
               ps.setDouble(2, envelope.getMinY());
               ps.setDouble(3, envelope.getMaxX());
               ps.setDouble(4, envelope.getMaxY());
-            });
-
-    List<Point> points = values.stream().map(value -> value.coordinate).toList();
-
-    return calculateCoordinateDistances(coordinate, n, points);
+            })
+        .stream()
+        .map(value -> value.coordinate)
+        .toList();
   }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   private CoordinateValue createCoordinateValue(Map<String, String> fieldToValues) {
     fieldToValues.remove("distance");

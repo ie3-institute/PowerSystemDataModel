@@ -9,7 +9,7 @@ Representation of an AC line.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
    * - Attribute
      - Unit
@@ -56,7 +56,7 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
@@ -129,7 +129,7 @@ Some standard overhead lines.
 ```{eval-rst}
 .. list-table::
    :widths: 11 11 11 11 11 11 11 11 11
-   :header-rows: 0
+   :header-rows: 1
    
    
    * - uuid
@@ -312,7 +312,7 @@ Some standard cables.
 ```{eval-rst}
 .. list-table::
    :widths: 11 11 11 11 11 11 11 11 11
-   :header-rows: 0
+   :header-rows: 1
    
    
    * - uuid

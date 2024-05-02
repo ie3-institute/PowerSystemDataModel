@@ -83,6 +83,11 @@ abstract class WeatherTestData {
     }
 
     @Override
+    List<CoordinateDistance> findCornerPoints(Point coordinate, ComparableQuantity<Length> distance) {
+      throw new UnsupportedOperationException("This method is not supported!")
+    }
+
+    @Override
     void validate() throws ValidationException {
     }
   }
