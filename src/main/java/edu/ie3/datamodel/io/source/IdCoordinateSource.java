@@ -112,7 +112,8 @@ public abstract class IdCoordinateSource extends EntitySource {
    * @return either a list with one exact match or a list of corner points (default implementation:
    *     max. 4 points)
    */
-  List<CoordinateDistance> findCornerPoints(Point coordinate, ComparableQuantity<Length> distance);
+  public abstract List<CoordinateDistance> findCornerPoints(
+      Point coordinate, ComparableQuantity<Length> distance);
 
   /**
    * Method for finding the corner points of a given coordinate. If a point matches the given
