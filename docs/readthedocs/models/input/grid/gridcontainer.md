@@ -40,7 +40,7 @@ A synoptic overview of both classes' attributes is given here:
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
