@@ -10,7 +10,7 @@ Participants are connected to an EM each via their `em` field.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
