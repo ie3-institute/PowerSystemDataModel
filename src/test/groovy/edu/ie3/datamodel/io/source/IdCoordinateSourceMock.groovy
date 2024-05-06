@@ -48,4 +48,9 @@ class IdCoordinateSourceMock implements IdCoordinateSource {
   List<CoordinateDistance> getClosestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
     return Collections.emptyList()
   }
+
+  @Override
+  List<CoordinateDistance> findCornerPoints(Point coordinate, ComparableQuantity<Length> distance) {
+    return Collections.emptyList()
+  }
 }

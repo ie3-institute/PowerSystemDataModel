@@ -9,7 +9,7 @@ Result of a cylindrical thermal storage using a fluent to store thermal energy.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
