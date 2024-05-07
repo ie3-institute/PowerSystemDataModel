@@ -5,7 +5,7 @@ plugins {
   id 'signing'
   id 'pmd' // code check, working on source code
   id 'com.diffplug.spotless' version '6.25.0' //code format
-  id 'com.github.spotbugs' version '6.0.12' // code check, working on byte code
+  id 'com.github.spotbugs' version '6.0.13' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
@@ -94,7 +94,7 @@ dependencies {
   runtimeOnly 'org.postgresql:postgresql:42.7.3' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.16.1' // I/O functionalities
-  implementation 'commons-codec:commons-codec:1.16.1' // needed by commons-compress
+  implementation 'commons-codec:commons-codec:1.17.0' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.26.1' // I/O functionalities
 }
 
