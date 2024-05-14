@@ -5,7 +5,7 @@ plugins {
   id 'signing'
   id 'pmd' // code check, working on source code
   id 'com.diffplug.spotless' version '6.25.0' //code format
-  id 'com.github.spotbugs' version '6.0.13' // code check, working on byte code
+  id 'com.github.spotbugs' version '6.0.14' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
@@ -18,7 +18,7 @@ ext {
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
   groovyBinaryVersion = "4.0.21"
-  testcontainersVersion = '1.19.7'
+  testcontainersVersion = '1.19.8'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -73,7 +73,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.4' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.14.14' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.14.15' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
