@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.processor.input
 
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.UniqueEntity
@@ -621,6 +622,23 @@ class InputEntityProcessorTest extends Specification {
 
     then:
     actual == expected
+  }
+
+  def "The InputEntityProcessor should serialize a provided MappingEntry correctly"() {
+    given:
+    def processor = new InputEntityProcessor(TimeSeriesMappingSource.MappingEntry)
+    def validResult = new TimeSeriesMappingSource.MappingEntry(UUID.fromString("7eb7b296-f4c4-4020-acf3-e865453b5dbd"), UUID.fromString("bc581c6c-3044-48a1-aea1-5b2cb1370356"))
+
+    Map expectedResults = [
+      "participant": "7eb7b296-f4c4-4020-acf3-e865453b5dbd",
+      "timeSeries": "bc581c6c-3044-48a1-aea1-5b2cb1370356"
+    ]
+
+    when: "the entity is passed to the processor"
+    def processingResult = processor.handleEntity(validResult)
+
+    then: "make sure that the result is as expected "
+    processingResult == expectedResults
   }
 
   def "The InputEntityProcessor should serialize an entity but ignore the operator field when OperatorInput is equal to NO_OPERATOR_ASSIGNED"() {
