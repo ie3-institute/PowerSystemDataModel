@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhancing `VoltageLevel` with `equals` method [#1063](https://github.com/ie3-institute/PowerSystemDataModel/issues/1063)
 
 ### Fixed
+- Fixed `MappingEntryies` not getting processed by adding `Getter` methods for record fields [#1084](https://github.com/ie3-institute/PowerSystemDataModel/issues/1084) 
 
 
 ### Changed

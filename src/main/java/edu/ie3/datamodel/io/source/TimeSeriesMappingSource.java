@@ -11,6 +11,8 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
+import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
@@ -80,6 +82,16 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
 
   /** Class to represent one entry within the participant to time series mapping */
   public record MappingEntry(UUID participant, UUID timeSeries) implements InputEntity {
+
+    /** Returns the {@link UUID} of the {@link SystemParticipantInput}. */
+    public UUID getParticipant() {
+      return participant;
+    }
+
+    /** Returns the {@link UUID} of the {@link TimeSeries}. */
+    public UUID getTimeSeries() {
+      return timeSeries;
+    }
 
     @Override
     public boolean equals(Object o) {
