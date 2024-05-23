@@ -62,6 +62,23 @@ class ConnectorValidationUtilsTest extends Specification {
   OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
   )
 
+  def "A ConnectorInput needs at least one parallel device"() {
+    when:
+    def actual = ConnectorValidationUtils.lessThanOneParallelDevice(invalidConnector)
+
+    then:
+    actual.failure
+    actual.exception.get().class == InvalidEntityException
+    actual.exception.get().message.contains(expectedMessage)
+
+    where:
+    invalidConnector                                                  || expectedMessage
+    GridTestData.lineFtoG.copy().parallelDevices(0).build()           || "LineInput needs to have at least one parallel device"
+    GridTestData.lineCtoD.copy().parallelDevices(-1).build()          || "LineInput needs to have at least one parallel device"
+    GridTestData.transformerBtoE.copy().parallelDevices(0).build()    || "Transformer2WInput needs to have at least one parallel device"
+    GridTestData.transformerAtoBtoC.copy().parallelDevices(0).build() || "Transformer3WInput needs to have at least one parallel device"
+  }
+
   def "ConnectorValidationUtils.checkLine() recognizes all potential errors for a line"() {
     when:
     List<Try<Void, InvalidEntityException>> exceptions = ConnectorValidationUtils.check(invalidLine).stream().filter { it -> it.failure }.toList()
