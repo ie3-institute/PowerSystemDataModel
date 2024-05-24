@@ -11,7 +11,9 @@ import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile;
 import edu.ie3.datamodel.models.profile.StandardLoadProfile;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
@@ -38,6 +40,12 @@ public class LoadInput extends SystemParticipantInput {
   private final ComparableQuantity<Power> sRated;
   /** Rated power factor */
   private final double cosPhiRated;
+  /** Type of the Househould */
+  private final String type;
+  /** Number of inhabitants of the Household */
+  private final int inhabitants;
+  /** Income of the inhabitants per Household */
+  private final int income;
 
   /**
    * Constructor for an operated load
@@ -54,6 +62,9 @@ public class LoadInput extends SystemParticipantInput {
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
+   * @param type of the Household
+   * @param inhabitants Number of inhabitants of the Household
+   * @param income of the inhabitants per Household
    */
   public LoadInput(
       UUID uuid,
@@ -67,13 +78,19 @@ public class LoadInput extends SystemParticipantInput {
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosPhiRated) {
+      double cosPhiRated,
+      String type,
+      int inhabitants,
+      int income) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.loadProfile = loadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
+    this.type = type;
+    this.inhabitants = inhabitants;
+    this.income = income;
   }
 
   /**
@@ -86,13 +103,15 @@ public class LoadInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
-   * @param loadProfileKey Load profile key corresponding to {@link
-   *     edu.ie3.datamodel.models.profile.BdewStandardLoadProfile} or {@link
-   *     edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
+   * @param loadProfileKey Load profile key corresponding to {@link BdewStandardLoadProfile} or
+   *     {@link NbwTemperatureDependantLoadProfile}
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
+   * @param type of the Household
+   * @param inhabitants Number of inhabitants of the Household
+   * @param income of the inhabitants per Household
    */
   public LoadInput(
       UUID uuid,
@@ -106,7 +125,10 @@ public class LoadInput extends SystemParticipantInput {
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosPhiRated)
+      double cosPhiRated,
+      String type,
+      int inhabitants,
+      int income)
       throws ParsingException {
 
     this(
@@ -121,7 +143,10 @@ public class LoadInput extends SystemParticipantInput {
         dsm,
         eConsAnnual,
         sRated,
-        cosPhiRated);
+        cosPhiRated,
+        type,
+        inhabitants,
+        income);
   }
 
   /**
@@ -137,6 +162,9 @@ public class LoadInput extends SystemParticipantInput {
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
+   * @param type of the Household
+   * @param inhabitants Number of inhabitants of the Household
+   * @param income of the inhabitants per Household
    */
   public LoadInput(
       UUID uuid,
@@ -148,13 +176,19 @@ public class LoadInput extends SystemParticipantInput {
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosPhiRated) {
+      double cosPhiRated,
+      String type,
+      int inhabitants,
+      int income) {
     super(uuid, id, node, qCharacteristics, em);
     this.loadProfile = loadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
+    this.type = type;
+    this.inhabitants = inhabitants;
+    this.income = income;
   }
 
   /**
@@ -165,13 +199,15 @@ public class LoadInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
-   * @param loadProfileKey load profile key corresponding to {@link
-   *     edu.ie3.datamodel.models.profile.BdewStandardLoadProfile} or {@link
-   *     edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
+   * @param loadProfileKey load profile key corresponding to {@link BdewStandardLoadProfile} or
+   *     {@link NbwTemperatureDependantLoadProfile}
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
+   * @param type of the Household
+   * @param inhabitants Number of inhabitants of the Household
+   * @param income of the inhabitants per Household
    */
   public LoadInput(
       UUID uuid,
@@ -183,7 +219,10 @@ public class LoadInput extends SystemParticipantInput {
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosPhiRated)
+      double cosPhiRated,
+      String type,
+      int inhabitants,
+      int income)
       throws ParsingException {
     this(
         uuid,
@@ -195,7 +234,10 @@ public class LoadInput extends SystemParticipantInput {
         dsm,
         eConsAnnual,
         sRated,
-        cosPhiRated);
+        cosPhiRated,
+        type,
+        inhabitants,
+        income);
   }
 
   public LoadProfile getLoadProfile() {
@@ -218,6 +260,18 @@ public class LoadInput extends SystemParticipantInput {
     return cosPhiRated;
   }
 
+  public String getType() {
+    return type;
+  }
+
+  public int getInhabitants() {
+    return inhabitants;
+  }
+
+  public int getIncome() {
+    return income;
+  }
+
   public LoadInputCopyBuilder copy() {
     return new LoadInputCopyBuilder(this);
   }
@@ -231,12 +285,16 @@ public class LoadInput extends SystemParticipantInput {
         && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0
         && eConsAnnual.equals(loadInput.eConsAnnual)
         && loadProfile.equals(loadInput.loadProfile)
-        && sRated.equals(loadInput.sRated);
+        && sRated.equals(loadInput.sRated)
+        && type.equals(loadInput.type)
+        && Integer.compare(loadInput.inhabitants, inhabitants) == 0
+        && Integer.compare(loadInput.income, income) == 0;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), dsm, eConsAnnual, sRated, cosPhiRated);
+    return Objects.hash(
+        super.hashCode(), dsm, eConsAnnual, sRated, cosPhiRated, type, inhabitants, income);
   }
 
   @Override
@@ -264,6 +322,12 @@ public class LoadInput extends SystemParticipantInput {
         + sRated
         + ", cosphiRated="
         + cosPhiRated
+        + ", type="
+        + type
+        + ", inhabitants="
+        + inhabitants
+        + ", income="
+        + income
         + '}';
   }
 
@@ -282,6 +346,9 @@ public class LoadInput extends SystemParticipantInput {
     private ComparableQuantity<Energy> eConsAnnual;
     private ComparableQuantity<Power> sRated;
     private double cosPhiRated;
+    private String type;
+    private int inhabitants;
+    private int income;
 
     private LoadInputCopyBuilder(LoadInput entity) {
       super(entity);
@@ -290,6 +357,9 @@ public class LoadInput extends SystemParticipantInput {
       this.eConsAnnual = entity.geteConsAnnual();
       this.sRated = entity.getsRated();
       this.cosPhiRated = entity.getCosPhiRated();
+      this.type = entity.getType();
+      this.inhabitants = entity.getInhabitants();
+      this.income = entity.getIncome();
     }
 
     public LoadInputCopyBuilder loadprofile(StandardLoadProfile standardLoadProfile) {
@@ -317,6 +387,21 @@ public class LoadInput extends SystemParticipantInput {
       return this;
     }
 
+    public LoadInputCopyBuilder type(String type) {
+      this.type = type;
+      return this;
+    }
+
+    public LoadInputCopyBuilder inhabitants(int inhabitants) {
+      this.inhabitants = inhabitants;
+      return this;
+    }
+
+    public LoadInputCopyBuilder income(int income) {
+      this.income = income;
+      return this;
+    }
+
     @Override
     public LoadInputCopyBuilder scale(Double factor) {
       eConsAnnual(eConsAnnual.multiply(factor));
@@ -338,7 +423,10 @@ public class LoadInput extends SystemParticipantInput {
           dsm,
           eConsAnnual,
           sRated,
-          cosPhiRated);
+          cosPhiRated,
+          type,
+          inhabitants,
+          income);
     }
 
     @Override

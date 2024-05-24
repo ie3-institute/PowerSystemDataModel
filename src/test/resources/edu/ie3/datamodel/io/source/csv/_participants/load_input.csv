@@ -1,2 +1,2 @@
-uuid,cos_phi_rated,dsm,e_cons_annual,id,node,operates_from,operates_until,operator,q_characteristics,s_rated,load_profile,em
-eaf77f7e-9001-479f-94ca-7fb657766f5f,0.95,false,4000.0,test_loadInput,4ca90220-74c2-4369-9afa-a18bf068840d,2020-03-24T15:11:31Z,2020-03-25T15:11:31Z,8f9682df-0744-4b58-a122-f0dc730f6510,"cosPhiFixed:{(0.00,0.95)}",25.0,h0,977157f4-25e5-4c72-bf34-440edc778792
+uuid,cos_phi_rated,dsm,e_cons_annual,id,node,operates_from,operates_until,operator,q_characteristics,s_rated,load_profile,em,type,inhabitants,income
+eaf77f7e-9001-479f-94ca-7fb657766f5f,0.95,false,4000.0,test_loadInput,4ca90220-74c2-4369-9afa-a18bf068840d,2020-03-24T15:11:31Z,2020-03-25T15:11:31Z,8f9682df-0744-4b58-a122-f0dc730f6510,"cosPhiFixed:{(0.00,0.95)}",25.0,h0,977157f4-25e5-4c72-bf34-440edc778792,house,1,900
