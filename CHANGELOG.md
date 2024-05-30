@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Enhancing `VoltageLevel` with `equals` method [#1063](https://github.com/ie3-institute/PowerSystemDataModel/issues/1063)
 - `ConnectorValidationUtils` checks if parallel devices is > 0 [#1077](https://github.com/ie3-institute/PowerSystemDataModel/issues/1077)
+- Enhance LoadInput by categories for markov [#1089](https://github.com/ie3-institute/PowerSystemDataModel/issues/1089) 
 
 ### Fixed
 - Fixed `MappingEntryies` not getting processed by adding `Getter` methods for record fields [#1084](https://github.com/ie3-institute/PowerSystemDataModel/issues/1084) 
