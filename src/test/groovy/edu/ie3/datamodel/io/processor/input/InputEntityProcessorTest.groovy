@@ -250,9 +250,9 @@ class InputEntityProcessorTest extends Specification {
       "sRated"             : SystemParticipantTestData.loadInput.sRated.getValue().doubleValue().toString(),
       "loadProfile"		   : SystemParticipantTestData.loadInput.loadProfile.key,
       "controllingEm"      : SystemParticipantTestData.loadInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse(""),
-            "type" : SystemParticipantTestData.loadInput.type.toString(),
-            "inhabitants" : SystemParticipantTestData.loadInput.inhabitants.toString(),
-            "income" : SystemParticipantTestData.loadInput.income.toString()
+      "type" : SystemParticipantTestData.loadInput.type.toString(),
+      "inhabitants" : SystemParticipantTestData.loadInput.inhabitants.toString(),
+      "income" : SystemParticipantTestData.loadInput.income.toString()
     ]
     StorageInput     | SystemParticipantTestData.storageInput     || [
       "uuid"            : SystemParticipantTestData.storageInput.uuid.toString(),

@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import java.lang.reflect.Type
-
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
@@ -24,6 +22,7 @@ import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
+import java.lang.reflect.Type
 import javax.measure.quantity.Dimensionless
 
 class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
@@ -53,9 +52,9 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
       "econsannual"        : "3",
       "srated"             : "4",
       "cosphirated"        : "5",
-            "type" : "house",
-            "inhabitants" : "1",
-            "income" : "900"
+      "type" : "house",
+      "inhabitants" : "1",
+      "income" : "900"
     ]
     Try<LoadInput, FactoryException> input = inputFactory.get(
         new SystemParticipantEntityData(parameter, inputClass, nodeInput, emUnit))

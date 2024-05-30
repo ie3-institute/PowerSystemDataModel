@@ -273,9 +273,9 @@ class SystemParticipantTestData {
   eConsAnnual,
   sRated,
   cosPhiRated,
-          type,
-          inhabitants,
-          income
+  type,
+  inhabitants,
+  income
   )
 
   // Storage
