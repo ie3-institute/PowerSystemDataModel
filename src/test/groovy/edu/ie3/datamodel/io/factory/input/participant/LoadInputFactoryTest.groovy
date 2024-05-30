@@ -22,7 +22,6 @@ import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import java.lang.reflect.Type
 import javax.measure.quantity.Dimensionless
 
 class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
