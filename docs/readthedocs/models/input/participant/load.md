@@ -59,6 +59,18 @@ Model of (mainly) domestic loads.
    * - cosPhiRated
      - --
      - Rated power factor
+     
+   * - type
+     - --
+     - Type of building: house or flat
+     
+   * - inhabitants
+     - --
+     - Number of inhabitants
+     
+   * - income
+     - --
+     - Income of inhabitants
 
    * - em
      - --
