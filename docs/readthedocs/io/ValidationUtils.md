@@ -11,6 +11,7 @@ The methods in ValidationUtils and subclasses can be used to check that objects 
 The general validation checks:
 - if assigned values are valid, e.g. lines are not allowed to have negative lengths or the rated power factor of any unit must be between 0 and 1
 - furthermore, several connections are checked, e.g. that lines only connect nodes of the same voltage level or that the voltage levels indicated for the transformer sides match the voltage levels of the nodes they are connected to.
+- the connectivity of the given grid for all defined operation intervals
 
 The uniqueness validation checks if a collection of given objects are unique in either:
 - a specific field

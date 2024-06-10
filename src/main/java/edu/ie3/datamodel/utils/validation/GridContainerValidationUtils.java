@@ -8,19 +8,33 @@ package edu.ie3.datamodel.utils.validation;
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkAssetUniqueness;
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkUniqueEntities;
 
-import edu.ie3.datamodel.exceptions.*;
+import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
+import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.InvalidGridException;
+import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.ConnectorInput;
+import edu.ie3.datamodel.models.input.connector.LineInput;
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
+import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.connectivity.ConnectivityInspector;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
 
 public class GridContainerValidationUtils extends ValidationUtils {
 
@@ -155,7 +169,103 @@ public class GridContainerValidationUtils extends ValidationUtils {
               exceptions.add(MeasurementUnitValidationUtils.check(measurement));
             });
 
+    exceptions.addAll(checkConnectivity(rawGridElements));
+
     return exceptions;
+  }
+
+  /**
+   * Checks the connectivity of the given grid for all defined {@link OperationTime}s. If every
+   * {@link AssetInput} is set to {@link OperationTime#notLimited()}, the connectivity is only
+   * checked once.
+   *
+   * @param rawGridElements to check
+   * @return a try
+   */
+  protected static List<Try<Void, InvalidGridException>> checkConnectivity(
+      RawGridElements rawGridElements) {
+    Set<ZonedDateTime> times =
+        rawGridElements.allEntitiesAsList().stream()
+            .map(AssetInput::getOperationTime)
+            .filter(OperationTime::isLimited)
+            .map(OperationTime::getOperationLimit)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(interval -> Set.of(interval.getLower(), interval.getUpper()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
+
+    if (times.isEmpty()) {
+      return List.of(checkConnectivity(rawGridElements, Optional.empty()));
+    } else {
+      return times.stream()
+          .sorted()
+          .map(time -> checkConnectivity(rawGridElements, Optional.of(time)))
+          .toList();
+    }
+  }
+
+  /**
+   * Checks if the given {@link RawGridElements} from a connected grid.
+   *
+   * @param rawGridElements to check
+   * @param time for operation filtering
+   * @return a try
+   */
+  protected static Try<Void, InvalidGridException> checkConnectivity(
+      RawGridElements rawGridElements, Optional<ZonedDateTime> time) {
+
+    Predicate<AssetInput> isInOperation =
+        assetInput -> time.map(assetInput::inOperationOn).orElse(true);
+
+    // build graph
+    Graph<UUID, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
+
+    rawGridElements.getNodes().stream()
+        .filter(isInOperation)
+        .forEach(node -> graph.addVertex(node.getUuid()));
+    rawGridElements.getLines().stream()
+        .filter(isInOperation)
+        .forEach(
+            connector ->
+                graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
+    rawGridElements.getTransformer2Ws().stream()
+        .filter(isInOperation)
+        .forEach(
+            connector ->
+                graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
+    rawGridElements.getTransformer3Ws().stream()
+        .filter(isInOperation)
+        .forEach(
+            connector ->
+                graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
+    rawGridElements.getSwitches().stream()
+        .filter(isInOperation)
+        .forEach(
+            connector ->
+                graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
+
+    ConnectivityInspector<UUID, DefaultEdge> inspector = new ConnectivityInspector<>(graph);
+
+    if (inspector.isConnected()) {
+      return Success.empty();
+    } else {
+      List<Set<UUID>> sets = inspector.connectedSets();
+
+      List<UUID> unconnected =
+          sets.stream()
+              .max(Comparator.comparing(Set::size))
+              .map(set -> graph.vertexSet().stream().filter(v -> !set.contains(v)).toList())
+              .orElse(List.of());
+
+      String message = "The grid contains unconnected elements";
+
+      if (time.isPresent()) {
+        message += " for time " + time.get();
+      }
+
+      return Failure.of(new InvalidGridException(message + ": " + unconnected));
+    }
   }
 
   /**
