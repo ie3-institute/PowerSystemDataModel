@@ -60,12 +60,6 @@ Model of an ideal electrical battery energy storage.
      - %
      - Efficiency of the electrical inverter
 
-   * - em
-     - --
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
-
 ```
 
 ### Entity Model
@@ -112,7 +106,12 @@ Model of an ideal electrical battery energy storage.
      - --
      - | Foreseen operation strategy of the storage.
        | Eligible input: *"market"*, *"grid"*, *"self"*
-
+       
+   * - em
+     - --
+     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       | this system participant. Field can be empty or missing, if this participant
+       | is not controlled.
 
 ```
 
