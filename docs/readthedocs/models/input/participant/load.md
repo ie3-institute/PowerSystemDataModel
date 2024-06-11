@@ -67,10 +67,6 @@ Model of (mainly) domestic loads.
    * - inhabitants
      - --
      - Number of inhabitants
-     
-   * - income
-     - --
-     - Income of inhabitants
 
    * - em
      - --
@@ -79,6 +75,10 @@ Model of (mainly) domestic loads.
        | is not controlled.
 
 ```
+
+## Markov
+
+The variables building_type and inhabitants are for the Markov loadagent.
 
 ## Caveats
 
