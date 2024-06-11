@@ -78,7 +78,7 @@ Model of (mainly) domestic loads.
 
 ## Markov
 
-The variables building_type and inhabitants are for the Markov loadagent.
+The parameters `building_type` and `inhabitants` are for the Markov load agent (stochastic load modeling).
 
 ## Caveats
 
