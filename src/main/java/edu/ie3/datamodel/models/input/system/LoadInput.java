@@ -207,7 +207,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param cosPhiRated Rated power factor
    * @param type of the Household
    * @param inhabitants Number of inhabitants of the Household
-   * @param income of the inhabitants per Household
+   * @param income Household income
    */
   public LoadInput(
       UUID uuid,
