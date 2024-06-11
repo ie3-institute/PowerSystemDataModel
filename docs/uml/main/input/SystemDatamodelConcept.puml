@@ -153,9 +153,6 @@ package models {
                     - pMax: ComparableQuantity<Power> [kW]
                     - activePowerGradient: ComparableQuantity<DimensionlessRate> [%/h]
                     - eta: ComparableQuantity<Dimensionless> [%]
-                    - dod: ComparableQuantity<Dimensionless> [%]
-                    - lifeTime: ComparableQuantity<Time> [h]
-                    - lifeCycle: int
                 }
                 StorageTypeInput --|> SystemParticipantTypeInput
 
