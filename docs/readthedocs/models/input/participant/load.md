@@ -59,6 +59,14 @@ Model of (mainly) domestic loads.
    * - cosPhiRated
      - --
      - Rated power factor
+     
+   * - type
+     - --
+     - Type of building: house or flat
+     
+   * - inhabitants
+     - --
+     - Number of inhabitants
 
    * - em
      - --
@@ -67,6 +75,10 @@ Model of (mainly) domestic loads.
        | is not controlled.
 
 ```
+
+## Markov
+
+The parameters `building_type` and `inhabitants` are for the Markov load agent (stochastic load modeling).
 
 ## Caveats
 

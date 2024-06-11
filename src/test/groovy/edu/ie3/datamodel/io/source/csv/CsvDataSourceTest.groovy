@@ -71,7 +71,10 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "e_cons_annual",
       "operator",
       "dsm",
-      "em"
+      "em",
+      "type",
+      "inhabitants",
+      "income"
     ] as Set
   }
 

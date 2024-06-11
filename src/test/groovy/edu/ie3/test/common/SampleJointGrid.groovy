@@ -95,7 +95,10 @@ class SampleJointGrid extends SystemParticipantTestData {
         false,
         eConsAnnual,
         sRated,
-        cosPhiRated)
+        cosPhiRated,
+        type,
+        inhabitants,
+        income)
 
     final LoadInput loadInput1 =
         new LoadInput(
@@ -110,7 +113,10 @@ class SampleJointGrid extends SystemParticipantTestData {
         false,
         eConsAnnual,
         sRated,
-        cosPhiRated)
+        cosPhiRated,
+        type,
+        inhabitants,
+        income)
 
     // Storage
     final StorageInput storageInput =

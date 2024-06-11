@@ -330,7 +330,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     where:
     nodes                 | operators                 || resultingSet
-    [sptd.loadInput.node] | []                        || [new LoadInput(sptd.loadInput.uuid, sptd.loadInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.loadInput.operationTime, sptd.loadInput.node, sptd.loadInput.qCharacteristics, sptd.emInput, sptd.loadInput.loadProfile, sptd.loadInput.dsm, sptd.loadInput.eConsAnnual, sptd.loadInput.sRated, sptd.loadInput.cosPhiRated)]
+    [sptd.loadInput.node] | []                        || [new LoadInput(sptd.loadInput.uuid, sptd.loadInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.loadInput.operationTime, sptd.loadInput.node, sptd.loadInput.qCharacteristics, sptd.emInput, sptd.loadInput.loadProfile, sptd.loadInput.dsm, sptd.loadInput.eConsAnnual, sptd.loadInput.sRated, sptd.loadInput.cosPhiRated, sptd.loadInput.type, sptd.loadInput.inhabitants, sptd.loadInput.income)]
     []                    | [sptd.loadInput.operator] || []
     []                    | []                        || []
   }

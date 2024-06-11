@@ -30,6 +30,9 @@ public class LoadInputFactory
   private static final String E_CONS_ANNUAL = "eConsAnnual";
   private static final String S_RATED = "sRated";
   private static final String COS_PHI = "cosPhiRated";
+  private static final String TYPE = "type";
+  private static final String INHABITANTS = "inhabitants";
+  private static final String INCOME = "income";
 
   public LoadInputFactory() {
     super(LoadInput.class);
@@ -65,6 +68,9 @@ public class LoadInputFactory
         data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN);
     final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     final double cosPhi = data.getDouble(COS_PHI);
+    final String type = data.getField(TYPE);
+    final int inhabitants = data.getInt(INHABITANTS);
+    final int income = data.getInt(INCOME);
 
     return new LoadInput(
         uuid,
@@ -78,6 +84,9 @@ public class LoadInputFactory
         dsm,
         eConsAnnual,
         sRated,
-        cosPhi);
+        cosPhi,
+        type,
+        inhabitants,
+        income);
   }
 }
