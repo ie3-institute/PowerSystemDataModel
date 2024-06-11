@@ -1,2 +1,2 @@
-uuid,active_power_gradient,capex,cos_phi_rated,dod,e_storage,eta,id,life_cycle,life_time,opex,p_max,s_rated
-5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,100.0,100.0,0.95,10.0,100.0,95.0,test_storageTypeInput,100,175316.4,50.0,15.0,25.0
+uuid,active_power_gradient,capex,cos_phi_rated,e_storage,eta,id,opex,p_max,s_rated
+5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,100.0,100.0,0.95,100.0,95.0,test_storageTypeInput,50.0,15.0,25.0
