@@ -65,6 +65,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
 
     List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
     exceptions.add(connectsDifferentNodes(connector));
+    exceptions.add(lessThanOneParallelDevice(connector));
 
     // Further checks for subclasses
     if (LineInput.class.isAssignableFrom(connector.getClass())) {
@@ -440,6 +441,23 @@ public class ConnectorValidationUtils extends ValidationUtils {
             new InvalidEntityException(
                 connectorInput.getClass().getSimpleName()
                     + " connects the same node, but shouldn't",
+                connectorInput));
+  }
+
+  /**
+   * Check that the given connector has at least one parallel device.
+   *
+   * @param connectorInput to check
+   * @return a try
+   */
+  private static Try<Void, InvalidEntityException> lessThanOneParallelDevice(
+      ConnectorInput connectorInput) {
+    return Try.ofVoid(
+        connectorInput.getParallelDevices() < 1,
+        () ->
+            new InvalidEntityException(
+                connectorInput.getClass().getSimpleName()
+                    + " needs to have at least one parallel device",
                 connectorInput));
   }
 

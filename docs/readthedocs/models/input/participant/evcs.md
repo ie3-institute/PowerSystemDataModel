@@ -12,7 +12,7 @@ station and has some limitations outlined below.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
@@ -81,7 +81,7 @@ The actual model definition for charging point types looks as follows:
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
@@ -119,7 +119,7 @@ synonymous ids. All standard types can be found in {code}`edu.ie3.datamodel.mode
 ```{eval-rst}
 .. list-table::
    :widths: 25 25 25 25
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - id
@@ -223,7 +223,7 @@ and underscores and minuses are ignored, that means "charginghubtown" is parsed 
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - type name

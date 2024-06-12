@@ -10,7 +10,7 @@ A coupling point to thermal system - equivalent to [electrical node](../grid/nod
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
