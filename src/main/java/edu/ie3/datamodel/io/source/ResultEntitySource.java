@@ -365,7 +365,7 @@ public class ResultEntitySource extends EntitySource {
   /**
    * Returns a unique set of {@link CongestionResult} instances.
    *
-   * @return a set of object and subnet unique {@link CongestionResult} entities
+   * @return a set of object and subgrid unique {@link CongestionResult} entities
    */
   public Set<CongestionResult> getCongestionResults() throws SourceException {
     return getResultEntities(CongestionResult.class, congestionResultFactory);

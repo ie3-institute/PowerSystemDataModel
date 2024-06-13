@@ -144,16 +144,16 @@ class UniquenessValidationUtilsTest extends Specification {
   def "Duplicates in congestion result inputs lead to an exception"() {
     given:
     ZonedDateTime time = ZonedDateTime.parse("2024-02-15T13:49:44+01:00[Europe/Berlin]")
-    int subnet1 = 1
-    int subnet2 = 2
+    int subgrid1 = 1
+    int subgrid2 = 2
     Quantity<Dimensionless> vMin = Quantities.getQuantity(0.9, PU)
     Quantity<Dimensionless> vMax = Quantities.getQuantity(1.1, PU)
 
     Set<CongestionResult> notUniqueResults = [
-      new CongestionResult(time, subnet1, vMin, vMax, false, false, false),
-      new CongestionResult(time, subnet1, vMin, vMax, false, true, false),
-      new CongestionResult(time.plusHours(1), subnet1, vMin, vMax, false, false, false),
-      new CongestionResult(time.plusHours(1), subnet2, vMin, vMax, false, true, false),
+      new CongestionResult(time, subgrid1, vMin, vMax, false, false, false),
+      new CongestionResult(time, subgrid1, vMin, vMax, false, true, false),
+      new CongestionResult(time.plusHours(1), subgrid1, vMin, vMax, false, false, false),
+      new CongestionResult(time.plusHours(1), subgrid2, vMin, vMax, false, true, false),
     ]
 
     when:
