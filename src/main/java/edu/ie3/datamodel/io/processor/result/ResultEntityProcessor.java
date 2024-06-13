@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.factory.result.SystemParticipantResultFactory;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.result.connector.LineResult;
@@ -58,7 +59,8 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
           ThermalHouseResult.class,
           CylindricalStorageResult.class,
           EmResult.class,
-          FlexOptionsResult.class);
+          FlexOptionsResult.class,
+          CongestionResult.class);
 
   public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass)
       throws EntityProcessorException {

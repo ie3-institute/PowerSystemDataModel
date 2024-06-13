@@ -21,7 +21,7 @@ import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
-public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
+public class ThermalResultFactory extends ModelResultFactory<ThermalUnitResult> {
   private static final String Q_DOT = "qDot";
   private static final String INDOOR_TEMPERATURE = "indoorTemperature";
   private static final String ENERGY = "energy";

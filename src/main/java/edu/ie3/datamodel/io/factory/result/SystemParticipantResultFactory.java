@@ -23,7 +23,7 @@ import tech.units.indriya.ComparableQuantity;
  * Factory class for creating {@link SystemParticipantResult} entities from provided {@link
  * EntityData} data objects.
  */
-public class SystemParticipantResultFactory extends ResultEntityFactory<SystemParticipantResult> {
+public class SystemParticipantResultFactory extends ModelResultFactory<SystemParticipantResult> {
 
   private static final String POWER = "p";
   private static final String REACTIVE_POWER = "q";
