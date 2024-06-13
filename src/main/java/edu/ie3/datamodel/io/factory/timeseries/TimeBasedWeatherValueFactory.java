@@ -15,24 +15,18 @@ import java.time.format.DateTimeFormatter;
  */
 public abstract class TimeBasedWeatherValueFactory
     extends TimeBasedValueFactory<TimeBasedWeatherValueData, WeatherValue> {
-  protected static final String TIME = "time";
   protected static final String COORDINATE_ID = "coordinateId";
-
-  protected final TimeUtil timeUtil;
 
   protected TimeBasedWeatherValueFactory() {
     super(WeatherValue.class);
-    this.timeUtil = TimeUtil.withDefaults;
   }
 
   protected TimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
-    super(WeatherValue.class);
-    this.timeUtil = new TimeUtil(dateTimeFormatter);
+    super(WeatherValue.class, dateTimeFormatter);
   }
 
   protected TimeBasedWeatherValueFactory(TimeUtil timeUtil) {
-    super(WeatherValue.class);
-    this.timeUtil = timeUtil;
+    super(WeatherValue.class, timeUtil);
   }
 
   /**
@@ -43,11 +37,4 @@ public abstract class TimeBasedWeatherValueFactory
   public String getCoordinateIdFieldString() {
     return COORDINATE_ID;
   }
-
-  /**
-   * Return the field name for the date time
-   *
-   * @return the field name for the date time
-   */
-  public abstract String getTimeFieldString();
 }

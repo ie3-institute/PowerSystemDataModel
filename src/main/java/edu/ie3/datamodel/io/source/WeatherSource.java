@@ -17,6 +17,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +112,37 @@ public abstract class WeatherSource {
       coordinateToTimeSeriesMap.put(entry.getKey(), timeSeries);
     }
     return coordinateToTimeSeriesMap;
+  }
+
+  protected Map<Point, List<ZonedDateTime>> toTimeKeys(
+      Stream<Map<String, String>> fieldMaps, TimeBasedWeatherValueFactory factory) {
+    return groupTime(
+        fieldMaps.map(
+            fieldMap -> {
+              String coordinateValue = fieldMap.get(COORDINATE_ID);
+              int coordinateId = Integer.parseInt(coordinateValue);
+              Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
+              ZonedDateTime time = factory.extractTime(fieldMap);
+
+              if (coordinate.isEmpty()) {
+                log.warn("Unable to match coordinate ID {} to a point", coordinateId);
+              }
+              return Pair.of(coordinate, time);
+            }));
+  }
+
+  protected Map<Point, List<ZonedDateTime>> groupTime(
+      Stream<Pair<Optional<Point>, ZonedDateTime>> values) {
+    return values
+        .filter(pair -> pair.getKey().isPresent())
+        .map(pair -> Pair.of(pair.getKey().get(), pair.getValue()))
+        .collect(Collectors.groupingBy(Pair::getKey, Collectors.toSet()))
+        .entrySet()
+        .stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                e -> e.getValue().stream().map(Pair::getValue).sorted().toList()));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

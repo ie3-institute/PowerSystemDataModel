@@ -192,10 +192,12 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   @Override
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
-    Set<TimeBasedValue<V>> timeBasedValues =
-        getTimeBasedValueSet(
-            queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())));
-    return timeBasedValues.stream().map(TimeBasedValue::getTime).sorted().toList();
+    return dataSource
+        .executeQuery(
+            queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
+        .map(valueFactory::extractTime)
+        .sorted()
+        .toList();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -273,7 +275,10 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    */
   private String createQueryForTimeKeysAfter(
       String schemaName, String tableName, String timeColumnName) {
-    return createBaseQueryString(schemaName, tableName)
+    return "SELECT time FROM "
+        + schemaName
+        + "."
+        + tableName
         + WHERE
         + TIME_SERIES
         + " = '"

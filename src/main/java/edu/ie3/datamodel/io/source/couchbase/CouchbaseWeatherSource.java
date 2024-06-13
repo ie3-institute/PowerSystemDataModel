@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,22 +195,22 @@ public class CouchbaseWeatherSource extends WeatherSource {
       logger.error("Querying weather inputs failed!", ex);
     }
     if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
-
-      Map<Point, Set<TimeBasedValue<WeatherValue>>> timeBasedValues =
+      return groupTime(
           jsonWeatherInputs.stream()
-              .map(this::toTimeBasedWeatherValue)
-              .flatMap(Optional::stream)
-              .filter(t -> t.getTime().isAfter(time))
-              .collect(
-                  Collectors.groupingBy(t -> t.getValue().getCoordinate(), Collectors.toSet()));
-
-      return timeBasedValues.entrySet().stream()
-          .collect(
-              Collectors.toMap(
-                  Map.Entry::getKey,
-                  t -> t.getValue().stream().map(TimeBasedValue::getTime).sorted().toList()));
+              .map(
+                  json -> {
+                    int coordinateId = json.getInt(COORDINATE_ID);
+                    Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
+                    ZonedDateTime timestamp =
+                        weatherFactory.toZonedDateTime(
+                            json.getString(weatherFactory.getTimeFieldString()));
+                    if (coordinate.isEmpty()) {
+                      log.warn("Unable to match coordinate ID {} to a point", coordinateId);
+                    }
+                    return Pair.of(coordinate, timestamp);
+                  })
+              .filter(value -> value.getValue().isAfter(time)));
     }
-
     return Collections.emptyMap();
   }
 
@@ -254,8 +255,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @return the query string
    */
   public String createQueryStringForFollowingTimeKeys(ZonedDateTime time) {
-    String basicQuery =
-        "SELECT " + connector.getBucketName() + ".* FROM " + connector.getBucketName();
+    String basicQuery = "SELECT a.coordinateid, a.time FROM " + connector.getBucketName() + " AS a";
     String whereClause = " WHERE META().id > '" + generateWeatherKey(time, 0) + "'";
     return basicQuery + whereClause;
   }

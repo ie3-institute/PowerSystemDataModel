@@ -46,11 +46,6 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   }
 
   @Override
-  public String getTimeFieldString() {
-    return TIME;
-  }
-
-  @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams =
         newSet(

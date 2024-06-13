@@ -177,23 +177,10 @@ public class SqlWeatherSource extends WeatherSource {
   @Override
   public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
       throws SourceException {
-
-    Map<Point, Set<TimeBasedValue<WeatherValue>>> timeBasedValues =
-        buildTimeBasedValues(
-                weatherFactory,
-                dataSource.executeQuery(
-                    queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant()))))
-            .stream()
-            .collect(
-                Collectors.groupingBy(
-                    timeBasedWeatherValue -> timeBasedWeatherValue.getValue().getCoordinate(),
-                    Collectors.toSet()));
-
-    return timeBasedValues.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                t -> t.getValue().stream().map(TimeBasedValue::getTime).sorted().toList()));
+    return toTimeKeys(
+        dataSource.executeQuery(
+            queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant()))),
+        weatherFactory);
   }
 
   @Override
@@ -205,16 +192,14 @@ public class SqlWeatherSource extends WeatherSource {
       return Collections.emptyList();
     }
 
-    return buildTimeBasedValues(
-            weatherFactory,
-            dataSource.executeQuery(
-                getQueryTimeKeysAfterAndCoordinate,
-                ps -> {
-                  ps.setInt(1, coordinateId.get());
-                  ps.setTimestamp(2, Timestamp.from(time.toInstant()));
-                }))
-        .stream()
-        .map(TimeBasedValue::getTime)
+    return dataSource
+        .executeQuery(
+            getQueryTimeKeysAfterAndCoordinate,
+            ps -> {
+              ps.setInt(1, coordinateId.get());
+              ps.setTimestamp(2, Timestamp.from(time.toInstant()));
+            })
+        .map(fieldMap -> weatherFactory.extractTime(fieldMap))
         .sorted()
         .toList();
   }
@@ -251,7 +236,13 @@ public class SqlWeatherSource extends WeatherSource {
    */
   private static String createQueryStringForTimeKeysAfter(
       String schemaName, String weatherTableName, String timeColumnName) {
-    return createBaseQueryString(schemaName, weatherTableName) + WHERE + timeColumnName + " > ?;";
+    return "SELECT coordinate_id, time FROM "
+        + schemaName
+        + "."
+        + weatherTableName
+        + WHERE
+        + timeColumnName
+        + " > ?;";
   }
 
   /**
@@ -270,7 +261,10 @@ public class SqlWeatherSource extends WeatherSource {
       String weatherTableName,
       String timeColumnName,
       String coordinateColumnName) {
-    return createBaseQueryString(schemaName, weatherTableName)
+    return "SELECT coordinate_id, time FROM "
+        + schemaName
+        + "."
+        + weatherTableName
         + WHERE
         + coordinateColumnName
         + "=? AND "
