@@ -79,7 +79,6 @@ public class CsvWeatherSource extends WeatherSource {
   @Override
   public Optional<Set<String>> getSourceFields() {
     return dataSource
-        .connector
         .getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER)
         .values()
         .stream()
