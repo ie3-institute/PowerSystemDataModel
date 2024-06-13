@@ -11,12 +11,7 @@ import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.input.EmInput
-import edu.ie3.datamodel.models.input.IdCoordinateInput
-import edu.ie3.datamodel.models.input.MeasurementUnitInput
-import edu.ie3.datamodel.models.input.NodeInput
-import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.RandomLoadParameters
+import edu.ie3.datamodel.models.input.*
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -31,6 +26,7 @@ import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
+import edu.ie3.datamodel.models.result.CongestionResult
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
@@ -121,6 +117,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       LoadResult,
       SwitchResult,
       NodeResult,
+      CongestionResult,
       ThermalHouseResult,
       CylindricalStorageResult
     ]

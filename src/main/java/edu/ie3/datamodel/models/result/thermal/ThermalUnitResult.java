@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.result.thermal;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.ModelResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Representation of a result with regard to a thermal unit */
-public abstract class ThermalUnitResult extends ResultEntity {
+public abstract class ThermalUnitResult extends ModelResultEntity {
 
   /**
    * Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power

@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
-import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.ModelResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import javax.measure.quantity.ElectricCurrent;
 import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors */
-public abstract class ConnectorResult extends ResultEntity {
+public abstract class ConnectorResult extends ModelResultEntity {
 
   /** Electric current magnitude @ port A, normally provided in Ampere */
   private ComparableQuantity<ElectricCurrent> iAMag;

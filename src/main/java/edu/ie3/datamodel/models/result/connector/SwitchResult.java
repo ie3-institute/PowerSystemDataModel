@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
-import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.ModelResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.SwitchInput}
  */
-public class SwitchResult extends ResultEntity {
+public class SwitchResult extends ModelResultEntity {
 
   /** is the switching state 'closed'? */
   private boolean closed;
