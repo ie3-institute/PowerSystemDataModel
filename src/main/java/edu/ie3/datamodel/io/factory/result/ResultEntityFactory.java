@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 abstract class ResultEntityFactory<T extends ResultEntity> extends EntityFactory<T, EntityData> {
 
   protected static final String TIME = "time";
-  protected static final String INPUT_MODEL = "inputModel";
 
   protected final TimeUtil timeUtil;
 
