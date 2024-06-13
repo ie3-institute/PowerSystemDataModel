@@ -614,10 +614,7 @@ class InputEntityProcessorTest extends Specification {
       "cosPhiRated"        : "0.997",
       "pMax"               : "12.961",
       "activePowerGradient": "3.0",
-      "eta"                : "92.0",
-      "dod"                : "20.0",
-      "lifeTime"           : "43800.0",
-      "lifeCycle"          : "100000"
+      "eta"                : "92.0"
     ]
 
     when:

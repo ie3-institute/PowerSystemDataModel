@@ -482,13 +482,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a StorageTypeInput if:
    *
    * <ul>
-   *   <li>its permissible amount of full cycles is not negative
    *   <li>its efficiency of the electrical converter is between 0% and 100%
-   *   <li>its maximum permissible depth of discharge is between 0% and 100%
    *   <li>its active power gradient is not negative
    *   <li>its battery capacity is positive
    *   <li>its maximum permissible active power (in-feed or consumption) is not negative
-   *   <li>its permissible hours of full use is not negative
    * </ul>
    *
    * @param storageTypeInput StorageTypeInput to validate
@@ -499,14 +496,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       StorageTypeInput storageTypeInput) {
     List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
 
-    exceptions.add(
-        Try.ofVoid(
-            storageTypeInput.getLifeCycle() < 0,
-            () ->
-                new InvalidEntityException(
-                    "Permissible amount of life cycles of the storage type must be zero or positive",
-                    storageTypeInput)));
-
     exceptions.addAll(
         Try.ofVoid(
             InvalidEntityException.class,
@@ -516,16 +505,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                     storageTypeInput.getEta(),
                     "Efficiency of the electrical converter"),
             () ->
-                isBetweenZeroAndHundredPercent(
-                    storageTypeInput,
-                    storageTypeInput.getDod(),
-                    "Maximum permissible depth of discharge"),
-            () ->
                 detectNegativeQuantities(
                     new Quantity<?>[] {
-                      storageTypeInput.getpMax(),
-                      storageTypeInput.getActivePowerGradient(),
-                      storageTypeInput.getLifeTime()
+                      storageTypeInput.getpMax(), storageTypeInput.getActivePowerGradient(),
                     },
                     storageTypeInput),
             () ->
