@@ -40,13 +40,13 @@ public class CongestionResultFactory extends ResultEntityFactory<CongestionResul
   @Override
   protected CongestionResult buildModel(EntityData data) {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
-    int subnet = data.getInt(SUBGRID);
+    int subgrid = data.getInt(SUBGRID);
     ComparableQuantity<Dimensionless> vMin = data.getQuantity(VMIN, PU);
     ComparableQuantity<Dimensionless> vMax = data.getQuantity(VMAX, PU);
     boolean voltage = data.getBoolean(VOLTAGE);
     boolean line = data.getBoolean(LINE);
     boolean transformer = data.getBoolean(TRANSFORMER);
 
-    return new CongestionResult(zdtTime, subnet, vMin, vMax, voltage, line, transformer);
+    return new CongestionResult(zdtTime, subgrid, vMin, vMax, voltage, line, transformer);
   }
 }
