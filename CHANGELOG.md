@@ -14,17 +14,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed `MappingEntryies` not getting processed by adding `Getter` methods for record fields [#1084](https://github.com/ie3-institute/PowerSystemDataModel/issues/1084) 
 
-
 ### Changed
 - Improvements to the search for corner points in `IdCoordinateSource` [#1016](https://github.com/ie3-institute/PowerSystemDataModel/issues/1016)
+- Refactor `CsvFileConnector` and `CsvDataSource` [#1007](https://github.com/ie3-institute/PowerSystemDataModel/issues/1007)
 - Make `EntitySource` completely static [#975](https://github.com/ie3-institute/PowerSystemDataModel/issues/975)
 - Abstract commonly used functionality from `EntitySource` [#981](https://github.com/ie3-institute/PowerSystemDataModel/issues/981)
-
 
 ## [5.0.1] - 2024-03-07
 
 ### Fixed
 - Fixed `equals` of `ResultEntity` and `TimeSeriesEntry` [#1037](https://github.com/ie3-institute/PowerSystemDataModel/issues/1037)
+- Fixed "depth of discharge" in documentation [#872](https://github.com/ie3-institute/PowerSystemDataModel/issues/872)
 
 ## [5.0.0] - 2024-03-06
 
