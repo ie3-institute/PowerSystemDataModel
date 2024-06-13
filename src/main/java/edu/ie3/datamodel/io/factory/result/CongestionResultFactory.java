@@ -17,7 +17,7 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
 public class CongestionResultFactory extends ResultEntityFactory<CongestionResult> {
-  private static final String SUBNET = "subnet";
+  private static final String SUBGRID = "subgrid";
   private static final String VMIN = "vMin";
   private static final String VMAX = "vMax";
   private static final String VOLTAGE = "voltage";
@@ -34,13 +34,13 @@ public class CongestionResultFactory extends ResultEntityFactory<CongestionResul
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-    return List.of(newSet(TIME, SUBNET, VMIN, VMAX, VOLTAGE, LINE, TRANSFORMER));
+    return List.of(newSet(TIME, SUBGRID, VMIN, VMAX, VOLTAGE, LINE, TRANSFORMER));
   }
 
   @Override
   protected CongestionResult buildModel(EntityData data) {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
-    int subnet = data.getInt(SUBNET);
+    int subnet = data.getInt(SUBGRID);
     ComparableQuantity<Dimensionless> vMin = data.getQuantity(VMIN, PU);
     ComparableQuantity<Dimensionless> vMax = data.getQuantity(VMAX, PU);
     boolean voltage = data.getBoolean(VOLTAGE);

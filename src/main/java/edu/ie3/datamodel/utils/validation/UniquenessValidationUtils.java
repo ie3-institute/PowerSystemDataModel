@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.result.ModelResultEntity;
-import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.Try;
@@ -32,7 +31,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
   protected static final FieldSetSupplier<ModelResultEntity> modelResultFieldSupplier =
       entity -> Set.of(entity.getTime(), entity.getInputModel());
   protected static final FieldSetSupplier<CongestionResult> congestionResultFieldSupplier =
-      entity -> Set.of(entity.getTime(), entity.getSubnet());
+      entity -> Set.of(entity.getTime(), entity.getSubgrid());
   protected static final FieldSetSupplier<MappingEntry> mappingFieldSupplier =
       entity -> Set.of(entity.participant());
   protected static final FieldSetSupplier<IdCoordinateInput> idCoordinateSupplier =
@@ -73,7 +72,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Checks the uniqueness of a collection of {@link ResultEntity}.
+   * Checks the uniqueness of a collection of {@link CongestionResult}.
    *
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated

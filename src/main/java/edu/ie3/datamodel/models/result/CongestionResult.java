@@ -12,7 +12,7 @@ import tech.units.indriya.ComparableQuantity;
 
 public class CongestionResult extends ResultEntity {
   /** Values */
-  private final Integer subnet;
+  private final Integer subgrid;
 
   private final ComparableQuantity<Dimensionless> vMin;
   private final ComparableQuantity<Dimensionless> vMax;
@@ -24,7 +24,7 @@ public class CongestionResult extends ResultEntity {
    * Standard constructor which includes auto generation of the resulting output models uuid.
    *
    * @param time date and time when the result is produced
-   * @param subnet the subnet
+   * @param subgrid the subgrid
    * @param vMin minimum voltage in pu
    * @param vMax maximal voltage in pu
    * @param voltage {@code true} if a voltage congestion occurred in the subnet
@@ -33,14 +33,14 @@ public class CongestionResult extends ResultEntity {
    */
   public CongestionResult(
       ZonedDateTime time,
-      int subnet,
+      int subgrid,
       ComparableQuantity<Dimensionless> vMin,
       ComparableQuantity<Dimensionless> vMax,
       boolean voltage,
       boolean line,
       boolean transformer) {
     super(time);
-    this.subnet = subnet;
+    this.subgrid = subgrid;
     this.vMin = vMin;
     this.vMax = vMax;
     this.voltage = voltage;
@@ -48,8 +48,8 @@ public class CongestionResult extends ResultEntity {
     this.transformer = transformer;
   }
 
-  public int getSubnet() {
-    return subnet;
+  public int getSubgrid() {
+    return subgrid;
   }
 
   public boolean getVoltage() {
@@ -78,6 +78,7 @@ public class CongestionResult extends ResultEntity {
     if (o == null || getClass() != o.getClass()) return false;
     CongestionResult that = (CongestionResult) o;
     return getTime().equals(that.getTime())
+        && Objects.equals(subgrid, that.subgrid)
         && vMin.equals(that.vMin)
         && vMax.equals(that.vMax)
         && voltage == that.voltage
@@ -87,13 +88,16 @@ public class CongestionResult extends ResultEntity {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getTime(), vMin, vMax, voltage, line, transformer);
+    return Objects.hash(
+        super.hashCode(), getTime(), subgrid, vMin, vMax, voltage, line, transformer);
   }
 
   @Override
   public String toString() {
     return "InputResultEntity{time="
         + getTime()
+        + ", subgrid="
+        + subgrid
         + ", vMin="
         + vMin
         + ", vMan="

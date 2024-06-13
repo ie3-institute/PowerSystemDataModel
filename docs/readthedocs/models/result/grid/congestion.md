@@ -19,6 +19,10 @@ Representation of a congestion result for a given subnet.
    * - time
      - ZonedDateTime
      - date and time for the produced result
+   
+   * - subgrid
+     - --
+     - Sub grid number
 
    * - vMin
      - p.u.
