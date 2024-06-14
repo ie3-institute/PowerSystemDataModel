@@ -10,7 +10,6 @@ import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -60,8 +59,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
       IdCoordinateSource coordinateSource,
       String coordinateIdColumnName,
       TimeBasedWeatherValueFactory weatherFactory,
-      String timeStampPattern)
-      throws SourceException {
+      String timeStampPattern) {
     this(
         connector,
         coordinateSource,
@@ -175,7 +173,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @param coordinateId the coordinate Id of the weather data
    * @return a weather document key
    */
-  public String generateWeatherKey(ZonedDateTime time, Integer coordinateId) {
+  private String generateWeatherKey(ZonedDateTime time, Integer coordinateId) {
     String key = keyPrefix + "::";
     key += coordinateId + "::";
     key += time.format(DateTimeFormatter.ofPattern(timeStampPattern));
@@ -190,7 +188,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @param coordinateId the coordinate ID for which the documents are queried
    * @return the query string
    */
-  public String createQueryStringForIntervalAndCoordinate(
+  private String createQueryStringForIntervalAndCoordinate(
       ClosedInterval<ZonedDateTime> timeInterval, int coordinateId) {
     String basicQuery =
         "SELECT " + connector.getBucketName() + ".* FROM " + connector.getBucketName();
@@ -232,7 +230,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @param jsonObj the JsonObject to convert
    * @return an optional weather value
    */
-  public Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(JsonObject jsonObj) {
+  private Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(JsonObject jsonObj) {
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(jsonObj);
     if (data.isEmpty()) {
       logger.warn("Unable to parse json object");

@@ -65,11 +65,6 @@ public class CsvWeatherSource extends WeatherSource {
     super(idCoordinateSource, weatherFactory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
 
-    // validating
-    Try.ofVoid(this::validate, ValidationException.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
-
     coordinateToTimeSeries = getWeatherTimeSeries();
   }
 

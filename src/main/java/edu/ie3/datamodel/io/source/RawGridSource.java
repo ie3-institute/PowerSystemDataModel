@@ -342,7 +342,7 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, Transformer3WTypeInput> transformer3WTypes)
       throws SourceException {
-    TryFunction<EntityData, Transformer3WInputEntityData> builder =
+    WrappedFunction<EntityData, Transformer3WInputEntityData> builder =
         data ->
             connectorEnricher
                 .andThen(

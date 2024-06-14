@@ -42,7 +42,7 @@ class SystemParticipantSourceTest extends Specification {
     def types = map([sptd.evTypeInput])
 
     when:
-    def actual = SystemParticipantSource.enrich(types).apply(new Try.Success<>(entityData))
+    def actual = SystemParticipantSource.enrichTypes(types).apply(new Try.Success<>(entityData))
 
     then:
     actual.success

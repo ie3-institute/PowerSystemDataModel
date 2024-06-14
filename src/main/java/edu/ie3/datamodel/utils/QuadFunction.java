@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * Enhancement of {@link Function} and {@link java.util.function.BiFunction} that accepts three
+ * Enhancement of {@link Function} and {@link java.util.function.BiFunction} that accepts four
  * arguments and produces a result.
  *
  * @param <A> the type of the first argument to the function

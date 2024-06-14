@@ -123,7 +123,7 @@ public abstract class EntitySource {
    * @param entityClass class of the entity
    * @param dataSource source for the entity
    * @param factory to build the entity
-   * @param fcn function to enrich the given entity data
+   * @param enrichFunction function to enrich the given entity data
    * @return a set of {@link Entity}s
    * @param <E> type of entity
    * @param <D> type of entity data
@@ -133,9 +133,10 @@ public abstract class EntitySource {
       Class<E> entityClass,
       DataSource dataSource,
       EntityFactory<E, D> factory,
-      TryFunction<EntityData, D> fcn)
+      WrappedFunction<EntityData, D> enrichFunction)
       throws SourceException {
-    return unpack(buildEntityData(entityClass, dataSource, fcn).map(factory::get), entityClass);
+    return unpack(
+        buildEntityData(entityClass, dataSource, enrichFunction).map(factory::get), entityClass);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -165,13 +166,15 @@ public abstract class EntitySource {
    *
    * @param entityClass class of the entity
    * @param dataSource source for the data
-   * @param fcn to convert {@link EntityData} to {@link E}
+   * @param converter to convert {@link EntityData} to {@link E}
    * @return an entity data
    * @param <E> type of entity data
    */
   protected static <E extends EntityData> Stream<Try<E, SourceException>> buildEntityData(
-      Class<? extends Entity> entityClass, DataSource dataSource, TryFunction<EntityData, E> fcn) {
-    return buildEntityData(entityClass, dataSource).map(fcn);
+      Class<? extends Entity> entityClass,
+      DataSource dataSource,
+      WrappedFunction<EntityData, E> converter) {
+    return buildEntityData(entityClass, dataSource).map(converter);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -182,21 +185,24 @@ public abstract class EntitySource {
    * @param fieldName name of the field
    * @param entities map: uuid to {@link Entity}
    * @param defaultEntity entity that should be used if no other entity was extracted
-   * @param fcn to build the returned {@link EntityData}
-   * @return a new entity data
+   * @param buildingFcn to build the returned {@link EntityData}
+   * @return an enrich function
    * @param <E> type of entity data
    * @param <T> type of entity
    * @param <R> type of returned entity data
    */
   protected static <E extends EntityData, T, R extends EntityData>
-      TryFunction<E, R> enrichWithDefault(
-          String fieldName, Map<UUID, T> entities, T defaultEntity, BiFunction<E, T, R> fcn) {
+      WrappedFunction<E, R> enrichWithDefault(
+          String fieldName,
+          Map<UUID, T> entities,
+          T defaultEntity,
+          BiFunction<E, T, R> buildingFcn) {
     return entityData ->
         entityData
             .zip(
-                extract(entityData, fieldName, entities)
+                extractFunction(entityData, fieldName, entities)
                     .orElse(() -> Try.Success.of(defaultEntity)))
-            .map(enrich(List.of(fieldName), fcn));
+            .map(enrichFunction(List.of(fieldName), buildingFcn));
   }
 
   /**
@@ -204,18 +210,18 @@ public abstract class EntitySource {
    *
    * @param fieldName name of the field
    * @param entities map: uuid to {@link Entity}
-   * @param fcn to build the returned {@link EntityData}
-   * @return a new entity data
+   * @param buildingFcn to build the returned {@link EntityData}
+   * @return an enrich function
    * @param <E> type of entity data
    * @param <T> type of entity
    * @param <R> type of returned entity data
    */
-  protected static <E extends EntityData, T, R extends EntityData> TryFunction<E, R> enrich(
-      String fieldName, Map<UUID, T> entities, BiFunction<E, T, R> fcn) {
+  protected static <E extends EntityData, T, R extends EntityData> WrappedFunction<E, R> enrich(
+      String fieldName, Map<UUID, T> entities, BiFunction<E, T, R> buildingFcn) {
     return entityData ->
         entityData
-            .zip(extract(entityData, fieldName, entities))
-            .map(enrich(List.of(fieldName), fcn));
+            .zip(extractFunction(entityData, fieldName, entities))
+            .map(enrichFunction(List.of(fieldName), buildingFcn));
   }
 
   /**
@@ -225,8 +231,8 @@ public abstract class EntitySource {
    * @param entities1 map: uuid to {@link Entity}
    * @param fieldName2 name of the second field
    * @param entities2 map: uuid to {@link Entity}
-   * @param fcn to build the returned {@link EntityData}
-   * @return a new entity data
+   * @param buildingFcn to build the returned {@link EntityData}
+   * @return an enrich function
    * @param <E> type of entity data
    * @param <T1> type of the first entity
    * @param <T2> type of the second entity
@@ -234,35 +240,41 @@ public abstract class EntitySource {
    */
   protected static <
           E extends EntityData, T1 extends Entity, T2 extends Entity, R extends EntityData>
-      TryFunction<E, R> biEnrich(
+      WrappedFunction<E, R> biEnrich(
           String fieldName1,
           Map<UUID, T1> entities1,
           String fieldName2,
           Map<UUID, T2> entities2,
-          TriFunction<E, T1, T2, R> fcn) {
+          TriFunction<E, T1, T2, R> buildingFcn) {
+    // adapting the provided function
+    BiFunction<E, Pair<T1, T2>, R> adaptedBuildingFcn =
+        (data, pair) -> buildingFcn.apply(data, pair.getKey(), pair.getValue());
+
+    // extractor to get the needed entities
+    WrappedFunction<E, Pair<T1, T2>> pairExtractor =
+        data ->
+            extractFunction(data, fieldName1, entities1)
+                .zip(extractFunction(data, fieldName2, entities2));
+
     return entityData ->
         entityData
-            .zip(
-                extract(entityData, fieldName1, entities1)
-                    .zip(extract(entityData, fieldName2, entities2)))
-            .map(
-                enrich(
-                    List.of(fieldName1, fieldName2),
-                    (data, pair) -> fcn.apply(data, pair.getKey(), pair.getValue())));
+            .zip(pairExtractor)
+            .map(enrichFunction(List.of(fieldName1, fieldName2), adaptedBuildingFcn));
   }
 
   /**
-   * Method to build an {@link EntityData}.
+   * Method to build a function to create an {@link EntityData}.
    *
    * @param fieldNames list with field names
-   * @param fcn to build the returned {@link EntityData}
+   * @param buildingFcn to build the returned {@link EntityData}
    * @return an entity data
    * @param <E> type of given entity data
    * @param <T> type of entities
    * @param <R> type of returned entity data
    */
-  protected static <E extends EntityData, T, R extends EntityData> Function<Pair<E, T>, R> enrich(
-      List<String> fieldNames, BiFunction<E, T, R> fcn) {
+  protected static <E extends EntityData, T, R extends EntityData>
+      Function<Pair<E, T>, R> enrichFunction(
+          List<String> fieldNames, BiFunction<E, T, R> buildingFcn) {
     return pair -> {
       E data = pair.getKey();
       T entities = pair.getValue();
@@ -272,7 +284,7 @@ public abstract class EntitySource {
       // remove fields that are passed as objects to constructor
       fieldNames.forEach(fieldsToAttributes.keySet()::remove);
 
-      return fcn.apply(data, entities);
+      return buildingFcn.apply(data, entities);
     };
   }
 
@@ -305,7 +317,7 @@ public abstract class EntitySource {
    * @param <E> type of entity data
    * @param <R> type of entity
    */
-  protected static <E extends EntityData, R> Try<R, SourceException> extract(
+  protected static <E extends EntityData, R> Try<R, SourceException> extractFunction(
       Try<E, SourceException> entityData, String fieldName, Map<UUID, R> entities) {
     return entityData.flatMap(
         data ->
@@ -319,7 +331,7 @@ public abstract class EntitySource {
                                 + entityData
                                 + " failed.",
                             exception))
-                .flatMap(entityUuid -> extract(entityUuid, entities)));
+                .flatMap(entityUuid -> extractFunction(entityUuid, entities)));
   }
 
   /**
@@ -330,7 +342,7 @@ public abstract class EntitySource {
    * @return a try of the {@link Entity}
    * @param <T> type of entity
    */
-  protected static <T> Try<T, SourceException> extract(UUID uuid, Map<UUID, T> entityMap) {
+  protected static <T> Try<T, SourceException> extractFunction(UUID uuid, Map<UUID, T> entityMap) {
     return Optional.ofNullable(entityMap.get(uuid))
         // We either find a matching entity for given UUID, thus return a success
         .map(entity -> Try.of(() -> entity, SourceException.class))
@@ -344,13 +356,13 @@ public abstract class EntitySource {
   // functional interfaces
 
   /**
-   * Adapts the function arguments to a try.
+   * Wraps the function arguments with a try.
    *
    * @param <T> type of first argument
    * @param <R> type of second argument
    */
   @FunctionalInterface
-  protected interface TryFunction<T, R>
+  protected interface WrappedFunction<T, R>
       extends Function<Try<T, SourceException>, Try<R, SourceException>> {}
 
   /**

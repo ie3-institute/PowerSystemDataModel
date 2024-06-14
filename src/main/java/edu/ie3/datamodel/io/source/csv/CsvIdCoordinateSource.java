@@ -53,11 +53,6 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
     this.factory = factory;
     this.dataSource = dataSource;
 
-    // validating
-    Try.ofVoid(this::validate, ValidationException.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
-
     /* set up the coordinate id to lat/long mapping */
     idToCoordinate = setupIdToCoordinateMap();
     coordinateToId = invert(idToCoordinate);

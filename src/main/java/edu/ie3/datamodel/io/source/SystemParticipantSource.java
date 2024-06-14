@@ -474,7 +474,9 @@ public class SystemParticipantSource extends AssetEntitySource {
             dataSource,
             bmInputFactory,
             data ->
-                participantEnricher.andThen(enrich(types)).apply(data, operators, nodes, emUnits))
+                participantEnricher
+                    .andThen(enrichTypes(types))
+                    .apply(data, operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -527,7 +529,9 @@ public class SystemParticipantSource extends AssetEntitySource {
             dataSource,
             storageInputFactory,
             data ->
-                participantEnricher.andThen(enrich(types)).apply(data, operators, nodes, emUnits))
+                participantEnricher
+                    .andThen(enrichTypes(types))
+                    .apply(data, operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -578,7 +582,9 @@ public class SystemParticipantSource extends AssetEntitySource {
             dataSource,
             wecInputFactory,
             data ->
-                participantEnricher.andThen(enrich(types)).apply(data, operators, nodes, emUnits))
+                participantEnricher
+                    .andThen(enrichTypes(types))
+                    .apply(data, operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -628,7 +634,9 @@ public class SystemParticipantSource extends AssetEntitySource {
             dataSource,
             evInputFactory,
             data ->
-                participantEnricher.andThen(enrich(types)).apply(data, operators, nodes, emUnits))
+                participantEnricher
+                    .andThen(enrichTypes(types))
+                    .apply(data, operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -673,10 +681,10 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, ThermalStorageInput> thermalStorages)
       throws SourceException {
 
-    TryFunction<EntityData, ChpInputEntityData> builder =
+    WrappedFunction<EntityData, ChpInputEntityData> builder =
         data ->
             participantEnricher
-                .andThen(enrich(types))
+                .andThen(enrichTypes(types))
                 .andThen(
                     biEnrich(
                         THERMAL_BUS,
@@ -725,10 +733,10 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
 
-    TryFunction<EntityData, HpInputEntityData> builder =
+    WrappedFunction<EntityData, HpInputEntityData> builder =
         data ->
             participantEnricher
-                .andThen(enrich(types))
+                .andThen(enrichTypes(types))
                 .andThen(enrich(THERMAL_BUS, thermalBuses, HpInputEntityData::new))
                 .apply(data, operators, nodes, emUnits);
     return getEntities(HpInput.class, dataSource, hpInputFactory, builder).collect(toSet());
@@ -744,9 +752,9 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param <T> type of types
    */
   private static <T extends SystemParticipantTypeInput, D extends SystemParticipantEntityData>
-      TryFunction<D, SystemParticipantTypedEntityData<T>> enrich(Map<UUID, T> types) {
-    BiFunction<D, T, SystemParticipantTypedEntityData<T>> fcn =
+      WrappedFunction<D, SystemParticipantTypedEntityData<T>> enrichTypes(Map<UUID, T> types) {
+    BiFunction<D, T, SystemParticipantTypedEntityData<T>> typeEnricher =
         SystemParticipantTypedEntityData::new;
-    return entityData -> enrich(TYPE, types, fcn).apply(entityData);
+    return entityData -> enrich(TYPE, types, typeEnricher).apply(entityData);
   }
 }

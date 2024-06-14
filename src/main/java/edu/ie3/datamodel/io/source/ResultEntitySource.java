@@ -100,10 +100,10 @@ public class ResultEntitySource extends EntitySource {
             validate(LineResult.class, dataSource, connectorResultFactory),
             validate(Transformer2WResult.class, dataSource, connectorResultFactory),
             validate(Transformer3WResult.class, dataSource, connectorResultFactory),
-            validate(FlexOptionsResult.class, dataSource, flexOptionsResultFactory)),
+            validate(FlexOptionsResult.class, dataSource, flexOptionsResultFactory),
             validate(CongestionResult.class, dataSource, congestionResultFactory)));
 
-      Try.scanCollection(participantResults, Void.class)
+    Try.scanCollection(participantResults, Void.class)
         .transformF(FailedValidationException::new)
         .getOrThrow();
   }

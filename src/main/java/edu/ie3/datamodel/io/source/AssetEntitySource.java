@@ -92,7 +92,7 @@ public abstract class AssetEntitySource extends EntitySource {
         entityClass,
         dataSource,
         factory,
-        data -> connectorEnricher.andThen(enrich(types)).apply(data, operators, nodes));
+        data -> connectorEnricher.andThen(enrichConnector(types)).apply(data, operators, nodes));
   }
 
   /**
@@ -103,8 +103,9 @@ public abstract class AssetEntitySource extends EntitySource {
    * @param <T> type of types
    */
   private static <T extends AssetTypeInput, D extends ConnectorInputEntityData>
-      TryFunction<D, TypedConnectorInputEntityData<T>> enrich(Map<UUID, T> types) {
-    BiFunction<D, T, TypedConnectorInputEntityData<T>> fcn = TypedConnectorInputEntityData::new;
-    return entityData -> enrich(TYPE, types, fcn).apply(entityData);
+      WrappedFunction<D, TypedConnectorInputEntityData<T>> enrichConnector(Map<UUID, T> types) {
+    BiFunction<D, T, TypedConnectorInputEntityData<T>> typeEnricher =
+        TypedConnectorInputEntityData::new;
+    return entityData -> enrich(TYPE, types, typeEnricher).apply(entityData);
   }
 }

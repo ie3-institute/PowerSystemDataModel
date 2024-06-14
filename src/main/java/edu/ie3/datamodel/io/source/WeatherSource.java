@@ -120,7 +120,7 @@ public abstract class WeatherSource extends EntitySource {
    * @param inputStream stream of fields to convert into TimeBasedValues
    * @return a list of that TimeBasedValues
    */
-  public List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
+  protected List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
       TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream)
       throws SourceException {
     return Try.scanStream(

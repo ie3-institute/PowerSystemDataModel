@@ -285,6 +285,17 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
+   * Method for zipping two tries, where one is created using the data of this try.
+   *
+   * @param extractor function to create the second try
+   * @return a try of a pair.
+   * @param <R> type of others data
+   */
+  public <R> Try<Pair<T, R>, E> zip(Function<Try<T, E>, Try<R, E>> extractor) {
+    return zip(extractor.apply(this));
+  }
+
+  /**
    * Method for zipping two tries.
    *
    * @param that other try

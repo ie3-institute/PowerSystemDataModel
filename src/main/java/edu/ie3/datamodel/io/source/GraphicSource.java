@@ -131,7 +131,7 @@ public class GraphicSource extends AssetEntitySource {
   /**
    * If the set of {@link LineInput} entities is not exhaustive for all available {@link
    * LineGraphicInput} entities or if an error during the building process occurs a {@link
-   * SourceException} is thrown, else all entities that have been able to be build are returned.
+   * SourceException} is thrown, else all entities that have been able to be built are returned.
    */
   public Set<LineGraphicInput> getLineGraphicInput() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();

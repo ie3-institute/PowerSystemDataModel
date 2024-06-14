@@ -135,7 +135,7 @@ class EntitySourceTest extends Specification {
     given:
     def entityData = new EntityData(["operator": ""], NodeInput)
     def pair = Pair.of(entityData, GridTestData.profBroccoli)
-    def fcn = enrich(["operator"], AssetInputEntityData::new)
+    def fcn = enrichFunction(["operator"], AssetInputEntityData::new)
 
     when:
     def result = fcn.apply(pair)
@@ -151,7 +151,7 @@ class EntitySourceTest extends Specification {
     def entityMap = map([GridTestData.profBroccoli])
 
     when:
-    def actual = extract(new Try.Success<>(entityData), "operator", entityMap)
+    def actual = extractFunction(new Try.Success<>(entityData), "operator", entityMap)
 
     then:
     actual.success
@@ -163,7 +163,7 @@ class EntitySourceTest extends Specification {
     def entityData = new EntityData(fieldsToAttributes, NodeInput)
 
     when:
-    def actual = extract(new Try.Success<>(entityData), "operator", entityMap)
+    def actual = extractFunction(new Try.Success<>(entityData), "operator", entityMap)
 
     then:
     actual.failure
@@ -184,7 +184,7 @@ class EntitySourceTest extends Specification {
     ])
 
     when:
-    def actual = extract(uuid, entityMap)
+    def actual = extractFunction(uuid, entityMap)
 
     then:
     actual.failure

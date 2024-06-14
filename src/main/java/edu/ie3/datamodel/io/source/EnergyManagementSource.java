@@ -74,7 +74,7 @@ public class EnergyManagementSource extends AssetEntitySource {
 
   /**
    * Since each EM can itself be controlled by another EM, it does not suffice to link {@link
-   * EmInput}s via {@link EntitySource#enrich} as we do for system participants in {@link
+   * EmInput}s via {@link EntitySource#enrichFunction} as we do for system participants in {@link
    * SystemParticipantSource}. Instead, we use a recursive approach, starting with EMs at root level
    * (which are not EM-controlled themselves).
    *

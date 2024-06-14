@@ -103,7 +103,7 @@ class AssetEntitySourceTest extends Specification {
     def types = map([GridTestData.lineTypeInputCtoD])
 
     when:
-    def actual = AssetEntitySource.enrich(types).apply(new Try.Success<>(entityData))
+    def actual = AssetEntitySource.enrichConnector(types).apply(new Try.Success<>(entityData))
 
     then:
     actual.success

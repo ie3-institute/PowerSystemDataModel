@@ -60,8 +60,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       Path folderPath,
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation,
-      Class<T> valClass)
-      throws SourceException {
+      Class<T> valClass) {
     TimeBasedSimpleValueFactory<T> valueFactory = new TimeBasedSimpleValueFactory<>(valClass);
     return new CsvTimeSeriesSource<>(
         csvSep,
@@ -91,16 +90,10 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       UUID timeSeriesUuid,
       Path filePath,
       Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory)
-      throws SourceException {
+      TimeBasedSimpleValueFactory<V> factory) {
     super(valueClass, factory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
-
-    // validate
     this.filePath = filePath;
-    Try.ofVoid(this::validate, ValidationException.class)
-        .transformF(SourceException::new)
-        .getOrThrow();
 
     /* Read in the full time series */
     try {
