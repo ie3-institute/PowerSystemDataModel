@@ -20,7 +20,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 import tech.units.indriya.ComparableQuantity;
 
-public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
+public class ConnectorResultFactory extends ModelResultFactory<ConnectorResult> {
 
   private static final String IAMAG = "iAMag";
   private static final String IAANG = "iAAng";

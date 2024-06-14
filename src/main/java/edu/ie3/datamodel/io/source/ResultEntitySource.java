@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.result.*;
+import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.result.connector.LineResult;
@@ -40,6 +41,7 @@ public class ResultEntitySource extends EntitySource {
   private final SwitchResultFactory switchResultFactory;
   private final NodeResultFactory nodeResultFactory;
   private final ConnectorResultFactory connectorResultFactory;
+  private final CongestionResultFactory congestionResultFactory;
   private final FlexOptionsResultFactory flexOptionsResultFactory;
 
   private final DataSource dataSource;
@@ -53,6 +55,7 @@ public class ResultEntitySource extends EntitySource {
     this.switchResultFactory = new SwitchResultFactory();
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
+    this.congestionResultFactory = new CongestionResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
@@ -65,6 +68,7 @@ public class ResultEntitySource extends EntitySource {
     this.switchResultFactory = new SwitchResultFactory();
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
+    this.congestionResultFactory = new CongestionResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
@@ -96,9 +100,10 @@ public class ResultEntitySource extends EntitySource {
             validate(LineResult.class, dataSource, connectorResultFactory),
             validate(Transformer2WResult.class, dataSource, connectorResultFactory),
             validate(Transformer3WResult.class, dataSource, connectorResultFactory),
-            validate(FlexOptionsResult.class, dataSource, flexOptionsResultFactory)));
+            validate(FlexOptionsResult.class, dataSource, flexOptionsResultFactory)),
+            validate(CongestionResult.class, dataSource, congestionResultFactory)));
 
-    Try.scanCollection(participantResults, Void.class)
+      Try.scanCollection(participantResults, Void.class)
         .transformF(FailedValidationException::new)
         .getOrThrow();
   }
@@ -356,6 +361,15 @@ public class ResultEntitySource extends EntitySource {
    */
   public Set<EmResult> getEmResults() throws SourceException {
     return getResultEntities(EmResult.class, systemParticipantResultFactory);
+  }
+
+  /**
+   * Returns a unique set of {@link CongestionResult} instances.
+   *
+   * @return a set of object and subgrid unique {@link CongestionResult} entities
+   */
+  public Set<CongestionResult> getCongestionResults() throws SourceException {
+    return getResultEntities(CongestionResult.class, congestionResultFactory);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
