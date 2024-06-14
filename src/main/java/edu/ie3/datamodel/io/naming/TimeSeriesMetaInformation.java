@@ -5,11 +5,11 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.util.UUID;
 
 /** Meta information, that describe a certain data source */
-public abstract class TimeSeriesMetaInformation extends InputEntity {
+public abstract class TimeSeriesMetaInformation extends UniqueInputEntity {
 
   protected TimeSeriesMetaInformation(UUID uuid) {
     super(uuid);

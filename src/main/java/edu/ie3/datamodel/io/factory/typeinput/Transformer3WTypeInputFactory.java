@@ -45,26 +45,8 @@ public class Transformer3WTypeInputFactory
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> constructorParams =
         newSet(
-            ENTITY_UUID,
-            ENTITY_ID,
-            S_RATED_A,
-            S_RATED_B,
-            S_RATED_C,
-            V_RATED_A,
-            V_RATED_B,
-            V_RATED_C,
-            R_SC_A,
-            R_SC_B,
-            R_SC_C,
-            X_SC_A,
-            X_SC_B,
-            X_SC_C,
-            G_M,
-            B_M,
-            D_V,
-            D_PHI,
-            TAP_NEUTR,
-            TAP_MIN,
+            UUID, ID, S_RATED_A, S_RATED_B, S_RATED_C, V_RATED_A, V_RATED_B, V_RATED_C, R_SC_A,
+            R_SC_B, R_SC_C, X_SC_A, X_SC_B, X_SC_C, G_M, B_M, D_V, D_PHI, TAP_NEUTR, TAP_MIN,
             TAP_MAX);
 
     return Collections.singletonList(constructorParams);
@@ -72,8 +54,8 @@ public class Transformer3WTypeInputFactory
 
   @Override
   protected Transformer3WTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.getField(ENTITY_ID);
+    UUID uuid = data.getUUID(UUID);
+    String id = data.getField(ID);
     ComparableQuantity<Power> sRatedA = data.getQuantity(S_RATED_A, StandardUnits.S_RATED);
     ComparableQuantity<Power> sRatedB = data.getQuantity(S_RATED_B, StandardUnits.S_RATED);
     ComparableQuantity<Power> sRatedC = data.getQuantity(S_RATED_C, StandardUnits.S_RATED);

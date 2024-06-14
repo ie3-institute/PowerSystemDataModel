@@ -23,7 +23,6 @@ class StorageTypeInputTest extends Specification {
     def alteredUnit = storageTypeInput.copy()
         .seteStorage(Quantities.getQuantity(90, ENERGY_IN))
         .setpMax(Quantities.getQuantity(15, ACTIVE_POWER_IN))
-        .setLifeTime(Quantities.getQuantity(999999, LIFE_TIME))
         .build()
 
     then:
@@ -38,9 +37,6 @@ class StorageTypeInputTest extends Specification {
       assert pMax == Quantities.getQuantity(15, ACTIVE_POWER_IN)
       assert activePowerGradient == storageTypeInput.activePowerGradient
       assert eta == storageTypeInput.eta
-      assert dod == storageTypeInput.dod
-      assert lifeTime == Quantities.getQuantity(999999, LIFE_TIME)
-      assert lifeCycle == storageTypeInput.lifeCycle
     }
   }
 
@@ -63,9 +59,6 @@ class StorageTypeInputTest extends Specification {
       assert pMax == storageTypeInput.pMax * 2d
       assert activePowerGradient == storageTypeInput.activePowerGradient
       assert eta == storageTypeInput.eta
-      assert dod == storageTypeInput.dod
-      assert lifeTime == storageTypeInput.lifeTime
-      assert lifeCycle == storageTypeInput.lifeCycle
     }
   }
 }

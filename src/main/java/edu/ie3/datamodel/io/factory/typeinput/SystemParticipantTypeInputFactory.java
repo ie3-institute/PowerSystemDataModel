@@ -37,7 +37,7 @@ public class SystemParticipantTypeInputFactory
 
   // EvTypeInput
   private static final String E_CONS = "eCons";
-
+  private static final String S_RATEDDC = "sRatedDC";
   // BmTypeInput
   private static final String ACTIVE_POWER_GRADIENT = "activePowerGradient";
 
@@ -53,9 +53,6 @@ public class SystemParticipantTypeInputFactory
   // StorageTypeInput
   private static final String P_MAX = "pMax";
   private static final String ETA = "eta";
-  private static final String DOD = "dod";
-  private static final String LIFETIME = "lifeTime";
-  private static final String LIFECYCLE = "lifeCycle";
 
   // WecTypeInput
   private static final String CP_CHARACTERISTIC = "cpCharacteristic";
@@ -72,8 +69,7 @@ public class SystemParticipantTypeInputFactory
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> standardConstructorParams =
-        newSet(ENTITY_UUID, ENTITY_ID, CAP_EX, OP_EX, S_RATED, COS_PHI_RATED);
+    Set<String> standardConstructorParams = newSet(UUID, ID, CAP_EX, OP_EX, S_RATED, COS_PHI_RATED);
 
     Set<String> constructorParameters = null;
     if (entityClass.equals(EvTypeInput.class)) {
@@ -90,15 +86,7 @@ public class SystemParticipantTypeInputFactory
           expandSet(standardConstructorParams, ETA_EL, ETA_THERMAL, P_THERMAL, P_OWN);
     } else if (entityClass.equals(StorageTypeInput.class)) {
       constructorParameters =
-          expandSet(
-              standardConstructorParams,
-              E_STORAGE,
-              P_MAX,
-              ACTIVE_POWER_GRADIENT,
-              ETA,
-              DOD,
-              LIFETIME,
-              LIFECYCLE);
+          expandSet(standardConstructorParams, E_STORAGE, P_MAX, ACTIVE_POWER_GRADIENT, ETA);
     }
 
     return Collections.singletonList(constructorParameters);
@@ -106,8 +94,8 @@ public class SystemParticipantTypeInputFactory
 
   @Override
   protected SystemParticipantTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.getField(ENTITY_ID);
+    UUID uuid = data.getUUID(UUID);
+    String id = data.getField(ID);
     ComparableQuantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
     ComparableQuantity<EnergyPrice> opEx = data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE);
     ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
@@ -144,7 +132,9 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<SpecificEnergy> eCons =
         data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
 
-    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi);
+    ComparableQuantity<Power> sRatedDC = data.getQuantity(S_RATEDDC, StandardUnits.ACTIVE_POWER_IN);
+
+    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC);
   }
 
   private SystemParticipantTypeInput buildHpTypeInput(
@@ -240,23 +230,8 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<DimensionlessRate> activePowerGradient =
         data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     ComparableQuantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
-    ComparableQuantity<Dimensionless> dod = data.getQuantity(DOD, StandardUnits.DOD);
-    ComparableQuantity<Time> lifeTime = data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME);
-    int lifeCycle = data.getInt(LIFECYCLE);
 
     return new StorageTypeInput(
-        uuid,
-        id,
-        capEx,
-        opEx,
-        eStorage,
-        sRated,
-        cosPhi,
-        pMax,
-        activePowerGradient,
-        eta,
-        dod,
-        lifeTime,
-        lifeCycle);
+        uuid, id, capEx, opEx, eStorage, sRated, cosPhi, pMax, activePowerGradient, eta);
   }
 }

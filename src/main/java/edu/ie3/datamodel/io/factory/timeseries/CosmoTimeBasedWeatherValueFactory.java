@@ -12,6 +12,7 @@ import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -36,8 +37,8 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
     super(timeUtil);
   }
 
-  public CosmoTimeBasedWeatherValueFactory(String timePattern) {
-    super(timePattern);
+  public CosmoTimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
+    super(dateTimeFormatter);
   }
 
   public CosmoTimeBasedWeatherValueFactory() {
@@ -65,7 +66,6 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
     Point coordinate = data.getCoordinate();
-    java.util.UUID uuid = data.getUUID(UUID);
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
         data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
@@ -85,6 +85,6 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             temperature,
             windDirection,
             windVelocity);
-    return new TimeBasedValue<>(uuid, time, weatherValue);
+    return new TimeBasedValue<>(time, weatherValue);
   }
 }

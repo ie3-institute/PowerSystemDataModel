@@ -5,50 +5,23 @@
 */
 package edu.ie3.datamodel.models.result;
 
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 /** Abstract class to hold all mappings common to all result models */
-public abstract class ResultEntity extends UniqueEntity {
+public abstract class ResultEntity implements Entity {
 
   /** date and time of the produced result */
   private ZonedDateTime time;
-  /** uuid of the input model that produces the result */
-  private UUID inputModel;
 
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
    *
    * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
    */
-  protected ResultEntity(ZonedDateTime time, UUID inputModel) {
+  protected ResultEntity(ZonedDateTime time) {
     this.time = time;
-    this.inputModel = inputModel;
-  }
-
-  /**
-   * Standard constructor without uuid generation.
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   */
-  protected ResultEntity(UUID uuid, ZonedDateTime time, UUID inputModel) {
-    super(uuid);
-    this.time = time;
-    this.inputModel = inputModel;
-  }
-
-  public UUID getInputModel() {
-    return inputModel;
-  }
-
-  public void setInputModel(UUID inputID) {
-    inputModel = inputID;
   }
 
   public ZonedDateTime getTime() {
@@ -63,25 +36,17 @@ public abstract class ResultEntity extends UniqueEntity {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
     ResultEntity that = (ResultEntity) o;
-    return time.equals(that.time) && inputModel.equals(that.inputModel);
+    return time.equals(that.time);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), time, inputModel);
+    return Objects.hash(super.hashCode(), time);
   }
 
   @Override
   public String toString() {
-    return "ResultEntity{"
-        + "uuid="
-        + getUuid()
-        + ", time="
-        + time
-        + ", inputModel="
-        + inputModel
-        + '}';
+    return "ResultEntity{time=" + time + '}';
   }
 }

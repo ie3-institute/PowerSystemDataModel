@@ -37,6 +37,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           OperatorInput.class,
           RandomLoadParameters.class,
           TimeSeriesMappingSource.MappingEntry.class,
+          IdCoordinateInput.class,
           /* - AssetInput */
           NodeInput.class,
           LineInput.class,

@@ -9,16 +9,12 @@ This model is currently only a dummy implementation of an electric vehicle charg
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
      - Unit
      - Remarks
-
-   * - uuid
-     - --
-     - uuid for the result entity
 
    * - time
      - --

@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.result.thermal;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.ModelResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Representation of a result with regard to a thermal unit */
-public abstract class ThermalUnitResult extends ResultEntity {
+public abstract class ThermalUnitResult extends ModelResultEntity {
 
   /**
    * Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power
@@ -31,20 +31,6 @@ public abstract class ThermalUnitResult extends ResultEntity {
    */
   protected ThermalUnitResult(ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
     super(time, inputModel);
-    this.qDot = qDot;
-  }
-
-  /**
-   * Constructor for the thermal result with
-   *
-   * @param uuid The uuid of this result
-   * @param time The time, the result is related to
-   * @param inputModel The input model's UUID, the result is related to
-   * @param qDot Average thermal power exchanged with the unit
-   */
-  protected ThermalUnitResult(
-      UUID uuid, ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
-    super(uuid, time, inputModel);
     this.qDot = qDot;
   }
 
@@ -73,9 +59,7 @@ public abstract class ThermalUnitResult extends ResultEntity {
   @Override
   public String toString() {
     return "ThermalUnitResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

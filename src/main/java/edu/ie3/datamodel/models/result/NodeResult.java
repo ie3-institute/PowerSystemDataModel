@@ -13,7 +13,7 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput} */
-public class NodeResult extends ResultEntity {
+public class NodeResult extends ModelResultEntity {
 
   /** Voltage magnitude @ this node in p.u. */
   private ComparableQuantity<Dimensionless> vMag;
@@ -35,27 +35,6 @@ public class NodeResult extends ResultEntity {
       ComparableQuantity<Dimensionless> vMag,
       ComparableQuantity<Angle> vAng) {
     super(time, inputModel);
-    this.vMag = vMag;
-    this.vAng = vAng;
-  }
-
-  /**
-   * Standard constructor without uuid generation.
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param vMag Dimensionless voltage magnitude
-   * @param vAng Voltage angle in degrees
-   */
-  public NodeResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Dimensionless> vMag,
-      ComparableQuantity<Angle> vAng) {
-    super(uuid, time, inputModel);
     this.vMag = vMag;
     this.vAng = vAng;
   }
@@ -93,9 +72,7 @@ public class NodeResult extends ResultEntity {
   @Override
   public String toString() {
     return "NodeResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

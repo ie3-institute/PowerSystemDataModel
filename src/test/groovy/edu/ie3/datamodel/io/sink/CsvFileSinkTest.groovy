@@ -142,19 +142,18 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         new FileNamingStrategy(),
         ",")
 
-    UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
     Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-    PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    WecResult wecResult = new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    EvcsResult evcsResult = new EvcsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    EmResult emResult = new EmResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+    PvResult pvResult = new PvResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    WecResult wecResult = new WecResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    EvcsResult evcsResult = new EvcsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    EmResult emResult = new EmResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
 
     Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
-    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, pRef, pMin, pMax)
+    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
 
     when:
     csvFileSink.persistAll([
@@ -239,6 +238,41 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("its_c_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").toFile().exists()
     testBaseFolderPath.resolve("lpts_g2_b56853fe-b800-4c18-b324-db1878b22a28.csv").toFile().exists()
     testBaseFolderPath.resolve("its_weather_4fcbdfcd-4ff0-46dd-b0df-f3af7ae3ed98.csv").toFile().exists()
+  }
+
+  def "A valid CsvFileSink is able to persist an InputEntity with multiple nested entities."() {
+    given:
+    def csvFileSink = new CsvFileSink(testBaseFolderPath)
+    def nestedInput = new PvInput(
+        UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
+        "test_pvInput",
+        OperatorInput.NO_OPERATOR_ASSIGNED,
+        OperationTime.notLimited(),
+        GridTestData.nodeA,
+        new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
+        SystemParticipantTestData.emInput,
+        0.2,
+        Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
+        Quantities.getQuantity(95d, PERCENT),
+        Quantities.getQuantity(41.01871871948242, DEGREE_GEOM),
+        0.8999999761581421,
+        1,
+        false,
+        Quantities.getQuantity(25d, KILOVOLTAMPERE),
+        0.95
+        )
+
+    when:
+    csvFileSink.persist(nestedInput)
+
+    then:
+    testBaseFolderPath.toFile().exists()
+    testBaseFolderPath.resolve("pv_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("node_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("em_input.csv").toFile().exists()
+
+    cleanup:
+    csvFileSink.shutdown()
   }
 
   def "A valid CsvFileSink is able to persist an InputEntity without persisting the nested elements"() {

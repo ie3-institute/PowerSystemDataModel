@@ -35,26 +35,6 @@ public class ThermalHouseResult extends ThermalSinkResult {
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }
 
-  /**
-   * Standard constructor without uuid generation.
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param qDot thermal heat demand of the sink
-   * @param indoorTemperature Indoor room temperature
-   */
-  public ThermalHouseResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Power> qDot,
-      ComparableQuantity<Temperature> indoorTemperature) {
-    super(uuid, time, inputModel, qDot);
-    this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
-  }
-
   public ComparableQuantity<Temperature> getIndoorTemperature() {
     return indoorTemperature;
   }
@@ -80,9 +60,7 @@ public class ThermalHouseResult extends ThermalSinkResult {
   @Override
   public String toString() {
     return "ThermalHouseResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

@@ -219,7 +219,7 @@ public class EvcsInput extends SystemParticipantInput {
         + ", qCharacteristics='"
         + getqCharacteristics()
         + "', em="
-        + getEm()
+        + getControllingEm()
         + ", type="
         + type
         + ", chargingPoints="

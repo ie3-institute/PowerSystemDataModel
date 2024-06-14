@@ -36,8 +36,8 @@ class SystemParticipantTestData {
 
   // general participant data
   static final OperationTime operationTime = OperationTime.builder()
-  .withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31"))
-  .withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
+  .withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24T15:11:31Z"))
+  .withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25T15:11:31Z")).build()
   static final OperatorInput operator = new OperatorInput(
   UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
   public static final NodeInput participantNode = GridTestData.nodeA
@@ -232,6 +232,7 @@ class SystemParticipantTestData {
   // EV
   private static final ComparableQuantity<Energy> eStorage = Quantities.getQuantity(100, ENERGY_IN)
   private static final ComparableQuantity<SpecificEnergy> eCons = Quantities.getQuantity(5, ENERGY_PER_DISTANCE)
+  private static final ComparableQuantity<Power> sRatedDC = Quantities.getQuantity(20,ACTIVE_POWER_IN )
   public static final EvTypeInput evTypeInput = new EvTypeInput(
   typeUuid,
   "test_evTypeInput",
@@ -240,7 +241,8 @@ class SystemParticipantTestData {
   eStorage,
   eCons,
   sRated,
-  cosPhiRated)
+  cosPhiRated,
+  sRatedDC)
   public static final EvInput evInput = new EvInput(
   UUID.fromString("a17be20f-c7a7-471d-8ffe-015487c9d022"),
   "test_evInput",
@@ -273,10 +275,7 @@ class SystemParticipantTestData {
   // Storage
   private static final ComparableQuantity<Power> pMax = Quantities.getQuantity(15, ACTIVE_POWER_IN)
   private static final ComparableQuantity<Dimensionless> eta = Quantities.getQuantity(95, EFFICIENCY)
-  private static final ComparableQuantity<Dimensionless> dod = Quantities.getQuantity(10, EFFICIENCY)
   private static final ComparableQuantity<DimensionlessRate> cpRate = Quantities.getQuantity(100, ACTIVE_POWER_GRADIENT)
-  private static final ComparableQuantity<Time> lifeTime = Quantities.getQuantity(175316.4, LIFE_TIME)
-  private static final int lifeCycle = 100
   public static final StorageTypeInput storageTypeInput = new StorageTypeInput(
   typeUuid,
   "test_storageTypeInput",
@@ -288,9 +287,6 @@ class SystemParticipantTestData {
   pMax,
   cpRate,
   eta,
-  dod,
-  lifeTime,
-  lifeCycle
   )
   public static final StorageInput storageInput = new StorageInput(
   UUID.fromString("06b58276-8350-40fb-86c0-2414aa4a0452"),

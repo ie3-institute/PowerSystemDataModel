@@ -11,7 +11,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
@@ -45,12 +45,16 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - sRated
      - kVA
-     - Rated apparent power
+     - Rated apparent power for AC
+     
+   * - sRatedDC
+     - kW
+     - power for DC
 
    * - cosPhiRated
      - --
      - Rated power factor
-
+     
 ```
 
 ### Entity Model
@@ -58,7 +62,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute

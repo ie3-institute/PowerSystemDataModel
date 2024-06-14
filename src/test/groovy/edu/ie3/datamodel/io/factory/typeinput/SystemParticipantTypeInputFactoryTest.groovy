@@ -52,6 +52,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
       "estorage":	"7",
       "econs":	"8",
+      "srateddc":	"9",
     ]
     def typeInputClass = EvTypeInput
 
@@ -72,6 +73,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
       assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
       assert eCons == getQuant(parameter["econs"], StandardUnits.ENERGY_PER_DISTANCE)
+      assert sRatedDC == getQuant(parameter["srateddc"], StandardUnits.ACTIVE_POWER_IN)
     }
   }
 
@@ -245,10 +247,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       "estorage"              : "6",
       "pmax"                  : "8",
       "activepowergradient"   : "1",
-      "eta"                   : "9",
-      "dod"                   : "10",
-      "lifetime"              : "11",
-      "lifecycle"             : "12"
+      "eta"                   : "9"
     ]
     def typeInputClass = StorageTypeInput
 
@@ -271,24 +270,21 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
       assert activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
       assert eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
-      assert dod == getQuant(parameter["dod"], StandardUnits.DOD)
-      assert lifeTime == getQuant(parameter["lifetime"], StandardUnits.LIFE_TIME)
-      assert lifeCycle == Integer.parseInt(parameter["lifecycle"])
     }
   }
 
   def "A SystemParticipantTypeInputFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
     def typeInputFactory = new SystemParticipantTypeInputFactory()
-    def actualFields = SystemParticipantTypeInputFactory.newSet("uuid", "id", "capex", "opex", "srated", "cosPhiRated", "estorage", "pmin", "pmax", "eta", "dod", "lifetime",)
+    def actualFields = SystemParticipantTypeInputFactory.newSet("uuid", "id", "capex", "opex", "srated", "cosPhiRated", "estorage", "pmin", "pmax", "eta",)
 
     when:
     def input = typeInputFactory.validate(actualFields, StorageTypeInput)
 
     then:
     input.failure
-    input.exception.get().message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] are invalid for instance of 'StorageTypeInput'. \n" +
+    input.exception.get().message == "The provided fields [capex, cosPhiRated, estorage, eta, id, opex, pmax, pmin, srated, uuid] are invalid for instance of 'StorageTypeInput'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
-        "0: [activePowerGradient, capex, cosPhiRated, dod, eStorage, eta, id, lifeCycle, lifeTime, opex, pMax, sRated, uuid] or [active_power_gradient, capex, cos_phi_rated, dod, e_storage, eta, id, life_cycle, life_time, opex, p_max, s_rated, uuid]\n"
+        "0: [activePowerGradient, capex, cosPhiRated, eStorage, eta, id, opex, pMax, sRated, uuid] or [active_power_gradient, capex, cos_phi_rated, e_storage, eta, id, opex, p_max, s_rated, uuid]\n"
   }
 }

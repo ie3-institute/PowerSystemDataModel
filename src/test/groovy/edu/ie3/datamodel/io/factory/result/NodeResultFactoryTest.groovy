@@ -28,7 +28,7 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     given: "a system participant factory and model data"
     def resultFactory = new NodeResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30 17:26:44",
+      "time"      : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
       "vmag"      : "2",
       "vang"      : "2"
@@ -60,7 +60,6 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     input.failure
     input.exception.get().message == "The provided fields [input_model, time, v_mag] are invalid for instance of 'NodeResult'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'NodeResult' are possible (NOT case-sensitive!):\n" +
-        "0: [inputModel, time, vAng, vMag] or [input_model, time, v_ang, v_mag]\n" +
-        "1: [inputModel, time, uuid, vAng, vMag] or [input_model, time, uuid, v_ang, v_mag]\n"
+        "0: [inputModel, time, vAng, vMag] or [input_model, time, v_ang, v_mag]\n"
   }
 }

@@ -9,8 +9,7 @@ import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.util.TimeUtil;
-import java.time.ZoneId;
-import java.util.Locale;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Internal API for building {@link ResultEntity}s. This additional abstraction layer is necessary
@@ -21,9 +20,7 @@ import java.util.Locale;
  */
 abstract class ResultEntityFactory<T extends ResultEntity> extends EntityFactory<T, EntityData> {
 
-  protected static final String ENTITY_UUID = "uuid";
   protected static final String TIME = "time";
-  protected static final String INPUT_MODEL = "inputModel";
 
   protected final TimeUtil timeUtil;
 
@@ -32,8 +29,9 @@ abstract class ResultEntityFactory<T extends ResultEntity> extends EntityFactory
     timeUtil = TimeUtil.withDefaults;
   }
 
-  protected ResultEntityFactory(String dtfPattern, Class<? extends T>... allowedClasses) {
+  protected ResultEntityFactory(
+      DateTimeFormatter dateTimeFormatter, Class<? extends T>... allowedClasses) {
     super(allowedClasses);
-    timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern);
+    timeUtil = new TimeUtil(dateTimeFormatter);
   }
 }

@@ -2,15 +2,32 @@
 This page gives an overview about the ValidationUtils in the *PowerSystemDataModel*.
 
 ## What are the ValidationUtils?
-The methods in ValidationUtils and subclasses can be used to check that objects are valid, meaning their parameters have valid values and they are correctly connected.
+The methods in ValidationUtils and subclasses can be used to check that objects are valid. The checks can be separated into two types:
+1. General validation
+2. Uniqueness validation
+
 
 ## What is checked?
-- The check methods include checks that assigned values are valid, e.g. lines are not allowed to have negative lengths or the rated power factor of any unit must be between 0 and 1.
-- Furthermore, several connections are checked, e.g. that lines only connect nodes of the same voltage level or that the voltage levels indicated for the transformer sides match the voltage levels of the nodes they are connected to.
+The general validation checks:
+- if assigned values are valid, e.g. lines are not allowed to have negative lengths or the rated power factor of any unit must be between 0 and 1
+- furthermore, several connections are checked, e.g. that lines only connect nodes of the same voltage level or that the voltage levels indicated for the transformer sides match the voltage levels of the nodes they are connected to.
+- the connectivity of the given grid for all defined operation intervals
 
-## How does it work?
-- The method `ValidationUtils.check(Object)` is the only method that should be called by the user.
-- This check method identifies the object class and forwards it to a specific check method for the given object
+The uniqueness validation checks if a collection of given objects are unique in either:
+- a specific field
+- or in a combination of multiple fields
+
+For example `AssetInputs` needs to be unique in their `uuid` and in their `id` while
+`weather values` needs to be unique in the combination of their `time` and their `coordinate`.
+
+
+## How to use?
+- To use the general validation the user should call the method `ValidationUtils.check(Object)`.
+- To use the uniqueness validation the user should call a method of `UniquenessValidationUtils` to check the uniqueness.
+
+## How does the general validation work?
+
+- The method `ValidationUtils.check(Object)` identifies the object class and forwards it to a specific check method for the given object
 - The overall structure of the ValidationUtils methods follows a cascading scheme, orientated along the class tree
 - Example: A `LineInput lineInput` should be checked
     1. `ValidationUtils.check(lineInput)` is called
@@ -49,7 +66,7 @@ The ValidationUtils include validation checks for...
         - PvInput
         - StorageInput
         - WecInput
-        - (missing: EvcsInput)
+        - EvcsInput (also checks ChargingPointType)
     - SystemParticipantTypeInput
         - BmTypeInput
         - ChpTypeInput
@@ -57,7 +74,6 @@ The ValidationUtils include validation checks for...
         - HpTypeInput
         - StorageTypeInput
         - WecTypeInput
-        - (missing: EvcsTypeInput/ChargingPointType)
 - ThermalUnitValidationUtils
     - ThermalUnitInput
         - ThermalSinkInput

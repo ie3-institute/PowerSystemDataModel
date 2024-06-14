@@ -11,7 +11,7 @@ Combined heat and power plant.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
@@ -66,7 +66,7 @@ Combined heat and power plant.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute

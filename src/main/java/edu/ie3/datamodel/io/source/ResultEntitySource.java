@@ -11,6 +11,7 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
+import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.result.connector.LineResult;
@@ -21,6 +22,7 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.utils.Try;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +42,7 @@ public class ResultEntitySource extends EntitySource {
   private final SwitchResultFactory switchResultFactory;
   private final NodeResultFactory nodeResultFactory;
   private final ConnectorResultFactory connectorResultFactory;
+  private final CongestionResultFactory congestionResultFactory;
   private final FlexOptionsResultFactory flexOptionsResultFactory;
 
   public ResultEntitySource(DataSource dataSource) {
@@ -51,18 +54,20 @@ public class ResultEntitySource extends EntitySource {
     this.switchResultFactory = new SwitchResultFactory();
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
+    this.congestionResultFactory = new CongestionResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
-  public ResultEntitySource(DataSource dataSource, String dtfPattern) {
+  public ResultEntitySource(DataSource dataSource, DateTimeFormatter dateTimeFormatter) {
     super(dataSource);
 
     // init factories
-    this.systemParticipantResultFactory = new SystemParticipantResultFactory(dtfPattern);
+    this.systemParticipantResultFactory = new SystemParticipantResultFactory(dateTimeFormatter);
     this.thermalResultFactory = new ThermalResultFactory();
     this.switchResultFactory = new SwitchResultFactory();
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
+    this.congestionResultFactory = new CongestionResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
@@ -94,7 +99,8 @@ public class ResultEntitySource extends EntitySource {
             validate(LineResult.class, connectorResultFactory),
             validate(Transformer2WResult.class, connectorResultFactory),
             validate(Transformer3WResult.class, connectorResultFactory),
-            validate(FlexOptionsResult.class, flexOptionsResultFactory)));
+            validate(FlexOptionsResult.class, flexOptionsResultFactory),
+            validate(CongestionResult.class, congestionResultFactory)));
 
     Try.scanCollection(participantResults, Void.class)
         .transformF(FailedValidationException::new)
@@ -354,6 +360,15 @@ public class ResultEntitySource extends EntitySource {
    */
   public Set<EmResult> getEmResults() throws SourceException {
     return getResultEntities(EmResult.class, systemParticipantResultFactory);
+  }
+
+  /**
+   * Returns a unique set of {@link CongestionResult} instances.
+   *
+   * @return a set of object and subgrid unique {@link CongestionResult} entities
+   */
+  public Set<CongestionResult> getCongestionResults() throws SourceException {
+    return getResultEntities(CongestionResult.class, congestionResultFactory);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

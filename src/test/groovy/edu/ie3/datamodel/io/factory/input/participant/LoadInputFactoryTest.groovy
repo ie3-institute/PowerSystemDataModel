@@ -70,7 +70,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert em == Optional.of(emUnit)
+      assert controllingEm == Optional.of(emUnit)
       assert loadProfile == profile
       assert dsm
       assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)

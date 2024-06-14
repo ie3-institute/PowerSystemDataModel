@@ -24,80 +24,181 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 
 ### Input
 
-| Model                             | File Name                                                                                 |
-|:----------------------------------|:------------------------------------------------------------------------------------------|
-| operator                          | *prefix_* operator_input *_suffix*                                                        |
-| node                              | *prefix_* node_input *_suffix*                                                            |
-| line                              | *prefix_* line_input *_suffix* <br> *prefix_* line_type_input *_suffix*                   |
-| switch                            | *prefix_* switch_input *_suffix*                                                          |
-| two winding transformer           | *prefix_* transformer2w_input *_suffix* <br> *prefix_* transformer2w_type_input *_suffix* |
-| three winding transformer         | *prefix_* transformer3w_input *_suffix* <br> *prefix_* transformer3w_type_input *_suffix* |
-| measurement unit                  | *prefix_* measurement_unit_input *_suffix*                                                |
-| biomass plant                     | *prefix_* bm_input *_suffix* <br> *prefix_* bm_type_input *_suffix*                       |
-| combined heat and power plant     | *prefix_* chp_input *_suffix* <br> *prefix_* chp_type_input *_suffix*                     |
-| electric vehicle                  | *prefix_* ev_input *_suffix* <br> *prefix_* ev_type_input *_suffix*                       |
-| electric vehicle charging station | *prefix_* evcs_input *_suffix*                                                            |
-| fixed feed in facility            | *prefix_* fixed_feed_in_input *_suffix*                                                   |
-| heat pump                         | *prefix_* hp_input *_suffix* <br> *prefix_* hp_type_input *_suffix*                       |
-| load                              | *prefix_* load_input *_suffix*                                                            |
-| photovoltaic power plant          | *prefix_* pc_input *_suffix*                                                              |
-| electrical energy storage         | *prefix_* storage_input *_suffix* <br> *prefix_* storage_type_input *_suffix*             |
-| wind energy converter             | *prefix_* wec_input *_suffix* <br> *prefix_* wec_type_input *_suffix*                     |
-| schematic node graphic            | *prefix_* node_graphic_input *_suffix*                                                    |
-| schematic line graphic            | *prefix_* line_graphic_input *_suffix*                                                    |
+```{eval-rst}
+.. list-table::
+   :widths: auto
+   :header-rows: 1
+
+   * - Model
+     - File Name
+   * - operator
+     - *prefix_* operator_input *_suffix*
+   * - node
+     - *prefix_* node_input *_suffix*
+   * - line
+     - | *prefix_* line_input *_suffix*
+       | *prefix_* line_type_input *_suffix*
+   * - switch
+     - *prefix_* switch_input *_suffix*
+   * - two winding transformer
+     - | *prefix_* transformer2w_input *_suffix*
+       | *prefix_* transformer2w_type_input *_suffix*
+   * - three winding transformer
+     - | *prefix_* transformer3w_input *_suffix*
+       | *prefix_* transformer3w_type_input *_suffix*
+   * - measurement unit
+     - *prefix_* measurement_unit_input *_suffix*
+   * - biomass plant
+     - | *prefix_* bm_input *_suffix*
+       | *prefix_* bm_type_input *_suffix*
+   * - combined heat and power plant
+     - | *prefix_* chp_input *_suffix*
+       | *prefix_* chp_type_input *_suffix*
+   * - electric vehicle
+     - | *prefix_* ev_input *_suffix*
+       | *prefix_* ev_type_input *_suffix*
+   * - electric vehicle charging station
+     - *prefix_* evcs_input *_suffix*
+   * - fixed feed in facility
+     - *prefix_* fixed_feed_in_input *_suffix*
+   * - heat pump
+     - | *prefix_* hp_input *_suffix*
+       | *prefix_* hp_type_input *_suffix*
+   * - load
+     - *prefix_* load_input *_suffix*
+   * - photovoltaic power plant
+     - *prefix_* pv_input *_suffix*
+   * - electrical energy storage
+     - | *prefix_* storage_input *_suffix*
+       | *prefix_* storage_type_input *_suffix*
+   * - wind energy converter
+     - | *prefix_* wec_input *_suffix*
+       | *prefix_* wec_type_input *_suffix*
+   * - schematic node graphic
+     - *prefix_* node_graphic_input *_suffix*
+   * - schematic line graphic
+     - *prefix_* line_graphic_input *_suffix*
+
+```
+
+### Id Coordinate
+Csv id coordinate sources can have two different ways to represent their coordinate:
+1. ICON: Takes a `latitude` and a `longitude` column
+2. COSMO: Takes a `lat_rot`, a `long_rot`, a `lat_geo` and a `long_geo` column
 
 
 ### Time Series
 
-| Model                  | File Name                                 |
-|:-----------------------|:------------------------------------------|
-| individual time series | *prefix_* its *_columnScheme_UUID_suffix* |
-| load profile input     | *prefix_* rts *_profileKey_UUID_suffix*   |
+```{eval-rst}
+.. list-table::
+   :widths: 50 50
+   :header-rows: 1
 
+   * - Model
+     - File Name
+   * - individual time series
+     - *prefix_* its *_columnScheme_UUID_suffix*
+   * - load profile input
+     - *prefix_* rts *_profileKey_UUID_suffix*
+```
 
 Let's spend a few more words on the individual time series:
 Those files are meant to carry different types of content - one might give information about wholesale market prices,
 the other is a record of power values provided by a real system.
 To be able to understand, what's inside of the file, the *columnScheme* part of the file name gives insight of its
 content.
+
+For example, you have an IndividualTimeSeries CSV file for energy prices, then you use the key `c` from the table below
+for columnScheme `its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1.csv`.
+The CSV file must then have the appropriate format for the key `c` :
+
+```text
+   time,price
+   2020-01-01T00:00:00Z,100.0
+```
+
+The CSV file requires a unique identification number.
+The UUID (Universally Unique Identifier) can be created [here](https://www.uuidgenerator.net/).
+You can also use the Method `java.util.UUID#randomUUID` to create a UUID.
+This is the UUID from the example above `2fcb3e53-b94a-4b96-bea4-c469e499f1a1`.
+
 The following keys are supported until now:
+```{eval-rst}
+.. list-table::
+   :widths: auto
+   :header-rows: 1
 
-| Key     | Information and supported head line                                                                                                                      |
-|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| c       | An energy price (e.g. in €/MWh; c stands for charge). <br> Permissible head line: ``uuid,time,price``                                                    |
-| p       | Active power <br> Permissible head line: ``uuid,time,p``                                                                                                 |
-| pq      | Active and reactive power <br> Permissible head line: ``uuid,time,p,q``                                                                                  |
-| h       | Heat power demand <br> Permissible head line: ``uuid,time,h``                                                                                            |
-| ph      | Active and heat power <br> Permissible head line: ``uuid,time,p,h``                                                                                      |
-| pqh     | Active, reactive and heat power <br> Permissible head line: ``uuid,time,p,q,h``                                                                          |
-| weather | Weather information <br> Permissible head line: ``uuid,time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction`` |
+   * - Key
+     - Information and supported head line
+   * - c
+     - | An energy price (e.g. in €/MWh; c stands for charge).
+       | Permissible head line: ``time,price``
+   * - p
+     - | Active power
+       | Permissible head line: ``time,p``
+   * - pq
+     - | Active and reactive power
+       | Permissible head line: ``time,p,q``
+   * - h
+     - | Heat power demand
+       | Permissible head line: ``time,h``
+   * - ph
+     - | Active and heat power
+       | Permissible head line: ``time,p,h``
+   * - pqh
+     - | Active, reactive and heat power
+       | Permissible head line: ``time,p,q,h``
+   * - weather
+     - | Weather information
+       | Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
 
-
-As the ``uuid`` and ``time`` field are mandatory, they are not mentioned explicitly, here.
+```
 
 ### Results
 
+```{eval-rst}
+.. list-table::
+   :widths: auto
+   :header-rows: 1
 
-| Model                             | File Name                                   |
-|:----------------------------------|:--------------------------------------------|
-| node                              | *prefix_* node_res *_suffix*                |
-| line                              | *prefix_* line_res *_suffix*                |
-| switch                            | *prefix_* switch_res *_suffix*              |
-| two winding transformer           | *prefix_* transformer2w_res *_suffix*       |
-| three winding transformer         | *prefix_* transformer3w_res *_suffix*       |
-| biomass plant                     | *prefix_* bm_res *_suffix*                  |
-| combined heat and power plant     | *prefix_* chp_res *_suffix*                 |
-| electric vehicle                  | *prefix_* ev_res *_suffix*                  |
-| electric vehicle charging station | *prefix_* evcs_res\*_suffix*                |
-| fixed feed in                     | *prefix_* fixed_feed_in_res *_suffix*       |
-| heat pump                         | *prefix_* hp_res *_suffix*                  |
-| load                              | *prefix_* load_res *_suffix*                |
-| photovoltaic power plant          | *prefix_* pv_res *_suffix*                  |
-| storage                           | *prefix_* storage_res *_suffix*             |
-| wind energy converter             | *prefix_* wec_res *_suffix*                 |
-| thermal house model               | *prefix_* thermal_house_res *_suffix*       |
-| cylindrical thermal storage       | *prefix_* cylindrical_storage_res *_suffix* |
+   * - Model
+     - File Name
+   * - node
+     - *prefix_* node_res *_suffix*
+   * - line
+     - *prefix_* line_res *_suffix*
+   * - switch
+     - *prefix_* switch_res *_suffix*
+   * - two winding transformer
+     - *prefix_* transformer2w_res *_suffix*
+   * - three winding transformer
+     - *prefix_* transformer3w_res *_suffix*
+   * - biomass plant
+     - *prefix_* bm_res *_suffix*
+   * - combined heat and power plant
+     - *prefix_* chp_res *_suffix*
+   * - electric vehicle
+     - *prefix_* ev_res *_suffix*
+   * - electric vehicle charging station
+     - *prefix_* evcs_res\*_suffix*
+   * - fixed feed in
+     - *prefix_* fixed_feed_in_res *_suffix*
+   * - heat pump
+     - *prefix_* hp_res *_suffix*
+   * - load
+     - *prefix_* load_res *_suffix*
+   * - photovoltaic power plant
+     - *prefix_* pv_res *_suffix*
+   * - storage
+     - *prefix_* storage_res *_suffix*
+   * - wind energy converter
+     - *prefix_* wec_res *_suffix*
+   * - thermal house model
+     - *prefix_* thermal_house_res *_suffix*
+   * - cylindrical thermal storage
+     - *prefix_* cylindrical_storage_res *_suffix*
 
+```
 
 ## Default directory hierarchy
 

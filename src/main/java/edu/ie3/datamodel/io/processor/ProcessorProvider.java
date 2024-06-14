@@ -12,7 +12,7 @@ import edu.ie3.datamodel.io.processor.input.InputEntityProcessor;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -24,11 +24,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Wrapper providing the class specific processor to convert an instance of a {@link UniqueEntity}
- * into a mapping from attribute to value which can be used to write data e.g. into .csv files. This
+ * Wrapper providing the class specific processor to convert an instance of a {@link Entity} into a
+ * mapping from attribute to value which can be used to write data e.g. into .csv files. This
  * wrapper can always be used if it's not clear which specific instance of a subclass of {@link
- * UniqueEntity} is received in the implementation. It can either be used for specific entity
- * processors only or as a general provider for all known entity processors.
+ * Entity} is received in the implementation. It can either be used for specific entity processors
+ * only or as a general provider for all known entity processors.
  *
  * @version 0.1
  * @since 20.03.20
@@ -36,8 +36,7 @@ import java.util.stream.Collectors;
 public class ProcessorProvider {
 
   /** unmodifiable map of all processors that has been provided on construction */
-  private final Map<Class<? extends UniqueEntity>, EntityProcessor<? extends UniqueEntity>>
-      entityProcessors;
+  private final Map<Class<? extends Entity>, EntityProcessor<? extends Entity>> entityProcessors;
 
   private final Map<
           TimeSeriesProcessorKey,
@@ -59,7 +58,7 @@ public class ProcessorProvider {
    *     provider
    */
   public ProcessorProvider(
-      Collection<EntityProcessor<? extends UniqueEntity>> entityProcessors,
+      Collection<EntityProcessor<? extends Entity>> entityProcessors,
       Map<
               TimeSeriesProcessorKey,
               TimeSeriesProcessor<
@@ -69,7 +68,7 @@ public class ProcessorProvider {
     this.timeSeriesProcessors = timeSeriesProcessors;
   }
 
-  public <T extends UniqueEntity>
+  public <T extends Entity>
       Try<LinkedHashMap<String, String>, ProcessorProviderException> handleEntity(T entity) {
     return Try.of(() -> getEntityProcessor(entity.getClass()), ProcessorProviderException.class)
         .flatMap(ProcessorProvider::castProcessor)
@@ -99,9 +98,9 @@ public class ProcessorProvider {
    * @return The correct entity processor
    * @throws ProcessorProviderException If the processor cannot be found
    */
-  private EntityProcessor<? extends UniqueEntity> getEntityProcessor(
-      Class<? extends UniqueEntity> clazz) throws ProcessorProviderException {
-    EntityProcessor<? extends UniqueEntity> processor = entityProcessors.get(clazz);
+  private EntityProcessor<? extends Entity> getEntityProcessor(Class<? extends Entity> clazz)
+      throws ProcessorProviderException {
+    EntityProcessor<? extends Entity> processor = entityProcessors.get(clazz);
     if (processor == null) {
       throw new ProcessorProviderException(
           "Cannot find a suitable processor for provided class with name '"
@@ -164,7 +163,7 @@ public class ProcessorProvider {
    *
    * @return all classes this provider hols a processor for
    */
-  public List<Class<? extends UniqueEntity>> getRegisteredClasses() {
+  public List<Class<? extends Entity>> getRegisteredClasses() {
     return entityProcessors.values().stream()
         .map(EntityProcessor::getRegisteredClass)
         .collect(Collectors.toList());
@@ -182,10 +181,10 @@ public class ProcessorProvider {
    * @return the header elements of the requested class
    * @throws ProcessorProviderException If no matching processor can be found
    */
-  public String[] getHeaderElements(Class<? extends UniqueEntity> clazz)
+  public String[] getHeaderElements(Class<? extends Entity> clazz)
       throws ProcessorProviderException {
     try {
-      EntityProcessor<? extends UniqueEntity> processor = getEntityProcessor(clazz);
+      EntityProcessor<? extends Entity> processor = getEntityProcessor(clazz);
       return processor.getHeaderElements();
     } catch (ProcessorProviderException e) {
       throw new ProcessorProviderException(
@@ -226,13 +225,12 @@ public class ProcessorProvider {
    * @param processors the processors that should be known by this provider
    * @return a mapping of all classes and their corresponding processor
    */
-  private Map<Class<? extends UniqueEntity>, EntityProcessor<? extends UniqueEntity>> init(
-      Collection<EntityProcessor<? extends UniqueEntity>> processors) {
+  private Map<Class<? extends Entity>, EntityProcessor<? extends Entity>> init(
+      Collection<EntityProcessor<? extends Entity>> processors) {
 
-    Map<Class<? extends UniqueEntity>, EntityProcessor<? extends UniqueEntity>> processorMap =
-        new HashMap<>();
+    Map<Class<? extends Entity>, EntityProcessor<? extends Entity>> processorMap = new HashMap<>();
 
-    for (EntityProcessor<? extends UniqueEntity> processor : processors) {
+    for (EntityProcessor<? extends Entity> processor : processors) {
       processorMap.put(processor.getRegisteredClass(), processor);
     }
 
@@ -244,9 +242,9 @@ public class ProcessorProvider {
    *
    * @return a collection of all existing processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors()
+  public static Collection<EntityProcessor<? extends Entity>> allEntityProcessors()
       throws EntityProcessorException {
-    Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
+    Collection<EntityProcessor<? extends Entity>> resultingProcessors = new ArrayList<>();
     resultingProcessors.addAll(allInputEntityProcessors());
     resultingProcessors.addAll(allResultEntityProcessors());
     return resultingProcessors;
@@ -257,9 +255,9 @@ public class ProcessorProvider {
    *
    * @return a collection of all input processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allInputEntityProcessors()
+  public static Collection<EntityProcessor<? extends Entity>> allInputEntityProcessors()
       throws EntityProcessorException {
-    Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
+    Collection<EntityProcessor<? extends Entity>> resultingProcessors = new ArrayList<>();
     for (Class<? extends InputEntity> cls : InputEntityProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new InputEntityProcessor(cls));
     }
@@ -271,9 +269,9 @@ public class ProcessorProvider {
    *
    * @return a collection of all result processors
    */
-  public static Collection<EntityProcessor<? extends UniqueEntity>> allResultEntityProcessors()
+  public static Collection<EntityProcessor<? extends Entity>> allResultEntityProcessors()
       throws EntityProcessorException {
-    Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
+    Collection<EntityProcessor<? extends Entity>> resultingProcessors = new ArrayList<>();
     for (Class<? extends ResultEntity> cls : ResultEntityProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new ResultEntityProcessor(cls));
     }
@@ -313,9 +311,9 @@ public class ProcessorProvider {
   }
 
   @SuppressWarnings("unchecked cast")
-  private static <T extends UniqueEntity>
+  private static <T extends Entity>
       Try<EntityProcessor<T>, ProcessorProviderException> castProcessor(
-          EntityProcessor<? extends UniqueEntity> processor) {
+          EntityProcessor<? extends Entity> processor) {
     return Try.of(() -> (EntityProcessor<T>) processor, ClassCastException.class)
         .transformF(
             e ->

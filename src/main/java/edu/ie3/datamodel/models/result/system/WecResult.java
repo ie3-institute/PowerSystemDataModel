@@ -29,31 +29,10 @@ public class WecResult extends SystemParticipantResult {
     super(time, inputModel, p, q);
   }
 
-  /**
-   * Standard constructor which allows uuid provision
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param p active power output normally provided in MW
-   * @param q reactive power output normally provided in MVAr
-   */
-  public WecResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) {
-    super(uuid, time, inputModel, p, q);
-  }
-
   @Override
   public String toString() {
     return "WecResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

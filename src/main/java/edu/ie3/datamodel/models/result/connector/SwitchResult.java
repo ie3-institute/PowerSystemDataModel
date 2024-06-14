@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
-import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.ModelResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.SwitchInput}
  */
-public class SwitchResult extends ResultEntity {
+public class SwitchResult extends ModelResultEntity {
 
   /** is the switching state 'closed'? */
   private boolean closed;
@@ -27,20 +27,6 @@ public class SwitchResult extends ResultEntity {
    */
   public SwitchResult(ZonedDateTime time, UUID inputModel, boolean closed) {
     super(time, inputModel);
-    this.closed = closed;
-  }
-
-  /**
-   * Standard constructor which allows uuid provision
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param closed true if switch is closed, false if switch is open
-   */
-  public SwitchResult(UUID uuid, ZonedDateTime time, UUID inputModel, boolean closed) {
-    super(uuid, time, inputModel);
     this.closed = closed;
   }
 
@@ -69,9 +55,7 @@ public class SwitchResult extends ResultEntity {
   @Override
   public String toString() {
     return "SwitchResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()

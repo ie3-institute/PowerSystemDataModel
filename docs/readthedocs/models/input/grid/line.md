@@ -9,7 +9,7 @@ Representation of an AC line.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
    * - Attribute
      - Unit
@@ -29,7 +29,7 @@ Representation of an AC line.
 
    * - x
      - Ω / km
-     - Phase resistance per length
+     - Phase reactance per length
 
    * - g
      - µS / km
@@ -37,7 +37,7 @@ Representation of an AC line.
 
    * - b
      - µS / km
-     - Phase-to-ground conductance per length
+     - Phase-to-ground susceptance per length
 
    * - iMax
      - A
@@ -56,7 +56,7 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
@@ -129,7 +129,7 @@ Some standard overhead lines.
 ```{eval-rst}
 .. list-table::
    :widths: 11 11 11 11 11 11 11 11 11
-   :header-rows: 0
+   :header-rows: 1
    
    
    * - uuid
@@ -312,7 +312,7 @@ Some standard cables.
 ```{eval-rst}
 .. list-table::
    :widths: 11 11 11 11 11 11 11 11 11
-   :header-rows: 0
+   :header-rows: 1
    
    
    * - uuid

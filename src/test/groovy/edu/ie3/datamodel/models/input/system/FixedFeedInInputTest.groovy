@@ -29,7 +29,7 @@ class FixedFeedInInputTest extends Specification {
       assert qCharacteristics == ffIn.qCharacteristics
       assert sRated == Quantities.getQuantity(10d, PowerSystemUnits.VOLTAMPERE)
       assert cosPhiRated == 0.8d
-      assert em == Optional.of(SystemParticipantTestData.emInput)
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -49,7 +49,7 @@ class FixedFeedInInputTest extends Specification {
       assert qCharacteristics == ffIn.qCharacteristics
       assert sRated == ffIn.sRated * 2d
       assert cosPhiRated == ffIn.cosPhiRated
-      assert em == Optional.of(SystemParticipantTestData.emInput)
+      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

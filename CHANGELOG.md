@@ -7,11 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Enhancing `VoltageLevel` with `equals` method [#1063](https://github.com/ie3-institute/PowerSystemDataModel/issues/1063)
+- `ConnectorValidationUtils` checks if parallel devices is > 0 [#1077](https://github.com/ie3-institute/PowerSystemDataModel/issues/1077)
+- `GridContainerValidationUtils` checks the connectivity for all defined operation time intervals [#1091](https://github.com/ie3-institute/PowerSystemDataModel/issues/1091)
+- Implemented a `CongestionResult` [#1097](https://github.com/ie3-institute/PowerSystemDataModel/issues/1097)
+
+### Fixed
+- Fixed `MappingEntryies` not getting processed by adding `Getter` methods for record fields [#1084](https://github.com/ie3-institute/PowerSystemDataModel/issues/1084) 
+
+### Changed
+- Improvements to the search for corner points in `IdCoordinateSource` [#1016](https://github.com/ie3-institute/PowerSystemDataModel/issues/1016)
+- Refactor `CsvFileConnector` and `CsvDataSource` [#1007](https://github.com/ie3-institute/PowerSystemDataModel/issues/1007)
+
+
+## [5.0.1] - 2024-03-07
+
+### Fixed
+- Fixed `equals` of `ResultEntity` and `TimeSeriesEntry` [#1037](https://github.com/ie3-institute/PowerSystemDataModel/issues/1037)
+- Fixed "depth of discharge" in documentation [#872](https://github.com/ie3-institute/PowerSystemDataModel/issues/872)
+
+## [5.0.0] - 2024-03-06
+
+### Added
 - Formatting Spotless Groovy import order [#960](https://github.com/ie3-institute/PowerSystemDataModel/issues/960)
 - Implementing missing typical methods in `Try` [#970](https://github.com/ie3-institute/PowerSystemDataModel/issues/970)
 - Added log warning when using `SwitchInputs` with `parallelDevices` parameter [#840](https://github.com/ie3-institute/PowerSystemDataModel/issues/840)
 - Validation for `EvcsInput` [#1000](https://github.com/ie3-institute/PowerSystemDataModel/issues/1000)
 - Scaling method in system participant copy builders [#1011](https://github.com/ie3-institute/PowerSystemDataModel/issues/1011)
+- Added separate field for maximum power limit for DC to evtype [#876](https://github.com/ie3-institute/PowerSystemDataModel/issues/876)
+- Added test for invalid input data in `CsvRawGridSource` [#1021](https://github.com/ie3-institute/PowerSystemDataModel/issues/1021)
+- Added `CsvThermalGridSource` [#1009](https://github.com/ie3-institute/PowerSystemDataModel/issues/1009)
+- Enhance documentation for CSV timeseries [#825](https://github.com/ie3-institute/PowerSystemDataModel/issues/825)
 
 ### Fixed
 - Fixed Couchbase integration tests that randomly failed [#755](https://github.com/ie3-institute/PowerSystemDataModel/issues/755)
@@ -20,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed thermal-house-documentation [#873](https://github.com/ie3-institute/PowerSystemDataModel/issues/873)
 - Fixed ElectricVehicle Documentation [#875](https://github.com/ie3-institute/PowerSystemDataModel/issues/875)
 - Fixed Equal behavior of `ConnectorResult` [#1001](https://github.com/ie3-institute/PowerSystemDataModel/issues/1001) 
+- Fixed test for invalid input data in `CsvGraphicSource` [#1022](https://github.com/ie3-institute/PowerSystemDataModel/issues/1022)
 
 ### Changed
 - Changing from comparing strings to comparing uuids in `EntitySource.findFirstEntityByUuid` [#829](https://github.com/ie3-institute/PowerSystemDataModel/issues/829)
@@ -35,6 +62,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated contributing.md [#737](https://github.com/ie3-institute/PowerSystemDataModel/issues/737)
 - Don't throw exceptions for not yet implemented validations [#879](https://github.com/ie3-institute/PowerSystemDataModel/issues/879)
 - `CsvDataSource` throws exceptions on error [#954](https://github.com/ie3-institute/PowerSystemDataModel/issues/954)
+- Removing `uuid` as required column from input and result time series [#826](https://github.com/ie3-institute/PowerSystemDataModel/issues/826)
+- Removing the support for the old csv format that was marked `deprecated` back in version `1.1.0` [#795](https://github.com/ie3-institute/PowerSystemDataModel/issues/795)
+- BREAKING: Updating PowerSystemUtils dependency to 2.2 [#1006](https://github.com/ie3-institute/PowerSystemDataModel/issues/1006)
 
 ## [4.1.0] - 2023-11-02
 
@@ -262,7 +292,9 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.1.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.1...HEAD
+[5.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.0...5.0.1
+[4.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.1.0...5.0.0
 [4.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/3.0.0...4.0.0
 [3.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...3.0.0

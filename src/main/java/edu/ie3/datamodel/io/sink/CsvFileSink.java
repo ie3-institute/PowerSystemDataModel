@@ -8,12 +8,13 @@ package edu.ie3.datamodel.io.sink;
 import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
+import edu.ie3.datamodel.io.csv.CsvFileDefinition;
 import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
@@ -38,11 +39,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sink that provides all capabilities to write {@link UniqueEntity}s to .csv-files. Be careful
- * about using methods other than {@link #persistJointGrid(JointGridContainer)} because all other
- * methods <b>do not check</b> for duplicate entries but only dump the data they received. In
- * contrast, when using {@link #persistJointGrid(JointGridContainer)}, all nested entities get
- * extracted first and then dumped individually without any duplicate lines.
+ * Sink that provides all capabilities to write {@link Entity}s to .csv-files. Be careful about
+ * using methods other than {@link #persistJointGrid(JointGridContainer)} because all other methods
+ * <b>do not check</b> for duplicate entries but only dump the data they received. In contrast, when
+ * using {@link #persistJointGrid(JointGridContainer)}, all nested entities get extracted first and
+ * then dumped individually without any duplicate lines.
  *
  * @version 0.1
  * @since 19.03.20
@@ -53,7 +54,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   private final CsvFileConnector connector;
   private final ProcessorProvider processorProvider;
-
+  private final FileNamingStrategy fileNamingStrategy;
   private final String csvSep;
 
   public CsvFileSink(Path baseFolderPath) throws EntityProcessorException {
@@ -95,18 +96,19 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
       String csvSep) {
     this.csvSep = csvSep;
     this.processorProvider = processorProvider;
-    this.connector = new CsvFileConnector(baseFolderPath, fileNamingStrategy);
+    this.connector = new CsvFileConnector(baseFolderPath);
+    this.fileNamingStrategy = fileNamingStrategy;
   }
 
   @Override
-  public <T extends UniqueEntity> void persistAll(Collection<T> entities) {
+  public <T extends Entity> void persistAll(Collection<T> entities) {
     for (T entity : entities) {
       persist(entity);
     }
   }
 
   @Override
-  public <T extends UniqueEntity> void persist(T entity) {
+  public <T extends Entity> void persist(T entity) {
     /* Distinguish between "regular" input / result models and time series */
     if (entity instanceof InputEntity inputEntity) {
       persistIncludeNested(inputEntity);
@@ -246,13 +248,16 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     try {
       TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
       String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
-      BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
+      BufferedCsvWriter writer =
+          connector.getOrInitWriter(
+              timeSeries,
+              new CsvFileDefinition(timeSeries, headerElements, csvSep, fileNamingStrategy));
       persistTimeSeries(timeSeries, writer);
       connector.closeTimeSeriesWriter(timeSeries.getUuid());
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element.", e);
-    } catch (ConnectorException e) {
+    } catch (ConnectorException | FileException e) {
       log.error("Exception occurred during acquisition of writer.", e);
     } catch (IOException e) {
       log.error("Exception occurred during closing of writer.", e);
@@ -286,18 +291,20 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param entity the entity to write
    * @param <C> bounded to be all unique entities
    */
-  private <C extends UniqueEntity> void write(C entity) {
+  private <C extends Entity> void write(C entity) {
     try {
       LinkedHashMap<String, String> entityFieldData =
           processorProvider.handleEntity(entity).map(this::csvEntityFieldData).getOrThrow();
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
-          connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
+          connector.getOrInitWriter(
+              entity.getClass(),
+              new CsvFileDefinition(entity.getClass(), headerElements, csvSep, fileNamingStrategy));
       writer.write(entityFieldData);
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element.", e);
-    } catch (ConnectorException e) {
+    } catch (ConnectorException | FileException e) {
       log.error("Exception occurred during retrieval of writer. Cannot write this element.", e);
     } catch (IOException e) {
       log.error("Exception occurred during writing of this element. Cannot write this element.", e);

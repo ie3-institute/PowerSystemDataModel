@@ -159,9 +159,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
       pMax == sptd.storageTypeInput.pMax
       activePowerGradient == sptd.storageTypeInput.activePowerGradient
       eta == sptd.storageTypeInput.eta
-      dod == sptd.storageTypeInput.dod
-      lifeTime == sptd.storageTypeInput.lifeTime
-      lifeCycle == sptd.storageTypeInput.lifeCycle
     }
   }
 
@@ -200,6 +197,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
       eCons == sptd.evTypeInput.eCons
       sRated == sptd.evTypeInput.sRated
       cosPhiRated == sptd.evTypeInput.cosPhiRated
+      sRatedDC == sptd.evTypeInput.sRatedDC
     }
   }
 }

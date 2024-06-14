@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkWeatherUniqueness;
+
+import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
@@ -15,14 +18,15 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.utils.ExceptionUtils;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.*;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -135,10 +139,7 @@ public class CsvWeatherSource extends WeatherSource {
       throws SourceException {
     /* Get only weather time series meta information */
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
-        dataSource
-            .connector
-            .getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER)
-            .values();
+        dataSource.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
     return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
   }
 
@@ -188,12 +189,27 @@ public class CsvWeatherSource extends WeatherSource {
         throw new SourceException("Validation failed for file " + data.getFullFilePath() + ".", e);
       }
     }
-    return weatherTimeSeries;
+
+    // checking the uniqueness before returning the time series
+    List<DuplicateEntitiesException> exceptions =
+        Try.getExceptions(
+            weatherTimeSeries.values().stream()
+                .map(
+                    ts ->
+                        Try.ofVoid(
+                            () -> checkWeatherUniqueness(ts.getEntries()),
+                            DuplicateEntitiesException.class)));
+
+    if (exceptions.isEmpty()) {
+      return weatherTimeSeries;
+    } else {
+      throw new SourceException("Due to: " + ExceptionUtils.getMessages(exceptions));
+    }
   }
 
   private Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       BufferedReader bufferedReader) throws ValidationException {
-    Class<? extends UniqueEntity> entityClass = TimeBasedValue.class;
+    Class<? extends Entity> entityClass = TimeBasedValue.class;
 
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
@@ -205,18 +221,7 @@ public class CsvWeatherSource extends WeatherSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows =
-          dataSource.csvRowFieldValueMapping(reader, headline);
-
-      Function<Map<String, String>, String> timeCoordinateIdExtractor =
-          fieldToValues ->
-              fieldToValues
-                  .get(weatherFactory.getTimeFieldString())
-                  .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
-      return dataSource
-          .distinctRowsWithLog(
-              allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
-          .map(Set::parallelStream);
+      return Success.of(dataSource.csvRowFieldValueMapping(reader, headline).parallelStream());
     } catch (IOException e) {
       return Failure.of(
           new SourceException(

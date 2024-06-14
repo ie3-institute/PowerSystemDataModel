@@ -17,8 +17,8 @@ import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
@@ -239,7 +239,7 @@ public class TypeSource extends EntitySource {
    */
   @SuppressWarnings("unchecked")
   private <T extends AssetTypeInput> Stream<Try<T, FactoryException>> buildEntities(
-      Class<T> entityClass, EntityFactory<? extends InputEntity, EntityData> factory) {
+      Class<T> entityClass, EntityFactory<? extends UniqueInputEntity, EntityData> factory) {
     return buildEntityData(entityClass).map(data -> (Try<T, FactoryException>) factory.get(data));
   }
 }

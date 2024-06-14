@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
-import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.ModelResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import javax.measure.quantity.ElectricCurrent;
 import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors */
-public abstract class ConnectorResult extends ResultEntity {
+public abstract class ConnectorResult extends ModelResultEntity {
 
   /** Electric current magnitude @ port A, normally provided in Ampere */
   private ComparableQuantity<ElectricCurrent> iAMag;
@@ -46,33 +46,6 @@ public abstract class ConnectorResult extends ResultEntity {
       ComparableQuantity<ElectricCurrent> iBMag,
       ComparableQuantity<Angle> iBAng) {
     super(time, inputModel);
-    this.iAMag = iAMag;
-    this.iAAng = iAAng;
-    this.iBMag = iBMag;
-    this.iBAng = iBAng;
-  }
-
-  /**
-   * Standard constructor which allows uuid provision
-   *
-   * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
-   *     above
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param iAMag electric current magnitude @ port A, normally provided in Ampere
-   * @param iAAng electric current angle @ Port A in degree
-   * @param iBMag electric current magnitude @ port B, normally provided in Ampere
-   * @param iBAng electric current angle @ Port B in degree
-   */
-  protected ConnectorResult(
-      UUID uuid,
-      ZonedDateTime time,
-      UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag,
-      ComparableQuantity<Angle> iAAng,
-      ComparableQuantity<ElectricCurrent> iBMag,
-      ComparableQuantity<Angle> iBAng) {
-    super(uuid, time, inputModel);
     this.iAMag = iAMag;
     this.iAAng = iAAng;
     this.iBMag = iBMag;
@@ -131,9 +104,7 @@ public abstract class ConnectorResult extends ResultEntity {
   @Override
   public String toString() {
     return "ConnectorResult{"
-        + "uuid="
-        + getUuid()
-        + ", time="
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()
