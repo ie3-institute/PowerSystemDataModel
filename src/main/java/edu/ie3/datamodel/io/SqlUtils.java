@@ -11,6 +11,7 @@ import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class SqlUtils {
 
   /** @return query to create a SQL table for an unique entity */
   public static String queryCreateTableUniqueEntity(
-      Class<? extends UniqueEntity> cls, String schemaName)
+          Class<? extends Entity> cls, String schemaName)
       throws EntityProcessorException, ProcessorProviderException {
     ProcessorProvider processorProvider = new ProcessorProvider();
     DatabaseNamingStrategy namingStrategy = new DatabaseNamingStrategy();
@@ -103,6 +104,7 @@ public class SqlUtils {
     map.put("dsm", "bool NOT NULL");
     map.put("e_cons_annual", "double precision NOT NULL");
     map.put("load_profile", "TEXT NOT NULL");
+    map.put("controlling_em", "uuid NOT NULL");
 
     map.put("auto_tap", "bool NOT NULL");
     map.put("tap_pos", "int NOT NULL");

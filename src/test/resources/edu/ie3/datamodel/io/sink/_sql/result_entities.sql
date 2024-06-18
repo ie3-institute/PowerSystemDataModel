@@ -1,6 +1,5 @@
 CREATE TABLE public.pv_res
 (
-    uuid uuid PRIMARY KEY,
     input_model uuid NOT NULL,
     p double precision NOT NULL,
     q double precision NOT NULL,
@@ -12,7 +11,6 @@ CREATE TABLE public.pv_res
 
 CREATE TABLE public.wec_res
 (
-    uuid uuid PRIMARY KEY,
     input_model uuid NOT NULL,
     p double precision NOT NULL,
     q double precision NOT NULL,
@@ -24,7 +22,6 @@ CREATE TABLE public.wec_res
 
 CREATE TABLE public.ev_res
 (
-    uuid uuid PRIMARY KEY,
     input_model uuid NOT NULL,
     p double precision NOT NULL,
     q double precision NOT NULL,
@@ -37,7 +34,6 @@ CREATE TABLE public.ev_res
 
 CREATE TABLE public.evcs_res
 (
-    uuid uuid PRIMARY KEY,
     input_model uuid NOT NULL,
     p double precision NOT NULL,
     q double precision NOT NULL,
@@ -49,7 +45,6 @@ CREATE TABLE public.evcs_res
 
 CREATE TABLE public.em_res
 (
-    uuid uuid PRIMARY KEY,
     input_model uuid NOT NULL,
     p double precision NOT NULL,
     q double precision NOT NULL,
@@ -61,7 +56,6 @@ CREATE TABLE public.em_res
 
 CREATE TABLE public.flex_options_res
 (
-    uuid uuid PRIMARY KEY,
     input_model uuid NOT NULL,
     p_max double precision NOT NULL,
     p_min double precision NOT NULL,

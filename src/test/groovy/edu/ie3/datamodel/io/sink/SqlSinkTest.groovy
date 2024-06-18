@@ -16,6 +16,7 @@ import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.io.source.sql.SqlDataSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -24,7 +25,6 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
-import edu.ie3.datamodel.models.input.system.EmInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
@@ -161,15 +161,15 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
     Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-    PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    WecResult wecResult = new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    EvcsResult evcsResult = new EvcsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-    EmResult emResult = new EmResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+    PvResult pvResult = new PvResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    WecResult wecResult = new WecResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    EvcsResult evcsResult = new EvcsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
+    EmResult emResult = new EmResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, p, q)
 
     Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
-    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, pRef, pMin, pMax)
+    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
 
     when:
     sink.persistAll([
@@ -185,8 +185,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
       ThermalUnitInputTestData.thermalHouseInput,
       SystemParticipantTestData.evcsInput,
       SystemParticipantTestData.loadInput,
-      SystemParticipantTestData.emInput,
-      individualTimeSeries
+      SystemParticipantTestData.emInput
     ], identifier)
 
     then:
@@ -206,9 +205,8 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "thermal_bus_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "thermal_house_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "load_input", ps -> {}).count() == 1
-    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "em_input", ps -> {}).count() == 1
+    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "em_input", ps -> {}).count() == 2
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "ev_res", ps -> {}).count() == 0
-    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "time_series_c", ps -> {}).count() == 3
 
     cleanup:
     sink.shutdown()
@@ -264,6 +262,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     OperationTime.notLimited(),
     Mock(NodeInput),
     new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
+    null,
     0.2,
     Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
     Quantities.getQuantity(95d, PERCENT),
@@ -309,32 +308,32 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
 
   def "A valid SqlSink throws an exception if a nested entity hasn't all of its nested entity."() {
     given:
-    def sink = new SqlSink(schemaName, namingStrategy, connector)
+    def sink = new SqlSink(
+            schemaName,
+            namingStrategy,
+            connector)
+    def load = SystemParticipantTestData.loadInput
 
     when:
-    sink.persistIgnoreNested(SystemParticipantTestData.loadInput, identifier)
+    sink.persistIgnoreNested(load, identifier)
 
     then:
     def exception = thrown(SQLException)
     exception.message == "ERROR: insert or update on table \"load_input\" violates foreign key constraint \"load_input_node_fkey\"\n" +
     "  Detail: Key (node)=(4ca90220-74c2-4369-9afa-a18bf068840d) is not present in table \"node_input\"."
-
-    cleanup:
-    sink.shutdown()
   }
 
   def "A valid SqlSink can create a table for entity class."() {
     given:
-    def sink = new SqlSink(schemaName, namingStrategy, connector)
-    def wec = SystemParticipantTestData.wecInput
+      def sink = new SqlSink(schemaName, namingStrategy, connector)
+      def hp = SystemParticipantTestData.hpInput
 
     when:
-    sink.createClassTable(wec.getClass())
+      sink.createClassTable(hp.getClass(), schemaName)
 
     then:
-    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "wec_input", ps -> {}).count() == 0
+      sqlSource.checkExistingTable("hp_input")
   }
-
   def "A valid SqlSink throws an exception if a grid does not exist."() {
     given:
     def sink = new SqlSink(schemaName, namingStrategy, connector)

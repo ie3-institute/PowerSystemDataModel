@@ -179,7 +179,6 @@ public class SqlDataSource implements DataSource {
   protected Stream<Map<String, String>> executeQuery(String query, AddParams addParams) {
     try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
       addParams.addParams(ps);
-
       ResultSet resultSet = ps.executeQuery();
       return connector.extractFieldMaps(resultSet).stream();
     } catch (SQLException e) {
@@ -191,4 +190,10 @@ public class SqlDataSource implements DataSource {
   protected Stream<Map<String, String>> executeQuery(String query) {
     return executeQuery(query, x -> {});
   }
+
+  public boolean checkExistingTable(String tableName) throws SQLException {
+    return connector.tableExistsSQL(tableName);
+  }
+
+
 }

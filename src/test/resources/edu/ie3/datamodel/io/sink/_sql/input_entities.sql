@@ -38,6 +38,7 @@ CREATE TABLE public.evcs_input
 (
     uuid uuid PRIMARY KEY,
     charging_points int NOT NULL,
+    controlling_em uuid,
     cos_phi_rated TEXT NOT NULL,
     id TEXT NOT NULL,
     location_type TEXT NOT NULL,
@@ -48,7 +49,7 @@ CREATE TABLE public.evcs_input
     q_characteristics TEXT NOT NULL,
     type TEXT NOT NULL,
     v_2g_support bool NOT NULL,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -155,6 +156,7 @@ CREATE TABLE public.thermal_bus_input
 CREATE TABLE public.load_input
 (
     uuid uuid PRIMARY KEY,
+    controlling_em uuid NOT NULL,
     cos_phi_rated TEXT NOT NULL,
     dsm bool NOT NULL,
     e_cons_annual double precision NOT NULL,
@@ -166,7 +168,7 @@ CREATE TABLE public.load_input
     operator uuid,
     q_characteristics TEXT NOT NULL,
     s_rated double precision NOT NULL,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -174,15 +176,13 @@ CREATE TABLE public.load_input
 CREATE TABLE public.em_input
 (
     uuid uuid PRIMARY KEY,
-    connected_assets TEXT NOT NULL,
     control_strategy TEXT NOT NULL,
+    controlling_em uuid,
     id TEXT NOT NULL,
-    node uuid NOT NULL,
     operates_from timestamp with time zone,
     operates_until timestamp with time zone,
     operator uuid,
-    q_characteristics TEXT NOT NULL,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -192,6 +192,7 @@ CREATE TABLE public.pv_input
     uuid uuid PRIMARY KEY,
     albedo double precision NOT NULL,
     azimuth double precision NOT NULL,
+    controlling_em uuid,
     cos_phi_rated TEXT NOT NULL,
     elevation_angle double precision NOT NULL,
     eta_conv double precision NOT NULL,
@@ -205,7 +206,7 @@ CREATE TABLE public.pv_input
     operator uuid,
     q_characteristics TEXT NOT NULL,
     s_rated double precision NOT NULL,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -213,6 +214,7 @@ CREATE TABLE public.pv_input
 CREATE TABLE public.storage_input
 (
     uuid uuid PRIMARY KEY,
+    controlling_em uuid NOT NULL,
     id TEXT NOT NULL,
     node uuid NOT NULL,
     operates_from timestamp with time zone,
@@ -220,7 +222,7 @@ CREATE TABLE public.storage_input
     operator uuid,
     q_characteristics TEXT NOT NULL,
     type uuid NOT NULL,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;

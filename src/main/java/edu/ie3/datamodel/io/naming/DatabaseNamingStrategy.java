@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.naming;
 import static edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy.logger;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;

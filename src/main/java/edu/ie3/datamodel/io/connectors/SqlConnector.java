@@ -156,10 +156,15 @@ public class SqlConnector implements DataConnector {
     return insensitiveFieldsToAttributes;
   }
 
-  public boolean tableExists(Connection connection, String tableName) throws SQLException {
-    DatabaseMetaData meta = connection.getMetaData();
-    ResultSet resultSet = meta.getTables(null, null, tableName, new String[] {"TABLE"});
+  public boolean tableExistsSQL(String tableName) throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) "
+            + "FROM information_schema.tables "
+            + "WHERE table_name = ?"
+            + "LIMIT 1;");
+    preparedStatement.setString(1, tableName);
 
-    return resultSet.next();
+    ResultSet resultSet = preparedStatement.executeQuery();
+    resultSet.next();
+    return resultSet.getInt(1) != 0;
   }
 }

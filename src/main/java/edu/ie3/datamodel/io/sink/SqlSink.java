@@ -17,7 +17,8 @@ import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
@@ -84,7 +85,7 @@ public class SqlSink {
    *     executed by a specific {@link EntityProcessor}
    * @throws SQLException
    */
-  public <C extends UniqueEntity> void persistAll(Collection<C> entities, DbGridMetadata identifier)
+  public <C extends Entity> void persistAll(Collection<C> entities, DbGridMetadata identifier)
       throws SQLException {
     // Extract nested entities and add them to the set of entities
     Set<C> entitiesToAdd = new HashSet<>(entities); // entities to persist
@@ -141,7 +142,7 @@ public class SqlSink {
    * @param identifier identifier of the grid
    * @throws SQLException
    */
-  public <C extends UniqueEntity> void persist(C entity, DbGridMetadata identifier)
+  public <C extends Entity> void persist(C entity, DbGridMetadata identifier)
       throws SQLException {
     if (entity instanceof InputEntity inputEntity) {
       persistIncludeNested(inputEntity, identifier);
@@ -170,7 +171,8 @@ public class SqlSink {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  protected <C extends UniqueEntity> void persistListIncludeNested(
+  /*
+  protected <C extends Entity> void persistListIncludeNested(
       List<C> entities, Class<C> cls, DbGridMetadata identifier) throws SQLException {
     if (NestedEntity.class.isAssignableFrom(cls)) {
       entities.forEach(
@@ -193,14 +195,16 @@ public class SqlSink {
     }
   }
 
-  public <C extends UniqueEntity> void persistIncludeNested(C entity, DbGridMetadata identifier)
+   */
+
+  public <C extends Entity> void persistIncludeNested(C entity, DbGridMetadata identifier)
       throws SQLException {
     Set<C> entitiesToAdd = new HashSet<>();
     entitiesToAdd.add(entity);
     persistAll(entitiesToAdd, identifier);
   }
 
-  private <C extends UniqueEntity> void persistMixedList(
+  private <C extends Entity> void persistMixedList(
       List<C> entities, DbGridMetadata identifier) {
     Map<Class<C>, List<C>> entitiesPerClass =
         entities.stream().collect(groupingBy(entity -> (Class<C>) entity.getClass()));
@@ -218,7 +222,7 @@ public class SqlSink {
         });
   }
 
-  private <C extends UniqueEntity, E extends TimeSeriesEntry<V>, V extends Value> void persistList(
+  private <C extends Entity, E extends TimeSeriesEntry<V>, V extends Value> void persistList(
       List<C> entities, Class<C> cls, DbGridMetadata identifier) throws SQLException {
     // Check if there are only elements of the same class
     Class<?> firstClass = entities.get(0).getClass();
@@ -226,9 +230,9 @@ public class SqlSink {
 
     if (allSameClass) {
       if (InputEntity.class.isAssignableFrom(cls)) {
-        insertListIgnoreNested(entities, cls, identifier);
+        insertListIgnoreNested(entities, cls, identifier, true);
       } else if (ResultEntity.class.isAssignableFrom(cls)) {
-        insertListIgnoreNested(entities, cls, identifier);
+        insertListIgnoreNested(entities, cls, identifier, false);
       } else if (TimeSeries.class.isAssignableFrom(cls)) {
         entities.forEach(
             ts -> {
@@ -254,15 +258,14 @@ public class SqlSink {
    * Writes a list of entities into a sql table. It's necessary that all entities have the same
    * class.
    */
-  private <C extends UniqueEntity> void insertListIgnoreNested(
-      List<C> entities, Class<C> cls, DbGridMetadata identifier) throws SQLException {
+  private <C extends Entity> void insertListIgnoreNested(
+      List<C> entities, Class<C> cls, DbGridMetadata identifier, boolean ignoreConflict) throws SQLException {
     try {
       String[] headerElements = processorProvider.getHeaderElements(cls);
       String query =
           basicInsertQueryValuesGrid(
               schemaName, databaseNamingStrategy.getEntityName(cls).orElseThrow(), headerElements);
-      query = query + createInsertQueryBodyIgnoreConflict(entities, headerElements, identifier);
-      System.out.println(query);
+      query = query + createInsertQueryBodyIgnoreConflict(entities, headerElements, identifier, ignoreConflict);
       connector.executeUpdate(query);
     } catch (ProcessorProviderException e) {
       log.error("Exception occurred during processor request: ", e);
@@ -336,7 +339,7 @@ public class SqlSink {
     SystemParticipants systemParticipants = jointGridContainer.getSystemParticipants();
     Set<BmInput> bmPlants = systemParticipants.getBmPlants();
     Set<ChpInput> chpPlants = systemParticipants.getChpPlants();
-    Set<EvcsInput> evCS = systemParticipants.getEvCS();
+    Set<EvcsInput> evCS = systemParticipants.getEvcs();
     Set<EvInput> evs = systemParticipants.getEvs();
     Set<FixedFeedInInput> fixedFeedIns = systemParticipants.getFixedFeedIns();
     Set<HpInput> heatPumps = systemParticipants.getHeatPumps();
@@ -344,7 +347,6 @@ public class SqlSink {
     Set<PvInput> pvPlants = systemParticipants.getPvPlants();
     Set<StorageInput> storages = systemParticipants.getStorages();
     Set<WecInput> wecPlants = systemParticipants.getWecPlants();
-    Set<EmInput> emSystems = systemParticipants.getEmSystems();
 
     // get graphic elements (just for better readability, we could also just get them directly
     // below)
@@ -384,14 +386,13 @@ public class SqlSink {
                 loads,
                 pvPlants,
                 storages,
-                wecPlants,
-                emSystems)
+                wecPlants)
             .flatMap(Collection::stream)
             .map(Extractor::extractOperator)
             .flatMap(Optional::stream)
             .collect(Collectors.toSet());
 
-    List<UniqueEntity> toAdd = new LinkedList<>();
+    List<Entity> toAdd = new LinkedList<>();
     toAdd.addAll(rawGridElements.allEntitiesAsList());
     toAdd.addAll(systemParticipants.allEntitiesAsList());
     toAdd.addAll(graphicElements.allEntitiesAsList());
@@ -402,7 +403,7 @@ public class SqlSink {
     persistAll(toAdd, identifier);
   }
 
-  private <C extends UniqueEntity> void insert(C entity, DbGridMetadata identifier)
+  private <C extends Entity> void insert(C entity, DbGridMetadata identifier)
       throws SQLException {
     try {
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
@@ -427,16 +428,24 @@ public class SqlSink {
    * will be ignored. Conflicts can occur if an entity (e.g. node) already exist. WARNING: It's
    * assumed that all entities are from the same class C.
    */
-  private <C extends UniqueEntity> String createInsertQueryBodyIgnoreConflict(
-      List<C> entities, String[] headerElements, DbGridMetadata identifier)
+  private <C extends Entity> String createInsertQueryBodyIgnoreConflict(
+      List<C> entities, String[] headerElements, DbGridMetadata identifier, boolean ignoreConflict)
       throws ProcessorProviderException {
     Set<LinkedHashMap<String, String>> entityFieldData = processorProvider.handleEntities(entities);
     String queryBody = "";
-    queryBody =
-        queryBody
-            + entityFieldData.stream()
-                .map(data -> queryValueLine(sqlEntityFieldData(data), headerElements, identifier))
-                .collect(Collectors.joining(",\n", "", "\nON CONFLICT (uuid) DO NOTHING;"));
+    if (ignoreConflict) {
+      queryBody =
+              queryBody
+                      + entityFieldData.stream()
+                      .map(data -> queryValueLine(sqlEntityFieldData(data), headerElements, identifier))
+                      .collect(Collectors.joining(",\n", "", "\nON CONFLICT (uuid) DO NOTHING;"));
+    } else {
+      queryBody =
+              queryBody
+                      + entityFieldData.stream()
+                      .map(data -> queryValueLine(sqlEntityFieldData(data), headerElements, identifier))
+                      .collect(Collectors.joining(",\n", "", ";\n"));
+    }
     return queryBody;
   }
 
@@ -445,7 +454,7 @@ public class SqlSink {
    *
    * <p>WARNING: It's assumed that all entities are from the same class C.
    */
-  private <C extends UniqueEntity> String createInsertQueryBody(
+  private <C extends Entity> String createInsertQueryBody(
       List<C> entities, String[] headerElements, DbGridMetadata identifier)
       throws ProcessorProviderException {
     Set<LinkedHashMap<String, String>> entityFieldData = processorProvider.handleEntities(entities);
@@ -472,7 +481,7 @@ public class SqlSink {
   }
 
   /** Creates a line with the values of one entity for an insertion query. */
-  private <C extends UniqueEntity> String queryValueLine(
+  private <C extends Entity> String queryValueLine(
       C entity, String[] headerElements, DbGridMetadata identifier)
       throws ProcessorProviderException {
     return queryValueLine(
@@ -510,7 +519,9 @@ public class SqlSink {
   /** Provides the insert, column names, grid identifier and the VALUES statement for a query. */
   private String basicInsertQueryValuesGrid(
       String schemaName, String tableName, String[] headerElements) {
-    String[] addParams = {DbGridMetadata.GRID_UUID};
+    String[] addParams = {
+            DbGridMetadata.GRID_UUID
+    };
     return basicInsertQuery(schemaName, tableName)
         + " "
         + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams)
@@ -523,7 +534,10 @@ public class SqlSink {
    */
   private String basicInsertQueryValuesITS(
       String schemaName, String tableName, String[] headerElements) {
-    String[] addParams = {DbGridMetadata.GRID_UUID, TIME_SERIES};
+    String[] addParams = {
+            DbGridMetadata.GRID_UUID,
+            TIME_SERIES
+    };
     return basicInsertQuery(schemaName, tableName)
         + " "
         + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams)
@@ -545,7 +559,7 @@ public class SqlSink {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  public void createClassTable(Class<? extends UniqueEntity> cls, String schemaName)
+  public void createClassTable(Class<? extends Entity> cls, String schemaName)
       throws SQLException, ProcessorProviderException, EntityProcessorException {
     String query = queryCreateTableUniqueEntity(cls, schemaName);
     connector.executeUpdate(query);

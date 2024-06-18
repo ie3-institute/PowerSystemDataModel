@@ -78,7 +78,7 @@ public class ProcessorProvider {
                     .transformF(ProcessorProviderException::new));
   }
 
-  public <T extends UniqueEntity> Set<LinkedHashMap<String, String>> handleEntities(
+  public <T extends Entity> Set<LinkedHashMap<String, String>> handleEntities(
       List<T> entities) throws ProcessorProviderException {
     Set<T> setOfEntities = new HashSet<>(entities);
     Set<LinkedHashMap<String, String>> setOfMaps = new HashSet<>();

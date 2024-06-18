@@ -42,17 +42,13 @@ CREATE TABLE public.storage_type_input
     active_power_gradient double precision NOT NULL,
     capex double precision NOT NULL,
     cos_phi_rated TEXT NOT NULL,
-    dod double precision NOT NULL,
     e_storage double precision NOT NULL,
     eta double precision NOT NULL,
     id TEXT NOT NULL,
-    life_cycle double precision NOT NULL,
-    life_time double precision NOT NULL,
     opex double precision NOT NULL,
     p_max double precision NOT NULL,
     s_rated double precision NOT NULL,
-
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;

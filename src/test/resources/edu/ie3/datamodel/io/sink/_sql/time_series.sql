@@ -1,6 +1,5 @@
 CREATE TABLE public.time_series_c
 (
-    uuid uuid PRIMARY KEY,
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
     price double precision,
@@ -18,7 +17,6 @@ CREATE UNIQUE INDEX time_series_c_series_time ON time_series_c USING btree (time
 
 CREATE TABLE public.time_series_p
 (
-    uuid uuid PRIMARY KEY,
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
     p double precision,
@@ -33,7 +31,6 @@ CREATE UNIQUE INDEX time_series_p_series_time ON time_series_p USING btree (time
 
 CREATE TABLE public.time_series_pq
 (
-    uuid uuid PRIMARY KEY,
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
     p double precision,
@@ -49,7 +46,6 @@ CREATE UNIQUE INDEX time_series_pq_series_time ON time_series_pq USING btree (ti
 
 CREATE TABLE public.time_series_h
 (
-    uuid uuid PRIMARY KEY,
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
     heat_demand double precision,
@@ -64,7 +60,6 @@ CREATE UNIQUE INDEX time_series_h_series_time ON time_series_h USING btree (time
 
 CREATE TABLE public.time_series_ph
 (
-    uuid uuid PRIMARY KEY,
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
     p double precision,
@@ -80,7 +75,6 @@ CREATE UNIQUE INDEX time_series_ph_series_time ON time_series_ph USING btree (ti
 
 CREATE TABLE public.time_series_pqh
 (
-    uuid uuid PRIMARY KEY,
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
     p double precision,
@@ -97,7 +91,6 @@ CREATE UNIQUE INDEX time_series_pqh_series_time ON time_series_pqh USING btree (
 
 CREATE TABLE public.time_series_weather
 (
-    uuid uuid PRIMARY KEY,
     time_series uuid NOT NULL,
     coordinate TEXT NOT NULL,
     time timestamp with time zone NOT NULL,
