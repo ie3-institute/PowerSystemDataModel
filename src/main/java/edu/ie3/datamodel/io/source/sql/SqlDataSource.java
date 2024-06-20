@@ -180,11 +180,10 @@ public class SqlDataSource implements DataSource {
       PreparedStatement ps = connector.getConnection().prepareStatement(query);
       addParams.addParams(ps);
 
-      Stream<Map<String, String>> stream = connector.toStream(ps, 1000);
-
-      // don't work with `try with resource`, but is necessary to get results
+      // don't work with `try with resource`, therefore manual closing is necessary
       ps.closeOnCompletion();
-      return stream;
+
+      return connector.toStream(ps, 1000);
     } catch (SQLException e) {
       log.error("Error during execution of query {}", query, e);
     }

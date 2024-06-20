@@ -131,12 +131,21 @@ public class SqlConnector implements DataConnector {
   public Stream<Map<String, String>> toStream(PreparedStatement ps, int fetchSize)
       throws SQLException {
     ps.setFetchSize(fetchSize);
-    Iterator<Map<String, String>> sqlIterator = getSqlIterator(ps.executeQuery());
+    ResultSet resultSet = ps.executeQuery();
+    Iterator<Map<String, String>> sqlIterator = getSqlIterator(resultSet);
 
     return StreamSupport.stream(
-        Spliterators.spliteratorUnknownSize(
-            sqlIterator, Spliterator.NONNULL | Spliterator.IMMUTABLE),
-        true);
+            Spliterators.spliteratorUnknownSize(
+                sqlIterator, Spliterator.NONNULL | Spliterator.IMMUTABLE),
+            true)
+        .onClose(
+            () -> {
+              try (resultSet) {
+                log.debug("Resources successfully closed.");
+              } catch (SQLException e) {
+                log.warn("Failed to properly close sources.", e);
+              }
+            });
   }
 
   /**
