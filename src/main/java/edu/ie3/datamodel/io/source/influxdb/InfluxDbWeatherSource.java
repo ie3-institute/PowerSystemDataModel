@@ -255,11 +255,13 @@ public class InfluxDbWeatherSource extends WeatherSource {
   }
 
   private String createQueryStringForTimeKeysAfter(ZonedDateTime time) {
+    // this could be more efficient with fetching only the coordinate column
     return BASIC_QUERY_STRING + WHERE + createTimeConstraintAfter(time);
   }
 
   private String createQueryStringForTimeKeysAfterWithCoordinate(
       ZonedDateTime time, int coordinateId) {
+    // this could be more efficient with fetching only the coordinate column
     return BASIC_QUERY_STRING
         + WHERE
         + createCoordinateConstraintString(coordinateId)
