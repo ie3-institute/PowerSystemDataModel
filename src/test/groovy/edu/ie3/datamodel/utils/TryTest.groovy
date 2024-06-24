@@ -8,6 +8,7 @@ package edu.ie3.datamodel.utils
 import edu.ie3.datamodel.exceptions.FailureException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.exceptions.TryException
+import org.apache.commons.lang3.tuple.Pair
 import spock.lang.Specification
 
 import java.util.stream.Stream
@@ -342,6 +343,60 @@ class TryTest extends Specification {
     flatMapS.exception.get() == failure.get()
     flatMapF.exception.get() == failure.get()
   }
+
+  def "Two Tries can be zipped correctly"() {
+    given:
+    def given = Try.of(() -> 1, SourceException)
+
+    when:
+    def actual = given.zip(second)
+
+    then:
+    actual.isSuccess() == isSuccess
+    actual.data == expectedData
+
+    where:
+    second | isSuccess | expectedData
+    new Try.Failure(new SourceException("source exception")) | false | Optional.empty()
+    new Try.Success("1") | true | Optional.of(Pair.of(1, "1"))
+  }
+
+  def "Two Tries can be zipped to any object correctly"() {
+    given:
+    def given = Try.of(() -> 1, SourceException)
+    def fcn = (i1, i2) -> i1 + i2
+
+    when:
+    def actual = given.zip(second, fcn)
+
+    then:
+    actual.isSuccess() == isSuccess
+    actual.data == expectedData
+
+    where:
+    second | isSuccess | expectedData
+    new Try.Failure(new SourceException("source exception")) | false | Optional.empty()
+    new Try.Success(10) | true | Optional.of(11)
+  }
+
+  def "Two Tries can be extracted and zipped correctly"() {
+    given:
+    def given = Try.of(() -> 1, SourceException)
+
+    def failureExtractor = f -> new Try.Failure(new SourceException("source exception"))
+    def successExtractor = s -> new Try.Success("10")
+
+    when:
+    def failure = given.zip(failureExtractor)
+    def success = given.zip(successExtractor)
+
+    then:
+    failure.isFailure()
+
+    success.isSuccess()
+    success.data == Optional.of(Pair.of(1, "10"))
+  }
+
 
   def "The convert method should work correctly for successes"() {
     given:

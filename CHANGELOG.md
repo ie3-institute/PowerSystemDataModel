@@ -20,7 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Improvements to the search for corner points in `IdCoordinateSource` [#1016](https://github.com/ie3-institute/PowerSystemDataModel/issues/1016)
 - Refactor `CsvFileConnector` and `CsvDataSource` [#1007](https://github.com/ie3-institute/PowerSystemDataModel/issues/1007)
-
+- Make `EntitySource` completely static [#975](https://github.com/ie3-institute/PowerSystemDataModel/issues/975)
+- Abstract commonly used functionality from `EntitySource` [#981](https://github.com/ie3-institute/PowerSystemDataModel/issues/981)
 
 ## [5.0.1] - 2024-03-07
 
