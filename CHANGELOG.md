@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+
+### Fixed
+
+### Changed
+
+## [5.1.0] - 2024-06-24
+
+### Added
 - Enhancing `VoltageLevel` with `equals` method [#1063](https://github.com/ie3-institute/PowerSystemDataModel/issues/1063)
 - `ConnectorValidationUtils` checks if parallel devices is > 0 [#1077](https://github.com/ie3-institute/PowerSystemDataModel/issues/1077)
 - `GridContainerValidationUtils` checks the connectivity for all defined operation time intervals [#1091](https://github.com/ie3-institute/PowerSystemDataModel/issues/1091)
@@ -294,9 +302,10 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.1...HEAD
-[5.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.0...5.0.1
-[4.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.1.0...5.0.0
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.1.0...HEAD
+[5.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.1...5.1.0
+[5.0.1]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.0...5.0.1
+[5.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.1.0...5.0.0
 [4.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/3.0.0...4.0.0
 [3.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...3.0.0
