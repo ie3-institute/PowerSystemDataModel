@@ -72,8 +72,20 @@ public class CsvWeatherSource extends WeatherSource {
 
   /** Returns an empty optional for now. */
   @Override
-  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
-    return Optional.empty();
+  public Optional<Set<String>> getSourceFields() {
+    return dataSource
+        .getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER)
+        .values()
+        .stream()
+        .findFirst()
+        .flatMap(
+            meta -> {
+              try {
+                return dataSource.getSourceFields(meta.getFullFilePath());
+              } catch (SourceException e) {
+                return Optional.empty();
+              }
+            });
   }
 
   @Override

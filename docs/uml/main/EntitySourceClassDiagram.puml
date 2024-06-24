@@ -3,27 +3,38 @@
 note "Assuming all classes to implement \nthe abstract methods of their interfaces\n\n" as generalNotes
 
 abstract class EntitySource {
-    # DataSource dataSource
-    # {static} <E extends EntityData, T extends UniqueEntity, R extends E> Try<R, SourceException> enrichEntityData(E, String, Map<UUID, T>, BiFunction<E, T, R>)
-    # {static} <E extends EntityData, T1 extends UniqueEntity, T2 extends UniqueEntity, R extends E> Try<R, SourceException> enrichEntityData(E, String, Map<UUID, T1>, String, Map<UUID, T2>, TriFunction<E, T1, T2, R>)
-    # {static} <T extends UniqueEntity> Try<T, SourceException> getLinkedEntity(EntityData, String, Map<UUID, T>)
-    # {static} <E extends EntityData, T extends UniqueEntity, R extends E> Try<R, SourceException> optionallyEnrichEntityData(E, String, Map<UUID, T>, T, BiFunction<E, T, R>)
-    # Stream<Try<NodeAssetInputEntityData, SourceException>> buildNodeAssetEntities(Class<T>, Map<UUID, OperatorInput>, Map<UUID, NodeInput>)
-    # {static} Stream<Try<NodeAssetInputEntityData, SourceException>> nodeAssetInputEntityDataStream(Stream<Try<AssetInputEntityData, SourceException>>, Map<UUID, NodeInput>)
-    # Stream<Try<AssetInputEntityData, SourceException>> buildAssetInputEntities(Class<? extends AssetInput>, Map<UUID, OperatorInput>)
-    # {static} Stream<Try<AssetInputEntityData, SourceException>> assetInputEntityDataStream(Stream<Try<EntityData, SourceException>>, Map<UUID, OperatorInput>)
-    # Stream<Try<EntityData, SourceException>> buildEntityData(Class<? extends UniqueEntity>)
-    # {static} <S extends UniqueEntity> Map<UUID, S> unpackMap(Stream<Try<S, FactoryException>>, Class<S>) throws SourceException
-    # {static} <S extends UniqueEntity> Set<S> unpackSet(Stream<Try<S, FactoryException>>, Class<S>) throws SourceException
-    # {static} <S, E extends Exception> Stream<S> unpackSet(Stream<Try<S, E>>, Class<S>) throws SourceException
+    + void validate() throws ValidationException
 }
 
+EntitySource <|-- EnergyManagementSource
 EntitySource <|-- GraphicSource
+EntitySource <|-- IdCoordinateSource
+IdCoordinateSource <|-- CsvIdCoordinateSource
+IdCoordinateSource <|-- SqlIdCoordinateSource
 EntitySource <|-- RawGridSource
 EntitySource <|-- ResultEntitySource
 EntitySource <|-- SystemParticipantSource
 EntitySource <|-- ThermalSource
+EntitySource <|-- TimeSeriesMappingSource
+TimeSeriesMappingSource <|-- CsvTimeSeriesMappingSource
+TimeSeriesMappingSource <|-- SqlTimeSeriesMappingSource
+EntitySource <|-- TimeSeriesSource
+TimeSeriesSource <|-- CsvTimeSeriesSource
+TimeSeriesSource <|-- SqlTimeSeriesSource
 EntitySource <|-- TypeSource
+EntitySource <|-- WeatherSource
+WeatherSource <|-- CouchbaseWeatherSource
+WeatherSource <|-- CsvWeatherSource
+WeatherSource <|-- InfluxDbWeatherSource
+WeatherSource <|-- SqlWeatherSource
+
+class EnergyManagementSource {
+    - TypeSource typeSource
+    - EmInputFactory emInputFactory
+    + EnergyManagementSource(TypeSource, DataSource)
+    + Map<UUID, EmInput> getEmUnits() throws SourceException
+    + Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput>) throws SourceException
+}
 
 class GraphicSource {
     - TypeSource typeSource
@@ -37,6 +48,34 @@ class GraphicSource {
     + Set<NodeGraphicInput> getNodeGraphicInput(Map<UUID, NodeInput>) throws SourceException
     + Set<LineGraphicInput> getLineGraphicInput() throws SourceException
     + Set<LineGraphicInput> getLineGraphicInput(Map<UUID, LineInput>) throws SourceException
+}
+
+abstract class IdCoordinateSource {
+    + Optional<Set<String>> getSourceFields() throws SourceException
+    + Optional<Point> getCoordinate(int)
+    + Collection<Point> getCoordinates(int[])
+    + Optional<Integer> getId(Point)
+    + Collection<Point> getAllCoordinates()
+    + List<CoordinateDistance> getNearestCoordinates(Point, int)
+    + List<CoordinateDistance> getClosestCoordinates(Point, int, ComparableQuantity<Length>)
+    + List<CoordinateDistance> calculateCoordinateDistances(Point, int, Collection<Point>)
+    + List<CoordinateDistance> findCornerPoints(Point, ComparableQuantity<Length>)
+    + List<CoordinateDistance> findCornerPoints(Point, Collection<CoordinateDistance>)
+}
+
+class CsvIdCoordinateSource {
+      - Map<Integer, Point> idToCoordinate;
+      - Map<Point, Integer> coordinateToId;
+      - CsvDataSource dataSource;
+      - IdCoordinateFactory factory;
+      + CsvIdCoordinateSource(IdCoordinateFactory, CsvDataSource) throws SourceException
+      + int getCoordinateCount()
+}
+
+class SqlIdCoordinateSource {
+    - SqlDataSource dataSource
+    - SqlIdCoordinateFactory factory
+    + SqlIdCoordinateSource(SqlIdCoordinateFactory, String, SqlDataSource)
 }
 
 class RawGridSource {
@@ -70,9 +109,10 @@ class ResultEntitySource {
     - SwitchResultFactory switchResultFactory
     - NodeResultFactory nodeResultFactory
     - ConnectorResultFactory connectorResultFactory
+    - CongestionResultFactory congestionResultFactory
     - FlexOptionsResultFactory flexOptionsResultFactory
     + ResultEntitySource(DataSource)
-    + ResultEntitySource(DataSource, String)
+    + ResultEntitySource(DataSource, DateTimeFormatter)
     + Set<NodeResult> getNodeResults() throws SourceException
     + Set<SwitchResult> getSwitchResults() throws SourceException
     + Set<LineResult> getLineResults() throws SourceException
@@ -92,12 +132,14 @@ class ResultEntitySource {
     + Set<CylindricalStorageResult> getCylindricalStorageResult() throws SourceException
     + Set<ThermalHouseResult> getThermalHouseResults() throws SourceException
     + Set<EmResult> getEmResults() throws SourceException
+    + Set<CongestionResult> getCongestionResults() throws SourceException
 }
 
 class SystemParticipantSource{
     - TypeSource typeSource
     - RawGridSource rawGridSource
     - ThermalSource thermalSource
+    - EnergyManagementSource energyManagementSource
     - BmInputFactory bmInputFactory
     - ChpInputFactory chpInputFactory
     - EvInputFactory evInputFactory
@@ -108,7 +150,7 @@ class SystemParticipantSource{
     - StorageInputFactory storageInputFactory
     - WecInputFactory wecInputFactory
     - EvcsInputFactory evcsInputFactory
-    + SystemParticipantSource(TypeSource, ThermalSource, RawGridSource, DataSource)
+    + SystemParticipantSource(TypeSource, ThermalSource, RawGridSource, EnergyManagementSource, DataSource)
     + SystemParticipants getSystemParticipants() throws SourceException
     + SystemParticipants getSystemParticipants(Map<UUID, OperatorInput>, Map<UUID, NodeInput>) throws SourceException
     + Set<BmInput> getBmPlants() throws SourceException
@@ -141,12 +183,56 @@ class ThermalSource {
     + ThermalSource(TypeSource, DataSource)
     + Map<UUID, ThermalBusInput> getThermalBuses() throws SourceException
     + Map<UUID, ThermalBusInput> getThermalBuses(Map<UUID, OperatorInput>) throws SourceException
-    + Set<ThermalStorageInput> getThermalStorages() throws SourceException
-    + Set<ThermalStorageInput> getThermalStorages(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
-    + Set<ThermalHouseInput> getThermalHouses() throws SourceException
-    + Set<ThermalHouseInput> getThermalHouses(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
+    + Map<UUID, ThermalStorageInput> getThermalStorages() throws SourceException
+    + Map<UUID, ThermalStorageInput> getThermalStorages(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
+    + Map<UUID, ThermalHouseInput> getThermalHouses() throws SourceException
+    + Map<UUID, ThermalHouseInput> getThermalHouses(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
     + Set<CylindricalStorageInput> getCylindricStorages() throws SourceException
     + Set<CylindricalStorageInput> getCylindricStorages(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
+}
+
+abstract class TimeSeriesMappingSource {
+    - TimeSeriesMappingFactory mappingFactory
+    + Map<UUID, UUID> getMapping() throws SourceException
+    + Optional<UUID> getTimeSeriesUuid(UUID) throws SourceException
+    + Stream<Map<String, String>> getMappingSourceData() throws SourceException
+    + Optional<Set<String>> getSourceFields() throws SourceException
+}
+
+class CsvTimeSeriesMappingSource {
+    - CsvDataSource dataSource
+    + CsvTimeSeriesMappingSource(String, Path, FileNamingStrategy)
+}
+
+class SqlTimeSeriesMappingSource {
+    - EntityPersistenceNamingStrategy entityPersistenceNamingStrategy
+    - SqlDataSource dataSource
+    + SqlTimeSeriesMappingSource(SqlConnector, String, EntityPersistenceNamingStrategy)
+}
+
+abstract class TimeSeriesSource {
+    - Class<V> valueClass
+    - TimeBasedSimpleValueFactory<V> valueFactory
+    + TimeSeriesSource(Class<V>, TimeBasedSimpleValueFactory<V>)
+    + IndividualTimeSeries<V> getTimeSeries()
+    + IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime>) throws SourceException
+    + Optional<V> getValue(ZonedDateTime) throws SourceException
+}
+
+class CsvTimeSeriesSource {
+    - IndividualTimeSeries<V> timeSeries
+    - CsvDataSource dataSource
+    - Path filePath
+    + {static} CsvTimeSeriesSource<? extends Value> getSource(String, Path, FileNamingStrategy, CsvIndividualTimeSeriesMetaInformation)
+    + CsvTimeSeriesSource(String, Path, FileNamingStrategy, UUID, Path, Class<V>, TimeBasedSimpleValueFactory<V>)
+}
+
+class SqlTimeSeriesSource {
+    - SqlDataSource dataSource
+    - UUID timeSeriesUuid
+    + SqlTimeSeriesSource(SqlDataSource, UUID, Class<V>, TimeBasedSimpleValueFactory<V>)
+    + SqlTimeSeriesSource(SqlConnector, String, DatabaseNamingStrategy, UUID, Class<V>, TimeBasedSimpleValueFactory<V>)
+    + SqlTimeSeriesSource<? extends Value> createSource(SqlConnector, String, DatabaseNamingStrategy, IndividualTimeSeriesMetaInformation, DateTimeFormatter) throws SourceException
 }
 
 class TypeSource {
@@ -155,6 +241,7 @@ class TypeSource {
     - LineTypeInputFactory lineTypeInputFactory
     - Transformer3WTypeInputFactory transformer3WTypeInputFactory
     - SystemParticipantTypeInputFactory systemParticipantTypeInputFactory
+    - DataSource dataSource
     + TypeSource(DataSource)
     + Map<UUID, Transformer2WTypeInput> getTransformer2WTypes() throws SourceException
     + Map<UUID, Transformer3WTypeInput> getTransformer3WTypes() throws SourceException
@@ -167,4 +254,38 @@ class TypeSource {
     + Map<UUID, WecTypeInput> getWecTypes() throws SourceException
     + Map<UUID, EvTypeInput> getEvTypes() throws SourceException
 }
+
+abstract class WeatherSource {
+    - TimeBasedWeatherValueFactory weatherFactory
+    - IdCoordinateSource idCoordinateSource
+    + WeatherSource(IdCoordinateSource, TimeBasedWeatherValueFactory)
+    + Optional<Set<String>> getSourceFields() throws SourceException
+    + Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(ClosedInterval<ZonedDateTime>) throws SourceException
+    + Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(ClosedInterval<ZonedDateTime>, Collection<Point>) throws SourceException
+    + Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime, Point) throws SourceException
+}
+
+class CouchbaseWeatherSource {
+    - CouchbaseConnector connector
+    + CouchbaseWeatherSource(CouchbaseConnector, IdCoordinateSource, String, TimeBasedWeatherValueFactory, String)
+    + CouchbaseWeatherSource(CouchbaseConnector, IdCoordinateSource, String, String, TimeBasedWeatherValueFactory, String)
+}
+
+class CsvWeatherSource {
+    - CsvDataSource dataSource
+    - Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries
+    + CsvWeatherSource(String, Path, FileNamingStrategy, IdCoordinateSource, TimeBasedWeatherValueFactory) throws SourceException
+}
+
+class InfluxDbWeatherSource {
+    - InfluxDbConnector connector
+    + InfluxDbWeatherSource(InfluxDbConnector, IdCoordinateSource, TimeBasedWeatherValueFactory)
+    + IndividualTimeSeries<WeatherValue> getWeather(ClosedInterval<ZonedDateTime>, Point)
+}
+
+class SqlWeatherSource {
+    - SqlDataSource dataSource
+    + SqlWeatherSource(SqlConnector, IdCoordinateSource, String, String, TimeBasedWeatherValueFactory)
+}
+
 @enduml

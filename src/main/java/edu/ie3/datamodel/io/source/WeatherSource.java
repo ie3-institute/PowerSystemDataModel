@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -23,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Abstract class for WeatherSource by Csv and Sql Data */
-public abstract class WeatherSource {
+public abstract class WeatherSource extends EntitySource {
 
   protected static final Logger log = LoggerFactory.getLogger(WeatherSource.class);
 
@@ -42,11 +43,14 @@ public abstract class WeatherSource {
   /**
    * Method to retrieve the fields found in the source.
    *
-   * @param entityClass class of the source
    * @return an option for fields found in the source
    */
-  public abstract <C extends WeatherValue> Optional<Set<String>> getSourceFields(
-      Class<C> entityClass) throws SourceException;
+  public abstract Optional<Set<String>> getSourceFields() throws SourceException;
+
+  @Override
+  public void validate() throws ValidationException {
+    validate(WeatherValue.class, this::getSourceFields, weatherFactory);
+  }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -154,7 +158,7 @@ public abstract class WeatherSource {
    * @param inputStream stream of fields to convert into TimeBasedValues
    * @return a list of that TimeBasedValues
    */
-  public List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
+  protected List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
       TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream)
       throws SourceException {
     return Try.scanStream(

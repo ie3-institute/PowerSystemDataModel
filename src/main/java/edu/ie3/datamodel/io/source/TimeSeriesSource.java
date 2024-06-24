@@ -21,10 +21,10 @@ import java.util.*;
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
  */
-public abstract class TimeSeriesSource<V extends Value> {
+public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
 
   protected Class<V> valueClass;
-  protected TimeBasedSimpleValueFactory<V> valueFactory;
+  protected final TimeBasedSimpleValueFactory<V> valueFactory;
 
   protected TimeSeriesSource(Class<V> valueClass, TimeBasedSimpleValueFactory<V> factory) {
     this.valueFactory = factory;

@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -27,6 +28,7 @@ import java.util.stream.Stream;
 public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final IndividualTimeSeries<V> timeSeries;
   private final CsvDataSource dataSource;
+  private final Path filePath;
 
   /**
    * Factory method to build a source from given meta information
@@ -91,6 +93,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       TimeBasedSimpleValueFactory<V> factory) {
     super(valueClass, factory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
+    this.filePath = filePath;
 
     /* Read in the full time series */
     try {
@@ -103,6 +106,11 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
               + "'. Please check arguments!",
           e);
     }
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    validate(valueClass, () -> dataSource.getSourceFields(filePath), valueFactory);
   }
 
   @Override

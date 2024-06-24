@@ -16,9 +16,9 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,7 +30,6 @@ public class SqlWeatherSource extends WeatherSource {
   private final SqlDataSource dataSource;
 
   private static final String WHERE = " WHERE ";
-  private final String factoryCoordinateFieldName;
   private final String tableName;
 
   /**
@@ -58,24 +57,11 @@ public class SqlWeatherSource extends WeatherSource {
       IdCoordinateSource idCoordinateSource,
       String schemaName,
       String weatherTableName,
-      TimeBasedWeatherValueFactory weatherFactory)
-      throws SourceException {
+      TimeBasedWeatherValueFactory weatherFactory) {
     super(idCoordinateSource, weatherFactory);
-    this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
+    String factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
     this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy());
     this.tableName = weatherTableName;
-
-    Try.of(() -> getSourceFields(WeatherValue.class), SourceException.class)
-        .flatMap(
-            fieldsOpt ->
-                fieldsOpt
-                    .map(
-                        fields ->
-                            weatherFactory
-                                .validate(fields, WeatherValue.class)
-                                .transformF(SourceException::new))
-                    .orElse(Try.Success.empty()))
-        .getOrThrow();
 
     String dbTimeColumnName =
         dataSource.getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
@@ -100,7 +86,7 @@ public class SqlWeatherSource extends WeatherSource {
   }
 
   @Override
-  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
+  public Optional<Set<String>> getSourceFields() {
     return dataSource.getSourceFields(tableName);
   }
 
