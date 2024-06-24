@@ -11,7 +11,7 @@ Model of an ideal electrical battery energy storage.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
@@ -60,25 +60,6 @@ Model of an ideal electrical battery energy storage.
      - %
      - Efficiency of the electrical inverter
 
-   * - dod
-     - %
-     - | Maximum permissible depth of discharge. 80 % dod
-       | is equivalent to a state of charge of 20 %.
-
-   * - lifeTime
-     - h
-     - Permissible hours of full use
-
-   * - lifeCycle
-     - --
-     - Permissible amount of full cycles
-
-   * - em
-     - --
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
-
 ```
 
 ### Entity Model
@@ -86,7 +67,7 @@ Model of an ideal electrical battery energy storage.
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
 
    * - Attribute
@@ -125,7 +106,12 @@ Model of an ideal electrical battery energy storage.
      - --
      - | Foreseen operation strategy of the storage.
        | Eligible input: *"market"*, *"grid"*, *"self"*
-
+       
+   * - em
+     - --
+     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       | this system participant. Field can be empty or missing, if this participant
+       | is not controlled.
 
 ```
 

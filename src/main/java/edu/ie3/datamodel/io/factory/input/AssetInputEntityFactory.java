@@ -27,6 +27,7 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
   private static final String OPERATES_FROM = "operatesFrom";
   private static final String OPERATES_UNTIL = "operatesUntil";
 
+  @SafeVarargs
   protected AssetInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }

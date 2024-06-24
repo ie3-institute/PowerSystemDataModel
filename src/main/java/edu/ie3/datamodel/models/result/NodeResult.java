@@ -13,7 +13,7 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput} */
-public class NodeResult extends ResultEntity {
+public class NodeResult extends ModelResultEntity {
 
   /** Voltage magnitude @ this node in p.u. */
   private ComparableQuantity<Dimensionless> vMag;

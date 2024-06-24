@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
+public class SwitchResultFactory extends ModelResultFactory<SwitchResult> {
 
   private static final String CLOSED = "closed";
 

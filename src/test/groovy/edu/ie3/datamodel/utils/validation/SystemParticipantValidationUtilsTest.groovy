@@ -87,10 +87,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
   private static final ComparableQuantity<Energy> eStorage = Quantities.getQuantity(100, ENERGY_IN)
   private static final ComparableQuantity<Power> pMax = Quantities.getQuantity(15, ACTIVE_POWER_IN)
   private static final ComparableQuantity<Dimensionless> eta = Quantities.getQuantity(95, EFFICIENCY)
-  private static final ComparableQuantity<Dimensionless> dod = Quantities.getQuantity(10, EFFICIENCY)
   private static final ComparableQuantity<DimensionlessRate> cpRate = Quantities.getQuantity(100, ACTIVE_POWER_GRADIENT)
-  private static final ComparableQuantity<Time> lifeTime = Quantities.getQuantity(175316.4, LIFE_TIME)
-  private static final int lifeCycle = 100
 
   // Specific data for wec type
   private static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
@@ -413,11 +410,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     where:
     invalidStorageType                                                                                                                                                                                                                           || expectedException
-    new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, eta, dod, lifeTime, -1)                                                                                                                             || new InvalidEntityException("Permissible amount of life cycles of the storage type must be zero or positive", invalidStorageType)
-    new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, Quantities.getQuantity(110, EFFICIENCY), dod, lifeTime, lifeCycle)                                                                                  || new InvalidEntityException("Efficiency of the electrical converter of StorageTypeInput must be between 0% and 100%", invalidStorageType)
-    new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, eta, Quantities.getQuantity(-10, EFFICIENCY), lifeTime, lifeCycle)                                                                                  || new InvalidEntityException("Maximum permissible depth of discharge of StorageTypeInput must be between 0% and 100%", invalidStorageType)
-    new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, Quantities.getQuantity(-15, ACTIVE_POWER_IN), Quantities.getQuantity(-100, ACTIVE_POWER_GRADIENT), eta, dod, Quantities.getQuantity(-10.5, LIFE_TIME), lifeCycle) || new InvalidEntityException("The following quantities have to be zero or positive: -15 kW, -100 %/h, -10.5 h", invalidStorageType)
-    new StorageTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), sRated, cosPhiRated, pMax, cpRate, eta, dod, lifeTime, lifeCycle)                                                                                          || new InvalidEntityException("The following quantities have to be positive: 0 kWh", invalidStorageType)
+    new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, Quantities.getQuantity(110, EFFICIENCY))                                                                                  || new InvalidEntityException("Efficiency of the electrical converter of StorageTypeInput must be between 0% and 100%", invalidStorageType)
+    new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, Quantities.getQuantity(-15, ACTIVE_POWER_IN), Quantities.getQuantity(-100, ACTIVE_POWER_GRADIENT), eta) || new InvalidEntityException("The following quantities have to be zero or positive: -15 kW, -100 %/h", invalidStorageType)
+    new StorageTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), sRated, cosPhiRated, pMax, cpRate, eta)                                                                                          || new InvalidEntityException("The following quantities have to be positive: 0 kWh", invalidStorageType)
   }
 
   // WEC

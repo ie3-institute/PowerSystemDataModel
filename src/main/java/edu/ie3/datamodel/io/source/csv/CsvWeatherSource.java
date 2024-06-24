@@ -64,6 +64,7 @@ public class CsvWeatherSource extends WeatherSource {
       throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
+
     coordinateToTimeSeries = getWeatherTimeSeries();
   }
 
@@ -71,8 +72,20 @@ public class CsvWeatherSource extends WeatherSource {
 
   /** Returns an empty optional for now. */
   @Override
-  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
-    return Optional.empty();
+  public Optional<Set<String>> getSourceFields() {
+    return dataSource
+        .getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER)
+        .values()
+        .stream()
+        .findFirst()
+        .flatMap(
+            meta -> {
+              try {
+                return dataSource.getSourceFields(meta.getFullFilePath());
+              } catch (SourceException e) {
+                return Optional.empty();
+              }
+            });
   }
 
   @Override
@@ -139,10 +152,7 @@ public class CsvWeatherSource extends WeatherSource {
       throws SourceException {
     /* Get only weather time series meta information */
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
-        dataSource
-            .connector
-            .getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER)
-            .values();
+        dataSource.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
     return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
   }
 

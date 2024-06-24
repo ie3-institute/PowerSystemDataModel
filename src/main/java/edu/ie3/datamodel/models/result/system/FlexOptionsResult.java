@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
-import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.ModelResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Represents results of flexibility request */
-public class FlexOptionsResult extends ResultEntity {
+public class FlexOptionsResult extends ModelResultEntity {
 
   /**
    * Active power (might be negative, thus feed-in) that was suggested for regular usage by the

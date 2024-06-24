@@ -20,7 +20,7 @@ On [Maven central](https://search.maven.org/artifact/com.github.ie3-institute/Po
 <dependency>
   <groupId>com.github.ie3-institute</groupId>
   <artifactId>PowerSystemDataModel</artifactId>
-  <version>2.1.0</version>
+  <version>5.0.1</version>
 </dependency>
 ```
 
@@ -41,7 +41,7 @@ and add the dependency:
 <dependency>
   <groupId>com.github.ie3-institute</groupId>
   <artifactId>PowerSystemDataModel</artifactId>
-  <version>3.0-SNAPSHOT</version>
+  <version>6.0-SNAPSHOT</version>
 </dependency>
 ```
 

@@ -15,7 +15,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
-public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
+public class NodeResultFactory extends ModelResultFactory<NodeResult> {
   private static final String VMAG = "vMag";
   private static final String VANG = "vAng";
 
