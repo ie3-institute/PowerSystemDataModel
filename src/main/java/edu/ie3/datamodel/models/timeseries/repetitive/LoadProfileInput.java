@@ -35,21 +35,25 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
 
   @Override
   public PValue calc(ZonedDateTime time) {
+    // dummy value
     return dayOfWeekToHourlyValues.get(time.getDayOfWeek()).get(time.getHour());
   }
 
   @Override
   protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
+    // dummy value
     return Optional.of(time.minusHours(1));
   }
 
   @Override
   protected Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
+    // dummy value
     return Optional.of(time.plusHours(1));
   }
 
   @Override
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
+    // dummy value
     return List.of(time.plusHours(1));
   }
 
