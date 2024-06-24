@@ -70,7 +70,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
     Exception ex = graphicElements.exception.get()
     ex.class == GraphicSourceException
-    ex.message.startsWith("1error(s) occurred while initializing graphic elements.  edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"LineGraphicInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Linked line with UUID 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7 was not found for entity")
+    ex.message.startsWith("1 error(s) occurred while initializing graphic elements.  edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"LineGraphicInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7 was not provided.")
   }
 
 

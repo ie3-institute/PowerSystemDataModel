@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
-import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
@@ -20,22 +19,8 @@ public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
   private final CsvDataSource dataSource;
 
   public CsvTimeSeriesMappingSource(
-      String csvSep, Path gridFolderPath, FileNamingStrategy fileNamingStrategy)
-      throws SourceException {
+      String csvSep, Path gridFolderPath, FileNamingStrategy fileNamingStrategy) {
     this.dataSource = new CsvDataSource(csvSep, gridFolderPath, fileNamingStrategy);
-
-    // validating
-    Try.of(this::getSourceFields, SourceException.class)
-        .flatMap(
-            fieldsOpt ->
-                fieldsOpt
-                    .map(
-                        fields ->
-                            mappingFactory
-                                .validate(fields, MappingEntry.class)
-                                .transformF(SourceException::new))
-                    .orElse(Try.Success.empty()))
-        .getOrThrow();
   }
 
   @Override
