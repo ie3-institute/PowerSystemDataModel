@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Changed
+- Improving usage of streams on sql fetches [#827](https://github.com/ie3-institute/PowerSystemDataModel/issues/827)
 
 ## [5.1.0] - 2024-06-24
 
@@ -30,7 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactor `CsvFileConnector` and `CsvDataSource` [#1007](https://github.com/ie3-institute/PowerSystemDataModel/issues/1007)
 - Make `EntitySource` completely static [#975](https://github.com/ie3-institute/PowerSystemDataModel/issues/975)
 - Abstract commonly used functionality from `EntitySource` [#981](https://github.com/ie3-institute/PowerSystemDataModel/issues/981)
-- Improving usage of streams on sql fetches [#827](https://github.com/ie3-institute/PowerSystemDataModel/issues/827)
 
 ## [5.0.1] - 2024-03-07
 
