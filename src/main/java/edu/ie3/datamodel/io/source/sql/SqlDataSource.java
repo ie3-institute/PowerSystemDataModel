@@ -181,6 +181,7 @@ public class SqlDataSource implements DataSource {
       addParams.addParams(ps);
 
       // don't work with `try with resource`, therefore manual closing is necessary
+      // closes automatically after all dependent resultSets are closed
       ps.closeOnCompletion();
 
       return connector.toStream(ps, 1000);
