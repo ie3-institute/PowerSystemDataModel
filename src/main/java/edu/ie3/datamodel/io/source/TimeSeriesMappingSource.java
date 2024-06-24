@@ -7,9 +7,12 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
+import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
@@ -20,12 +23,17 @@ import java.util.stream.Stream;
  * This interface describes basic function to handle mapping between models and their respective
  * time series
  */
-public abstract class TimeSeriesMappingSource {
+public abstract class TimeSeriesMappingSource extends EntitySource {
 
   protected final TimeSeriesMappingFactory mappingFactory;
 
   protected TimeSeriesMappingSource() {
     this.mappingFactory = new TimeSeriesMappingFactory();
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    validate(MappingEntry.class, this::getSourceFields, mappingFactory);
   }
 
   /**
@@ -74,6 +82,16 @@ public abstract class TimeSeriesMappingSource {
 
   /** Class to represent one entry within the participant to time series mapping */
   public record MappingEntry(UUID participant, UUID timeSeries) implements InputEntity {
+
+    /** Returns the {@link UUID} of the {@link SystemParticipantInput}. */
+    public UUID getParticipant() {
+      return participant;
+    }
+
+    /** Returns the {@link UUID} of the {@link TimeSeries}. */
+    public UUID getTimeSeries() {
+      return timeSeries;
+    }
 
     @Override
     public boolean equals(Object o) {

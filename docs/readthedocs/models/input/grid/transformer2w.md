@@ -13,7 +13,7 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
    * - Attribute
      - Unit
@@ -85,7 +85,7 @@ A list with some standard transformer types can be found here: [Standard Two Win
 ```{eval-rst}
 .. list-table::
    :widths: 33 33 33
-   :header-rows: 0
+   :header-rows: 1
 
    * - Attribute
      - Unit
@@ -145,7 +145,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
 ```{eval-rst}
 .. list-table::
    :widths: 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
-   :header-rows: 0
+   :header-rows: 1
    
    * - uuid
      - bM

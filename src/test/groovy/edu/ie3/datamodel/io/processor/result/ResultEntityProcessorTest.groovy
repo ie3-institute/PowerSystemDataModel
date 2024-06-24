@@ -7,8 +7,8 @@ package edu.ie3.datamodel.io.processor.result
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.result.ModelResultEntity
 import edu.ie3.datamodel.models.result.NodeResult
-import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
@@ -270,7 +270,7 @@ class ResultEntityProcessorTest extends Specification {
 
   def "The list of eligible entity classes for a ResultEntityProcessor should be valid"() {
     given:
-    int noOfElements = 19 // number of all currently implemented entity results
+    int noOfElements = 20 // number of all currently implemented entity results
 
     expect:
     ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements
@@ -285,7 +285,7 @@ class ResultEntityProcessorTest extends Specification {
     thrown(EntityProcessorException)
   }
 
-  private static class InvalidTestResult extends ResultEntity {
+  private static class InvalidTestResult extends ModelResultEntity {
 
     InvalidTestResult(ZonedDateTime time, UUID inputModel) {
       super(time, inputModel)

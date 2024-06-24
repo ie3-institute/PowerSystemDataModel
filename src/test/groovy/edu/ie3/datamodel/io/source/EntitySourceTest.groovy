@@ -1,232 +1,193 @@
 /*
- * © 2023. TU Dortmund University,
+ * © 2024. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.source
 
+import static edu.ie3.datamodel.io.source.EntitySource.*
 import static edu.ie3.test.helper.EntityMap.map
 
 import edu.ie3.datamodel.exceptions.SourceException
-import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
-import edu.ie3.datamodel.io.factory.input.participant.ChpInputEntityData
-import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantTypedEntityData
-import edu.ie3.datamodel.io.source.csv.CsvDataSource
-import edu.ie3.datamodel.models.input.AssetInput
-import edu.ie3.datamodel.models.input.EmInput
+import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData
+import edu.ie3.datamodel.io.factory.input.OperatorInputFactory
 import edu.ie3.datamodel.models.input.NodeInput
-import edu.ie3.datamodel.models.input.system.ChpInput
-import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
-import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
-import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
+import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.utils.Try
+import edu.ie3.datamodel.utils.validation.DummyAssetInput
 import edu.ie3.test.common.GridTestData
-import edu.ie3.test.common.SystemParticipantTestData as sptd
-import spock.lang.Shared
+import org.apache.commons.lang3.tuple.Pair
 import spock.lang.Specification
 
 class EntitySourceTest extends Specification {
 
-  private final class DummyEntitySource extends EntitySource {
-    DummyEntitySource(CsvDataSource dataSource) {
-      super(dataSource)
-    }
-
-    @Override
-    void validate() throws ValidationException {
-    }
-  }
-
-  @Shared
-  DummyEntitySource dummyEntitySource = new DummyEntitySource(Mock(CsvDataSource))
-
-  def "An EntitySource should enrich entity data with a linked entity, if it was provided"() {
+  def "An EntitySource can build a map of entities correctly"() {
     given:
-    Map<String, String> parameter = [
-      "linked_entity" : GridTestData.nodeA.uuid.toString(),
-    ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput)
-
-    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+    Map<String, String> parameter = ["uuid": GridTestData.profBroccoli.uuid.toString(), "id": GridTestData.profBroccoli.id]
+    def source = DummyDataSource.of(parameter)
 
     when:
-    def result = dummyEntitySource.enrichEntityData(entityData, "linked_entity", entityMap, NodeAssetInputEntityData::new)
+    def actual = getEntities(OperatorInput, source, new OperatorInputFactory())
 
     then:
-    result == new Try.Success<NodeAssetInputEntityData, SourceException>(new NodeAssetInputEntityData(entityData, GridTestData.nodeA))
+    actual.size() == 1
+    OperatorInput input = actual.get(GridTestData.profBroccoli.uuid)
+    input.id == GridTestData.profBroccoli.id
   }
 
-  def "An EntitySource trying to enrich entity data should fail, if no matching linked entity was provided"() {
+  def "An EntitySource throws a SourceException if an entity can not be build"() {
     given:
-    Map<String, String> parameter = [
-      "linked_entity" : GridTestData.nodeB.uuid.toString(),
-    ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput)
-
-    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+    Map<String, String> parameter = ["uuid": GridTestData.profBroccoli.uuid.toString()]
+    def source = DummyDataSource.of(parameter)
 
     when:
-    def result = dummyEntitySource.enrichEntityData(entityData, "linked_entity", entityMap, NodeAssetInputEntityData::new)
+    getEntities(OperatorInput, source, new OperatorInputFactory())
 
     then:
-    result.isFailure()
-    result.getException().get().message.startsWith("Linked linked_entity with UUID 47d29df0-ba2d-4d23-8e75-c82229c5c758 was not found for entity AssetInputEntityData")
+    SourceException ex = thrown()
+    ex.message == "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"OperatorInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: An error occurred when creating instance of OperatorInput.class."
   }
 
-  def "An EntitySource should enrich entity data with two linked entities, if they are provided"() {
+  def "An EntitySource can build EntityData correctly"() {
     given:
-    Map<String, String> parameter = [
-      "t_bus" : sptd.thermalBus.uuid.toString(),
-      "t_storage" : sptd.thermalStorage.uuid.toString()
-    ]
-    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput, sptd.participantNode, null, sptd.chpTypeInput)
-
-    Map<UUID, ThermalBusInput> busMap = map([sptd.thermalBus])
-    Map<UUID, ThermalStorageInput> storageMap = map([sptd.thermalStorage])
+    Map<String, String> parameter = ["operator": GridTestData.profBroccoli.uuid.toString()]
+    def source = DummyDataSource.of(parameter)
 
     when:
-    def result = dummyEntitySource.enrichEntityData(entityData, "t_bus", busMap, "t_storage", storageMap, ChpInputEntityData::new)
+    def actual = buildEntityData(DummyAssetInput, source).toList()
 
     then:
-    result == new Try.Success<ChpInputEntityData, SourceException>(new ChpInputEntityData(entityData, sptd.thermalBus, sptd.thermalStorage))
+    actual.size() == 1
+    actual.get(0).success
   }
 
-  def "An EntitySource trying to enrich entity data should fail, if one of two linked entities is not provided"() {
+  def "An EntitySource can enrich and build EntityData correctly"() {
     given:
-    Map<String, String> parameter = [
-      "t_bus" : sptd.thermalBus.uuid.toString(),
-      "t_storage" : "8851813b-3a7d-4fee-874b-4df9d724e4b4"
-    ]
-    def entityData = new SystemParticipantTypedEntityData<ChpTypeInput>(parameter, ChpInput, sptd.participantNode, null, sptd.chpTypeInput)
-
-    Map<UUID, ThermalBusInput> busMap = map([sptd.thermalBus])
-    Map<UUID, ThermalStorageInput> storageMap = map([sptd.thermalStorage])
+    Map<String, String> parameter = ["operator": GridTestData.profBroccoli.uuid.toString()]
+    def entityMap = map([GridTestData.profBroccoli])
+    def source = DummyDataSource.of(parameter)
+    def fcn = enrich("operator", entityMap, AssetInputEntityData::new)
 
     when:
-    def result = dummyEntitySource.enrichEntityData(entityData, "t_bus", busMap, "t_storage", storageMap, ChpInputEntityData::new)
+    def actual = buildEntityData(DummyAssetInput, source, fcn).toList()
 
     then:
-    result.isFailure()
-    result.getException().get().message.startsWith("Linked t_storage with UUID 8851813b-3a7d-4fee-874b-4df9d724e4b4 was not found for entity SystemParticipantTypedEntityData")
+    actual.size() == 1
+    actual.get(0).success
+    def data = actual.get(0).data.get()
+
+    data.targetClass == DummyAssetInput
+    data.fieldsToValues.size() == 0
   }
 
-  def "An EntitySource should find a linked entity, if it was provided"() {
+  def "An EntitySource can enrich EntityData with default fallback"() {
     given:
-    Map<String, String> parameter = [
-      "linked_entity" : sptd.emInput.uuid.toString(),
-    ]
-    def entityData = new EntityData(parameter, AssetInput)
-
-    Map<UUID, EmInput> entityMap = map([sptd.emInput])
+    def entityMap = map([GridTestData.profBroccoli])
+    def entityData1 = new EntityData(["operator": GridTestData.profBroccoli.uuid.toString()], NodeInput)
+    def entityData2 = new EntityData(["operator": ""], NodeInput)
+    def fcn = enrichWithDefault("operator", entityMap, OperatorInput.NO_OPERATOR_ASSIGNED, AssetInputEntityData::new)
 
     when:
-    def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
+    def enrichedWithEntity = fcn.apply(new Try.Success<>(entityData1))
+    def enrichedWithDefault = fcn.apply(new Try.Success<>(entityData2))
 
     then:
-    result == new Try.Success<EmInput, SourceException>(sptd.emInput)
+    enrichedWithEntity.success
+    enrichedWithEntity.data.get().operatorInput == GridTestData.profBroccoli
+
+    enrichedWithDefault.success
+    enrichedWithDefault.data.get().operatorInput == OperatorInput.NO_OPERATOR_ASSIGNED
   }
 
-  def "An EntitySource trying to find a linked entity should fail, if no matching linked entity was provided"() {
+  def "An EntitySource can enrich EntityData"() {
     given:
-    Map<String, String> parameter = [
-      "linked_entity" : sptd.parentEm.uuid.toString(),
-    ]
-    def entityData = new EntityData(parameter, AssetInput)
-
-    Map<UUID, EmInput> entityMap = map([sptd.emInput])
+    def entityMap = map([GridTestData.profBroccoli])
+    def entityData = new EntityData(["operator": GridTestData.profBroccoli.uuid.toString()], NodeInput)
+    def fcn = enrich("operator", entityMap, AssetInputEntityData::new)
 
     when:
-    def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
+    def enrichedData = fcn.apply(new Try.Success<>(entityData))
 
     then:
-    result.isFailure()
-    result.getException().get().message == "Linked linked_entity with UUID 897bfc17-8e54-43d0-8d98-740786fd94dd was not found for entity EntityData{fieldsToAttributes={linked_entity=897bfc17-8e54-43d0-8d98-740786fd94dd}, targetClass=class edu.ie3.datamodel.models.input.AssetInput}"
+    enrichedData.success
+    enrichedData.data.get().operatorInput == GridTestData.profBroccoli
   }
 
-  def "An EntitySource trying to find a linked entity should fail, if corresponding UUID is malformed"() {
+  def "An EntitySource can enrich EntityData with two entities"() {
     given:
-    Map<String, String> parameter = [
-      "linked_entity" : "not-a-uuid",
-    ]
-    def entityData = new EntityData(parameter, AssetInput)
-
-    Map<UUID, EmInput> entityMap = map([sptd.emInput])
+    def entityMap = map([GridTestData.nodeA, GridTestData.nodeB])
+    def entityData = new AssetInputEntityData(["nodeA": GridTestData.nodeA.uuid.toString(), "nodeB": GridTestData.nodeB.uuid.toString()], LineInput)
+    def fcn = biEnrich("nodeA", entityMap, "nodeB", entityMap, ConnectorInputEntityData::new)
 
     when:
-    def result = dummyEntitySource.getLinkedEntity(entityData, "linked_entity", entityMap)
+    def enrichedData = fcn.apply(new Try.Success<>(entityData))
 
     then:
-    result.isFailure()
-    result.getException().get().message == "Extracting UUID field linked_entity from entity data EntityData{fieldsToAttributes={linked_entity=not-a-uuid}, targetClass=class edu.ie3.datamodel.models.input.AssetInput} failed."
+    enrichedData.success
+    enrichedData.data.get().nodeA == GridTestData.nodeA
+    enrichedData.data.get().nodeB == GridTestData.nodeB
   }
 
-  def "An EntitySource should optionally enrich entity data with a linked entity, if it was provided"() {
+  def "An EntitySource's builder function should work as expected"() {
     given:
-    Map<String, String> parameter = [
-      "linked_entity" : GridTestData.nodeA.uuid.toString(),
-    ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput)
-
-    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+    def entityData = new EntityData(["operator": ""], NodeInput)
+    def pair = Pair.of(entityData, GridTestData.profBroccoli)
+    def fcn = enrichFunction(["operator"], AssetInputEntityData::new)
 
     when:
-    def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
+    def result = fcn.apply(pair)
 
     then:
-    result == new Try.Success<NodeAssetInputEntityData, SourceException>(new NodeAssetInputEntityData(entityData, GridTestData.nodeA))
+    result.fieldsToValues.isEmpty()
+    result.operatorInput == GridTestData.profBroccoli
   }
 
-  def "An EntitySource should (optionally) enrich entity data with the default entity, if no linked entity is specified"() {
+  def "An EntitySource can extract an Entity from a map correctly if a field name is given"() {
     given:
-    Map<String, String> parameter = [
-      "linked_entity" : "",
-    ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput)
-
-    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+    def entityData = new EntityData(["operator": GridTestData.profBroccoli.uuid.toString()], NodeInput)
+    def entityMap = map([GridTestData.profBroccoli])
 
     when:
-    def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
+    def actual = extractFunction(new Try.Success<>(entityData), "operator", entityMap)
 
     then:
-    result == new Try.Success<NodeAssetInputEntityData, SourceException>(new NodeAssetInputEntityData(entityData, GridTestData.nodeB))
+    actual.success
+    actual.data.get() == GridTestData.profBroccoli
   }
 
-  def "An EntitySource trying to optionally find a linked entity should fail, if no matching linked entity was provided"() {
+  def "An EntitySource returns a failure if an entity can not be extracted from a given map"() {
     given:
-    Map<String, String> parameter = [
-      "linked_entity" : "4ca90220-74c2-4369-9afa-a18bf068840e",
-    ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput)
-
-    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+    def entityData = new EntityData(fieldsToAttributes, NodeInput)
 
     when:
-    def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
+    def actual = extractFunction(new Try.Success<>(entityData), "operator", entityMap)
 
     then:
-    result.isFailure()
-    result.getException().get().message.startsWith("Linked linked_entity with UUID 4ca90220-74c2-4369-9afa-a18bf068840e was not found for entity AssetInputEntityData{fieldsToValues={linked_entity=4ca90220-74c2-4369-9afa-a18bf068840e}, targetClass=class edu.ie3.datamodel.models.input.AssetInput")
+    actual.failure
+    actual.exception.get().class == SourceException
+    actual.exception.get().message.contains(expectedMessage)
+
+    where:
+    fieldsToAttributes                                      | entityMap                                 | expectedMessage
+    ["operator": "no uuid"]                                 | map([OperatorInput.NO_OPERATOR_ASSIGNED]) | "Extracting UUID field operator from entity data"
+    ["operator": GridTestData.profBroccoli.uuid.toString()] | map([OperatorInput.NO_OPERATOR_ASSIGNED]) | "Entity with uuid f15105c4-a2de-4ab8-a621-4bc98e372d92 was not provided."
   }
 
-
-  def "An EntitySource trying to optionally find a linked entity should fail, if corresponding UUID is malformed"() {
+  def "An EntitySource returns a failure if a given map does not contain the given uuid"() {
     given:
-    Map<String, String> parameter = [
-      "linked_entity" : "not-a-uuid",
-    ]
-    def entityData = new AssetInputEntityData(parameter, AssetInput)
-
-    Map<UUID, NodeInput> entityMap = map([GridTestData.nodeA])
+    def uuid = GridTestData.profBroccoli.uuid
+    def entityMap = map([
+      OperatorInput.NO_OPERATOR_ASSIGNED
+    ])
 
     when:
-    def result = dummyEntitySource.optionallyEnrichEntityData(entityData, "linked_entity", entityMap, GridTestData.nodeB, NodeAssetInputEntityData::new)
+    def actual = extractFunction(uuid, entityMap)
 
     then:
-    result.isFailure()
-    result.getException().get().message == "Exception while trying to parse UUID of field \"linked_entity\" with value \"not-a-uuid\""
+    actual.failure
+    actual.exception.get().message == "Entity with uuid f15105c4-a2de-4ab8-a621-4bc98e372d92 was not provided."
   }
 }

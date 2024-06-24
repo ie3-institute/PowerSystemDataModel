@@ -8,9 +8,8 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
+import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.result.connector.LineResult;
@@ -25,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -41,10 +41,13 @@ public class ResultEntitySource extends EntitySource {
   private final SwitchResultFactory switchResultFactory;
   private final NodeResultFactory nodeResultFactory;
   private final ConnectorResultFactory connectorResultFactory;
+  private final CongestionResultFactory congestionResultFactory;
   private final FlexOptionsResultFactory flexOptionsResultFactory;
 
+  private final DataSource dataSource;
+
   public ResultEntitySource(DataSource dataSource) {
-    super(dataSource);
+    this.dataSource = dataSource;
 
     // init factories
     this.systemParticipantResultFactory = new SystemParticipantResultFactory();
@@ -52,11 +55,12 @@ public class ResultEntitySource extends EntitySource {
     this.switchResultFactory = new SwitchResultFactory();
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
+    this.congestionResultFactory = new CongestionResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
   public ResultEntitySource(DataSource dataSource, DateTimeFormatter dateTimeFormatter) {
-    super(dataSource);
+    this.dataSource = dataSource;
 
     // init factories
     this.systemParticipantResultFactory = new SystemParticipantResultFactory(dateTimeFormatter);
@@ -64,6 +68,7 @@ public class ResultEntitySource extends EntitySource {
     this.switchResultFactory = new SwitchResultFactory();
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
+    this.congestionResultFactory = new CongestionResultFactory();
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
@@ -83,19 +88,20 @@ public class ResultEntitySource extends EntitySource {
                     EvResult.class,
                     HpResult.class,
                     EmResult.class)
-                .map(c -> validate(c, systemParticipantResultFactory))
+                .map(c -> validate(c, dataSource, systemParticipantResultFactory))
                 .toList());
 
     participantResults.addAll(
         List.of(
-            validate(ThermalHouseResult.class, thermalResultFactory),
-            validate(CylindricalStorageResult.class, thermalResultFactory),
-            validate(SwitchResult.class, switchResultFactory),
-            validate(NodeResult.class, nodeResultFactory),
-            validate(LineResult.class, connectorResultFactory),
-            validate(Transformer2WResult.class, connectorResultFactory),
-            validate(Transformer3WResult.class, connectorResultFactory),
-            validate(FlexOptionsResult.class, flexOptionsResultFactory)));
+            validate(ThermalHouseResult.class, dataSource, thermalResultFactory),
+            validate(CylindricalStorageResult.class, dataSource, thermalResultFactory),
+            validate(SwitchResult.class, dataSource, switchResultFactory),
+            validate(NodeResult.class, dataSource, nodeResultFactory),
+            validate(LineResult.class, dataSource, connectorResultFactory),
+            validate(Transformer2WResult.class, dataSource, connectorResultFactory),
+            validate(Transformer3WResult.class, dataSource, connectorResultFactory),
+            validate(FlexOptionsResult.class, dataSource, flexOptionsResultFactory),
+            validate(CongestionResult.class, dataSource, congestionResultFactory)));
 
     Try.scanCollection(participantResults, Void.class)
         .transformF(FailedValidationException::new)
@@ -357,24 +363,31 @@ public class ResultEntitySource extends EntitySource {
     return getResultEntities(EmResult.class, systemParticipantResultFactory);
   }
 
+  /**
+   * Returns a unique set of {@link CongestionResult} instances.
+   *
+   * @return a set of object and subgrid unique {@link CongestionResult} entities
+   */
+  public Set<CongestionResult> getCongestionResults() throws SourceException {
+    return getResultEntities(CongestionResult.class, congestionResultFactory);
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Build and cast entities to the correct type, since result factories outputs result entities of
    * some general type.
    *
-   * @param entityClass
-   * @param factory
-   * @return
-   * @param <T>
+   * @param entityClass that should be build
+   * @param factory for building the entity
+   * @return a set of entities
+   * @param <T> type of entity
    */
   @SuppressWarnings("unchecked")
   private <T extends ResultEntity> Set<T> getResultEntities(
-      Class<T> entityClass, EntityFactory<? extends ResultEntity, EntityData> factory)
+      Class<T> entityClass, ResultEntityFactory<? extends ResultEntity> factory)
       throws SourceException {
-    return unpackSet(
-        buildEntityData(entityClass)
-            .map(entityData -> factory.get(entityData).map(data -> (T) data)),
-        entityClass);
+    return getEntities(entityClass, dataSource, (ResultEntityFactory<T>) factory, t -> t)
+        .collect(Collectors.toSet());
   }
 }

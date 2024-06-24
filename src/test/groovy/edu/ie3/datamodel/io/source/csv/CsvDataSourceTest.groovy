@@ -5,12 +5,16 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.models.input.system.LoadInput
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.nio.file.Files
 import java.nio.file.Path
+import java.util.stream.Collectors
 
 class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
@@ -36,20 +40,38 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
   }
 
   @Shared
-  String csvSep = ","
+  String csvSep
   @Shared
-  Path testBaseFolderPath = Path.of("testBaseFolderPath") // does not have to exist for this test
+  Path testBaseFolderPath
   @Shared
-  FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+  FileNamingStrategy fileNamingStrategy
+  @Shared
+  Set<Path> timeSeriesPaths
 
   @Shared
-  DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, fileNamingStrategy)
+  DummyCsvSource dummyCsvSource
+
+  def setupSpec() {
+    csvSep = ","
+    testBaseFolderPath = Files.createTempDirectory("testBaseFolderPath")
+    fileNamingStrategy = new FileNamingStrategy()
+
+    dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, fileNamingStrategy)
+
+    timeSeriesPaths = [
+      "its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf.csv",
+      "its_p_fcf0b851-a836-4bde-8090-f44c382ed226.csv",
+      "its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b.csv",
+      "its_c_b88dee50-5484-4136-901d-050d8c1c97d1.csv",
+      "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b.csv"
+    ].stream().map { file -> Path.of(file) }.collect(Collectors.toSet())
+    timeSeriesPaths.forEach { path -> Files.createFile(testBaseFolderPath.resolve(path)) }
+  }
 
   def "A DataSource should contain a valid connector after initialization"() {
     expect:
     dummyCsvSource.connector != null
     dummyCsvSource.connector.baseDirectory == testBaseFolderPath
-    dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
     dummyCsvSource.connector.entityWriters.isEmpty()
   }
 
@@ -274,5 +296,51 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too less columns"
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too much columns"
+  }
+
+  def "The CsvDataSource is able to provide correct paths to time series files"() {
+    when:
+    def actual = dummyCsvSource.getIndividualTimeSeriesFilePaths()
+
+    then:
+    noExceptionThrown()
+
+    actual.size() == timeSeriesPaths.size()
+    actual.containsAll(timeSeriesPaths)
+  }
+
+  def "The CsvDataSource is able to build correct uuid to meta information mapping"() {
+    given:
+    def expected = [
+      (UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf"), ColumnScheme.APPARENT_POWER, Path.of("its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf")),
+      (UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, Path.of("its_p_fcf0b851-a836-4bde-8090-f44c382ed226")),
+      (UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND, Path.of("its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b")),
+      (UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_b88dee50-5484-4136-901d-050d8c1c97d1")),
+      (UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"))
+    ]
+
+    when:
+    def actual = dummyCsvSource.getCsvIndividualTimeSeriesMetaInformation()
+
+    then:
+    actual == expected
+  }
+
+  def "The CsvDataSource is able to build correct uuid to meta information mapping when restricting column schemes"() {
+    given:
+    def expected = [
+      (UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_b88dee50-5484-4136-901d-050d8c1c97d1")),
+      (UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")),
+      (UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, Path.of("its_p_fcf0b851-a836-4bde-8090-f44c382ed226"))
+    ]
+
+    when:
+    def actual = dummyCsvSource.getCsvIndividualTimeSeriesMetaInformation(
+        ColumnScheme.ENERGY_PRICE,
+        ColumnScheme.ACTIVE_POWER
+        )
+
+    then:
+    actual == expected
   }
 }

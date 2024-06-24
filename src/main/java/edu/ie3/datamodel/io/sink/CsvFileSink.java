@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.sink;
 import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
+import edu.ie3.datamodel.io.csv.CsvFileDefinition;
 import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -53,7 +54,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   private final CsvFileConnector connector;
   private final ProcessorProvider processorProvider;
-
+  private final FileNamingStrategy fileNamingStrategy;
   private final String csvSep;
 
   public CsvFileSink(Path baseFolderPath) throws EntityProcessorException {
@@ -95,7 +96,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
       String csvSep) {
     this.csvSep = csvSep;
     this.processorProvider = processorProvider;
-    this.connector = new CsvFileConnector(baseFolderPath, fileNamingStrategy);
+    this.connector = new CsvFileConnector(baseFolderPath);
+    this.fileNamingStrategy = fileNamingStrategy;
   }
 
   @Override
@@ -246,13 +248,16 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     try {
       TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
       String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
-      BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
+      BufferedCsvWriter writer =
+          connector.getOrInitWriter(
+              timeSeries,
+              new CsvFileDefinition(timeSeries, headerElements, csvSep, fileNamingStrategy));
       persistTimeSeries(timeSeries, writer);
       connector.closeTimeSeriesWriter(timeSeries.getUuid());
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element.", e);
-    } catch (ConnectorException e) {
+    } catch (ConnectorException | FileException e) {
       log.error("Exception occurred during acquisition of writer.", e);
     } catch (IOException e) {
       log.error("Exception occurred during closing of writer.", e);
@@ -292,12 +297,14 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
           processorProvider.handleEntity(entity).map(this::csvEntityFieldData).getOrThrow();
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
-          connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
+          connector.getOrInitWriter(
+              entity.getClass(),
+              new CsvFileDefinition(entity.getClass(), headerElements, csvSep, fileNamingStrategy));
       writer.write(entityFieldData);
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element.", e);
-    } catch (ConnectorException e) {
+    } catch (ConnectorException | FileException e) {
       log.error("Exception occurred during retrieval of writer. Cannot write this element.", e);
     } catch (IOException e) {
       log.error("Exception occurred during writing of this element. Cannot write this element.", e);

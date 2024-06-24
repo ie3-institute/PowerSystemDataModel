@@ -14,7 +14,7 @@ import java.util.*;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsResult> {
+public class FlexOptionsResultFactory extends ModelResultFactory<FlexOptionsResult> {
 
   private static final String P_REF = "pRef";
   private static final String P_MIN = "pMin";

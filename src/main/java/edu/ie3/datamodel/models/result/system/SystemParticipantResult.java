@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
-import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.ModelResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class that holds values common to all other result entities */
-public abstract class SystemParticipantResult extends ResultEntity {
+public abstract class SystemParticipantResult extends ModelResultEntity {
 
   /** active power output normally provided in MW */
   private ComparableQuantity<Power> p;

@@ -113,7 +113,7 @@ node {
         gradle('--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain ' +
             'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName)
 
-        sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew clean javadoc''', returnStdout: true)
+        sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew javadoc''', returnStdout: true)
       }
 
       // sonarqube analysis
@@ -156,7 +156,7 @@ node {
              */
             sh(
                 script: """set +x && cd $projectName""" +
-                ''' set +x; ./gradlew clean javadoc''',
+                ''' set +x; ./gradlew javadoc''',
                 returnStdout: true
                 )
 
