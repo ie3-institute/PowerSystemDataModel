@@ -11,7 +11,6 @@ import edu.ie3.datamodel.exceptions.TryException
 import org.apache.commons.lang3.tuple.Pair
 import spock.lang.Specification
 
-import java.util.function.Function
 import java.util.stream.Stream
 
 class TryTest extends Specification {
