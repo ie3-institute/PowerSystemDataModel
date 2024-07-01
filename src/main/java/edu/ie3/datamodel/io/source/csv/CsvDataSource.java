@@ -197,9 +197,9 @@ public class CsvDataSource implements DataSource {
                 + csvSep
                 + "') and does the number of columns match the number of headline fields?");
       }
-    } catch (Exception e) {
+    } catch (SourceException e) {
       log.error(
-          "Cannot build fields to attributes map for row '{}' with headline '{}'.\nException: {}",
+          "Cannot build fields to attributes map for row '{}' with headline '{}'.",
           csvRow.trim(),
           String.join(",", headline),
           e);
