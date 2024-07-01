@@ -168,6 +168,14 @@ public class CsvDataSource implements DataSource {
 
     try {
       String[] fieldVals = parseCsvRow(csvRow, csvSep);
+
+      if (fieldVals.length > headline.length) {
+        throw new SourceException(
+            "The size of the fields is greater than the size of the headline. This can happen when using the old"
+                + " and now unsupported csv input format! Please refer to the docs to find the way to convert the"
+                + " input data into the new input format.");
+      }
+
       insensitiveFieldsToAttributes.putAll(
           IntStream.range(0, fieldVals.length)
               .boxed()
@@ -189,9 +197,9 @@ public class CsvDataSource implements DataSource {
                 + csvSep
                 + "') and does the number of columns match the number of headline fields?");
       }
-    } catch (Exception e) {
+    } catch (SourceException e) {
       log.error(
-          "Cannot build fields to attributes map for row '{}' with headline '{}'.\nException: {}",
+          "Cannot build fields to attributes map for row '{}' with headline '{}'.",
           csvRow.trim(),
           String.join(",", headline),
           e);
