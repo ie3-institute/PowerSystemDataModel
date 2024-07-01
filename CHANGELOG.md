@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Changed
+- Improving error message when using the outdated csv format [#1112](https://github.com/ie3-institute/PowerSystemDataModel/issues/1112)
+
 
 ## [5.1.0] - 2024-06-24
 
