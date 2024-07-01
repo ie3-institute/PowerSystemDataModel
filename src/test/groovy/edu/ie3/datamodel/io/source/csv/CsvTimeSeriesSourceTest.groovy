@@ -47,6 +47,22 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     actual.data.get() == expected
   }
 
+  def "The csv time series source returns the time keys after a given key correctly"() {
+    given:
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-12-31T23:59:59Z")
+
+    when:
+    def actual = source.getTimeKeysAfter(time)
+
+    then:
+    actual == [
+      TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:00:00Z"),
+      TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:15:00Z")
+    ]
+  }
+
   def "The factory method in csv time series source refuses to build time series with unsupported column type"() {
     given:
     def metaInformation = new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), ColumnScheme.WEATHER, Path.of("its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"))

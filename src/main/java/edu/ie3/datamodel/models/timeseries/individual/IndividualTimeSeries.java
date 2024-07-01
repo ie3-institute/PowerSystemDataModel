@@ -67,6 +67,11 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
   }
 
   @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
+    return timeToValue.keySet().stream().filter(timeKey -> timeKey.isAfter(time)).sorted().toList();
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;

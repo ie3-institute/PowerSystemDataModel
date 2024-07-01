@@ -43,11 +43,6 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   }
 
   @Override
-  public String getTimeFieldString() {
-    return TIME;
-  }
-
-  @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minParameters =
         newSet(
