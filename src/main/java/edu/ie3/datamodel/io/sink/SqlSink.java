@@ -164,7 +164,7 @@ public class SqlSink {
    * @param identifier identifier of the grid
    * @throws SQLException
    */
-  public <C extends InputEntity> void persistIgnoreNested(C entity, DbGridMetadata identifier)
+  public <C extends Entity> void persistIgnoreNested(C entity, DbGridMetadata identifier)
       throws SQLException {
     insert(entity, identifier);
   }
