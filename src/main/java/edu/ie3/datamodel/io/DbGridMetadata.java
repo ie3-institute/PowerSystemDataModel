@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io;
 
-import static edu.ie3.datamodel.io.IoUtil.quote;
+import static edu.ie3.datamodel.io.SqlUtils.quote;
 
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -21,6 +21,7 @@ public record DbGridMetadata(String gridName, UUID uuid) {
     return GRID_NAME + "=" + gridName + ", " + GRID_UUID + "=" + uuid.toString();
   }
 
+  /** @return Stream with grid uuid */
   public Stream<String> getStreamForQuery() {
     return Stream.of(quote(uuid.toString(), "'"));
   }

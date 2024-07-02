@@ -194,6 +194,4 @@ public class SqlDataSource implements DataSource {
   public boolean checkExistingTable(String tableName) throws SQLException {
     return connector.tableExistsSQL(tableName);
   }
-
-
 }

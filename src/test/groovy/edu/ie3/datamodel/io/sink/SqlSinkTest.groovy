@@ -5,6 +5,10 @@
  */
 package edu.ie3.datamodel.io.sink
 
+import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static tech.units.indriya.unit.Units.PERCENT
+
 import edu.ie3.datamodel.io.DbGridMetadata
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
@@ -46,28 +50,22 @@ import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SampleJointGrid
+import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.TimeUtil
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
-import org.testcontainers.spock.Testcontainers
 import tech.units.indriya.quantity.Quantities
 
+import java.sql.SQLException
 import javax.measure.Quantity
 import javax.measure.quantity.Power
-
-import edu.ie3.test.common.SystemParticipantTestData
-
-import java.sql.SQLException
-
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
-import static tech.units.indriya.unit.Units.PERCENT
 
 @Testcontainers
 class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeriesTestData {
@@ -309,9 +307,9 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
   def "A valid SqlSink throws an exception if a nested entity hasn't all of its nested entity."() {
     given:
     def sink = new SqlSink(
-            schemaName,
-            namingStrategy,
-            connector)
+    schemaName,
+    namingStrategy,
+    connector)
     def load = SystemParticipantTestData.loadInput
 
     when:
@@ -325,14 +323,14 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
 
   def "A valid SqlSink can create a table for entity class."() {
     given:
-      def sink = new SqlSink(schemaName, namingStrategy, connector)
-      def hp = SystemParticipantTestData.hpInput
+    def sink = new SqlSink(schemaName, namingStrategy, connector)
+    def hp = SystemParticipantTestData.hpInput
 
     when:
-      sink.createClassTable(hp.getClass(), schemaName)
+    sink.createClassTable(hp.getClass(), schemaName)
 
     then:
-      sqlSource.checkExistingTable("hp_input")
+    sqlSource.checkExistingTable("hp_input")
   }
   def "A valid SqlSink throws an exception if a grid does not exist."() {
     given:

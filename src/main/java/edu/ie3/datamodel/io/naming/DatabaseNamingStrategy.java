@@ -8,12 +8,12 @@ package edu.ie3.datamodel.io.naming;
 import static edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy.logger;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
-import edu.ie3.datamodel.models.Entity;
 import java.util.Optional;
 
 /** A naming strategy for database entities */

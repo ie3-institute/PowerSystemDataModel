@@ -12,10 +12,10 @@ import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.models.Entity;
-import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -43,8 +43,7 @@ public class SqlUtils {
   }
 
   /** @return query to create a SQL table for an unique entity */
-  public static String queryCreateTableUniqueEntity(
-          Class<? extends Entity> cls, String schemaName)
+  public static String queryCreateTableUniqueEntity(Class<? extends Entity> cls, String schemaName)
       throws EntityProcessorException, ProcessorProviderException {
     ProcessorProvider processorProvider = new ProcessorProvider();
     DatabaseNamingStrategy namingStrategy = new DatabaseNamingStrategy();
@@ -75,7 +74,7 @@ public class SqlUtils {
    * @return Map column name -> data type
    */
   public static Map<String, String> columnToSqlDataType() {
-    HashMap map = new HashMap();
+    Map<String, String> map = new HashMap<>();
 
     map.put("uuid", "uuid PRIMARY KEY");
     map.put("time_series", "uuid NOT NULL");
@@ -181,7 +180,7 @@ public class SqlUtils {
     map.put("opex", "double precision NOT NULL");
     map.put("active_power_gradient", "double precision NOT NULL");
 
-    // not all data types are implemented
+    // TODO: Not all data types are implemented
 
     return map;
   }
@@ -192,7 +191,7 @@ public class SqlUtils {
    * @return input with quoteSymbol
    */
   public static String quote(String input, String quoteSymbol) {
-    if (input == "") {
+    if (Objects.equals(input, "")) {
       return "NULL";
     } else {
       return input.matches("^\".*\"$") ? input : quoteSymbol + input + quoteSymbol;

@@ -7,8 +7,6 @@ package edu.ie3.datamodel.io;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class IoUtil {
@@ -50,17 +48,5 @@ public class IoUtil {
    */
   public static Optional<Path> pathOption(String in) {
     return Optional.of(Path.of(in));
-  }
-
-  public String timeFormatter(ZonedDateTime time, String timePattern) {
-    return time.format(DateTimeFormatter.ofPattern(timePattern));
-  }
-
-  public static String quote(String input, String quoteSymbol) {
-    if (input == "") {
-      return "NULL";
-    } else {
-      return input.matches("^\".*\"$") ? input : quoteSymbol + input + quoteSymbol;
-    }
   }
 }

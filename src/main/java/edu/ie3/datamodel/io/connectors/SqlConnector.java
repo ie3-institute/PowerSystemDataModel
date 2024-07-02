@@ -156,11 +156,19 @@ public class SqlConnector implements DataConnector {
     return insensitiveFieldsToAttributes;
   }
 
+  /**
+   * Executes a query to check if a table exists
+   *
+   * @param tableName Name of the table, that should be checked
+   * @return True, if the table exists
+   */
   public boolean tableExistsSQL(String tableName) throws SQLException {
-    PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) "
-            + "FROM information_schema.tables "
-            + "WHERE table_name = ?"
-            + "LIMIT 1;");
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            "SELECT count(*) "
+                + "FROM information_schema.tables "
+                + "WHERE table_name = ?"
+                + "LIMIT 1;");
     preparedStatement.setString(1, tableName);
 
     ResultSet resultSet = preparedStatement.executeQuery();
