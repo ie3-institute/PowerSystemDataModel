@@ -1,9 +1,9 @@
 CREATE TABLE public.test_data_sql
 (
-    uuid uuid PRIMARY KEY,
-    time_series uuid NOT NULL,
-    time timestamp with time zone NOT NULL,
-    p double precision NOT NULL
+    uuid UUID PRIMARY KEY,
+    time_series UUID NOT NULL,
+    time TIMESTAMP WITH TIME ZONE NOT NULL,
+    p DOUBLE PRECISION NOT NULL
 )
     WITHOUT OIDS
     TABLESPACE pg_default;

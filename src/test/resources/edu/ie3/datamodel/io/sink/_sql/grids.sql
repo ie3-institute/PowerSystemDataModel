@@ -1,6 +1,6 @@
 CREATE TABLE public.grids
 (
-    uuid uuid PRIMARY KEY,
+    uuid UUID PRIMARY KEY,
     name TEXT NOT NULL
 )
     WITHOUT OIDS

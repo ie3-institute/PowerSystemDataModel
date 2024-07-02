@@ -1,9 +1,9 @@
 CREATE TABLE public.time_series_c
 (
-    time_series uuid NOT NULL,
-    time timestamp with time zone NOT NULL,
-    price double precision,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    time_series UUID NOT NULL,
+    time TIMESTAMP WITH TIME ZONE NOT NULL,
+    price DOUBLE PRECISION,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -17,10 +17,10 @@ CREATE UNIQUE INDEX time_series_c_series_time ON time_series_c USING btree (time
 
 CREATE TABLE public.time_series_p
 (
-    time_series uuid NOT NULL,
-    time timestamp with time zone NOT NULL,
-    p double precision,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    time_series UUID NOT NULL,
+    time TIMESTAMP WITH TIME ZONE NOT NULL,
+    p DOUBLE PRECISION,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -31,11 +31,11 @@ CREATE UNIQUE INDEX time_series_p_series_time ON time_series_p USING btree (time
 
 CREATE TABLE public.time_series_pq
 (
-    time_series uuid NOT NULL,
-    time timestamp with time zone NOT NULL,
-    p double precision,
-    q double precision,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    time_series UUID NOT NULL,
+    time TIMESTAMP WITH TIME ZONE NOT NULL,
+    p DOUBLE PRECISION,
+    q DOUBLE PRECISION,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -46,10 +46,10 @@ CREATE UNIQUE INDEX time_series_pq_series_time ON time_series_pq USING btree (ti
 
 CREATE TABLE public.time_series_h
 (
-    time_series uuid NOT NULL,
-    time timestamp with time zone NOT NULL,
-    heat_demand double precision,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    time_series UUID NOT NULL,
+    time TIMESTAMP WITH TIME ZONE NOT NULL,
+    heat_demand DOUBLE PRECISION,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -60,11 +60,11 @@ CREATE UNIQUE INDEX time_series_h_series_time ON time_series_h USING btree (time
 
 CREATE TABLE public.time_series_ph
 (
-    time_series uuid NOT NULL,
-    time timestamp with time zone NOT NULL,
-    p double precision,
-    heat_demand double precision,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    time_series UUID NOT NULL,
+    time TIMESTAMP WITH TIME ZONE NOT NULL,
+    p DOUBLE PRECISION,
+    heat_demand DOUBLE PRECISION,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -75,12 +75,12 @@ CREATE UNIQUE INDEX time_series_ph_series_time ON time_series_ph USING btree (ti
 
 CREATE TABLE public.time_series_pqh
 (
-    time_series uuid NOT NULL,
-    time timestamp with time zone NOT NULL,
-    p double precision,
-    q double precision,
-    heat_demand double precision,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    time_series UUID NOT NULL,
+    time TIMESTAMP WITH TIME ZONE NOT NULL,
+    p DOUBLE PRECISION,
+    q DOUBLE PRECISION,
+    heat_demand DOUBLE PRECISION,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
@@ -91,15 +91,15 @@ CREATE UNIQUE INDEX time_series_pqh_series_time ON time_series_pqh USING btree (
 
 CREATE TABLE public.time_series_weather
 (
-    time_series uuid NOT NULL,
+    time_series UUID NOT NULL,
     coordinate TEXT NOT NULL,
-    time timestamp with time zone NOT NULL,
-    diffuse_irradiance double precision,
-    direct_irradiance double precision,
-    direction double precision,
-    temperature double precision,
-    velocity double precision,
-    grid_uuid uuid NOT NULL REFERENCES grids(uuid)
+    time TIMESTAMP WITH TIME ZONE NOT NULL,
+    diffuse_irradiance DOUBLE PRECISION,
+    direct_irradiance DOUBLE PRECISION,
+    direction DOUBLE PRECISION,
+    temperature DOUBLE PRECISION,
+    velocity DOUBLE PRECISION,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
