@@ -64,13 +64,8 @@ public class SqlConnector implements DataConnector {
    * @param updateQuery the query to execute
    * @return The number of updates or a negative number if the execution failed
    */
-  public int executeUpdate(String updateQuery) {
-    try (Statement stmt = getConnection().createStatement()) {
-      return stmt.executeUpdate(updateQuery);
-    } catch (SQLException e) {
-      log.error(String.format("Error at execution of query \"%1.127s\": ", updateQuery), e);
-      return -1;
-    }
+  public int executeUpdate(String updateQuery) throws SQLException {
+    return getConnection().createStatement().executeUpdate(updateQuery);
   }
 
   /**
@@ -159,5 +154,25 @@ public class SqlConnector implements DataConnector {
       log.error("Exception at extracting ResultSet: ", e);
     }
     return insensitiveFieldsToAttributes;
+  }
+
+  /**
+   * Executes a query to check if a table exists
+   *
+   * @param tableName Name of the table, that should be checked
+   * @return True, if the table exists
+   */
+  public boolean tableExistsSQL(String tableName) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            "SELECT count(*) "
+                + "FROM information_schema.tables "
+                + "WHERE table_name = ?"
+                + "LIMIT 1;");
+    preparedStatement.setString(1, tableName);
+
+    ResultSet resultSet = preparedStatement.executeQuery();
+    resultSet.next();
+    return resultSet.getInt(1) != 0;
   }
 }
