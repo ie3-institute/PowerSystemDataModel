@@ -504,28 +504,6 @@ public class SqlSink {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  /**
-   * Creates a table for an entity class
-   *
-   * @param cls The class for which a table should be created
-   * @param schemaName Schema name of the database
-   */
-  public void createClassTable(Class<? extends Entity> cls, String schemaName)
-      throws SQLException, ProcessorProviderException, EntityProcessorException {
-    String query = queryCreateTableUniqueEntity(cls, schemaName);
-    connector.executeUpdate(query);
-  }
-
-  /**
-   * Creates a table for a grid
-   *
-   * @param schemaName Schema name of the database
-   */
-  public void createGridTable(String schemaName) throws SQLException {
-    String query = queryCreateGridTable(schemaName);
-    connector.executeUpdate(query);
-  }
-
   /** @return insertion order for unique entities */
   private static List<Class<?>> hierarchicInsert() {
     List<Class<?>> sortedInsert = new ArrayList<>();

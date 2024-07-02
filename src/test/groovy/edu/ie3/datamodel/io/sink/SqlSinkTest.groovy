@@ -321,17 +321,6 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     "  Detail: Key (node)=(4ca90220-74c2-4369-9afa-a18bf068840d) is not present in table \"node_input\"."
   }
 
-  def "A valid SqlSink can create a table for entity class."() {
-    given:
-    def sink = new SqlSink(schemaName, namingStrategy, connector)
-    def hp = SystemParticipantTestData.hpInput
-
-    when:
-    sink.createClassTable(hp.getClass(), schemaName)
-
-    then:
-    sqlSource.checkExistingTable("hp_input")
-  }
   def "A valid SqlSink throws an exception if a grid does not exist."() {
     given:
     def sink = new SqlSink(schemaName, namingStrategy, connector)
