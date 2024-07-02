@@ -36,7 +36,7 @@ import tech.units.indriya.unit.Units;
  * Implementation of {@link IdCoordinateSource} to read the mapping between coordinate id and actual
  * coordinate from csv file and build a mapping from it.
  */
-public class CsvIdCoordinateSource implements IdCoordinateSource {
+public class CsvIdCoordinateSource extends IdCoordinateSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvIdCoordinateSource.class);
 
@@ -56,6 +56,11 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
     /* set up the coordinate id to lat/long mapping */
     idToCoordinate = setupIdToCoordinateMap();
     coordinateToId = invert(idToCoordinate);
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    validate(IdCoordinateInput.class, this::getSourceFields, factory);
   }
 
   /**
