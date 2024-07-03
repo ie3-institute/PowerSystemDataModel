@@ -128,7 +128,6 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     TimeSeriesProcessorKey timeSeriesProcessorKey = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
     timeSeriesProcessorMap.put(timeSeriesProcessorKey, timeSeriesProcessor)
-    IndividualTimeSeries<EnergyPriceValue> individualTimeSeries = individualEnergyPriceTimeSeries
 
     SqlSink sink = new SqlSink(schemaName,
     new ProcessorProvider([
@@ -155,7 +154,6 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     ], timeSeriesProcessorMap),
     namingStrategy,
     connector)
-    UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
     Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
