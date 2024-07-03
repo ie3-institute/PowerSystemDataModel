@@ -13,7 +13,7 @@ public class SqlUtils {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlUtils.class);
   private static final String endQueryCreateTable =
-      ")\n" + "\t WITHOUT OIDS\n" + "\t TABLESPACE pg_default;";
+      ")\n \t WITHOUT OIDS\n \t TABLESPACE pg_default;";
 
   private SqlUtils() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
@@ -36,7 +36,7 @@ public class SqlUtils {
    * @return input with quoteSymbol
    */
   public static String quote(String input, String quoteSymbol) {
-    if (Objects.equals(input, "")) {
+    if (Objects.equals(input, "") || Objects.equals(input, "null")) {
       return "NULL";
     } else {
       return input.matches("^\".*\"$") ? input : quoteSymbol + input + quoteSymbol;

@@ -33,7 +33,6 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -105,9 +104,7 @@ public class SqlSink {
     // Persist the entities in hierarchic order to avoid failure because of foreign keys
     for (Class<?> cls : hierarchicInsert()) {
       persistMixedList(
-          entitiesToAdd.stream()
-              .filter(ent -> cls.isAssignableFrom(ent.getClass()))
-              .collect(Collectors.toList()),
+          entitiesToAdd.stream().filter(ent -> cls.isAssignableFrom(ent.getClass())).toList(),
           identifier);
       entitiesToAdd.removeIf(
           ent ->
@@ -202,15 +199,7 @@ public class SqlSink {
       } else if (TimeSeries.class.isAssignableFrom(cls)) {
         entities.forEach(
             ts -> {
-              try {
-                persistTimeSeries((TimeSeries<E, V>) ts, identifier);
-              } catch (SQLException e) {
-                throw new RuntimeException(
-                    String.format(
-                        "An error occurred during extraction of entity '%s', SQLReason: '%s'",
-                        cls.getSimpleName(), e.getMessage()),
-                    e);
-              }
+              persistTimeSeries((TimeSeries<E, V>) ts, identifier);
             });
       } else {
         log.error("I don't know how to handle an entity of class {}", cls.getSimpleName());
@@ -244,7 +233,7 @@ public class SqlSink {
 
   /** Persist one time series. */
   protected <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
-      TimeSeries<E, V> timeSeries, DbGridMetadata identifier) throws SQLException {
+      TimeSeries<E, V> timeSeries, DbGridMetadata identifier) {
     try {
       TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
       String[] headerElements = processorProvider.getHeaderElements(key);
@@ -252,14 +241,12 @@ public class SqlSink {
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element.", e);
-    } catch (IOException e) {
-      log.error("Exception occurred during closing of writer.", e);
     }
   }
 
   private <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries, String[] headerElements, DbGridMetadata identifier)
-      throws ProcessorProviderException, IOException {
+      throws ProcessorProviderException {
     try {
       String query =
           basicInsertQueryValuesITS(

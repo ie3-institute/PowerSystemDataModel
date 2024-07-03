@@ -61,11 +61,16 @@ public class SqlConnector implements DataConnector {
   /**
    * Executes an update query
    *
-   * @param updateQuery the query to execute
+   * @param query the query to execute
    * @return The number of updates or a negative number if the execution failed
    */
-  public int executeUpdate(String updateQuery) throws SQLException {
-    return getConnection().createStatement().executeUpdate(updateQuery);
+  public int executeUpdate(String query) throws SQLException {
+    try (Statement statement = getConnection().createStatement()) {
+      return statement.executeUpdate(query);
+    } catch (SQLException e) {
+      throw new SQLException(
+          String.format("Error at execution of query, SQLReason: '%s'", e.getMessage()), e);
+    }
   }
 
   /**
@@ -162,17 +167,21 @@ public class SqlConnector implements DataConnector {
    * @param tableName Name of the table, that should be checked
    * @return True, if the table exists
    */
-  public boolean tableExistsSQL(String tableName) throws SQLException {
-    PreparedStatement preparedStatement =
-        connection.prepareStatement(
-            "SELECT count(*) "
-                + "FROM information_schema.tables "
-                + "WHERE table_name = ?"
-                + "LIMIT 1;");
-    preparedStatement.setString(1, tableName);
+  public boolean tableExistsSQL(String tableName) {
+    String query =
+        "SELECT count(*) "
+            + "FROM information_schema.tables "
+            + "WHERE table_name = ?"
+            + "LIMIT 1;";
+    try (PreparedStatement ps = getConnection().prepareStatement(query)) {
+      ps.setString(1, tableName);
 
-    ResultSet resultSet = preparedStatement.executeQuery();
-    resultSet.next();
-    return resultSet.getInt(1) != 0;
+      ResultSet resultSet = ps.executeQuery();
+      resultSet.next();
+      return resultSet.getInt(1) != 0;
+    } catch (SQLException e) {
+      log.error("Error during execution of query {}", query, e);
+    }
+    return false;
   }
 }

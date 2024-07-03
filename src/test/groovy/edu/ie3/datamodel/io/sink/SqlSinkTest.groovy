@@ -277,7 +277,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
 
     then:
     def exception = thrown(SQLException)
-    exception.message.contains("ERROR: invalid input syntax for type uuid: \"null\"\n")
+    exception.message.contains("ERROR: null value in column \"node\" of relation \"pv_input\" violates not-null constraint")
 
     cleanup:
     sink.shutdown()
@@ -317,8 +317,8 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
 
     then:
     def exception = thrown(SQLException)
-    exception.message == "ERROR: insert or update on table \"load_input\" violates foreign key constraint \"load_input_node_fkey\"\n" +
-    "  Detail: Key (node)=(4ca90220-74c2-4369-9afa-a18bf068840d) is not present in table \"node_input\"."
+    exception.message.contains("ERROR: insert or update on table \"load_input\" violates foreign key constraint \"load_input_node_fkey\"\n" +
+    "  Detail: Key (node)=(4ca90220-74c2-4369-9afa-a18bf068840d) is not present in table \"node_input\".")
   }
 
   def "A valid SqlSink throws an exception if a grid does not exist."() {
