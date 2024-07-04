@@ -169,34 +169,26 @@ public class CsvDataSource implements DataSource {
     try {
       String[] fieldVals = parseCsvRow(csvRow, csvSep);
 
-      if (fieldVals.length > headline.length) {
+      if (fieldVals.length != headline.length) {
         throw new SourceException(
-            "The size of the fields is greater than the size of the headline. This can happen when using the old"
-                + " and now unsupported csv input format! Please refer to the docs to find the way to convert the"
-                + " input data into the new input format.");
+            "The size of the headline does not fit to the size of the attribute fields.\nHeadline: "
+                + String.join(", ", headline)
+                + "\nCsvRow: "
+                + csvRow.trim()
+                + ".\nPlease check:"
+                + "\n - is the csv separator in the file matching the separator provided in the constructor ('"
+                + csvSep
+                + "')"
+                + "\n - does the number of columns match the number of headline fields "
+                + "\n - are you using a valid RFC 4180 formatted csv row?");
       }
 
       insensitiveFieldsToAttributes.putAll(
-          IntStream.range(0, fieldVals.length)
+          IntStream.range(0, headline.length)
               .boxed()
               .collect(
                   Collectors.toMap(
                       k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
-
-      if (insensitiveFieldsToAttributes.size() != headline.length) {
-        Set<String> fieldsToAttributesKeySet = insensitiveFieldsToAttributes.keySet();
-        insensitiveFieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        throw new SourceException(
-            "The size of the headline does not fit to the size of the resulting fields to attributes mapping.\nHeadline: "
-                + String.join(", ", headline)
-                + "\nResultingMap: "
-                + String.join(", ", fieldsToAttributesKeySet)
-                + "\nCsvRow: "
-                + csvRow.trim()
-                + ".\nIs the csv separator in the file matching the separator provided in the constructor ('"
-                + csvSep
-                + "') and does the number of columns match the number of headline fields?");
-      }
     } catch (SourceException e) {
       log.error(
           "Cannot build fields to attributes map for row '{}' with headline '{}'.",

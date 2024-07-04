@@ -243,7 +243,6 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     ]
   }
 
-
   def "A CsvDataSource should build a valid fields to attributes map with valid data and empty value fields as expected"() {
     given:
     def validHeadline = [
@@ -296,6 +295,25 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too less columns"
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too much columns"
+  }
+
+  def "A CsvDataSource should be able to handle invalid headlines"() {
+    given:
+    def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,0.95,test_bmTypeInput,25.0"
+
+    expect:
+    dummyCsvSource.buildFieldsToAttributes(validCsvRow, invalidHeadline) == [:]
+
+    where:
+    invalidHeadline                                                || explaination
+    ["uuid", "cosphi_rated", "id"] as String[]                     || "headline too short"
+    [
+      "uuid",
+      "cosphi_rated",
+      "id",
+      "s_rated",
+      "capex"
+    ] as String[] || "headline too long"
   }
 
   def "The CsvDataSource is able to provide correct paths to time series files"() {
