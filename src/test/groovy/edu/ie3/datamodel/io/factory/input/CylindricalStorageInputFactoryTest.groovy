@@ -53,7 +53,6 @@ class CylindricalStorageInputFactoryTest  extends Specification implements Facto
       assert id == parameter["id"]
       assert thermalBus == thermalBusInput
       assert storageVolumeLvl == getQuant(parameter["storagevolumelvl"], StandardUnits.VOLUME)
-      assert storageVolumeLvlMin == getQuant(parameter["storagevolumelvlmin"], StandardUnits.VOLUME)
       assert inletTemp == getQuant(parameter["inlettemp"], StandardUnits.TEMPERATURE)
       assert returnTemp == getQuant(parameter["returntemp"], StandardUnits.TEMPERATURE)
       assert c == getQuant(parameter["c"], StandardUnits.SPECIFIC_HEAT_CAPACITY)
