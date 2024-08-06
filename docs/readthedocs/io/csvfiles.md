@@ -148,6 +148,9 @@ The following keys are supported until now:
    * - pqh
      - | Active, reactive and heat power
        | Permissible head line: ``time,p,q,h``
+   * - v
+     - | Voltage mangnitude in pu and angle in °
+       | Permissible head line: ``time,vMag,vAng``
    * - weather
      - | Weather information
        | Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``

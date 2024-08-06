@@ -12,7 +12,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import static tech.units.indriya.unit.Units.METRE_PER_SECOND
 
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException
-import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.AssetInput

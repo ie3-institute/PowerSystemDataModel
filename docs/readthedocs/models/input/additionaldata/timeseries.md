@@ -32,10 +32,12 @@ The following different values are available:
      - Electrical active and reactive power
      
    * - `HeatAndPValue`
-     - Combination of thermal power (e.g. in kW) <br> and electrical active power (e.g. in kW)
+     - | Combination of thermal power (e.g. in kW) 
+       | and electrical active power (e.g. in kW)
      
    * - `HeatAndSValue`
-     -  Combination of thermal power (e.g. in kW) <br> and electrical active and reactive power (e.g. in kW and kVAr)
+     - | Combination of thermal power (e.g. in kW) 
+       | and electrical active and reactive power (e.g. in kW and kVAr)
      
    * - `EnergyPriceValue`
      - Wholesale market price (e.g. in € / MWh)
@@ -48,7 +50,10 @@ The following different values are available:
      
    * - `WindValue`
      - Combination of wind direction and wind velocity
-        
+   
+   * - `VoltageValue`
+     - Combination of voltage magnitude in pu and angle in °
+   
    * - `WeatherValue`
      - Combination of irradiance, temperature and wind information
            
