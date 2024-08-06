@@ -30,14 +30,15 @@ class CsvTimeSeriesMetaInformationSourceIT extends Specification implements CsvT
         new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5"), ColumnScheme.ACTIVE_POWER, Path.of('its_p_9185b8c1-86ba-4a16-8dea-5ac898e8caa5')),
         new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26"), ColumnScheme.APPARENT_POWER, Path.of('its_pq_3fbfaa97-cff4-46d4-95ba-a95665e87c26')),
         new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND, Path.of('its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047')),
-        new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("1061af70-1c03-46e1-b960-940b956c429f"), ColumnScheme.APPARENT_POWER, Path.of('its_pq_1061af70-1c03-46e1-b960-940b956c429f'))
+        new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("1061af70-1c03-46e1-b960-940b956c429f"), ColumnScheme.APPARENT_POWER, Path.of('its_pq_1061af70-1c03-46e1-b960-940b956c429f')),
+        new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("eeccbe3c-a47e-448e-8eca-1f369d3c24e6"), ColumnScheme.VOLTAGE, Path.of("its_v_eeccbe3c-a47e-448e-8eca-1f369d3c24e6"))
         )
 
     when:
     def actual = source.timeSeriesMetaInformation
 
     then:
-    actual.size() == 7
+    actual.size() == 8
     actual.every {
       it.key == it.value.uuid &&
           expectedTimeSeries.contains(it.value)
@@ -62,6 +63,7 @@ class CsvTimeSeriesMetaInformationSourceIT extends Specification implements CsvT
     "3fbfaa97-cff4-46d4-95ba-a95665e87c26" || "pq"
     "46be1e57-e4ed-4ef7-95f1-b2b321cb2047" || "pqh"
     "1061af70-1c03-46e1-b960-940b956c429f" || "pq"
+    "eeccbe3c-a47e-448e-8eca-1f369d3c24e6" || "v"
   }
 
   def "The CSV time series meta information source returns an empty optional for an unknown time series UUID"() {

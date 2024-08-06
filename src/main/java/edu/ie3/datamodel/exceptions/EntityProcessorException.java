@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.exceptions;
 
 /**
- * Is thrown, when an something went wrong during entity field mapping creation in a {@link
+ * Is thrown, when something went wrong during entity field mapping creation in a {@link
  * edu.ie3.datamodel.io.processor.EntityProcessor}
  */
 public class EntityProcessorException extends Exception {

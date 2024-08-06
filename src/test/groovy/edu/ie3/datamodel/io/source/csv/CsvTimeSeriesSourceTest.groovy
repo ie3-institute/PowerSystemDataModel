@@ -78,5 +78,6 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7") | ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND   | Path.of("its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7")  || 2               | HeatAndPValue
     UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26") | ColumnScheme.APPARENT_POWER                 | Path.of("its_pq_3fbfaa97-cff4-46d4-95ba-a95665e87c26")  || 2               | SValue
     UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047") | ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND | Path.of("its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047") || 2               | HeatAndSValue
+    UUID.fromString("eeccbe3c-a47e-448e-8eca-1f369d3c24e6") | ColumnScheme.VOLTAGE                        | Path.of("its_v_eeccbe3c-a47e-448e-8eca-1f369d3c24e6")   || 2               | VoltageValue
   }
 }
