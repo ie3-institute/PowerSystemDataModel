@@ -5,14 +5,14 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.test.helper.EntityMap.map
+
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.exceptions.SystemParticipantsException
 import edu.ie3.datamodel.io.source.*
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Specification
-
-import static edu.ie3.test.helper.EntityMap.map
 
 class CsvSystemParticipantSourceTest extends Specification implements CsvTestDataMeta {
 
