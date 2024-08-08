@@ -35,7 +35,10 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
       "ethcapa"              : "4",
       "targetTemperature"    : "5",
       "upperTemperatureLimit": "6",
-      "lowerTemperatureLimit": "7"
+      "lowerTemperatureLimit": "7",
+      "housingType"          : "flat",
+      "numberInhabitants"    : "9",
+
     ]
     def inputClass = ThermalHouseInput
     def thermalBusInput = Mock(ThermalBusInput)
@@ -57,6 +60,8 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
       assert targetTemperature == getQuant(parameter["targetTemperature"], StandardUnits.TEMPERATURE)
       assert upperTemperatureLimit == getQuant(parameter["upperTemperatureLimit"], StandardUnits.TEMPERATURE)
       assert lowerTemperatureLimit == getQuant(parameter["lowerTemperatureLimit"], StandardUnits.TEMPERATURE)
+      assert housingType == parameter["housingType"]
+      assert numberInhabitants == parameter["numberInhabitants"].toInteger()
     }
   }
 }

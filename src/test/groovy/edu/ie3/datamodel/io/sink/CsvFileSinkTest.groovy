@@ -165,7 +165,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
       GridTestData.transformerCtoG,
       GridTestData.lineGraphicCtoD,
       GridTestData.nodeGraphicC,
-      ThermalUnitInputTestData.cylindricStorageInput,
+      ThermalUnitInputTestData.cylindricalStorageInput,
       ThermalUnitInputTestData.thermalHouseInput,
       SystemParticipantTestData.evcsInput,
       SystemParticipantTestData.loadInput,

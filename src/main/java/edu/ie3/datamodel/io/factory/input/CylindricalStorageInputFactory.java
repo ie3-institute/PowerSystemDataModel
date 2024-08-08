@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.UUID;
+import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
@@ -23,6 +24,7 @@ public class CylindricalStorageInputFactory
   private static final String INLET_TEMP = "inletTemp";
   private static final String RETURN_TEMP = "returnTemp";
   private static final String C = "c";
+  private static final String P_THERMAL_MAX = "pThermalMax";
 
   public CylindricalStorageInputFactory() {
     super(CylindricalStorageInput.class);
@@ -30,7 +32,9 @@ public class CylindricalStorageInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {STORAGE_VOLUME_LVL, STORAGE_VOLUME_LVL_MIN, INLET_TEMP, RETURN_TEMP, C};
+    return new String[] {
+      STORAGE_VOLUME_LVL, STORAGE_VOLUME_LVL_MIN, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX
+    };
   }
 
   @Override
@@ -51,6 +55,8 @@ public class CylindricalStorageInputFactory
         data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE);
     final ComparableQuantity<SpecificHeatCapacity> c =
         data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
+    final ComparableQuantity<Power> pThermalMax =
+        data.getQuantity(P_THERMAL_MAX, StandardUnits.ACTIVE_POWER_IN);
     return new CylindricalStorageInput(
         uuid,
         id,
@@ -61,6 +67,7 @@ public class CylindricalStorageInputFactory
         storageVolumeLvlMin,
         inletTemp,
         returnTemp,
-        c);
+        c,
+        pThermalMax);
   }
 }

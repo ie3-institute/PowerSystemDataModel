@@ -36,6 +36,9 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   private static final ComparableQuantity<Temperature> TARGET_TEMPERATURE = Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> UPPER_TEMPERATURE_LIMIT = Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> LOWER_TEMPERATURE_LIMIT = Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
+  private static final String HOUSING_TYPE = "house"
+  private static final Integer NUMBER_INHABITANTS = 2
+
   public static final thermalHouseInput = new ThermalHouseInput(
   thermalUnitUuid,
   "test_thermalHouseInput",
@@ -46,16 +49,19 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   ethCapa,
   TARGET_TEMPERATURE,
   UPPER_TEMPERATURE_LIMIT,
-  LOWER_TEMPERATURE_LIMIT)
+  LOWER_TEMPERATURE_LIMIT,
+  HOUSING_TYPE,
+  NUMBER_INHABITANTS)
 
-  // thermal cylindric storage input
+  // thermal cylindrical storage input
   private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
   private static final ComparableQuantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(10, StandardUnits.VOLUME)
   private static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
+  private static final ComparableQuantity<SpecificHeatCapacity> pThermalMax = Quantities.getQuantity(20, StandardUnits.ACTIVE_POWER_IN)
 
-  public static final cylindricStorageInput = new CylindricalStorageInput(
+  public static final cylindricalStorageInput = new CylindricalStorageInput(
   thermalUnitUuid,
   "test_cylindricStorageInput",
   operator,
@@ -65,5 +71,6 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   storageVolumeLvlMin,
   inletTemp,
   returnTemp,
-  c)
+  c,
+  pThermalMax)
 }

@@ -134,10 +134,10 @@ class ExtractorTest extends Specification {
       tutd.thermalBus.operator
     ]
 
-    tutd.cylindricStorageInput || [
-      tutd.cylindricStorageInput.operator,
-      tutd.cylindricStorageInput.thermalBus,
-      tutd.cylindricStorageInput.thermalBus.operator
+    tutd.cylindricalStorageInput || [
+      tutd.cylindricalStorageInput.operator,
+      tutd.cylindricalStorageInput.thermalBus,
+      tutd.cylindricalStorageInput.thermalBus.operator
     ]
 
     tutd.thermalHouseInput     || [

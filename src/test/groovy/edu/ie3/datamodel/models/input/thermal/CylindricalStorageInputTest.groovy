@@ -13,7 +13,7 @@ class CylindricalStorageInputTest extends Specification {
 
   def "A CylindricalStorageInput copy method should work as expected"() {
     given:
-    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricStorageInput
+    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricalStorageInput
 
     when:
     def alteredUnit = cylindricalStorageInput.copy().storageVolumeLvl(ThermalUnitInputTestData.storageVolumeLvl)
@@ -39,7 +39,7 @@ class CylindricalStorageInputTest extends Specification {
 
   def "Scaling a CylindricalStorageInput via builder should work as expected"() {
     given:
-    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricStorageInput
+    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricalStorageInput
 
     when:
     def alteredUnit = cylindricalStorageInput.copy().scale(2d).build()
@@ -56,6 +56,7 @@ class CylindricalStorageInputTest extends Specification {
       assert inletTemp == cylindricalStorageInput.inletTemp
       assert returnTemp == cylindricalStorageInput.returnTemp
       assert c == cylindricalStorageInput.c
+      assert pThermalMax == cylindricalStorageInput.pThermalMax * 2d
     }
   }
 }

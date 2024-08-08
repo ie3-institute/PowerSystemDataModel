@@ -23,6 +23,8 @@ public class ThermalHouseInputFactory
   private static final String TARGET_TEMPERATURE = "targetTemperature";
   private static final String UPPER_TEMPERATURE_LIMIT = "upperTemperatureLimit";
   private static final String LOWER_TEMPERATURE_LIMIT = "lowerTemperatureLimit";
+  private static final String HOUSING_TYPE = "housingType";
+  private static final String NUMBER_INHABITANTS = "numberInhabitants";
 
   public ThermalHouseInputFactory() {
     super(ThermalHouseInput.class);
@@ -31,7 +33,13 @@ public class ThermalHouseInputFactory
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {
-      ETH_LOSSES, ETH_CAPA, TARGET_TEMPERATURE, UPPER_TEMPERATURE_LIMIT, LOWER_TEMPERATURE_LIMIT
+      ETH_LOSSES,
+      ETH_CAPA,
+      TARGET_TEMPERATURE,
+      UPPER_TEMPERATURE_LIMIT,
+      LOWER_TEMPERATURE_LIMIT,
+      HOUSING_TYPE,
+      NUMBER_INHABITANTS
     };
   }
 
@@ -53,6 +61,8 @@ public class ThermalHouseInputFactory
         data.getQuantity(UPPER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE);
     final ComparableQuantity<Temperature> lowerTemperatureLimit =
         data.getQuantity(LOWER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE);
+    final String housingType = data.getField(HOUSING_TYPE);
+    final Integer numberInhabitants = data.getInt(NUMBER_INHABITANTS);
     return new ThermalHouseInput(
         uuid,
         id,
@@ -63,6 +73,8 @@ public class ThermalHouseInputFactory
         ethCapa,
         targetTemperature,
         upperTemperatureLimit,
-        lowerTemperatureLimit);
+        lowerTemperatureLimit,
+        housingType,
+        numberInhabitants);
   }
 }

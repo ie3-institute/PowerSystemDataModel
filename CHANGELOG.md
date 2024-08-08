@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ConnectorValidationUtils` checks if parallel devices is > 0 [#1077](https://github.com/ie3-institute/PowerSystemDataModel/issues/1077)
 - `GridContainerValidationUtils` checks the connectivity for all defined operation time intervals [#1091](https://github.com/ie3-institute/PowerSystemDataModel/issues/1091)
 - Implemented a `CongestionResult` [#1097](https://github.com/ie3-institute/PowerSystemDataModel/issues/1097)
+- Attribute `pThermalRated` for `ThermalStorage`s [#1131](https://github.com/ie3-institute/PowerSystemDataModel/issues/1131)
+- Attributes `housingType` and `numberInhabitants` for `ThermalHouse`s [#1131](https://github.com/ie3-institute/PowerSystemDataModel/issues/1131)
+- Added domestic hot water storage model [#1131](https://github.com/ie3-institute/PowerSystemDataModel/issues/1131)
 
 ### Fixed
 - Fixed `MappingEntryies` not getting processed by adding `Getter` methods for record fields [#1084](https://github.com/ie3-institute/PowerSystemDataModel/issues/1084) 
