@@ -41,7 +41,7 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
 
   public static final thermalHouseInput = new ThermalHouseInput(
   thermalUnitUuid,
-  "test_thermalHouseInput",
+  "testThermalHouseInput",
   operator,
   operationTime,
   thermalBus,
@@ -63,7 +63,7 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
 
   public static final cylindricalStorageInput = new CylindricalStorageInput(
   thermalUnitUuid,
-  "test_cylindricStorageInput",
+  "testCylindricStorageInput",
   operator,
   operationTime,
   thermalBus,
