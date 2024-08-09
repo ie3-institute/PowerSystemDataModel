@@ -70,12 +70,16 @@ public class CsvThermalGridSource {
     Try<Collection<ThermalHouseInput>, SourceException> houses =
         Try.of(
             () -> thermalSource.getThermalHouses(operators, buses).values(), SourceException.class);
-    Try<Collection<ThermalStorageInput>, SourceException> storages =
+    Try<Collection<ThermalStorageInput>, SourceException> heatStorages =
+        Try.of(
+            () -> thermalSource.getThermalStorages(operators, buses).values(),
+            SourceException.class);
+    Try<Collection<ThermalStorageInput>, SourceException> waterStorages =
         Try.of(
             () -> thermalSource.getThermalStorages(operators, buses).values(),
             SourceException.class);
 
-    List<? extends Exception> exceptions = Try.getExceptions(houses, storages);
+    List<? extends Exception> exceptions = Try.getExceptions(houses, heatStorages, waterStorages);
 
     if (!exceptions.isEmpty()) {
       throw new SourceException(
@@ -87,16 +91,20 @@ public class CsvThermalGridSource {
       Map<ThermalBusInput, Set<ThermalHouseInput>> houseInputs =
           houses.getOrThrow().stream()
               .collect(Collectors.groupingBy(ThermalUnitInput::getThermalBus, Collectors.toSet()));
-      Map<ThermalBusInput, Set<ThermalStorageInput>> storageInputs =
-          storages.getOrThrow().stream()
+      Map<ThermalBusInput, Set<ThermalStorageInput>> heatStorageInputs =
+          heatStorages.getOrThrow().stream()
+              .collect(Collectors.groupingBy(ThermalUnitInput::getThermalBus, Collectors.toSet()));
+      Map<ThermalBusInput, Set<ThermalStorageInput>> waterStorageInputs =
+          waterStorages.getOrThrow().stream()
               .collect(Collectors.groupingBy(ThermalUnitInput::getThermalBus, Collectors.toSet()));
 
       return buses.values().stream()
           .map(
               bus -> {
                 Set<ThermalHouseInput> h = houseInputs.getOrDefault(bus, emptySet());
-                Set<ThermalStorageInput> s = storageInputs.getOrDefault(bus, emptySet());
-                return new ThermalGrid(bus, h, s);
+                Set<ThermalStorageInput> hs = heatStorageInputs.getOrDefault(bus, emptySet());
+                Set<ThermalStorageInput> ws = waterStorageInputs.getOrDefault(bus, emptySet());
+                return new ThermalGrid(bus, h, hs, ws);
               })
           .toList();
     }

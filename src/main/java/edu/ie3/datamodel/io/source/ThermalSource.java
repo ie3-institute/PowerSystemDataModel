@@ -9,10 +9,7 @@ import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
-import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
-import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
-import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
+import edu.ie3.datamodel.models.input.thermal.*;
 import edu.ie3.datamodel.utils.Try;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +31,7 @@ public class ThermalSource extends AssetEntitySource {
   // factories
   private final ThermalBusInputFactory thermalBusInputFactory;
   private final CylindricalStorageInputFactory cylindricalStorageInputFactory;
+  private final DomesticHotWaterStorageInputFactory domesticHotWaterStorageInputFactory;
   private final ThermalHouseInputFactory thermalHouseInputFactory;
 
   // enriching function
@@ -51,6 +49,7 @@ public class ThermalSource extends AssetEntitySource {
 
     this.thermalBusInputFactory = new ThermalBusInputFactory();
     this.cylindricalStorageInputFactory = new CylindricalStorageInputFactory();
+    this.domesticHotWaterStorageInputFactory = new DomesticHotWaterStorageInputFactory();
     this.thermalHouseInputFactory = new ThermalHouseInputFactory();
   }
 
@@ -60,6 +59,10 @@ public class ThermalSource extends AssetEntitySource {
             Stream.of(
                 validate(ThermalBusInput.class, dataSource, thermalBusInputFactory),
                 validate(CylindricalStorageInput.class, dataSource, cylindricalStorageInputFactory),
+                validate(
+                    DomesticHotWaterStorageInput.class,
+                    dataSource,
+                    domesticHotWaterStorageInputFactory),
                 validate(ThermalHouseInput.class, dataSource, thermalHouseInputFactory)),
             "Validation")
         .transformF(FailedValidationException::new)
@@ -122,6 +125,7 @@ public class ThermalSource extends AssetEntitySource {
    */
   public Map<UUID, ThermalStorageInput> getThermalStorages() throws SourceException {
     return getCylindricalStorages().stream().collect(toMap());
+    // FIXME
   }
 
   /**
@@ -215,6 +219,23 @@ public class ThermalSource extends AssetEntitySource {
   }
 
   /**
+   * Returns a unique set of {@link DomesticHotWaterStorageInput} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link DomesticHotWaterStorageInput} which has to be
+   * checked manually, as {@link DomesticHotWaterStorageInput#equals(Object)} is NOT restricted on
+   * the uuid of {@link DomesticHotWaterStorageInput}.
+   *
+   * @return a set of object- and uuid-unique {@link DomesticHotWaterStorageInput} entities
+   */
+  public Set<DomesticHotWaterStorageInput> getDomesticHotWaterStorages() throws SourceException {
+    Map<UUID, OperatorInput> operators = typeSource.getOperators();
+    Map<UUID, ThermalBusInput> thermalBuses = getThermalBuses();
+
+    return getDomesticHotWaterStorages(operators, thermalBuses);
+  }
+
+  /**
    * Returns a set of {@link CylindricalStorageInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
@@ -241,6 +262,37 @@ public class ThermalSource extends AssetEntitySource {
             CylindricalStorageInput.class,
             dataSource,
             cylindricalStorageInputFactory,
+            data -> thermalUnitEnricher.apply(data, operators, thermalBuses))
+        .collect(toSet());
+  }
+
+  /**
+   * Returns a set of {@link DomesticHotWaterStorageInput} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link DomesticHotWaterStorageInput} which has to be
+   * checked manually, as {@link DomesticHotWaterStorageInput#equals(Object)} is NOT restricted on
+   * the uuid of {@link DomesticHotWaterStorageInput}.
+   *
+   * <p>In contrast to {@link #getDomesticHotWaterStorages()} this interface provides the ability to
+   * pass in an already existing set of {@link OperatorInput} entities, the {@link
+   * DomesticHotWaterStorageInput} instances depend on. Doing so, already loaded nodes can be
+   * recycled to improve performance and prevent unnecessary loading operations.
+   *
+   * <p>If something fails during the creation process it's up to the concrete implementation of an
+   * empty set or a set with all entities that has been able to be build is returned.
+   *
+   * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
+   * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
+   * @return a set of object- and uuid-unique {@link DomesticHotWaterStorageInput} entities
+   */
+  public Set<DomesticHotWaterStorageInput> getDomesticHotWaterStorages(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
+      throws SourceException {
+    return getEntities(
+            DomesticHotWaterStorageInput.class,
+            dataSource,
+            domesticHotWaterStorageInputFactory,
             data -> thermalUnitEnricher.apply(data, operators, thermalBuses))
         .collect(toSet());
   }

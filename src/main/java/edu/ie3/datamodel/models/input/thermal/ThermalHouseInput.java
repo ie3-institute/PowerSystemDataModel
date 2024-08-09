@@ -41,6 +41,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
    * @param targetTemperature Desired target temperature of the thermal house model
    * @param upperTemperatureLimit Upper boundary temperature of the thermal house model
    * @param lowerTemperatureLimit Lower boundary temperature of the thermal house model
+   * @param housingType Type of the building: either house or flat
+   * @param numberInhabitants Number of inhabitants living in this house
    */
   public ThermalHouseInput(
       UUID uuid,
@@ -74,6 +76,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
    * @param targetTemperature Desired target temperature of the thermal house model
    * @param upperTemperatureLimit Upper boundary temperature of the thermal house model
    * @param lowerTemperatureLimit Lower boundary temperature of the thermal house model
+   * @param housingType Type of the building: either house or flat
+   * @param numberInhabitants Number of inhabitants living in this house
    */
   public ThermalHouseInput(
       UUID uuid,
@@ -256,10 +260,11 @@ public class ThermalHouseInput extends ThermalSinkInput {
 
     @Override
     public ThermalHouseInputCopyBuilder scale(Double factor) {
-      // scale losses as well as capacity to keep equal
+      // scale losses as well as capacity and number of inhabitants to keep equal
       // the time needed to heat a scaled house
       ethLosses(ethLosses.multiply(factor));
       ethCapa(ethCapa.multiply(factor));
+      numberInhabitants((int) Math.round(numberInhabitants.doubleValue() * factor));
       return this;
     }
 

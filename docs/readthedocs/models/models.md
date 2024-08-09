@@ -129,6 +129,7 @@ maxdepth: 1
 input/thermal/thermalbus
 input/thermal/thermalhouse
 input/thermal/cylindricalstorage
+input/thermal/domestichotwaterstorage
 ```
 
 ### Participant Related Models

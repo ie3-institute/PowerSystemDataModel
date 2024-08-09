@@ -18,21 +18,31 @@ import java.util.stream.Collectors;
  * edu.ie3.datamodel.models.input.thermal.ThermalUnitInput}s
  */
 public record ThermalGrid(
-    ThermalBusInput bus, Set<ThermalHouseInput> houses, Set<ThermalStorageInput> storages)
+    ThermalBusInput bus,
+    Set<ThermalHouseInput> houses,
+    Set<ThermalStorageInput> heatStorages,
+    Set<ThermalStorageInput> domesticHotWaterStorages)
     implements InputContainer<ThermalInput> {
   public ThermalGrid(
       ThermalBusInput bus,
       Collection<ThermalHouseInput> houses,
-      Collection<ThermalStorageInput> storages) {
-    this(bus, new HashSet<>(houses), new HashSet<>(storages));
+      Collection<ThermalStorageInput> heatStorages,
+      Collection<ThermalStorageInput> domesticHotWaterStorages) {
+    this(
+        bus,
+        new HashSet<>(houses),
+        new HashSet<>(heatStorages),
+        new HashSet<>(domesticHotWaterStorages));
   }
 
   @Override
   public List<ThermalInput> allEntitiesAsList() {
-    List<ThermalInput> ret = new ArrayList<>(houses.size() + storages.size() + 1);
+    List<ThermalInput> ret =
+        new ArrayList<>(houses.size() + heatStorages.size() + domesticHotWaterStorages.size() + 1);
     ret.add(bus);
     ret.addAll(houses);
-    ret.addAll(storages);
+    ret.addAll(heatStorages);
+    ret.addAll(domesticHotWaterStorages);
     return ret;
   }
 
@@ -48,8 +58,10 @@ public record ThermalGrid(
         + bus
         + ", #houses="
         + houses.size()
-        + ", #storages="
-        + storages.size()
+        + ", #heatStorages="
+        + heatStorages.size()
+        + ", #domesticHotWaterStorages="
+        + domesticHotWaterStorages.size()
         + '}';
   }
 
@@ -63,7 +75,8 @@ public record ThermalGrid(
   public static class ThermalGridCopyBuilder implements InputContainerCopyBuilder<ThermalInput> {
     private ThermalBusInput bus;
     private Set<ThermalHouseInput> houses;
-    private Set<ThermalStorageInput> storages;
+    private Set<ThermalStorageInput> heatStorages;
+    private Set<ThermalStorageInput> domesticHotWaterStorages;
 
     /**
      * Constructor for {@link ThermalGridCopyBuilder}
@@ -73,7 +86,8 @@ public record ThermalGrid(
     protected ThermalGridCopyBuilder(ThermalGrid thermalGrid) {
       this.bus = thermalGrid.bus();
       this.houses = thermalGrid.houses();
-      this.storages = thermalGrid.storages();
+      this.heatStorages = thermalGrid.heatStorages();
+      this.domesticHotWaterStorages = thermalGrid.domesticHotWaterStorages();
     }
 
     /**
@@ -101,11 +115,23 @@ public record ThermalGrid(
     /**
      * Method to alter {@link ThermalStorageInput}
      *
-     * @param storages altered thermal storages
+     * @param heatStorages altered thermal storages
      * @return this instance of {@link ThermalGridCopyBuilder}
      */
-    public ThermalGridCopyBuilder storages(Set<ThermalStorageInput> storages) {
-      this.storages = storages;
+    public ThermalGridCopyBuilder heatStorages(Set<ThermalStorageInput> heatStorages) {
+      this.heatStorages = heatStorages;
+      return this;
+    }
+
+    /**
+     * Method to alter {@link ThermalStorageInput}
+     *
+     * @param domesticHotWaterStorages altered thermal storages
+     * @return this instance of {@link ThermalGridCopyBuilder}
+     */
+    public ThermalGridCopyBuilder domesticHotWaterStorages(
+        Set<ThermalStorageInput> domesticHotWaterStorages) {
+      this.domesticHotWaterStorages = domesticHotWaterStorages;
       return this;
     }
 
@@ -114,8 +140,12 @@ public record ThermalGrid(
           houses.stream()
               .map(house -> house.copy().scale(factor).build())
               .collect(Collectors.toSet()));
-      storages(
-          storages.stream()
+      heatStorages(
+          heatStorages.stream()
+              .map(storage -> storage.copy().scale(factor).build())
+              .collect(Collectors.toSet()));
+      domesticHotWaterStorages(
+          domesticHotWaterStorages.stream()
               .map(storage -> storage.copy().scale(factor).build())
               .collect(Collectors.toSet()));
       return this;
@@ -123,7 +153,7 @@ public record ThermalGrid(
 
     @Override
     public ThermalGrid build() {
-      return new ThermalGrid(bus, houses, storages);
+      return new ThermalGrid(bus, houses, heatStorages, domesticHotWaterStorages);
     }
   }
 }
