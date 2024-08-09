@@ -107,6 +107,8 @@ package models {
                 - targetTemperature: ComparableQuantity<Temperature> [°C]
                 - upperTemperatureLimit: ComparableQuantity<Temperature> [°C]
                 - lowerTemperatureLimit: ComparableQuantity<Temperature> [°C]
+                - houseType: String ['house' or 'flat']
+                - numberInhabitants: Integer
             }
             ThermalHouseInput --|> ThermalSinkInput
 
@@ -120,6 +122,14 @@ package models {
                 - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
             }
             CylindricalStorageInput --|> ThermalStorageInput
+
+            class DomesticHotWaterStorageInput {
+                            - storageVolumeLvl: ComparableQuantity<Volume> [m³]
+                            - inletTemp: ComparableQuantity<Temperature> [°C]
+                            - returnTemp: ComparableQuantity<Temperature> [°C]
+                            - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
+                        }
+                        DomesticHotWaterStorageInput --|> ThermalStorageInput
         }
     }
 }
