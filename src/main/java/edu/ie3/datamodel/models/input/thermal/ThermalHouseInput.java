@@ -29,8 +29,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
   private final ComparableQuantity<Temperature> lowerTemperatureLimit;
   /** Type of the building, e.g. house or flat */
   private final String housingType;
-  /** Number of people living in the building */
-  private final Integer numberInhabitants;
+  /** Number of people living in the building, double to allow proper scaling */
+  private final double numberInhabitants;
 
   /**
    * @param uuid Unique identifier of a thermal house model
@@ -54,7 +54,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
       ComparableQuantity<Temperature> upperTemperatureLimit,
       ComparableQuantity<Temperature> lowerTemperatureLimit,
       String housingType,
-      Integer numberInhabitants) {
+      double numberInhabitants) {
     super(uuid, id, bus);
     this.ethLosses = ethLosses.to(StandardUnits.THERMAL_TRANSMISSION);
     this.ethCapa = ethCapa.to(StandardUnits.HEAT_CAPACITY);
@@ -91,7 +91,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
       ComparableQuantity<Temperature> upperTemperatureLimit,
       ComparableQuantity<Temperature> lowerTemperatureLimit,
       String housingType,
-      Integer numberInhabitants) {
+      double numberInhabitants) {
     super(uuid, id, operator, operationTime, bus);
     this.ethLosses = ethLosses.to(StandardUnits.THERMAL_TRANSMISSION);
     this.ethCapa = ethCapa.to(StandardUnits.HEAT_CAPACITY);
@@ -126,7 +126,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
     return housingType;
   }
 
-  public Integer getNumberOfInhabitants() {
+  public double getNumberOfInhabitants() {
     return numberInhabitants;
   }
 
@@ -206,7 +206,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
     private ComparableQuantity<Temperature> upperTemperatureLimit;
     private ComparableQuantity<Temperature> lowerTemperatureLimit;
     private String housingType;
-    private Integer numberInhabitants;
+    private double numberInhabitants;
 
     private ThermalHouseInputCopyBuilder(ThermalHouseInput entity) {
       super(entity);
@@ -253,7 +253,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
       return this;
     }
 
-    public ThermalHouseInputCopyBuilder numberInhabitants(Integer numberInhabitants) {
+    public ThermalHouseInputCopyBuilder numberInhabitants(double numberInhabitants) {
       this.numberInhabitants = numberInhabitants;
       return this;
     }
@@ -264,7 +264,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
       // the time needed to heat a scaled house
       ethLosses(ethLosses.multiply(factor));
       ethCapa(ethCapa.multiply(factor));
-      numberInhabitants((int) Math.round(numberInhabitants.doubleValue() * factor));
+      numberInhabitants(numberInhabitants * factor);
       return this;
     }
 

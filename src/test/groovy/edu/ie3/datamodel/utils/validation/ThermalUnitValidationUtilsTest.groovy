@@ -47,7 +47,7 @@ class ThermalUnitValidationUtilsTest extends Specification {
   private static final ComparableQuantity<Temperature> UPPER_TEMPERATURE_LIMIT = Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> LOWER_TEMPERATURE_LIMIT = Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
   private static final String HOUSING_TYPE = "House"
-  private static final Integer NUMBER_INHABITANTS = 2
+  private static final Integer NUMBER_INHABITANTS = 2.0
 
   // Specific data for thermal cylindric storage input
   private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
@@ -87,7 +87,7 @@ class ThermalUnitValidationUtilsTest extends Specification {
     new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, ethCapa, TARGET_TEMPERATURE, Quantities.getQuantity(0, StandardUnits.TEMPERATURE), LOWER_TEMPERATURE_LIMIT, HOUSING_TYPE, NUMBER_INHABITANTS)                   || 1            || new InvalidEntityException("Target temperature must be higher than lower temperature limit and lower than upper temperature limit", invalidThermalHouse)
     new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, ethCapa, TARGET_TEMPERATURE, UPPER_TEMPERATURE_LIMIT, Quantities.getQuantity(30, StandardUnits.TEMPERATURE), HOUSING_TYPE, NUMBER_INHABITANTS)                  || 1            || new InvalidEntityException("Target temperature must be higher than lower temperature limit and lower than upper temperature limit", invalidThermalHouse)
     new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, ethCapa, TARGET_TEMPERATURE, UPPER_TEMPERATURE_LIMIT, LOWER_TEMPERATURE_LIMIT, "someWrongType", NUMBER_INHABITANTS)                                             || 1            || new InvalidEntityException("Housing type must be either 'house' or 'flat'", invalidThermalHouse)
-    new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, ethCapa, TARGET_TEMPERATURE, UPPER_TEMPERATURE_LIMIT, LOWER_TEMPERATURE_LIMIT, HOUSING_TYPE, 0)                                                                 || 1            || new InvalidEntityException("Number of inhabitants must be greater than zero", invalidThermalHouse)
+    new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, ethCapa, TARGET_TEMPERATURE, UPPER_TEMPERATURE_LIMIT, LOWER_TEMPERATURE_LIMIT, HOUSING_TYPE, 0d)                                                                || 1            || new InvalidEntityException("Number of inhabitants must be greater than zero", invalidThermalHouse)
   }
 
   // Thermal Cylindrical Storage
@@ -121,20 +121,20 @@ class ThermalUnitValidationUtilsTest extends Specification {
   }
 
 
-def "ThermalUnitValidationUtils.checkDomesticHotWaterStorage() recognizes all potential errors for a domestic hot water storage"() {
-  when:
-  List<Try<Void, ? extends ValidationException>> exceptions = ThermalUnitValidationUtils.check(invalidDomesticHotWaterStorage).stream().filter { it -> it.failure }.toList()
+  def "ThermalUnitValidationUtils.checkDomesticHotWaterStorage() recognizes all potential errors for a domestic hot water storage"() {
+    when:
+    List<Try<Void, ? extends ValidationException>> exceptions = ThermalUnitValidationUtils.check(invalidDomesticHotWaterStorage).stream().filter { it -> it.failure }.toList()
 
-  then:
-  exceptions.size() == expectedSize
-  Exception ex = exceptions.get(0).exception.get()
-  ex.class == expectedException.class
-  ex.message == expectedException.message
+    then:
+    exceptions.size() == expectedSize
+    Exception ex = exceptions.get(0).exception.get()
+    ex.class == expectedException.class
+    ex.message == expectedException.message
 
-  where:
-  invalidDomesticHotWaterStorage                                                                                                                                                                                                                                                                                                   || expectedSize || expectedException
-  new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c, Quantities.getQuantity(20, PowerSystemUnits.KILOWATT))                 || 1            || new InvalidEntityException("Inlet temperature of the domestic hot water storage cannot be lower than outlet temperature", invalidDomesticHotWaterStorage)
-  new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY), Quantities.getQuantity(20, PowerSystemUnits.KILOWATT))      || 1            || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -1.05 kWh/K*m³", invalidDomesticHotWaterStorage)
-  new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY),  Quantities.getQuantity(-20, PowerSystemUnits.KILOWATT))    || 1            || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -1.05 kWh/K*m³, -20 kW", invalidDomesticHotWaterStorage)
-
-}}
+    where:
+    invalidDomesticHotWaterStorage                                                                                                                                                                                                                                                                                                   || expectedSize || expectedException
+    new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c, Quantities.getQuantity(20, PowerSystemUnits.KILOWATT))                 || 1            || new InvalidEntityException("Inlet temperature of the domestic hot water storage cannot be lower than outlet temperature", invalidDomesticHotWaterStorage)
+    new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY), Quantities.getQuantity(20, PowerSystemUnits.KILOWATT))      || 1            || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -1.05 kWh/K*m³", invalidDomesticHotWaterStorage)
+    new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY),  Quantities.getQuantity(-20, PowerSystemUnits.KILOWATT))    || 1            || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -1.05 kWh/K*m³, -20 kW", invalidDomesticHotWaterStorage)
+  }
+}
