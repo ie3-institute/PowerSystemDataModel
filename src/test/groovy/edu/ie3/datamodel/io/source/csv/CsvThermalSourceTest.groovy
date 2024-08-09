@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.source.ThermalSource
 import edu.ie3.datamodel.io.source.TypeSource
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import edu.ie3.test.common.ThermalUnitInputTestData
-import org.apache.commons.compress.harmony.unpack200.bytecode.forms.ThisMethodRefForm
 import spock.lang.Specification
 
 class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {

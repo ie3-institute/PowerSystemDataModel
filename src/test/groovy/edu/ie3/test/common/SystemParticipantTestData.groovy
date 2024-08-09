@@ -5,8 +5,6 @@
  */
 package edu.ie3.test.common
 
-import static edu.ie3.datamodel.models.StandardUnits.*
-
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -27,11 +25,12 @@ import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.profile.StandardLoadProfile
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.*
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.*
+
+import static edu.ie3.datamodel.models.StandardUnits.*
 
 class SystemParticipantTestData {
 

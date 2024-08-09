@@ -20,7 +20,6 @@ import tech.units.indriya.ComparableQuantity;
 public class DomesticHotWaterStorageInputFactory
     extends AssetInputEntityFactory<DomesticHotWaterStorageInput, ThermalUnitInputEntityData> {
   private static final String STORAGE_VOLUME_LVL = "storageVolumeLvl";
-  private static final String STORAGE_VOLUME_LVL_MIN = "storageVolumeLvlMin";
   private static final String INLET_TEMP = "inletTemp";
   private static final String RETURN_TEMP = "returnTemp";
   private static final String C = "c";
@@ -33,7 +32,7 @@ public class DomesticHotWaterStorageInputFactory
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {
-      STORAGE_VOLUME_LVL, STORAGE_VOLUME_LVL_MIN, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX
+      STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX
     };
   }
 
@@ -47,8 +46,6 @@ public class DomesticHotWaterStorageInputFactory
     final ThermalBusInput bus = data.getBusInput();
     final ComparableQuantity<Volume> storageVolumeLvl =
         data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
-    final ComparableQuantity<Volume> storageVolumeLvlMin =
-        data.getQuantity(STORAGE_VOLUME_LVL_MIN, StandardUnits.VOLUME);
     final ComparableQuantity<Temperature> inletTemp =
         data.getQuantity(INLET_TEMP, StandardUnits.TEMPERATURE);
     final ComparableQuantity<Temperature> returnTemp =
