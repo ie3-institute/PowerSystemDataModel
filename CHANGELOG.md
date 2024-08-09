@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- BDEW standard load profiles [#1106](https://github.com/ie3-institute/PowerSystemDataModel/issues/1106)
 
 ### Fixed
 

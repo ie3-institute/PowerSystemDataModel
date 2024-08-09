@@ -5,13 +5,14 @@
 */
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
-import static java.time.temporal.ChronoUnit.HOURS;
-
 import edu.ie3.datamodel.models.profile.StandardLoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 // TODO This is a sample implementation, please implement a real scenario
@@ -38,16 +39,6 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
   @Override
   public PValue calc(ZonedDateTime time) {
     return dayOfWeekToHourlyValues.get(time.getDayOfWeek()).get(time.getHour());
-  }
-
-  @Override
-  protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
-    return Optional.of(time.minus(1, HOURS));
-  }
-
-  @Override
-  protected Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
-    return Optional.of(time.plus(1, HOURS));
   }
 
   public StandardLoadProfile getType() {

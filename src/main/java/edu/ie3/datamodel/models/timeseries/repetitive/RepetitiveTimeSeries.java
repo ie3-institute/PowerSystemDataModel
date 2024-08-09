@@ -36,4 +36,14 @@ public abstract class RepetitiveTimeSeries<E extends TimeSeriesEntry<V>, V exten
   public Optional<V> getValue(ZonedDateTime time) {
     return Optional.of(calc(time));
   }
+
+  @Override
+  protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
+    return Optional.of(time.minusHours(1));
+  }
+
+  @Override
+  protected Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
+    return Optional.of(time.plusHours(1));
+  }
 }
