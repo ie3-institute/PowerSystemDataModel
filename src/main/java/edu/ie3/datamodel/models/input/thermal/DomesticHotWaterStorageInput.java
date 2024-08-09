@@ -20,8 +20,6 @@ import tech.units.indriya.ComparableQuantity;
 public class DomesticHotWaterStorageInput extends ThermalStorageInput {
   /** Available storage volume (typically in m³) */
   private final ComparableQuantity<Volume> storageVolumeLvl;
-  /** Minimum permissible storage volume (typically in m³) */
-  private final ComparableQuantity<Volume> storageVolumeLvlMin;
   /** Temperature of the inlet (typically in C) */
   private final ComparableQuantity<Temperature> inletTemp;
   /** Temperature of the outlet (typically in C) */
@@ -38,7 +36,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
    * @param operationTime operation time of the asset
    * @param bus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
-   * @param storageVolumeLvlMin Minimum permissible storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
    * @param c Specific heat capacity of the storage medium
@@ -51,14 +48,12 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
       OperationTime operationTime,
       ThermalBusInput bus,
       ComparableQuantity<Volume> storageVolumeLvl,
-      ComparableQuantity<Volume> storageVolumeLvlMin,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
       ComparableQuantity<SpecificHeatCapacity> c,
       ComparableQuantity<Power> pThermalMax) {
     super(uuid, id, operator, operationTime, bus);
     this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
-    this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
     this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
     this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
     this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
@@ -70,7 +65,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
    * @param id Identifier of the thermal unit
    * @param bus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
-   * @param storageVolumeLvlMin Minimum permissible storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
    * @param c Specific heat capacity of the storage medium
@@ -88,7 +82,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
       ComparableQuantity<Power> pThermalMax) {
     super(uuid, id, bus);
     this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
-    this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
     this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
     this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
     this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
@@ -97,10 +90,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
 
   public ComparableQuantity<Volume> getStorageVolumeLvl() {
     return storageVolumeLvl;
-  }
-
-  public ComparableQuantity<Volume> getStorageVolumeLvlMin() {
-    return storageVolumeLvlMin;
   }
 
   public ComparableQuantity<Temperature> getInletTemp() {
@@ -130,7 +119,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
     if (!(o instanceof DomesticHotWaterStorageInput that)) return false;
     if (!super.equals(o)) return false;
     return storageVolumeLvl.equals(that.storageVolumeLvl)
-        && storageVolumeLvlMin.equals(that.storageVolumeLvlMin)
         && inletTemp.equals(that.inletTemp)
         && returnTemp.equals(that.returnTemp)
         && c.equals(that.c)
@@ -142,7 +130,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
     return Objects.hash(
         super.hashCode(),
         storageVolumeLvl,
-        storageVolumeLvlMin,
         inletTemp,
         returnTemp,
         c,
@@ -164,8 +151,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
         + getThermalBus().getUuid()
         + ", storageVolumeLvl="
         + storageVolumeLvl
-        + ", storageVolumeLvlMin="
-        + storageVolumeLvlMin
         + ", inletTemp="
         + inletTemp
         + ", returnTemp="
@@ -195,7 +180,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
     private DomesticHotWaterStorageInputCopyBuilder(DomesticHotWaterStorageInput entity) {
       super(entity);
       this.storageVolumeLvl = entity.getStorageVolumeLvl();
-      this.storageVolumeLvlMin = entity.getStorageVolumeLvlMin();
       this.inletTemp = entity.getInletTemp();
       this.returnTemp = entity.getReturnTemp();
       this.c = entity.getC();
@@ -205,12 +189,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
     public DomesticHotWaterStorageInputCopyBuilder storageVolumeLvl(
         ComparableQuantity<Volume> storageVolumeLvl) {
       this.storageVolumeLvl = storageVolumeLvl;
-      return this;
-    }
-
-    public DomesticHotWaterStorageInputCopyBuilder storageVolumeLvlMin(
-        ComparableQuantity<Volume> storageVolumeLvlMin) {
-      this.storageVolumeLvlMin = storageVolumeLvlMin;
       return this;
     }
 
@@ -240,7 +218,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
     @Override
     public DomesticHotWaterStorageInputCopyBuilder scale(Double factor) {
       storageVolumeLvl(storageVolumeLvl.multiply(factor));
-      storageVolumeLvlMin(storageVolumeLvlMin.multiply(factor));
       pThermalMax(pThermalMax.multiply(factor));
       return this;
     }
@@ -254,7 +231,6 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
           getOperationTime(),
           getThermalBus(),
           storageVolumeLvl,
-          storageVolumeLvlMin,
           inletTemp,
           returnTemp,
           c,

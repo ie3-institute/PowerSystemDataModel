@@ -17,7 +17,7 @@ class DomesticHotWaterStorageInputTest extends Specification {
 
     when:
     def alteredUnit = domesticHotWaterStorageInput.copy().storageVolumeLvl(ThermalUnitInputTestData.storageVolumeLvl)
-        .storageVolumeLvlMin(ThermalUnitInputTestData.storageVolumeLvlMin).inletTemp(ThermalUnitInputTestData.inletTemp)
+        .inletTemp(ThermalUnitInputTestData.inletTemp)
         .returnTemp(ThermalUnitInputTestData.returnTemp).c(ThermalUnitInputTestData.c)
         .thermalBus(ThermalUnitInputTestData.thermalBus).build()
 
@@ -30,7 +30,6 @@ class DomesticHotWaterStorageInputTest extends Specification {
       assert operationTime == domesticHotWaterStorageInput.operationTime
       assert thermalBus == domesticHotWaterStorageInput.thermalBus
       assert storageVolumeLvl == ThermalUnitInputTestData.storageVolumeLvl
-      assert storageVolumeLvlMin == ThermalUnitInputTestData.storageVolumeLvlMin
       assert inletTemp == ThermalUnitInputTestData.inletTemp
       assert returnTemp == ThermalUnitInputTestData.returnTemp
       assert c == ThermalUnitInputTestData.c
@@ -52,7 +51,6 @@ class DomesticHotWaterStorageInputTest extends Specification {
       assert operationTime == domesticHotWaterStorageInput.operationTime
       assert thermalBus == domesticHotWaterStorageInput.thermalBus
       assert storageVolumeLvl == domesticHotWaterStorageInput.storageVolumeLvl * 2d
-      assert storageVolumeLvlMin == domesticHotWaterStorageInput.storageVolumeLvlMin * 2d
       assert inletTemp == domesticHotWaterStorageInput.inletTemp
       assert returnTemp == domesticHotWaterStorageInput.returnTemp
       assert c == domesticHotWaterStorageInput.c

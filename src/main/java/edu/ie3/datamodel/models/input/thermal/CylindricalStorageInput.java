@@ -126,7 +126,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax););
+    return Objects.hash(super.hashCode(), storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
   }
 
   @Override

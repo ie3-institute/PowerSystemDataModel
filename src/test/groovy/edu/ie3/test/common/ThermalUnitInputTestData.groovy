@@ -81,7 +81,6 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   operationTime,
   thermalBus,
   storageVolumeLvl,
-  storageVolumeLvlMin,
   inletTemp,
   returnTemp,
   c,

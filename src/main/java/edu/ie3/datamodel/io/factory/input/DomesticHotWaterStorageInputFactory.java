@@ -64,7 +64,6 @@ public class DomesticHotWaterStorageInputFactory
         operationTime,
         bus,
         storageVolumeLvl,
-        storageVolumeLvlMin,
         inletTemp,
         returnTemp,
         c,
