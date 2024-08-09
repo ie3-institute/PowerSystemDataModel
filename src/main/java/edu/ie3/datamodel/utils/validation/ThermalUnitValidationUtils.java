@@ -119,10 +119,12 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
 
     // Further checks for subclasses
     if (thermalStorageInput.getClass() == CylindricalStorageInput.class) {
-      exceptions.addAll(checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput));}
+      exceptions.addAll(checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput));
+    }
 
     if (thermalStorageInput.getClass() == DomesticHotWaterStorageInput.class) {
-      exceptions.addAll(checkDomesticHotWaterStorage((DomesticHotWaterStorageInput) thermalStorageInput));
+      exceptions.addAll(
+          checkDomesticHotWaterStorage((DomesticHotWaterStorageInput) thermalStorageInput));
     }
 
     return exceptions;
