@@ -169,7 +169,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     private ComparableQuantity<SpecificHeatCapacity> c;
     private ComparableQuantity<Power> pThermalMax;
 
-    private CylindricalStorageInputCopyBuilder(CylindricalStorageInput entity) {
+    CylindricalStorageInputCopyBuilder(CylindricalStorageInput entity) {
       super(entity);
       this.storageVolumeLvl = entity.getStorageVolumeLvl();
       this.inletTemp = entity.getInletTemp();

@@ -42,7 +42,7 @@ class ThermalGridTest extends Specification {
     def thermalHouses = []
     def heatStorages = []
     def domesticHotWaterStorages = []
-    def thermalGrid = new ThermalGrid(thermalBus, thermalHouses, heatStorages,domesticHotWaterStorages)
+    def thermalGrid = new ThermalGrid(thermalBus, thermalHouses, heatStorages, domesticHotWaterStorages)
 
     def modifiedHouses = [Mock(ThermalHouseInput)]
     def modifiedHeatStorages = [Mock(CylindricalStorageInput)]

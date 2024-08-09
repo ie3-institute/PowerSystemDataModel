@@ -6,30 +6,19 @@
 package edu.ie3.datamodel.models.input.thermal;
 
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
-import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
 
-/** Thermal storage with cylindrical shape store hot tap water */
-public class DomesticHotWaterStorageInput extends ThermalStorageInput {
-  /** Available storage volume (typically in m³) */
-  private final ComparableQuantity<Volume> storageVolumeLvl;
-  /** Temperature of the inlet (typically in C) */
-  private final ComparableQuantity<Temperature> inletTemp;
-  /** Temperature of the outlet (typically in C) */
-  private final ComparableQuantity<Temperature> returnTemp;
-  /** Specific heat capacity of the storage medium (typically in kWh/K*m³) */
-  private final ComparableQuantity<SpecificHeatCapacity> c;
-  /** Maximum permissible thermal power (typically in kW) */
-  private final ComparableQuantity<Power> pThermalMax;
+public class DomesticHotWaterStorageInput extends CylindricalStorageInput {
 
   /**
+   * Constructor for DomesticHotWaterStorageInput
+   *
    * @param uuid Unique identifier of a domestic hot water storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
@@ -52,15 +41,22 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
       ComparableQuantity<Temperature> returnTemp,
       ComparableQuantity<SpecificHeatCapacity> c,
       ComparableQuantity<Power> pThermalMax) {
-    super(uuid, id, operator, operationTime, bus);
-    this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
-    this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
-    this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
-    this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
-    this.pThermalMax = pThermalMax.to(StandardUnits.ACTIVE_POWER_IN);
+    super(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        bus,
+        storageVolumeLvl,
+        inletTemp,
+        returnTemp,
+        c,
+        pThermalMax);
   }
 
   /**
+   * Alternative constructor for DomesticHotWaterStorageInput
+   *
    * @param uuid Unique identifier of a domestic hot water storage
    * @param id Identifier of the thermal unit
    * @param bus Thermal bus, a thermal unit is connected to
@@ -75,59 +71,16 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
       String id,
       ThermalBusInput bus,
       ComparableQuantity<Volume> storageVolumeLvl,
-      ComparableQuantity<Volume> storageVolumeLvlMin,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
       ComparableQuantity<SpecificHeatCapacity> c,
       ComparableQuantity<Power> pThermalMax) {
-    super(uuid, id, bus);
-    this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
-    this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
-    this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
-    this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
-    this.pThermalMax = pThermalMax.to(StandardUnits.ACTIVE_POWER_IN);
-  }
-
-  public ComparableQuantity<Volume> getStorageVolumeLvl() {
-    return storageVolumeLvl;
-  }
-
-  public ComparableQuantity<Temperature> getInletTemp() {
-    return inletTemp;
-  }
-
-  public ComparableQuantity<Temperature> getReturnTemp() {
-    return returnTemp;
-  }
-
-  public ComparableQuantity<SpecificHeatCapacity> getC() {
-    return c;
-  }
-
-  public ComparableQuantity<Power> getpThermalMax() {
-    return pThermalMax;
+    super(uuid, id, bus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
   }
 
   @Override
   public DomesticHotWaterStorageInputCopyBuilder copy() {
     return new DomesticHotWaterStorageInputCopyBuilder(this);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof DomesticHotWaterStorageInput that)) return false;
-    if (!super.equals(o)) return false;
-    return storageVolumeLvl.equals(that.storageVolumeLvl)
-        && inletTemp.equals(that.inletTemp)
-        && returnTemp.equals(that.returnTemp)
-        && c.equals(that.c)
-        && pThermalMax.equals(that.pThermalMax);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
   }
 
   @Override
@@ -144,76 +97,22 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
         + ", bus="
         + getThermalBus().getUuid()
         + ", storageVolumeLvl="
-        + storageVolumeLvl
+        + getStorageVolumeLvl()
         + ", inletTemp="
-        + inletTemp
+        + getInletTemp()
         + ", returnTemp="
-        + returnTemp
+        + getReturnTemp()
         + ", c="
-        + c
+        + getC()
         + ", pThermalMax="
-        + pThermalMax
+        + getpThermalMax()
         + '}';
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link DomesticHotWaterStorageInput}
-   * entities with altered field values. For detailed field descriptions refer to java docs of
-   * {@link DomesticHotWaterStorageInput}
-   */
-  public static class DomesticHotWaterStorageInputCopyBuilder
-      extends ThermalStorageInputCopyBuilder<DomesticHotWaterStorageInputCopyBuilder> {
-
-    private ComparableQuantity<Volume> storageVolumeLvl;
-    private ComparableQuantity<Volume> storageVolumeLvlMin;
-    private ComparableQuantity<Temperature> inletTemp;
-    private ComparableQuantity<Temperature> returnTemp;
-    private ComparableQuantity<SpecificHeatCapacity> c;
-    private ComparableQuantity<Power> pThermalMax;
+  public class DomesticHotWaterStorageInputCopyBuilder extends CylindricalStorageInputCopyBuilder {
 
     private DomesticHotWaterStorageInputCopyBuilder(DomesticHotWaterStorageInput entity) {
       super(entity);
-      this.storageVolumeLvl = entity.getStorageVolumeLvl();
-      this.inletTemp = entity.getInletTemp();
-      this.returnTemp = entity.getReturnTemp();
-      this.c = entity.getC();
-      this.pThermalMax = entity.getpThermalMax();
-    }
-
-    public DomesticHotWaterStorageInputCopyBuilder storageVolumeLvl(
-        ComparableQuantity<Volume> storageVolumeLvl) {
-      this.storageVolumeLvl = storageVolumeLvl;
-      return this;
-    }
-
-    public DomesticHotWaterStorageInputCopyBuilder inletTemp(
-        ComparableQuantity<Temperature> inletTemp) {
-      this.inletTemp = inletTemp;
-      return this;
-    }
-
-    public DomesticHotWaterStorageInputCopyBuilder returnTemp(
-        ComparableQuantity<Temperature> returnTemp) {
-      this.returnTemp = returnTemp;
-      return this;
-    }
-
-    public DomesticHotWaterStorageInputCopyBuilder c(ComparableQuantity<SpecificHeatCapacity> c) {
-      this.c = c;
-      return this;
-    }
-
-    public DomesticHotWaterStorageInputCopyBuilder pThermalMax(
-        ComparableQuantity<Power> pThermalMax) {
-      this.pThermalMax = pThermalMax;
-      return this;
-    }
-
-    @Override
-    public DomesticHotWaterStorageInputCopyBuilder scale(Double factor) {
-      storageVolumeLvl(storageVolumeLvl.multiply(factor));
-      pThermalMax(pThermalMax.multiply(factor));
-      return this;
     }
 
     @Override
@@ -224,11 +123,11 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
           getOperator(),
           getOperationTime(),
           getThermalBus(),
-          storageVolumeLvl,
-          inletTemp,
-          returnTemp,
-          c,
-          pThermalMax);
+          getStorageVolumeLvl(),
+          getInletTemp(),
+          getReturnTemp(),
+          getC(),
+          getpThermalMax());
     }
 
     @Override
