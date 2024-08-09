@@ -125,7 +125,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     }
 
     if (DomesticHotWaterStorageInput.class.isAssignableFrom(thermalStorageInput.getClass())) {
-      exceptions.addAll(checkDomesticHotWaterStorage((DomesticHotWaterStorageInput) thermalStorageInput));
+      exceptions.addAll(
+          checkDomesticHotWaterStorage((DomesticHotWaterStorageInput) thermalStorageInput));
     } else {
       logNotImplemented(thermalStorageInput);
     }
@@ -250,7 +251,9 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
             () ->
                 detectZeroOrNegativeQuantities(
                     new Quantity<?>[] {
-                      cylindricalStorageInput.getStorageVolumeLvl(), cylindricalStorageInput.getC(), cylindricalStorageInput.getpThermalMax()
+                      cylindricalStorageInput.getStorageVolumeLvl(),
+                      cylindricalStorageInput.getC(),
+                      cylindricalStorageInput.getpThermalMax()
                     },
                     cylindricalStorageInput),
             InvalidEntityException.class));
@@ -272,9 +275,9 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    *     Success
    */
   private static List<Try<Void, InvalidEntityException>> checkDomesticHotWaterStorage(
-          DomesticHotWaterStorageInput domesticHotWaterStorageInput) {
+      DomesticHotWaterStorageInput domesticHotWaterStorageInput) {
     Try<Void, InvalidEntityException> isNull =
-            checkNonNull(domesticHotWaterStorageInput, "a domestic hot water storage");
+        checkNonNull(domesticHotWaterStorageInput, "a domestic hot water storage");
 
     if (isNull.isFailure()) {
       return List.of(isNull);
@@ -284,24 +287,26 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
 
     // Check if inlet temperature is higher/equal to outlet temperature
     exceptions.add(
-            Try.ofVoid(
-                    domesticHotWaterStorageInput
-                            .getInletTemp()
-                            .isLessThan(domesticHotWaterStorageInput.getReturnTemp()),
-                    () ->
-                            new InvalidEntityException(
-                                    "Inlet temperature of the domestic hot water storage cannot be lower than outlet temperature",
-                                    domesticHotWaterStorageInput)));
+        Try.ofVoid(
+            domesticHotWaterStorageInput
+                .getInletTemp()
+                .isLessThan(domesticHotWaterStorageInput.getReturnTemp()),
+            () ->
+                new InvalidEntityException(
+                    "Inlet temperature of the domestic hot water storage cannot be lower than outlet temperature",
+                    domesticHotWaterStorageInput)));
 
     exceptions.add(
-            Try.ofVoid(
-                    () ->
-                            detectZeroOrNegativeQuantities(
-                                    new Quantity<?>[] {
-                                            domesticHotWaterStorageInput.getStorageVolumeLvl(), domesticHotWaterStorageInput.getC(), domesticHotWaterStorageInput.getpThermalMax()
-                                    },
-                                    domesticHotWaterStorageInput),
-                    InvalidEntityException.class));
+        Try.ofVoid(
+            () ->
+                detectZeroOrNegativeQuantities(
+                    new Quantity<?>[] {
+                      domesticHotWaterStorageInput.getStorageVolumeLvl(),
+                      domesticHotWaterStorageInput.getC(),
+                      domesticHotWaterStorageInput.getpThermalMax()
+                    },
+                    domesticHotWaterStorageInput),
+            InvalidEntityException.class));
 
     return exceptions;
   }

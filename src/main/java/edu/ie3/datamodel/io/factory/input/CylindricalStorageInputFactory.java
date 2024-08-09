@@ -53,7 +53,15 @@ public class CylindricalStorageInputFactory
     final ComparableQuantity<Power> pThermalMax =
         data.getQuantity(P_THERMAL_MAX, StandardUnits.ACTIVE_POWER_IN);
     return new CylindricalStorageInput(
-        uuid, id, operator, operationTime, bus, storageVolumeLvl, inletTemp, returnTemp, c,
-            pThermalMax);
+        uuid,
+        id,
+        operator,
+        operationTime,
+        bus,
+        storageVolumeLvl,
+        inletTemp,
+        returnTemp,
+        c,
+        pThermalMax);
   }
 }

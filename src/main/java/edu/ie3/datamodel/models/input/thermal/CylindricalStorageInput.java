@@ -208,7 +208,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     @Override
     public CylindricalStorageInputCopyBuilder scale(Double factor) {
       storageVolumeLvl(storageVolumeLvl.multiply(factor));
-        pThermalMax(pThermalMax.multiply(factor));
+      pThermalMax(pThermalMax.multiply(factor));
       return this;
     }
 

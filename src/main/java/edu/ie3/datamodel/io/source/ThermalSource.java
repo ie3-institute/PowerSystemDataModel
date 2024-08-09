@@ -125,14 +125,8 @@ public class ThermalSource extends AssetEntitySource {
    * @return a map of UUID to object- and uuid-unique {@link ThermalStorageInput} entities
    */
   public Map<UUID, ThermalStorageInput> getThermalStorages() throws SourceException {
-    return Stream.concat(
-                    getCylindricalStorages().stream(),
-                    getDomesticHotWaterStorages().stream()
-            )
-            .collect(Collectors.toMap(
-                    ThermalStorageInput::getUuid,
-                    storage -> storage
-            ));
+    return Stream.concat(getCylindricalStorages().stream(), getDomesticHotWaterStorages().stream())
+        .collect(Collectors.toMap(ThermalStorageInput::getUuid, storage -> storage));
   }
 
   /**
@@ -158,13 +152,9 @@ public class ThermalSource extends AssetEntitySource {
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
     return Stream.concat(
-                    getCylindricalStorages(operators, thermalBuses).stream(),
-                    getDomesticHotWaterStorages(operators, thermalBuses).stream()
-            )
-            .collect(Collectors.toMap(
-                    ThermalStorageInput::getUuid,
-                    storage -> storage
-            ));
+            getCylindricalStorages(operators, thermalBuses).stream(),
+            getDomesticHotWaterStorages(operators, thermalBuses).stream())
+        .collect(Collectors.toMap(ThermalStorageInput::getUuid, storage -> storage));
   }
 
   /**

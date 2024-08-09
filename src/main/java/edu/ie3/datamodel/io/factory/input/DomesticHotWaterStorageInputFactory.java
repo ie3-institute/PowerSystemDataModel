@@ -31,9 +31,7 @@ public class DomesticHotWaterStorageInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {
-      STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX
-    };
+    return new String[] {STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX};
   }
 
   @Override

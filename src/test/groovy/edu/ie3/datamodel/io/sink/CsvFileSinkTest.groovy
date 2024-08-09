@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
-
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
@@ -33,6 +31,7 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
+import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.system.EmResult
@@ -120,27 +119,27 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     given:
     CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
         new ProcessorProvider([
-                new ResultEntityProcessor(PvResult),
-                new ResultEntityProcessor(WecResult),
-                new ResultEntityProcessor(EvResult),
-                new ResultEntityProcessor(EvcsResult),
-                new ResultEntityProcessor(EmResult),
-                new ResultEntityProcessor(FlexOptionsResult),
-                new InputEntityProcessor(Transformer2WInput),
-                new InputEntityProcessor(NodeInput),
-                new InputEntityProcessor(EvcsInput),
-                new InputEntityProcessor(Transformer2WTypeInput),
-                new InputEntityProcessor(LineGraphicInput),
-                new InputEntityProcessor(NodeGraphicInput),
-                new InputEntityProcessor(CylindricalStorageInput),
-                new InputEntityProcessor(DomesticHotWaterStorageInput),
-                new InputEntityProcessor(ThermalHouseInput),
-                new InputEntityProcessor(OperatorInput),
-                new InputEntityProcessor(LineInput),
-                new InputEntityProcessor(ThermalBusInput),
-                new InputEntityProcessor(LineTypeInput),
-                new InputEntityProcessor(LoadInput),
-                new InputEntityProcessor(EmInput)
+          new ResultEntityProcessor(PvResult),
+          new ResultEntityProcessor(WecResult),
+          new ResultEntityProcessor(EvResult),
+          new ResultEntityProcessor(EvcsResult),
+          new ResultEntityProcessor(EmResult),
+          new ResultEntityProcessor(FlexOptionsResult),
+          new InputEntityProcessor(Transformer2WInput),
+          new InputEntityProcessor(NodeInput),
+          new InputEntityProcessor(EvcsInput),
+          new InputEntityProcessor(Transformer2WTypeInput),
+          new InputEntityProcessor(LineGraphicInput),
+          new InputEntityProcessor(NodeGraphicInput),
+          new InputEntityProcessor(CylindricalStorageInput),
+          new InputEntityProcessor(DomesticHotWaterStorageInput),
+          new InputEntityProcessor(ThermalHouseInput),
+          new InputEntityProcessor(OperatorInput),
+          new InputEntityProcessor(LineInput),
+          new InputEntityProcessor(ThermalBusInput),
+          new InputEntityProcessor(LineTypeInput),
+          new InputEntityProcessor(LoadInput),
+          new InputEntityProcessor(EmInput)
         ], [] as Map),
         new FileNamingStrategy(),
         ",")
