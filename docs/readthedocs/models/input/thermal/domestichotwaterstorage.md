@@ -40,10 +40,6 @@ Model of a domestic hot water storage using a fluent to store thermal energy.
      - m³
      - Overall available storage volume
 
-   * - storageVolumeLvlMin
-     - m³
-     - Minimum permissible storage volume
-
    * - inletTemp
      - °C
      - Temperature of the inlet
