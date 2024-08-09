@@ -36,7 +36,7 @@ class DomesticHotWaterStorageInputTest extends Specification {
     }
   }
 
-  def "Scaling a CylindricalStorageInput via builder should work as expected"() {
+  def "Scaling a DomesticHotWaterStorageInput via builder should work as expected"() {
     given:
     def domesticHotWaterStorageInput = ThermalUnitInputTestData.domesticHotWaterStorageInput
 

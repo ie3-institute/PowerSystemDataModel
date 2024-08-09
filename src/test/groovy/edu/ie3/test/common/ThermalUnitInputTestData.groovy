@@ -64,7 +64,7 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
 
   public static final cylindricalStorageInput = new CylindricalStorageInput(
   thermalUnitUuid,
-  "testCylindricStorageInput",
+  "testCylindricalStorageInput",
   operator,
   operationTime,
   thermalBus,

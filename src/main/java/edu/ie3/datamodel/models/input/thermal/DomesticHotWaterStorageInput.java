@@ -115,6 +115,12 @@ public class DomesticHotWaterStorageInput extends CylindricalStorageInput {
       super(entity);
     }
 
+    public DomesticHotWaterStorageInputCopyBuilder scale(Double factor) {
+      storageVolumeLvl(getStorageVolumeLvl().multiply(factor));
+      pThermalMax(getpThermalMax().multiply(factor));
+      return this;
+    }
+
     @Override
     public DomesticHotWaterStorageInput build() {
       return new DomesticHotWaterStorageInput(
