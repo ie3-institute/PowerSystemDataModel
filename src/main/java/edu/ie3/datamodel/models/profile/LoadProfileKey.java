@@ -9,9 +9,9 @@ import edu.ie3.datamodel.exceptions.ParsingException;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 
-public record LoadProfileKey(LoadProfile profile, Season season, DayOfWeek dayOfWeek) {
+public interface LoadProfileKey {
 
-  public static LoadProfileKey parseBDEWProfile(String key) throws ParsingException {
+  static BDEWLoadProfileKey parseBDEWProfile(String key) throws ParsingException {
     String profile = key.substring(0, 2);
     String season = key.substring(2, 4);
     String dayString = key.substring(4, 6);
@@ -23,10 +23,13 @@ public record LoadProfileKey(LoadProfile profile, Season season, DayOfWeek dayOf
           default -> DayOfWeek.MONDAY;
         };
 
-    return new LoadProfileKey(BdewStandardLoadProfile.get(profile), Season.parse(season), day);
+    return new BDEWLoadProfileKey(BdewStandardLoadProfile.get(profile), Season.parse(season), day);
   }
 
-  public enum Season {
+  record BDEWLoadProfileKey(LoadProfile profile, Season season, DayOfWeek dayOfWeek)
+      implements LoadProfileKey {}
+
+  enum Season {
     WINTER("Wi"),
     SUMMER("Su"),
     TRANSITION("Tr");
