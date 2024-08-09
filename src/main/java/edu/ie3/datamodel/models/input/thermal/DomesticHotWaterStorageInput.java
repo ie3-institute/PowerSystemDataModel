@@ -32,7 +32,7 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
   private final ComparableQuantity<Power> pThermalMax;
 
   /**
-   * @param uuid Unique identifier of a cylindrical storage
+   * @param uuid Unique identifier of a domestic hot water storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
    * @param operationTime operation time of the asset
@@ -66,7 +66,7 @@ public class DomesticHotWaterStorageInput extends ThermalStorageInput {
   }
 
   /**
-   * @param uuid Unique identifier of a cylindrical storage
+   * @param uuid Unique identifier of a domestic hot water storage
    * @param id Identifier of the thermal unit
    * @param bus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
