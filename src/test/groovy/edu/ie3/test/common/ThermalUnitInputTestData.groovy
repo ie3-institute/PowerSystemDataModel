@@ -57,7 +57,6 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
 
   // thermal cylindrical storage input
   private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
-  private static final ComparableQuantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(10, StandardUnits.VOLUME)
   private static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
@@ -70,7 +69,6 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   operationTime,
   thermalBus,
   storageVolumeLvl,
-  storageVolumeLvlMin,
   inletTemp,
   returnTemp,
   c,

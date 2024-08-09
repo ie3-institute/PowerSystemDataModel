@@ -66,7 +66,6 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
       operationTime == sptd.thermalStorage.operationTime
       thermalBus == sptd.thermalStorage.thermalBus
       storageVolumeLvl == sptd.storageVolumeLvl
-      storageVolumeLvlMin == sptd.storageVolumeLvlMin
       inletTemp == sptd.inletTemp
       returnTemp == sptd.returnTemp
       c == sptd.c
@@ -86,7 +85,6 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
       operationTime == sptd.thermalStorage.operationTime
       thermalBus == sptd.thermalStorage.thermalBus
       storageVolumeLvl == sptd.storageVolumeLvl
-      storageVolumeLvlMin == sptd.storageVolumeLvlMin
       inletTemp == sptd.inletTemp
       returnTemp == sptd.returnTemp
       c == sptd.c

@@ -20,8 +20,6 @@ import tech.units.indriya.ComparableQuantity;
 public class CylindricalStorageInput extends ThermalStorageInput {
   /** Available storage volume (typically in m³) */
   private final ComparableQuantity<Volume> storageVolumeLvl;
-  /** Minimum permissible storage volume (typically in m³) */
-  private final ComparableQuantity<Volume> storageVolumeLvlMin;
   /** Temperature of the inlet (typically in C) */
   private final ComparableQuantity<Temperature> inletTemp;
   /** Temperature of the outlet (typically in C) */
@@ -38,7 +36,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
    * @param operationTime operation time of the asset
    * @param bus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
-   * @param storageVolumeLvlMin Minimum permissible storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
    * @param c Specific heat capacity of the storage medium
@@ -51,14 +48,12 @@ public class CylindricalStorageInput extends ThermalStorageInput {
       OperationTime operationTime,
       ThermalBusInput bus,
       ComparableQuantity<Volume> storageVolumeLvl,
-      ComparableQuantity<Volume> storageVolumeLvlMin,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
       ComparableQuantity<SpecificHeatCapacity> c,
       ComparableQuantity<Power> pThermalMax) {
     super(uuid, id, operator, operationTime, bus);
     this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
-    this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
     this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
     this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
     this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
@@ -70,7 +65,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
    * @param id Identifier of the thermal unit
    * @param bus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
-   * @param storageVolumeLvlMin Minimum permissible storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
    * @param c Specific heat capacity of the storage medium
@@ -81,14 +75,12 @@ public class CylindricalStorageInput extends ThermalStorageInput {
       String id,
       ThermalBusInput bus,
       ComparableQuantity<Volume> storageVolumeLvl,
-      ComparableQuantity<Volume> storageVolumeLvlMin,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
       ComparableQuantity<SpecificHeatCapacity> c,
       ComparableQuantity<Power> pThermalMax) {
     super(uuid, id, bus);
     this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
-    this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
     this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
     this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
     this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
@@ -97,10 +89,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
 
   public ComparableQuantity<Volume> getStorageVolumeLvl() {
     return storageVolumeLvl;
-  }
-
-  public ComparableQuantity<Volume> getStorageVolumeLvlMin() {
-    return storageVolumeLvlMin;
   }
 
   public ComparableQuantity<Temperature> getInletTemp() {
@@ -130,7 +118,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     if (!(o instanceof CylindricalStorageInput that)) return false;
     if (!super.equals(o)) return false;
     return storageVolumeLvl.equals(that.storageVolumeLvl)
-        && storageVolumeLvlMin.equals(that.storageVolumeLvlMin)
         && inletTemp.equals(that.inletTemp)
         && returnTemp.equals(that.returnTemp)
         && c.equals(that.c)
@@ -139,14 +126,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        storageVolumeLvl,
-        storageVolumeLvlMin,
-        inletTemp,
-        returnTemp,
-        c,
-        pThermalMax);
+    return Objects.hash(super.hashCode(), storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax););
   }
 
   @Override
@@ -164,8 +144,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
         + getThermalBus().getUuid()
         + ", storageVolumeLvl="
         + storageVolumeLvl
-        + ", storageVolumeLvlMin="
-        + storageVolumeLvlMin
         + ", inletTemp="
         + inletTemp
         + ", returnTemp="
@@ -186,7 +164,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
       extends ThermalStorageInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
 
     private ComparableQuantity<Volume> storageVolumeLvl;
-    private ComparableQuantity<Volume> storageVolumeLvlMin;
     private ComparableQuantity<Temperature> inletTemp;
     private ComparableQuantity<Temperature> returnTemp;
     private ComparableQuantity<SpecificHeatCapacity> c;
@@ -195,7 +172,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     private CylindricalStorageInputCopyBuilder(CylindricalStorageInput entity) {
       super(entity);
       this.storageVolumeLvl = entity.getStorageVolumeLvl();
-      this.storageVolumeLvlMin = entity.getStorageVolumeLvlMin();
       this.inletTemp = entity.getInletTemp();
       this.returnTemp = entity.getReturnTemp();
       this.c = entity.getC();
@@ -205,12 +181,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     public CylindricalStorageInputCopyBuilder storageVolumeLvl(
         ComparableQuantity<Volume> storageVolumeLvl) {
       this.storageVolumeLvl = storageVolumeLvl;
-      return this;
-    }
-
-    public CylindricalStorageInputCopyBuilder storageVolumeLvlMin(
-        ComparableQuantity<Volume> storageVolumeLvlMin) {
-      this.storageVolumeLvlMin = storageVolumeLvlMin;
       return this;
     }
 
@@ -238,8 +208,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     @Override
     public CylindricalStorageInputCopyBuilder scale(Double factor) {
       storageVolumeLvl(storageVolumeLvl.multiply(factor));
-      storageVolumeLvlMin(storageVolumeLvlMin.multiply(factor));
-      pThermalMax(pThermalMax.multiply(factor));
+        pThermalMax(pThermalMax.multiply(factor));
       return this;
     }
 
@@ -252,7 +221,6 @@ public class CylindricalStorageInput extends ThermalStorageInput {
           getOperationTime(),
           getThermalBus(),
           storageVolumeLvl,
-          storageVolumeLvlMin,
           inletTemp,
           returnTemp,
           c,

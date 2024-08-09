@@ -20,7 +20,6 @@ import tech.units.indriya.ComparableQuantity;
 public class CylindricalStorageInputFactory
     extends AssetInputEntityFactory<CylindricalStorageInput, ThermalUnitInputEntityData> {
   private static final String STORAGE_VOLUME_LVL = "storageVolumeLvl";
-  private static final String STORAGE_VOLUME_LVL_MIN = "storageVolumeLvlMin";
   private static final String INLET_TEMP = "inletTemp";
   private static final String RETURN_TEMP = "returnTemp";
   private static final String C = "c";
@@ -32,9 +31,7 @@ public class CylindricalStorageInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {
-      STORAGE_VOLUME_LVL, STORAGE_VOLUME_LVL_MIN, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX
-    };
+    return new String[] {STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX};
   }
 
   @Override
@@ -47,8 +44,6 @@ public class CylindricalStorageInputFactory
     final ThermalBusInput bus = data.getBusInput();
     final ComparableQuantity<Volume> storageVolumeLvl =
         data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
-    final ComparableQuantity<Volume> storageVolumeLvlMin =
-        data.getQuantity(STORAGE_VOLUME_LVL_MIN, StandardUnits.VOLUME);
     final ComparableQuantity<Temperature> inletTemp =
         data.getQuantity(INLET_TEMP, StandardUnits.TEMPERATURE);
     final ComparableQuantity<Temperature> returnTemp =
@@ -58,16 +53,7 @@ public class CylindricalStorageInputFactory
     final ComparableQuantity<Power> pThermalMax =
         data.getQuantity(P_THERMAL_MAX, StandardUnits.ACTIVE_POWER_IN);
     return new CylindricalStorageInput(
-        uuid,
-        id,
-        operator,
-        operationTime,
-        bus,
-        storageVolumeLvl,
-        storageVolumeLvlMin,
-        inletTemp,
-        returnTemp,
-        c,
-        pThermalMax);
+        uuid, id, operator, operationTime, bus, storageVolumeLvl, inletTemp, returnTemp, c,
+            pThermalMax);
   }
 }
