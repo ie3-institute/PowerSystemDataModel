@@ -32,10 +32,9 @@ class CylindricalStorageInputFactoryTest  extends Specification implements Facto
       "uuid"               : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id"                 : "TestID",
       "storagevolumelvl"   : "3",
-      "storagevolumelvlmin": "4",
-      "inlettemp"          : "5",
-      "returntemp"         : "6",
-      "c"                  : "7"
+      "inlettemp"          : "4",
+      "returntemp"         : "5",
+      "c"                  : "6"
     ]
     def inputClass = CylindricalStorageInput
     def thermalBusInput = Mock(ThermalBusInput)
