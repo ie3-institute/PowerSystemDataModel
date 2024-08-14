@@ -50,7 +50,7 @@ public class ThermalSource extends AssetEntitySource {
 
     this.thermalBusInputFactory = new ThermalBusInputFactory();
     this.cylindricalStorageInputFactory =
-        new CylindricalStorageInputFactory(CylindricalStorageInput.class);
+        new CylindricalStorageInputFactory();
     this.domesticHotWaterStorageInputFactory = new DomesticHotWaterStorageInputFactory();
     this.thermalHouseInputFactory = new ThermalHouseInputFactory();
   }

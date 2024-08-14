@@ -25,8 +25,7 @@ public class CylindricalStorageInputFactory
   private static final String C = "c";
   private static final String P_THERMAL_MAX = "pThermalMax";
 
-  public CylindricalStorageInputFactory(
-      Class<CylindricalStorageInput> cylindricalStorageInputClass) {
+  public CylindricalStorageInputFactory() {
     super(CylindricalStorageInput.class);
   }
 
