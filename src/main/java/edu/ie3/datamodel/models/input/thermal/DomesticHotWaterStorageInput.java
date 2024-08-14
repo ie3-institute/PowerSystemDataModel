@@ -115,19 +115,20 @@ public class DomesticHotWaterStorageInput extends CylindricalStorageInput {
       super(entity);
     }
 
-
-    public DomesticHotWaterStorageInputCopyBuilder storageVolumeLvl(ComparableQuantity<Volume> storageVolumeLvl) {
+    public DomesticHotWaterStorageInputCopyBuilder storageVolumeLvl(
+        ComparableQuantity<Volume> storageVolumeLvl) {
       this.storageVolumeLvl = storageVolumeLvl;
       return this;
     }
 
-    public DomesticHotWaterStorageInputCopyBuilder inletTemp(ComparableQuantity<Temperature> inletTemp) {
+    public DomesticHotWaterStorageInputCopyBuilder inletTemp(
+        ComparableQuantity<Temperature> inletTemp) {
       this.inletTemp = inletTemp;
       return this;
     }
 
     public DomesticHotWaterStorageInputCopyBuilder returnTemp(
-            ComparableQuantity<Temperature> returnTemp) {
+        ComparableQuantity<Temperature> returnTemp) {
       this.returnTemp = returnTemp;
       return this;
     }
@@ -137,7 +138,8 @@ public class DomesticHotWaterStorageInput extends CylindricalStorageInput {
       return this;
     }
 
-    public DomesticHotWaterStorageInputCopyBuilder pThermalMax(ComparableQuantity<Power> pThermalMax) {
+    public DomesticHotWaterStorageInputCopyBuilder pThermalMax(
+        ComparableQuantity<Power> pThermalMax) {
       this.pThermalMax = pThermalMax;
       return this;
     }
