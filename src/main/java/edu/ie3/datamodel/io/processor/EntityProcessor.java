@@ -55,7 +55,7 @@ public abstract class EntityProcessor<T extends Entity> extends Processor<T> {
    *     during processing
    */
   public LinkedHashMap<String, String> handleEntity(T entity) throws EntityProcessorException {
-    if (!registeredClass.equals(entity.getClass()))
+    if (!registeredClass.isAssignableFrom(entity.getClass()))
       throw new EntityProcessorException(
           "Cannot process "
               + entity.getClass().getSimpleName()

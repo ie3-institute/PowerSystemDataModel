@@ -25,7 +25,8 @@ public class TimeSeriesUtils {
           ENERGY_PRICE,
           APPARENT_POWER_AND_HEAT_DEMAND,
           ACTIVE_POWER_AND_HEAT_DEMAND,
-          HEAT_DEMAND);
+          HEAT_DEMAND,
+          VOLTAGE);
 
   /** Private Constructor as this class is not meant to be instantiated */
   private TimeSeriesUtils() {

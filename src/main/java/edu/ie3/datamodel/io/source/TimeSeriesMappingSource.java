@@ -11,7 +11,6 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
@@ -47,7 +46,7 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
         .filter(Try::isSuccess)
         .map(t -> (Success<MappingEntry, FactoryException>) t)
         .map(Success::get)
-        .collect(Collectors.toMap(MappingEntry::participant, MappingEntry::timeSeries));
+        .collect(Collectors.toMap(MappingEntry::getEntity, MappingEntry::getTimeSeries));
   }
 
   /**
@@ -80,12 +79,19 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  /** Class to represent one entry within the participant to time series mapping */
-  public record MappingEntry(UUID participant, UUID timeSeries) implements InputEntity {
+  /** Class to represent one entry within the entity to time series mapping */
+  public abstract static class MappingEntry implements InputEntity {
+    protected final UUID entity;
+    private final UUID timeSeries;
 
-    /** Returns the {@link UUID} of the {@link SystemParticipantInput}. */
-    public UUID getParticipant() {
-      return participant;
+    public MappingEntry(UUID entity, UUID timeSeries) {
+      this.entity = entity;
+      this.timeSeries = timeSeries;
+    }
+
+    /** Returns the {@link UUID} of the {@link edu.ie3.datamodel.models.UniqueEntity}. */
+    public UUID getEntity() {
+      return entity;
     }
 
     /** Returns the {@link UUID} of the {@link TimeSeries}. */
@@ -97,17 +103,56 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (!(o instanceof MappingEntry that)) return false;
-      return participant.equals(that.participant) && timeSeries.equals(that.timeSeries);
+      return entity.equals(that.entity) && timeSeries.equals(that.timeSeries);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(participant, timeSeries);
+      return Objects.hash(entity, timeSeries);
     }
 
     @Override
     public String toString() {
-      return "MappingEntry{" + "participant=" + participant + ", timeSeries=" + timeSeries + '}';
+      return "MappingEntry{" + "entity=" + entity + ", timeSeries=" + timeSeries + '}';
+    }
+  }
+
+  /** Class to represent one entry within the entity to time series mapping */
+  public static class EntityMappingEntry extends MappingEntry {
+
+    public EntityMappingEntry(UUID entity, UUID timeSeries) {
+      super(entity, timeSeries);
+    }
+
+    @Override
+    public String toString() {
+      return "EntityMappingEntry{" + "entity=" + entity + ", timeSeries=" + getTimeSeries() + '}';
+    }
+  }
+
+  /** Class to represent one entry within the participant to time series mapping */
+  public static class ParticipantMappingEntry extends MappingEntry {
+
+    public ParticipantMappingEntry(UUID participant, UUID timeSeries) {
+      super(participant, timeSeries);
+    }
+
+    /**
+     * Returns the {@link UUID} of the {@link
+     * edu.ie3.datamodel.models.input.system.SystemParticipantInput}.
+     */
+    public UUID getParticipant() {
+      return entity;
+    }
+
+    @Override
+    public String toString() {
+      return "ParticipantMappingEntry{"
+          + "participant="
+          + entity
+          + ", timeSeries="
+          + getTimeSeries()
+          + '}';
     }
   }
 }

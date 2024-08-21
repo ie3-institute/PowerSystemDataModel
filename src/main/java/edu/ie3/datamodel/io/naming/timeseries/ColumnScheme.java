@@ -19,7 +19,8 @@ public enum ColumnScheme {
   HEAT_DEMAND("h", HeatDemandValue.class),
   ACTIVE_POWER_AND_HEAT_DEMAND("ph", HeatAndPValue.class),
   APPARENT_POWER_AND_HEAT_DEMAND("pqh", HeatAndSValue.class),
-  WEATHER("weather", WeatherValue.class);
+  WEATHER("weather", WeatherValue.class),
+  VOLTAGE("v", VoltageValue.class);
 
   private final String scheme;
   private final Class<? extends Value> valueClass;
@@ -57,6 +58,7 @@ public enum ColumnScheme {
     if (PValue.class.isAssignableFrom(valueClass)) return Optional.of(ACTIVE_POWER);
     if (HeatDemandValue.class.isAssignableFrom(valueClass)) return Optional.of(HEAT_DEMAND);
     if (WeatherValue.class.isAssignableFrom(valueClass)) return Optional.of(WEATHER);
+    if (VoltageValue.class.isAssignableFrom(valueClass)) return Optional.of(VOLTAGE);
     return Optional.empty();
   }
 }
