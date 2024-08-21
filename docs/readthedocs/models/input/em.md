@@ -38,8 +38,8 @@ Participants are connected to an EM each via their `em` field.
 
    * - parentEm
      - --
-     - | Reference to a superior Energy Management Unit that is controlling this EM.
-       | Field can be empty or missing, if this EM itself is not controlled.
+     - Reference to a superior Energy Management Unit that is controlling this EM.
+       Field can be empty or missing, if this EM itself is not controlled.
 
 ```
 
