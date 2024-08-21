@@ -7,7 +7,7 @@ Representation of an AC line.
 ### Type Model
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
    * - Attribute
@@ -53,7 +53,7 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 ### Entity Model
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
 

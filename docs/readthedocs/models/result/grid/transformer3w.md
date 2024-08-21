@@ -7,7 +7,7 @@ Representation of three winding transformers.
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
 
@@ -20,7 +20,7 @@ Representation of three winding transformers.
      - date and time for the produced result
 
    * - inputModel
-     -
+     - --
      - uuid for the associated input model
 
    * - iAMag
@@ -48,7 +48,7 @@ Representation of three winding transformers.
      -
 
    * - tapPos
-     -
+     - --
      -
 
 ```

@@ -7,7 +7,7 @@ Result of a thermal sink.
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
 
@@ -16,11 +16,11 @@ Result of a thermal sink.
      - Remarks
 
    * - time
-     -
+     - --
      - date and time for the produced result
 
    * - inputModel
-     -
+     - --
      - uuid for the associated input model
 
    * - qDot

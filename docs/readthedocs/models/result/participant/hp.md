@@ -7,7 +7,7 @@ Result of a heat pump.
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
 
@@ -16,11 +16,11 @@ Result of a heat pump.
      - Remarks
 
    * - time
-     -
+     - --
      - date and time for the produced result
 
    * - inputModel
-     -
+     - --
      - uuid for the associated input model
 
    * - p

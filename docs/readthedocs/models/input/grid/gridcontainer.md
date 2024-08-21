@@ -38,7 +38,7 @@ A synoptic overview of both classes' attributes is given here:
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
 

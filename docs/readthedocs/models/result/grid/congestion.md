@@ -7,7 +7,7 @@ Representation of a congestion result for a given subnet.
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
 
@@ -20,7 +20,7 @@ Representation of a congestion result for a given subnet.
      - date and time for the produced result
    
    * - subgrid
-     -
+     - --
      - Sub grid number
 
    * - vMin
@@ -32,15 +32,15 @@ Representation of a congestion result for a given subnet.
      - maximal voltage of the subnet
 
    * - voltage
-     -
+     - --
      - Boolean indicator, if a voltage congestion occurred
 
    * - line
-     -
+     - --
      - Boolean indicator, if a line congestion occurred
 
    * - transformer
-     -
+     - --
      - Boolean indicator, if a transformer congestion occurred
 ```
 

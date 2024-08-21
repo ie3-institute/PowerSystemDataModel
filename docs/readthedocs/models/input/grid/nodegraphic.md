@@ -7,7 +7,7 @@ Schematic drawing information for a node model.
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
 
@@ -16,24 +16,24 @@ Schematic drawing information for a node model.
      - Remarks
 
    * - uuid
-     -
+     - --
      -
 
    * - graphicLayer
-     -
+     - --
      - | Human readable identifier of the graphic layer to draw
        | this element on
 
    * - path
-     -
+     - --
      - Line string of coordinates describing the drawing, e.g. for bus bars
 
    * - point
-     -
+     - --
      - Alternative to line string, only drawing a point coordinate
 
    * - node
-     -
+     - --
      - Reference to the physical node model
 
 ```

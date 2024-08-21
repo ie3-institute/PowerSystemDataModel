@@ -10,7 +10,7 @@ station and has some limitations outlined below.
 ### Entity Model
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
 
@@ -19,47 +19,47 @@ station and has some limitations outlined below.
      - Remarks
 
    * - uuid
-     -
+     - --
      -
 
    * - id
-     -
+     - --
      - Human readable identifier
 
    * - operator
-     -
+     - --
      -
 
    * - operationTime
-     -
+     - --
      - Timely restriction of operation
 
    * - node
-     -
+     - --
      -
 
    * - qCharacteristics
-     -
+     - --
      - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - type
-     -
+     - --
      -  :ref:`Charging point type<evcs-point-types>`  (valid for all installed points)
 
    * - chargingPoints
-     -
+     - --
      - no of installed charging points @ the specific station
 
    * - cosPhiRated
-     -
+     - --
      - Rated power factor
 
    * - locationType
-     -
+     - --
      - 	:ref:`Charging station location types<location-types>` 
 
    * - em
-     -
+     - --
      - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
        | this system participant. Field can be empty or missing, if this participant
        | is not controlled.
@@ -78,7 +78,7 @@ available standard types and how to use custom types.
 The actual model definition for charging point types looks as follows:
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
 
@@ -87,7 +87,7 @@ The actual model definition for charging point types looks as follows:
      - Remarks
 
    * - id
-     -
+     - --
      - Human readable identifier
 
    * - sRated
@@ -95,11 +95,11 @@ The actual model definition for charging point types looks as follows:
      - Rated apparent power
 
    * - electricCurrentType
-     -
+     - --
      - Electric current type
 
    * - synonymousIds
-     -
+     - --
      - Set of alternative human readable identifiers
 
 ```
@@ -218,7 +218,7 @@ Evcs location types describe the type of charging location of a charging station
 and underscores and minuses are ignored, that means "charginghubtown" is parsed as type {code}`CHARGING_HUB_TOWN`.
 
 ```{list-table}
-   :widths: auto
+   :widths: 33 33 33
    :header-rows: 1
 
 
