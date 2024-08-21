@@ -8,7 +8,7 @@ model can be derived.
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
    :header-rows: 1
 
 
@@ -17,27 +17,27 @@ model can be derived.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      -
 
    * - qCharacteristics
-     - --
+     -
      - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - sRated
@@ -45,11 +45,11 @@ model can be derived.
      - Rated apparent power
 
    * - cosPhiRated
-     - --
+     -
      - Rated power factor
 
    * - em
-     - --
+     -
      - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
        | this system participant. Field can be empty or missing, if this participant
        | is not controlled.

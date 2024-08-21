@@ -7,7 +7,7 @@ Model of a cylindrical thermal storage using a fluent to store thermal energy.
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
    :header-rows: 1
 
 
@@ -16,23 +16,23 @@ Model of a cylindrical thermal storage using a fluent to store thermal energy.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - thermalBus
-     - --
+     -
      - Connection point to the thermal system
 
    * - storageVolumeLvl

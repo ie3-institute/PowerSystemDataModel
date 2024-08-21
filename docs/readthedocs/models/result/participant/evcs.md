@@ -7,7 +7,7 @@ This model is currently only a dummy implementation of an electric vehicle charg
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
    :header-rows: 1
 
 
@@ -16,11 +16,11 @@ This model is currently only a dummy implementation of an electric vehicle charg
      - Remarks
 
    * - time
-     - --
+     -
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - p

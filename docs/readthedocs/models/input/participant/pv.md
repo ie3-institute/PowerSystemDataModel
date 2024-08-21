@@ -5,7 +5,7 @@
 Detailed model of a photovoltaic power plant.
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
    :header-rows: 1
 
 
@@ -14,31 +14,31 @@ Detailed model of a photovoltaic power plant.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      -
 
    * - qCharacteristics
-     - --
+     -
      - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - albedo
-     - --
+     -
      - `Albedo <https://en.wikipedia.org/wiki/Albedo>`_ of the plant's surrounding
 
    * - azimuth
@@ -55,15 +55,15 @@ Detailed model of a photovoltaic power plant.
      - Tilted inclination from horizontal [0°, 90°]
 
    * - kG
-     - --
+     -
      - Generator correction factor merging technical influences
 
    * - kT
-     - --
+     -
      - Temperature correction factor merging thermal influences
 
    * - marketReaction
-     - --
+     -
      - | Whether to adapt output based on (volatile)
        | market price or not
 
@@ -72,11 +72,11 @@ Detailed model of a photovoltaic power plant.
      - Rated apparent power
 
    * - cosPhiRated
-     - --
+     -
      - Rated power factor
 
    * - em
-     - --
+     -
      - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
        | this system participant. Field can be empty or missing, if this participant
        | is not controlled.

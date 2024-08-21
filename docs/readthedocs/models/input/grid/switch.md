@@ -7,7 +7,7 @@ Model of an ideal switch connecting two node models of the same voltage level
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
    :header-rows: 1
 
 
@@ -16,31 +16,31 @@ Model of an ideal switch connecting two node models of the same voltage level
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - nodeA
-     - --
+     -
      -
 
    * - nodeB
-     - --
+     -
      -
 
    * - closed
-     - --
+     -
      - true, if the switch is closed
 
 

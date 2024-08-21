@@ -7,7 +7,7 @@ Representation of all kinds of connectors.
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
    :header-rows: 1
 
 
@@ -20,7 +20,7 @@ Representation of all kinds of connectors.
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - iAMag

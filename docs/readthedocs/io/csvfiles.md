@@ -88,7 +88,7 @@ Csv id coordinate sources can have two different ways to represent their coordin
 ### Time Series
 
 ```{list-table}
-   :widths: 50 50
+   :widths: auto
    :header-rows: 1
 
    * - Model
