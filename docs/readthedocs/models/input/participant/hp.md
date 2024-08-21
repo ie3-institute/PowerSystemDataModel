@@ -8,8 +8,7 @@ Model of a heat pump.
 
 ### Type Model
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 
@@ -51,8 +50,7 @@ Model of a heat pump.
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 

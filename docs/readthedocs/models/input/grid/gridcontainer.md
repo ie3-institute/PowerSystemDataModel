@@ -37,8 +37,7 @@ A synoptic overview of both classes' attributes is given here:
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 

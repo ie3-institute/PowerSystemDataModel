@@ -8,8 +8,7 @@ Model of an ideal electrical battery energy storage.
 
 ### Type Model
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 
@@ -64,8 +63,7 @@ Model of an ideal electrical battery energy storage.
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 

@@ -6,8 +6,7 @@ This model is currently only a dummy implementation of an electric vehicle charg
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 

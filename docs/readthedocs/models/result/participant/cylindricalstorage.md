@@ -6,8 +6,7 @@ Result of a cylindrical thermal storage using a fluent to store thermal energy.
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 

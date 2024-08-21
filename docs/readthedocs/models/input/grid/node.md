@@ -6,8 +6,7 @@ Representation of an electrical node, with no further distinction into bus bar, 
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 

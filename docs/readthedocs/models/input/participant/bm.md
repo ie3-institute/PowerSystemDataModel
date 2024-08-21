@@ -8,8 +8,7 @@ Model of a biomass power plant.
 
 ### Type Model
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 
@@ -55,8 +54,7 @@ Model of a biomass power plant.
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 

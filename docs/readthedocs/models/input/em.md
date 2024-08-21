@@ -7,8 +7,7 @@ Participants are connected to an EM each via their `em` field.
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 

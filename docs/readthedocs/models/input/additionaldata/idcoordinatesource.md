@@ -7,8 +7,7 @@ coordinates.
 
 ## Information
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33
    :header-rows: 1
     

@@ -4,8 +4,7 @@
 
 Detailed model of a photovoltaic power plant.
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 

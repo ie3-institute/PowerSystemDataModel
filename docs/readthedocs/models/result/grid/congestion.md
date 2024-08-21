@@ -6,8 +6,7 @@ Representation of a congestion result for a given subnet.
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 

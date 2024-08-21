@@ -6,8 +6,7 @@ Representation of an AC line.
 
 ### Type Model
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 
@@ -53,8 +52,7 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 
@@ -126,8 +124,7 @@ The lines which source is ``simBench`` are from [here](https://simbench.de/en/do
 
 Some standard overhead lines.
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 11 11 11 11 11 11 11 11 11
    :header-rows: 1
    
@@ -309,8 +306,7 @@ Some standard overhead lines.
 
 Some standard cables.
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 11 11 11 11 11 11 11 11 11
    :header-rows: 1
    

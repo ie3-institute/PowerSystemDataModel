@@ -9,8 +9,7 @@ station and has some limitations outlined below.
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 
@@ -78,8 +77,7 @@ available standard types and how to use custom types.
 
 The actual model definition for charging point types looks as follows:
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 
@@ -116,8 +114,7 @@ To simplify the application of electric vehicle charging stations, some common s
 They can either by used code wise or directly from database or file input by referencing their id or one of their
 synonymous ids. All standard types can be found in {code}`edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils`.
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 25 25 25 25
    :header-rows: 1
 
@@ -220,8 +217,7 @@ be in kVA!
 Evcs location types describe the type of charging location of a charging station. Parsing of these types is case-insensitive
 and underscores and minuses are ignored, that means "charginghubtown" is parsed as type {code}`CHARGING_HUB_TOWN`.
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 
