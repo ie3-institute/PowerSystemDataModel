@@ -115,7 +115,6 @@ package models {
 
             class CylindricalStorageInput {
                 - storageVolumeLvl: ComparableQuantity<Volume> [m³]
-                - storageVolumeLvlMin: ComparableQuantity<Volume> [m³]
                 - inletTemp: ComparableQuantity<Temperature> [°C]
                 - returnTemp: ComparableQuantity<Temperature> [°C]
                 - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
