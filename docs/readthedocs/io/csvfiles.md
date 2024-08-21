@@ -24,61 +24,59 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 
 ### Input
 
-```{eval-rst}
-.. list-table::
-   :widths: auto
+```{list-table}
    :header-rows: 1
+   :widths: auto
 
-   * - Model
-     - File Name
-   * - operator
-     - *prefix_* operator_input *_suffix*
-   * - node
-     - *prefix_* node_input *_suffix*
-   * - line
-     - | *prefix_* line_input *_suffix*
-       | *prefix_* line_type_input *_suffix*
-   * - switch
-     - *prefix_* switch_input *_suffix*
-   * - two winding transformer
-     - | *prefix_* transformer2w_input *_suffix*
-       | *prefix_* transformer2w_type_input *_suffix*
-   * - three winding transformer
-     - | *prefix_* transformer3w_input *_suffix*
-       | *prefix_* transformer3w_type_input *_suffix*
-   * - measurement unit
-     - *prefix_* measurement_unit_input *_suffix*
-   * - biomass plant
-     - | *prefix_* bm_input *_suffix*
-       | *prefix_* bm_type_input *_suffix*
-   * - combined heat and power plant
-     - | *prefix_* chp_input *_suffix*
-       | *prefix_* chp_type_input *_suffix*
-   * - electric vehicle
-     - | *prefix_* ev_input *_suffix*
-       | *prefix_* ev_type_input *_suffix*
-   * - electric vehicle charging station
-     - *prefix_* evcs_input *_suffix*
-   * - fixed feed in facility
-     - *prefix_* fixed_feed_in_input *_suffix*
-   * - heat pump
-     - | *prefix_* hp_input *_suffix*
-       | *prefix_* hp_type_input *_suffix*
-   * - load
-     - *prefix_* load_input *_suffix*
-   * - photovoltaic power plant
-     - *prefix_* pv_input *_suffix*
-   * - electrical energy storage
-     - | *prefix_* storage_input *_suffix*
-       | *prefix_* storage_type_input *_suffix*
-   * - wind energy converter
-     - | *prefix_* wec_input *_suffix*
-       | *prefix_* wec_type_input *_suffix*
-   * - schematic node graphic
-     - *prefix_* node_graphic_input *_suffix*
-   * - schematic line graphic
-     - *prefix_* line_graphic_input *_suffix*
-
+* - Model
+  - File Name
+* - operator
+  - *prefix_* operator_input *_suffix*
+* - node
+  - *prefix_* node_input *_suffix*
+* - line
+  - *prefix_* line_input *_suffix*  
+    *prefix_* line_type_input *_suffix*
+* - switch
+  - *prefix_* switch_input *_suffix*
+* - two winding transformer
+  - *prefix_* transformer2w_input *_suffix*  
+    *prefix_* transformer2w_type_input *_suffix*
+* - three winding transformer
+  - *prefix_* transformer3w_input *_suffix*  
+    *prefix_* transformer3w_type_input *_suffix*
+* - measurement unit
+  - *prefix_* measurement_unit_input *_suffix*
+* - biomass plant
+  - *prefix_* bm_input *_suffix*  
+    *prefix_* bm_type_input *_suffix*
+* - combined heat and power plant
+  - *prefix_* chp_input *_suffix*  
+    *prefix_* chp_type_input *_suffix*
+* - electric vehicle
+  - *prefix_* ev_input *_suffix*  
+    *prefix_* ev_type_input *_suffix*
+* - electric vehicle charging station
+  - *prefix_* evcs_input *_suffix*
+* - fixed feed in facility
+  - *prefix_* fixed_feed_in_input *_suffix*
+* - heat pump
+  - *prefix_* hp_input *_suffix*  
+    *prefix_* hp_type_input *_suffix*
+* - load
+  - *prefix_* load_input *_suffix*
+* - photovoltaic power plant
+  - *prefix_* pv_input *_suffix*
+* - electrical energy storage
+  - *prefix_* storage_input *_suffix*  
+    *prefix_* storage_type_input *_suffix*
+* - wind energy converter
+  - *prefix_* wec_input *_suffix*  
+    *prefix_* wec_type_input *_suffix*
+* - schematic node graphic
+  - *prefix_* node_graphic_input *_suffix*
+* - schematic line graphic
+  - *prefix_* line_graphic_input *_suffix*
 ```
 
 ### Id Coordinate
@@ -89,8 +87,7 @@ Csv id coordinate sources can have two different ways to represent their coordin
 
 ### Time Series
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 50 50
    :header-rows: 1
 
@@ -123,8 +120,7 @@ You can also use the Method `java.util.UUID#randomUUID` to create a UUID.
 This is the UUID from the example above `2fcb3e53-b94a-4b96-bea4-c469e499f1a1`.
 
 The following keys are supported until now:
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: auto
    :header-rows: 1
 
@@ -156,8 +152,7 @@ The following keys are supported until now:
 
 ### Results
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: auto
    :header-rows: 1
 
