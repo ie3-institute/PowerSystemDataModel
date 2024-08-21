@@ -8,6 +8,7 @@ Participants are connected to an EM each via their `em` field.
 ## Attributes, Units and Remarks
 
 ```{list-table}
+   :widths: auto
    :header-rows: 1
 
 
@@ -16,27 +17,27 @@ Participants are connected to an EM each via their `em` field.
      - Remarks
 
    * - uuid
-     - --
-     - --
+     -
+     -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
-     - --
+     -
+     -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - controlStrategy
-     - --
+     -
      - String representation (e.g. name) of a control strategy
 
    * - parentEm
-     - --
+     -
      - Reference to a superior Energy Management Unit that is controlling this EM.
        Field can be empty or missing, if this EM itself is not controlled.
 
