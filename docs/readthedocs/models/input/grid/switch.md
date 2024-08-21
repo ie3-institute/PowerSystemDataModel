@@ -16,31 +16,31 @@ Model of an ideal switch connecting two node models of the same voltage level
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - nodeA
-     - --
+     -
      -
 
    * - nodeB
-     - --
+     -
      -
 
    * - closed
-     - --
+     -
      - true, if the switch is closed
 
 

@@ -20,7 +20,7 @@ Representation of electrical switches.
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - closed

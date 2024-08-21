@@ -17,11 +17,11 @@ having control over one or more physical entitites.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
 ```

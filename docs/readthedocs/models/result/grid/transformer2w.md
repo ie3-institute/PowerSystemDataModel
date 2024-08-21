@@ -20,7 +20,7 @@ Representation of two winding transformers.
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - iAMag
@@ -40,7 +40,7 @@ Representation of two winding transformers.
      -
 
    * - tapPos
-     - --
+     -
      -
 
 ```

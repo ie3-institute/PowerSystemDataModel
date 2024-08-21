@@ -16,11 +16,11 @@ Result of a cylindrical thermal storage using a fluent to store thermal energy.
      - Remarks
 
    * - time
-     - --
+     -
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - energy
@@ -32,7 +32,7 @@ Result of a cylindrical thermal storage using a fluent to store thermal energy.
      - heat demand of the sink
 
    * - fillLevel
-     - --
+     -
      -
 
 ```

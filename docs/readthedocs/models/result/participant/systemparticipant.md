@@ -16,11 +16,11 @@ Groups together all system participants such as PV, Storage etc.
      - Remarks
 
    * - time
-     - --
+     -
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - p

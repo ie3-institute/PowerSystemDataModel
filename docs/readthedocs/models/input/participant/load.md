@@ -16,35 +16,35 @@ Model of (mainly) domestic loads.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      -
 
    * - qCharacteristics
-     - --
+     -
      - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - loadProfile
-     - --
+     -
      - :ref:`Load profile<load-lp>`  as model behaviour
 
    * - dsm
-     - --
+     -
      - Whether the load is able to follow demand side management signals
 
    * - eConsAnnual
@@ -56,11 +56,11 @@ Model of (mainly) domestic loads.
      - Rated apparent power
 
    * - cosPhiRated
-     - --
+     -
      - Rated power factor
 
    * - em
-     - --
+     -
      - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
        | this system participant. Field can be empty or missing, if this participant
        | is not controlled.

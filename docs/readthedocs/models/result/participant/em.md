@@ -16,11 +16,11 @@ Result of an energy management entity.
      - Remarks
 
    * - time
-     - --
+     -
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - p

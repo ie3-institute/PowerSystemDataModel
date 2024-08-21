@@ -20,7 +20,7 @@ Representation of an electrical node, with no further distinction into bus bar, 
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - vMag

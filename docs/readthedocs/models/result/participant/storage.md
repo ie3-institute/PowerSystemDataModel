@@ -16,11 +16,11 @@ Result of an electrochemical storage
      - Remarks
 
    * - time
-     - --
+     -
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - p
@@ -32,7 +32,7 @@ Result of an electrochemical storage
      -
 
    * - soc
-     - --
+     -
      -
 
 ```

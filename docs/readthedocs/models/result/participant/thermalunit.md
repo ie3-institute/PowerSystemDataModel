@@ -16,11 +16,11 @@ Result of a thermal unit.
      - Remarks
 
    * - time
-     - --
+     -
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - qDot

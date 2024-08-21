@@ -16,11 +16,11 @@ Result of an electric vehicle, that is occasionally connected to the grid via an
      - Remarks
 
    * - time
-     - --
+     -
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - p

@@ -20,7 +20,7 @@ Representation of all kinds of connectors.
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - iAMag

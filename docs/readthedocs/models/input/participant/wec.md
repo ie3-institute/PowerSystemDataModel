@@ -18,11 +18,11 @@ Model of a wind energy converter.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - capex
@@ -39,11 +39,11 @@ Model of a wind energy converter.
      - Rated apparent power
 
    * - cosPhiRated
-     - --
+     -
      - Rated power factor
 
    * - cpCharacteristic
-     - --
+     -
      - Wind velocity dependent :ref:`Betz factors<wec-cp-characteristic>`.
 
    * - etaConv
@@ -72,40 +72,40 @@ Model of a wind energy converter.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      -
 
    * - qCharacteristics
-     - --
+     -
      - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - type
-     - --
+     -
      -
 
    * - marketReaction
-     - --
+     -
      - | Whether to adapt output based on (volatile)
        | market price or not
 
    * - em
-     - --
+     -
      - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
        | this system participant. Field can be empty or missing, if this participant
        | is not controlled.

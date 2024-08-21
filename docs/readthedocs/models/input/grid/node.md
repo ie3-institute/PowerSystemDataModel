@@ -16,19 +16,19 @@ Representation of an electrical node, with no further distinction into bus bar, 
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - vTarget
@@ -36,20 +36,20 @@ Representation of an electrical node, with no further distinction into bus bar, 
      - Target voltage magnitude to be used by voltage regulation entities
 
    * - slack
-     - --
+     -
      - | Boolean indicator, if this nodes serves as a slack node in power
        | flow calculation
 
    * - geoPosition
-     - --
+     -
      - Geographical location
 
    * - voltLvl
-     - --
+     -
      - Information of the voltage level (id and nominal voltage)
 
    * - subnet
-     - --
+     -
      - Sub grid number
 
 ```

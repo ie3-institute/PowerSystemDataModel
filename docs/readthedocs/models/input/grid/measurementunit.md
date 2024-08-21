@@ -18,39 +18,39 @@ The measured information are indicated by boolean fields.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      -
 
    * - vMag
-     - --
+     -
      - Voltage magnitude measurements are available
 
    * - vAng
-     - --
+     -
      - Voltage angle measurements are available
 
    * - p
-     - --
+     -
      - Active power measurements are available
 
    * - q
-     - --
+     -
      - Reactive power measurements are available
 
 ```

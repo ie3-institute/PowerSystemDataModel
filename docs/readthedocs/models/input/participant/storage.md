@@ -18,11 +18,11 @@ Model of an ideal electrical battery energy storage.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - capex
@@ -43,7 +43,7 @@ Model of an ideal electrical battery energy storage.
      - Rated apparent power
 
    * - cosPhiRated
-     - --
+     -
      - Rated power factor
 
    * - pMax
@@ -73,40 +73,40 @@ Model of an ideal electrical battery energy storage.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      -
 
    * - qCharacteristics
-     - --
+     -
      - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
 
    * - type
-     - --
+     -
      -
 
    * - behaviour
-     - --
+     -
      - | Foreseen operation strategy of the storage.
        | Eligible input: *"market"*, *"grid"*, *"self"*
        
    * - em
-     - --
+     -
      - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
        | this system participant. Field can be empty or missing, if this participant
        | is not controlled.

@@ -17,23 +17,23 @@ This reflects a simple shoe box with transmission losses
      - Remarks
 
    * - uuid
-     - --
+     -
      - 
 
    * - id
-     - --
+     -
      - Human readable identifier
      
    * - bus
-     - --
+     -
      - Thermal bus, the model is connected to
 
    * - operator
-     - --
+     -
      - 
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - ethLosses
