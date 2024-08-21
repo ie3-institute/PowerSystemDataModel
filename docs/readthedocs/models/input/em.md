@@ -18,7 +18,7 @@ Participants are connected to an EM each via their `em` field.
 
    * - uuid
      - --
-     - 
+     - --
 
    * - id
      - --
@@ -26,7 +26,7 @@ Participants are connected to an EM each via their `em` field.
 
    * - operator
      - --
-     - 
+     - --
 
    * - operationTime
      - --
