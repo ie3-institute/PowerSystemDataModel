@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Enhance `TimeSeriesSource` with method to retrieve all time keys after a given key [#543](https://github.com/ie3-institute/PowerSystemDataModel/issues/543)
+- Enhance `WeatherSource` with method to retrieve all time keys after a given key [#572](https://github.com/ie3-institute/PowerSystemDataModel/issues/572)
 
 ### Fixed
 
