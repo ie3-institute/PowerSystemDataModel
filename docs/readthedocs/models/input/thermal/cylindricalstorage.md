@@ -38,11 +38,7 @@ Model of a cylindrical thermal storage using a fluent to store thermal energy.
 
    * - storageVolumeLvl
      - m³
-     - Overall available storage volume
-
-   * - storageVolumeLvlMin
-     - m³
-     - Minimum permissible storage volume
+     - Overall usable storage volume
 
    * - inletTemp
      - °C
