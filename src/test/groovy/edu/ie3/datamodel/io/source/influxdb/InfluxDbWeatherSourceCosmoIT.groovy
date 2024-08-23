@@ -153,4 +153,21 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
     equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries_193186)
   }
+
+  def "A InfluxDbWeatherSource returns all time keys after a given time key correctly"() {
+    given:
+    def time = CosmoWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time)
+
+    then:
+    actual.size() == 2
+
+    actual.get(CosmoWeatherTestData.COORDINATE_193186) == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+    actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
+  }
 }

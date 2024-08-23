@@ -128,6 +128,11 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     return timeSeries.getValue(time);
   }
 
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
+    return timeSeries.getTimeKeysAfter(time);
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
