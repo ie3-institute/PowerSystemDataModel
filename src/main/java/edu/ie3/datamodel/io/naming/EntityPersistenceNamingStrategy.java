@@ -17,7 +17,7 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
 import java.util.Optional;
@@ -383,12 +383,12 @@ public class EntityPersistenceNamingStrategy {
         logger.error("Unable to determine content of time series {}", timeSeries);
         return Optional.empty();
       }
-    } else if (timeSeries instanceof LoadProfileInput loadProfileInput) {
+    } else if (timeSeries instanceof LoadProfileTimeSeries<?> loadProfileInput) {
       return Optional.of(
           prefix
               .concat("lpts")
               .concat("_")
-              .concat(loadProfileInput.getType().getKey())
+              .concat(loadProfileInput.getLoadProfile().getKey())
               .concat("_")
               .concat(loadProfileInput.getUuid().toString())
               .concat(suffix));

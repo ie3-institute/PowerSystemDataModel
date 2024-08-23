@@ -7,11 +7,12 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.FileUtils;
 import java.nio.file.Path;
@@ -180,7 +181,7 @@ public class FileNamingStrategy {
    * @return A load profile time series pattern
    */
   public Pattern getLoadProfileTimeSeriesPattern() {
-    Optional<Path> subDirectory = fileHierarchy.getSubDirectory(LoadProfileInput.class);
+    Optional<Path> subDirectory = fileHierarchy.getSubDirectory(LoadProfileTimeSeries.class);
 
     if (subDirectory.isEmpty()) {
       return entityPersistenceNamingStrategy.getLoadProfileTimeSeriesPattern();
@@ -234,6 +235,12 @@ public class FileNamingStrategy {
 
   public IndividualTimeSeriesMetaInformation individualTimeSeriesMetaInformation(String fileName) {
     return entityPersistenceNamingStrategy.individualTimesSeriesMetaInformation(
+        removeFileNameEnding(fileName));
+  }
+
+  public LoadProfileTimeSeriesMetaInformation loadProfileTimeSeriesMetaInformation(
+      String fileName) {
+    return entityPersistenceNamingStrategy.loadProfileTimesSeriesMetaInformation(
         removeFileNameEnding(fileName));
   }
 

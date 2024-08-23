@@ -8,12 +8,15 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.Entity;
+import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
@@ -25,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -102,7 +106,8 @@ public class CsvDataSource implements DataSource {
    */
   public Map<UUID, CsvIndividualTimeSeriesMetaInformation>
       getCsvIndividualTimeSeriesMetaInformation(final ColumnScheme... columnSchemes) {
-    return getIndividualTimeSeriesFilePaths().parallelStream()
+    return getTimeSeriesFilePaths(fileNamingStrategy.getIndividualTimeSeriesPattern())
+        .parallelStream()
         .map(
             filePath -> {
               /* Extract meta information from file path and enhance it with the file path itself */
@@ -121,12 +126,40 @@ public class CsvDataSource implements DataSource {
   }
 
   /**
+   * Receive the information for specific load profile time series. They are given back mapped to
+   * their uuid.
+   *
+   * @return A mapping from uuid to the load profile time series meta information
+   */
+  public Map<UUID, CsvLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
+      LoadProfile... profiles) {
+    return getTimeSeriesFilePaths(fileNamingStrategy.getLoadProfileTimeSeriesPattern())
+        .parallelStream()
+        .map(
+            filePath -> {
+              /* Extract meta information from file path and enhance it with the file path itself */
+              LoadProfileTimeSeriesMetaInformation metaInformation =
+                  fileNamingStrategy.loadProfileTimeSeriesMetaInformation(filePath.toString());
+              return new CsvLoadProfileMetaInformation(
+                  metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
+            })
+        .filter(
+            metaInformation ->
+                profiles == null
+                    || profiles.length == 0
+                    || Stream.of(profiles)
+                        .anyMatch(profile -> profile.getKey().equals(metaInformation.getProfile())))
+        .collect(Collectors.toMap(TimeSeriesMetaInformation::getUuid, Function.identity()));
+  }
+
+  /**
    * Returns a set of relative paths strings to time series files, with respect to the base folder
    * path
    *
+   * @param pattern for matching the time series
    * @return A set of relative paths to time series files, with respect to the base folder path
    */
-  protected Set<Path> getIndividualTimeSeriesFilePaths() {
+  protected Set<Path> getTimeSeriesFilePaths(Pattern pattern) {
     Path baseDirectory = connector.getBaseDirectory();
     try (Stream<Path> pathStream = Files.walk(baseDirectory)) {
       return pathStream
@@ -135,10 +168,7 @@ public class CsvDataSource implements DataSource {
               path -> {
                 Path withoutEnding =
                     Path.of(FileNamingStrategy.removeFileNameEnding(path.toString()));
-                return fileNamingStrategy
-                    .getIndividualTimeSeriesPattern()
-                    .matcher(withoutEnding.toString())
-                    .matches();
+                return pattern.matcher(withoutEnding.toString()).matches();
               })
           .collect(Collectors.toSet());
     } catch (IOException e) {
@@ -228,8 +258,7 @@ public class CsvDataSource implements DataSource {
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       Class<? extends Entity> entityClass, boolean allowFileNotExisting) {
     return getFilePath(entityClass)
-        .flatMap(
-            path -> buildStreamWithFieldsToAttributesMap(entityClass, path, allowFileNotExisting));
+        .flatMap(path -> buildStreamWithFieldsToAttributesMap(path, allowFileNotExisting));
   }
 
   /**
@@ -237,14 +266,12 @@ public class CsvDataSource implements DataSource {
    * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
    * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
-   * @param entityClass the entity class that should be build
    * @param filePath the path of the file to read
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
-  protected <T extends Entity>
-      Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-          Class<T> entityClass, Path filePath, boolean allowFileNotExisting) {
+  protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
+      Path filePath, boolean allowFileNotExisting) {
     try (BufferedReader reader = connector.initReader(filePath)) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
@@ -261,9 +288,7 @@ public class CsvDataSource implements DataSource {
         return Failure.of(new SourceException("Unable to find file '" + filePath + "'.", e));
       }
     } catch (IOException e) {
-      return Failure.of(
-          new SourceException(
-              "Cannot read file to build entity '" + entityClass.getSimpleName() + "'", e));
+      return Failure.of(new SourceException("Cannot read file '" + filePath + "'.", e));
     }
   }
 

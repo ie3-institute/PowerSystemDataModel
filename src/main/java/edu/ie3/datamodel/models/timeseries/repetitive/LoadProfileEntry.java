@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.util.Objects;
 
-/** Unique entry to a {@link LoadProfileInput} */
+/** Unique entry to a {@link LoadProfileTimeSeries} */
 public class LoadProfileEntry extends TimeSeriesEntry<PValue> {
   private final DayOfWeek dayOfWeek;
   private final int quarterHourOfDay;

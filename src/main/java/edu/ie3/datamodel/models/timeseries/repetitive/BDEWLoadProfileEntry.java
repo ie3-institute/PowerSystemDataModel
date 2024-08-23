@@ -5,22 +5,22 @@
 */
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
-import edu.ie3.datamodel.models.profile.LoadProfileKey;
+import edu.ie3.datamodel.models.Season;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.util.Objects;
 
-/** Unique entry to a {@link BDEWLoadProfileInput} */
+/** Unique entry to a {@link BDEWLoadProfileTimeSeries} */
 public class BDEWLoadProfileEntry extends LoadProfileEntry {
-  private final LoadProfileKey.Season season;
+  private final Season season;
 
   public BDEWLoadProfileEntry(
-      PValue value, LoadProfileKey.Season season, DayOfWeek dayOfWeek, int quarterHourOfDay) {
+      PValue value, Season season, DayOfWeek dayOfWeek, int quarterHourOfDay) {
     super(value, dayOfWeek, quarterHourOfDay);
     this.season = season;
   }
 
-  public LoadProfileKey.Season getSeason() {
+  public Season getSeason() {
     return season;
   }
 

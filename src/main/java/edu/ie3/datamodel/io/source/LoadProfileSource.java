@@ -5,123 +5,99 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT;
-
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.connectors.CsvFileConnector;
+import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
+import edu.ie3.datamodel.io.factory.timeseries.BDEWLoadProfileFactory;
+import edu.ie3.datamodel.io.factory.timeseries.LoadProfileData;
+import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
+import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.source.csv.CsvDataSource;
+import edu.ie3.datamodel.io.source.csv.CsvLoadProfileSource;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
-import edu.ie3.datamodel.models.profile.LoadProfileKey;
-import edu.ie3.datamodel.models.profile.LoadProfileKey.BDEWLoadProfileKey;
+import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileEntry;
-import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileInput;
-import edu.ie3.datamodel.models.value.PValue;
+import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
+import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.Try;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import tech.units.indriya.quantity.Quantities;
+import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class LoadProfileSource extends EntitySource {
+public abstract class LoadProfileSource<P extends LoadProfile, E extends LoadProfileEntry>
+    extends EntitySource {
 
-  private final Path bdewLoadProfilePath = Path.of("src", "main", "resources", "load");
+  protected final Class<E> entryClass;
+  protected final LoadProfileFactory<P, E> entryFactory;
 
-  @Override
-  public void validate() throws ValidationException {
-    /* Nothing to do here */
+  protected LoadProfileSource(Class<E> entryClass, LoadProfileFactory<P, E> entryFactory) {
+    this.entryClass = entryClass;
+    this.entryFactory = entryFactory;
   }
 
-  public Map<BdewStandardLoadProfile, BDEWLoadProfileInput> getBDEWLoadProfiles()
-      throws SourceException {
-    CsvFileConnector connector = new CsvFileConnector(bdewLoadProfilePath);
-
-    try (BufferedReader reader = connector.initReader(Path.of("standard_load_profiles"))) {
-      return parseBDEWStandardProfiles(reader);
-    } catch (IOException | ParsingException e) {
-      throw new SourceException("The bdew standard load profiles could not be loaded!", e);
-    }
+  /**
+   * Build a list of type {@code E}, whereas the underlying {@link Value} does not need any
+   * additional information.
+   *
+   * @param fieldToValues Mapping from field id to values
+   * @return {@link Try} of simple time based value
+   */
+  protected Try<List<E>, FactoryException> createEntries(Map<String, String> fieldToValues) {
+    LoadProfileData<E> factoryData = new LoadProfileData<>(fieldToValues, entryClass);
+    return entryFactory.get(factoryData);
   }
 
-  protected Map<BdewStandardLoadProfile, BDEWLoadProfileInput> parseBDEWStandardProfiles(
-      BufferedReader reader) throws IOException, ParsingException, SourceException {
+  public abstract LoadProfileTimeSeries<E> getTimeSeries();
 
-    Map<BDEWLoadProfileKey, List<LoadProfileData<BDEWLoadProfileKey>>> dataMap =
-        readLoadProfile(
-            reader,
-            ",",
-            str -> Try.of(() -> LoadProfileKey.parseBDEWProfile(str), ParsingException.class));
+  /**
+   * Method to return all time keys after a given timestamp.
+   *
+   * @param time given time
+   * @return a list of time keys
+   */
+  public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time);
 
-    return Arrays.stream(BdewStandardLoadProfile.values())
-        .map(
-            profile -> {
-              Set<BDEWLoadProfileEntry> entries =
-                  dataMap.keySet().stream()
-                      .filter(e -> e.profile() == profile)
-                      .map(dataMap::get)
-                      .flatMap(Collection::stream)
-                      .map(
-                          d ->
-                              new BDEWLoadProfileEntry(
-                                  d.value,
-                                  d.profileKey.season(),
-                                  d.profileKey.dayOfWeek(),
-                                  d.quarterHour))
-                      .collect(Collectors.toSet());
+  /**
+   * Method to read in the build-in {@link BdewStandardLoadProfile}s.
+   *
+   * @return a map: load profile to time series
+   * @throws SourceException if an exception occurred
+   */
+  public static Map<BdewStandardLoadProfile, BDEWLoadProfileTimeSeries>
+      readBDEWStandardLoadProfiles() throws SourceException {
+    Path bdewLoadProfilePath = Path.of("src", "main", "resources", "load");
+    CsvDataSource dataSource =
+        new CsvDataSource(",", bdewLoadProfilePath, new FileNamingStrategy());
 
-              return Map.entry(profile, new BDEWLoadProfileInput(profile, entries));
-            })
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-  }
+    BdewStandardLoadProfile[] implemented = BdewStandardLoadProfile.values();
+    Map<BdewStandardLoadProfile, BDEWLoadProfileTimeSeries> loadProfileInputs = new HashMap<>();
 
-  private <T extends LoadProfileKey> Map<T, List<LoadProfileData<T>>> readLoadProfile(
-      BufferedReader reader, String csvSep, Function<String, Try<T, ParsingException>> keyExtractor)
-      throws IOException, SourceException, ParsingException {
-    List<String> headline = Arrays.asList(reader.readLine().split(csvSep));
+    try {
+      for (CsvLoadProfileMetaInformation metaInformation :
+          dataSource.getCsvLoadProfileMetaInformation(implemented).values()) {
+        BdewStandardLoadProfile profile = BdewStandardLoadProfile.get(metaInformation.getProfile());
 
-    int quarterHourColumn = headline.indexOf("quarterHour");
+        Class<BDEWLoadProfileEntry> entryClass = BDEWLoadProfileEntry.class;
 
-    if (quarterHourColumn < 0) {
-      throw new SourceException("There is no column for quarter hour values.");
-    }
+        CsvLoadProfileSource<BdewStandardLoadProfile, BDEWLoadProfileEntry> source =
+            new CsvLoadProfileSource<>(
+                dataSource,
+                metaInformation,
+                entryClass,
+                profile,
+                new BDEWLoadProfileFactory(entryClass));
 
-    Map<Integer, T> profileKeys = new HashMap<>();
-
-    for (int i = 0; i < headline.size(); i++) {
-      if (i != quarterHourColumn) {
-        profileKeys.put(i, keyExtractor.apply(headline.get(i)).getOrThrow());
+        loadProfileInputs.put(profile, (BDEWLoadProfileTimeSeries) source.getTimeSeries());
       }
+
+      return loadProfileInputs;
+    } catch (ParsingException e) {
+      throw new SourceException("Unable to read standard load profiles due to: ", e);
     }
-
-    return reader
-        .lines()
-        .map(
-            csvRow -> {
-              List<String> elements = Arrays.asList(csvRow.split(csvSep));
-              int quarterHour = Integer.parseInt(elements.get(quarterHourColumn));
-
-              List<LoadProfileData<T>> loadProfileToValue = new ArrayList<>();
-
-              for (int i = 0; i < elements.size(); i++) {
-                if (i != quarterHourColumn) {
-                  loadProfileToValue.add(
-                      new LoadProfileData<>(
-                          profileKeys.get(i),
-                          quarterHour,
-                          new PValue(
-                              Quantities.getQuantity(
-                                  Double.parseDouble(elements.get(i)), KILOWATT))));
-                }
-              }
-              return loadProfileToValue;
-            })
-        .flatMap(Collection::stream)
-        .collect(Collectors.groupingBy(LoadProfileData::profileKey));
   }
-
-  public record LoadProfileData<T extends LoadProfileKey>(
-      T profileKey, int quarterHour, PValue value) {}
 }
