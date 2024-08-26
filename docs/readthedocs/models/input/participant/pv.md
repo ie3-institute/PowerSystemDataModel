@@ -44,8 +44,8 @@ Detailed model of a photovoltaic power plant.
 
    * - azimuth
      - °
-     - | Inclination in a compass direction
-       | South = 0°, West = 90°, East = -90°
+     - Inclination in a compass direction
+       South = 0°, West = 90°, East = -90°
 
    * - etaConv
      - %
@@ -65,8 +65,8 @@ Detailed model of a photovoltaic power plant.
 
    * - marketReaction
      -
-     - | Whether to adapt output based on (volatile)
-       | market price or not
+     - Whether to adapt output based on (volatile)
+       market price or not
 
    * - sRated
      - kVA
@@ -78,9 +78,9 @@ Detailed model of a photovoltaic power plant.
 
    * - em
      -
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
+     - UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       this system participant. Field can be empty or missing, if this participant
+       is not controlled.
 
 ```
 

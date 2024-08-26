@@ -38,8 +38,8 @@ Representation of an electrical node, with no further distinction into bus bar, 
 
    * - slack
      -
-     - | Boolean indicator, if this nodes serves as a slack node in power
-       | flow calculation
+     - Boolean indicator, if this nodes serves as a slack node in power
+       flow calculation
 
    * - geoPosition
      -

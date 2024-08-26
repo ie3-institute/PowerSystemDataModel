@@ -32,8 +32,8 @@ Model of a biomass power plant.
 
    * - opex
      - € / MWh
-     - | Operational expenditure to operate one entity of
-       | this type
+     - Operational expenditure to operate one entity of
+       this type
 
    * - activePowerGradient
      - % / h
@@ -95,13 +95,13 @@ Model of a biomass power plant.
 
    * - marketReaction
      -
-     - | Whether to adapt output based on (volatile)
-       | market price or not
+     - Whether to adapt output based on (volatile)
+       market price or not
 
    * - costControlled
      -
-     - | Whether to adapt output based on the difference
-       | between production costs and fixed feed in tariff or not
+     - Whether to adapt output based on the difference
+       between production costs and fixed feed in tariff or not
 
    * - feedInTariff
      - € / MWh
@@ -109,9 +109,9 @@ Model of a biomass power plant.
 
    * - em
      -
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
+     - UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       this system participant. Field can be empty or missing, if this participant
+       is not controlled.
 
 ```
 

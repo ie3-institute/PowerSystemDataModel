@@ -89,9 +89,9 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
    * - parallelDevices
      - –
-     - | overall amount of parallel lines to automatically construct
-       | (e.g. parallelDevices = 2 will build a total of two lines
-       | using the specified parameters)
+     - overall amount of parallel lines to automatically construct
+       (e.g. parallelDevices = 2 will build a total of two lines
+       using the specified parameters)
 
    * - type
      - –
@@ -108,9 +108,9 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
    * - olmCharacteristic
      - –
-     - | Characteristic of possible overhead line monitoring Can be
-       | given in the form of ``olm:{<List of Pairs>}``. The pairs
-       | are wind velocity in x and permissible loading in y.
+     - Characteristic of possible overhead line monitoring Can be
+       given in the form of ``olm:{<List of Pairs>}``. The pairs
+       are wind velocity in x and permissible loading in y.
 
 ```
 

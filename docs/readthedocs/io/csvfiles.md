@@ -127,26 +127,26 @@ The following keys are supported until now:
    * - Key
      - Information and supported head line
    * - c
-     - | An energy price (e.g. in €/MWh; c stands for charge).
-       | Permissible head line: ``time,price``
+     - An energy price (e.g. in €/MWh; c stands for charge).
+       Permissible head line: ``time,price``
    * - p
-     - | Active power
-       | Permissible head line: ``time,p``
+     - Active power
+       Permissible head line: ``time,p``
    * - pq
-     - | Active and reactive power
-       | Permissible head line: ``time,p,q``
+     - Active and reactive power
+       Permissible head line: ``time,p,q``
    * - h
-     - | Heat power demand
-       | Permissible head line: ``time,h``
+     - Heat power demand
+       Permissible head line: ``time,h``
    * - ph
-     - | Active and heat power
-       | Permissible head line: ``time,p,h``
+     - Active and heat power
+       Permissible head line: ``time,p,h``
    * - pqh
-     - | Active, reactive and heat power
-       | Permissible head line: ``time,p,q,h``
+     - Active, reactive and heat power
+       Permissible head line: ``time,p,q,h``
    * - weather
-     - | Weather information
-       | Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
+     - Weather information
+       Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
 
 ```
 

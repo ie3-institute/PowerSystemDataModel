@@ -32,8 +32,8 @@ Model of an ideal electrical battery energy storage.
 
    * - opex
      - € / MWh
-     - | Operational expenditure to operate one entity of
-       | this type
+     - Operational expenditure to operate one entity of
+       this type
 
    * - eStorage
      - kWh
@@ -49,8 +49,8 @@ Model of an ideal electrical battery energy storage.
 
    * - pMax
      - kW
-     - | Maximum permissible active power
-       | infeed or consumption
+     - Maximum permissible active power
+       infeed or consumption
 
    * - activePowerGradient
      - % / h
@@ -104,14 +104,14 @@ Model of an ideal electrical battery energy storage.
 
    * - behaviour
      -
-     - | Foreseen operation strategy of the storage.
-       | Eligible input: *"market"*, *"grid"*, *"self"*
+     - Foreseen operation strategy of the storage.
+       Eligible input: *"market"*, *"grid"*, *"self"*
        
    * - em
      -
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
+     - UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       this system participant. Field can be empty or missing, if this participant
+       is not controlled.
 
 ```
 

@@ -51,9 +51,9 @@ model can be derived.
 
    * - em
      -
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
+     - UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       this system participant. Field can be empty or missing, if this participant
+       is not controlled.
 
 ```
 

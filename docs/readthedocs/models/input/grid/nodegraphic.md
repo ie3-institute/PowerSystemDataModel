@@ -22,8 +22,8 @@ Schematic drawing information for a node model.
 
    * - graphicLayer
      -
-     - | Human readable identifier of the graphic layer to draw
-       | this element on
+     - Human readable identifier of the graphic layer to draw
+       this element on
 
    * - path
      -

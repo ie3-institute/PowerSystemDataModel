@@ -32,8 +32,8 @@ Model of a wind energy converter.
 
    * - opex
      - € / MWh
-     - | Operational expenditure to operate one entity of
-       | this type
+     - Operational expenditure to operate one entity of
+       this type
 
    * - sRated
      - kVA
@@ -103,14 +103,14 @@ Model of a wind energy converter.
 
    * - marketReaction
      -
-     - | Whether to adapt output based on (volatile)
-       | market price or not
+     - Whether to adapt output based on (volatile)
+       market price or not
 
    * - em
      -
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
+     - UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+       this system participant. Field can be empty or missing, if this participant
+       is not controlled.
 
 ```
 
