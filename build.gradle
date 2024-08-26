@@ -76,7 +76,7 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.4' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.14.19' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.15.0' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
@@ -94,7 +94,7 @@ dependencies {
   // Databases
   implementation 'org.influxdb:influxdb-java:2.24'
   implementation 'com.couchbase.client:java-client:3.7.2'
-  runtimeOnly 'org.postgresql:postgresql:42.7.3' // postgresql jdbc driver required during runtime
+  runtimeOnly 'org.postgresql:postgresql:42.7.4' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.16.1' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.17.1' // needed by commons-compress
