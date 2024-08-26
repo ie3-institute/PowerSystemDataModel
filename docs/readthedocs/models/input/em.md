@@ -10,6 +10,7 @@ Participants are connected to an EM each via their `em` field.
 ```{list-table}
    :widths: auto
    :header-rows: 1
+   :class: wrapping
 
 
    * - Attribute
