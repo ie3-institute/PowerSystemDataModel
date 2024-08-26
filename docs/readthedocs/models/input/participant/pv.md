@@ -36,7 +36,7 @@ Detailed model of a photovoltaic power plant.
 
    * - qCharacteristics
      -
-     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
+     - [Reactive power characteristic](#participant-general-q-characteristic) to follow
 
    * - albedo
      -
@@ -78,7 +78,7 @@ Detailed model of a photovoltaic power plant.
 
    * - em
      -
-     - UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+     - UUID reference to an [Energy Management Unit](#em_model) that is controlling
        this system participant. Field can be empty or missing, if this participant
        is not controlled.
 

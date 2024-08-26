@@ -96,7 +96,7 @@ Model of an ideal electrical battery energy storage.
 
    * - qCharacteristics
      -
-     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
+     - [Reactive power characteristic](#participant-general-q-characteristic) to follow
 
    * - type
      -
@@ -109,7 +109,7 @@ Model of an ideal electrical battery energy storage.
        
    * - em
      -
-     - UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+     - UUID reference to an [Energy Management Unit](#em_model) that is controlling
        this system participant. Field can be empty or missing, if this participant
        is not controlled.
 

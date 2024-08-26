@@ -45,7 +45,7 @@ Model of a wind energy converter.
 
    * - cpCharacteristic
      -
-     - Wind velocity dependent :ref:`Betz factors<wec-cp-characteristic>`.
+     - Wind velocity dependent [Betz factors](#wec-cp-characteristic).
 
    * - etaConv
      - %
@@ -95,7 +95,7 @@ Model of a wind energy converter.
 
    * - qCharacteristics
      -
-     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
+     - [Reactive power characteristic](#participant-general-q-characteristic) to follow
 
    * - type
      -
@@ -108,7 +108,7 @@ Model of a wind energy converter.
 
    * - em
      -
-     - UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
+     - UUID reference to an [Energy Management Unit](#em_model) that is controlling
        this system participant. Field can be empty or missing, if this participant
        is not controlled.
 
