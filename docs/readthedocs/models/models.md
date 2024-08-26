@@ -210,7 +210,7 @@ result/participant/thermalstorage
 result/participant/thermalunit
 result/participant/thermalhouse
 result/participant/cylindricalstorage
-result/participant/domesticthotwaterstorage
+result/participant/domestichotwaterstorage
 result/participant/systemparticipant
 result/participant/flexoption
 result/participant/em
