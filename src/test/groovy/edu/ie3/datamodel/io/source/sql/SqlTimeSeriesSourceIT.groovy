@@ -14,6 +14,7 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.test.helper.TestContainerHelper
+import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
@@ -141,5 +142,19 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     then:
     timeSeries.uuid == pTimeSeriesUuid
     timeSeries.entries.size() == 2
+  }
+
+  def "The SqlTimeSeriesSource returns the time keys after a given key correctly"() {
+    given:
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-12-31T23:59:59Z")
+
+    when:
+    def actual = pSource.getTimeKeysAfter(time)
+
+    then:
+    actual == [
+      TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:00:00Z"),
+      TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:15:00Z")
+    ]
   }
 }

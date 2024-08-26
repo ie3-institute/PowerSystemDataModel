@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
-import edu.ie3.util.TimeUtil
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
@@ -138,5 +137,22 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
+  }
+
+  def "A SqlWeatherSource returns all time keys after a given time key correctly"() {
+    given:
+    def time = CosmoWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time)
+
+    then:
+    actual.size() == 2
+
+    actual.get(CosmoWeatherTestData.COORDINATE_193186) == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+    actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
   }
 }
