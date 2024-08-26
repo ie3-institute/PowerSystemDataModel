@@ -9,7 +9,8 @@ Combined heat and power plant.
 ### Type Model
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -63,7 +64,8 @@ Combined heat and power plant.
 ### Entity Model
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 

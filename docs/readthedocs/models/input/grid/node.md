@@ -7,7 +7,8 @@ Representation of an electrical node, with no further distinction into bus bar, 
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 

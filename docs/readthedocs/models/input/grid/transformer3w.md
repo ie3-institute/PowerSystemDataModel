@@ -23,7 +23,8 @@ name: Equivalent circuit diagram of a three winding transformer
 All impedances and admittances are given with respect to the higher voltage side.
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -120,7 +121,8 @@ All impedances and admittances are given with respect to the higher voltage side
 ### Entity Model
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 

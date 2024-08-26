@@ -9,7 +9,8 @@ Model of a wind energy converter.
 ### Type Model
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -63,7 +64,8 @@ Model of a wind energy converter.
 ### Entity Model
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 

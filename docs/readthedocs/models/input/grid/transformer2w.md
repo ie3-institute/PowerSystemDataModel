@@ -11,7 +11,8 @@ All impedances and admittances are given with respect to the higher voltage side
 As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit representations.
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
    * - Attribute
@@ -82,7 +83,8 @@ A list with some standard transformer types can be found here: [Standard Two Win
 ### Entity Model
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
    * - Attribute
@@ -141,7 +143,8 @@ file can be used directly for any simulation with ``simona``.
 The transformers which source is ``simBench`` are from [here](https://simbench.de/en/download/datasets/).
 
 ```{list-table}
-   :widths: 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
+   :widths: auto
+   :class: wrapping6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
    :header-rows: 1
    
    * - uuid

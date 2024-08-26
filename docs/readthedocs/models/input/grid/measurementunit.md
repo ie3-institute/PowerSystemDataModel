@@ -9,7 +9,8 @@ The measured information are indicated by boolean fields.
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 

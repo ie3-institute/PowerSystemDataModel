@@ -10,7 +10,8 @@ station and has some limitations outlined below.
 ### Entity Model
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -78,7 +79,8 @@ available standard types and how to use custom types.
 The actual model definition for charging point types looks as follows:
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -115,7 +117,8 @@ They can either by used code wise or directly from database or file input by ref
 synonymous ids. All standard types can be found in {code}`edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils`.
 
 ```{list-table}
-   :widths: 25 25 25 25
+   :widths: auto
+   :class: wrapping25 25 25 25
    :header-rows: 1
 
 
@@ -218,7 +221,8 @@ Evcs location types describe the type of charging location of a charging station
 and underscores and minuses are ignored, that means "charginghubtown" is parsed as type {code}`CHARGING_HUB_TOWN`.
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 

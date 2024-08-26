@@ -8,7 +8,8 @@ A coupling point to thermal system - equivalent to [electrical node](../grid/nod
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 

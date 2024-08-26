@@ -9,7 +9,8 @@ Model of a biomass power plant.
 ### Type Model
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -55,7 +56,8 @@ Model of a biomass power plant.
 ### Entity Model
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 

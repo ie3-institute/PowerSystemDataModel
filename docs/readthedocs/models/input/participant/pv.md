@@ -5,7 +5,8 @@
 Detailed model of a photovoltaic power plant.
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 

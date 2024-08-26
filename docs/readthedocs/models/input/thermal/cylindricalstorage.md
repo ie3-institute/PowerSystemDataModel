@@ -7,7 +7,8 @@ Model of a cylindrical thermal storage using a fluent to store thermal energy.
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 

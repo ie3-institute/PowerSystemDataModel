@@ -18,7 +18,8 @@ To be as flexible, as possible, the actual content of the time series is given a
 The following different values are available:
 
 ```{list-table}
-   :widths: 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
    
    * - Value Class 

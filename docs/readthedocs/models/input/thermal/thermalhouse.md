@@ -8,7 +8,8 @@ This reflects a simple shoe box with transmission losses
 ## Attributes, Units and Remarks
 
 ```{list-table}
-   :widths: 33 33 33
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
