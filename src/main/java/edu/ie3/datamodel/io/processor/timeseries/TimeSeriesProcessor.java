@@ -13,8 +13,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.timeseries.repetitive.*;
 import edu.ie3.datamodel.models.value.*;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -50,7 +49,10 @@ public class TimeSeriesProcessor<
               IndividualTimeSeries.class, TimeBasedValue.class, SValue.class),
           new TimeSeriesProcessorKey(
               IndividualTimeSeries.class, TimeBasedValue.class, HeatAndSValue.class),
-          new TimeSeriesProcessorKey(LoadProfileInput.class, LoadProfileEntry.class, PValue.class));
+          new TimeSeriesProcessorKey(
+              BDEWLoadProfileTimeSeries.class, BDEWLoadProfileEntry.class, PValue.class),
+          new TimeSeriesProcessorKey(
+              RandomLoadProfileTimeSeries.class, RandomLoadProfileEntry.class, PValue.class));
 
   /**
    * Specific combination of time series class, entry class and value class, this processor is

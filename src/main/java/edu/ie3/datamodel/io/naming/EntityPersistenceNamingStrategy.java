@@ -60,7 +60,7 @@ public class EntityPersistenceNamingStrategy {
    * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
    */
   private static final String LOAD_PROFILE_TIME_SERIES =
-      "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>" + UUID_STRING + ")";
+      "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})_(?<uuid>" + UUID_STRING + ")";
 
   /**
    * Pattern to identify load profile time series in this instance of the naming strategy (takes
@@ -215,8 +215,6 @@ public class EntityPersistenceNamingStrategy {
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
       return getAssetInputEntityName(cls.asSubclass(AssetInput.class));
-    if (RandomLoadParameters.class.isAssignableFrom(cls))
-      return getRandomLoadParametersEntityName(cls.asSubclass(RandomLoadParameters.class));
     if (GraphicInput.class.isAssignableFrom(cls))
       return getGraphicsInputEntityName(cls.asSubclass(GraphicInput.class));
     if (OperatorInput.class.isAssignableFrom(cls))
@@ -272,19 +270,6 @@ public class EntityPersistenceNamingStrategy {
       Class<? extends CharacteristicInput> assetCharClass) {
     String assetCharString = camelCaseToSnakeCase(assetCharClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetCharString));
-  }
-
-  /**
-   * Get the entity name for all {@link RandomLoadParameters}
-   *
-   * @param randomLoadParamClass the random load parameters class an entity name string should be
-   *     generated from
-   * @return the entity name string
-   */
-  public Optional<String> getRandomLoadParametersEntityName(
-      Class<? extends RandomLoadParameters> randomLoadParamClass) {
-    String loadParamString = camelCaseToSnakeCase(randomLoadParamClass.getSimpleName());
-    return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
   }
 
   /**
@@ -383,14 +368,14 @@ public class EntityPersistenceNamingStrategy {
         logger.error("Unable to determine content of time series {}", timeSeries);
         return Optional.empty();
       }
-    } else if (timeSeries instanceof LoadProfileTimeSeries<?> loadProfileInput) {
+    } else if (timeSeries instanceof LoadProfileTimeSeries<?> loadProfileTimeSeries) {
       return Optional.of(
           prefix
               .concat("lpts")
               .concat("_")
-              .concat(loadProfileInput.getLoadProfile().getKey())
+              .concat(loadProfileTimeSeries.getLoadProfile().getKey())
               .concat("_")
-              .concat(loadProfileInput.getUuid().toString())
+              .concat(loadProfileTimeSeries.getUuid().toString())
               .concat(suffix));
     } else {
       logger.error("There is no naming strategy defined for {}", timeSeries);

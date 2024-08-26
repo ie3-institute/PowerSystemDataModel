@@ -5,32 +5,32 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.BDEWLoadProfileFactory;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileData;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
-import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.factory.timeseries.RandomLoadProfileFactory;
 import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.io.source.csv.CsvLoadProfileSource;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.profile.LoadProfile;
-import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileEntry;
-import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileTimeSeries;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.*;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class LoadProfileSource<P extends LoadProfile, E extends LoadProfileEntry>
     extends EntitySource {
+  private static final CsvDataSource buildInSource = getBuildInSource(Path.of("load"));
 
   protected final Class<E> entryClass;
   protected final LoadProfileFactory<P, E> entryFactory;
@@ -47,7 +47,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, E extends LoadPro
    * @param fieldToValues Mapping from field id to values
    * @return {@link Try} of simple time based value
    */
-  protected Try<List<E>, FactoryException> createEntries(Map<String, String> fieldToValues) {
+  protected Try<Set<E>, FactoryException> createEntries(Map<String, String> fieldToValues) {
     LoadProfileData<E> factoryData = new LoadProfileData<>(fieldToValues, entryClass);
     return entryFactory.get(factoryData);
   }
@@ -66,38 +66,36 @@ public abstract class LoadProfileSource<P extends LoadProfile, E extends LoadPro
    * Method to read in the build-in {@link BdewStandardLoadProfile}s.
    *
    * @return a map: load profile to time series
-   * @throws SourceException if an exception occurred
    */
-  public static Map<BdewStandardLoadProfile, BDEWLoadProfileTimeSeries>
-      readBDEWStandardLoadProfiles() throws SourceException {
-    Path bdewLoadProfilePath = Path.of("src", "main", "resources", "load");
-    CsvDataSource dataSource =
-        new CsvDataSource(",", bdewLoadProfilePath, new FileNamingStrategy());
+  public static Map<BdewStandardLoadProfile, BDEWLoadProfileTimeSeries> getBDEWLoadProfiles() {
+    BDEWLoadProfileFactory factory = new BDEWLoadProfileFactory();
 
-    BdewStandardLoadProfile[] implemented = BdewStandardLoadProfile.values();
-    Map<BdewStandardLoadProfile, BDEWLoadProfileTimeSeries> loadProfileInputs = new HashMap<>();
+    return buildInSource.getCsvLoadProfileMetaInformation(BdewStandardLoadProfile.values()).stream()
+        .map(
+            metaInformation ->
+                (BDEWLoadProfileTimeSeries)
+                    new CsvLoadProfileSource<>(
+                            buildInSource, metaInformation, BDEWLoadProfileEntry.class, factory)
+                        .getTimeSeries())
+        .collect(Collectors.toMap(BDEWLoadProfileTimeSeries::getLoadProfile, Function.identity()));
+  }
 
-    try {
-      for (CsvLoadProfileMetaInformation metaInformation :
-          dataSource.getCsvLoadProfileMetaInformation(implemented).values()) {
-        BdewStandardLoadProfile profile = BdewStandardLoadProfile.get(metaInformation.getProfile());
-
-        Class<BDEWLoadProfileEntry> entryClass = BDEWLoadProfileEntry.class;
-
-        CsvLoadProfileSource<BdewStandardLoadProfile, BDEWLoadProfileEntry> source =
-            new CsvLoadProfileSource<>(
-                dataSource,
+  /**
+   * Method to read in the build-in {@link RandomLoadProfileTimeSeries}.
+   *
+   * @return the random load profile time series
+   */
+  public static RandomLoadProfileTimeSeries getRandomLoadProfile() {
+    CsvLoadProfileMetaInformation metaInformation =
+        buildInSource.getCsvLoadProfileMetaInformation(RANDOM_LOAD_PROFILE).stream()
+            .findAny()
+            .orElseThrow();
+    return (RandomLoadProfileTimeSeries)
+        new CsvLoadProfileSource<>(
+                buildInSource,
                 metaInformation,
-                entryClass,
-                profile,
-                new BDEWLoadProfileFactory(entryClass));
-
-        loadProfileInputs.put(profile, (BDEWLoadProfileTimeSeries) source.getTimeSeries());
-      }
-
-      return loadProfileInputs;
-    } catch (ParsingException e) {
-      throw new SourceException("Unable to read standard load profiles due to: ", e);
-    }
+                RandomLoadProfileEntry.class,
+                new RandomLoadProfileFactory())
+            .getTimeSeries();
   }
 }

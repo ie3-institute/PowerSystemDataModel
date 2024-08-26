@@ -9,14 +9,16 @@ import static edu.ie3.util.quantities.PowerSystemUnits.*
 import static tech.units.indriya.unit.Units.CELSIUS
 import static tech.units.indriya.unit.Units.METRE_PER_SECOND
 
+import edu.ie3.datamodel.models.Season
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileEntry
+import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileTimeSeries
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries
 import edu.ie3.datamodel.models.value.*
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
@@ -394,41 +396,50 @@ trait TimeSeriesTestData {
     ] as LinkedHashMap
   ] as Set
 
-  LoadProfileInput loadProfileInput =  new LoadProfileInput(
-  UUID.fromString("b56853fe-b800-4c18-b324-db1878b22a28"),
+  BDEWLoadProfileTimeSeries loadProfileTimeSeries =  new BDEWLoadProfileTimeSeries(
+  UUID.fromString("b0ad5ba2-0d5e-4c9b-b818-4079cebf59cc"),
   BdewStandardLoadProfile.G2,
   [
-    new LoadProfileEntry(
+    new BDEWLoadProfileEntry(
     new PValue(Quantities.getQuantity(5d, KILOWATT)),
+    Season.SUMMER,
     DayOfWeek.MONDAY,
     0
     ),
-    new LoadProfileEntry(
+    new BDEWLoadProfileEntry(
     new PValue(Quantities.getQuantity(15d, KILOWATT)),
+    Season.SUMMER,
     DayOfWeek.MONDAY,
     1
     ),
-    new LoadProfileEntry(
+    new BDEWLoadProfileEntry(
     new PValue(Quantities.getQuantity(10d, KILOWATT)),
+    Season.SUMMER,
     DayOfWeek.MONDAY,
     2
     )
   ] as Set
   )
 
-  Set<LinkedHashMap<String, String>> loadProfileInputProcessed = [
+  Set<LinkedHashMap<String, String>> loadProfileTimeSeriesProcessed = [
     [
       "dayOfWeek"			: "MONDAY",
+      "loadProfile": "g2",
+      "season": "su",
       "p"					: "5.0",
       "quarterHourOfDay"	: "0"
     ] as LinkedHashMap,
     [
       "dayOfWeek"			: "MONDAY",
+      "loadProfile": "g2",
+      "season": "su",
       "p"					: "15.0",
       "quarterHourOfDay"	: "1"
     ] as LinkedHashMap,
     [
       "dayOfWeek"			: "MONDAY",
+      "loadProfile": "g2",
+      "season": "su",
       "p"					: "10.0",
       "quarterHourOfDay"	: "2"
     ] as LinkedHashMap
@@ -443,6 +454,6 @@ trait TimeSeriesTestData {
     individualPTimeSeries,
     individualSTimeSeries,
     individualWeatherTimeSeries,
-    loadProfileInput
+    loadProfileTimeSeries
   ]
 }

@@ -10,8 +10,10 @@ import edu.ie3.datamodel.io.processor.Processor
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileEntry
+import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
@@ -210,14 +212,14 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
     actual == individualHeatAndSTimeSeriesProcessed
   }
 
-  def "A TimeSeriesProcessors handles a complete LoadProfileInput correctly"() {
+  def "A TimeSeriesProcessors handles a complete LoadProfileTimeSeries correctly"() {
     given:
-    TimeSeriesProcessor<LoadProfileInput, LoadProfileEntry, PValue> processor = new TimeSeriesProcessor<>(LoadProfileInput, LoadProfileEntry, PValue)
+    TimeSeriesProcessor<BDEWLoadProfileTimeSeries, LoadProfileEntry, PValue> processor = new TimeSeriesProcessor<>(BDEWLoadProfileTimeSeries, BDEWLoadProfileEntry, PValue)
 
     when:
-    Set<Map<String, String>> actual = processor.handleTimeSeries(loadProfileInput)
+    Set<Map<String, String>> actual = processor.handleTimeSeries(loadProfileTimeSeries)
 
     then:
-    actual == loadProfileInputProcessed
+    actual == loadProfileTimeSeriesProcessed
   }
 }

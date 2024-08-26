@@ -29,7 +29,7 @@ public abstract class RepetitiveTimeSeries<E extends TimeSeriesEntry<V>, V exten
 
   @Override
   public Optional<V> getValue(ZonedDateTime time) {
-    return Optional.of(calc(time));
+    return Optional.ofNullable(calc(time));
   }
 
   @Override

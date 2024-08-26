@@ -131,7 +131,7 @@ public class CsvDataSource implements DataSource {
    *
    * @return A mapping from uuid to the load profile time series meta information
    */
-  public Map<UUID, CsvLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
+  public Set<CsvLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
       LoadProfile... profiles) {
     return getTimeSeriesFilePaths(fileNamingStrategy.getLoadProfileTimeSeriesPattern())
         .parallelStream()
@@ -149,7 +149,7 @@ public class CsvDataSource implements DataSource {
                     || profiles.length == 0
                     || Stream.of(profiles)
                         .anyMatch(profile -> profile.getKey().equals(metaInformation.getProfile())))
-        .collect(Collectors.toMap(TimeSeriesMetaInformation::getUuid, Function.identity()));
+        .collect(Collectors.toSet());
   }
 
   /**

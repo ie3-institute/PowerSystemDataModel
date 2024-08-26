@@ -9,7 +9,6 @@ import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
-import edu.ie3.datamodel.models.input.RandomLoadParameters
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -19,22 +18,8 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
-import edu.ie3.datamodel.models.input.system.BmInput
-import edu.ie3.datamodel.models.input.system.ChpInput
-import edu.ie3.datamodel.models.input.system.EvInput
-import edu.ie3.datamodel.models.input.system.EvcsInput
-import edu.ie3.datamodel.models.input.system.FixedFeedInInput
-import edu.ie3.datamodel.models.input.system.HpInput
-import edu.ie3.datamodel.models.input.system.LoadInput
-import edu.ie3.datamodel.models.input.system.PvInput
-import edu.ie3.datamodel.models.input.system.StorageInput
-import edu.ie3.datamodel.models.input.system.WecInput
-import edu.ie3.datamodel.models.input.system.type.BmTypeInput
-import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
-import edu.ie3.datamodel.models.input.system.type.EvTypeInput
-import edu.ie3.datamodel.models.input.system.type.HpTypeInput
-import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
-import edu.ie3.datamodel.models.input.system.type.WecTypeInput
+import edu.ie3.datamodel.models.input.system.*
+import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
@@ -43,23 +28,13 @@ import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
-import edu.ie3.datamodel.models.result.system.BmResult
-import edu.ie3.datamodel.models.result.system.ChpResult
-import edu.ie3.datamodel.models.result.system.EmResult
-import edu.ie3.datamodel.models.result.system.EvResult
-import edu.ie3.datamodel.models.result.system.EvcsResult
-import edu.ie3.datamodel.models.result.system.FixedFeedInResult
-import edu.ie3.datamodel.models.result.system.FlexOptionsResult
-import edu.ie3.datamodel.models.result.system.LoadResult
-import edu.ie3.datamodel.models.result.system.PvResult
-import edu.ie3.datamodel.models.result.system.StorageResult
-import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.util.quantities.PowerSystemUnits
@@ -344,22 +319,6 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     WecTypeInput           || "wec_type_input"
   }
 
-  def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for a Load Parameter Model"() {
-    given: "a naming strategy without pre- or suffixes"
-    EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
-
-    when:
-    Optional<String> res = strategy.getEntityName(modelClass)
-
-    then:
-    res.present
-    res.get() == expectedString
-
-    where:
-    modelClass           || expectedString
-    RandomLoadParameters || "random_load_parameters_input"
-  }
-
   def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for a graphic input Model"() {
     given: "a naming strategy without pre- or suffixes"
     EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
@@ -452,12 +411,12 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
   }
 
-  def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for load profile input" () {
+  def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for load profile time series" () {
     given:
     EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
-    LoadProfileInput timeSeries = Mock(LoadProfileInput)
+    BDEWLoadProfileTimeSeries timeSeries = Mock(BDEWLoadProfileTimeSeries)
     timeSeries.uuid >> uuid
-    timeSeries.type >> type
+    timeSeries.loadProfile >> type
 
     when:
     Optional<String> actual = strategy.getEntityName(timeSeries)
@@ -468,7 +427,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 
     where:
     clazz            | uuid                                                    | type                       || expectedFileName
-    LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+    BDEWLoadProfileTimeSeries | UUID.fromString("9b880468-309c-43c1-a3f4-26dd26266216") | BdewStandardLoadProfile.G3 || "lpts_g3_9b880468-309c-43c1-a3f4-26dd26266216"
   }
 
   def "A EntityPersistenceNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {

@@ -77,6 +77,6 @@ public enum Season {
 
   @Override
   public String toString() {
-    return "Season{" + "key='" + key + '\'' + '}';
+    return key;
   }
 }

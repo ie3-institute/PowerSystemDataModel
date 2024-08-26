@@ -8,16 +8,17 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT;
 import static java.time.DayOfWeek.*;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.Season;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.PValue;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public class BDEWLoadProfileFactory
     extends LoadProfileFactory<BdewStandardLoadProfile, BDEWLoadProfileEntry> {
@@ -31,82 +32,71 @@ public class BDEWLoadProfileFactory
   public static final String TRANSITION_SATURDAY = "TrSa";
   public static final String TRANSITION_SUNDAY = "TrSu";
 
+  public BDEWLoadProfileFactory() {
+    this(BDEWLoadProfileEntry.class);
+  }
+
   public BDEWLoadProfileFactory(Class<BDEWLoadProfileEntry> valueClass) {
     super(valueClass);
   }
 
   @Override
-  protected List<BDEWLoadProfileEntry> buildModel(LoadProfileData<BDEWLoadProfileEntry> data) {
-    List<BDEWLoadProfileEntry> entries = new ArrayList<>();
+  protected Set<BDEWLoadProfileEntry> buildModel(LoadProfileData<BDEWLoadProfileEntry> data) {
     int quarterHour = data.getInt(QUARTER_HOUR);
 
-    /* summer */
-    entries.add(
+    return Set.of(
         new BDEWLoadProfileEntry(
             new PValue(data.getQuantity(SUMMER_WEEKDAY, KILOWATT)),
             Season.SUMMER,
             MONDAY,
-            quarterHour));
-    entries.add(
+            quarterHour),
         new BDEWLoadProfileEntry(
             new PValue(data.getQuantity(SUMMER_SATURDAY, KILOWATT)),
             Season.SUMMER,
             SATURDAY,
-            quarterHour));
-    entries.add(
+            quarterHour),
         new BDEWLoadProfileEntry(
             new PValue(data.getQuantity(SUMMER_SUNDAY, KILOWATT)),
             Season.SUMMER,
             SUNDAY,
-            quarterHour));
-
-    /* winter */
-    entries.add(
+            quarterHour),
         new BDEWLoadProfileEntry(
             new PValue(data.getQuantity(WINTER_WEEKDAY, KILOWATT)),
             Season.WINTER,
             MONDAY,
-            quarterHour));
-    entries.add(
+            quarterHour),
         new BDEWLoadProfileEntry(
             new PValue(data.getQuantity(WINTER_SATURDAY, KILOWATT)),
             Season.WINTER,
             SATURDAY,
-            quarterHour));
-    entries.add(
+            quarterHour),
         new BDEWLoadProfileEntry(
             new PValue(data.getQuantity(WINTER_SUNDAY, KILOWATT)),
             Season.WINTER,
             SUNDAY,
-            quarterHour));
-
-    /* transition */
-    entries.add(
+            quarterHour),
         new BDEWLoadProfileEntry(
             new PValue(data.getQuantity(TRANSITION_WEEKDAY, KILOWATT)),
             Season.TRANSITION,
             MONDAY,
-            quarterHour));
-    entries.add(
+            quarterHour),
         new BDEWLoadProfileEntry(
             new PValue(data.getQuantity(TRANSITION_SATURDAY, KILOWATT)),
             Season.TRANSITION,
             SATURDAY,
-            quarterHour));
-    entries.add(
+            quarterHour),
         new BDEWLoadProfileEntry(
             new PValue(data.getQuantity(TRANSITION_SUNDAY, KILOWATT)),
             Season.TRANSITION,
             SUNDAY,
             quarterHour));
-
-    return entries;
   }
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     return List.of(
         newSet(
+            QUARTER_HOUR,
             SUMMER_WEEKDAY,
             SUMMER_SATURDAY,
             SUMMER_SUNDAY,
@@ -120,7 +110,17 @@ public class BDEWLoadProfileFactory
 
   @Override
   public LoadProfileTimeSeries<BDEWLoadProfileEntry> build(
-      UUID uuid, BdewStandardLoadProfile loadProfile, Set<BDEWLoadProfileEntry> entries) {
-    return new BDEWLoadProfileTimeSeries(uuid, loadProfile, entries);
+      LoadProfileTimeSeriesMetaInformation metaInformation, Set<BDEWLoadProfileEntry> entries) {
+    return new BDEWLoadProfileTimeSeries(
+        metaInformation.getUuid(), parseProfile(metaInformation.getProfile()), entries);
+  }
+
+  @Override
+  public BdewStandardLoadProfile parseProfile(String profile) {
+    try {
+      return BdewStandardLoadProfile.get(profile);
+    } catch (ParsingException e) {
+      throw new FactoryException("An error occurred while parsing the profile: " + profile, e);
+    }
   }
 }

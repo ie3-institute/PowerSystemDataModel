@@ -34,7 +34,6 @@ public class CsvLoadProfileSource<P extends LoadProfile, E extends LoadProfileEn
       CsvDataSource source,
       CsvLoadProfileMetaInformation metaInformation,
       Class<E> entryClass,
-      P loadProfile,
       LoadProfileFactory<P, E> entryFactory) {
     super(entryClass, entryFactory);
     this.dataSource = source;
@@ -42,9 +41,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, E extends LoadProfileEn
 
     /* Read in the full time series */
     try {
-      this.loadProfileTimeSeries =
-          buildLoadProfileTimeSeries(
-              metaInformation.getUuid(), filePath, loadProfile, this::createEntries);
+      this.loadProfileTimeSeries = buildLoadProfileTimeSeries(metaInformation, this::createEntries);
     } catch (SourceException e) {
       throw new IllegalArgumentException(
           "Unable to obtain time series with UUID '"
@@ -76,18 +73,16 @@ public class CsvLoadProfileSource<P extends LoadProfile, E extends LoadProfileEn
    * entries are obtained entries with the help of {@code fieldToValueFunction}. If the file does
    * not exist, an empty Stream is returned.
    *
-   * @param timeSeriesUuid unique identifier of the time series
-   * @param filePath path to the file to read
+   * @param metaInformation containing an unique identifier of the time series, a path to the file
+   *     to read as well as the profile
    * @param fieldToValueFunction function, that is able to transfer a mapping (from field to value)
    *     onto a specific instance of the targeted entry class
    * @throws SourceException If the file cannot be read properly
    * @return an individual time series
    */
   protected LoadProfileTimeSeries<E> buildLoadProfileTimeSeries(
-      UUID timeSeriesUuid,
-      Path filePath,
-      P loadProfile,
-      Function<Map<String, String>, Try<List<E>, FactoryException>> fieldToValueFunction)
+      CsvLoadProfileMetaInformation metaInformation,
+      Function<Map<String, String>, Try<Set<E>, FactoryException>> fieldToValueFunction)
       throws SourceException {
     Set<E> entries =
         dataSource
@@ -100,6 +95,6 @@ public class CsvLoadProfileSource<P extends LoadProfile, E extends LoadProfileEn
             .flatMap(Collection::stream)
             .collect(Collectors.toSet());
 
-    return entryFactory.build(timeSeriesUuid, loadProfile, entries);
+    return entryFactory.build(metaInformation, entries);
   }
 }

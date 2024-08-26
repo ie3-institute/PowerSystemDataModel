@@ -5,8 +5,11 @@
 */
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
+import static java.util.function.Function.identity;
+
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
+import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Objects;
@@ -21,10 +24,14 @@ import java.util.stream.Collectors;
 public abstract class LoadProfileTimeSeries<E extends LoadProfileEntry>
     extends RepetitiveTimeSeries<E, PValue> {
   private final LoadProfile loadProfile;
-  private final Map<LoadProfileKey, Map<Integer, PValue>> valueMapping;
+  private final Map<Key, Map<Integer, E>> valueMapping;
+
+  public LoadProfileTimeSeries(UUID uuid, LoadProfile loadProfile, Set<E> entries) {
+    this(uuid, loadProfile, entries, e -> new WeekDayKey(e.getDayOfWeek()));
+  }
 
   public LoadProfileTimeSeries(
-      UUID uuid, Set<E> entries, LoadProfile loadProfile, Function<E, LoadProfileKey> extractor) {
+      UUID uuid, LoadProfile loadProfile, Set<E> entries, Function<E, Key> extractor) {
     super(uuid, entries);
     this.loadProfile = loadProfile;
 
@@ -33,8 +40,7 @@ public abstract class LoadProfileTimeSeries<E extends LoadProfileEntry>
             .collect(
                 Collectors.groupingBy(
                     extractor,
-                    Collectors.toMap(
-                        LoadProfileEntry::getQuarterHourOfDay, LoadProfileEntry::getValue)));
+                    Collectors.toMap(LoadProfileEntry::getQuarterHourOfDay, identity())));
   }
 
   /** Returns the {@link LoadProfile}. */
@@ -43,21 +49,24 @@ public abstract class LoadProfileTimeSeries<E extends LoadProfileEntry>
   }
 
   /** Returns the value mapping. */
-  protected Map<LoadProfileKey, Map<Integer, PValue>> getValueMapping() {
+  protected Map<Key, Map<Integer, E>> getValueMapping() {
     return valueMapping;
   }
 
   @Override
   protected PValue calc(ZonedDateTime time) {
-    LoadProfileKey key = fromTime(time);
+    Key key = fromTime(time);
     int quarterHour = time.getHour() * 4 + time.getMinute() / 15;
-
-    return valueMapping.get(key).get(quarterHour);
+    return valueMapping.get(key).get(quarterHour).getValue();
   }
 
-  protected abstract LoadProfileKey fromTime(ZonedDateTime time);
+  protected Key fromTime(ZonedDateTime time) {
+    return new WeekDayKey(time.getDayOfWeek());
+  }
 
-  public interface LoadProfileKey {}
+  public interface Key {}
+
+  private record WeekDayKey(DayOfWeek dayOfWeek) implements Key {}
 
   @Override
   @SuppressWarnings("unchecked")
