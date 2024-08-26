@@ -128,7 +128,7 @@ Some standard overhead lines.
 
 ```{list-table}
    :widths: auto
-   :class: wrapping11 11 11 11 11 11 11 11 11
+   :class: wrapping
    :header-rows: 1
    
    
@@ -311,7 +311,7 @@ Some standard cables.
 
 ```{list-table}
    :widths: auto
-   :class: wrapping11 11 11 11 11 11 11 11 11
+   :class: wrapping
    :header-rows: 1
    
    

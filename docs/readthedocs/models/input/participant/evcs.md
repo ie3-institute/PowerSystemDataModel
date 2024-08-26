@@ -118,7 +118,7 @@ synonymous ids. All standard types can be found in {code}`edu.ie3.datamodel.mode
 
 ```{list-table}
    :widths: auto
-   :class: wrapping25 25 25 25
+   :class: wrapping
    :header-rows: 1
 
 

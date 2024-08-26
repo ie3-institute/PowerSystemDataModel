@@ -144,7 +144,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
 
 ```{list-table}
    :widths: auto
-   :class: wrapping6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
+   :class: wrapping
    :header-rows: 1
    
    * - uuid
