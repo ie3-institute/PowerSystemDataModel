@@ -156,13 +156,13 @@ public class CsvWeatherSource extends WeatherSource {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries()
-          throws SourceException {
+      throws SourceException {
     // Get only weather time series meta information
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
-            dataSource.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
+        dataSource.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
 
     Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries =
-            readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
+        readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
 
     if (weatherTimeSeries.isEmpty()) {
       throw new NoWeatherDataException("No weather data available from the CSV source.");
@@ -170,7 +170,6 @@ public class CsvWeatherSource extends WeatherSource {
 
     return weatherTimeSeries;
   }
-
 
   /**
    * Reads weather data to time series and maps them coordinate wise
