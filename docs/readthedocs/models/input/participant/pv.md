@@ -40,7 +40,7 @@ Detailed model of a photovoltaic power plant.
 
    * - albedo
      -
-     - `Albedo <https://en.wikipedia.org/wiki/Albedo>`_ of the plant's surrounding
+     - [Albedo](https://en.wikipedia.org/wiki/Albedo) of the plant's surrounding
 
    * - azimuth
      - °
