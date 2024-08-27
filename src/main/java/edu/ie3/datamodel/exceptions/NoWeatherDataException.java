@@ -12,6 +12,7 @@ package edu.ie3.datamodel.exceptions;
  * @since 27.08.24
  */
 public class NoWeatherDataException extends SourceException {
+
   private static final long serialVersionUID = 123456789L;
 
   public NoWeatherDataException(final String message) {
@@ -20,5 +21,9 @@ public class NoWeatherDataException extends SourceException {
 
   public NoWeatherDataException(final String message, final Throwable cause) {
     super(message, cause);
+  }
+
+  public NoWeatherDataException(String filePath, String reason) {
+    super("No weather data available from the source. File: " + filePath + ". Reason: " + reason);
   }
 }

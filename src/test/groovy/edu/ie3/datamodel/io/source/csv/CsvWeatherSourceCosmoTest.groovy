@@ -80,7 +80,6 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
 
-
   def "A CsvWeatherSource can read all weather data in a given time interval"() {
     given:
     def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
