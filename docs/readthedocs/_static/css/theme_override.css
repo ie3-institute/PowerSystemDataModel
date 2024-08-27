@@ -11,3 +11,7 @@
 .wy-table-responsive table th p {
     margin-bottom: 0;
 }
+
+table.wrapping td {
+    white-space: normal;
+}

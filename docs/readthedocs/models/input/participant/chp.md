@@ -8,9 +8,9 @@ Combined heat and power plant.
 
 ### Type Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -19,11 +19,11 @@ Combined heat and power plant.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - capex
@@ -32,8 +32,8 @@ Combined heat and power plant.
 
    * - opex
      - € / MWh
-     - | Operational expenditure to operate one entity of
-       | this type
+     - Operational expenditure to operate one entity of
+       this type
 
    * - etaEl
      - %
@@ -48,7 +48,7 @@ Combined heat and power plant.
      - Rated apparent power
 
    * - cosPhiRated
-     - --
+     -
      - Rated power factor
 
    * - pThermal
@@ -63,9 +63,9 @@ Combined heat and power plant.
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -74,51 +74,51 @@ Combined heat and power plant.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      -
 
    * - thermalBus
-     - --
+     -
      - Connection point to the thermal system
 
    * - qCharacteristics
-     - --
-     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
+     -
+     - [Reactive power characteristic](#participant-general-q-characteristic) to follow
 
    * - type
-     - --
+     -
      -
 
    * - thermalStorage
-     - --
+     -
      - Reference to thermal storage
 
    * - marketReaction
-     - --
-     - | Whether to adapt output based on (volatile)
-       | market price or not
+     -
+     - Whether to adapt output based on (volatile)
+       market price or not
 
    * - em
-     - --
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
+     -
+     - UUID reference to an [Energy Management Unit](em_model) that is controlling
+       this system participant. Field can be empty or missing, if this participant
+       is not controlled.
 
 ```
 

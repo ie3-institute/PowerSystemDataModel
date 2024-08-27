@@ -6,8 +6,7 @@ Result of an electric vehicle, that is occasionally connected to the grid via an
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 33 33 33
    :header-rows: 1
 
@@ -17,11 +16,11 @@ Result of an electric vehicle, that is occasionally connected to the grid via an
      - Remarks
 
    * - time
-     - --
+     -
      - date and time for the produced result
 
    * - inputModel
-     - --
+     -
      - uuid for the associated input model
 
    * - p

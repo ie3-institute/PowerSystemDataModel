@@ -7,9 +7,9 @@ A coupling point to thermal system - equivalent to [electrical node](../grid/nod
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -18,23 +18,23 @@ A coupling point to thermal system - equivalent to [electrical node](../grid/nod
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - bus
-     - --
+     -
      - Connection point to the thermal system
 
 ```
