@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.source.csv;
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkWeatherUniqueness;
 
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
-import edu.ie3.datamodel.exceptions.NoWeatherDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
@@ -157,31 +156,28 @@ public class CsvWeatherSource extends WeatherSource {
 
   private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries()
       throws SourceException {
-    // Get only weather time series meta information
+    /* Get only weather time series meta information */
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
         dataSource.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
-
-    Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries =
-        readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
-
-    if (weatherTimeSeries.isEmpty()) {
-      throw new NoWeatherDataException(
-          "CSV source", "No weather data was found after processing the CSV files.");
-    }
-
-    return weatherTimeSeries;
+    return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
   }
 
+  /**
+   * Reads weather data to time series and maps them coordinate wise
+   *
+   * @param weatherMetaInformation Data needed for reading
+   * @return time series mapped to the represented coordinate
+   */
   private Map<Point, IndividualTimeSeries<WeatherValue>> readWeatherTimeSeries(
       Set<CsvIndividualTimeSeriesMetaInformation> weatherMetaInformation,
       CsvFileConnector connector)
       throws SourceException {
-
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
     Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
         this::buildWeatherValue;
-
+    /* Reading in weather time series */
     for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
+      // we need a reader for each file
       try (BufferedReader reader = connector.initReader(data.getFullFilePath())) {
         buildStreamWithFieldsToAttributesMap(reader)
             .getOrThrow()
@@ -190,6 +186,9 @@ public class CsvWeatherSource extends WeatherSource {
             .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
             .forEach(
                 (point, timeBasedValues) -> {
+                  // We have to generate a random UUID as we'd risk running into duplicate key
+                  // issues
+                  // otherwise
                   IndividualTimeSeries<WeatherValue> timeSeries =
                       new IndividualTimeSeries<>(UUID.randomUUID(), new HashSet<>(timeBasedValues));
                   if (weatherTimeSeries.containsKey(point)) {
@@ -208,21 +207,9 @@ public class CsvWeatherSource extends WeatherSource {
       } catch (ValidationException e) {
         throw new SourceException("Validation failed for file " + data.getFullFilePath() + ".", e);
       }
-
-      // Check if no data was read for this file
-      if (weatherTimeSeries.isEmpty()) {
-        throw new NoWeatherDataException(
-            String.valueOf(data.getFullFilePath()), "No weather data found in the file.");
-      }
     }
 
-    // Check if no data was read and throw an exception
-    if (weatherTimeSeries.isEmpty()) {
-      throw new NoWeatherDataException(
-          "CSV source", "No weather data found after processing all files.");
-    }
-
-    // Checking the uniqueness before returning the time series
+    // checking the uniqueness before returning the time series
     List<DuplicateEntitiesException> exceptions =
         Try.getExceptions(
             weatherTimeSeries.values().stream()
