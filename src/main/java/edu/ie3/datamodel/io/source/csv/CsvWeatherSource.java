@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkWeatherUniqueness;
 
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
+import edu.ie3.datamodel.exceptions.NoWeatherDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
@@ -155,12 +156,21 @@ public class CsvWeatherSource extends WeatherSource {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries()
-      throws SourceException {
-    /* Get only weather time series meta information */
+          throws SourceException {
+    // Get only weather time series meta information
     Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
-        dataSource.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
-    return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
+            dataSource.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
+
+    Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries =
+            readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
+
+    if (weatherTimeSeries.isEmpty()) {
+      throw new NoWeatherDataException("No weather data available from the CSV source.");
+    }
+
+    return weatherTimeSeries;
   }
+
 
   /**
    * Reads weather data to time series and maps them coordinate wise
