@@ -225,4 +225,22 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     then:
     actual.empty
   }
+
+  def "The CsvWeatherSource returns all time keys after a given time key correctly"() {
+    given:
+    def time = CosmoWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time)
+
+    then:
+    actual.size() == 3
+
+    actual.get(CosmoWeatherTestData.COORDINATE_193186) == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+    actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
+    actual.get(CosmoWeatherTestData.COORDINATE_193188) == []
+  }
 }

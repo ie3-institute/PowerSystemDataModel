@@ -17,7 +17,7 @@ class CylindricalStorageInputTest extends Specification {
 
     when:
     def alteredUnit = cylindricalStorageInput.copy().storageVolumeLvl(ThermalUnitInputTestData.storageVolumeLvl)
-        .storageVolumeLvlMin(ThermalUnitInputTestData.storageVolumeLvlMin).inletTemp(ThermalUnitInputTestData.inletTemp)
+        .inletTemp(ThermalUnitInputTestData.inletTemp)
         .returnTemp(ThermalUnitInputTestData.returnTemp).c(ThermalUnitInputTestData.c)
         .thermalBus(ThermalUnitInputTestData.thermalBus).build()
 
@@ -30,7 +30,6 @@ class CylindricalStorageInputTest extends Specification {
       assert operationTime == cylindricalStorageInput.operationTime
       assert thermalBus == cylindricalStorageInput.thermalBus
       assert storageVolumeLvl == ThermalUnitInputTestData.storageVolumeLvl
-      assert storageVolumeLvlMin == ThermalUnitInputTestData.storageVolumeLvlMin
       assert inletTemp == ThermalUnitInputTestData.inletTemp
       assert returnTemp == ThermalUnitInputTestData.returnTemp
       assert c == ThermalUnitInputTestData.c
@@ -52,7 +51,6 @@ class CylindricalStorageInputTest extends Specification {
       assert operationTime == cylindricalStorageInput.operationTime
       assert thermalBus == cylindricalStorageInput.thermalBus
       assert storageVolumeLvl == cylindricalStorageInput.storageVolumeLvl * 2d
-      assert storageVolumeLvlMin == cylindricalStorageInput.storageVolumeLvlMin * 2d
       assert inletTemp == cylindricalStorageInput.inletTemp
       assert returnTemp == cylindricalStorageInput.returnTemp
       assert c == cylindricalStorageInput.c

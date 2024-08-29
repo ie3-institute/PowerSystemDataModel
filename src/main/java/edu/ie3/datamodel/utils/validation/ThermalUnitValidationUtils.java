@@ -182,8 +182,6 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * <ul>
    *   <li>it is not null
    *   <li>its available storage volume is positive
-   *   <li>its minimum permissible storage volume is positive and not greater than the available
-   *       storage volume
    *   <li>its inlet temperature is equal/greater than the outlet temperature
    *   <li>its specific heat capacity is positive
    * </ul>
@@ -213,25 +211,13 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
                 new InvalidEntityException(
                     "Inlet temperature of the cylindrical storage cannot be lower than outlet temperature",
                     cylindricalStorageInput)));
-    // Check if minimum permissible storage volume is lower than overall available storage volume
-    exceptions.add(
-        Try.ofVoid(
-            cylindricalStorageInput
-                .getStorageVolumeLvlMin()
-                .isGreaterThan(cylindricalStorageInput.getStorageVolumeLvl()),
-            () ->
-                new InvalidEntityException(
-                    "Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume",
-                    cylindricalStorageInput)));
 
     exceptions.add(
         Try.ofVoid(
             () ->
                 detectZeroOrNegativeQuantities(
                     new Quantity<?>[] {
-                      cylindricalStorageInput.getStorageVolumeLvl(),
-                      cylindricalStorageInput.getStorageVolumeLvlMin(),
-                      cylindricalStorageInput.getC()
+                      cylindricalStorageInput.getStorageVolumeLvl(), cylindricalStorageInput.getC()
                     },
                     cylindricalStorageInput),
             InvalidEntityException.class));

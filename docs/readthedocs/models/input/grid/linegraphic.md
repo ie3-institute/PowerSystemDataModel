@@ -6,9 +6,9 @@ Schematic drawing information for a line model.
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -17,20 +17,20 @@ Schematic drawing information for a line model.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - graphicLayer
-     - --
-     - | Human readable identifier of the graphic layer to draw
-       | this element on
+     -
+     - Human readable identifier of the graphic layer to draw
+       this element on
 
    * - path
-     - --
+     -
      - Line string of coordinates describing the drawing
 
    * - line
-     - --
+     -
      - Reference to the physical line model
 
 ```

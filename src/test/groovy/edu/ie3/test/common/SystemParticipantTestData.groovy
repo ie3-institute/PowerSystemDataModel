@@ -169,7 +169,6 @@ class SystemParticipantTestData {
   operationTime
   )
   public static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(1.039154027, VOLUME)
-  public static final ComparableQuantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(0.3, VOLUME)
   public static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(110, TEMPERATURE)
   public static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, TEMPERATURE)
   public static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(
@@ -181,7 +180,6 @@ class SystemParticipantTestData {
   OperationTime.notLimited(),
   thermalBus,
   storageVolumeLvl,
-  storageVolumeLvlMin,
   inletTemp,
   returnTemp,
   c

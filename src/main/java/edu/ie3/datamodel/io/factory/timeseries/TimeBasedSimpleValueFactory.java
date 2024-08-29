@@ -11,7 +11,6 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
-import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -26,26 +25,13 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private static final String REACTIVE_POWER = "q";
   private static final String HEAT_DEMAND = "heatDemand";
 
-  private final TimeUtil timeUtil;
-
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
     super(valueClasses);
-    this.timeUtil = TimeUtil.withDefaults;
   }
 
   public TimeBasedSimpleValueFactory(
       Class<? extends V> valueClasses, DateTimeFormatter dateTimeFormatter) {
-    super(valueClasses);
-    this.timeUtil = new TimeUtil(dateTimeFormatter);
-  }
-
-  /**
-   * Return the field name for the date time
-   *
-   * @return the field name for the date time
-   */
-  public String getTimeFieldString() {
-    return TIME;
+    super(valueClasses, dateTimeFormatter);
   }
 
   @Override
