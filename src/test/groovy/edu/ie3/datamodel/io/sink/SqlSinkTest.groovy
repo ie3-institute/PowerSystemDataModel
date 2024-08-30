@@ -130,28 +130,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     timeSeriesProcessorMap.put(timeSeriesProcessorKey, timeSeriesProcessor)
 
     SqlSink sink = new SqlSink(schemaName,
-    new ProcessorProvider([
-      new ResultEntityProcessor(PvResult),
-      new ResultEntityProcessor(WecResult),
-      new ResultEntityProcessor(EvResult),
-      new ResultEntityProcessor(EvcsResult),
-      new ResultEntityProcessor(EmResult),
-      new ResultEntityProcessor(FlexOptionsResult),
-      new InputEntityProcessor(Transformer2WInput),
-      new InputEntityProcessor(NodeInput),
-      new InputEntityProcessor(EvcsInput),
-      new InputEntityProcessor(Transformer2WTypeInput),
-      new InputEntityProcessor(LineGraphicInput),
-      new InputEntityProcessor(NodeGraphicInput),
-      new InputEntityProcessor(CylindricalStorageInput),
-      new InputEntityProcessor(ThermalHouseInput),
-      new InputEntityProcessor(OperatorInput),
-      new InputEntityProcessor(LineInput),
-      new InputEntityProcessor(ThermalBusInput),
-      new InputEntityProcessor(LineTypeInput),
-      new InputEntityProcessor(LoadInput),
-      new InputEntityProcessor(EmInput)
-    ], timeSeriesProcessorMap),
+    new ProcessorProvider(),
     namingStrategy,
     connector)
     UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")

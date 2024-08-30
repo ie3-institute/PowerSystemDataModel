@@ -106,17 +106,13 @@ public class SqlSink {
       persistMixedList(
           entitiesToAdd.stream().filter(ent -> cls.isAssignableFrom(ent.getClass())).toList(),
           identifier);
-      entitiesToAdd.removeIf(
-          ent ->
-              cls.isAssignableFrom(
-                  ent.getClass())); // maybe it's not necessary, but I'm not sure if there are
-      // entities who aren't in the hierarchic structure
+      entitiesToAdd.removeIf(ent -> cls.isAssignableFrom(ent.getClass()));
     }
     persistMixedList(new ArrayList<>(entitiesToAdd), identifier); // persist left entities
   }
 
   /**
-   * Persist an entity. By default this method take care about the extraction process of nested
+   * Persist an entity. By default this method takes care of the extraction process of nested
    * entities (if any)
    *
    * @param entity the entity that should be persisted
@@ -456,7 +452,7 @@ public class SqlSink {
   /** Provides the insert, column names, grid identifier and the VALUES statement for a query. */
   private String basicInsertQueryValuesGrid(
       String schemaName, String tableName, String[] headerElements) {
-    String[] addParams = {DbGridMetadata.GRID_UUID};
+    String[] addParams = {DbGridMetadata.GRID_UUID_COLUMN};
     return basicInsertQuery(schemaName, tableName)
         + " "
         + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams)
@@ -469,7 +465,7 @@ public class SqlSink {
    */
   private String basicInsertQueryValuesITS(
       String schemaName, String tableName, String[] headerElements) {
-    String[] addParams = {DbGridMetadata.GRID_UUID, TIME_SERIES};
+    String[] addParams = {DbGridMetadata.GRID_UUID_COLUMN, TIME_SERIES};
     return basicInsertQuery(schemaName, tableName)
         + " "
         + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams)

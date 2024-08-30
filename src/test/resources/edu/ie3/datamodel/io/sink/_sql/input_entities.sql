@@ -79,18 +79,17 @@ CREATE TABLE public.node_graphic_input
 
 CREATE TABLE public.cylindrical_storage_input
 (
-    uuid UUID PRIMARY KEY,
+    uuid uuid PRIMARY KEY,
     c DOUBLE PRECISION NOT NULL,
     id TEXT NOT NULL,
-    inlet_temp DOUBLE PRECISION NOT NULL,
-    operates_from TIMESTAMP WITH TIME ZONE,
-    operates_until TIMESTAMP WITH TIME ZONE,
-    operator UUID,
-    return_temp DOUBLE PRECISION NOT NULL,
-    storage_volume_lvl DOUBLE PRECISION NOT NULL,
-    storage_volume_lvl_min DOUBLE PRECISION NOT NULL,
-    thermal_bus UUID NOT NULL,
-    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
+    inlet_temp double precision NOT NULL,
+    operates_from timestamp with time zone,
+    operates_until timestamp with time zone,
+    operator uuid,
+    return_temp double precision NOT NULL,
+    storage_volume_lvl double precision NOT NULL,
+    thermal_bus uuid NOT NULL,
+    grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;

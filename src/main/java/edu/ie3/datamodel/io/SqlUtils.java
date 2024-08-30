@@ -25,7 +25,7 @@ public class SqlUtils {
 
   /** @return query to create a SQL table for a grid */
   public static String queryCreateGridTable(String schemaName) {
-    return beginQueryCreateTable(schemaName, DbGridMetadata.GRID_TABLE)
+    return beginQueryCreateTable(schemaName, DbGridMetadata.GRID_TABLE_COLUMN)
         + "\tuuid uuid PRIMARY KEY,\n\tname TEXT NOT NULL\n"
         + endQueryCreateTable;
   }
