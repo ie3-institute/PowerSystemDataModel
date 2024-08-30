@@ -193,10 +193,7 @@ public class SqlSink {
       } else if (ResultEntity.class.isAssignableFrom(cls)) {
         insertListIgnoreNested(entities, cls, identifier, false);
       } else if (TimeSeries.class.isAssignableFrom(cls)) {
-        entities.forEach(
-            ts -> {
-              persistTimeSeries((TimeSeries<E, V>) ts, identifier);
-            });
+        entities.forEach(ts -> persistTimeSeries((TimeSeries<E, V>) ts, identifier));
       } else {
         log.error("I don't know how to handle an entity of class {}", cls.getSimpleName());
       }
@@ -262,17 +259,21 @@ public class SqlSink {
                               identifier,
                               timeSeries.getUuid().toString()))
                   .collect(Collectors.joining(",\n", "", ";"));
-      try {
-        connector.executeUpdate(query);
-      } catch (SQLException e) {
-        throw new RuntimeException(
-            String.format(
-                "An error occurred during extraction of the time series, SQLReason: '%s'",
-                e.getMessage()),
-            e);
-      }
+      executeQueryToPersist(query);
     } catch (ProcessorProviderException e) {
       throw new ProcessorProviderException("Exception occurred during processor request: ", e);
+    }
+  }
+
+  private void executeQueryToPersist(String query) {
+    try {
+      connector.executeUpdate(query);
+    } catch (SQLException e) {
+      throw new RuntimeException(
+          String.format(
+              "An error occurred during extraction of the time series, SQLReason: '%s'",
+              e.getMessage()),
+          e);
     }
   }
 
@@ -427,13 +428,13 @@ public class SqlSink {
       Map<String, String> entityFieldData,
       String[] headerElements,
       DbGridMetadata identifier,
-      String TSuuid) {
+      String tsUuid) {
     return writeOneLine(
         Stream.concat(
             Stream.concat(
                 Arrays.stream(headerElements).map(entityFieldData::get),
                 identifier.getStreamForQuery()),
-            Stream.of(quote(TSuuid, "'"))));
+            Stream.of(quote(tsUuid, "'"))));
   }
 
   private LinkedHashMap<String, String> sqlEntityFieldData(

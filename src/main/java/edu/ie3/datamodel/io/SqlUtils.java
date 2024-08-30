@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 public class SqlUtils {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlUtils.class);
-  private static final String endQueryCreateTable =
+  private static final String END_QUERY_CREATE_TABLE =
       ")\n \t WITHOUT OIDS\n \t TABLESPACE pg_default;";
 
   private SqlUtils() {
@@ -27,7 +27,7 @@ public class SqlUtils {
   public static String queryCreateGridTable(String schemaName) {
     return beginQueryCreateTable(schemaName, DbGridMetadata.GRID_TABLE_COLUMN)
         + "\tuuid uuid PRIMARY KEY,\n\tname TEXT NOT NULL\n"
-        + endQueryCreateTable;
+        + END_QUERY_CREATE_TABLE;
   }
 
   /**

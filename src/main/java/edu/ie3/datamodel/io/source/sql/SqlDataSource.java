@@ -190,8 +190,4 @@ public class SqlDataSource implements DataSource {
   protected Stream<Map<String, String>> executeQuery(String query) {
     return executeQuery(query, x -> {});
   }
-
-  public boolean checkExistingTable(String tableName) throws SQLException {
-    return connector.tableExistsSQL(tableName);
-  }
 }
