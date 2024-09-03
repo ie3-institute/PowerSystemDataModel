@@ -58,7 +58,7 @@ dependencies {
   implementation 'tech.units:indriya:2.2'
 
   // JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
-  implementation ('org.locationtech.jts:jts-core:1.19.0'){
+  implementation ('org.locationtech.jts:jts-core:1.20.0'){
     exclude group: 'junit', module: 'junit'
   }
 
