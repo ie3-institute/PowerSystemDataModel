@@ -69,7 +69,7 @@ public abstract class WeatherSource extends EntitySource {
       throws SourceException;
 
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
-          throws SourceException {
+      throws SourceException {
     return getTimeKeysAfter(time).getOrDefault(coordinate, Collections.emptyList());
   }
 
