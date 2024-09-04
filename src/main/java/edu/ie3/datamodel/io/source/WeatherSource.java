@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.NoWeatherDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
@@ -55,7 +56,7 @@ public abstract class WeatherSource extends EntitySource {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) throws SourceException;
+      ClosedInterval<ZonedDateTime> timeInterval) throws SourceException, NoWeatherDataException;
 
   public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)

@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkWeatherUniqueness;
 
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
+import edu.ie3.datamodel.exceptions.NoWeatherDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
@@ -90,7 +91,15 @@ public class CsvWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoWeatherDataException {
+
+    Map<Point, IndividualTimeSeries<WeatherValue>> result =
+        trimMapToInterval(coordinateToTimeSeries, timeInterval);
+
+    if (result == null || result.isEmpty()) {
+      throw new NoWeatherDataException("No weather data found.");
+    }
+
     return trimMapToInterval(coordinateToTimeSeries, timeInterval);
   }
 
