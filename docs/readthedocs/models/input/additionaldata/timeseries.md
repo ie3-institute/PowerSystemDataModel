@@ -17,9 +17,9 @@ In addition to actual data, a mapping function has to be known.
 To be as flexible, as possible, the actual content of the time series is given as children of the `Value` class.
 The following different values are available:
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
    
    * - Value Class 
