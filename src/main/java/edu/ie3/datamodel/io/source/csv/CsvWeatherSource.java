@@ -100,23 +100,30 @@ public class CsvWeatherSource extends WeatherSource {
       throw new NoWeatherDataException("No weather data found.");
     }
 
-    return trimMapToInterval(coordinateToTimeSeries, timeInterval);
+    return result;
   }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) throws NoWeatherDataException {
     Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
         coordinateToTimeSeries.entrySet().stream()
             .filter(entry -> coordinates.contains(entry.getKey()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    return trimMapToInterval(filteredMap, timeInterval);
+
+    Map<Point, IndividualTimeSeries<WeatherValue>> result =
+            trimMapToInterval(filteredMap, timeInterval);
+
+    if(result == null || result.isEmpty()) {
+      throw new NoWeatherDataException("No weather data found.");
+    }
+    return result;
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) throws NoWeatherDataException {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
-    if (timeSeries == null) return Optional.empty();
+    if (timeSeries == null) throw new NoWeatherDataException("No weather data for given coordinates.");
     return timeSeries.getTimeBasedValue(date);
   }
 

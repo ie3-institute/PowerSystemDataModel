@@ -60,16 +60,16 @@ public abstract class WeatherSource extends EntitySource {
 
   public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
-      throws SourceException;
+      throws SourceException, NoWeatherDataException;
 
   public abstract Optional<TimeBasedValue<WeatherValue>> getWeather(
-      ZonedDateTime date, Point coordinate) throws SourceException;
+      ZonedDateTime date, Point coordinate) throws SourceException, NoWeatherDataException;
 
   public abstract Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
       throws SourceException;
 
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
-      throws SourceException {
+          throws SourceException {
     return getTimeKeysAfter(time).getOrDefault(coordinate, Collections.emptyList());
   }
 
