@@ -8,18 +8,18 @@ package edu.ie3.datamodel.models;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import java.time.ZonedDateTime;
 
-public enum Season {
+public enum BdewSeason {
   WINTER("Wi"),
   SUMMER("Su"),
   TRANSITION("Tr");
 
   private final String key;
 
-  Season(String key) {
+  BdewSeason(String key) {
     this.key = key.toLowerCase();
   }
 
-  public static Season parse(String key) throws ParsingException {
+  public static BdewSeason parse(String key) throws ParsingException {
     return switch (key) {
       case "Wi" -> WINTER;
       case "Su" -> SUMMER;
@@ -34,7 +34,7 @@ public enum Season {
    * @param time the time
    * @return a season
    */
-  public static Season get(ZonedDateTime time) {
+  public static BdewSeason get(ZonedDateTime time) {
     int day = time.getDayOfMonth();
 
     // winter:      1.11.-20.03.

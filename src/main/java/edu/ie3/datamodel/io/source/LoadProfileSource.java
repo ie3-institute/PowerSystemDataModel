@@ -9,7 +9,7 @@ import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RAN
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
-import edu.ie3.datamodel.io.factory.timeseries.BDEWLoadProfileFactory;
+import edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileData;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.factory.timeseries.RandomLoadProfileFactory;
@@ -19,23 +19,25 @@ import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.*;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.models.value.load.BdewLoadValues;
+import edu.ie3.datamodel.models.value.load.LoadValues;
+import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public abstract class LoadProfileSource<P extends LoadProfile, E extends LoadProfileEntry>
+public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadValues>
     extends EntitySource {
   private static final CsvDataSource buildInSource = getBuildInSource(Path.of("load"));
 
-  protected final Class<E> entryClass;
-  protected final LoadProfileFactory<P, E> entryFactory;
+  protected final Class<V> entryClass;
+  protected final LoadProfileFactory<P, V> entryFactory;
 
-  protected LoadProfileSource(Class<E> entryClass, LoadProfileFactory<P, E> entryFactory) {
+  protected LoadProfileSource(Class<V> entryClass, LoadProfileFactory<P, V> entryFactory) {
     this.entryClass = entryClass;
     this.entryFactory = entryFactory;
   }
@@ -47,12 +49,13 @@ public abstract class LoadProfileSource<P extends LoadProfile, E extends LoadPro
    * @param fieldToValues Mapping from field id to values
    * @return {@link Try} of simple time based value
    */
-  protected Try<Set<E>, FactoryException> createEntries(Map<String, String> fieldToValues) {
-    LoadProfileData<E> factoryData = new LoadProfileData<>(fieldToValues, entryClass);
+  protected Try<LoadProfileEntry<V>, FactoryException> createEntries(
+      Map<String, String> fieldToValues) {
+    LoadProfileData<V> factoryData = new LoadProfileData<>(fieldToValues, entryClass);
     return entryFactory.get(factoryData);
   }
 
-  public abstract LoadProfileTimeSeries<E> getTimeSeries();
+  public abstract LoadProfileTimeSeries<V> getTimeSeries();
 
   /**
    * Method to return all time keys after a given timestamp.
@@ -67,17 +70,17 @@ public abstract class LoadProfileSource<P extends LoadProfile, E extends LoadPro
    *
    * @return a map: load profile to time series
    */
-  public static Map<BdewStandardLoadProfile, BDEWLoadProfileTimeSeries> getBDEWLoadProfiles() {
-    BDEWLoadProfileFactory factory = new BDEWLoadProfileFactory();
+  public static Map<BdewStandardLoadProfile, BdewLoadProfileTimeSeries> getBDEWLoadProfiles() {
+    BdewLoadProfileFactory factory = new BdewLoadProfileFactory();
 
     return buildInSource.getCsvLoadProfileMetaInformation(BdewStandardLoadProfile.values()).stream()
         .map(
             metaInformation ->
-                (BDEWLoadProfileTimeSeries)
+                (BdewLoadProfileTimeSeries)
                     new CsvLoadProfileSource<>(
-                            buildInSource, metaInformation, BDEWLoadProfileEntry.class, factory)
+                            buildInSource, metaInformation, BdewLoadValues.class, factory)
                         .getTimeSeries())
-        .collect(Collectors.toMap(BDEWLoadProfileTimeSeries::getLoadProfile, Function.identity()));
+        .collect(Collectors.toMap(BdewLoadProfileTimeSeries::getLoadProfile, Function.identity()));
   }
 
   /**
@@ -94,7 +97,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, E extends LoadPro
         new CsvLoadProfileSource<>(
                 buildInSource,
                 metaInformation,
-                RandomLoadProfileEntry.class,
+                RandomLoadValues.class,
                 new RandomLoadProfileFactory())
             .getTimeSeries();
   }

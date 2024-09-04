@@ -12,7 +12,8 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 /** Describes a TimeSeries with repetitive values that can be calculated from a pattern */
-public abstract class RepetitiveTimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
+public abstract class RepetitiveTimeSeries<
+        E extends TimeSeriesEntry<? extends Value>, V extends Value>
     extends TimeSeries<E, V> {
 
   protected RepetitiveTimeSeries(UUID uuid, Set<E> entries) {

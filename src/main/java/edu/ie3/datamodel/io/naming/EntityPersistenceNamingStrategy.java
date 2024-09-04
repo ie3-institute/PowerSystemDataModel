@@ -344,7 +344,7 @@ public class EntityPersistenceNamingStrategy {
    * @param timeSeries Time series to derive naming information from
    * @return A file name for this particular time series
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<? extends Value>, V extends Value>
       Optional<String> getEntityName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries) {
       Optional<E> maybeFirstElement = timeSeries.getEntries().stream().findFirst();

@@ -63,7 +63,8 @@ public class CsvFileConnector implements DataConnector {
     }
   }
 
-  public synchronized <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public synchronized <
+          T extends TimeSeries<E, V>, E extends TimeSeriesEntry<? extends Value>, V extends Value>
       BufferedCsvWriter getOrInitWriter(T timeSeries, CsvFileDefinition fileDefinition)
           throws ConnectorException {
     /* Try to the right writer */

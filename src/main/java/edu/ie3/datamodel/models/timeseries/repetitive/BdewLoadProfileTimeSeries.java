@@ -5,21 +5,28 @@
 */
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
-import edu.ie3.datamodel.models.profile.LoadProfile;
-import edu.ie3.datamodel.models.value.load.RandomLoadValues;
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
+import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-public class RandomLoadProfileTimeSeries extends LoadProfileTimeSeries<RandomLoadValues> {
-  public RandomLoadProfileTimeSeries(
-      UUID uuid, LoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> entries) {
-    super(uuid, loadProfile, entries);
+/**
+ * Describes a bdew load profile time series with repetitive values that can be calculated from a
+ * pattern
+ */
+public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadValues> {
+
+  public BdewLoadProfileTimeSeries(
+      UUID uuid,
+      BdewStandardLoadProfile loadProfile,
+      Set<LoadProfileEntry<BdewLoadValues>> values) {
+    super(uuid, loadProfile, values);
   }
 
   @Override
-  public LoadProfile.RandomLoadProfile getLoadProfile() {
-    return (LoadProfile.RandomLoadProfile) super.getLoadProfile();
+  public BdewStandardLoadProfile getLoadProfile() {
+    return (BdewStandardLoadProfile) super.getLoadProfile();
   }
 
   @Override
@@ -36,7 +43,7 @@ public class RandomLoadProfileTimeSeries extends LoadProfileTimeSeries<RandomLoa
 
   @Override
   public String toString() {
-    return "RandomLoadProfileTimeSeries{"
+    return "BDEWLoadProfileTimeSeries{"
         + "uuid="
         + getUuid()
         + "loadProfile="

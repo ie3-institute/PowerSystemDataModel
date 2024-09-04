@@ -34,7 +34,7 @@ import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileTimeSeries
+import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.util.quantities.PowerSystemUnits
@@ -414,7 +414,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
   def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for load profile time series" () {
     given:
     EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
-    BDEWLoadProfileTimeSeries timeSeries = Mock(BDEWLoadProfileTimeSeries)
+    BdewLoadProfileTimeSeries timeSeries = Mock(BdewLoadProfileTimeSeries)
     timeSeries.uuid >> uuid
     timeSeries.loadProfile >> type
 
@@ -427,7 +427,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 
     where:
     clazz            | uuid                                                    | type                       || expectedFileName
-    BDEWLoadProfileTimeSeries | UUID.fromString("9b880468-309c-43c1-a3f4-26dd26266216") | BdewStandardLoadProfile.G3 || "lpts_g3_9b880468-309c-43c1-a3f4-26dd26266216"
+    BdewLoadProfileTimeSeries | UUID.fromString("9b880468-309c-43c1-a3f4-26dd26266216") | BdewStandardLoadProfile.G3 || "lpts_g3_9b880468-309c-43c1-a3f4-26dd26266216"
   }
 
   def "A EntityPersistenceNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {

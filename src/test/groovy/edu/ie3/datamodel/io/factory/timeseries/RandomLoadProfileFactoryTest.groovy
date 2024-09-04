@@ -5,12 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import static java.time.DayOfWeek.*
-
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.profile.LoadProfile
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries
-import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileEntry
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
+import edu.ie3.datamodel.models.value.load.RandomLoadValues
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -19,7 +17,7 @@ class RandomLoadProfileFactoryTest extends Specification {
   RandomLoadProfileFactory factory
 
   @Shared
-  private Set<RandomLoadProfileEntry> allEntries
+  private Set<LoadProfileEntry<RandomLoadValues>> allEntries
 
   def setupSpec() {
     factory = new RandomLoadProfileFactory()
@@ -35,7 +33,7 @@ class RandomLoadProfileFactoryTest extends Specification {
       "sigmaSu": "0.0370676517486572",
       "sigmaWd": "0.0293692331761122",
       "quarterHour": "0"
-    ] as Map, RandomLoadProfileEntry)
+    ] as Map, RandomLoadValues)
 
     def data1 = new LoadProfileData([
       "kSa": "0.281179457902908",
@@ -48,7 +46,7 @@ class RandomLoadProfileFactoryTest extends Specification {
       "sigmaSu": "0.0334825366735458",
       "sigmaWd": "0.0265011098235846",
       "quarterHour": "1"
-    ] as Map, RandomLoadProfileEntry)
+    ] as Map, RandomLoadValues)
 
     def data2 = new LoadProfileData([
       "kSa": "0.275563269853592",
@@ -61,13 +59,13 @@ class RandomLoadProfileFactoryTest extends Specification {
       "sigmaSu": "0.0310499873012304",
       "sigmaWd": "0.0245211906731129",
       "quarterHour": "2"
-    ] as Map, RandomLoadProfileEntry)
+    ] as Map, RandomLoadValues)
 
     allEntries = [
       factory.buildModel(data0),
       factory.buildModel(data1),
       factory.buildModel(data2)
-    ].flatten() as Set<RandomLoadProfileEntry>
+    ].flatten() as Set<LoadProfileEntry<RandomLoadValues>>
   }
 
   def "A RandomLoadProfileFactory returns the correct fields"() {
@@ -86,7 +84,7 @@ class RandomLoadProfileFactoryTest extends Specification {
     ] as Set
 
     when:
-    def actual = factory.getFields(RandomLoadProfileEntry)
+    def actual = factory.getFields(RandomLoadValues)
 
     then:
     actual.size() == 1
@@ -98,12 +96,12 @@ class RandomLoadProfileFactoryTest extends Specification {
     def actualFields = factory.newSet("Wd", "Sa", "Su")
 
     when:
-    def actual = factory.validate(actualFields, RandomLoadProfileEntry)
+    def actual = factory.validate(actualFields, RandomLoadValues)
 
     then:
     actual.failure
-    actual.exception.get().message == "The provided fields [Sa, Su, Wd] are invalid for instance of 'RandomLoadProfileEntry'. \n" +
-        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'RandomLoadProfileEntry' are possible (NOT case-sensitive!):\n" +
+    actual.exception.get().message == "The provided fields [Sa, Su, Wd] are invalid for instance of 'RandomLoadValues'. \n" +
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'RandomLoadValues' are possible (NOT case-sensitive!):\n" +
         "0: [kSa, kSu, kWd, mySa, mySu, myWd, quarterHour, sigmaSa, sigmaSu, sigmaWd] or [k_sa, k_su, k_wd, my_sa, my_su, my_wd, quarter_hour, sigma_sa, sigma_su, sigma_wd]\n"
   }
 
@@ -123,10 +121,10 @@ class RandomLoadProfileFactoryTest extends Specification {
     ] as Map
 
     when:
-    def entries = factory.buildModel(new LoadProfileData<>(data, RandomLoadProfileEntry))
+    def entry = factory.buildModel(new LoadProfileData<>(data, RandomLoadValues))
 
     then:
-    entries.size() == 3
+    entry.value.class == RandomLoadValues
   }
 
   def "A RandomLoadProfileFactory builds time series from entries"() {
@@ -140,14 +138,6 @@ class RandomLoadProfileFactoryTest extends Specification {
 
     then:
     lpts.loadProfile == LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE
-    lpts.entries.size() == 9
-
-    lpts.valueMapping.keySet() == [
-      new LoadProfileTimeSeries.WeekDayKey(SATURDAY),
-      new LoadProfileTimeSeries.WeekDayKey(SUNDAY),
-      new LoadProfileTimeSeries.WeekDayKey(MONDAY),
-    ] as Set
-
-    lpts.valueMapping.values().every { it.size() == 3}
+    lpts.entries.size() == 3
   }
 }

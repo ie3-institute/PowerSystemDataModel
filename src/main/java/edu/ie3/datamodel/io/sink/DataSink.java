@@ -62,6 +62,6 @@ public interface DataSink {
    * @param <E> Type of entry in the time series
    * @param <V> Type of actual value, that is inside the entry
    */
-  <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
+  <E extends TimeSeriesEntry<? extends Value>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries) throws ProcessorProviderException;
 }

@@ -6,11 +6,11 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.FactoryData;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
+import edu.ie3.datamodel.models.value.load.LoadValues;
 import java.util.Map;
 
-public class LoadProfileData<E extends LoadProfileEntry> extends FactoryData {
-  public LoadProfileData(Map<String, String> fieldsToAttributes, Class<E> targetClass) {
+public class LoadProfileData<V extends LoadValues> extends FactoryData {
+  public LoadProfileData(Map<String, String> fieldsToAttributes, Class<V> targetClass) {
     super(fieldsToAttributes, targetClass);
   }
 }

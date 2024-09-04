@@ -19,7 +19,7 @@ class LoadProfileSourceTest extends Specification {
     then:
     profiles.size() == 11
     BdewStandardLoadProfile.values().every { profiles.keySet().contains(it) }
-    profiles.values().every { it.entries.size() == 864}
+    profiles.values().every { it.entries.size() == 96}
   }
 
   def "A LoadProfileSourceTest should read in the build-in RandomLoadProfile"() {
@@ -28,6 +28,6 @@ class LoadProfileSourceTest extends Specification {
 
     then:
     random.loadProfile == RANDOM_LOAD_PROFILE
-    random.entries.size() == 288
+    random.entries.size() == 96
   }
 }

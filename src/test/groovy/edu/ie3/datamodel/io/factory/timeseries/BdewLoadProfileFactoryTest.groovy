@@ -5,25 +5,22 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import static java.time.DayOfWeek.*
-
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
-import edu.ie3.datamodel.models.Season
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
-import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileEntry
-import edu.ie3.datamodel.models.timeseries.repetitive.BDEWLoadProfileTimeSeries
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
+import edu.ie3.datamodel.models.value.load.BdewLoadValues
 import spock.lang.Shared
 import spock.lang.Specification
 
-class DBEWLoadProfileFactoryTest extends Specification {
+class BdewLoadProfileFactoryTest extends Specification {
   @Shared
-  BDEWLoadProfileFactory factory
+  BdewLoadProfileFactory factory
 
   @Shared
-  private Set<BDEWLoadProfileEntry> allEntries
+  private Set<LoadProfileEntry<BdewLoadValues>> allEntries
 
   def setupSpec() {
-    factory = new BDEWLoadProfileFactory()
+    factory = new BdewLoadProfileFactory()
 
     def data0 = new LoadProfileData([
       "SuSa": "74.6",
@@ -36,7 +33,7 @@ class DBEWLoadProfileFactoryTest extends Specification {
       "WiSu": "63.2",
       "WiWd": "65.5",
       "quarterHour": "0"
-    ] as Map, BDEWLoadProfileEntry)
+    ] as Map, BdewLoadValues)
 
     def data1 = new LoadProfileData([
       "SuSa": "76.2",
@@ -49,7 +46,7 @@ class DBEWLoadProfileFactoryTest extends Specification {
       "WiSu": "61.0",
       "WiWd": "62.6",
       "quarterHour": "1"
-    ] as Map, BDEWLoadProfileEntry)
+    ] as Map, BdewLoadValues)
 
     def data2 = new LoadProfileData([
       "SuSa": "77.7",
@@ -62,13 +59,13 @@ class DBEWLoadProfileFactoryTest extends Specification {
       "WiSu": "58.9",
       "WiWd": "59.6",
       "quarterHour": "2"
-    ] as Map, BDEWLoadProfileEntry)
+    ] as Map, BdewLoadValues)
 
     allEntries = [
       factory.buildModel(data0),
       factory.buildModel(data1),
       factory.buildModel(data2)
-    ].flatten() as Set<BDEWLoadProfileEntry>
+    ].flatten() as Set<LoadProfileEntry<BdewLoadValues>>
   }
 
   def "A BDEWLoadProfileFactory returns the correct fields"() {
@@ -87,7 +84,7 @@ class DBEWLoadProfileFactoryTest extends Specification {
     ] as Set
 
     when:
-    def actual = factory.getFields(BDEWLoadProfileEntry)
+    def actual = factory.getFields(BdewLoadValues)
 
     then:
     actual.size() == 1
@@ -96,15 +93,15 @@ class DBEWLoadProfileFactoryTest extends Specification {
 
   def "A BDEWLoadProfileFactory refuses to build from invalid data"() {
     given:
-    def actualFields = factory.newSet("Wd", "Sa", "Su")
+    def actualFields = factory.newSet("Sa", "Su", "Wd")
 
     when:
-    def actual = factory.validate(actualFields, BDEWLoadProfileEntry)
+    def actual = factory.validate(actualFields, BdewLoadValues)
 
     then:
     actual.failure
-    actual.exception.get().message == "The provided fields [Sa, Su, Wd] are invalid for instance of 'BDEWLoadProfileEntry'. \n" +
-        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'BDEWLoadProfileEntry' are possible (NOT case-sensitive!):\n" +
+    actual.exception.get().message == "The provided fields [Sa, Su, Wd] are invalid for instance of 'BdewLoadValues'. \n" +
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'BdewLoadValues' are possible (NOT case-sensitive!):\n" +
         "0: [quarterHour, SuSa, SuSu, SuWd, TrSa, TrSu, TrWd, WiSa, WiSu, WiWd] or [quarter_hour, su_sa, su_su, su_wd, tr_sa, tr_su, tr_wd, wi_sa, wi_su, wi_wd]\n"
   }
 
@@ -124,10 +121,10 @@ class DBEWLoadProfileFactoryTest extends Specification {
     ] as Map
 
     when:
-    def entries = factory.buildModel(new LoadProfileData<>(data, BDEWLoadProfileEntry))
+    def entry = factory.buildModel(new LoadProfileData<>(data, BdewLoadValues))
 
     then:
-    entries.size() == 9
+    entry.value.class == BdewLoadValues
   }
 
   def "A BDEWLoadProfileFactory builds time series from entries"() {
@@ -141,20 +138,6 @@ class DBEWLoadProfileFactoryTest extends Specification {
 
     then:
     lpts.loadProfile == BdewStandardLoadProfile.G0
-    lpts.entries.size() == 27
-
-    lpts.valueMapping.keySet() == [
-      new BDEWLoadProfileTimeSeries.BdewKey(Season.SUMMER, SATURDAY),
-      new BDEWLoadProfileTimeSeries.BdewKey(Season.SUMMER, SUNDAY),
-      new BDEWLoadProfileTimeSeries.BdewKey(Season.SUMMER, MONDAY),
-      new BDEWLoadProfileTimeSeries.BdewKey(Season.TRANSITION, SATURDAY),
-      new BDEWLoadProfileTimeSeries.BdewKey(Season.TRANSITION, SUNDAY),
-      new BDEWLoadProfileTimeSeries.BdewKey(Season.TRANSITION, MONDAY),
-      new BDEWLoadProfileTimeSeries.BdewKey(Season.WINTER, SATURDAY),
-      new BDEWLoadProfileTimeSeries.BdewKey(Season.WINTER, SUNDAY),
-      new BDEWLoadProfileTimeSeries.BdewKey(Season.WINTER, MONDAY),
-    ] as Set
-
-    lpts.valueMapping.values().every { it.size() == 3}
+    lpts.entries.size() == 3
   }
 }

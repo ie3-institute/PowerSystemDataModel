@@ -5,42 +5,29 @@
 */
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
-import static java.util.function.Function.identity;
-
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
-import java.time.DayOfWeek;
+import edu.ie3.datamodel.models.value.load.LoadValues;
 import java.time.ZonedDateTime;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Function;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Describes a load profile time series with repetitive values that can be calculated from a pattern
  */
-public abstract class LoadProfileTimeSeries<E extends LoadProfileEntry>
-    extends RepetitiveTimeSeries<E, PValue> {
+public abstract class LoadProfileTimeSeries<V extends LoadValues>
+    extends RepetitiveTimeSeries<LoadProfileEntry<V>, PValue> {
   private final LoadProfile loadProfile;
-  private final Map<Key, Map<Integer, E>> valueMapping;
-
-  public LoadProfileTimeSeries(UUID uuid, LoadProfile loadProfile, Set<E> entries) {
-    this(uuid, loadProfile, entries, e -> new WeekDayKey(e.getDayOfWeek()));
-  }
+  private final Map<Integer, V> valueMapping;
 
   public LoadProfileTimeSeries(
-      UUID uuid, LoadProfile loadProfile, Set<E> entries, Function<E, Key> extractor) {
+      UUID uuid, LoadProfile loadProfile, Set<LoadProfileEntry<V>> entries) {
     super(uuid, entries);
     this.loadProfile = loadProfile;
-
     this.valueMapping =
         entries.stream()
             .collect(
-                Collectors.groupingBy(
-                    extractor,
-                    Collectors.toMap(LoadProfileEntry::getQuarterHourOfDay, identity())));
+                Collectors.toMap(LoadProfileEntry::getQuarterHour, LoadProfileEntry::getValue));
   }
 
   /** Returns the {@link LoadProfile}. */
@@ -48,33 +35,32 @@ public abstract class LoadProfileTimeSeries<E extends LoadProfileEntry>
     return loadProfile;
   }
 
+  @Override
+  public Set<LoadProfileEntry<V>> getEntries() {
+    // to ensure that the entries are ordered by their quarter-hour
+    TreeSet<LoadProfileEntry<V>> set =
+        new TreeSet<>(Comparator.comparing(LoadProfileEntry::getQuarterHour));
+    set.addAll(super.getEntries());
+    return set;
+  }
+
   /** Returns the value mapping. */
-  protected Map<Key, Map<Integer, E>> getValueMapping() {
+  protected Map<Integer, V> getValueMapping() {
     return valueMapping;
   }
 
   @Override
   protected PValue calc(ZonedDateTime time) {
-    Key key = fromTime(time);
     int quarterHour = time.getHour() * 4 + time.getMinute() / 15;
-    return valueMapping.get(key).get(quarterHour).getValue();
+    return valueMapping.get(quarterHour).getValue(time, loadProfile);
   }
-
-  protected Key fromTime(ZonedDateTime time) {
-    return new WeekDayKey(time.getDayOfWeek());
-  }
-
-  public interface Key {}
-
-  private record WeekDayKey(DayOfWeek dayOfWeek) implements Key {}
 
   @Override
-  @SuppressWarnings("unchecked")
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    LoadProfileTimeSeries<E> that = (LoadProfileTimeSeries<E>) o;
+    LoadProfileTimeSeries<?> that = (LoadProfileTimeSeries<?>) o;
     return loadProfile.equals(that.loadProfile) && valueMapping.equals(that.valueMapping);
   }
 

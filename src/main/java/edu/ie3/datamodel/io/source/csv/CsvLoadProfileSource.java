@@ -14,6 +14,7 @@ import edu.ie3.datamodel.io.source.LoadProfileSource;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
+import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
@@ -24,17 +25,17 @@ import java.util.stream.Collectors;
 /**
  * Source that is capable of providing information around load profile time series from csv files.
  */
-public class CsvLoadProfileSource<P extends LoadProfile, E extends LoadProfileEntry>
-    extends LoadProfileSource<P, E> {
-  private final LoadProfileTimeSeries<E> loadProfileTimeSeries;
+public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues>
+    extends LoadProfileSource<P, V> {
+  private final LoadProfileTimeSeries<V> loadProfileTimeSeries;
   private final CsvDataSource dataSource;
   private final Path filePath;
 
   public CsvLoadProfileSource(
       CsvDataSource source,
       CsvLoadProfileMetaInformation metaInformation,
-      Class<E> entryClass,
-      LoadProfileFactory<P, E> entryFactory) {
+      Class<V> entryClass,
+      LoadProfileFactory<P, V> entryFactory) {
     super(entryClass, entryFactory);
     this.dataSource = source;
     this.filePath = metaInformation.getFullFilePath();
@@ -57,7 +58,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, E extends LoadProfileEn
   }
 
   @Override
-  public LoadProfileTimeSeries<E> getTimeSeries() {
+  public LoadProfileTimeSeries<V> getTimeSeries() {
     return loadProfileTimeSeries;
   }
 
@@ -80,11 +81,12 @@ public class CsvLoadProfileSource<P extends LoadProfile, E extends LoadProfileEn
    * @throws SourceException If the file cannot be read properly
    * @return an individual time series
    */
-  protected LoadProfileTimeSeries<E> buildLoadProfileTimeSeries(
+  protected LoadProfileTimeSeries<V> buildLoadProfileTimeSeries(
       CsvLoadProfileMetaInformation metaInformation,
-      Function<Map<String, String>, Try<Set<E>, FactoryException>> fieldToValueFunction)
+      Function<Map<String, String>, Try<LoadProfileEntry<V>, FactoryException>>
+          fieldToValueFunction)
       throws SourceException {
-    Set<E> entries =
+    Set<LoadProfileEntry<V>> entries =
         dataSource
             .buildStreamWithFieldsToAttributesMap(filePath, false)
             .flatMap(
@@ -92,7 +94,6 @@ public class CsvLoadProfileSource<P extends LoadProfile, E extends LoadProfileEn
                     Try.scanStream(stream.map(fieldToValueFunction), "LoadProfileEntry")
                         .transformF(SourceException::new))
             .getOrThrow()
-            .flatMap(Collection::stream)
             .collect(Collectors.toSet());
 
     return entryFactory.build(metaInformation, entries);

@@ -6,21 +6,17 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE;
-import static java.time.DayOfWeek.*;
 
-import de.lmu.ifi.dbs.elki.math.statistics.distribution.GeneralizedExtremeValueDistribution;
-import de.lmu.ifi.dbs.elki.utilities.random.RandomFactory;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
-import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
+import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
-public class RandomLoadProfileFactory
-    extends LoadProfileFactory<LoadProfile, RandomLoadProfileEntry> {
+public class RandomLoadProfileFactory extends LoadProfileFactory<LoadProfile, RandomLoadValues> {
   public static final String K_WEEKDAY = "kWd";
   public static final String K_SATURDAY = "kSa";
   public static final String K_SUNDAY = "kSu";
@@ -32,37 +28,25 @@ public class RandomLoadProfileFactory
   public static final String SIGMA_SUNDAY = "sigmaSu";
 
   public RandomLoadProfileFactory() {
-    super(RandomLoadProfileEntry.class);
+    super(RandomLoadValues.class);
   }
 
   @Override
-  protected Set<RandomLoadProfileEntry> buildModel(LoadProfileData<RandomLoadProfileEntry> data) {
+  protected LoadProfileEntry<RandomLoadValues> buildModel(LoadProfileData<RandomLoadValues> data) {
     int quarterHour = data.getInt(QUARTER_HOUR);
-    return Set.of(
-        new RandomLoadProfileEntry(
-            new GeneralizedExtremeValueDistribution(
-                data.getDouble(MY_WEEKDAY),
-                data.getDouble(SIGMA_WEEKDAY),
-                data.getDouble(K_WEEKDAY),
-                RandomFactory.get(new Random().nextLong())),
-            MONDAY,
-            quarterHour),
-        new RandomLoadProfileEntry(
-            new GeneralizedExtremeValueDistribution(
-                data.getDouble(MY_SATURDAY),
-                data.getDouble(SIGMA_SATURDAY),
-                data.getDouble(K_SATURDAY),
-                RandomFactory.get(new Random().nextLong())),
-            SATURDAY,
-            quarterHour),
-        new RandomLoadProfileEntry(
-            new GeneralizedExtremeValueDistribution(
-                data.getDouble(MY_SUNDAY),
-                data.getDouble(SIGMA_SUNDAY),
-                data.getDouble(K_SUNDAY),
-                RandomFactory.get(new Random().nextLong())),
-            SUNDAY,
-            quarterHour));
+
+    return new LoadProfileEntry<>(
+        new RandomLoadValues(
+            data.getDouble(K_SATURDAY),
+            data.getDouble(K_SUNDAY),
+            data.getDouble(K_WEEKDAY),
+            data.getDouble(MY_SATURDAY),
+            data.getDouble(MY_SUNDAY),
+            data.getDouble(MY_WEEKDAY),
+            data.getDouble(SIGMA_SATURDAY),
+            data.getDouble(SIGMA_SUNDAY),
+            data.getDouble(SIGMA_WEEKDAY)),
+        quarterHour);
   }
 
   @Override
@@ -82,8 +66,9 @@ public class RandomLoadProfileFactory
   }
 
   @Override
-  public LoadProfileTimeSeries<RandomLoadProfileEntry> build(
-      LoadProfileTimeSeriesMetaInformation metaInformation, Set<RandomLoadProfileEntry> entries) {
+  public LoadProfileTimeSeries<RandomLoadValues> build(
+      LoadProfileTimeSeriesMetaInformation metaInformation,
+      Set<LoadProfileEntry<RandomLoadValues>> entries) {
     return new RandomLoadProfileTimeSeries(metaInformation.getUuid(), RANDOM_LOAD_PROFILE, entries);
   }
 

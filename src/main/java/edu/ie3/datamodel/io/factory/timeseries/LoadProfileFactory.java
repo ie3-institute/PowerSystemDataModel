@@ -10,18 +10,19 @@ import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformati
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
+import edu.ie3.datamodel.models.value.load.LoadValues;
 import java.util.Set;
 
-public abstract class LoadProfileFactory<P extends LoadProfile, E extends LoadProfileEntry>
-    extends Factory<E, LoadProfileData<E>, Set<E>> {
+public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadValues>
+    extends Factory<V, LoadProfileData<V>, LoadProfileEntry<V>> {
   public static final String QUARTER_HOUR = "quarterHour";
 
-  public LoadProfileFactory(Class<? extends E> valueClass) {
+  public LoadProfileFactory(Class<? extends V> valueClass) {
     super(valueClass);
   }
 
-  public abstract LoadProfileTimeSeries<E> build(
-      LoadProfileTimeSeriesMetaInformation metaInformation, Set<E> data);
+  public abstract LoadProfileTimeSeries<V> build(
+      LoadProfileTimeSeriesMetaInformation metaInformation, Set<LoadProfileEntry<V>> data);
 
   public abstract P parseProfile(String profile);
 }
