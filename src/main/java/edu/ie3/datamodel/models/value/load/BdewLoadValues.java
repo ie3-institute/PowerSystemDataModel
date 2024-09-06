@@ -73,7 +73,7 @@ public class BdewLoadValues implements LoadValues {
               TRANSITION, TrWd);
         };
 
-    PValue value = new PValue(Quantities.getQuantity(mapping.get(BdewSeason.get(time)), KILOWATT));
+    PValue value = new PValue(Quantities.getQuantity(mapping.get(getSeason(time)), KILOWATT));
 
     if (loadProfile == BdewStandardLoadProfile.H0) {
       /* For the residential average profile, a dynamization has to be taken into account */

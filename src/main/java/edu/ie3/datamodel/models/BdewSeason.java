@@ -34,7 +34,7 @@ public enum BdewSeason {
    * @param time the time
    * @return a season
    */
-  public static BdewSeason get(ZonedDateTime time) {
+  public static BdewSeason getSeason(ZonedDateTime time) {
     int day = time.getDayOfMonth();
 
     // winter:      1.11.-20.03.
