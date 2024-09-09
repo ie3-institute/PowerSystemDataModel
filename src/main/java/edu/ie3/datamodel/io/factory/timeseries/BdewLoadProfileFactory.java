@@ -5,16 +5,20 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import static tech.units.indriya.unit.Units.WATT;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 public class BdewLoadProfileFactory
     extends LoadProfileFactory<BdewStandardLoadProfile, BdewLoadValues> {
@@ -71,11 +75,14 @@ public class BdewLoadProfileFactory
   }
 
   @Override
-  public LoadProfileTimeSeries<BdewLoadValues> build(
+  public BdewLoadProfileTimeSeries build(
       LoadProfileTimeSeriesMetaInformation metaInformation,
       Set<LoadProfileEntry<BdewLoadValues>> entries) {
-    return new BdewLoadProfileTimeSeries(
-        metaInformation.getUuid(), parseProfile(metaInformation.getProfile()), entries);
+
+    BdewStandardLoadProfile profile = parseProfile(metaInformation.getProfile());
+    Optional<ComparableQuantity<Power>> maxPower = calculateMaxPower(profile, entries);
+
+    return new BdewLoadProfileTimeSeries(metaInformation.getUuid(), profile, entries, maxPower);
   }
 
   @Override
@@ -85,5 +92,41 @@ public class BdewLoadProfileFactory
     } catch (ParsingException e) {
       throw new FactoryException("An error occurred while parsing the profile: " + profile, e);
     }
+  }
+
+  @Override
+  public Optional<ComparableQuantity<Power>> calculateMaxPower(
+      BdewStandardLoadProfile loadProfile, Set<LoadProfileEntry<BdewLoadValues>> entries) {
+    Optional<Double> power;
+
+    if (loadProfile == BdewStandardLoadProfile.H0) {
+      power =
+          entries.stream()
+              .map(TimeSeriesEntry::getValue)
+              .map(v -> List.of(v.getWiSa(), v.getWiSu(), v.getWiWd()))
+              .flatMap(Collection::stream)
+              .max(Comparator.naturalOrder());
+
+    } else {
+      power =
+          entries.stream()
+              .map(LoadProfileEntry::getValue)
+              .map(
+                  v ->
+                      List.of(
+                          v.getSuSa(),
+                          v.getSuSu(),
+                          v.getSuWd(),
+                          v.getTrSa(),
+                          v.getTrSu(),
+                          v.getTrWd(),
+                          v.getWiSa(),
+                          v.getWiSu(),
+                          v.getWiWd()))
+              .flatMap(Collection::stream)
+              .max(Comparator.naturalOrder());
+    }
+
+    return power.map(p -> Quantities.getQuantity(p, WATT));
   }
 }

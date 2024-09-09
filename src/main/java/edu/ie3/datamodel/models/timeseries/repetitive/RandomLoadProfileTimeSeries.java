@@ -9,6 +9,7 @@ import de.lmu.ifi.dbs.elki.math.statistics.distribution.GeneralizedExtremeValueD
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class RandomLoadProfileTimeSeries extends LoadProfileTimeSeries<RandomLoadValues> {
   public RandomLoadProfileTimeSeries(
       UUID uuid, LoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> entries) {
-    super(uuid, loadProfile, entries);
+    super(uuid, loadProfile, entries, Optional.empty());
   }
 
   @Override

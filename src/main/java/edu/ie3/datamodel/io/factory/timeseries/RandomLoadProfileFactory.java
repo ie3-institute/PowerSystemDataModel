@@ -10,11 +10,13 @@ import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RAN
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 public class RandomLoadProfileFactory extends LoadProfileFactory<LoadProfile, RandomLoadValues> {
   public static final String K_WEEKDAY = "kWd";
@@ -66,7 +68,7 @@ public class RandomLoadProfileFactory extends LoadProfileFactory<LoadProfile, Ra
   }
 
   @Override
-  public LoadProfileTimeSeries<RandomLoadValues> build(
+  public RandomLoadProfileTimeSeries build(
       LoadProfileTimeSeriesMetaInformation metaInformation,
       Set<LoadProfileEntry<RandomLoadValues>> entries) {
     return new RandomLoadProfileTimeSeries(metaInformation.getUuid(), RANDOM_LOAD_PROFILE, entries);
@@ -75,5 +77,11 @@ public class RandomLoadProfileFactory extends LoadProfileFactory<LoadProfile, Ra
   @Override
   public LoadProfile parseProfile(String profile) {
     return RANDOM_LOAD_PROFILE;
+  }
+
+  @Override
+  public Optional<ComparableQuantity<Power>> calculateMaxPower(
+      LoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> loadProfileEntries) {
+    return Optional.empty();
   }
 }

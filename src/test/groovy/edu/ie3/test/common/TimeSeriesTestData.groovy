@@ -406,7 +406,8 @@ trait TimeSeriesTestData {
     new LoadProfileEntry<>(
     new BdewLoadValues(53.5, 44.3, 46.0, 62.8, 56.9, 54.4, 69.2, 63.6, 58.4), 2
     ),
-  ] as Set
+  ] as Set,
+  Optional.empty()
   )
 
   Set<LinkedHashMap<String, String>> loadProfileTimeSeriesProcessed = [

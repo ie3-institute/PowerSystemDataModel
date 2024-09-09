@@ -7,6 +7,8 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.models.profile.LoadProfile;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,4 +31,20 @@ public interface TimeSeriesMetaInformationSource {
    * @return An Option on the meta information
    */
   Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(UUID timeSeriesUuid);
+
+  /**
+   * Gat a mapping from load profile to {@link LoadProfileTimeSeriesMetaInformation}.
+   *
+   * @return that mapping
+   */
+  Map<String, LoadProfileTimeSeriesMetaInformation> getLoadProfileMetaInformation();
+
+  /**
+   * Get an option on the given time series meta information
+   *
+   * @param loadProfile load profile of the time series in question
+   * @return An Option on the meta information
+   */
+  Optional<LoadProfileTimeSeriesMetaInformation> getLoadProfileMetaInformation(
+      LoadProfile loadProfile);
 }

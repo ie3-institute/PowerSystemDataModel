@@ -68,4 +68,14 @@ public class TimeSeriesUtils {
   public static boolean isSchemeAccepted(ColumnScheme scheme) {
     return ACCEPTED_COLUMN_SCHEMES.contains(scheme);
   }
+
+  /**
+   * Method to calculate the quarter-hour of a day from a given time.
+   *
+   * @param time given time
+   * @return the quarter-hour
+   */
+  public static int calculateQuarterHourOfDay(ZonedDateTime time) {
+    return time.getHour() * 4 + time.getMinute() / 15;
+  }
 }

@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source;
 import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileData;
@@ -18,6 +19,7 @@ import edu.ie3.datamodel.io.source.csv.CsvLoadProfileSource;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.*;
+import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import edu.ie3.datamodel.models.value.load.LoadValues;
@@ -27,6 +29,7 @@ import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,6 +67,15 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    * @return a list of time keys
    */
   public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time);
+
+  /**
+   * Method to get the value for a given time.
+   *
+   * @param time for which a value is needed
+   * @return an optional
+   * @throws SourceException if an exception occurred
+   */
+  public abstract Optional<PValue> getValue(ZonedDateTime time) throws SourceException;
 
   /**
    * Method to read in the build-in {@link BdewStandardLoadProfile}s.

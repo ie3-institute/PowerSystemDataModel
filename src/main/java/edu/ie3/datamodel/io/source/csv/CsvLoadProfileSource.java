@@ -14,6 +14,7 @@ import edu.ie3.datamodel.io.source.LoadProfileSource;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
+import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
@@ -65,6 +66,11 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues>
   @Override
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
     return loadProfileTimeSeries.getTimeKeysAfter(time);
+  }
+
+  @Override
+  public Optional<PValue> getValue(ZonedDateTime time) throws SourceException {
+    return loadProfileTimeSeries.getValue(time);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

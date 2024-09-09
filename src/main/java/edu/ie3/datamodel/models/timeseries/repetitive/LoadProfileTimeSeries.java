@@ -8,26 +8,40 @@ package edu.ie3.datamodel.models.timeseries.repetitive;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.load.LoadValues;
+import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Describes a load profile time series with repetitive values that can be calculated from a pattern
  */
-public abstract class LoadProfileTimeSeries<V extends LoadValues>
+public class LoadProfileTimeSeries<V extends LoadValues>
     extends RepetitiveTimeSeries<LoadProfileEntry<V>, PValue> {
   private final LoadProfile loadProfile;
   private final Map<Integer, V> valueMapping;
 
+  /**
+   * The maximum average power consumption per quarter-hour for a given calculated over all seasons
+   * and weekday types of given load profile
+   */
+  public final Optional<ComparableQuantity<Power>> maxPower;
+
   public LoadProfileTimeSeries(
-      UUID uuid, LoadProfile loadProfile, Set<LoadProfileEntry<V>> entries) {
+      UUID uuid,
+      LoadProfile loadProfile,
+      Set<LoadProfileEntry<V>> entries,
+      Optional<ComparableQuantity<Power>> maxPower) {
     super(uuid, entries);
     this.loadProfile = loadProfile;
     this.valueMapping =
         entries.stream()
             .collect(
                 Collectors.toMap(LoadProfileEntry::getQuarterHour, LoadProfileEntry::getValue));
+
+    this.maxPower = maxPower;
   }
 
   /** Returns the {@link LoadProfile}. */
@@ -44,6 +58,11 @@ public abstract class LoadProfileTimeSeries<V extends LoadValues>
     return set;
   }
 
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
+    return List.of(time.plusMinutes(15)); // dummy value that will return next quarter-hour value
+  }
+
   /** Returns the value mapping. */
   protected Map<Integer, V> getValueMapping() {
     return valueMapping;
@@ -51,7 +70,7 @@ public abstract class LoadProfileTimeSeries<V extends LoadValues>
 
   @Override
   protected PValue calc(ZonedDateTime time) {
-    int quarterHour = time.getHour() * 4 + time.getMinute() / 15;
+    int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
     return valueMapping.get(quarterHour).getValue(time, loadProfile);
   }
 
