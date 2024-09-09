@@ -6,9 +6,9 @@
 package edu.ie3.datamodel.models.value.load;
 
 import static edu.ie3.datamodel.models.BdewSeason.*;
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
+import static tech.units.indriya.unit.Units.WATT;
 
 import edu.ie3.datamodel.models.BdewSeason;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
@@ -73,7 +73,7 @@ public class BdewLoadValues implements LoadValues {
               TRANSITION, TrWd);
         };
 
-    PValue value = new PValue(Quantities.getQuantity(mapping.get(getSeason(time)), KILOWATT));
+    PValue value = new PValue(Quantities.getQuantity(mapping.get(getSeason(time)), WATT));
 
     if (loadProfile == BdewStandardLoadProfile.H0) {
       /* For the residential average profile, a dynamization has to be taken into account */
@@ -103,7 +103,7 @@ public class BdewLoadValues implements LoadValues {
         load.getP()
             .map(v -> v.getValue().doubleValue())
             .map(round)
-            .map(v -> Quantities.getQuantity(v, KILOWATT))
+            .map(v -> Quantities.getQuantity(v, WATT))
             .orElse(null);
 
     return new PValue(value);

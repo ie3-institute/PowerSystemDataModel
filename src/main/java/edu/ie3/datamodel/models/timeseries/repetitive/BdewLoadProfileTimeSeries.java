@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT;
+import static tech.units.indriya.unit.Units.WATT;
 
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -16,7 +16,7 @@ import tech.units.indriya.quantity.Quantities;
 
 /**
  * Describes a bdew load profile time series with repetitive values that can be calculated from a
- * pattern
+ * pattern. Each value of this timeseries is given in W.
  */
 public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadValues> {
   /**
@@ -63,7 +63,7 @@ public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadVal
               .orElse(0d);
     }
 
-    this.maxPower = new PValue(Quantities.getQuantity(power, KILOWATT));
+    this.maxPower = new PValue(Quantities.getQuantity(power, WATT));
   }
 
   @Override
