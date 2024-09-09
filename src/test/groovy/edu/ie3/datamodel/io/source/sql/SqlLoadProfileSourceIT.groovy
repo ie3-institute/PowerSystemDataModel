@@ -11,7 +11,6 @@ import static edu.ie3.test.common.TimeSeriesSourceTestData.TIME_00MIN
 
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory
-import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
