@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2024. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -12,9 +12,9 @@ package edu.ie3.datamodel.exceptions;
  * @version 0.1
  * @since 04.09.24
  */
-public class NoWeatherDataException extends Exception {
+public class NoDataException extends Exception {
 
-  public NoWeatherDataException(final String message) {
+  public NoDataException(final String message) {
     super(message);
   }
 }
