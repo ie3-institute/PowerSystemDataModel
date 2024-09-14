@@ -103,7 +103,7 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
-    if(timeBasedValues.isEmpty()) {
+    if (timeBasedValues.isEmpty()) {
       throw new NoDataException("No weather data found");
     }
     return mapWeatherValuesToPoints(timeBasedValues);
@@ -141,7 +141,7 @@ public class SqlWeatherSource extends WeatherSource {
 
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate)
-          throws SourceException, NoDataException {
+      throws SourceException, NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
