@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
+import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -92,7 +93,7 @@ public class SqlWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) throws SourceException {
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException, SourceException {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         buildTimeBasedValues(
             weatherFactory,
@@ -102,6 +103,9 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
+    if(timeBasedValues.isEmpty()) {
+      throw new NoDataException("No weather data found");
+    }
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
@@ -137,7 +141,7 @@ public class SqlWeatherSource extends WeatherSource {
 
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate)
-      throws SourceException {
+          throws SourceException, NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
@@ -154,7 +158,7 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(2, Timestamp.from(date.toInstant()));
                 }));
 
-    if (timeBasedValues.isEmpty()) return Optional.empty();
+    if (timeBasedValues.isEmpty()) throw new NoDataException("No weather data found");
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0));
