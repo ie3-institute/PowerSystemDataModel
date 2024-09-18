@@ -58,11 +58,11 @@ This reflects a simple shoe box with transmission losses
      - Lower temperature boundary
      
    * - housingType
-     - --
+     - –
      - Type of building can either be house or flat
      
    * - numberInhabititans
-     - --
+     - –
      - Number of people living in the house
 
 ```
