@@ -7,9 +7,9 @@ coordinates.
 
 ## Information
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
     
    * - Attribute

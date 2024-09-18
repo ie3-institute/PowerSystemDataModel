@@ -7,9 +7,9 @@ having control over one or more physical entitites.
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -18,11 +18,11 @@ having control over one or more physical entitites.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
 ```
