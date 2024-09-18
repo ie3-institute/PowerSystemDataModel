@@ -58,6 +58,13 @@ public class CsvDataSource implements DataSource {
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
+  public CsvDataSource(
+      String csvSep, CsvFileConnector connector, FileNamingStrategy fileNamingStrategy) {
+    this.csvSep = csvSep;
+    this.connector = connector;
+    this.fileNamingStrategy = fileNamingStrategy;
+  }
+
   @Override
   public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass)
       throws SourceException {

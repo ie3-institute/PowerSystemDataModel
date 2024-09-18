@@ -43,7 +43,16 @@ public class CsvTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
    */
   public CsvTimeSeriesMetaInformationSource(
       String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
-    this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
+    this(new CsvDataSource(csvSep, folderPath, fileNamingStrategy));
+  }
+
+  /**
+   * Creates a time series type source
+   *
+   * @param dataSource a csv data source
+   */
+  public CsvTimeSeriesMetaInformationSource(CsvDataSource dataSource) {
+    this.dataSource = dataSource;
     // retrieve only the desired time series
     this.timeSeriesMetaInformation =
         dataSource.getCsvIndividualTimeSeriesMetaInformation(

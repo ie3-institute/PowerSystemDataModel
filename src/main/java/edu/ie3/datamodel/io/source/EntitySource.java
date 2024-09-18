@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -19,6 +20,12 @@ import edu.ie3.datamodel.utils.QuadFunction;
 import edu.ie3.datamodel.utils.TriFunction;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -37,8 +44,8 @@ import org.slf4j.LoggerFactory;
 public abstract class EntitySource {
   protected static final Logger log = LoggerFactory.getLogger(EntitySource.class);
 
-  // path for build-in entities
-  private static final Path BUILD_INS = Path.of("src", "main", "resources");
+  // file system for build-in entities
+  private static FileSystem jarFileSystem = null;
 
   // convenience collectors
 
@@ -106,8 +113,40 @@ public abstract class EntitySource {
    * @param subdirectory from the resource folder
    * @return a new {@link CsvDataSource}
    */
-  protected static CsvDataSource getBuildInSource(Path subdirectory) {
-    return new CsvDataSource(",", BUILD_INS.resolve(subdirectory), new FileNamingStrategy());
+  protected static CsvDataSource getBuildInSource(Class<?> clazz, String subdirectory)
+      throws SourceException {
+    try {
+      URL url = clazz.getResource(subdirectory);
+
+      if (url == null) {
+        throw new SourceException("Resources not found for: " + subdirectory);
+      }
+
+      URI uri = url.toURI();
+      CsvFileConnector connector;
+
+      switch (url.getProtocol()) {
+        case "file" -> connector = new CsvFileConnector(Path.of(uri));
+        case "jar" -> {
+          // handling resources in jar
+
+          String[] array = uri.toString().split("!");
+
+          if (jarFileSystem == null) {
+            jarFileSystem = FileSystems.newFileSystem(URI.create(array[0]), Collections.emptyMap());
+          }
+
+          connector =
+              new CsvFileConnector(jarFileSystem.getPath(array[1]), clazz::getResourceAsStream);
+        }
+        default -> throw new SourceException(
+            "Protocol " + url.getProtocol() + " is nor supported!");
+      }
+
+      return new CsvDataSource(",", connector, new FileNamingStrategy());
+    } catch (URISyntaxException | IOException e) {
+      throw new SourceException(e);
+    }
   }
 
   /**

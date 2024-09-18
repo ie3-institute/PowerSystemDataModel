@@ -18,14 +18,16 @@ import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.io.source.csv.CsvLoadProfileSource;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.profile.LoadProfile;
-import edu.ie3.datamodel.models.timeseries.repetitive.*;
+import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import edu.ie3.datamodel.utils.Try;
-import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +37,6 @@ import java.util.stream.Collectors;
 
 public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadValues>
     extends EntitySource {
-  private static final CsvDataSource buildInSource = getBuildInSource(Path.of("load"));
-
   protected final Class<V> entryClass;
   protected final LoadProfileFactory<P, V> entryFactory;
 
@@ -82,7 +82,10 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    *
    * @return a map: load profile to time series
    */
-  public static Map<BdewStandardLoadProfile, BdewLoadProfileTimeSeries> getBDEWLoadProfiles() {
+  public static Map<BdewStandardLoadProfile, BdewLoadProfileTimeSeries> getBDEWLoadProfiles()
+      throws SourceException {
+    CsvDataSource buildInSource = getBuildInSource(LoadProfileSource.class, "/load");
+
     BdewLoadProfileFactory factory = new BdewLoadProfileFactory();
 
     return buildInSource.getCsvLoadProfileMetaInformation(BdewStandardLoadProfile.values()).stream()
@@ -100,7 +103,9 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    *
    * @return the random load profile time series
    */
-  public static RandomLoadProfileTimeSeries getRandomLoadProfile() {
+  public static RandomLoadProfileTimeSeries getRandomLoadProfile() throws SourceException {
+    CsvDataSource buildInSource = getBuildInSource(LoadProfileSource.class, "/load");
+
     CsvLoadProfileMetaInformation metaInformation =
         buildInSource.getCsvLoadProfileMetaInformation(RANDOM_LOAD_PROFILE).stream()
             .findAny()
