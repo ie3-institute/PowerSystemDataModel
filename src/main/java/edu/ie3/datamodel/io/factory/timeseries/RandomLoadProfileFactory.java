@@ -16,7 +16,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.measure.quantity.Power;
+
+import edu.ie3.util.quantities.PowerSystemUnits;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 public class RandomLoadProfileFactory extends LoadProfileFactory<LoadProfile, RandomLoadValues> {
   public static final String K_WEEKDAY = "kWd";
@@ -82,11 +85,11 @@ public class RandomLoadProfileFactory extends LoadProfileFactory<LoadProfile, Ra
   @Override
   public Optional<ComparableQuantity<Power>> calculateMaxPower(
       LoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> loadProfileEntries) {
-    return Optional.empty();
+    return Optional.of(Quantities.getQuantity(159d, PowerSystemUnits.WATT));
   }
 
   @Override
   public double getLoadProfileEnergyScaling() {
-    return 1d;
+    return 716.5416966513656;
   }
 }
