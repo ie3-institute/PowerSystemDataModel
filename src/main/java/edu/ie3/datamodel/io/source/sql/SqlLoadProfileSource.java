@@ -27,8 +27,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.measure.quantity.Power;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Sql source for {@link LoadProfileTimeSeries}.
@@ -116,6 +118,11 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
     if (entries.isEmpty()) return Optional.empty();
     if (entries.size() > 1) log.warn("Retrieved more than one result value, using the first");
     return Optional.of(entries.stream().toList().get(0).getValue().getValue(time, loadProfile));
+  }
+
+  @Override
+  public Optional<ComparableQuantity<Power>> getMaxValue() {
+    return entryFactory.calculateMaxPower(loadProfile, getEntries(queryFull, ps -> {}));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

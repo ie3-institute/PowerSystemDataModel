@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadValues>
     extends EntitySource {
@@ -76,6 +78,14 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    * @throws SourceException if an exception occurred
    */
   public abstract Optional<PValue> getValue(ZonedDateTime time) throws SourceException;
+
+  /** Returns the maximal power value of the time series */
+  public abstract Optional<ComparableQuantity<Power>> getMaxValue();
+
+  /** Returns the load profile energy scaling for this load profile time series. */
+  public double getLoadProfileEnergyScaling() {
+    return entryFactory.getLoadProfileEnergyScaling();
+  }
 
   /**
    * Method to read in the build-in {@link BdewStandardLoadProfile}s.

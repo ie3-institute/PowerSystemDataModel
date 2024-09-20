@@ -21,10 +21,13 @@ public enum BdewSeason {
 
   public static BdewSeason parse(String key) throws ParsingException {
     return switch (key) {
-      case "Wi" -> WINTER;
-      case "Su" -> SUMMER;
-      case "Tr" -> TRANSITION;
-      default -> throw new ParsingException("There is no season for key:" + key);
+      case "Wi", "Winter" -> WINTER;
+      case "Su", "Summer" -> SUMMER;
+      case "Tr", "Intermediate" -> TRANSITION;
+      default -> throw new ParsingException(
+          "There is no season for key:"
+              + key
+              + ". Permissible keys: 'Wi', 'Winter', 'Su', 'Summer', 'Tr', 'Intermediate'");
     };
   }
 

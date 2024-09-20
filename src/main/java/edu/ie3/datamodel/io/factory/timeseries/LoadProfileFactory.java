@@ -44,4 +44,7 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
   public String getTimeFieldString() {
     return QUARTER_HOUR;
   }
+
+  /** Returns the load profile energy scaling. */
+  public abstract double getLoadProfileEnergyScaling();
 }

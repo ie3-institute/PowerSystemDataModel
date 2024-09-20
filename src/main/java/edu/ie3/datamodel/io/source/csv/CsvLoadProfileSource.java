@@ -22,6 +22,8 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Source that is capable of providing information around load profile time series from csv files.
@@ -71,6 +73,11 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues>
   @Override
   public Optional<PValue> getValue(ZonedDateTime time) throws SourceException {
     return loadProfileTimeSeries.getValue(time);
+  }
+
+  @Override
+  public Optional<ComparableQuantity<Power>> getMaxValue() {
+    return loadProfileTimeSeries.maxPower;
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

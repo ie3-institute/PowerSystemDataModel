@@ -84,4 +84,9 @@ public class RandomLoadProfileFactory extends LoadProfileFactory<LoadProfile, Ra
       LoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> loadProfileEntries) {
     return Optional.empty();
   }
+
+  @Override
+  public double getLoadProfileEnergyScaling() {
+    return 1d;
+  }
 }

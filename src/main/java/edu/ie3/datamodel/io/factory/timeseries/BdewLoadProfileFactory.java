@@ -129,4 +129,9 @@ public class BdewLoadProfileFactory
 
     return power.map(p -> Quantities.getQuantity(p, WATT));
   }
+
+  @Override
+  public double getLoadProfileEnergyScaling() {
+    return 1000d;
+  }
 }
