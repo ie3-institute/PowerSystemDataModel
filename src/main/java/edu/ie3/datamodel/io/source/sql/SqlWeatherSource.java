@@ -140,12 +140,12 @@ public class SqlWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate)
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
       throws SourceException, NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
-      return Optional.empty();
+      throw new NoDataException("No coordinate ID found for the given point.");
     }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
@@ -161,7 +161,7 @@ public class SqlWeatherSource extends WeatherSource {
     if (timeBasedValues.isEmpty()) throw new NoDataException("No weather data found");
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
-    return Optional.of(timeBasedValues.get(0));
+    return timeBasedValues.get(0);
   }
 
   @Override

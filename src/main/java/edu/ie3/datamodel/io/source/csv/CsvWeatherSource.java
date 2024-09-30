@@ -121,16 +121,16 @@ public class CsvWeatherSource extends WeatherSource {
     return result;
   }
 
-  // TODO
-  // Remove Optional
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate)
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
       throws NoDataException {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
-    return Optional.of(
-        timeSeries
-            .getTimeBasedValue(date)
-            .orElseThrow(() -> new NoDataException("No weather data found")));
+
+    if(timeSeries == null){
+      throw new NoDataException("No weather data found for the given coordinate");
+    }
+
+    return timeSeries.getTimeBasedValue(date).orElseThrow(() -> new NoDataException("No weather data found for the given coordinate"));
   }
 
   @Override

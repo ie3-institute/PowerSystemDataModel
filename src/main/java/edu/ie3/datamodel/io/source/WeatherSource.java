@@ -62,7 +62,7 @@ public abstract class WeatherSource extends EntitySource {
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
       throws SourceException, NoDataException;
 
-  public abstract Optional<TimeBasedValue<WeatherValue>> getWeather(
+  public abstract TimeBasedValue<WeatherValue> getWeather(
       ZonedDateTime date, Point coordinate) throws SourceException, NoDataException;
 
   public abstract Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)

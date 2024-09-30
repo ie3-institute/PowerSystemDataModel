@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.influxdb;
 
+import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -107,15 +108,15 @@ public class InfluxDbWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate) throws NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
-      return Optional.empty();
+      throw new NoDataException("No coordinate ID found for the given point.");
     }
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForCoordinateAndTime(date, coordinateId.get());
       QueryResult queryResult = session.query(new Query(query));
-      return filterEmptyOptionals(optTimeBasedValueStream(queryResult)).findFirst();
+      return filterEmptyOptionals(optTimeBasedValueStream(queryResult)).findFirst().orElseThrow(() -> new NoDataException("No weather data available for the given date and coordinate."));
     }
   }
 

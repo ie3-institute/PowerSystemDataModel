@@ -10,6 +10,7 @@ import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
+import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -143,25 +144,27 @@ public class CouchbaseWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate) throws NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
-      return Optional.empty();
+      throw new NoDataException("No coordinate ID found for the given point.");
     }
     try {
       CompletableFuture<GetResult> futureResult =
           connector.get(generateWeatherKey(date, coordinateId.get()));
       GetResult getResult = futureResult.join();
       JsonObject jsonWeatherInput = getResult.contentAsObject();
-      return toTimeBasedWeatherValue(jsonWeatherInput);
+      return toTimeBasedWeatherValue(jsonWeatherInput).orElseThrow(() -> new NoDataException("No valid weather data found for the given date and coordinate."));
     } catch (DecodingFailureException ex) {
       logger.error("Decoding to TimeBasedWeatherValue failed!", ex);
-      return Optional.empty();
+      throw new NoDataException("Failed to decode weather data.");
     } catch (DocumentNotFoundException ex) {
-      return Optional.empty();
+      throw new NoDataException("Weather document not found.");
     } catch (CompletionException ex) {
-      if (ex.getCause() instanceof DocumentNotFoundException) return Optional.empty();
+      if (ex.getCause() instanceof DocumentNotFoundException) {
+        throw new NoDataException("Weather document not found in the completion stage.");
+      }
       else throw ex;
     }
   }
