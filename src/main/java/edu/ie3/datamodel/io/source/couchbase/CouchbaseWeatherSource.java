@@ -105,7 +105,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException {
     logger.warn(
         "By not providing coordinates you are forcing couchbase to check all possible coordinates one by one."
             + " This is not very performant. Please consider providing specific coordinates instead.");
@@ -114,7 +114,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+      throws NoDataException {
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     for (Point coordinate : coordinates) {
       Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
@@ -138,7 +139,10 @@ public class CouchbaseWeatherSource extends WeatherSource {
               new IndividualTimeSeries<>(weatherInputs);
           coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
         }
-      } else logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+      } else {
+        logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+        throw new NoDataException("No data found");
+      }
     }
     return coordinateToTimeSeries;
   }
