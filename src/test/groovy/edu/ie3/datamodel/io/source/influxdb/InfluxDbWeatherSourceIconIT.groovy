@@ -63,8 +63,8 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     def optTimeBasedValue = source.getWeather(IconWeatherTestData.TIME_15H , IconWeatherTestData.COORDINATE_67775)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    optTimeBasedValue != null
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "An InfluxDbWeatherSource can read multiple time series values for multiple coordinates"() {
