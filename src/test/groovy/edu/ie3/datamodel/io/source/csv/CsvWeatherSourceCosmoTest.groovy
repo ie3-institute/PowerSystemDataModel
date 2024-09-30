@@ -50,7 +50,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 
     then:
     optTimeBasedValue != null
-    equalsIgnoreUUID(timeBasedValue, expectedTimeBasedValue)
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {

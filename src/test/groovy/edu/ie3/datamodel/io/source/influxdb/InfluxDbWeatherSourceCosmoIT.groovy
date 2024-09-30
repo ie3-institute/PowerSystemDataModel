@@ -148,7 +148,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     ])
 
     then:
-    coordinateAtDate == null
+    assert coordinateAtDate == null
     equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
     coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
     equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries_193186)
