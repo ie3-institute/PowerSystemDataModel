@@ -126,11 +126,13 @@ public class CsvWeatherSource extends WeatherSource {
       throws NoDataException {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
 
-    if(timeSeries == null){
+    if (timeSeries == null) {
       throw new NoDataException("No weather data found for the given coordinate");
     }
 
-    return timeSeries.getTimeBasedValue(date).orElseThrow(() -> new NoDataException("No weather data found for the given coordinate"));
+    return timeSeries
+        .getTimeBasedValue(date)
+        .orElseThrow(() -> new NoDataException("No weather data found for the given coordinate"));
   }
 
   @Override

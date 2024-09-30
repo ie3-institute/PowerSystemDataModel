@@ -108,7 +108,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
   }
 
   @Override
-  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate) throws NoDataException {
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
+      throws NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       throw new NoDataException("No coordinate ID found for the given point.");
@@ -116,7 +117,12 @@ public class InfluxDbWeatherSource extends WeatherSource {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForCoordinateAndTime(date, coordinateId.get());
       QueryResult queryResult = session.query(new Query(query));
-      return filterEmptyOptionals(optTimeBasedValueStream(queryResult)).findFirst().orElseThrow(() -> new NoDataException("No weather data available for the given date and coordinate."));
+      return filterEmptyOptionals(optTimeBasedValueStream(queryResult))
+          .findFirst()
+          .orElseThrow(
+              () ->
+                  new NoDataException(
+                      "No weather data available for the given date and coordinate."));
     }
   }
 

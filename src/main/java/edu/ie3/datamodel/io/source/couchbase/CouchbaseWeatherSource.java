@@ -144,7 +144,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
   }
 
   @Override
-  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate) throws NoDataException {
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
+      throws NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
@@ -155,7 +156,11 @@ public class CouchbaseWeatherSource extends WeatherSource {
           connector.get(generateWeatherKey(date, coordinateId.get()));
       GetResult getResult = futureResult.join();
       JsonObject jsonWeatherInput = getResult.contentAsObject();
-      return toTimeBasedWeatherValue(jsonWeatherInput).orElseThrow(() -> new NoDataException("No valid weather data found for the given date and coordinate."));
+      return toTimeBasedWeatherValue(jsonWeatherInput)
+          .orElseThrow(
+              () ->
+                  new NoDataException(
+                      "No valid weather data found for the given date and coordinate."));
     } catch (DecodingFailureException ex) {
       logger.error("Decoding to TimeBasedWeatherValue failed!", ex);
       throw new NoDataException("Failed to decode weather data.");
@@ -164,8 +169,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
     } catch (CompletionException ex) {
       if (ex.getCause() instanceof DocumentNotFoundException) {
         throw new NoDataException("Weather document not found in the completion stage.");
-      }
-      else throw ex;
+      } else throw ex;
     }
   }
 
