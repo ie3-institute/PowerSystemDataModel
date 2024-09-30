@@ -143,13 +143,13 @@ public class SqlWeatherSource extends WeatherSource {
   public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
       throws SourceException, NoDataException {
     Optional<Integer> coordinateId;
-    try{
+    try {
       coordinateId = idCoordinateSource.getId(coordinate);
       if (coordinateId.isEmpty()) {
         log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
         throw new NoDataException("No coordinate ID found for the given point.");
       }
-    }catch (NoDataException e) {
+    } catch (NoDataException e) {
       log.error("No data available for coordinate {} and date {}", coordinate, date, e);
       return null;
     }
