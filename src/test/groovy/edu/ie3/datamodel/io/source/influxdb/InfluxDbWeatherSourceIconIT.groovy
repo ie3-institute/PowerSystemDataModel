@@ -141,7 +141,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     ])
 
     then:
-    coordinateAtDate == Optional.empty()
+    coordinateAtDate == null
     equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
     coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
     equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries67775)

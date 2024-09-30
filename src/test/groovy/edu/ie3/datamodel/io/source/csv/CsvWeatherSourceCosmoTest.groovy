@@ -46,10 +46,10 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def expectedTimeBasedValue = new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193186_15H)
 
     when:
-    def timeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
+    def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
 
     then:
-    timeBasedValue != null
+    optTimeBasedValue != null
     equalsIgnoreUUID(timeBasedValue, expectedTimeBasedValue)
   }
 
