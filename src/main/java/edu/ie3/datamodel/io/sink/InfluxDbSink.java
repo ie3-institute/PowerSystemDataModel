@@ -85,7 +85,7 @@ public class InfluxDbSink implements OutputDataSink {
   }
 
   @Override
-  public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
+  public <E extends TimeSeriesEntry<? extends Value>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries) throws ProcessorProviderException {
     Set<Point> points = transformToPoints(timeSeries);
     writeAll(points);
@@ -146,8 +146,8 @@ public class InfluxDbSink implements OutputDataSink {
    *
    * @param timeSeries the time series to transform
    */
-  private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
-      TimeSeries<E, V> timeSeries) throws ProcessorProviderException {
+  private <E extends TimeSeriesEntry<? extends Value>, V extends Value>
+      Set<Point> transformToPoints(TimeSeries<E, V> timeSeries) throws ProcessorProviderException {
     if (timeSeries.getEntries().isEmpty()) return Collections.emptySet();
 
     Optional<String> measurementName = entityPersistenceNamingStrategy.getEntityName(timeSeries);
@@ -169,8 +169,9 @@ public class InfluxDbSink implements OutputDataSink {
    * @param timeSeries the time series to transform
    * @param measurementName equivalent to the name of a relational table
    */
-  private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
-      TimeSeries<E, V> timeSeries, String measurementName) throws ProcessorProviderException {
+  private <E extends TimeSeriesEntry<? extends Value>, V extends Value>
+      Set<Point> transformToPoints(TimeSeries<E, V> timeSeries, String measurementName)
+          throws ProcessorProviderException {
     Set<Point> points = new HashSet<>();
     Set<LinkedHashMap<String, String>> entityFieldData =
         processorProvider.handleTimeSeries(timeSeries);

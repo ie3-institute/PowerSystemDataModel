@@ -35,7 +35,6 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
       List.of(
           /* InputEntity */
           OperatorInput.class,
-          RandomLoadParameters.class,
           TimeSeriesMappingSource.MappingEntry.class,
           IdCoordinateInput.class,
           /* - AssetInput */
