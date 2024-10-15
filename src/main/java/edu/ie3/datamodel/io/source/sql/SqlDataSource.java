@@ -179,7 +179,6 @@ public class SqlDataSource implements DataSource {
   protected Stream<Map<String, String>> executeQuery(String query, AddParams addParams) {
     try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
       addParams.addParams(ps);
-
       ResultSet resultSet = ps.executeQuery();
       return connector.extractFieldMaps(resultSet).stream();
     } catch (SQLException e) {
