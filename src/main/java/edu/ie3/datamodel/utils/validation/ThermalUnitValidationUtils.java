@@ -12,6 +12,7 @@ import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.measure.Quantity;
 
 public class ThermalUnitValidationUtils extends ValidationUtils {
@@ -117,10 +118,13 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
     // Further checks for subclasses
-    if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass())) {
+    if (thermalStorageInput.getClass() == CylindricalStorageInput.class) {
       exceptions.addAll(checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput));
-    } else {
-      logNotImplemented(thermalStorageInput);
+    }
+
+    if (thermalStorageInput.getClass() == DomesticHotWaterStorageInput.class) {
+      exceptions.addAll(
+          checkDomesticHotWaterStorage((DomesticHotWaterStorageInput) thermalStorageInput));
     }
 
     return exceptions;
@@ -135,6 +139,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    *   <li>its thermal capacity is positive
    *   <li>its upper temperature limit is higher than the lower temperature limit
    *   <li>its target temperature lies between the upper und lower limit temperatures
+   *   <li>its housing type is either `house` or `flat`
+   *   <li>its number of inhabitants is higher than zero
    * </ul>
    *
    * @param thermalHouseInput ThermalHouseInput to validate
@@ -173,7 +179,31 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
                   thermalHouseInput)));
     }
 
+    if (!isValidHousingType(thermalHouseInput.getHousingType())) {
+      exceptions.add(
+          new Failure<>(
+              new InvalidEntityException(
+                  "Housing type must be either 'house' or 'flat'", thermalHouseInput)));
+    }
+
+    if (thermalHouseInput.getNumberOfInhabitants() <= 0) {
+      exceptions.add(
+          new Failure<>(
+              new InvalidEntityException(
+                  "Number of inhabitants must be greater than zero", thermalHouseInput)));
+    }
+
     return exceptions;
+  }
+
+  /**
+   * Checks if the housing type is valid (either "house" or "flat").
+   *
+   * @param housingType The housing type to check
+   * @return true if valid, false otherwise
+   */
+  private static boolean isValidHousingType(String housingType) {
+    return Set.of("house", "flat").contains(housingType.toLowerCase());
   }
 
   /**
@@ -217,9 +247,61 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
             () ->
                 detectZeroOrNegativeQuantities(
                     new Quantity<?>[] {
-                      cylindricalStorageInput.getStorageVolumeLvl(), cylindricalStorageInput.getC()
+                      cylindricalStorageInput.getStorageVolumeLvl(),
+                      cylindricalStorageInput.getC(),
+                      cylindricalStorageInput.getpThermalMax()
                     },
                     cylindricalStorageInput),
+            InvalidEntityException.class));
+
+    return exceptions;
+  }
+  /**
+   * Validates a domcesticHotWaterStorageInput if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>its available storage volume is positive
+   *   <li>its inlet temperature is equal/greater than the outlet temperature
+   *   <li>its specific heat capacity is positive
+   * </ul>
+   *
+   * @param domesticHotWaterStorageInput DomesticHotWaterStorageInput to validate
+   * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
+   *     Success
+   */
+  private static List<Try<Void, InvalidEntityException>> checkDomesticHotWaterStorage(
+      DomesticHotWaterStorageInput domesticHotWaterStorageInput) {
+    Try<Void, InvalidEntityException> isNull =
+        checkNonNull(domesticHotWaterStorageInput, "a domestic hot water storage");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
+
+    // Check if inlet temperature is higher/equal to outlet temperature
+    exceptions.add(
+        Try.ofVoid(
+            domesticHotWaterStorageInput
+                .getInletTemp()
+                .isLessThan(domesticHotWaterStorageInput.getReturnTemp()),
+            () ->
+                new InvalidEntityException(
+                    "Inlet temperature of the domestic hot water storage cannot be lower than outlet temperature",
+                    domesticHotWaterStorageInput)));
+
+    exceptions.add(
+        Try.ofVoid(
+            () ->
+                detectZeroOrNegativeQuantities(
+                    new Quantity<?>[] {
+                      domesticHotWaterStorageInput.getStorageVolumeLvl(),
+                      domesticHotWaterStorageInput.getC(),
+                      domesticHotWaterStorageInput.getpThermalMax()
+                    },
+                    domesticHotWaterStorageInput),
             InvalidEntityException.class));
 
     return exceptions;

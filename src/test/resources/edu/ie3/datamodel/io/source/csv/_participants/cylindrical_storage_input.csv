@@ -1,2 +1,2 @@
-uuid,c,id,inlet_temp,operates_from,operates_until,operator,return_temp,storage_volume_lvl,storage_volume_lvl_min,thermal_bus,em
-8851813b-3a7d-4fee-874b-4df9d724e4b3,1.0,test_cylindricThermalStorage,110.0,,,f15105c4-a2de-4ab8-a621-4bc98e372d92,80.0,1.039154027,0.3,0d95d7f2-49fb-4d49-8636-383a5220384e,977157f4-25e5-4c72-bf34-440edc778792
+uuid,c,id,inlet_temp,operates_from,operates_until,operator,return_temp,storage_volume_lvl,storage_volume_lvl_min,p_thermal_max,thermal_bus,em
+8851813b-3a7d-4fee-874b-4df9d724e4b3,1.0,test_cylindricThermalStorage,110.0,,,f15105c4-a2de-4ab8-a621-4bc98e372d92,80.0,1.039154027,0.3,20.0,0d95d7f2-49fb-4d49-8636-383a5220384e,977157f4-25e5-4c72-bf34-440edc778792

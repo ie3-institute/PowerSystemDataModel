@@ -67,7 +67,10 @@ class ThermalHouseInputTest extends Specification {
         Quantities.getQuantity(20, StandardUnits.HEAT_CAPACITY),
         Quantities.getQuantity(20, StandardUnits.TEMPERATURE),
         Quantities.getQuantity(25, StandardUnits.TEMPERATURE),
-        Quantities.getQuantity(15, StandardUnits.TEMPERATURE))
+        Quantities.getQuantity(15, StandardUnits.TEMPERATURE),
+        "house",
+        2
+        )
 
     expect:
     thermalHouseInput.targetTemperature == Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
