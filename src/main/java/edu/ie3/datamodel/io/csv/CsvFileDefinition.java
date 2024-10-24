@@ -68,7 +68,7 @@ public record CsvFileDefinition(Path filePath, String[] headLineElements, String
    * @param fileNamingStrategy that should be used
    * @throws FileException If the definition cannot be determined
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<? extends Value>, V extends Value>
       CsvFileDefinition(
           T timeSeries,
           String[] headLineElements,

@@ -7,8 +7,10 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -21,12 +23,13 @@ import java.util.stream.Stream;
  * mappings
  */
 public class TimeSeriesMetaInformationFactory
-    extends EntityFactory<IndividualTimeSeriesMetaInformation, EntityData> {
+    extends EntityFactory<TimeSeriesMetaInformation, EntityData> {
   private static final String TIME_SERIES = "timeSeries";
   private static final String COLUMN_SCHEME = "columnScheme";
+  private static final String LOAD_PROFILE = "loadProfile";
 
   public TimeSeriesMetaInformationFactory() {
-    super(IndividualTimeSeriesMetaInformation.class);
+    super(IndividualTimeSeriesMetaInformation.class, LoadProfileTimeSeriesMetaInformation.class);
   }
 
   @Override
@@ -36,9 +39,15 @@ public class TimeSeriesMetaInformationFactory
   }
 
   @Override
-  protected IndividualTimeSeriesMetaInformation buildModel(EntityData data) {
+  protected TimeSeriesMetaInformation buildModel(EntityData data) {
     UUID timeSeries = data.getUUID(TIME_SERIES);
-    ColumnScheme columnScheme = ColumnScheme.parse(data.getField(COLUMN_SCHEME)).orElseThrow();
-    return new IndividualTimeSeriesMetaInformation(timeSeries, columnScheme);
+
+    if (LoadProfileTimeSeriesMetaInformation.class.isAssignableFrom(data.getTargetClass())) {
+      String profile = data.getField(LOAD_PROFILE);
+      return new LoadProfileTimeSeriesMetaInformation(timeSeries, profile);
+    } else {
+      ColumnScheme columnScheme = ColumnScheme.parse(data.getField(COLUMN_SCHEME)).orElseThrow();
+      return new IndividualTimeSeriesMetaInformation(timeSeries, columnScheme);
+    }
   }
 }

@@ -243,7 +243,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   }
 
   @Override
-  public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
+  public <E extends TimeSeriesEntry<? extends Value>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries) {
     try {
       TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
@@ -264,7 +264,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     }
   }
 
-  private <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
+  private <E extends TimeSeriesEntry<? extends Value>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries, BufferedCsvWriter writer) throws ProcessorProviderException {
     try {
       Set<LinkedHashMap<String, String>> entityFieldData =

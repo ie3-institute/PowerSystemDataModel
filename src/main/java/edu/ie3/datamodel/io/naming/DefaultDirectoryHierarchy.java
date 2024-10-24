@@ -30,7 +30,6 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -250,9 +249,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 StorageTypeInput.class,
                 WecTypeInput.class,
                 OperatorInput.class,
-                WecCharacteristicInput.class,
-                RandomLoadParameters.class,
-                LoadProfileInput.class)
+                WecCharacteristicInput.class)
             .collect(Collectors.toSet())),
     PARTICIPANTS_INPUT(
         Constants.INPUT_SUB_TREE.resolve("participants"),

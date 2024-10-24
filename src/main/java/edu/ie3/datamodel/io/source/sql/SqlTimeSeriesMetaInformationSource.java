@@ -11,7 +11,9 @@ import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMetaInformationFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMetaInformationSource;
+import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.util.Map;
 import java.util.Optional;
@@ -27,6 +29,8 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
 
   private final DatabaseNamingStrategy namingStrategy;
   private final Map<UUID, IndividualTimeSeriesMetaInformation> mapping;
+  private final Map<String, LoadProfileTimeSeriesMetaInformation>
+      loadProfileTimeSeriesMetaInformation;
 
   private final SqlDataSource dataSource;
 
@@ -36,6 +40,7 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
     this.namingStrategy = databaseNamingStrategy;
 
     String queryComplete = createQueryComplete(schemaName);
+    String loadMetaInformationQuery = createLoadProfileQueryComplete(schemaName);
 
     this.mapping =
         dataSource
@@ -45,6 +50,15 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
             .collect(
                 Collectors.toMap(
                     IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
+
+    this.loadProfileTimeSeriesMetaInformation =
+        dataSource
+            .executeQuery(loadMetaInformationQuery)
+            .map(this::createLoadProfileEntity)
+            .flatMap(Optional::stream)
+            .collect(
+                Collectors.toMap(
+                    LoadProfileTimeSeriesMetaInformation::getProfile, Function.identity()));
   }
 
   /**
@@ -79,6 +93,20 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
     return String.join("\nUNION\n", selectQueries) + ";";
   }
 
+  /**
+   * Creates a query that retrieves all time series uuid from existing time series tables.
+   *
+   * @param schemaName schema that the time series reside in
+   * @return query String
+   */
+  private String createLoadProfileQueryComplete(String schemaName) {
+    return "SELECT DISTINCT load_profile, time_series FROM "
+        + schemaName
+        + "."
+        + namingStrategy.getLoadProfileTimeSeriesEntityName()
+        + ";";
+  }
+
   @Override
   public Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation() {
     return this.mapping;
@@ -90,10 +118,34 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
     return Optional.ofNullable(this.mapping.get(timeSeriesUuid));
   }
 
+  @Override
+  public Map<String, LoadProfileTimeSeriesMetaInformation> getLoadProfileMetaInformation() {
+    return loadProfileTimeSeriesMetaInformation;
+  }
+
+  @Override
+  public Optional<LoadProfileTimeSeriesMetaInformation> getLoadProfileMetaInformation(
+      LoadProfile loadProfile) {
+    return Optional.ofNullable(loadProfileTimeSeriesMetaInformation.get(loadProfile.getKey()));
+  }
+
   private Optional<IndividualTimeSeriesMetaInformation> createEntity(
       Map<String, String> fieldToValues) {
     EntityData entityData =
         new EntityData(fieldToValues, IndividualTimeSeriesMetaInformation.class);
-    return mappingFactory.get(entityData).getData();
+    return mappingFactory
+        .get(entityData)
+        .map(meta -> (IndividualTimeSeriesMetaInformation) meta)
+        .getData();
+  }
+
+  private Optional<LoadProfileTimeSeriesMetaInformation> createLoadProfileEntity(
+      Map<String, String> fieldToValues) {
+    EntityData entityData =
+        new EntityData(fieldToValues, LoadProfileTimeSeriesMetaInformation.class);
+    return mappingFactory
+        .get(entityData)
+        .map(meta -> (LoadProfileTimeSeriesMetaInformation) meta)
+        .getData();
   }
 }

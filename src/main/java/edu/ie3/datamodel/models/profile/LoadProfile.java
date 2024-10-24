@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.ParsingException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public interface LoadProfile extends Serializable {
   /** @return The identifying String */
@@ -28,12 +29,12 @@ public interface LoadProfile extends Serializable {
   }
 
   static LoadProfile[] getAllProfiles() {
-    final LoadProfile[][] all =
-        new LoadProfile[][] {
-          BdewStandardLoadProfile.values(), NbwTemperatureDependantLoadProfile.values()
-        };
-
-    return Arrays.stream(all).flatMap(Arrays::stream).toArray(LoadProfile[]::new);
+    return Stream.of(
+            BdewStandardLoadProfile.values(),
+            NbwTemperatureDependantLoadProfile.values(),
+            (LoadProfile[]) RandomLoadProfile.values())
+        .flatMap(Arrays::stream)
+        .toArray(LoadProfile[]::new);
   }
 
   /**
@@ -68,6 +69,15 @@ public interface LoadProfile extends Serializable {
     @Override
     public String getKey() {
       return "No load profile assigned";
+    }
+  }
+
+  enum RandomLoadProfile implements LoadProfile {
+    RANDOM_LOAD_PROFILE;
+
+    @Override
+    public String getKey() {
+      return "random";
     }
   }
 }

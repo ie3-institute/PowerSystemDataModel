@@ -42,6 +42,11 @@ public class DatabaseNamingStrategy {
     return TIME_SERIES_PREFIX + columnScheme.getScheme();
   }
 
+  /** Provides the name of the time series table that contains all load profiles. */
+  public String getLoadProfileTimeSeriesEntityName() {
+    return TIME_SERIES_PREFIX + "load_profiles";
+  }
+
   public Optional<String> getEntityName(Class<? extends Entity> cls) {
     return entityPersistenceNamingStrategy.getEntityName(cls);
   }

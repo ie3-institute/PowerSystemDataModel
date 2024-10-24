@@ -22,11 +22,22 @@ package models {
     childNote .. input
     childNote .. voltagelevels
 
-    interface StandardLoadProfile {
+    interface LoadProfile {
         + getKey: String
+        + {static} parse(String): LoadProfile
+        + {static} getAllProfiles: LoadProfile[]
+        + {static} getProfile(T[], String): T
         + enum DefaultLoadProfiles
+        + enum RandomLoadProfile
+    }
+
+    DefaultLoadProfiles --|> LoadProfile
+    RandomLoadProfile --|> LoadProfile
+
+    interface StandardLoadProfile {
         + {static} parse(String): StandardLoadProfile
     }
+    StandardLoadProfile ..|> LoadProfile
 
     enum BdewLoadProfile {
         - key: String
@@ -120,12 +131,22 @@ package models {
         }
         RepetitiveTimeSeries --|> TimeSeries
 
-        class LoadProfileInput {
-            - type: StandardLoadProfile
-            - dayOfWeekToHourlyValues: Map<DayOfWeek, Map<Integer, PValue>>
+        abstract class LoadProfileTimeSeries<E extends LoadProfileEntry> {
+            - loadProfile: StandardLoadProfile
+            - valueMapping: Map<Key, Map<Integer, E>>
+            + getLoadProfile(): LoadProfile
+            # fromTime(ZonedDateTime): Key
         }
-        LoadProfileInput --|> RepetitiveTimeSeries
-        LoadProfileInput *-- StandardLoadProfile
+        LoadProfileTimeSeries --|> RepetitiveTimeSeries
+        LoadProfileTimeSeries *-- LoadProfile
+
+        class BDEWLoadProfileTimeSeries {}
+        BDEWLoadProfileTimeSeries --|> LoadProfileTimeSeries
+        BDEWLoadProfileTimeSeries *-- BdewLoadProfileEntry
+
+        class RandomLoadProfileTimeSeries {}
+        RandomLoadProfileTimeSeries --|> LoadProfileTimeSeries
+        RandomLoadProfileTimeSeries *-- RandomLoadProfileEntry
 
         abstract class TimeSeriesEntry <V extends Value> {
             # value: V
@@ -142,8 +163,21 @@ package models {
         class LoadProfileEntry {
             - dayOfWeek: DayOfWeek
             - quarterHourOfDay: int
+            + getDayOfWeek(): DayOfWeek
+            + getQuarterHourOfDay(): Integer
         }
         LoadProfileEntry --|> TimeSeriesEntry: <<bind>>:PValue
+
+        class BdewLoadProfileEntry {
+            - season: Season
+            + getSeason(): Season
+        }
+        BdewLoadProfileEntry --|> LoadProfileEntry
+
+        class RandomLoadProfileEntry {
+            - gev: GeneralizedExtremeValueDistribution
+        }
+        RandomLoadProfileEntry --|> LoadProfileEntry
     }
 }
 

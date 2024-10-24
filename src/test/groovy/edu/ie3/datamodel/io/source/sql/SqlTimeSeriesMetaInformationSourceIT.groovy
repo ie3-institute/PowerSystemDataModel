@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.test.helper.TestContainerHelper
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
@@ -41,7 +42,8 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
         "time_series_p.sql",
         "time_series_ph.sql",
         "time_series_pq.sql",
-        "time_series_pqh.sql")
+        "time_series_pqh.sql",
+        "time_series_load_profiles.sql")
     for (String file: importFiles) {
       Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
       assert res.stderr.empty
@@ -97,6 +99,41 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
     when:
     def timeSeriesUuid = UUID.fromString("e9c13f5f-31da-44ea-abb7-59f616c3da16")
     def result = source.getTimeSeriesMetaInformation(timeSeriesUuid)
+
+    then:
+    result.empty
+  }
+
+  def "The SQL time series meta information source returns correct meta information load profiles" () {
+    when:
+    def result = source.loadProfileMetaInformation
+
+    then:
+    result.size() == 2
+
+    result.keySet() == ["g2", "g3"] as Set
+
+    result.get("g2").uuid == UUID.fromString('b0ad5ba2-0d5e-4c9b-b818-4079cebf59cc')
+    result.get("g3").uuid == UUID.fromString('9b880468-309c-43c1-a3f4-26dd26266216')
+  }
+
+  def "The SQL time series meta information source returns correct meta information for a given load profile"() {
+    when:
+    def result = source.getLoadProfileMetaInformation(profile)
+
+    then:
+    result.present
+    result.get().uuid == expectedUuid
+
+    where:
+    profile || expectedUuid
+    BdewStandardLoadProfile.G2 || UUID.fromString('b0ad5ba2-0d5e-4c9b-b818-4079cebf59cc')
+    BdewStandardLoadProfile.G3 || UUID.fromString('9b880468-309c-43c1-a3f4-26dd26266216')
+  }
+
+  def "The SQL time series meta information source returns an empty optional for an unknown load profile"() {
+    when:
+    def result = source.getLoadProfileMetaInformation(BdewStandardLoadProfile.G1)
 
     then:
     result.empty
