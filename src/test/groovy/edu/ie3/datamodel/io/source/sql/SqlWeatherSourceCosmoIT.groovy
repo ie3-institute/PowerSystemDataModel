@@ -56,8 +56,8 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
+    optTimeBasedValue != null
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue )
   }
 
   def "A SqlWeatherSource returns nothing for an invalid coordinate"() {
@@ -65,7 +65,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, GeoUtils.buildPoint(89d, 88d))
 
     then:
-    optTimeBasedValue.empty
+    assert optTimeBasedValue == null
   }
 
   def "A SqlWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -107,7 +107,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
 
     then:
-    coordinateToTimeSeries.keySet().empty
+    coordinateToTimeSeries == null
   }
 
   def "A SqlWeatherSource can read all weather data in a given time interval"() {
