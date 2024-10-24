@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2024. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.factory.input;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
+import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.UUID;
@@ -17,16 +17,16 @@ import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
 
-public class CylindricalStorageInputFactory
-    extends AssetInputEntityFactory<CylindricalStorageInput, ThermalUnitInputEntityData> {
+public class DomesticHotWaterStorageInputFactory
+    extends AssetInputEntityFactory<DomesticHotWaterStorageInput, ThermalUnitInputEntityData> {
   private static final String STORAGE_VOLUME_LVL = "storageVolumeLvl";
   private static final String INLET_TEMP = "inletTemp";
   private static final String RETURN_TEMP = "returnTemp";
   private static final String C = "c";
   private static final String P_THERMAL_MAX = "pThermalMax";
 
-  public CylindricalStorageInputFactory() {
-    super(CylindricalStorageInput.class);
+  public DomesticHotWaterStorageInputFactory() {
+    super(DomesticHotWaterStorageInput.class);
   }
 
   @Override
@@ -35,7 +35,7 @@ public class CylindricalStorageInputFactory
   }
 
   @Override
-  protected CylindricalStorageInput buildModel(
+  protected DomesticHotWaterStorageInput buildModel(
       ThermalUnitInputEntityData data,
       UUID uuid,
       String id,
@@ -52,7 +52,7 @@ public class CylindricalStorageInputFactory
         data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
     final ComparableQuantity<Power> pThermalMax =
         data.getQuantity(P_THERMAL_MAX, StandardUnits.ACTIVE_POWER_IN);
-    return new CylindricalStorageInput(
+    return new DomesticHotWaterStorageInput(
         uuid,
         id,
         operator,

@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
+import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult
 import edu.ie3.datamodel.utils.Try
@@ -23,7 +24,8 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
     def resultFactory = new ThermalResultFactory()
     def expectedClasses = [
       ThermalHouseResult,
-      CylindricalStorageResult
+      CylindricalStorageResult,
+      DomesticHotWaterStorageResult
     ]
 
     expect:

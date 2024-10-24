@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
+import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import java.util.List;
@@ -61,6 +62,8 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           /* -- ThermalUnitInput */
           ThermalHouseInput.class,
           CylindricalStorageInput.class,
+          DomesticHotWaterStorageInput.class,
+
           /* - GraphicInput */
           NodeGraphicInput.class,
           LineGraphicInput.class,
