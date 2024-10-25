@@ -8,9 +8,9 @@ Model of an ideal electrical battery energy storage.
 
 ### Type Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -19,11 +19,11 @@ Model of an ideal electrical battery energy storage.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - capex
@@ -32,8 +32,8 @@ Model of an ideal electrical battery energy storage.
 
    * - opex
      - € / MWh
-     - | Operational expenditure to operate one entity of
-       | this type
+     - Operational expenditure to operate one entity of
+       this type
 
    * - eStorage
      - kWh
@@ -44,13 +44,13 @@ Model of an ideal electrical battery energy storage.
      - Rated apparent power
 
    * - cosPhiRated
-     - --
+     -
      - Rated power factor
 
    * - pMax
      - kW
-     - | Maximum permissible active power
-       | infeed or consumption
+     - Maximum permissible active power
+       infeed or consumption
 
    * - activePowerGradient
      - % / h
@@ -64,9 +64,9 @@ Model of an ideal electrical battery energy storage.
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -75,43 +75,43 @@ Model of an ideal electrical battery energy storage.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      -
 
    * - qCharacteristics
-     - --
-     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
+     -
+     - [Reactive power characteristic](#participant-general-q-characteristic) to follow
 
    * - type
-     - --
+     -
      -
 
    * - behaviour
-     - --
-     - | Foreseen operation strategy of the storage.
-       | Eligible input: *"market"*, *"grid"*, *"self"*
+     -
+     - Foreseen operation strategy of the storage.
+       Eligible input: *"market"*, *"grid"*, *"self"*
        
    * - em
-     - --
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
+     -
+     - UUID reference to an [Energy Management Unit](#em_model) that is controlling
+       this system participant. Field can be empty or missing, if this participant
+       is not controlled.
 
 ```
 

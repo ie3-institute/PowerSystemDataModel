@@ -146,4 +146,21 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
     equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries67775)
   }
+
+  def "The InfluxDbWeatherSource returns all time keys after a given time key correctly"() {
+    given:
+    def time = IconWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time)
+
+    then:
+    actual.size() == 2
+
+    actual.get(IconWeatherTestData.COORDINATE_67775) == [
+      IconWeatherTestData.TIME_16H,
+      IconWeatherTestData.TIME_17H
+    ]
+    actual.get(IconWeatherTestData.COORDINATE_67776) == [IconWeatherTestData.TIME_16H]
+  }
 }

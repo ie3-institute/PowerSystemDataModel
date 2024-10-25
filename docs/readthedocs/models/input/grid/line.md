@@ -6,9 +6,9 @@ Representation of an AC line.
 
 ### Type Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
    * - Attribute
@@ -53,9 +53,9 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -89,9 +89,9 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
    * - parallelDevices
      - –
-     - | overall amount of parallel lines to automatically construct
-       | (e.g. parallelDevices = 2 will build a total of two lines
-       | using the specified parameters)
+     - overall amount of parallel lines to automatically construct
+       (e.g. parallelDevices = 2 will build a total of two lines
+       using the specified parameters)
 
    * - type
      - –
@@ -108,9 +108,9 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
    * - olmCharacteristic
      - –
-     - | Characteristic of possible overhead line monitoring Can be
-       | given in the form of ``olm:{<List of Pairs>}``. The pairs
-       | are wind velocity in x and permissible loading in y.
+     - Characteristic of possible overhead line monitoring Can be
+       given in the form of ``olm:{<List of Pairs>}``. The pairs
+       are wind velocity in x and permissible loading in y.
 
 ```
 
@@ -126,9 +126,9 @@ The lines which source is ``simBench`` are from [here](https://simbench.de/en/do
 
 Some standard overhead lines.
 
-```{eval-rst}
-.. list-table::
-   :widths: 11 11 11 11 11 11 11 11 11
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
    
    
@@ -309,9 +309,9 @@ Some standard overhead lines.
 
 Some standard cables.
 
-```{eval-rst}
-.. list-table::
-   :widths: 11 11 11 11 11 11 11 11 11
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
    
    

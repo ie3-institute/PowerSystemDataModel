@@ -72,6 +72,14 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
   protected abstract Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time);
 
   /**
+   * Get all {@link ZonedDateTime}s after the given time.
+   *
+   * @param time given time
+   * @return a list of all time keys
+   */
+  public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time);
+
+  /**
    * Get the most recent available value before or at the given time step as a TimeBasedValue
    *
    * @param time Reference in time
