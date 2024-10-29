@@ -20,10 +20,7 @@ import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
-import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -280,80 +277,7 @@ public class SqlSink {
   /** Persists a whole {@link JointGridContainer}. */
   public void persistJointGrid(JointGridContainer jointGridContainer, UUID gridUUID) {
     DbGridMetadata identifier = new DbGridMetadata(jointGridContainer.getGridName(), gridUUID);
-
-    // get raw grid entities with types or operators
-    RawGridElements rawGridElements = jointGridContainer.getRawGrid();
-    Set<NodeInput> nodes = rawGridElements.getNodes();
-    Set<LineInput> lines = rawGridElements.getLines();
-    Set<Transformer2WInput> transformer2Ws = rawGridElements.getTransformer2Ws();
-    Set<Transformer3WInput> transformer3Ws = rawGridElements.getTransformer3Ws();
-    Set<SwitchInput> switches = rawGridElements.getSwitches();
-    Set<MeasurementUnitInput> measurementUnits = rawGridElements.getMeasurementUnits();
-
-    // get system participants with types or operators
-    SystemParticipants systemParticipants = jointGridContainer.getSystemParticipants();
-    Set<BmInput> bmPlants = systemParticipants.getBmPlants();
-    Set<ChpInput> chpPlants = systemParticipants.getChpPlants();
-    Set<EvcsInput> evCS = systemParticipants.getEvcs();
-    Set<EvInput> evs = systemParticipants.getEvs();
-    Set<FixedFeedInInput> fixedFeedIns = systemParticipants.getFixedFeedIns();
-    Set<HpInput> heatPumps = systemParticipants.getHeatPumps();
-    Set<LoadInput> loads = systemParticipants.getLoads();
-    Set<PvInput> pvPlants = systemParticipants.getPvPlants();
-    Set<StorageInput> storages = systemParticipants.getStorages();
-    Set<WecInput> wecPlants = systemParticipants.getWecPlants();
-
-    // get graphic elements (just for better readability, we could also just get them directly
-    // below)
-    GraphicElements graphicElements = jointGridContainer.getGraphics();
-
-    // extract types
-    Set<AssetTypeInput> types =
-        Stream.of(
-                lines,
-                transformer2Ws,
-                transformer3Ws,
-                bmPlants,
-                chpPlants,
-                evs,
-                heatPumps,
-                storages,
-                wecPlants)
-            .flatMap(Collection::stream)
-            .map(Extractor::extractType)
-            .collect(Collectors.toSet());
-
-    // extract operators
-    Set<OperatorInput> operators =
-        Stream.of(
-                nodes,
-                lines,
-                transformer2Ws,
-                transformer3Ws,
-                switches,
-                measurementUnits,
-                bmPlants,
-                chpPlants,
-                evCS,
-                evs,
-                fixedFeedIns,
-                heatPumps,
-                loads,
-                pvPlants,
-                storages,
-                wecPlants)
-            .flatMap(Collection::stream)
-            .map(Extractor::extractOperator)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
-
-    List<Entity> toAdd = new LinkedList<>();
-    toAdd.addAll(rawGridElements.allEntitiesAsList());
-    toAdd.addAll(systemParticipants.allEntitiesAsList());
-    toAdd.addAll(graphicElements.allEntitiesAsList());
-    toAdd.addAll(types);
-    toAdd.addAll(operators);
-
+    List<Entity> toAdd = new LinkedList<>(jointGridContainer.allEntitiesAsList());
     persistAll(toAdd, identifier);
   }
 
