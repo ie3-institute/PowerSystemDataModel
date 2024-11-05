@@ -107,7 +107,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
 
     then:
-    coordinateToTimeSeries == null
+    coordinateToTimeSeries == Collections.emptyMap()
   }
 
   def "A SqlWeatherSource can read all weather data in a given time interval"() {
