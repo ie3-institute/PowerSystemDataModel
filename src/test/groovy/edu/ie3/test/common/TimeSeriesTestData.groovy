@@ -9,6 +9,8 @@ import static edu.ie3.util.quantities.PowerSystemUnits.*
 import static tech.units.indriya.unit.Units.CELSIUS
 import static tech.units.indriya.unit.Units.METRE_PER_SECOND
 
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.timeseries.IntValue
@@ -47,6 +49,11 @@ trait TimeSeriesTestData {
     ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
     new EnergyPriceValue(Quantities.getQuantity(10d, EURO_PER_MEGAWATTHOUR))),
   ] as Set
+  )
+
+  IndividualTimeSeriesMetaInformation individualEnergyPriceTimeSeriesMeta = new IndividualTimeSeriesMetaInformation(
+  UUID.fromString("a4bbcb77-b9d0-4b88-92be-b9a14a3e332b"),
+  ColumnScheme.ENERGY_PRICE
   )
 
   Set<LinkedHashMap<String, String>>  individualEnergyPriceTimeSeriesProcessed = [

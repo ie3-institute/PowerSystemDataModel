@@ -125,6 +125,7 @@ public class SqlDataSource implements DataSource {
       ResultSet rs =
           connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
       Set<String> columnNames = new HashSet<>();
+
       while (rs.next()) {
         String name = rs.getString("COLUMN_NAME");
         columnNames.add(StringUtils.snakeCaseToCamelCase(name));

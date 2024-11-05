@@ -63,17 +63,17 @@ public class SqlConnector implements DataConnector {
   /**
    * Executes an update query
    *
-   * @param updateQuery the query to execute
+   * @param query the query to execute
    * @return The number of updates or a negative number if the execution failed
    */
-  public int executeUpdate(String updateQuery) {
-    try (Statement stmt = getConnection().createStatement()) {
-      int res = stmt.executeUpdate(updateQuery);
-      getConnection().commit();
-      return res;
+  public int executeUpdate(String query) throws SQLException {
+    try (Statement statement = getConnection().createStatement()) {
+        int res = statement.executeUpdate(query);
+        getConnection().commit();
+        return res;
     } catch (SQLException e) {
-      log.error(String.format("Error at execution of query \"%1.127s\": ", updateQuery), e);
-      return -1;
+        throw new SQLException(
+                String.format("Error at execution of query, SQLReason: '%s'", e.getMessage()), e);
     }
   }
 
