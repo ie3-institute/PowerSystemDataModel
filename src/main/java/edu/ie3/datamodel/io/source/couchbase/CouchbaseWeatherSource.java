@@ -140,7 +140,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
           coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
         }
       } else {
-        logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+        logger.error("Unable to match coordinate {} to a coordinate ID", coordinate);
         throw new NoDataException("No data found");
       }
     }
@@ -152,7 +152,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
       throws NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
-      logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+      logger.error("Unable to match coordinate {} to a coordinate ID", coordinate);
       throw new NoDataException("No coordinate ID found for the given point.");
     }
     try {

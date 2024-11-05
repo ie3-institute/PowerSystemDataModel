@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.exceptions;
 
 /**
- * Exception that should be used whenever no weather data is received{@link
+ * Exception that should be used whenever no data is received{@link
  * edu.ie3.datamodel.io.source.DataSource}
  *
  * @version 0.1

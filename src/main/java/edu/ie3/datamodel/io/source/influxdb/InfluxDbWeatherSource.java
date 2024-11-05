@@ -82,7 +82,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
               Collectors.toMap(Map.Entry::getKey, e -> new IndividualTimeSeries<>(e.getValue())));
     } catch (NoDataException e) {
       log.error("No data available for coordinate", e);
-      return null;
+      return Collections.emptyMap();
     }
   }
 
@@ -113,7 +113,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
         }
       }
     } catch (NoDataException e) {
-      return null;
+      return Collections.emptyMap();
     }
     return coordinateToTimeSeries;
   }

@@ -125,7 +125,7 @@ public class SqlWeatherSource extends WeatherSource {
         throw new NoDataException("No coordinates found");
       }
     } catch (NoDataException e) {
-      return null;
+      return Collections.emptyMap();
     }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
