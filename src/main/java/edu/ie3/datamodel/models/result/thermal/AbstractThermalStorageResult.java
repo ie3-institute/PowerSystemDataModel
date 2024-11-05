@@ -28,7 +28,7 @@ public abstract class AbstractThermalStorageResult extends ThermalStorageResult 
    * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
    * @param fillLevel Fill level of the storage
    */
-  public AbstractThermalStorageResult(
+  protected AbstractThermalStorageResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Energy> energy,
