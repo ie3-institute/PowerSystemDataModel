@@ -68,12 +68,12 @@ public class SqlConnector implements DataConnector {
    */
   public int executeUpdate(String query) throws SQLException {
     try (Statement statement = getConnection().createStatement()) {
-        int res = statement.executeUpdate(query);
-        getConnection().commit();
-        return res;
+      int res = statement.executeUpdate(query);
+      getConnection().commit();
+      return res;
     } catch (SQLException e) {
-        throw new SQLException(
-                String.format("Error at execution of query, SQLReason: '%s'", e.getMessage()), e);
+      throw new SQLException(
+          String.format("Error at execution of query, SQLReason: '%s'", e.getMessage()), e);
     }
   }
 
@@ -162,13 +162,25 @@ public class SqlConnector implements DataConnector {
           return rs.next();
         } catch (SQLException e) {
           log.error("Exception at extracting next ResultSet: ", e);
+
+          try {
+            rs.close();
+          } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+          }
+
           return false;
         }
       }
 
       @Override
       public Map<String, String> next() {
-        return extractFieldMap(rs);
+        try {
+          return extractFieldMap(rs);
+        } catch (SQLException e) {
+          log.error("Exception at extracting ResultSet: ", e);
+          return Collections.emptyMap();
+        }
       }
     };
   }
@@ -179,26 +191,24 @@ public class SqlConnector implements DataConnector {
    * @param rs the ResultSet to use
    * @return the field map for the current row
    */
-  public Map<String, String> extractFieldMap(ResultSet rs) {
+  public Map<String, String> extractFieldMap(ResultSet rs) throws SQLException {
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    try {
-      ResultSetMetaData metaData = rs.getMetaData();
-      int columnCount = metaData.getColumnCount();
-      for (int i = 1; i <= columnCount; i++) {
-        String columnName = StringUtils.snakeCaseToCamelCase(metaData.getColumnName(i));
-        String value;
-        Object result = rs.getObject(i);
-        if (result instanceof Timestamp) {
-          value = TimeUtil.withDefaults.toString(rs.getTimestamp(i).toInstant());
-        } else {
-          value = String.valueOf(rs.getObject(i));
-        }
-        insensitiveFieldsToAttributes.put(columnName, value);
+
+    ResultSetMetaData metaData = rs.getMetaData();
+    int columnCount = metaData.getColumnCount();
+    for (int i = 1; i <= columnCount; i++) {
+      String columnName = StringUtils.snakeCaseToCamelCase(metaData.getColumnName(i));
+      String value;
+      Object result = rs.getObject(i);
+      if (result instanceof Timestamp) {
+        value = TimeUtil.withDefaults.toString(rs.getTimestamp(i).toInstant());
+      } else {
+        value = String.valueOf(rs.getObject(i));
       }
-    } catch (SQLException e) {
-      log.error("Exception at extracting ResultSet: ", e);
+      insensitiveFieldsToAttributes.put(columnName, value);
     }
+
     return insensitiveFieldsToAttributes;
   }
 }
