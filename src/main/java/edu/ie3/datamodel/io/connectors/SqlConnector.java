@@ -68,6 +68,9 @@ public class SqlConnector implements DataConnector {
    */
   public int executeUpdate(String query) throws SQLException {
     try (Statement statement = getConnection().createStatement()) {
+      // updates the database with previous commits, necessary if previously an error occurred
+      getConnection().commit();
+
       int res = statement.executeUpdate(query);
       getConnection().commit();
       return res;
