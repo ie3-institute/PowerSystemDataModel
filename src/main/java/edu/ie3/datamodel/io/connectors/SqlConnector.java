@@ -57,6 +57,9 @@ public class SqlConnector implements DataConnector {
       return stmt.executeQuery(query);
     } catch (SQLException e) {
       throw new SQLException(String.format("Error at execution of query \"%1.127s\": ", query), e);
+    } finally {
+      // commits any changes made and unlocks database
+      getConnection().commit();
     }
   }
 
@@ -68,15 +71,13 @@ public class SqlConnector implements DataConnector {
    */
   public int executeUpdate(String query) throws SQLException {
     try (Statement statement = getConnection().createStatement()) {
-      // updates the database with previous commits, necessary if previously an error occurred
-      getConnection().commit();
-
-      int res = statement.executeUpdate(query);
-      getConnection().commit();
-      return res;
+      return statement.executeUpdate(query);
     } catch (SQLException e) {
       throw new SQLException(
           String.format("Error at execution of query, SQLReason: '%s'", e.getMessage()), e);
+    } finally {
+      // commits any changes made and unlocks database
+      getConnection().commit();
     }
   }
 
