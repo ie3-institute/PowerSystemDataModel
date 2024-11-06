@@ -40,6 +40,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
+import java.sql.SQLException
 import javax.measure.Quantity
 import javax.measure.quantity.Power
 
