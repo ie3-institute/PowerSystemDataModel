@@ -145,7 +145,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
 
   @Override
   public Collection<Point> getAllCoordinates() {
-    return executeQuerytoStream(basicQuery + ";").map(value -> value.coordinate).toList();
+    return executeQueryToStream(basicQuery + ";").map(value -> value.coordinate).toList();
   }
 
   @Override
@@ -206,7 +206,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
     return new CoordinateValue(idCoordinate.id(), idCoordinate.point());
   }
 
-  private Stream<CoordinateValue> executeQuerytoStream(String query) {
+  private Stream<CoordinateValue> executeQueryToStream(String query) {
     return dataSource.executeQuery(query).map(this::createCoordinateValue);
   }
 
