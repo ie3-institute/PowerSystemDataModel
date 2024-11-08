@@ -18,8 +18,8 @@ import edu.ie3.datamodel.models.value.CoordinateValue;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
-import java.sql.PreparedStatement;
 import java.util.*;
+import java.util.stream.Stream;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
@@ -98,7 +98,8 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
 
   @Override
   public Optional<Point> getCoordinate(int id) {
-    List<CoordinateValue> values = executeQueryToList(queryForPoint, ps -> ps.setInt(1, id));
+    List<CoordinateValue> values =
+        executeQueryToStream(queryForPoint, ps -> ps.setInt(1, id)).toList();
 
     if (values.isEmpty()) {
       return Optional.empty();
@@ -111,15 +112,14 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   public Collection<Point> getCoordinates(int... ids) {
     Object[] idSet = Arrays.stream(ids).boxed().distinct().toArray();
 
-    List<CoordinateValue> values =
-        executeQueryToList(
+    return executeQueryToStream(
             queryForPoints,
             ps -> {
               Array sqlArray = ps.getConnection().createArrayOf("int", idSet);
               ps.setArray(1, sqlArray);
-            });
-
-    return values.stream().map(value -> value.coordinate).toList();
+            })
+        .map(value -> value.coordinate)
+        .toList();
   }
 
   @Override
@@ -128,12 +128,13 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
     double longitude = coordinate.getX();
 
     List<CoordinateValue> values =
-        executeQueryToList(
-            queryForId,
-            ps -> {
-              ps.setDouble(1, longitude);
-              ps.setDouble(2, latitude);
-            });
+        executeQueryToStream(
+                queryForId,
+                ps -> {
+                  ps.setDouble(1, longitude);
+                  ps.setDouble(2, latitude);
+                })
+            .toList();
 
     if (values.isEmpty()) {
       return Optional.empty();
@@ -144,23 +145,21 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
 
   @Override
   public Collection<Point> getAllCoordinates() {
-    List<CoordinateValue> values = executeQueryToList(basicQuery + ";", PreparedStatement::execute);
-
-    return values.stream().map(value -> value.coordinate).toList();
+    return executeQueryToStream(basicQuery + ";").map(value -> value.coordinate).toList();
   }
 
   @Override
   public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
-    List<CoordinateValue> values =
-        executeQueryToList(
-            queryForNearestPoints,
-            ps -> {
-              ps.setDouble(1, coordinate.getX());
-              ps.setDouble(2, coordinate.getY());
-              ps.setInt(3, n);
-            });
-
-    List<Point> points = values.stream().map(value -> value.coordinate).toList();
+    List<Point> points =
+        executeQueryToStream(
+                queryForNearestPoints,
+                ps -> {
+                  ps.setDouble(1, coordinate.getX());
+                  ps.setDouble(2, coordinate.getY());
+                  ps.setInt(3, n);
+                })
+            .map(value -> value.coordinate)
+            .toList();
     return calculateCoordinateDistances(coordinate, n, points);
   }
 
@@ -185,7 +184,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
       Point coordinate, ComparableQuantity<Length> distance) {
     Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
 
-    return executeQueryToList(
+    return executeQueryToStream(
             queryForBoundingBox,
             ps -> {
               ps.setDouble(1, envelope.getMinX());
@@ -193,7 +192,6 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
               ps.setDouble(3, envelope.getMaxX());
               ps.setDouble(4, envelope.getMaxY());
             })
-        .stream()
         .map(value -> value.coordinate)
         .toList();
   }
@@ -208,9 +206,13 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
     return new CoordinateValue(idCoordinate.id(), idCoordinate.point());
   }
 
-  private List<CoordinateValue> executeQueryToList(
+  private Stream<CoordinateValue> executeQueryToStream(String query) {
+    return dataSource.executeQuery(query).map(this::createCoordinateValue);
+  }
+
+  private Stream<CoordinateValue> executeQueryToStream(
       String query, SqlDataSource.AddParams addParams) {
-    return dataSource.executeQuery(query, addParams).map(this::createCoordinateValue).toList();
+    return dataSource.executeQuery(query, addParams).map(this::createCoordinateValue);
   }
 
   /**
