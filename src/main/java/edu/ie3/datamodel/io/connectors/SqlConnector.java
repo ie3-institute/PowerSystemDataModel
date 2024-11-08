@@ -162,7 +162,9 @@ public class SqlConnector implements DataConnector {
       @Override
       public boolean hasNext() {
         try {
-          return rs.next();
+          boolean notEmpty = rs.isBeforeFirst() || rs.getRow() > 0;
+          boolean notLastRow = !rs.isLast();
+          return notEmpty && notLastRow;
         } catch (SQLException e) {
           log.error("Exception at extracting next ResultSet: ", e);
           closeResultSet(null, rs);
@@ -173,6 +175,12 @@ public class SqlConnector implements DataConnector {
       @Override
       public Map<String, String> next() {
         try {
+          boolean valid = rs.next();
+
+          if (!valid)
+            throw new NoSuchElementException(
+                "There is no more element to iterate to in the ResultSet.");
+
           return extractFieldMap(rs);
         } catch (SQLException e) {
           log.error("Exception at extracting ResultSet: ", e);
