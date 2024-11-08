@@ -98,7 +98,10 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
 
     BdewLoadProfileFactory factory = new BdewLoadProfileFactory();
 
-    return buildInSource.getCsvLoadProfileMetaInformation(BdewStandardLoadProfile.values()).stream()
+    return buildInSource
+        .getCsvLoadProfileMetaInformation(BdewStandardLoadProfile.values())
+        .values()
+        .stream()
         .map(
             metaInformation ->
                 (BdewLoadProfileTimeSeries)
@@ -117,7 +120,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
     CsvDataSource buildInSource = getBuildInSource(LoadProfileSource.class, "/load");
 
     CsvLoadProfileMetaInformation metaInformation =
-        buildInSource.getCsvLoadProfileMetaInformation(RANDOM_LOAD_PROFILE).stream()
+        buildInSource.getCsvLoadProfileMetaInformation(RANDOM_LOAD_PROFILE).values().stream()
             .findAny()
             .orElseThrow();
     return (RandomLoadProfileTimeSeries)

@@ -100,11 +100,7 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
    * @return query String
    */
   private String createLoadProfileQueryComplete(String schemaName) {
-    return "SELECT DISTINCT load_profile, time_series FROM "
-        + schemaName
-        + "."
-        + namingStrategy.getLoadProfileTimeSeriesEntityName()
-        + ";";
+    return "SELECT DISTINCT load_profile FROM " + schemaName + ".load_profiles;";
   }
 
   @Override

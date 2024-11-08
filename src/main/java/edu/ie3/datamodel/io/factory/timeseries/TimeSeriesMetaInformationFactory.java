@@ -40,12 +40,12 @@ public class TimeSeriesMetaInformationFactory
 
   @Override
   protected TimeSeriesMetaInformation buildModel(EntityData data) {
-    UUID timeSeries = data.getUUID(TIME_SERIES);
-
     if (LoadProfileTimeSeriesMetaInformation.class.isAssignableFrom(data.getTargetClass())) {
       String profile = data.getField(LOAD_PROFILE);
-      return new LoadProfileTimeSeriesMetaInformation(timeSeries, profile);
+      return new LoadProfileTimeSeriesMetaInformation(profile);
     } else {
+      UUID timeSeries = data.getUUID(TIME_SERIES);
+
       ColumnScheme columnScheme = ColumnScheme.parse(data.getField(COLUMN_SCHEME)).orElseThrow();
       return new IndividualTimeSeriesMetaInformation(timeSeries, columnScheme);
     }

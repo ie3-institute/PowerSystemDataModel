@@ -399,7 +399,6 @@ class FileNamingStrategyTest extends Specification {
     given:
     def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
     def timeSeries = Mock(LoadProfileTimeSeries)
-    timeSeries.uuid >> uuid
     timeSeries.loadProfile >> type
 
     when:
@@ -410,8 +409,8 @@ class FileNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz                 | uuid                                                    | type                       || expectedFileName
-    LoadProfileTimeSeries | UUID.fromString("9b880468-309c-43c1-a3f4-26dd26266216") | BdewStandardLoadProfile.G3 || Path.of("test_grid", "input", "participants", "time_series", "lpts_g3_9b880468-309c-43c1-a3f4-26dd26266216")
+    clazz                 | type                       || expectedFileName
+    LoadProfileTimeSeries | BdewStandardLoadProfile.G3 || Path.of("test_grid", "input", "participants", "time_series", "lpts_g3")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory path for time series mapping"() {
@@ -706,7 +705,6 @@ class FileNamingStrategyTest extends Specification {
     given: "a naming strategy without pre- or suffixes"
     def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
     def timeSeries = Mock(LoadProfileTimeSeries)
-    timeSeries.uuid >> uuid
     timeSeries.loadProfile >> type
 
     when:
@@ -717,8 +715,8 @@ class FileNamingStrategyTest extends Specification {
     actual.get() == expectedFilePath
 
     where:
-    clazz            | uuid                                                    | type               || expectedFilePath
-    LoadProfileTimeSeries | UUID.fromString("9b880468-309c-43c1-a3f4-26dd26266216") | BdewStandardLoadProfile.G3 || Path.of("lpts_g3_9b880468-309c-43c1-a3f4-26dd26266216")
+    clazz                 | type               || expectedFilePath
+    LoadProfileTimeSeries | BdewStandardLoadProfile.G3 || Path.of("lpts_g3")
   }
 
   def "A FileNamingStrategy with FlatHierarchy does return valid file path for individual time series"() {
@@ -764,7 +762,7 @@ class FileNamingStrategyTest extends Specification {
     def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
     then:
-    actual == "test_grid" + escapedFileSeparator + "input" + escapedFileSeparator + "participants" + escapedFileSeparator + "time_series" + escapedFileSeparator + "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+    actual == "test_grid" + escapedFileSeparator + "input" + escapedFileSeparator + "participants" + escapedFileSeparator + "time_series" + escapedFileSeparator + "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
   }
 
   def "A FileNamingStrategy with FlatHierarchy returns correct individual time series file name pattern"() {
@@ -786,7 +784,7 @@ class FileNamingStrategyTest extends Specification {
     def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
     then:
-    actual == "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+    actual == "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
   }
 
   def "Trying to extract time series meta information throws an Exception, if it is provided a malformed string"() {
@@ -908,7 +906,7 @@ class FileNamingStrategyTest extends Specification {
   def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
     given:
     def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-    def path = Path.of("/bla/foo/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304.csv")
+    def path = Path.of("/bla/foo/lpts_g3.csv")
 
     when:
     def metaInformation = fns.timeSeriesMetaInformation(path)
@@ -916,7 +914,6 @@ class FileNamingStrategyTest extends Specification {
     then:
     LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as LoadProfileTimeSeriesMetaInformation).with {
-      assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
       assert profile == "g3"
     }
   }
@@ -924,7 +921,7 @@ class FileNamingStrategyTest extends Specification {
   def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name with pre- and suffix"() {
     given:
     def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
-    def path = Path.of("/bla/foo/prefix_lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304_suffix.csv")
+    def path = Path.of("/bla/foo/prefix_lpts_g3_suffix.csv")
 
     when:
     def metaInformation = fns.timeSeriesMetaInformation(path)
@@ -932,7 +929,6 @@ class FileNamingStrategyTest extends Specification {
     then:
     LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as LoadProfileTimeSeriesMetaInformation).with {
-      assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
       assert profile == "g3"
     }
   }

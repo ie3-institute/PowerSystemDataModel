@@ -72,9 +72,9 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     timeSeriesPaths.forEach { path -> Files.createFile(testBaseFolderPath.resolve(path)) }
 
     loadProfileTimeSeriesPaths = [
-      "lpts_r1_aac618d5-f707-4000-8871-ea080c24df82.csv",
-      "lpts_r2_0b5059d9-dbf5-4047-85f7-522a43608448.csv",
-      "lpts_g0_fa3894c1-25af-479c-8a40-1323bb9150a9.csv"
+      "lpts_r1.csv",
+      "lpts_r2.csv",
+      "lpts_g0.csv"
     ].stream().map { file -> Path.of(file) }.collect(Collectors.toSet())
     loadProfileTimeSeriesPaths.forEach { path -> Files.createFile(testBaseFolderPath.resolve(path)) }
   }
@@ -360,30 +360,22 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
   }
 
   def "The CsvDataSource is able to build correct load profile meta information"() {
-    given:
-    def expected = [
-      new CsvLoadProfileMetaInformation(UUID.fromString("aac618d5-f707-4000-8871-ea080c24df82"), "r1", Path.of("lpts_r1_aac618d5-f707-4000-8871-ea080c24df82")),
-      new CsvLoadProfileMetaInformation(UUID.fromString("0b5059d9-dbf5-4047-85f7-522a43608448"), "r2", Path.of("lpts_r2_0b5059d9-dbf5-4047-85f7-522a43608448")),
-      new CsvLoadProfileMetaInformation(UUID.fromString("fa3894c1-25af-479c-8a40-1323bb9150a9"), "g0", Path.of("lpts_g0_fa3894c1-25af-479c-8a40-1323bb9150a9"))
-    ] as Set
-
     when:
     def actual = dummyCsvSource.getCsvLoadProfileMetaInformation()
 
     then:
-    actual == expected
+    actual.size() == 3
+    actual.get("r1").fullFilePath == Path.of("lpts_r1")
+    actual.get("r2").fullFilePath == Path.of("lpts_r2")
+    actual.get("g0").fullFilePath == Path.of("lpts_g0")
   }
 
   def "The CsvDataSource is able to build correct load profile meta information when restricting load profile"() {
-    given:
-    def expected = [
-      new CsvLoadProfileMetaInformation(UUID.fromString("fa3894c1-25af-479c-8a40-1323bb9150a9"), "g0", Path.of("lpts_g0_fa3894c1-25af-479c-8a40-1323bb9150a9"))
-    ] as Set
-
     when:
     def actual = dummyCsvSource.getCsvLoadProfileMetaInformation(BdewStandardLoadProfile.G0)
 
     then:
-    actual == expected
+    actual.size() == 1
+    actual.get("g0").fullFilePath == Path.of("lpts_g0")
   }
 }

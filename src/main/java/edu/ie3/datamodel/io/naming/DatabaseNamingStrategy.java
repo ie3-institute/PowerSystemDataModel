@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public class DatabaseNamingStrategy {
 
   private static final String TIME_SERIES_PREFIX = "time_series_";
 
-  private static final String LOAD_PROFILE_PREFIX = "load_profile_";
+  private static final String LOAD_PROFILE_PREFIX = "load_profiles";
 
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
 
@@ -53,13 +53,12 @@ public class DatabaseNamingStrategy {
   }
 
   /**
-   * Provides the name of a load profile given by the load profile key
+   * Provides the name of the load profile table.
    *
-   * @param lpKey Load profile key
    * @return the table name
    */
-  private String getLoadProfileEntityName(String lpKey) {
-    return LOAD_PROFILE_PREFIX + lpKey;
+  public String getLoadProfileEntityName() {
+    return LOAD_PROFILE_PREFIX;
   }
 
   /**
@@ -78,7 +77,7 @@ public class DatabaseNamingStrategy {
    * @param timeSeries to be named TimeSeries
    * @return the table name
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<?>, V extends Value>
       Optional<String> getEntityName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries individualTimeSeries) {
       Optional<E> maybeFirstElement = individualTimeSeries.getEntries().stream().findFirst();
@@ -89,8 +88,8 @@ public class DatabaseNamingStrategy {
         logger.error("Unable to determine content of time series {}", timeSeries);
         return Optional.empty();
       }
-    } else if (timeSeries instanceof LoadProfileInput loadProfileInput) {
-      return Optional.of(getLoadProfileEntityName(loadProfileInput.getType().getKey()));
+    } else if (timeSeries instanceof LoadProfileTimeSeries<?>) {
+      return Optional.of(getLoadProfileEntityName());
     } else {
       logger.error("There is no naming strategy defined for {}", timeSeries);
       return Optional.empty();

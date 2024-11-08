@@ -80,7 +80,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
   def "The pattern for a repetitive load profile time series file name actually matches a valid file name and extracts the correct groups"() {
     given:
     def ens = new EntityPersistenceNamingStrategy()
-    def validFileName = "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+    def validFileName = "lpts_g3"
 
     when:
     def matcher = ens.loadProfileTimeSeriesPattern.matcher(validFileName)
@@ -89,11 +89,9 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     matcher.matches()
 
     then: "it also has correct capturing groups"
-    matcher.groupCount() == 2
+    matcher.groupCount() == 1
     matcher.group(1) == "g3"
-    matcher.group(2) == "bee0a8b6-4788-4f18-bf72-be52035f7304"
     matcher.group("profile") == "g3"
-    matcher.group("uuid") == "bee0a8b6-4788-4f18-bf72-be52035f7304"
   }
 
   def "Trying to extract individual time series meta information throws an Exception, if it is provided a malformed string"() {
@@ -415,7 +413,6 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     given:
     EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
     BdewLoadProfileTimeSeries timeSeries = Mock(BdewLoadProfileTimeSeries)
-    timeSeries.uuid >> uuid
     timeSeries.loadProfile >> type
 
     when:
@@ -426,8 +423,8 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz            | uuid                                                    | type                       || expectedFileName
-    BdewLoadProfileTimeSeries | UUID.fromString("9b880468-309c-43c1-a3f4-26dd26266216") | BdewStandardLoadProfile.G3 || "lpts_g3_9b880468-309c-43c1-a3f4-26dd26266216"
+    clazz                     | type                       || expectedFileName
+    BdewLoadProfileTimeSeries | BdewStandardLoadProfile.G3 || "lpts_g3"
   }
 
   def "A EntityPersistenceNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {

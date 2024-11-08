@@ -49,7 +49,7 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
     postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/")
 
     // Execute import script
-    Iterable<String> importFiles = Arrays.asList("time_series_load_profiles.sql")
+    Iterable<String> importFiles = Arrays.asList("load_profiles.sql")
     for (String file: importFiles) {
       Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
       assert res.stderr.empty

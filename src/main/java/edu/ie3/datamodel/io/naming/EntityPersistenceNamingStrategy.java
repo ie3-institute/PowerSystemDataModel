@@ -60,7 +60,7 @@ public class EntityPersistenceNamingStrategy {
    * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
    */
   private static final String LOAD_PROFILE_TIME_SERIES =
-      "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})_(?<uuid>" + UUID_STRING + ")";
+      "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})";
 
   /**
    * Pattern to identify load profile time series in this instance of the naming strategy (takes
@@ -163,8 +163,7 @@ public class EntityPersistenceNamingStrategy {
       throw new IllegalArgumentException(
           "Cannot extract meta information on load profile time series from '" + fileName + "'.");
 
-    return new LoadProfileTimeSeriesMetaInformation(
-        UUID.fromString(matcher.group("uuid")), matcher.group("profile"));
+    return new LoadProfileTimeSeriesMetaInformation(matcher.group("profile"));
   }
 
   /**
@@ -374,8 +373,6 @@ public class EntityPersistenceNamingStrategy {
               .concat("lpts")
               .concat("_")
               .concat(loadProfileTimeSeries.getLoadProfile().getKey())
-              .concat("_")
-              .concat(loadProfileTimeSeries.getUuid().toString())
               .concat(suffix));
     } else {
       logger.error("There is no naming strategy defined for {}", timeSeries);

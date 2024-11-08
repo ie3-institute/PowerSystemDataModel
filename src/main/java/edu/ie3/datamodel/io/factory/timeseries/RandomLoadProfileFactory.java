@@ -12,12 +12,11 @@ import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
+import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.measure.quantity.Power;
-
-import edu.ie3.util.quantities.PowerSystemUnits;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 

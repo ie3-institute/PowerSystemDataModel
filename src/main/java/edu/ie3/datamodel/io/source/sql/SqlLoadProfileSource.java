@@ -49,7 +49,6 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
 
   // General fields
   private static final String WHERE = " WHERE ";
-  private static final String TIME_SERIES = "time_series";
   private static final String LOAD_PROFILE = "load_profile";
 
   /**
@@ -68,7 +67,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
     super(entryClass, entryFactory);
     this.dataSource = dataSource;
 
-    this.tableName = dataSource.databaseNamingStrategy.getLoadProfileTimeSeriesEntityName();
+    this.tableName = "load_profiles";
     this.metaInformation = metaInformation;
     this.loadProfile = entryFactory.parseProfile(metaInformation.getProfile());
 
@@ -165,10 +164,6 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
   private String createQueryFull(String schemaName, String tableName) {
     return createBaseQueryString(schemaName, tableName)
         + WHERE
-        + TIME_SERIES
-        + " = '"
-        + metaInformation.getUuid().toString()
-        + "' AND "
         + LOAD_PROFILE
         + " = '"
         + loadProfile.getKey()
@@ -188,10 +183,6 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
   private String createQueryForTime(String schemaName, String tableName, String timeColumnName) {
     return createBaseQueryString(schemaName, tableName)
         + WHERE
-        + TIME_SERIES
-        + " = '"
-        + metaInformation.getUuid().toString()
-        + "' AND "
         + LOAD_PROFILE
         + " = '"
         + loadProfile.getKey()

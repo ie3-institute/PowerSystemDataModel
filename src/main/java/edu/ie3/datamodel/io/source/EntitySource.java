@@ -129,7 +129,6 @@ public abstract class EntitySource {
         case "file" -> connector = new CsvFileConnector(Path.of(uri));
         case "jar" -> {
           // handling resources in jar
-
           String[] array = uri.toString().split("!");
 
           if (jarFileSystem == null) {

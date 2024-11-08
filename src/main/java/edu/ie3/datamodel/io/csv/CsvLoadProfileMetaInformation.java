@@ -8,19 +8,18 @@ package edu.ie3.datamodel.io.csv;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import java.nio.file.Path;
 import java.util.Objects;
-import java.util.UUID;
 
 public class CsvLoadProfileMetaInformation extends LoadProfileTimeSeriesMetaInformation {
   private final Path fullFilePath;
 
-  public CsvLoadProfileMetaInformation(UUID uuid, String profile, Path fullFilePath) {
-    super(uuid, profile);
+  public CsvLoadProfileMetaInformation(String profile, Path fullFilePath) {
+    super(profile);
     this.fullFilePath = fullFilePath;
   }
 
   public CsvLoadProfileMetaInformation(
       LoadProfileTimeSeriesMetaInformation metaInformation, Path fullFilePath) {
-    this(metaInformation.getUuid(), metaInformation.getProfile(), fullFilePath);
+    this(metaInformation.getProfile(), fullFilePath);
   }
 
   public Path getFullFilePath() {

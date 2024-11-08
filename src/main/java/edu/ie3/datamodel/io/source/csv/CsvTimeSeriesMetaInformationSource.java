@@ -59,7 +59,7 @@ public class CsvTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
             TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
 
     this.loadProfileMetaInformation =
-        dataSource.getCsvLoadProfileMetaInformation().stream()
+        dataSource.getCsvLoadProfileMetaInformation().values().stream()
             .collect(
                 Collectors.toMap(
                     LoadProfileTimeSeriesMetaInformation::getProfile, Function.identity()));

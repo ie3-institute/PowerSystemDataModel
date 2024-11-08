@@ -43,7 +43,7 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
         "time_series_ph.sql",
         "time_series_pq.sql",
         "time_series_pqh.sql",
-        "time_series_load_profiles.sql")
+        "load_profiles.sql")
     for (String file: importFiles) {
       Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
       assert res.stderr.empty
@@ -112,9 +112,6 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
     result.size() == 2
 
     result.keySet() == ["g2", "g3"] as Set
-
-    result.get("g2").uuid == UUID.fromString('b0ad5ba2-0d5e-4c9b-b818-4079cebf59cc')
-    result.get("g3").uuid == UUID.fromString('9b880468-309c-43c1-a3f4-26dd26266216')
   }
 
   def "The SQL time series meta information source returns correct meta information for a given load profile"() {
@@ -122,13 +119,13 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
     def result = source.getLoadProfileMetaInformation(profile)
 
     then:
-    result.present
-    result.get().uuid == expectedUuid
+    result.present == expected
 
     where:
-    profile || expectedUuid
-    BdewStandardLoadProfile.G2 || UUID.fromString('b0ad5ba2-0d5e-4c9b-b818-4079cebf59cc')
-    BdewStandardLoadProfile.G3 || UUID.fromString('9b880468-309c-43c1-a3f4-26dd26266216')
+    profile || expected
+    BdewStandardLoadProfile.G2 || true
+    BdewStandardLoadProfile.G3 || true
+    BdewStandardLoadProfile.L0 ||false
   }
 
   def "The SQL time series meta information source returns an empty optional for an unknown load profile"() {

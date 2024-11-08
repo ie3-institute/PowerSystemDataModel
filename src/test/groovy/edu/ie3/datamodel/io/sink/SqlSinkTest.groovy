@@ -110,7 +110,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     "result_entities.sql",
     "input_entities.sql",
     "time_series.sql",
-    "load_profile.sql"
+    "load_profiles.sql"
     )
     for (String file: importFiles) {
       Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
@@ -222,6 +222,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     source.executeQuery("SELECT * FROM " + schemaName + "." + "time_series_ph", ps -> {}).count() == 3
     source.executeQuery("SELECT * FROM " + schemaName + "." + "time_series_pqh", ps -> {}).count() == 3
     source.executeQuery("SELECT * FROM " + schemaName + "." + "time_series_weather", ps -> {}).count() == 3
+    source.executeQuery("SELECT * FROM " + schemaName + "." + "load_profiles", ps -> {}).count() == 3
 
     cleanup:
     sink.shutdown()
