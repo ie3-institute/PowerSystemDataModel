@@ -134,22 +134,21 @@ public class SqlConnector implements DataConnector {
    */
   public Stream<Map<String, String>> toStream(PreparedStatement ps, int fetchSize)
       throws SQLException {
-    ps.setFetchSize(fetchSize);
-    ResultSet resultSet = ps.executeQuery();
-    Iterator<Map<String, String>> sqlIterator = getSqlIterator(resultSet);
+    try {
+      ps.setFetchSize(fetchSize);
+      ResultSet resultSet = ps.executeQuery();
+      Iterator<Map<String, String>> sqlIterator = getSqlIterator(resultSet);
 
-    return StreamSupport.stream(
-            Spliterators.spliteratorUnknownSize(
-                sqlIterator, Spliterator.NONNULL | Spliterator.IMMUTABLE),
-            true)
-        .onClose(
-            () -> {
-              try (resultSet) {
-                log.debug("Resources successfully closed.");
-              } catch (SQLException e) {
-                log.warn("Failed to properly close sources.", e);
-              }
-            });
+      return StreamSupport.stream(
+              Spliterators.spliteratorUnknownSize(
+                  sqlIterator, Spliterator.NONNULL | Spliterator.IMMUTABLE),
+              true)
+          .onClose(() -> closeResultSet(ps, resultSet));
+    } catch (SQLException e) {
+      // catches the exception, closes the statement and re-throws the exception
+      closeResultSet(ps, null);
+      throw e;
+    }
   }
 
   /**
@@ -166,13 +165,7 @@ public class SqlConnector implements DataConnector {
           return rs.next();
         } catch (SQLException e) {
           log.error("Exception at extracting next ResultSet: ", e);
-
-          try {
-            rs.close();
-          } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-          }
-
+          closeResultSet(null, rs);
           return false;
         }
       }
@@ -183,10 +176,25 @@ public class SqlConnector implements DataConnector {
           return extractFieldMap(rs);
         } catch (SQLException e) {
           log.error("Exception at extracting ResultSet: ", e);
+          closeResultSet(null, rs);
           return Collections.emptyMap();
         }
       }
     };
+  }
+
+  /**
+   * Method for closing a {@link ResultSet}.
+   *
+   * @param rs to close
+   */
+  private void closeResultSet(PreparedStatement ps, ResultSet rs) {
+    try (ps;
+        rs) {
+      log.debug("Resources successfully closed.");
+    } catch (SQLException e) {
+      log.warn("Failed to properly close sources.", e);
+    }
   }
 
   /**
