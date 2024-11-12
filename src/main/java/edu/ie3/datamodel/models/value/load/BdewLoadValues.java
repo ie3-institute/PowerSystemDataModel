@@ -15,11 +15,9 @@ import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import javax.measure.quantity.Power;
-import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /** Load values for a {@link BdewStandardLoadProfile} */
@@ -73,14 +71,14 @@ public class BdewLoadValues implements LoadValues {
               TRANSITION, TrWd);
         };
 
-    PValue value = new PValue(Quantities.getQuantity(mapping.get(getSeason(time)), WATT));
+    double power = mapping.get(getSeason(time));
 
     if (loadProfile == BdewStandardLoadProfile.H0) {
       /* For the residential average profile, a dynamization has to be taken into account */
-      return dynamization(value, time.getDayOfYear()); // leap years are ignored
-    } else {
-      return value;
+      power = dynamization(power, time.getDayOfYear()); // leap years are ignored
     }
+
+    return new PValue(Quantities.getQuantity(power, WATT));
   }
 
   /**
@@ -92,21 +90,11 @@ public class BdewLoadValues implements LoadValues {
    * @param t day of year (1-366)
    * @return dynamization factor
    */
-  private PValue dynamization(PValue load, int t) {
+  public static double dynamization(double load, int t) {
     double factor =
         (-3.92e-10 * pow(t, 4) + 3.2e-7 * pow(t, 3) - 7.02e-5 * pow(t, 2) + 2.1e-3 * t + 1.24);
     double rndFactor = round(factor * 1e4) / 1e4; // round to 4 decimal places
-    Function<Double, Double> round =
-        l -> round(l * rndFactor * 1e1) / 1e1; // rounded to 1 decimal place
-
-    ComparableQuantity<Power> value =
-        load.getP()
-            .map(v -> v.getValue().doubleValue())
-            .map(round)
-            .map(v -> Quantities.getQuantity(v, WATT))
-            .orElse(null);
-
-    return new PValue(value);
+    return round(load * rndFactor * 1e1) / 1e1; // rounded to 1 decimal place
   }
 
   public double getSuSa() {
@@ -143,6 +131,10 @@ public class BdewLoadValues implements LoadValues {
 
   public double getWiWd() {
     return WiWd;
+  }
+
+  public List<Double> values() {
+    return List.of(SuSa, SuSu, SuWd, TrSa, TrSu, TrWd, WiSa, WiSu, WiWd);
   }
 
   @Override

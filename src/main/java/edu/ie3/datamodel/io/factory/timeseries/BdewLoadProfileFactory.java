@@ -16,6 +16,8 @@ import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -97,37 +99,23 @@ public class BdewLoadProfileFactory
   @Override
   public Optional<ComparableQuantity<Power>> calculateMaxPower(
       BdewStandardLoadProfile loadProfile, Set<LoadProfileEntry<BdewLoadValues>> entries) {
-    Optional<Double> power;
+    Function<BdewLoadValues, Stream<Double>> valueExtractor;
 
     if (loadProfile == BdewStandardLoadProfile.H0) {
-      power =
-          entries.stream()
-              .map(TimeSeriesEntry::getValue)
-              .map(v -> List.of(v.getWiSa(), v.getWiSu(), v.getWiWd()))
-              .flatMap(Collection::stream)
-              .max(Comparator.naturalOrder());
-
+      // maximum dynamization factor is on day 366 (leap year) or day 365 (regular year).
+      // The difference between day 365 and day 366 is negligible, thus pick 366
+      valueExtractor =
+          v ->
+              Stream.of(v.getWiSa(), v.getWiSu(), v.getWiWd())
+                  .map(p -> BdewLoadValues.dynamization(p, 366));
     } else {
-      power =
-          entries.stream()
-              .map(LoadProfileEntry::getValue)
-              .map(
-                  v ->
-                      List.of(
-                          v.getSuSa(),
-                          v.getSuSu(),
-                          v.getSuWd(),
-                          v.getTrSa(),
-                          v.getTrSu(),
-                          v.getTrWd(),
-                          v.getWiSa(),
-                          v.getWiSu(),
-                          v.getWiWd()))
-              .flatMap(Collection::stream)
-              .max(Comparator.naturalOrder());
+      valueExtractor = v -> v.values().stream();
     }
-
-    return power.map(p -> Quantities.getQuantity(p, WATT));
+    return entries.stream()
+        .map(TimeSeriesEntry::getValue)
+        .flatMap(valueExtractor)
+        .max(Comparator.naturalOrder())
+        .map(p -> Quantities.getQuantity(p, WATT));
   }
 
   @Override
