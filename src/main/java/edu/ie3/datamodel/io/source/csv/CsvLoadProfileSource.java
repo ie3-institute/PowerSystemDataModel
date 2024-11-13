@@ -22,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -76,8 +77,19 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues>
   }
 
   @Override
-  public Optional<ComparableQuantity<Power>> getMaxValue() {
+  @SuppressWarnings("unchecked")
+  public P getLoadProfile() {
+    return (P) getTimeSeries().getLoadProfile();
+  }
+
+  @Override
+  public Optional<ComparableQuantity<Power>> getMaxPower() {
     return loadProfileTimeSeries.maxPower;
+  }
+
+  @Override
+  public Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling() {
+    return loadProfileTimeSeries.profileEnergyScaling;
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

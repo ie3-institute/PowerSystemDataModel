@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,8 +121,18 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
   }
 
   @Override
-  public Optional<ComparableQuantity<Power>> getMaxValue() {
+  public P getLoadProfile() {
+    return loadProfile;
+  }
+
+  @Override
+  public Optional<ComparableQuantity<Power>> getMaxPower() {
     return entryFactory.calculateMaxPower(loadProfile, getEntries(queryFull, ps -> {}));
+  }
+
+  @Override
+  public Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling() {
+    return entryFactory.getLoadProfileEnergyScaling(loadProfile);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

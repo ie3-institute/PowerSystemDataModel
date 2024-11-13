@@ -12,6 +12,7 @@ import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -25,15 +26,19 @@ public class LoadProfileTimeSeries<V extends LoadValues>
 
   /**
    * The maximum average power consumption per quarter-hour for a given calculated over all seasons
-   * and weekday types of given load profile
+   * and weekday types of given load profile.
    */
   public final Optional<ComparableQuantity<Power>> maxPower;
+
+  /** The profile energy scaling in kWh. */
+  public final Optional<ComparableQuantity<Energy>> profileEnergyScaling;
 
   public LoadProfileTimeSeries(
       UUID uuid,
       LoadProfile loadProfile,
       Set<LoadProfileEntry<V>> entries,
-      Optional<ComparableQuantity<Power>> maxPower) {
+      Optional<ComparableQuantity<Power>> maxPower,
+      Optional<ComparableQuantity<Energy>> profileEnergyScaling) {
     super(uuid, entries);
     this.loadProfile = loadProfile;
     this.valueMapping =
@@ -42,6 +47,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
                 Collectors.toMap(LoadProfileEntry::getQuarterHour, LoadProfileEntry::getValue));
 
     this.maxPower = maxPower;
+    this.profileEnergyScaling = profileEnergyScaling;
   }
 
   /** Returns the {@link LoadProfile}. */

@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE;
 
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
-import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
@@ -16,11 +16,13 @@ import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
-public class RandomLoadProfileFactory extends LoadProfileFactory<LoadProfile, RandomLoadValues> {
+public class RandomLoadProfileFactory
+    extends LoadProfileFactory<RandomLoadProfile, RandomLoadValues> {
   public static final String K_WEEKDAY = "kWd";
   public static final String K_SATURDAY = "kSa";
   public static final String K_SUNDAY = "kSu";
@@ -76,18 +78,19 @@ public class RandomLoadProfileFactory extends LoadProfileFactory<LoadProfile, Ra
   }
 
   @Override
-  public LoadProfile parseProfile(String profile) {
+  public RandomLoadProfile parseProfile(String profile) {
     return RANDOM_LOAD_PROFILE;
   }
 
   @Override
   public Optional<ComparableQuantity<Power>> calculateMaxPower(
-      LoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> loadProfileEntries) {
+      RandomLoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> loadProfileEntries) {
     return Optional.of(Quantities.getQuantity(159d, PowerSystemUnits.WATT));
   }
 
   @Override
-  public double getLoadProfileEnergyScaling() {
-    return 716.5416966513656;
+  public Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling(
+      RandomLoadProfile loadProfile) {
+    return Optional.of(Quantities.getQuantity(716.5416966513656, PowerSystemUnits.KILOWATTHOUR));
   }
 }

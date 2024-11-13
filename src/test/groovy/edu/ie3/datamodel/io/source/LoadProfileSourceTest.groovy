@@ -14,17 +14,17 @@ class LoadProfileSourceTest extends Specification {
 
   def "A LoadProfileSourceTest should read in all build-in BDEWStandardLoadProfiles"() {
     when:
-    def profiles = LoadProfileSource.getBDEWLoadProfiles()
+    def profiles = LoadProfileSource.bdewLoadProfiles
 
     then:
     profiles.size() == 11
     BdewStandardLoadProfile.values().every { profiles.keySet().contains(it) }
-    profiles.values().every { it.entries.size() == 96 }
+    profiles.values().every { it.timeSeries.entries.size() == 96 }
   }
 
   def "A LoadProfileSourceTest should read in the build-in RandomLoadProfile"() {
     when:
-    def random = LoadProfileSource.randomLoadProfile
+    def random = LoadProfileSource.randomLoadProfile.timeSeries
 
     then:
     random.loadProfile == RANDOM_LOAD_PROFILE

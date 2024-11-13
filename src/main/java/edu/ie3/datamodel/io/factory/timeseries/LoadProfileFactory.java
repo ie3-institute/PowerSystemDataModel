@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import java.util.Optional;
 import java.util.Set;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -46,5 +47,5 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
   }
 
   /** Returns the load profile energy scaling. */
-  public abstract double getLoadProfileEnergyScaling();
+  public abstract Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling(P loadProfile);
 }

@@ -15,9 +15,11 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
+import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -118,7 +120,8 @@ public class BdewLoadProfileFactory
   }
 
   @Override
-  public double getLoadProfileEnergyScaling() {
-    return 1000d;
+  public Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling(
+      BdewStandardLoadProfile loadProfile) {
+    return Optional.of(Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR));
   }
 }

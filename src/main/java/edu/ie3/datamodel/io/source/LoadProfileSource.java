@@ -18,7 +18,6 @@ import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.io.source.csv.CsvLoadProfileSource;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.profile.LoadProfile;
-import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
@@ -34,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -79,21 +79,23 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    */
   public abstract Optional<PValue> getValue(ZonedDateTime time) throws SourceException;
 
+  /** Returns the load profile of this source. */
+  public abstract P getLoadProfile();
+
   /** Returns the maximal power value of the time series */
-  public abstract Optional<ComparableQuantity<Power>> getMaxValue();
+  public abstract Optional<ComparableQuantity<Power>> getMaxPower();
 
   /** Returns the load profile energy scaling for this load profile time series. */
-  public double getLoadProfileEnergyScaling() {
-    return entryFactory.getLoadProfileEnergyScaling();
-  }
+  public abstract Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling();
 
   /**
    * Method to read in the build-in {@link BdewStandardLoadProfile}s.
    *
-   * @return a map: load profile to time series
+   * @return a map: load profile to load profile source
    */
-  public static Map<BdewStandardLoadProfile, BdewLoadProfileTimeSeries> getBDEWLoadProfiles()
-      throws SourceException {
+  public static Map<
+          BdewStandardLoadProfile, CsvLoadProfileSource<BdewStandardLoadProfile, BdewLoadValues>>
+      getBdewLoadProfiles() throws SourceException {
     CsvDataSource buildInSource = getBuildInSource(LoadProfileSource.class, "/load");
 
     BdewLoadProfileFactory factory = new BdewLoadProfileFactory();
@@ -104,31 +106,25 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
         .stream()
         .map(
             metaInformation ->
-                (BdewLoadProfileTimeSeries)
-                    new CsvLoadProfileSource<>(
-                            buildInSource, metaInformation, BdewLoadValues.class, factory)
-                        .getTimeSeries())
-        .collect(Collectors.toMap(BdewLoadProfileTimeSeries::getLoadProfile, Function.identity()));
+                new CsvLoadProfileSource<>(
+                    buildInSource, metaInformation, BdewLoadValues.class, factory))
+        .collect(Collectors.toMap(CsvLoadProfileSource::getLoadProfile, Function.identity()));
   }
 
   /**
    * Method to read in the build-in {@link RandomLoadProfileTimeSeries}.
    *
-   * @return the random load profile time series
+   * @return the random load profile source
    */
-  public static RandomLoadProfileTimeSeries getRandomLoadProfile() throws SourceException {
+  public static CsvLoadProfileSource<LoadProfile.RandomLoadProfile, RandomLoadValues>
+      getRandomLoadProfile() throws SourceException {
     CsvDataSource buildInSource = getBuildInSource(LoadProfileSource.class, "/load");
 
     CsvLoadProfileMetaInformation metaInformation =
         buildInSource.getCsvLoadProfileMetaInformation(RANDOM_LOAD_PROFILE).values().stream()
             .findAny()
             .orElseThrow();
-    return (RandomLoadProfileTimeSeries)
-        new CsvLoadProfileSource<>(
-                buildInSource,
-                metaInformation,
-                RandomLoadValues.class,
-                new RandomLoadProfileFactory())
-            .getTimeSeries();
+    return new CsvLoadProfileSource<>(
+        buildInSource, metaInformation, RandomLoadValues.class, new RandomLoadProfileFactory());
   }
 }
