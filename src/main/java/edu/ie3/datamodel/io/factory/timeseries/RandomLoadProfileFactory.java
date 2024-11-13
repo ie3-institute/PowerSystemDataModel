@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE;
 
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
@@ -71,8 +71,7 @@ public class RandomLoadProfileFactory extends LoadProfileFactory<LoadProfile, Ra
 
   @Override
   public RandomLoadProfileTimeSeries build(
-      LoadProfileTimeSeriesMetaInformation metaInformation,
-      Set<LoadProfileEntry<RandomLoadValues>> entries) {
+      LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<RandomLoadValues>> entries) {
     return new RandomLoadProfileTimeSeries(metaInformation.getUuid(), RANDOM_LOAD_PROFILE, entries);
   }
 

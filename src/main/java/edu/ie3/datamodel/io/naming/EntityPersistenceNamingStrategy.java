@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
@@ -156,14 +156,13 @@ public class EntityPersistenceNamingStrategy {
    * @param fileName File name to extract information from
    * @return Meta information form load profile time series file name
    */
-  public LoadProfileTimeSeriesMetaInformation loadProfileTimesSeriesMetaInformation(
-      String fileName) {
+  public LoadProfileMetaInformation loadProfileTimesSeriesMetaInformation(String fileName) {
     Matcher matcher = getLoadProfileTimeSeriesPattern().matcher(fileName);
     if (!matcher.matches())
       throw new IllegalArgumentException(
           "Cannot extract meta information on load profile time series from '" + fileName + "'.");
 
-    return new LoadProfileTimeSeriesMetaInformation(matcher.group("profile"));
+    return new LoadProfileMetaInformation(matcher.group("profile"));
   }
 
   /**

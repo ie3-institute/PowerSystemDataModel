@@ -9,7 +9,7 @@ import static tech.units.indriya.unit.Units.WATT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
@@ -78,8 +78,7 @@ public class BdewLoadProfileFactory
 
   @Override
   public BdewLoadProfileTimeSeries build(
-      LoadProfileTimeSeriesMetaInformation metaInformation,
-      Set<LoadProfileEntry<BdewLoadValues>> entries) {
+      LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<BdewLoadValues>> entries) {
 
     BdewStandardLoadProfile profile = parseProfile(metaInformation.getProfile());
     Optional<ComparableQuantity<Power>> maxPower = calculateMaxPower(profile, entries);

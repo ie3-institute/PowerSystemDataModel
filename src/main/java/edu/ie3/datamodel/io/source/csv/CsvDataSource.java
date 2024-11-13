@@ -13,7 +13,7 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.profile.LoadProfile;
@@ -145,7 +145,7 @@ public class CsvDataSource implements DataSource {
         .map(
             filePath -> {
               /* Extract meta information from file path and enhance it with the file path itself */
-              LoadProfileTimeSeriesMetaInformation metaInformation =
+              LoadProfileMetaInformation metaInformation =
                   fileNamingStrategy.loadProfileTimeSeriesMetaInformation(filePath.toString());
               return new CsvLoadProfileMetaInformation(
                   metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
@@ -156,9 +156,7 @@ public class CsvDataSource implements DataSource {
                     || profiles.length == 0
                     || Stream.of(profiles)
                         .anyMatch(profile -> profile.getKey().equals(metaInformation.getProfile())))
-        .collect(
-            Collectors.toMap(
-                LoadProfileTimeSeriesMetaInformation::getProfile, Function.identity()));
+        .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
   }
 
   /**

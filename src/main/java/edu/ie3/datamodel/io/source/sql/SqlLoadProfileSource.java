@@ -12,7 +12,7 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.LoadProfileSource;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
@@ -44,7 +44,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
   private final SqlDataSource dataSource;
   private final String tableName;
 
-  private final LoadProfileTimeSeriesMetaInformation metaInformation;
+  private final LoadProfileMetaInformation metaInformation;
   private final P loadProfile;
 
   // General fields
@@ -61,7 +61,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
 
   public SqlLoadProfileSource(
       SqlDataSource dataSource,
-      LoadProfileTimeSeriesMetaInformation metaInformation,
+      LoadProfileMetaInformation metaInformation,
       Class<V> entryClass,
       LoadProfileFactory<P, V> entryFactory) {
     super(entryClass, entryFactory);
@@ -82,7 +82,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
       SqlConnector connector,
       String schemaName,
       DatabaseNamingStrategy namingStrategy,
-      LoadProfileTimeSeriesMetaInformation metaInformation,
+      LoadProfileMetaInformation metaInformation,
       Class<V> entryClass,
       LoadProfileFactory<P, V> entryFactory) {
     this(

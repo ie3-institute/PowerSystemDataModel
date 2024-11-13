@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
@@ -912,8 +912,8 @@ class FileNamingStrategyTest extends Specification {
     def metaInformation = fns.timeSeriesMetaInformation(path)
 
     then:
-    LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
-    (metaInformation as LoadProfileTimeSeriesMetaInformation).with {
+    LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
+    (metaInformation as LoadProfileMetaInformation).with {
       assert profile == "g3"
     }
   }
@@ -927,8 +927,8 @@ class FileNamingStrategyTest extends Specification {
     def metaInformation = fns.timeSeriesMetaInformation(path)
 
     then:
-    LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
-    (metaInformation as LoadProfileTimeSeriesMetaInformation).with {
+    LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
+    (metaInformation as LoadProfileMetaInformation).with {
       assert profile == "g3"
     }
   }

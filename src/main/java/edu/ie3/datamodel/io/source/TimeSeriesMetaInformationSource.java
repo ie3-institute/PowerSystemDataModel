@@ -7,14 +7,17 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.profile.LoadProfile;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 /** Source for all available time series with their {@link UUID} and {@link ColumnScheme} */
-public interface TimeSeriesMetaInformationSource {
+public abstract class TimeSeriesMetaInformationSource {
+
+  protected Map<String, LoadProfileMetaInformation> loadProfileMetaInformation;
 
   /**
    * Get a mapping from time series {@link UUID} to its meta information {@link
@@ -22,7 +25,7 @@ public interface TimeSeriesMetaInformationSource {
    *
    * @return that mapping
    */
-  Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation();
+  public abstract Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation();
 
   /**
    * Get an option on the given time series meta information
@@ -30,14 +33,17 @@ public interface TimeSeriesMetaInformationSource {
    * @param timeSeriesUuid Unique identifier of the time series in question
    * @return An Option on the meta information
    */
-  Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(UUID timeSeriesUuid);
+  public abstract Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
+      UUID timeSeriesUuid);
 
   /**
-   * Gat a mapping from load profile to {@link LoadProfileTimeSeriesMetaInformation}.
+   * Gat a mapping from load profile to {@link LoadProfileMetaInformation}.
    *
    * @return that mapping
    */
-  Map<String, LoadProfileTimeSeriesMetaInformation> getLoadProfileMetaInformation();
+  public Map<String, LoadProfileMetaInformation> getLoadProfileMetaInformation() {
+    return Collections.unmodifiableMap(loadProfileMetaInformation);
+  }
 
   /**
    * Get an option on the given time series meta information
@@ -45,6 +51,8 @@ public interface TimeSeriesMetaInformationSource {
    * @param loadProfile load profile of the time series in question
    * @return An Option on the meta information
    */
-  Optional<LoadProfileTimeSeriesMetaInformation> getLoadProfileMetaInformation(
-      LoadProfile loadProfile);
+  public Optional<LoadProfileMetaInformation> getLoadProfileMetaInformation(
+      LoadProfile loadProfile) {
+    return Optional.ofNullable(loadProfileMetaInformation.get(loadProfile.getKey()));
+  }
 }

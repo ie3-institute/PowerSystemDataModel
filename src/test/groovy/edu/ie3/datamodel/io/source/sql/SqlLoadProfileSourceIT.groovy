@@ -12,7 +12,7 @@ import static edu.ie3.test.common.TimeSeriesSourceTestData.TIME_00MIN
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.value.load.BdewLoadValues
 import edu.ie3.test.helper.TestContainerHelper
@@ -56,7 +56,7 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
     }
 
     connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-    def metaInformation = new LoadProfileTimeSeriesMetaInformation(timeSeriesUuid, "g3")
+    def metaInformation = new LoadProfileMetaInformation(timeSeriesUuid, "g3")
 
     namingStrategy = new DatabaseNamingStrategy()
 

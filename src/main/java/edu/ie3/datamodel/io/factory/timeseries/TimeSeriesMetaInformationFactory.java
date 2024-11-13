@@ -10,7 +10,7 @@ import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +29,7 @@ public class TimeSeriesMetaInformationFactory
   private static final String LOAD_PROFILE = "loadProfile";
 
   public TimeSeriesMetaInformationFactory() {
-    super(IndividualTimeSeriesMetaInformation.class, LoadProfileTimeSeriesMetaInformation.class);
+    super(IndividualTimeSeriesMetaInformation.class, LoadProfileMetaInformation.class);
   }
 
   @Override
@@ -40,9 +40,9 @@ public class TimeSeriesMetaInformationFactory
 
   @Override
   protected TimeSeriesMetaInformation buildModel(EntityData data) {
-    if (LoadProfileTimeSeriesMetaInformation.class.isAssignableFrom(data.getTargetClass())) {
+    if (LoadProfileMetaInformation.class.isAssignableFrom(data.getTargetClass())) {
       String profile = data.getField(LOAD_PROFILE);
-      return new LoadProfileTimeSeriesMetaInformation(profile);
+      return new LoadProfileMetaInformation(profile);
     } else {
       UUID timeSeries = data.getUUID(TIME_SERIES);
 

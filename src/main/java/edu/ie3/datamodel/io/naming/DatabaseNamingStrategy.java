@@ -21,7 +21,7 @@ public class DatabaseNamingStrategy {
 
   private static final String TIME_SERIES_PREFIX = "time_series_";
 
-  private static final String LOAD_PROFILE_PREFIX = "load_profiles";
+  private static final String LOAD_PROFILE = "load_profiles";
 
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
 
@@ -42,6 +42,11 @@ public class DatabaseNamingStrategy {
     return TIME_SERIES_PREFIX;
   }
 
+  /** Returns the String of the load profile table */
+  public String getLoadProfileTableName() {
+    return LOAD_PROFILE;
+  }
+
   /**
    * Provides the name of a time series table given a column scheme
    *
@@ -58,7 +63,7 @@ public class DatabaseNamingStrategy {
    * @return the table name
    */
   public String getLoadProfileEntityName() {
-    return LOAD_PROFILE_PREFIX;
+    return getLoadProfileTableName();
   }
 
   /**

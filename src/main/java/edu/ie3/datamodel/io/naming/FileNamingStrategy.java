@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -238,8 +238,7 @@ public class FileNamingStrategy {
         removeFileNameEnding(fileName));
   }
 
-  public LoadProfileTimeSeriesMetaInformation loadProfileTimeSeriesMetaInformation(
-      String fileName) {
+  public LoadProfileMetaInformation loadProfileTimeSeriesMetaInformation(String fileName) {
     return entityPersistenceNamingStrategy.loadProfileTimesSeriesMetaInformation(
         removeFileNameEnding(fileName));
   }

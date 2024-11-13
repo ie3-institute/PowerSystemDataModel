@@ -6,13 +6,11 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMetaInformationSource;
-import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -26,13 +24,11 @@ import java.util.stream.Collectors;
  * CSV implementation for retrieving {@link TimeSeriesMetaInformationSource} from input directory
  * structures
  */
-public class CsvTimeSeriesMetaInformationSource implements TimeSeriesMetaInformationSource {
+public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
 
   protected final CsvDataSource dataSource;
 
   private final Map<UUID, CsvIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
-
-  private final Map<String, CsvLoadProfileMetaInformation> loadProfileMetaInformation;
 
   /**
    * Creates a time series type source
@@ -60,9 +56,7 @@ public class CsvTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
 
     this.loadProfileMetaInformation =
         dataSource.getCsvLoadProfileMetaInformation().values().stream()
-            .collect(
-                Collectors.toMap(
-                    LoadProfileTimeSeriesMetaInformation::getProfile, Function.identity()));
+            .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
   }
 
   @Override
@@ -74,16 +68,5 @@ public class CsvTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
       UUID timeSeriesUuid) {
     return Optional.ofNullable(timeSeriesMetaInformation.get(timeSeriesUuid));
-  }
-
-  @Override
-  public Map<String, LoadProfileTimeSeriesMetaInformation> getLoadProfileMetaInformation() {
-    return Collections.unmodifiableMap(loadProfileMetaInformation);
-  }
-
-  @Override
-  public Optional<LoadProfileTimeSeriesMetaInformation> getLoadProfileMetaInformation(
-      LoadProfile loadProfile) {
-    return Optional.ofNullable(loadProfileMetaInformation.get(loadProfile.getKey()));
   }
 }
