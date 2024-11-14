@@ -108,4 +108,21 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
     equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeSeries67775.entries)
     equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeSeries67776.entries)
   }
+
+  def "A NativeSqlWeatherSource returns all time keys after a given time key correctly"() {
+    given:
+    def time = IconWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time)
+
+    then:
+    actual.size() == 2
+
+    actual.get(IconWeatherTestData.COORDINATE_67775) == [
+      IconWeatherTestData.TIME_16H,
+      IconWeatherTestData.TIME_17H
+    ]
+    actual.get(IconWeatherTestData.COORDINATE_67776) == [IconWeatherTestData.TIME_16H]
+  }
 }

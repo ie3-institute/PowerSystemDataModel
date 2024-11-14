@@ -8,9 +8,9 @@ The measured information are indicated by boolean fields.
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -19,39 +19,39 @@ The measured information are indicated by boolean fields.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      -
 
    * - vMag
-     - --
+     -
      - Voltage magnitude measurements are available
 
    * - vAng
-     - --
+     -
      - Voltage angle measurements are available
 
    * - p
-     - --
+     -
      - Active power measurements are available
 
    * - q
-     - --
+     -
      - Reactive power measurements are available
 
 ```
