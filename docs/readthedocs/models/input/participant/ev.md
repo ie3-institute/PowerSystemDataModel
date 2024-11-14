@@ -8,9 +8,9 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
 ### Type Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -19,11 +19,11 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
      - Remarks
 
    * - uuid
-     - --
+     -
      - 
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - capex
@@ -32,8 +32,8 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - opex
      - € / MWh
-     - | Operational expenditure to operate one entity of
-       | this type
+     - Operational expenditure to operate one entity of
+       this type
 
    * - eStorage
      - kWh
@@ -52,16 +52,16 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
      - power for DC
 
    * - cosPhiRated
-     - --
+     -
      - Rated power factor
      
 ```
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -70,38 +70,38 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
      - Remarks
 
    * - uuid
-     - --
+     -
      - 
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      - 
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      - 
      
    * - qCharacteristics
-     - --
-     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
+     -
+     - [Reactive power characteristic](#participant-general-q-characteristic) to follow
 
    * - type
-     - --
+     -
      - 
 
    * - em
-     - --
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
+     -
+     - UUID reference to an [Energy Management Unit](#em_model) that is controlling
+       this system participant. Field can be empty or missing, if this participant
+       is not controlled.
 
 ```
 

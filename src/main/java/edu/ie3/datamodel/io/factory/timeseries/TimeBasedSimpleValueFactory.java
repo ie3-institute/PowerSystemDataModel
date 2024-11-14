@@ -11,7 +11,6 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
-import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -33,26 +32,13 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private static final String VMAG = "vMag";
   private static final String VANG = "VAng";
 
-  private final TimeUtil timeUtil;
-
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
     super(valueClasses);
-    this.timeUtil = TimeUtil.withDefaults;
   }
 
   public TimeBasedSimpleValueFactory(
       Class<? extends V> valueClasses, DateTimeFormatter dateTimeFormatter) {
-    super(valueClasses);
-    this.timeUtil = new TimeUtil(dateTimeFormatter);
-  }
-
-  /**
-   * Return the field name for the date time
-   *
-   * @return the field name for the date time
-   */
-  public String getTimeFieldString() {
-    return TIME;
+    super(valueClasses, dateTimeFormatter);
   }
 
   @Override
