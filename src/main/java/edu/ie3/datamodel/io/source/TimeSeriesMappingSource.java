@@ -80,8 +80,8 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /** Class to represent one entry within the entity to time series mapping */
-  public abstract static class MappingEntry implements InputEntity {
-    protected final UUID entity;
+  public static class MappingEntry implements InputEntity {
+    private final UUID entity;
     private final UUID timeSeries;
 
     public MappingEntry(UUID entity, UUID timeSeries) {
@@ -114,45 +114,6 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
     @Override
     public String toString() {
       return "MappingEntry{" + "entity=" + entity + ", timeSeries=" + timeSeries + '}';
-    }
-  }
-
-  /** Class to represent one entry within the entity to time series mapping */
-  public static class EntityMappingEntry extends MappingEntry {
-
-    public EntityMappingEntry(UUID entity, UUID timeSeries) {
-      super(entity, timeSeries);
-    }
-
-    @Override
-    public String toString() {
-      return "EntityMappingEntry{" + "entity=" + entity + ", timeSeries=" + getTimeSeries() + '}';
-    }
-  }
-
-  /** Class to represent one entry within the participant to time series mapping */
-  public static class ParticipantMappingEntry extends MappingEntry {
-
-    public ParticipantMappingEntry(UUID participant, UUID timeSeries) {
-      super(participant, timeSeries);
-    }
-
-    /**
-     * Returns the {@link UUID} of the {@link
-     * edu.ie3.datamodel.models.input.system.SystemParticipantInput}.
-     */
-    public UUID getParticipant() {
-      return entity;
-    }
-
-    @Override
-    public String toString() {
-      return "ParticipantMappingEntry{"
-          + "participant="
-          + entity
-          + ", timeSeries="
-          + getTimeSeries()
-          + '}';
     }
   }
 }

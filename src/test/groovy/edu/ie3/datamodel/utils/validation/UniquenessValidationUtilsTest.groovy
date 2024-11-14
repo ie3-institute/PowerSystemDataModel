@@ -169,8 +169,8 @@ class UniquenessValidationUtilsTest extends Specification {
     given:
     UUID timeSeries = UUID.randomUUID()
     Set<TimeSeriesMappingSource.MappingEntry> uniqueEntries = [
-      new TimeSeriesMappingSource.ParticipantMappingEntry(UUID.randomUUID(), timeSeries),
-      new TimeSeriesMappingSource.ParticipantMappingEntry(UUID.randomUUID(), timeSeries),
+      new TimeSeriesMappingSource.MappingEntry(UUID.randomUUID(), timeSeries),
+      new TimeSeriesMappingSource.MappingEntry(UUID.randomUUID(), timeSeries),
     ]
 
     when:
@@ -184,27 +184,18 @@ class UniquenessValidationUtilsTest extends Specification {
     given:
     UUID participant = UUID.fromString("1f25eea2-20eb-4b6b-8f05-bdbb0e851e65")
 
-    Set<TimeSeriesMappingSource.MappingEntry> uniqueParticipantEntries = [
-      new TimeSeriesMappingSource.ParticipantMappingEntry(participant, UUID.randomUUID()),
-      new TimeSeriesMappingSource.ParticipantMappingEntry(participant, UUID.randomUUID()),
-    ]
-
     Set<TimeSeriesMappingSource.MappingEntry> uniqueEntityEntries = [
-      new TimeSeriesMappingSource.EntityMappingEntry(participant, UUID.randomUUID()),
-      new TimeSeriesMappingSource.EntityMappingEntry(participant, UUID.randomUUID()),
+      new TimeSeriesMappingSource.MappingEntry(participant, UUID.randomUUID()),
+      new TimeSeriesMappingSource.MappingEntry(participant, UUID.randomUUID()),
     ]
 
     when:
-    def participantDuplicate = Try.ofVoid(() -> checkMappingEntryUniqueness(uniqueParticipantEntries), DuplicateEntitiesException)
     def entityDuplicate = Try.ofVoid(() -> checkMappingEntryUniqueness(uniqueEntityEntries), DuplicateEntitiesException)
 
     then:
-    participantDuplicate.failure
-    participantDuplicate.exception.get().message == "'ParticipantMappingEntry' entities with duplicated UUID key, but different field values found! " +
-    "Affected primary keys: [1f25eea2-20eb-4b6b-8f05-bdbb0e851e65]"
 
     entityDuplicate.failure
-    entityDuplicate.exception.get().message == "'EntityMappingEntry' entities with duplicated UUID key, but different field values found! " +
+    entityDuplicate.exception.get().message == "'MappingEntry' entities with duplicated UUID key, but different field values found! " +
     "Affected primary keys: [1f25eea2-20eb-4b6b-8f05-bdbb0e851e65]"
   }
 

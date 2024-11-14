@@ -627,7 +627,7 @@ class InputEntityProcessorTest extends Specification {
   def "The InputEntityProcessor should serialize a provided MappingEntry correctly"() {
     given:
     def processor = new InputEntityProcessor(TimeSeriesMappingSource.MappingEntry)
-    def validResult = new TimeSeriesMappingSource.ParticipantMappingEntry(UUID.fromString("7eb7b296-f4c4-4020-acf3-e865453b5dbd"), UUID.fromString("bc581c6c-3044-48a1-aea1-5b2cb1370356"))
+    def validResult = new TimeSeriesMappingSource.MappingEntry(UUID.fromString("7eb7b296-f4c4-4020-acf3-e865453b5dbd"), UUID.fromString("bc581c6c-3044-48a1-aea1-5b2cb1370356"))
 
     Map expectedResults = [
       "entity": "7eb7b296-f4c4-4020-acf3-e865453b5dbd",
