@@ -85,4 +85,24 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
     actual.present
     actual.get() == PH_VALUE_15MIN
   }
+
+  def "A csv time series source is able to return the previous value for a given time"() {
+    when:
+    def actual = source.getPreviousTimeBasedValue(TIME_15MIN)
+
+    then:
+    actual.isPresent()
+    actual.get().time == TIME_00MIN
+    actual.get().value == PH_VALUE_00MIN
+  }
+
+  def "A csv time series source is able to return the next value for a given time"() {
+    when:
+    def actual = source.getNextTimeBasedValue(TIME_00MIN)
+
+    then:
+    actual.isPresent()
+    actual.get().time == TIME_15MIN
+    actual.get().value == PH_VALUE_15MIN
+  }
 }

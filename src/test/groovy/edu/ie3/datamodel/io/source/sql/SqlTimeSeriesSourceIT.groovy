@@ -123,6 +123,16 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     value.get() == P_VALUE_00MIN
   }
 
+  def "A SqlTimeSeriesSource is able to return the previous value for a given time"() {
+    when:
+    def actual = pSource.getPreviousTimeBasedValue(TIME_15MIN)
+
+    then:
+    actual.isPresent()
+    actual.get().time == TIME_00MIN
+    actual.get().value == P_VALUE_00MIN
+  }
+
   def "A SqlTimeSeriesSource can read multiple time series values for a time interval"() {
     given:
     def timeInterval = new ClosedInterval(TIME_00MIN, TIME_15MIN)
