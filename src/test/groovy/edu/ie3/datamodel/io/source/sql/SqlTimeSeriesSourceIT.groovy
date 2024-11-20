@@ -12,6 +12,7 @@ import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.TimeUtil
@@ -125,12 +126,17 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
 
   def "A SqlTimeSeriesSource is able to return the previous value for a given time"() {
     when:
-    def actual = pSource.getPreviousTimeBasedValue(TIME_15MIN)
+    def actual = pSource.getPreviousTimeBasedValue(time)
 
     then:
-    actual.isPresent()
-    actual.get().time == TIME_00MIN
-    actual.get().value == P_VALUE_00MIN
+    actual.isPresent() == expectedResult.isPresent()
+    actual == expectedResult
+
+    where:
+    time       | expectedResult
+    TIME_00MIN | Optional.empty()
+    TIME_15MIN | Optional.of(new TimeBasedValue<>(TIME_00MIN, P_VALUE_00MIN))
+    TIME_30MIN | Optional.of(new TimeBasedValue<>(TIME_15MIN, P_VALUE_15MIN))
   }
 
   def "A SqlTimeSeriesSource can read multiple time series values for a time interval"() {

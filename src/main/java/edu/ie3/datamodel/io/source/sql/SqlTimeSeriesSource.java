@@ -306,7 +306,8 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         + timeSeriesUuid.toString()
         + "' AND "
         + timeColumnName
-        + " < ?;";
+        + " < ?"
+        + "ORDER BY time DESC LIMIT 1;";
   }
   /**
    * Creates a base query to retrieve all time keys before a given time for given time series with
