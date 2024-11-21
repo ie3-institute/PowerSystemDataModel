@@ -94,7 +94,7 @@ class ConnectorValidationUtilsTest extends Specification {
     GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeG).build()                                                           || 1            || new InvalidEntityException("LineInput connects the same node, but shouldn't", invalidLine)
     GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().subnet(5).build()).build()                                  || 1            || new InvalidEntityException("LineInput connects different subnets, but shouldn't", invalidLine)
     GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()).build()   || 1            || new InvalidEntityException("LineInput connects different voltage levels, but shouldn't", invalidLine)
-    GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build()                                           || 1            || new InvalidEntityException("The following quantities have to be positive: 0.0 km", invalidLine)
+    GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build()                                           || 1            || new InvalidEntityException("The following quantities have to be positive: 0 km", invalidLine)
   }
 
   def "Smoke Test: Correct line type throws no exception"() {
