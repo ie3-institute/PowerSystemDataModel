@@ -22,35 +22,35 @@ import tech.units.indriya.quantity.Quantities;
 
 /** Load values for a {@link BdewStandardLoadProfile} */
 public class BdewLoadValues implements LoadValues {
-  private final double SuSa;
-  private final double SuSu;
-  private final double SuWd;
-  private final double TrSa;
-  private final double TrSu;
-  private final double TrWd;
-  private final double WiSa;
-  private final double WiSu;
-  private final double WiWd;
+  private final double suSa;
+  private final double suSu;
+  private final double suWd;
+  private final double trSa;
+  private final double trSu;
+  private final double trWd;
+  private final double wiSa;
+  private final double wiSu;
+  private final double wiWd;
 
   public BdewLoadValues(
-      double SuSa,
-      double SuSu,
-      double SuWd,
-      double TrSa,
-      double TrSu,
-      double TrWd,
-      double WiSa,
-      double WiSu,
-      double WiWd) {
-    this.SuSa = SuSa;
-    this.SuSu = SuSu;
-    this.SuWd = SuWd;
-    this.TrSa = TrSa;
-    this.TrSu = TrSu;
-    this.TrWd = TrWd;
-    this.WiSa = WiSa;
-    this.WiSu = WiSu;
-    this.WiWd = WiWd;
+      double suSa,
+      double suSu,
+      double suWd,
+      double trSa,
+      double trSu,
+      double trWd,
+      double wiSa,
+      double wiSu,
+      double wiWd) {
+    this.suSa = suSa;
+    this.suSu = suSu;
+    this.suWd = suWd;
+    this.trSa = trSa;
+    this.trSu = trSu;
+    this.trWd = trWd;
+    this.wiSa = wiSa;
+    this.wiSu = wiSu;
+    this.wiWd = wiWd;
   }
 
   @Override
@@ -58,17 +58,17 @@ public class BdewLoadValues implements LoadValues {
     Map<BdewSeason, Double> mapping =
         switch (time.getDayOfWeek()) {
           case SATURDAY -> Map.of(
-              SUMMER, SuSa,
-              WINTER, WiSa,
-              TRANSITION, TrSa);
+              SUMMER, suSa,
+              WINTER, wiSa,
+              TRANSITION, trSa);
           case SUNDAY -> Map.of(
-              SUMMER, SuSu,
-              WINTER, WiSu,
-              TRANSITION, TrSu);
+              SUMMER, suSu,
+              WINTER, wiSu,
+              TRANSITION, trSu);
           default -> Map.of(
-              SUMMER, SuWd,
-              WINTER, WiWd,
-              TRANSITION, TrWd);
+              SUMMER, suWd,
+              WINTER, wiWd,
+              TRANSITION, trWd);
         };
 
     double power = mapping.get(getSeason(time));
@@ -98,43 +98,43 @@ public class BdewLoadValues implements LoadValues {
   }
 
   public double getSuSa() {
-    return SuSa;
+    return suSa;
   }
 
   public double getSuSu() {
-    return SuSu;
+    return suSu;
   }
 
   public double getSuWd() {
-    return SuWd;
+    return suWd;
   }
 
   public double getTrSa() {
-    return TrSa;
+    return trSa;
   }
 
   public double getTrSu() {
-    return TrSu;
+    return trSu;
   }
 
   public double getTrWd() {
-    return TrWd;
+    return trWd;
   }
 
   public double getWiSa() {
-    return WiSa;
+    return wiSa;
   }
 
   public double getWiSu() {
-    return WiSu;
+    return wiSu;
   }
 
   public double getWiWd() {
-    return WiWd;
+    return wiWd;
   }
 
   public List<Double> values() {
-    return List.of(SuSa, SuSu, SuWd, TrSa, TrSu, TrWd, WiSa, WiSu, WiWd);
+    return List.of(suSa, suSu, suWd, trSa, trSu, trWd, wiSa, wiSu, wiWd);
   }
 
   @Override
@@ -142,43 +142,43 @@ public class BdewLoadValues implements LoadValues {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     BdewLoadValues that = (BdewLoadValues) o;
-    return Objects.equals(SuSa, that.SuSa)
-        && Objects.equals(SuSu, that.SuSu)
-        && Objects.equals(SuWd, that.SuWd)
-        && Objects.equals(TrSa, that.TrSa)
-        && Objects.equals(TrSu, that.TrSu)
-        && Objects.equals(TrWd, that.TrWd)
-        && Objects.equals(WiSa, that.WiSa)
-        && Objects.equals(WiSu, that.WiSu)
-        && Objects.equals(WiWd, that.WiWd);
+    return Objects.equals(suSa, that.suSa)
+        && Objects.equals(suSu, that.suSu)
+        && Objects.equals(suWd, that.suWd)
+        && Objects.equals(trSa, that.trSa)
+        && Objects.equals(trSu, that.trSu)
+        && Objects.equals(trWd, that.trWd)
+        && Objects.equals(wiSa, that.wiSa)
+        && Objects.equals(wiSu, that.wiSu)
+        && Objects.equals(wiWd, that.wiWd);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(SuWd, SuSa, SuSu, WiWd, WiSa, WiSu, TrWd, TrSa, TrSu);
+    return Objects.hash(suSa, suSu, suWd, trSa, trSu, trWd, wiSa, wiSu, wiWd);
   }
 
   @Override
   public String toString() {
     return "BDEWLoadValues{"
-        + "SuWd="
-        + SuWd
-        + ", SuSa="
-        + SuSa
-        + ", SuSu="
-        + SuSu
-        + ", WiWd="
-        + WiWd
-        + ", WiSa="
-        + WiSa
-        + ", WiSu="
-        + WiSu
-        + ", TrWd="
-        + TrWd
-        + ", TrSa="
-        + TrSa
-        + ", TrSu="
-        + TrSu
+        + "suSa="
+        + suSa
+        + ", suSu="
+        + suSu
+        + ", suWd="
+        + suWd
+        + ", trSa="
+        + trSa
+        + ", trSu="
+        + trSu
+        + ", trWd="
+        + trWd
+        + ", wiSa="
+        + wiSa
+        + ", wiSu="
+        + wiSu
+        + ", wiWd="
+        + wiWd
         + '}';
   }
 }

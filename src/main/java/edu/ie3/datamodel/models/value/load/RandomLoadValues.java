@@ -86,8 +86,7 @@ public class RandomLoadValues implements LoadValues {
     this.sigmaSa = sigmaSa;
     this.sigmaSu = sigmaSu;
 
-    Random random = new Random();
-    RandomFactory factory = RandomFactory.get(random.nextLong());
+    RandomFactory factory = RandomFactory.get(new Random().nextLong());
 
     this.gevWd = new GeneralizedExtremeValueDistribution(myWd, sigmaWd, kWd, factory.getRandom());
 
