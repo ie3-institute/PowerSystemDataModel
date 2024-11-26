@@ -179,7 +179,7 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
   }
 
   public int getCoordinateCount() {
-    return idToCoordinate.keySet().size();
+    return idToCoordinate.size();
   }
 
   private Collection<Point> getCoordinatesInBoundingBox(
@@ -209,7 +209,7 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      return Success.of(dataSource.csvRowFieldValueMapping(reader, headline).parallelStream());
+      return dataSource.csvRowFieldValueMapping(reader, headline);
     } catch (IOException e) {
       return Failure.of(
           new SourceException("Cannot read the file for coordinate id to coordinate mapping.", e));
