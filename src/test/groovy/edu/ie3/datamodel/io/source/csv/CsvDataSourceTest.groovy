@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
@@ -274,7 +275,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     ]
   }
 
-  def "A CsvDataSource should be able to handle several errors when the csvRow is invalid or cannot be processed"() {
+  def "A CsvDataSource should throw an exception if the headline and CSV row have different sizes"() {
     given:
     def validHeadline = [
       "uuid",
@@ -287,33 +288,42 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "s_rated"
     ] as String[]
 
-    expect:
-    dummyCsvSource.buildFieldsToAttributes(invalidCsvRow, validHeadline) == [:]
+    when:
+    dummyCsvSource.buildFieldsToAttributes(invalidCsvRow, validHeadline)
+
+    then:
+    def exception = thrown(SourceException)
+    exception.getMessage().startsWith("The size of the headline (8) does not fit to the size of the attribute fields")
 
     where:
     invalidCsvRow                                                                          || explaination
     "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too less columns"
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too much columns"
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too little columns"
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too many columns"
   }
 
-  def "A CsvDataSource should be able to handle invalid headlines"() {
+
+  def "A CsvDataSource should throw an exception if there are duplicate headlines"() {
     given:
-    def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,0.95,test_bmTypeInput,25.0"
-
-    expect:
-    dummyCsvSource.buildFieldsToAttributes(validCsvRow, invalidHeadline) == [:]
-
-    where:
-    invalidHeadline                                                || explaination
-    ["uuid", "cosphi_rated", "id"] as String[]                     || "headline too short"
-    [
+    def invalidHeadline = [
       "uuid",
+      "active_power_gradient",
+      "Active_Power_Gradient",
+      "capex",
       "cosphi_rated",
+      "eta_conv",
       "id",
+      "opex",
       "s_rated",
-      "capex"
-    ] as String[] || "headline too long"
+    ] as String[]
+    def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0"
+
+    when:
+    dummyCsvSource.buildFieldsToAttributes(validCsvRow, invalidHeadline)
+
+    then:
+    def exception = thrown(SourceException)
+    exception.getMessage().startsWith("There might be duplicate headline elements.")
   }
 
   def "The CsvDataSource is able to provide correct paths to time series files"() {

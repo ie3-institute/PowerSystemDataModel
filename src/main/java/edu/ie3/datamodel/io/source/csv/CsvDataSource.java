@@ -161,41 +161,44 @@ public class CsvDataSource implements DataSource {
    *     occurred
    */
   protected Map<String, String> buildFieldsToAttributes(
-      final String csvRow, final String[] headline) {
+      final String csvRow, final String[] headline) throws SourceException {
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    try {
-      String[] fieldVals = parseCsvRow(csvRow, csvSep);
+    String[] fieldVals = parseCsvRow(csvRow, csvSep);
+    insensitiveFieldsToAttributes.putAll(
+        IntStream.range(0, Math.min(fieldVals.length, headline.length))
+            .boxed()
+            .collect(
+                Collectors.toMap(
+                    k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
 
-      if (fieldVals.length != headline.length) {
-        throw new SourceException(
-            "The size of the headline does not fit to the size of the attribute fields.\nHeadline: "
-                + String.join(", ", headline)
-                + "\nCsvRow: "
-                + csvRow.trim()
-                + ".\nPlease check:"
-                + "\n - is the csv separator in the file matching the separator provided in the constructor ('"
-                + csvSep
-                + "')"
-                + "\n - does the number of columns match the number of headline fields "
-                + "\n - are you using a valid RFC 4180 formatted csv row?");
-      }
-
-      insensitiveFieldsToAttributes.putAll(
-          IntStream.range(0, headline.length)
-              .boxed()
-              .collect(
-                  Collectors.toMap(
-                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
-    } catch (SourceException e) {
-      log.error(
-          "Cannot build fields to attributes map for row '{}' with headline '{}'.",
-          csvRow.trim(),
-          String.join(",", headline),
-          e);
+    if (fieldVals.length != headline.length) {
+      throw new SourceException(
+          "The size of the headline ("
+              + headline.length
+              + ") does not fit to the size of the attribute fields ("
+              + fieldVals.length
+              + ").\nHeadline: "
+              + String.join(", ", headline)
+              + "\nRow: "
+              + csvRow.trim()
+              + ".\nPlease check:"
+              + "\n - is the csv separator in the file matching the separator provided in the constructor ('"
+              + csvSep
+              + "')"
+              + "\n - does the number of columns match the number of headline fields "
+              + "\n - are you using a valid RFC 4180 formatted csv row?");
     }
+
+    if (insensitiveFieldsToAttributes.size() != fieldVals.length) {
+      throw new SourceException(
+          "There might be duplicate headline elements.\nHeadline: "
+              + String.join(", ", headline)
+              + ".\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
+    }
+
     return insensitiveFieldsToAttributes;
   }
 
@@ -252,7 +255,7 @@ public class CsvDataSource implements DataSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      return Success.of(csvRowFieldValueMapping(reader, headline).parallelStream());
+      return csvRowFieldValueMapping(reader, headline);
     } catch (FileNotFoundException e) {
       if (allowFileNotExisting) {
         log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
@@ -282,13 +285,20 @@ public class CsvDataSource implements DataSource {
    * @param headline of the file
    * @return a list of mapping
    */
-  protected List<Map<String, String>> csvRowFieldValueMapping(
+  protected Try<Stream<Map<String, String>>, SourceException> csvRowFieldValueMapping(
       BufferedReader reader, String[] headline) {
-    return reader
-        .lines()
-        .parallel()
-        .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-        .filter(map -> !map.isEmpty())
-        .toList();
+    return Try.scanStream(
+            reader
+                .lines()
+                .parallel()
+                .map(
+                    csvRow ->
+                        Try.of(
+                            () -> buildFieldsToAttributes(csvRow, headline),
+                            SourceException.class)),
+            "Map<String, String>")
+        .transform(
+            stream -> stream.filter(map -> !map.isEmpty()),
+            e -> new SourceException("Parsing csv row failed.", e));
   }
 }
