@@ -286,10 +286,10 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
         Try.ofVoid(
             domesticHotWaterStorageInput
                 .getInletTemp()
-                .isLessThan(domesticHotWaterStorageInput.getReturnTemp()),
+                .isLessThanOrEqualTo(domesticHotWaterStorageInput.getReturnTemp()),
             () ->
                 new InvalidEntityException(
-                    "Inlet temperature of the domestic hot water storage cannot be lower than outlet temperature",
+                    "Inlet temperature of the domestic hot water storage cannot be lower or equal than outlet temperature",
                     domesticHotWaterStorageInput)));
 
     exceptions.add(
