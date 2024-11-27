@@ -9,6 +9,8 @@ import edu.ie3.util.StringUtils;
 import edu.ie3.util.TimeUtil;
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +57,9 @@ public class SqlConnector implements DataConnector {
       return stmt.executeQuery(query);
     } catch (SQLException e) {
       throw new SQLException(String.format("Error at execution of query \"%1.127s\": ", query), e);
+    } finally {
+      // commits any changes made and unlocks database
+      getConnection().commit();
     }
   }
 
@@ -70,6 +75,9 @@ public class SqlConnector implements DataConnector {
     } catch (SQLException e) {
       throw new SQLException(
           String.format("Error at execution of query, SQLReason: '%s'", e.getMessage()), e);
+    } finally {
+      // commits any changes made and unlocks database
+      getConnection().commit();
     }
   }
 
@@ -85,7 +93,8 @@ public class SqlConnector implements DataConnector {
   }
 
   /**
-   * Establishes and returns a database connection
+   * Establishes and returns a database connection. The {@link Connection#getAutoCommit()} is set to
+   * {@code false}.
    *
    * @param reuseConnection should the connection be used again, if it is still valid? If not, a new
    *     connection will be established
@@ -98,6 +107,7 @@ public class SqlConnector implements DataConnector {
         if (connection != null) connection.close();
 
         connection = DriverManager.getConnection(jdbcUrl, connectionProps);
+        connection.setAutoCommit(false);
       } catch (SQLException e) {
         throw new SQLException("Could not establish connection: ", e);
       }
@@ -115,21 +125,82 @@ public class SqlConnector implements DataConnector {
   }
 
   /**
-   * Extracts all field to value maps from the ResultSet, one for each row
+   * Method to execute a {@link PreparedStatement} and return its result as a stream.
    *
-   * @param rs the ResultSet to use
-   * @return a list of field maps
+   * @param ps to execute
+   * @param fetchSize used for {@link PreparedStatement#setFetchSize(int)}
+   * @return a stream of maps
+   * @throws SQLException if an exception occurred while executing the query
    */
-  public List<Map<String, String>> extractFieldMaps(ResultSet rs) {
-    List<Map<String, String>> fieldMaps = new ArrayList<>();
+  public Stream<Map<String, String>> toStream(PreparedStatement ps, int fetchSize)
+      throws SQLException {
     try {
-      while (rs.next()) {
-        fieldMaps.add(extractFieldMap(rs));
-      }
+      ps.setFetchSize(fetchSize);
+      ResultSet resultSet = ps.executeQuery();
+      Iterator<Map<String, String>> sqlIterator = getSqlIterator(resultSet);
+
+      return StreamSupport.stream(
+              Spliterators.spliteratorUnknownSize(
+                  sqlIterator, Spliterator.NONNULL | Spliterator.IMMUTABLE),
+              true)
+          .onClose(() -> closeResultSet(ps, resultSet));
     } catch (SQLException e) {
-      log.error("Exception at extracting ResultSet: ", e);
+      // catches the exception, closes the statement and re-throws the exception
+      closeResultSet(ps, null);
+      throw e;
     }
-    return fieldMaps;
+  }
+
+  /**
+   * Returns an {@link Iterator} for the given {@link ResultSet}.
+   *
+   * @param rs given result set
+   * @return an iterator
+   */
+  public Iterator<Map<String, String>> getSqlIterator(ResultSet rs) {
+    return new Iterator<>() {
+      @Override
+      public boolean hasNext() {
+        try {
+          return rs.next();
+        } catch (SQLException e) {
+          log.error("Exception at extracting next ResultSet: ", e);
+          closeResultSet(null, rs);
+          return false;
+        }
+      }
+
+      @Override
+      public Map<String, String> next() {
+        try {
+          boolean isEmpty = !rs.isBeforeFirst() && rs.getRow() == 0;
+
+          if (isEmpty || rs.isAfterLast())
+            throw new NoSuchElementException(
+                "There is no more element to iterate to in the ResultSet.");
+
+          return extractFieldMap(rs);
+        } catch (SQLException e) {
+          log.error("Exception at extracting ResultSet: ", e);
+          closeResultSet(null, rs);
+          return Collections.emptyMap();
+        }
+      }
+    };
+  }
+
+  /**
+   * Method for closing a {@link ResultSet}.
+   *
+   * @param rs to close
+   */
+  private void closeResultSet(PreparedStatement ps, ResultSet rs) {
+    try (ps;
+        rs) {
+      log.debug("Resources successfully closed.");
+    } catch (SQLException e) {
+      log.warn("Failed to properly close sources.", e);
+    }
   }
 
   /**
@@ -138,26 +209,24 @@ public class SqlConnector implements DataConnector {
    * @param rs the ResultSet to use
    * @return the field map for the current row
    */
-  public Map<String, String> extractFieldMap(ResultSet rs) {
+  public Map<String, String> extractFieldMap(ResultSet rs) throws SQLException {
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    try {
-      ResultSetMetaData metaData = rs.getMetaData();
-      int columnCount = metaData.getColumnCount();
-      for (int i = 1; i <= columnCount; i++) {
-        String columnName = StringUtils.snakeCaseToCamelCase(metaData.getColumnName(i));
-        String value;
-        Object result = rs.getObject(i);
-        if (result instanceof Timestamp) {
-          value = TimeUtil.withDefaults.toString(rs.getTimestamp(i).toInstant());
-        } else {
-          value = String.valueOf(rs.getObject(i));
-        }
-        insensitiveFieldsToAttributes.put(columnName, value);
+
+    ResultSetMetaData metaData = rs.getMetaData();
+    int columnCount = metaData.getColumnCount();
+    for (int i = 1; i <= columnCount; i++) {
+      String columnName = StringUtils.snakeCaseToCamelCase(metaData.getColumnName(i));
+      String value;
+      Object result = rs.getObject(i);
+      if (result instanceof Timestamp) {
+        value = TimeUtil.withDefaults.toString(rs.getTimestamp(i).toInstant());
+      } else {
+        value = String.valueOf(rs.getObject(i));
       }
-    } catch (SQLException e) {
-      log.error("Exception at extracting ResultSet: ", e);
+      insensitiveFieldsToAttributes.put(columnName, value);
     }
+
     return insensitiveFieldsToAttributes;
   }
 }
