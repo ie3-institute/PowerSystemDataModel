@@ -89,6 +89,7 @@ CREATE TABLE public.cylindrical_storage_input
     return_temp double precision NOT NULL,
     storage_volume_lvl double precision NOT NULL,
     thermal_bus uuid NOT NULL,
+    p_thermal_max DOUBLE PRECISION NOT NULL,
     grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS
@@ -107,6 +108,8 @@ CREATE TABLE public.thermal_house_input
     target_temperature DOUBLE PRECISION NOT NULL,
     thermal_bus UUID NOT NULL,
     upper_temperature_limit DOUBLE PRECISION NOT NULL,
+    housing_type TEXT NOT NULL,
+    number_of_inhabitants TEXT NOT NULL,
     grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
