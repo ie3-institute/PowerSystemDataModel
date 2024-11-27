@@ -14,8 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Storage minimum level parameter removed from cylindrical thermal storage [#1123](https://github.com/ie3-institute/PowerSystemDataModel/issues/1123)
-- Converted eval-rst to myst syntax in ReadTheDocs, fixed line wrapping and widths[#1137](https://github.com/ie3-institute/PowerSystemDataModel/issues/1137)
-- Improving usage of streams on sql fetches [#827](https://github.com/ie3-institute/PowerSystemDataModel/issues/827)
+- Converted eval-rst to myst syntax in ReadTheDocs, fixed line wrapping and widths [#1137](https://github.com/ie3-institute/PowerSystemDataModel/issues/1137)
+- Changed ThermalUnitValidation: Ensure that thermal boundaries of thermal house are not the same [#1186](https://github.com/ie3-institute/PowerSystemDataModel/issues/1186)
 
 ## [5.1.0] - 2024-06-24
 

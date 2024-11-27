@@ -162,10 +162,10 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
 
     if (thermalHouseInput
             .getLowerTemperatureLimit()
-            .isGreaterThan(thermalHouseInput.getTargetTemperature())
+            .isGreaterThanOrEqualTo(thermalHouseInput.getTargetTemperature())
         || thermalHouseInput
             .getUpperTemperatureLimit()
-            .isLessThan(thermalHouseInput.getTargetTemperature())) {
+            .isLessThanOrEqualTo(thermalHouseInput.getTargetTemperature())) {
       exceptions.add(
           new Failure<>(
               new InvalidEntityException(
