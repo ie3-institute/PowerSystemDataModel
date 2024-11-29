@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improving usage of streams on sql fetches [#827](https://github.com/ie3-institute/PowerSystemDataModel/issues/827)
 - Improving error message when using the outdated csv format [#1112](https://github.com/ie3-institute/PowerSystemDataModel/issues/1112)
 - Changed ThermalUnitValidation: Ensure that thermal boundaries of thermal house are not the same [#1186](https://github.com/ie3-institute/PowerSystemDataModel/issues/1186)
+- Converted `MappingEntry` into a normal class [#1087](https://github.com/ie3-institute/PowerSystemDataModel/issues/1087)
+- Renamed timeseries mapping `participant` column to `asset` [#1191](https://github.com/ie3-institute/PowerSystemDataModel/issues/1191)
 
 ## [5.1.0] - 2024-06-24
 
