@@ -122,33 +122,34 @@ This is the UUID from the example above `2fcb3e53-b94a-4b96-bea4-c469e499f1a1`.
 The following keys are supported until now:
 ```{list-table}
    :widths: auto
+   :class: wrapping
    :header-rows: 1
 
    * - Key
-     - Information and supported head line
+     - Information and supported head line.
    * - c
      - An energy price (e.g. in €/MWh; c stands for charge).
        Permissible head line: ``time,price``
    * - p
-     - Active power
+     - Active power.
        Permissible head line: ``time,p``
    * - pq
-     - Active and reactive power
+     - Active and reactive power.
        Permissible head line: ``time,p,q``
    * - h
-     - Heat power demand
+     - Heat power demand.
        Permissible head line: ``time,h``
    * - ph
-     - Active and heat power
+     - Active and heat power.
        Permissible head line: ``time,p,h``
    * - pqh
-     - Active, reactive and heat power
+     - Active, reactive and heat power.
        Permissible head line: ``time,p,q,h``
    * - v
-     - Voltage mangnitude in pu and angle in °
+     - Voltage mangnitude in pu and angle in °.
        Permissible head line: ``time,vMag,vAng``
    * - weather
-     - Weather information
+     - Weather information.
        Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
 
 ```

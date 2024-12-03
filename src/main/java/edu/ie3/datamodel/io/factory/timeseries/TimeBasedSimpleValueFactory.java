@@ -11,12 +11,12 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
+import edu.ie3.datamodel.utils.Try;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import javax.measure.quantity.Angle;
+import tech.units.indriya.ComparableQuantity;
 
 public class TimeBasedSimpleValueFactory<V extends Value>
     extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {
@@ -72,16 +72,10 @@ public class TimeBasedSimpleValueFactory<V extends Value>
     } else if (PValue.class.isAssignableFrom(data.getTargetClass())) {
       value = (V) new PValue(data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN));
     } else if (VoltageValue.class.isAssignableFrom(data.getTargetClass())) {
+      Optional<ComparableQuantity<Angle>> angleOption =
+          Try.of(() -> data.getQuantity(VANG, VOLTAGE_ANGLE), FactoryException.class).getData();
 
-      try {
-        value =
-            (V)
-                new VoltageValue(
-                    data.getQuantity(VMAG, VOLTAGE_MAGNITUDE),
-                    data.getQuantity(VANG, VOLTAGE_ANGLE));
-      } catch (FactoryException e) {
-        value = (V) new VoltageValue(data.getQuantity(VMAG, VOLTAGE_MAGNITUDE));
-      }
+      value = (V) new VoltageValue(data.getQuantity(VMAG, VOLTAGE_MAGNITUDE), angleOption);
     } else {
       throw new FactoryException(
           "The given factory cannot handle target class '" + data.getTargetClass() + "'.");
@@ -106,6 +100,8 @@ public class TimeBasedSimpleValueFactory<V extends Value>
       minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, REACTIVE_POWER));
     } else if (PValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.add(ACTIVE_POWER);
+    } else if (VoltageValue.class.isAssignableFrom(entityClass)) {
+      minConstructorParams.addAll(List.of(VMAG, VANG));
     } else {
       throw new FactoryException(
           "The given factory cannot handle target class '" + entityClass + "'.");

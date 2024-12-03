@@ -7,9 +7,9 @@ package edu.ie3.datamodel.models.value
 
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 
+import edu.ie3.util.quantities.QuantityUtil
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
 
 class VoltageValueTest extends Specification {
 
@@ -19,13 +19,13 @@ class VoltageValueTest extends Specification {
 
     then:
     actual.isPresent()
-    actual.get() =~ expected
+    QuantityUtil.isEquivalentAbs(actual.get(), expected, 1e-3)
 
     where:
     value                                                                                    | expected
     new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(0, DEGREE_GEOM))  | Quantities.getQuantity(1, PU)
     new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(45, DEGREE_GEOM)) | Quantities.getQuantity(0.7071067811865476, PU)
-    new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(90, DEGREE_GEOM)) | Quantities.getQuantity(6.123233995736766E-17, PU) // ~0pu
+    new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(90, DEGREE_GEOM)) | Quantities.getQuantity(0, PU)
   }
 
 
@@ -35,7 +35,7 @@ class VoltageValueTest extends Specification {
 
     then:
     actual.isPresent()
-    actual.get() =~ expected
+    QuantityUtil.isEquivalentAbs(actual.get(), expected, 1e-3)
 
     where:
     value                                                                                    | expected

@@ -27,22 +27,23 @@ public class VoltageValue implements Value {
 
   /**
    * @param magnitude of the voltage in p.u.
+   * @param angleOption option for the angle of this voltage in degree
+   */
+  public VoltageValue(
+      ComparableQuantity<Dimensionless> magnitude,
+      Optional<ComparableQuantity<Angle>> angleOption) {
+    this.magnitude = magnitude;
+    this.angle = angleOption.orElse(Quantities.getQuantity(0.0, VOLTAGE_ANGLE));
+  }
+
+  /**
+   * @param magnitude of the voltage in p.u.
    * @param angle of the voltage in degree
    */
   public VoltageValue(
       ComparableQuantity<Dimensionless> magnitude, ComparableQuantity<Angle> angle) {
     this.magnitude = magnitude;
     this.angle = angle;
-  }
-
-  /**
-   * This constructor will set the angle to 0°
-   *
-   * @param magnitude of the voltage in p.u.
-   */
-  public VoltageValue(ComparableQuantity<Dimensionless> magnitude) {
-    this.magnitude = magnitude;
-    this.angle = Quantities.getQuantity(0.0, VOLTAGE_ANGLE);
   }
 
   public Optional<ComparableQuantity<Dimensionless>> getMagnitude() {
@@ -65,8 +66,8 @@ public class VoltageValue implements Value {
     double mag = magnitude.to(PU).getValue().doubleValue();
     double ang = angle.to(DEGREE_GEOM).getValue().doubleValue();
 
-    double eInPu = mag * sin(toRadians(ang));
-    return Optional.of(Quantities.getQuantity(eInPu, PU));
+    double fInPu = mag * sin(toRadians(ang));
+    return Optional.of(Quantities.getQuantity(fInPu, PU));
   }
 
   @Override
