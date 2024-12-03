@@ -48,7 +48,10 @@ The following different values are available:
      
    * - `WindValue`
      - Combination of wind direction and wind velocity
-        
+   
+   * - `VoltageValue`
+     - Combination of voltage magnitude in p.u. and angle in °
+   
    * - `WeatherValue`
      - Combination of irradiance, temperature and wind information
            
