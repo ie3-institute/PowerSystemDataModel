@@ -8,10 +8,14 @@ package edu.ie3.datamodel.models.value
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.util.quantities.QuantityUtil
+import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 class VoltageValueTest extends Specification {
+
+  @Shared
+  double tolerance = 1e-10
 
   def "A VoltageValue should return the real part correctly"() {
     when:
@@ -19,7 +23,7 @@ class VoltageValueTest extends Specification {
 
     then:
     actual.isPresent()
-    QuantityUtil.isEquivalentAbs(actual.get(), expected, 1e-3)
+    QuantityUtil.isEquivalentAbs(actual.get(), expected, tolerance)
 
     where:
     value                                                                                    | expected
@@ -35,7 +39,7 @@ class VoltageValueTest extends Specification {
 
     then:
     actual.isPresent()
-    QuantityUtil.isEquivalentAbs(actual.get(), expected, 1e-3)
+    QuantityUtil.isEquivalentAbs(actual.get(), expected, tolerance)
 
     where:
     value                                                                                    | expected
