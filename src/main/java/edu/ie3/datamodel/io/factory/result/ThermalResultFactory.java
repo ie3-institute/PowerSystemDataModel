@@ -57,6 +57,8 @@ public class ThermalResultFactory extends ModelResultFactory<ThermalUnitResult> 
       minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, INDOOR_TEMPERATURE);
     } else if (entityClass.equals(CylindricalStorageResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
+    } else if (entityClass.equals(DomesticHotWaterStorageResult.class)) {
+      minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
     }
 
     return List.of(minConstructorParams);
