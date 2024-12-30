@@ -5,11 +5,11 @@ plugins {
   id 'signing'
   id 'pmd' // code check, working on source code
   id 'com.diffplug.spotless' version '6.25.0' //code format
-  id 'com.github.spotbugs' version '6.0.26' // code check, working on byte code
+  id 'com.github.spotbugs' version '6.0.27' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "6.0.0.5145" // sonarqube
+  id "org.sonarqube" version "6.0.1.5171" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
@@ -70,10 +70,10 @@ dependencies {
   // testing
   testImplementation "org.apache.groovy:groovy:$groovyBinaryVersion"
 
-  testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.4' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.15.10' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.15.11' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
@@ -83,14 +83,14 @@ dependencies {
   testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
 
   // logging
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.24.2')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.24.3')
   implementation 'org.apache.logging.log4j:log4j-api' // log4j
   implementation 'org.apache.logging.log4j:log4j-core' // log4j
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.24'
-  implementation 'com.couchbase.client:java-client:3.7.5'
+  implementation 'com.couchbase.client:java-client:3.7.6'
   runtimeOnly 'org.postgresql:postgresql:42.7.4' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.18.0' // I/O functionalities
