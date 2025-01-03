@@ -44,10 +44,6 @@ Model of (mainly) domestic loads.
      -
      - [Load profile](#load-lp) as model behaviour
 
-   * - dsm
-     -
-     - Whether the load is able to follow demand side management signals
-
    * - eConsAnnual
      - kWh
      - Annual energy consumption
