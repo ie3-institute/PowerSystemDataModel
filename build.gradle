@@ -94,7 +94,7 @@ dependencies {
   runtimeOnly 'org.postgresql:postgresql:42.7.4' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.18.0' // I/O functionalities
-  implementation 'commons-codec:commons-codec:1.17.1' // needed by commons-compress
+  implementation 'commons-codec:commons-codec:1.17.2' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.27.1' // I/O functionalities
 }
 
