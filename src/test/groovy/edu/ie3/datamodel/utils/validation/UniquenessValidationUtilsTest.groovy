@@ -23,6 +23,7 @@ import edu.ie3.datamodel.models.value.SolarIrradianceValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.util.geo.GeoUtils
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -183,29 +184,30 @@ class UniquenessValidationUtilsTest extends Specification {
     given:
     UUID participant = UUID.fromString("1f25eea2-20eb-4b6b-8f05-bdbb0e851e65")
 
-    Set<TimeSeriesMappingSource.MappingEntry> uniqueEntries = [
+    Set<TimeSeriesMappingSource.MappingEntry> uniqueEntityEntries = [
       new TimeSeriesMappingSource.MappingEntry(participant, UUID.randomUUID()),
       new TimeSeriesMappingSource.MappingEntry(participant, UUID.randomUUID()),
     ]
 
     when:
-    checkMappingEntryUniqueness(uniqueEntries)
+    def entityDuplicate = Try.ofVoid(() -> checkMappingEntryUniqueness(uniqueEntityEntries), DuplicateEntitiesException)
 
     then:
-    DuplicateEntitiesException de = thrown()
-    de.message == "'MappingEntry' entities with duplicated UUID key, but different field values found! " +
-        "Affected primary keys: [1f25eea2-20eb-4b6b-8f05-bdbb0e851e65]"
+
+    entityDuplicate.failure
+    entityDuplicate.exception.get().message == "'MappingEntry' entities with duplicated UUID key, but different field values found! " +
+    "Affected primary keys: [1f25eea2-20eb-4b6b-8f05-bdbb0e851e65]"
   }
 
   def "Checking if time based weather values are unique"() {
     given:
     ZonedDateTime time = ZonedDateTime.now()
     WeatherValue value = new WeatherValue(
-        GeoUtils.buildPoint(50d, 7d),
-        new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
-        new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
-        new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))
-        )
+    GeoUtils.buildPoint(50d, 7d),
+    new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
+    new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
+    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))
+    )
 
     Set<TimeBasedValue<WeatherValue>> uniqueValues = [
       new TimeBasedValue<WeatherValue>(time, value),
@@ -223,11 +225,11 @@ class UniquenessValidationUtilsTest extends Specification {
     given:
     ZonedDateTime time = ZonedDateTime.now()
     WeatherValue value = new WeatherValue(
-        GeoUtils.buildPoint(50d, 7d),
-        new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
-        new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
-        new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))
-        )
+    GeoUtils.buildPoint(50d, 7d),
+    new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
+    new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
+    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))
+    )
     Set<TimeBasedValue<WeatherValue>> notUniqueValues = [
       new TimeBasedValue<WeatherValue>(time, value),
       new TimeBasedValue<WeatherValue>(time, value)

@@ -79,6 +79,22 @@ public abstract class FactoryData {
   }
 
   /**
+   * Returns field value for given field name, or empty Optional if field does not exist.
+   *
+   * @param field field name
+   * @param unit unit of Quantity
+   * @param <Q> unit type parameter
+   * @return field value
+   */
+  public <Q extends Quantity<Q>> Optional<ComparableQuantity<Q>> getQuantityOptional(
+      String field, Unit<Q> unit) {
+    return Optional.ofNullable(fieldsToAttributes.get(field))
+        .filter(str -> !str.isEmpty())
+        .map(Double::parseDouble)
+        .map(value -> Quantities.getQuantity(value, unit));
+  }
+
+  /**
    * Returns int value for given field name. Throws {@link FactoryException} if field does not exist
    * or parsing fails.
    *

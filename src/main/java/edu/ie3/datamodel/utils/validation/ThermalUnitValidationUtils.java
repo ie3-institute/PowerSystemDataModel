@@ -162,10 +162,10 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
 
     if (thermalHouseInput
             .getLowerTemperatureLimit()
-            .isGreaterThan(thermalHouseInput.getTargetTemperature())
+            .isGreaterThanOrEqualTo(thermalHouseInput.getTargetTemperature())
         || thermalHouseInput
             .getUpperTemperatureLimit()
-            .isLessThan(thermalHouseInput.getTargetTemperature())) {
+            .isLessThanOrEqualTo(thermalHouseInput.getTargetTemperature())) {
       exceptions.add(
           new Failure<>(
               new InvalidEntityException(
@@ -206,10 +206,10 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
         Try.ofVoid(
             cylindricalStorageInput
                 .getInletTemp()
-                .isLessThan(cylindricalStorageInput.getReturnTemp()),
+                .isLessThanOrEqualTo(cylindricalStorageInput.getReturnTemp()),
             () ->
                 new InvalidEntityException(
-                    "Inlet temperature of the cylindrical storage cannot be lower than outlet temperature",
+                    "Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature",
                     cylindricalStorageInput)));
 
     exceptions.add(
