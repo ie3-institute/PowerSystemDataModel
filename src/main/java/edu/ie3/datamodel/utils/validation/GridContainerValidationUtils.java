@@ -66,6 +66,10 @@ public class GridContainerValidationUtils extends ValidationUtils {
             () -> checkUniqueEntities(gridContainer.allEntitiesAsList()),
             DuplicateEntitiesException.class));
 
+    if (gridContainer instanceof JointGridContainer jointGridContainer) {
+      exceptions.add(checkSlackNodeCount(jointGridContainer));
+    }
+
     exceptions.addAll(checkRawGridElements(gridContainer.getRawGrid()));
     exceptions.addAll(
         checkSystemParticipants(
@@ -81,6 +85,28 @@ public class GridContainerValidationUtils extends ValidationUtils {
     }
 
     return exceptions;
+  }
+
+  /**
+   * Method to check if a given {@link JointGridContainer} contains exactly one slack node.
+   *
+   * @param jointGridContainer to validate
+   * @return a {@link Try}
+   */
+  protected static Try<Void, InvalidGridException> checkSlackNodeCount(
+      JointGridContainer jointGridContainer) {
+    List<NodeInput> slackNodes =
+        jointGridContainer.getRawGrid().getNodes().stream().filter(NodeInput::isSlack).toList();
+
+    if (slackNodes.size() > 1) {
+      return Failure.ofVoid(new InvalidGridException("There is more than one slack node!"));
+    }
+
+    if (slackNodes.isEmpty()) {
+      return Failure.ofVoid(new InvalidGridException("There is no slack node!"));
+    }
+
+    return Success.empty();
   }
 
   /**

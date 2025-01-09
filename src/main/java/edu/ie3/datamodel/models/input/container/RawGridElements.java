@@ -115,6 +115,12 @@ public class RawGridElements implements InputContainer<AssetInput> {
             .collect(Collectors.toSet());
   }
 
+  /** Returns an empty {@link RawGridElements}. */
+  public static RawGridElements empty() {
+    List<RawGridElements> list = Collections.emptyList();
+    return new RawGridElements(list);
+  }
+
   @Override
   public final List<AssetInput> allEntitiesAsList() {
     List<AssetInput> allEntities = new ArrayList<>();

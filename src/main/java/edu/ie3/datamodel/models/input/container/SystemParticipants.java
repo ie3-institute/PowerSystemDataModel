@@ -157,6 +157,12 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
             .collect(Collectors.toSet());
   }
 
+  /** Returns an empty {@link SystemParticipants}. */
+  public static SystemParticipants empty() {
+    List<SystemParticipantInput> list = Collections.emptyList();
+    return new SystemParticipants(list);
+  }
+
   @Override
   public final List<SystemParticipantInput> allEntitiesAsList() {
     List<SystemParticipantInput> allEntities = new ArrayList<>();

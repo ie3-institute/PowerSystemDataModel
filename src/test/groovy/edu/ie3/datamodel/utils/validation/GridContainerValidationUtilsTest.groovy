@@ -7,7 +7,10 @@ package edu.ie3.datamodel.utils.validation
 
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.models.OperationTime
+import edu.ie3.datamodel.models.input.container.GraphicElements
+import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
+import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData as GTD
 import spock.lang.Shared
@@ -47,6 +50,44 @@ class GridContainerValidationUtilsTest extends Specification {
     ] as Set
 
     limitedElements = new RawGridElements(nodes, lines, transformers, [] as Set, [] as Set, [] as Set)
+  }
+
+  def "The GridContainerValidationUtils should return a Success if there is only one slack node"() {
+    when:
+    def jointGridContainer = new JointGridContainer(
+        "grid",
+        new RawGridElements([GTD.nodeA]),
+        SystemParticipants.empty(),
+        GraphicElements.empty()
+        )
+
+    def actual = GridContainerValidationUtils.checkSlackNodeCount(jointGridContainer)
+
+    then:
+    actual.success
+  }
+
+  def "The GridContainerValidationUtils should check the slack node count for JointGridContainer correctly"() {
+    when:
+    def jointGridContainer = new JointGridContainer(
+        "grid",
+        new RawGridElements(nodes),
+        SystemParticipants.empty(),
+        GraphicElements.empty()
+        )
+
+    def actual = GridContainerValidationUtils.checkSlackNodeCount(jointGridContainer)
+
+    then:
+    actual.getException().get().message == expectedMessage
+
+    where:
+    nodes                                             | expectedMessage
+    [GTD.nodeB]                                       | "There is no slack node!"
+    [
+      GTD.nodeA,
+      GTD.nodeB.copy().slack(true).build()
+    ] | "There is more than one slack node!"
   }
 
   def "The GridContainerValidationUtils should check the connectivity for all operation intervals correctly"() {

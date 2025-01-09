@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhance `WeatherSource` with method to retrieve all time keys after a given key [#572](https://github.com/ie3-institute/PowerSystemDataModel/issues/572)
 - Adding timeseries for voltage values [#1128](https://github.com/ie3-institute/PowerSystemDataModel/issues/1128)
 - Added Staudt to list of reviewers [#1190](https://github.com/ie3-institute/PowerSystemDataModel/issues/1190)
+- Validation for the number of slack nodes in a `JointGridContainer` [#1206](https://github.com/ie3-institute/PowerSystemDataModel/issues/1206)
 
 ### Fixed
 

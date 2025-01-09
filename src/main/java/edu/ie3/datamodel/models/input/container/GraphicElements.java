@@ -59,6 +59,12 @@ public class GraphicElements implements InputContainer<GraphicInput> {
             .collect(Collectors.toSet());
   }
 
+  /** Returns an empty {@link GraphicElements}. */
+  public static GraphicElements empty() {
+    List<GraphicInput> list = Collections.emptyList();
+    return new GraphicElements(list);
+  }
+
   @Override
   public final List<GraphicInput> allEntitiesAsList() {
     List<GraphicInput> allEntities = new LinkedList<>();
