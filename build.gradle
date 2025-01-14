@@ -4,8 +4,8 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '6.25.0' //code format
-  id 'com.github.spotbugs' version '6.0.27' // code check, working on byte code
+  id 'com.diffplug.spotless' version '7.0.1' //code format
+  id 'com.github.spotbugs' version '6.1.0' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
@@ -55,7 +55,7 @@ dependencies {
   //	 ie³ power system utils
   implementation 'com.github.ie3-institute:PowerSystemUtils:2.2.1'
 
-  implementation 'tech.units:indriya:2.2.1'
+  implementation 'tech.units:indriya:2.2.2'
 
   // JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
   implementation ('org.locationtech.jts:jts-core:1.20.0'){
@@ -90,11 +90,11 @@ dependencies {
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.24'
-  implementation 'com.couchbase.client:java-client:3.7.6'
+  implementation 'com.couchbase.client:java-client:3.7.7'
   runtimeOnly 'org.postgresql:postgresql:42.7.4' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.18.0' // I/O functionalities
-  implementation 'commons-codec:commons-codec:1.17.1' // needed by commons-compress
+  implementation 'commons-codec:commons-codec:1.17.2' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.27.1' // I/O functionalities
 }
 
