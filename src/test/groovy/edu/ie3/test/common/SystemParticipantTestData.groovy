@@ -269,7 +269,6 @@ class SystemParticipantTestData {
   cosPhiFixed,
   emInput,
   standardLoadProfile,
-  false,
   eConsAnnual,
   sRated,
   cosPhiRated

@@ -47,7 +47,6 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
       "id"                 : "TestID",
       "qcharacteristics"   : "cosPhiFixed:{(0.0,1.0)}",
       "loadprofile"	     : profileKey,
-      "dsm"                : "true",
       "econsannual"        : "3",
       "srated"             : "4",
       "cosphirated"        : "5"
@@ -72,7 +71,6 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
       }
       assert controllingEm == Optional.of(emUnit)
       assert loadProfile == profile
-      assert dsm
       assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)
       assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
       assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])

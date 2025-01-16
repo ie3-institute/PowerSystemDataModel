@@ -92,7 +92,6 @@ class SampleJointGrid extends SystemParticipantTestData {
         cosPhiFixed,
         emInput,
         standardLoadProfile,
-        false,
         eConsAnnual,
         sRated,
         cosPhiRated)
@@ -107,7 +106,6 @@ class SampleJointGrid extends SystemParticipantTestData {
         cosPhiFixed,
         emInput,
         standardLoadProfile,
-        false,
         eConsAnnual,
         sRated,
         cosPhiRated)
