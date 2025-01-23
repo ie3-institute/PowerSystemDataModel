@@ -89,11 +89,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     }
 
     // Validate storages
-    for (ThermalStorageInput storage :
-        Stream.concat(
-                thermalGrid.heatStorages().stream(),
-                thermalGrid.domesticHotWaterStorages().stream())
-            .toList()) {
+    for (ThermalStorageInput storage : thermalGrid.storages()) {
       exceptions.addAll(check(storage));
     }
 
