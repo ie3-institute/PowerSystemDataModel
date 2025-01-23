@@ -238,7 +238,6 @@ class InputEntityProcessorTest extends Specification {
     LoadInput        | SystemParticipantTestData.loadInput        || [
       "uuid"               : SystemParticipantTestData.loadInput.uuid.toString(),
       "cosPhiRated"        : SystemParticipantTestData.loadInput.cosPhiRated.toString(),
-      "dsm"                : SystemParticipantTestData.loadInput.dsm.toString(),
       "eConsAnnual"        : SystemParticipantTestData.loadInput.eConsAnnual.getValue().doubleValue().toString(),
       "id"                 : SystemParticipantTestData.loadInput.id,
       "node"               : SystemParticipantTestData.loadInput.node.uuid.toString(),

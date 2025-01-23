@@ -157,7 +157,6 @@ CREATE TABLE public.load_input
     uuid UUID PRIMARY KEY,
     controlling_em UUID NOT NULL,
     cos_phi_rated TEXT NOT NULL,
-    dsm BOOL NOT NULL,
     e_cons_annual DOUBLE PRECISION NOT NULL,
     id TEXT NOT NULL,
     load_profile TEXT NOT NULL,
