@@ -13,14 +13,12 @@ import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
 import javax.measure.Quantity;
 
-public class ThermalUnitValidationUtils extends ValidationUtils {
+public class ThermalValidationUtils extends ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */
-  private ThermalUnitValidationUtils() {
+  private ThermalValidationUtils() {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 

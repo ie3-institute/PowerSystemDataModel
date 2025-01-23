@@ -27,7 +27,7 @@ import tech.units.indriya.quantity.Quantities
 import javax.measure.quantity.Temperature
 import javax.measure.quantity.Volume
 
-class ThermalUnitValidationUtilsTest extends Specification {
+class ThermalValidationUtilsTest extends Specification {
 
   // General data
   private static final UUID thermalUnitUuid = UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a")
@@ -66,7 +66,7 @@ class ThermalUnitValidationUtilsTest extends Specification {
 
   def "ThermalUnitValidationUtils.checkThermalHouse() recognizes all potential errors for a thermal house"() {
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ThermalUnitValidationUtils.check(invalidThermalHouse).stream().filter { it -> it.failure }.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = ThermalValidationUtils.check(invalidThermalHouse).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -99,7 +99,7 @@ class ThermalUnitValidationUtilsTest extends Specification {
 
   def "ThermalUnitValidationUtils.checkCylindricalStorage() recognizes all potential errors for a thermal cylindrical storage"() {
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ThermalUnitValidationUtils.check(invalidCylindricalStorage).stream().filter { it -> it.failure }.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = ThermalValidationUtils.check(invalidCylindricalStorage).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -127,7 +127,7 @@ class ThermalUnitValidationUtilsTest extends Specification {
     ThermalGrid thermalGrid = new ThermalGrid(thermalBus, [thermalHouse], cylindricalStorageInput, domesticHotWaterStorageInput)
 
 
-    List<Try<Void, ? extends ValidationException>> exceptions = ThermalUnitValidationUtils.check(thermalGrid).stream().filter { it -> it.failure }.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = ThermalValidationUtils.check(thermalGrid).stream().filter { it -> it.failure }.toList()
 
     then:
     exceptions.size() == expectedSize
