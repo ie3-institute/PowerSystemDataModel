@@ -117,7 +117,9 @@ class ThermalValidationUtilsTest extends Specification {
   def "ThermalUnitValidationUtils.check() works for complete ThermalGrid as well"() {
     when:
     def thermalBus = ThermalUnitInputTestData.thermalBus
-    def cylindricalStorageInput = [ThermalUnitInputTestData.cylindricStorageInput]
+    def cylindricalStorageInput = [
+      ThermalUnitInputTestData.cylindricStorageInput
+    ]
 
 
     ThermalGrid thermalGrid = new ThermalGrid(thermalBus, [thermalHouse], cylindricalStorageInput)
