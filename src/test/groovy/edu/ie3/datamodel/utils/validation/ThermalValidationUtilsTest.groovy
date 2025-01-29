@@ -45,7 +45,7 @@ class ThermalValidationUtilsTest extends Specification {
   private static final ComparableQuantity<Temperature> UPPER_TEMPERATURE_LIMIT = Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> LOWER_TEMPERATURE_LIMIT = Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
 
-  // Specific data for thermal cylindric storage input
+  // Specific data for thermal cylindrical storage input
   private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
   private static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
@@ -108,23 +108,19 @@ class ThermalValidationUtilsTest extends Specification {
     ex.message == expectedException.message
 
     where:
-    invalidCylindricalStorage                                                                                                                                                                                                                                                                                           || expectedSize || expectedException
-    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c)                                           || 1            || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature", invalidCylindricalStorage)
-    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(100, StandardUnits.TEMPERATURE), c)                                           || 1            || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature", invalidCylindricalStorage)
+    invalidCylindricalStorage                                                                                                                                                                                                                                       || expectedSize || expectedException
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c)            || 1            || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature", invalidCylindricalStorage)
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(100, StandardUnits.TEMPERATURE), c)            || 1            || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature", invalidCylindricalStorage)
     new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)) || 1            || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -1.05 kWh/K*m³", invalidCylindricalStorage)
   }
 
   def "ThermalUnitValidationUtils.check() works for complete ThermalGrid as well"() {
     when:
     def thermalBus = ThermalUnitInputTestData.thermalBus
-    def domesticHotWaterStorageInput = [
-      ThermalUnitInputTestData.domesticHotWaterStorageInput
-    ]
-    def cylindricalStorageInput = [
-      ThermalUnitInputTestData.cylindricalStorageInput
-    ]
+    def cylindricalStorageInput = [ThermalUnitInputTestData.cylindricStorageInput]
 
-    ThermalGrid thermalGrid = new ThermalGrid(thermalBus, [thermalHouse], cylindricalStorageInput, domesticHotWaterStorageInput)
+
+    ThermalGrid thermalGrid = new ThermalGrid(thermalBus, [thermalHouse], cylindricalStorageInput)
 
 
     List<Try<Void, ? extends ValidationException>> exceptions = ThermalValidationUtils.check(thermalGrid).stream().filter { it -> it.failure }.toList()
@@ -137,7 +133,7 @@ class ThermalValidationUtilsTest extends Specification {
 
 
     where:
-    thermalHouse                                                                                                                                                                                                                                                                       || expectedSize || expectedException
-    new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, ethCapa, Quantities.getQuantity(0, StandardUnits.TEMPERATURE), UPPER_TEMPERATURE_LIMIT, LOWER_TEMPERATURE_LIMIT, HOUSING_TYPE, NUMBER_INHABITANTS)   || 1            || new InvalidEntityException("Target temperature must be higher than lower temperature limit and lower than upper temperature limit", thermalHouse)
+    thermalHouse                                                                                                                                                                                                                                      || expectedSize || expectedException
+    new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, ethCapa, Quantities.getQuantity(0, StandardUnits.TEMPERATURE), UPPER_TEMPERATURE_LIMIT, LOWER_TEMPERATURE_LIMIT)    || 1            || new InvalidEntityException("Target temperature must be higher than lower temperature limit and lower than upper temperature limit", thermalHouse)
   }
 }
