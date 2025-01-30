@@ -103,4 +103,25 @@ class GridContainerValidationUtilsTest extends Specification {
       GTD.nodeG.uuid
     ])
   }
+
+  def "The GridContainerValidationUtils should return an exception if the grid is not properly connected, because a switch is open"() {
+    given:
+    def nodeA = GTD.nodeA.copy().operationTime(OperationTime.notLimited()).build()
+    def nodeB = GTD.nodeB.copy().operationTime(OperationTime.notLimited()).build()
+
+    def switchAtoB = GTD.switchAtoB.copy()
+        .nodeA(nodeA)
+        .nodeB(nodeB)
+        .operationTime(OperationTime.notLimited())
+        .closed(false)
+        .build()
+
+    def rawGrid = new RawGridElements([nodeA, nodeB] as Set, [] as Set, [] as Set, [] as Set, [switchAtoB] as Set, [] as Set)
+
+    when:
+    def actual = GridContainerValidationUtils.checkConnectivity(rawGrid, Optional.of(start) as Optional<ZonedDateTime>)
+
+    then:
+    actual.exception.get().message == "The grid contains unconnected elements for time "+start+": [47d29df0-ba2d-4d23-8e75-c82229c5c758]"
+  }
 }
