@@ -218,7 +218,6 @@ package models {
 
             class LoadInput {
                 - standardLoadProfile: StandardLoadProfile
-                - dsm: Boolean
                 - sRated: ComparableQuantity<Power> [kVA]
                 - eConsAnnual: ComparableQuantity<Energy> [kWh]
                 - cosPhiRated: double

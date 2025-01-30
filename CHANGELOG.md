@@ -10,13 +10,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhance `TimeSeriesSource` with method to retrieve all time keys after a given key [#543](https://github.com/ie3-institute/PowerSystemDataModel/issues/543)
 - Enhance `WeatherSource` with method to retrieve all time keys after a given key [#572](https://github.com/ie3-institute/PowerSystemDataModel/issues/572)
 - Added explicit handling for cases where no weather data is received from any source [#554](https://github.com/ie3-institute/PowerSystemDataModel/issues/554)
+- Adding timeseries for voltage values [#1128](https://github.com/ie3-institute/PowerSystemDataModel/issues/1128)
+- Added Staudt to list of reviewers [#1190](https://github.com/ie3-institute/PowerSystemDataModel/issues/1190)
+
 
 ### Fixed
 
 ### Changed
 - Storage minimum level parameter removed from cylindrical thermal storage [#1123](https://github.com/ie3-institute/PowerSystemDataModel/issues/1123)
-- Converted eval-rst to myst syntax in ReadTheDocs, fixed line wrapping and widths[#1137](https://github.com/ie3-institute/PowerSystemDataModel/issues/1137)
+- Converted eval-rst to myst syntax in ReadTheDocs, fixed line wrapping and widths [#1137](https://github.com/ie3-institute/PowerSystemDataModel/issues/1137)
 - Improving usage of streams on sql fetches [#827](https://github.com/ie3-institute/PowerSystemDataModel/issues/827)
+- Improving error message when using the outdated csv format [#1112](https://github.com/ie3-institute/PowerSystemDataModel/issues/1112)
+- Changed ThermalUnitValidation: Ensure that thermal boundaries of thermal house are not the same [#1186](https://github.com/ie3-institute/PowerSystemDataModel/issues/1186)
+- Converted `MappingEntry` into a normal class [#1087](https://github.com/ie3-institute/PowerSystemDataModel/issues/1087)
+- Renamed timeseries mapping `participant` column to `asset` [#1191](https://github.com/ie3-institute/PowerSystemDataModel/issues/1191)
+- Removed attribute `dsm` from `LoadInput` [#1195](https://github.com/ie3-institute/PowerSystemDataModel/issues/1195)
+- Fix spotless deprecations [#1123](https://github.com/ie3-institute/PowerSystemDataModel/issues/1223)
 
 ## [5.1.0] - 2024-06-24
 

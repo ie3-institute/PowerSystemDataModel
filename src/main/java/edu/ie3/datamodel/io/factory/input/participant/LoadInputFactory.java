@@ -26,7 +26,6 @@ public class LoadInputFactory
   private static final Logger logger = LoggerFactory.getLogger(LoadInputFactory.class);
 
   private static final String LOAD_PROFILE = "loadProfile";
-  private static final String DSM = "dsm";
   private static final String E_CONS_ANNUAL = "eConsAnnual";
   private static final String S_RATED = "sRated";
   private static final String COS_PHI = "cosPhiRated";
@@ -37,7 +36,7 @@ public class LoadInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {LOAD_PROFILE, DSM, E_CONS_ANNUAL, S_RATED, COS_PHI};
+    return new String[] {LOAD_PROFILE, E_CONS_ANNUAL, S_RATED, COS_PHI};
   }
 
   @Override
@@ -60,7 +59,7 @@ public class LoadInputFactory
       loadProfile = LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
     }
     final EmInput em = data.getEm().orElse(null);
-    final boolean dsm = data.getBoolean(DSM);
+
     final ComparableQuantity<Energy> eConsAnnual =
         data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN);
     final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
@@ -75,7 +74,6 @@ public class LoadInputFactory
         qCharacteristics,
         em,
         loadProfile,
-        dsm,
         eConsAnnual,
         sRated,
         cosPhi);

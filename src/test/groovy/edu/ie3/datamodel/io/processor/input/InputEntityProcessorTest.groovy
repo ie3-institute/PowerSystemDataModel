@@ -239,7 +239,6 @@ class InputEntityProcessorTest extends Specification {
     LoadInput        | SystemParticipantTestData.loadInput        || [
       "uuid"               : SystemParticipantTestData.loadInput.uuid.toString(),
       "cosPhiRated"        : SystemParticipantTestData.loadInput.cosPhiRated.toString(),
-      "dsm"                : SystemParticipantTestData.loadInput.dsm.toString(),
       "eConsAnnual"        : SystemParticipantTestData.loadInput.eConsAnnual.getValue().doubleValue().toString(),
       "id"                 : SystemParticipantTestData.loadInput.id,
       "node"               : SystemParticipantTestData.loadInput.node.uuid.toString(),
@@ -630,7 +629,7 @@ class InputEntityProcessorTest extends Specification {
     def validResult = new TimeSeriesMappingSource.MappingEntry(UUID.fromString("7eb7b296-f4c4-4020-acf3-e865453b5dbd"), UUID.fromString("bc581c6c-3044-48a1-aea1-5b2cb1370356"))
 
     Map expectedResults = [
-      "participant": "7eb7b296-f4c4-4020-acf3-e865453b5dbd",
+      "asset": "7eb7b296-f4c4-4020-acf3-e865453b5dbd",
       "timeSeries": "bc581c6c-3044-48a1-aea1-5b2cb1370356"
     ]
 
