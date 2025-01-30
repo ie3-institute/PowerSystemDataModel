@@ -11,9 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhance `WeatherSource` with method to retrieve all time keys after a given key [#572](https://github.com/ie3-institute/PowerSystemDataModel/issues/572)
 - Adding timeseries for voltage values [#1128](https://github.com/ie3-institute/PowerSystemDataModel/issues/1128)
 - Added Staudt to list of reviewers [#1190](https://github.com/ie3-institute/PowerSystemDataModel/issues/1190)
+- Extend ValidationUtils for validating ThermalGrids [#1216](https://github.com/ie3-institute/PowerSystemDataModel/issues/1216) 
 - BDEW standard load profiles [#1106](https://github.com/ie3-institute/PowerSystemDataModel/issues/1106)
 
 ### Fixed
+- Removing opened `SwitchInput` during connectivity check [#1221](https://github.com/ie3-institute/PowerSystemDataModel/issues/1221)
 
 ### Changed
 - Storage minimum level parameter removed from cylindrical thermal storage [#1123](https://github.com/ie3-institute/PowerSystemDataModel/issues/1123)
@@ -24,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Converted `MappingEntry` into a normal class [#1087](https://github.com/ie3-institute/PowerSystemDataModel/issues/1087)
 - Renamed timeseries mapping `participant` column to `asset` [#1191](https://github.com/ie3-institute/PowerSystemDataModel/issues/1191)
 - Removed attribute `dsm` from `LoadInput` [#1195](https://github.com/ie3-institute/PowerSystemDataModel/issues/1195)
+- Fix spotless deprecations [#1123](https://github.com/ie3-institute/PowerSystemDataModel/issues/1223)
 
 ## [5.1.0] - 2024-06-24
 
