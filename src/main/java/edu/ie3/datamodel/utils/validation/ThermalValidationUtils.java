@@ -7,6 +7,7 @@ package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.models.input.container.ThermalGrid;
 import edu.ie3.datamodel.models.input.thermal.*;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
@@ -14,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.measure.Quantity;
 
-public class ThermalUnitValidationUtils extends ValidationUtils {
+public class ThermalValidationUtils extends ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */
-  private ThermalUnitValidationUtils() {
+  private ThermalValidationUtils() {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
@@ -52,6 +53,42 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       exceptions.addAll(checkThermalStorage((ThermalStorageInput) thermalUnitInput));
     } else {
       logNotImplemented(thermalUnitInput);
+    }
+
+    return exceptions;
+  }
+
+  /**
+   * Validates a thermal grid if:
+   *
+   * <ul>
+   *   <li>it is not null
+   * </ul>
+   *
+   * A "distribution" method, that forwards the check request to specific implementations to fulfill
+   * the checking task, based on the class of the given object.
+   *
+   * @param thermalGrid ThermalGrid to validate
+   * @return a list of try objects either containing an {@link ValidationException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, ? extends ValidationException>> check(ThermalGrid thermalGrid) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(thermalGrid, "a thermal grid");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+
+    // Validate houses
+    for (ThermalHouseInput house : thermalGrid.houses()) {
+      exceptions.addAll(checkThermalHouse(house));
+    }
+
+    // Validate storages
+    for (ThermalStorageInput storage : thermalGrid.storages()) {
+      exceptions.addAll(check(storage));
     }
 
     return exceptions;
