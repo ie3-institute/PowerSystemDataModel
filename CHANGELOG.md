@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Converted `MappingEntry` into a normal class [#1087](https://github.com/ie3-institute/PowerSystemDataModel/issues/1087)
 - Renamed timeseries mapping `participant` column to `asset` [#1191](https://github.com/ie3-institute/PowerSystemDataModel/issues/1191)
 - Removed attribute `dsm` from `LoadInput` [#1195](https://github.com/ie3-institute/PowerSystemDataModel/issues/1195)
+- Fix spotless deprecations [#1123](https://github.com/ie3-institute/PowerSystemDataModel/issues/1223)
 
 ## [5.1.0] - 2024-06-24
 
