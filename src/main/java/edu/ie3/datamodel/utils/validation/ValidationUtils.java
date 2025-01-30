@@ -70,7 +70,7 @@ public class ValidationUtils {
     } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(checkAssetType((AssetTypeInput) obj));
     } else if (ThermalGrid.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(ThermalUnitValidationUtils.check((ThermalGrid) obj));
+      exceptions.addAll(ThermalValidationUtils.check((ThermalGrid) obj));
     } else {
       logNotImplemented(obj);
     }
@@ -154,7 +154,9 @@ public class ValidationUtils {
       exceptions.addAll(
           SystemParticipantValidationUtils.check((SystemParticipantInput) assetInput));
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
-      exceptions.addAll(ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput));
+      exceptions.addAll(ThermalValidationUtils.check((ThermalUnitInput) assetInput));
+    else if (ThermalGrid.class.isAssignableFrom(assetInput.getClass()))
+      exceptions.addAll(ThermalValidationUtils.check((ThermalUnitInput) assetInput));
     else if (ThermalGrid.class.isAssignableFrom(assetInput.getClass()))
       exceptions.addAll(ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput));
     else {
