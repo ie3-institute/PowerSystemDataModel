@@ -48,6 +48,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   private final String queryTimeInterval;
   private final String queryTimeKeysAfter;
+  private final String queryForValueBefore;
   private final String queryTime;
 
   public SqlTimeSeriesSource(
@@ -63,15 +64,16 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     final ColumnScheme columnScheme = ColumnScheme.parse(valueClass).orElseThrow();
     this.tableName = sqlDataSource.databaseNamingStrategy.getTimeSeriesEntityName(columnScheme);
 
+    String schemaName = sqlDataSource.schemaName;
+
     String dbTimeColumnName =
         sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
 
-    this.queryFull = createQueryFull(sqlDataSource.schemaName, tableName);
-    this.queryTimeInterval =
-        createQueryForTimeInterval(sqlDataSource.schemaName, tableName, dbTimeColumnName);
-    this.queryTimeKeysAfter =
-        createQueryForTimeKeysAfter(sqlDataSource.schemaName, tableName, dbTimeColumnName);
-    this.queryTime = createQueryForTime(sqlDataSource.schemaName, tableName, dbTimeColumnName);
+    this.queryFull = createQueryFull(schemaName, tableName);
+    this.queryTimeInterval = createQueryForTimeInterval(schemaName, tableName, dbTimeColumnName);
+    this.queryTimeKeysAfter = createQueryForTimeKeysAfter(schemaName, tableName, dbTimeColumnName);
+    this.queryForValueBefore = createQueryForValueBefore(schemaName, tableName, dbTimeColumnName);
+    this.queryTime = createQueryForTime(schemaName, tableName, dbTimeColumnName);
   }
 
   /**
@@ -180,6 +182,14 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   @Override
+  public Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time) {
+    return getTimeBasedValueSet(
+            queryForValueBefore, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
+        .stream()
+        .max(TimeBasedValue::compareTo);
+  }
+
+  @Override
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
     return dataSource
         .executeQuery(
@@ -278,8 +288,30 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   /**
-   * Creates a basic query to retrieve an entry for the given time series uuid and time with the
-   * following pattern: <br>
+   * Creates a base query to retrieve all time keys after a given time for given time series with
+   * the following pattern: <br>
+   * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column> < ?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @param timeColumnName the name of the column holding the timestamp info
+   * @return the query string
+   */
+  private String createQueryForValueBefore(
+      String schemaName, String tableName, String timeColumnName) {
+    return createBaseQueryString(schemaName, tableName)
+        + WHERE
+        + TIME_SERIES
+        + " = '"
+        + timeSeriesUuid.toString()
+        + "' AND "
+        + timeColumnName
+        + " < ?"
+        + "ORDER BY time DESC LIMIT 1;";
+  }
+  /**
+   * Creates a base query to retrieve all time keys before a given time for given time series with
+   * the following pattern: <br>
    * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column>=?;}
    *
    * @param schemaName the name of the database schema

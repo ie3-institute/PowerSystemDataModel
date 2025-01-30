@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adding timeseries for voltage values [#1128](https://github.com/ie3-institute/PowerSystemDataModel/issues/1128)
 - Added Staudt to list of reviewers [#1190](https://github.com/ie3-institute/PowerSystemDataModel/issues/1190)
 - Extend ValidationUtils for validating ThermalGrids [#1216](https://github.com/ie3-institute/PowerSystemDataModel/issues/1216) 
+- Enhance `TimeSeriesSource` with method to retrieve the previous value before a given key [#1182](https://github.com/ie3-institute/PowerSystemDataModel/issues/1182)
 
 ### Fixed
 - Removing opened `SwitchInput` during connectivity check [#1221](https://github.com/ie3-institute/PowerSystemDataModel/issues/1221)

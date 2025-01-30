@@ -55,14 +55,14 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
   @Override
   protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
     return timeToValue.keySet().stream()
-        .filter(valueTime -> valueTime.compareTo(time) <= 0)
+        .filter(valueTime -> valueTime.compareTo(time) < 0)
         .max(Comparator.naturalOrder());
   }
 
   @Override
   protected Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
     return timeToValue.keySet().stream()
-        .filter(valueTime -> valueTime.compareTo(time) >= 0)
+        .filter(valueTime -> valueTime.compareTo(time) > 0)
         .min(Comparator.naturalOrder());
   }
 

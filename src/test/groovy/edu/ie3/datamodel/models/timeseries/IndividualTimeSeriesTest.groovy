@@ -72,7 +72,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
     Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)))
 
     when:
-    Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
+    Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 5, 0, 0, ZoneId.of("UTC")))
 
     then:
     expected.present
@@ -103,7 +103,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
     Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), new IntValue(4)))
 
     when:
-    Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
+    Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
 
     then:
     expected.present
