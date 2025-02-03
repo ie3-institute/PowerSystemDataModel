@@ -142,20 +142,6 @@ package models {
         MeasurementUnitInput --|> AssetInput
         MeasurementUnitInput ..|> HasNodes
 
-        class RandomLoadParameter {
-            - quarterHour: int
-            - kWd: Double
-            - kSa: Double
-            - kSu: Double
-            - myWd: Double
-            - mySa: Double
-            - mySu: Double
-            - sigmaWd: Double
-            - sigmaSa: Double
-            - sigmaSu: Double
-        }
-        RandomLoadParameter --|> InputEntity
-
         abstract class AssetTypeInput {
             - id: String
         }
