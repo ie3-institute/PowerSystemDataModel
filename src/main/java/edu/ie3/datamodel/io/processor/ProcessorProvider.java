@@ -122,7 +122,7 @@ public class ProcessorProvider {
    * @param <V> Type of the value inside the time series entries
    * @return A set of mappings from field name to value
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<? extends Value>, V extends Value>
       Set<LinkedHashMap<String, String>> handleTimeSeries(T timeSeries)
           throws ProcessorProviderException {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
@@ -145,7 +145,7 @@ public class ProcessorProvider {
    * @throws ProcessorProviderException If no fitting processor can be found
    */
   @SuppressWarnings("unchecked cast")
-  private <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  private <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<? extends Value>, V extends Value>
       TimeSeriesProcessor<T, E, V> getTimeSeriesProcessor(TimeSeriesProcessorKey processorKey)
           throws ProcessorProviderException {
     TimeSeriesProcessor<T, E, V> processor =

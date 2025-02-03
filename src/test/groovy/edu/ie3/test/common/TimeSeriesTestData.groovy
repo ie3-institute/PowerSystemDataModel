@@ -18,7 +18,6 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.value.*
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
@@ -26,7 +25,6 @@ import org.locationtech.jts.geom.Point
 import org.locationtech.jts.geom.PrecisionModel
 import tech.units.indriya.quantity.Quantities
 
-import java.time.DayOfWeek
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -401,46 +399,6 @@ trait TimeSeriesTestData {
     ] as LinkedHashMap
   ] as Set
 
-  LoadProfileInput loadProfileInput =  new LoadProfileInput(
-  UUID.fromString("b56853fe-b800-4c18-b324-db1878b22a28"),
-  BdewStandardLoadProfile.G2,
-  [
-    new LoadProfileEntry(
-    new PValue(Quantities.getQuantity(5d, KILOWATT)),
-    DayOfWeek.MONDAY,
-    0
-    ),
-    new LoadProfileEntry(
-    new PValue(Quantities.getQuantity(15d, KILOWATT)),
-    DayOfWeek.MONDAY,
-    1
-    ),
-    new LoadProfileEntry(
-    new PValue(Quantities.getQuantity(10d, KILOWATT)),
-    DayOfWeek.MONDAY,
-    2
-    )
-  ] as Set
-  )
-
-  Set<LinkedHashMap<String, String>> loadProfileInputProcessed = [
-    [
-      "dayOfWeek"			: "MONDAY",
-      "p"					: "5.0",
-      "quarterHourOfDay"	: "0"
-    ] as LinkedHashMap,
-    [
-      "dayOfWeek"			: "MONDAY",
-      "p"					: "15.0",
-      "quarterHourOfDay"	: "1"
-    ] as LinkedHashMap,
-    [
-      "dayOfWeek"			: "MONDAY",
-      "p"					: "10.0",
-      "quarterHourOfDay"	: "2"
-    ] as LinkedHashMap
-  ] as Set
-
   List<TimeSeries> allTimeSeries = [
     individualPTimeSeries,
     individualEnergyPriceTimeSeries,
@@ -450,6 +408,5 @@ trait TimeSeriesTestData {
     individualPTimeSeries,
     individualSTimeSeries,
     individualWeatherTimeSeries,
-    loadProfileInput
   ]
 }

@@ -236,7 +236,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("its_ph_56c20b88-c001-4225-8dac-cd13a75c6b48.csv").toFile().exists()
     testBaseFolderPath.resolve("its_pqh_83b577cc-06b1-47a1-bfff-ad648a00784b.csv").toFile().exists()
     testBaseFolderPath.resolve("its_c_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").toFile().exists()
-    testBaseFolderPath.resolve("lpts_g2_b56853fe-b800-4c18-b324-db1878b22a28.csv").toFile().exists()
     testBaseFolderPath.resolve("its_weather_4fcbdfcd-4ff0-46dd-b0df-f3af7ae3ed98.csv").toFile().exists()
   }
 

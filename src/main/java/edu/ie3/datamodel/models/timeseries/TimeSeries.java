@@ -17,7 +17,7 @@ import java.util.*;
  * @param <E> Type of the entries, the time series is foreseen to contain
  * @param <V> Type of the values, the entries will have
  */
-public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
+public abstract class TimeSeries<E extends TimeSeriesEntry<? extends Value>, V extends Value>
     extends UniqueEntity {
   private final Set<E> entries;
 

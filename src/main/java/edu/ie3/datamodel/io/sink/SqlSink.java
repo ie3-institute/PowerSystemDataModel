@@ -5,10 +5,12 @@
 */
 package edu.ie3.datamodel.io.sink;
 
-import static edu.ie3.datamodel.io.SqlUtils.*;
+import static edu.ie3.datamodel.io.SqlUtils.quote;
 import static java.util.stream.Collectors.groupingBy;
 
-import edu.ie3.datamodel.exceptions.*;
+import edu.ie3.datamodel.exceptions.EntityProcessorException;
+import edu.ie3.datamodel.exceptions.ExtractorException;
+import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.DbGridMetadata;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.extractor.Extractor;
@@ -18,17 +20,22 @@ import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.Entity;
-import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
-import edu.ie3.datamodel.models.input.system.*;
+import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.utils.TriFunction;
 import edu.ie3.util.StringUtils;
 import java.sql.SQLException;
 import java.util.*;
@@ -47,6 +54,7 @@ public class SqlSink {
   private final String schemaName;
 
   private static final String TIME_SERIES = "time_series";
+  private static final String LOAD_PROFILE = "load_profile";
 
   public SqlSink(
       String schemaName, DatabaseNamingStrategy databaseNamingStrategy, SqlConnector connector)
@@ -109,12 +117,12 @@ public class SqlSink {
   }
 
   /**
-   * Persist an entity. By default this method takes care of the extraction process of nested
+   * Persist an entity. By default, this method takes care of the extraction process of nested
    * entities (if any)
    *
    * @param entity the entity that should be persisted
    * @param identifier identifier of the grid
-   * @throws SQLException
+   * @throws SQLException if an error occurred
    */
   public <C extends Entity> void persist(C entity, DbGridMetadata identifier) throws SQLException {
     if (entity instanceof InputEntity inputEntity) {
@@ -178,7 +186,7 @@ public class SqlSink {
    * Persist a list of entities with same types. To minimize the number of queries, the entities
    * will be grouped by their class.
    */
-  private <C extends Entity, E extends TimeSeriesEntry<V>, V extends Value> void persistList(
+  private <C extends Entity, E extends TimeSeriesEntry<?>, V extends Value> void persistList(
       List<C> entities, Class<C> cls, DbGridMetadata identifier) throws SQLException {
     // Check if there are only elements of the same class
     Class<?> firstClass = entities.get(0).getClass();
@@ -222,7 +230,7 @@ public class SqlSink {
   }
 
   /** Persist one time series. */
-  protected <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
+  protected <E extends TimeSeriesEntry<?>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries, DbGridMetadata identifier) {
     try {
       TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
@@ -234,17 +242,30 @@ public class SqlSink {
     }
   }
 
-  private <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
+  private <E extends TimeSeriesEntry<?>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries, String[] headerElements, DbGridMetadata identifier)
       throws ProcessorProviderException {
     try {
+
+      TriFunction<String, String, String[], String> queryBuilder;
+      String timeSeriesIdentifier;
+
+      if (timeSeries instanceof LoadProfileTimeSeries<?> lpts) {
+        timeSeriesIdentifier = lpts.getLoadProfile().getKey();
+        queryBuilder = this::basicInsertQueryValuesLPTS;
+      } else {
+        timeSeriesIdentifier = timeSeries.getUuid().toString();
+        queryBuilder = this::basicInsertQueryValuesITS;
+      }
+
       String query =
-          basicInsertQueryValuesITS(
+          queryBuilder.apply(
               schemaName,
               databaseNamingStrategy.getEntityName(timeSeries).orElseThrow(),
               headerElements);
       Set<LinkedHashMap<String, String>> entityFieldData =
           processorProvider.handleTimeSeries(timeSeries);
+
       query =
           query
               + entityFieldData.stream()
@@ -254,7 +275,7 @@ public class SqlSink {
                               sqlEntityFieldData(data),
                               headerElements,
                               identifier,
-                              timeSeries.getUuid().toString()))
+                              timeSeriesIdentifier))
                   .collect(Collectors.joining(",\n", "", ";"));
       executeQueryToPersist(query);
     } catch (ProcessorProviderException e) {
@@ -352,13 +373,13 @@ public class SqlSink {
       Map<String, String> entityFieldData,
       String[] headerElements,
       DbGridMetadata identifier,
-      String tsUuid) {
+      String timeSeriesIdentifier) {
     return writeOneLine(
         Stream.concat(
             Stream.concat(
                 Arrays.stream(headerElements).map(entityFieldData::get),
                 identifier.getStreamForQuery()),
-            Stream.of(quote(tsUuid, "'"))));
+            Stream.of(quote(timeSeriesIdentifier, "'"))));
   }
 
   private LinkedHashMap<String, String> sqlEntityFieldData(
@@ -391,6 +412,16 @@ public class SqlSink {
   private String basicInsertQueryValuesITS(
       String schemaName, String tableName, String[] headerElements) {
     String[] addParams = {DbGridMetadata.GRID_UUID_COLUMN, TIME_SERIES};
+    return basicInsertQuery(schemaName, tableName)
+        + " "
+        + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams)
+        + "\nVALUES\n";
+  }
+
+  /** Provides the insert, column names, grid identifier, and the VALUES statement for a query. */
+  private String basicInsertQueryValuesLPTS(
+      String schemaName, String tableName, String[] headerElements) {
+    String[] addParams = {DbGridMetadata.GRID_UUID_COLUMN, LOAD_PROFILE};
     return basicInsertQuery(schemaName, tableName)
         + " "
         + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams)

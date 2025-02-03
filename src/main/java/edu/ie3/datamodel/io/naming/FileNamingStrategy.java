@@ -7,11 +7,12 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.FileUtils;
 import java.nio.file.Path;
@@ -136,7 +137,7 @@ public class FileNamingStrategy {
    * @param timeSeries Time series to derive naming information from
    * @return An optional sub directory path
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<? extends Value>, V extends Value>
       Optional<Path> getDirectoryPath(T timeSeries) {
     Optional<Path> maybeDirectoryName = fileHierarchy.getSubDirectory(timeSeries.getClass());
     if (maybeDirectoryName.isEmpty()) {
@@ -180,7 +181,7 @@ public class FileNamingStrategy {
    * @return A load profile time series pattern
    */
   public Pattern getLoadProfileTimeSeriesPattern() {
-    Optional<Path> subDirectory = fileHierarchy.getSubDirectory(LoadProfileInput.class);
+    Optional<Path> subDirectory = fileHierarchy.getSubDirectory(LoadProfileTimeSeries.class);
 
     if (subDirectory.isEmpty()) {
       return entityPersistenceNamingStrategy.getLoadProfileTimeSeriesPattern();
@@ -237,6 +238,11 @@ public class FileNamingStrategy {
         removeFileNameEnding(fileName));
   }
 
+  public LoadProfileMetaInformation loadProfileTimeSeriesMetaInformation(String fileName) {
+    return entityPersistenceNamingStrategy.loadProfileTimesSeriesMetaInformation(
+        removeFileNameEnding(fileName));
+  }
+
   public static String removeFileNameEnding(String fileName) {
     return fileName.replaceAll("(?:\\.[^.\\\\/\\s]{1,255}){1,2}$", "");
   }
@@ -274,7 +280,7 @@ public class FileNamingStrategy {
    * @param timeSeries Time series to derive naming information from
    * @return A file name for this particular time series
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<? extends Value>, V extends Value>
       Optional<String> getEntityName(T timeSeries) {
     return entityPersistenceNamingStrategy.getEntityName(timeSeries);
   }
