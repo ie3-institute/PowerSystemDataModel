@@ -9,8 +9,10 @@ import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
 import edu.ie3.datamodel.models.value.load.BdewLoadValues
+import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Shared
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 class BdewLoadProfileFactoryTest extends Specification {
   @Shared
@@ -139,5 +141,23 @@ class BdewLoadProfileFactoryTest extends Specification {
     then:
     lpts.loadProfile == BdewStandardLoadProfile.G0
     lpts.entries.size() == 3
+  }
+
+  def "A BDEWLoadProfileFactory does return the max power correctly"() {
+    when:
+    def maxPower = factory.calculateMaxPower(BdewStandardLoadProfile.G0, allEntries)
+
+    then:
+    maxPower.isPresent()
+    maxPower.get() == Quantities.getQuantity(77.7, PowerSystemUnits.WATT)
+  }
+
+  def "A BDEWLoadProfileFactory does return an energy scaling correctly"() {
+    when:
+    def energyScaling = factory.getLoadProfileEnergyScaling(BdewStandardLoadProfile.G0)
+
+    then:
+    energyScaling.isPresent()
+    energyScaling.get() == Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR)
   }
 }

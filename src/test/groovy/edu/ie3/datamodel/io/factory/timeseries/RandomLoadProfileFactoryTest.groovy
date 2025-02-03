@@ -9,8 +9,10 @@ import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
 import edu.ie3.datamodel.models.profile.LoadProfile
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
 import edu.ie3.datamodel.models.value.load.RandomLoadValues
+import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Shared
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 class RandomLoadProfileFactoryTest extends Specification {
   @Shared
@@ -139,5 +141,23 @@ class RandomLoadProfileFactoryTest extends Specification {
     then:
     lpts.loadProfile == LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE
     lpts.entries.size() == 3
+  }
+
+  def "A RandomLoadProfileFactory does return the max power correctly"() {
+    when:
+    def maxPower = factory.calculateMaxPower(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE, allEntries)
+
+    then:
+    maxPower.isPresent()
+    maxPower.get() == Quantities.getQuantity(159d, PowerSystemUnits.WATT)
+  }
+
+  def "A RandomLoadProfileFactory does return an energy scaling correctly"() {
+    when:
+    def energyScaling = factory.getLoadProfileEnergyScaling(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE)
+
+    then:
+    energyScaling.isPresent()
+    energyScaling.get() == Quantities.getQuantity(716.5416966513656, PowerSystemUnits.KILOWATTHOUR)
   }
 }

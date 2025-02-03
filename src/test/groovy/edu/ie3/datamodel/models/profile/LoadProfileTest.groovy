@@ -110,7 +110,7 @@ class LoadProfileTest extends Specification {
     "H_0"   || BdewStandardLoadProfile.H0
   }
 
-  def "Tempearture dependent load profiles can be parsed correctly"() {
+  def "Temperature dependent load profiles can be parsed correctly"() {
     when:
     TemperatureDependantLoadProfile actual = TemperatureDependantLoadProfile.parse(key)
 
