@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.GridContainer;
+import edu.ie3.datamodel.models.input.container.ThermalGrid;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
@@ -68,6 +69,8 @@ public class ValidationUtils {
       exceptions.addAll(GraphicValidationUtils.check((GraphicInput) obj));
     } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(checkAssetType((AssetTypeInput) obj));
+    } else if (ThermalGrid.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(ThermalValidationUtils.check((ThermalGrid) obj));
     } else {
       logNotImplemented(obj);
     }
@@ -151,7 +154,9 @@ public class ValidationUtils {
       exceptions.addAll(
           SystemParticipantValidationUtils.check((SystemParticipantInput) assetInput));
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
-      exceptions.addAll(ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput));
+      exceptions.addAll(ThermalValidationUtils.check((ThermalUnitInput) assetInput));
+    else if (ThermalGrid.class.isAssignableFrom(assetInput.getClass()))
+      exceptions.addAll(ThermalValidationUtils.check((ThermalUnitInput) assetInput));
     else {
       logNotImplemented(assetInput);
     }
