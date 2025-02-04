@@ -153,7 +153,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     ProcessorProvider provider = new ProcessorProvider([
       new ResultEntityProcessor(PvResult),
       new ResultEntityProcessor(EvResult)
-    ], [] as Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>)
+    ], [] as Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>)
 
     when:
     String[] headerResults = provider.getHeaderElements(PvResult)
@@ -177,7 +177,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
   def "A ProcessorProvider should return the header elements for a time series key known by one of its processors and do nothing otherwise"() {
     given:
     TimeSeriesProcessorKey availableKey = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
-    Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>> timeSeriesProcessors = new HashMap<>()
+    Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>> timeSeriesProcessors = new HashMap<>()
     timeSeriesProcessors.put(availableKey, new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue))
     ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessors)
 
@@ -203,7 +203,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     ProcessorProvider provider = new ProcessorProvider([
       new ResultEntityProcessor(PvResult),
       new ResultEntityProcessor(EvResult)
-    ], [] as Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>)
+    ], [] as Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>)
 
     Map expectedMap = [
       "inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
@@ -244,7 +244,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
   def "A ProcessorProvider returns an empty Optional, if none of the assigned processors is able to handle a time series"() {
     given:
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     Map<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
     timeSeriesProcessorMap.put(key, processor)
     ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)
@@ -261,7 +261,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
   def "A ProcessorProvider handles a time series correctly"() {
     given:
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     Map<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
     timeSeriesProcessorMap.put(key, processor)
     ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)

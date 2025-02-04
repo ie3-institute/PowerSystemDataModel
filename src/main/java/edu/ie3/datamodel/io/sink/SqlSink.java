@@ -129,7 +129,7 @@ public class SqlSink {
       persistIncludeNested(inputEntity, identifier);
     } else if (entity instanceof ResultEntity resultEntity) {
       insert(resultEntity, identifier);
-    } else if (entity instanceof TimeSeries<?, ?> timeSeries) {
+    } else if (entity instanceof TimeSeries<?, ?, ?> timeSeries) {
       persistTimeSeries(timeSeries, identifier);
     } else {
       log.error(
@@ -186,8 +186,9 @@ public class SqlSink {
    * Persist a list of entities with same types. To minimize the number of queries, the entities
    * will be grouped by their class.
    */
-  private <C extends Entity, E extends TimeSeriesEntry<?>, V extends Value> void persistList(
-      List<C> entities, Class<C> cls, DbGridMetadata identifier) throws SQLException {
+  private <C extends Entity, E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
+      void persistList(List<C> entities, Class<C> cls, DbGridMetadata identifier)
+          throws SQLException {
     // Check if there are only elements of the same class
     Class<?> firstClass = entities.get(0).getClass();
     boolean allSameClass = entities.stream().allMatch(e -> e.getClass() == firstClass);
@@ -198,7 +199,7 @@ public class SqlSink {
       } else if (ResultEntity.class.isAssignableFrom(cls)) {
         insertListIgnoreNested(entities, cls, identifier, false);
       } else if (TimeSeries.class.isAssignableFrom(cls)) {
-        entities.forEach(ts -> persistTimeSeries((TimeSeries<E, V>) ts, identifier));
+        entities.forEach(ts -> persistTimeSeries((TimeSeries<E, V, R>) ts, identifier));
       } else {
         log.error("I don't know how to handle an entity of class {}", cls.getSimpleName());
       }
@@ -230,8 +231,8 @@ public class SqlSink {
   }
 
   /** Persist one time series. */
-  protected <E extends TimeSeriesEntry<?>, V extends Value> void persistTimeSeries(
-      TimeSeries<E, V> timeSeries, DbGridMetadata identifier) {
+  protected <E extends TimeSeriesEntry<V>, V extends Value, R extends Value> void persistTimeSeries(
+      TimeSeries<E, V, R> timeSeries, DbGridMetadata identifier) {
     try {
       TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
       String[] headerElements = processorProvider.getHeaderElements(key);
@@ -242,8 +243,8 @@ public class SqlSink {
     }
   }
 
-  private <E extends TimeSeriesEntry<?>, V extends Value> void persistTimeSeries(
-      TimeSeries<E, V> timeSeries, String[] headerElements, DbGridMetadata identifier)
+  private <E extends TimeSeriesEntry<V>, V extends Value, R extends Value> void persistTimeSeries(
+      TimeSeries<E, V, R> timeSeries, String[] headerElements, DbGridMetadata identifier)
       throws ProcessorProviderException {
     try {
 

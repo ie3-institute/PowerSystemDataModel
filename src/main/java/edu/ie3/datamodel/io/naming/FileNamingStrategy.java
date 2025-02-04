@@ -86,7 +86,11 @@ public class FileNamingStrategy {
    * @param timeSeries Time series to derive naming information from
    * @return An optional sub path to the actual file
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public <
+          T extends TimeSeries<E, V, R>,
+          E extends TimeSeriesEntry<V>,
+          V extends Value,
+          R extends Value>
       Optional<Path> getFilePath(T timeSeries) {
     return FileUtils.of(
         entityPersistenceNamingStrategy.getEntityName(timeSeries), getDirectoryPath(timeSeries));
@@ -137,7 +141,11 @@ public class FileNamingStrategy {
    * @param timeSeries Time series to derive naming information from
    * @return An optional sub directory path
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<? extends Value>, V extends Value>
+  public <
+          T extends TimeSeries<E, V, R>,
+          E extends TimeSeriesEntry<V>,
+          V extends Value,
+          R extends Value>
       Optional<Path> getDirectoryPath(T timeSeries) {
     Optional<Path> maybeDirectoryName = fileHierarchy.getSubDirectory(timeSeries.getClass());
     if (maybeDirectoryName.isEmpty()) {
@@ -280,7 +288,11 @@ public class FileNamingStrategy {
    * @param timeSeries Time series to derive naming information from
    * @return A file name for this particular time series
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<? extends Value>, V extends Value>
+  public <
+          T extends TimeSeries<E, V, R>,
+          E extends TimeSeriesEntry<V>,
+          V extends Value,
+          R extends Value>
       Optional<String> getEntityName(T timeSeries) {
     return entityPersistenceNamingStrategy.getEntityName(timeSeries);
   }
