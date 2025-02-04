@@ -155,7 +155,7 @@ class UniquenessValidationUtilsTest extends Specification {
 
     Set<CongestionResult> notUniqueResults = [
       new CongestionResult(time, inputModel1, subgrid1, min, max),
-      new CongestionResult(time, inputModel2, subgrid1, min, max),
+      new CongestionResult(time, inputModel1, subgrid2, min, max),
       new CongestionResult(time.plusHours(1), inputModel1, subgrid1, min, max),
       new CongestionResult(time.plusHours(1), inputModel2, subgrid2, min, max),
     ]
