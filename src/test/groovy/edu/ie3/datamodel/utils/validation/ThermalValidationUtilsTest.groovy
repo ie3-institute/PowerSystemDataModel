@@ -175,7 +175,7 @@ class ThermalValidationUtilsTest extends Specification {
       ThermalUnitInputTestData.cylindricalStorageInput
     ]
     def domesticHotWaterStorageInput = [
-            ThermalUnitInputTestData.domesticHotWaterStorageInput
+      ThermalUnitInputTestData.domesticHotWaterStorageInput
     ]
 
 
