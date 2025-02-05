@@ -157,8 +157,6 @@ public class ValidationUtils {
       exceptions.addAll(ThermalValidationUtils.check((ThermalUnitInput) assetInput));
     else if (ThermalGrid.class.isAssignableFrom(assetInput.getClass()))
       exceptions.addAll(ThermalValidationUtils.check((ThermalUnitInput) assetInput));
-    else if (ThermalGrid.class.isAssignableFrom(assetInput.getClass()))
-      exceptions.addAll(ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput));
     else {
       logNotImplemented(assetInput);
     }
