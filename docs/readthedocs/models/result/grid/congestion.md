@@ -33,7 +33,7 @@ Representation of a congestion result for a given asset.
 
    * - value
      - Percent
-     - the actual value that was calculated
+     - the actual value that was calculated in relation to its base value
      
    * - min
      - Percent
