@@ -31,17 +31,17 @@ Representation of a congestion result for a given asset.
      -
      - Sub grid number
 
-   * - min
+   * - value
      - Percent
      - the actual value that was calculated
      
    * - min
      - Percent
-     - minimal value that is possible
+     - minimal limit value
 
    * - max
      - Percent
-     - maximal value that is possible
+     - maximal limit value
 ```
 
 ## Caveats

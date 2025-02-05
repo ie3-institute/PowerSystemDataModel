@@ -151,7 +151,7 @@ class UniquenessValidationUtilsTest extends Specification {
     UUID inputModel2 = UUID.randomUUID()
     int subgrid1 = 1
     int subgrid2 = 2
-    Quantity<Dimensionless> value = Quantities.getQuantity(100, PERCENT)
+    Quantity<Dimensionless> value = Quantities.getQuantity(120, PERCENT)
     Quantity<Dimensionless> min = Quantities.getQuantity(90, PERCENT)
     Quantity<Dimensionless> max = Quantities.getQuantity(110, PERCENT)
 
