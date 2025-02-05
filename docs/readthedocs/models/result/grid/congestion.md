@@ -2,7 +2,7 @@
 
 # Congestion
 
-Representation of a congestion result for a given subnet.
+Representation of a congestion result for a given asset.
 
 ## Attributes, Units and Remarks
 
@@ -18,30 +18,30 @@ Representation of a congestion result for a given subnet.
    * - time
      - ZonedDateTime
      - date and time for the produced result
-   
+     
+   * - inputModel
+     -
+     - uuid for the associated input model
+     
+   * - inputModelType
+     -
+     - the type of the input model (e.g. node, line, etc.)
+     
    * - subgrid
      -
      - Sub grid number
 
-   * - vMin
-     - p.u.
-     - minimal voltage of the subnet
+   * - value
+     - Percent
+     - the actual value that was calculated in relation to its base value
+     
+   * - min
+     - Percent
+     - minimal limit value
 
-   * - vMax
-     - p.u.
-     - maximal voltage of the subnet
-
-   * - voltage
-     -
-     - Boolean indicator, if a voltage congestion occurred
-
-   * - line
-     -
-     - Boolean indicator, if a line congestion occurred
-
-   * - transformer
-     -
-     - Boolean indicator, if a transformer congestion occurred
+   * - max
+     - Percent
+     - maximal limit value
 ```
 
 ## Caveats

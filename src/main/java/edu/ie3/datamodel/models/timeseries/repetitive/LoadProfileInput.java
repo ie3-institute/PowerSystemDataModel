@@ -42,13 +42,13 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
   @Override
   protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
     // dummy value
-    return Optional.of(time.minusHours(1));
+    return Optional.of(time.minusMinutes(15));
   }
 
   @Override
   protected Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
     // dummy value
-    return Optional.of(time.plusHours(1));
+    return Optional.of(time.plusMinutes(15));
   }
 
   @Override
