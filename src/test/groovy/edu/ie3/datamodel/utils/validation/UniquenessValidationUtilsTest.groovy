@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.datamodel.models.result.CongestionResult.InputModelType.NODE
 import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
@@ -150,14 +151,15 @@ class UniquenessValidationUtilsTest extends Specification {
     UUID inputModel2 = UUID.randomUUID()
     int subgrid1 = 1
     int subgrid2 = 2
+    Quantity<Dimensionless> value = Quantities.getQuantity(100, PERCENT)
     Quantity<Dimensionless> min = Quantities.getQuantity(90, PERCENT)
     Quantity<Dimensionless> max = Quantities.getQuantity(110, PERCENT)
 
     Set<CongestionResult> notUniqueResults = [
-      new CongestionResult(time, inputModel1, subgrid1, min, max),
-      new CongestionResult(time, inputModel1, subgrid2, min, max),
-      new CongestionResult(time.plusHours(1), inputModel1, subgrid1, min, max),
-      new CongestionResult(time.plusHours(1), inputModel2, subgrid2, min, max),
+      new CongestionResult(time, inputModel1, NODE, subgrid1, value, min, max),
+      new CongestionResult(time, inputModel1, NODE, subgrid2, value, min, max),
+      new CongestionResult(time.plusHours(1), inputModel1, NODE, subgrid1, value, min, max),
+      new CongestionResult(time.plusHours(1), inputModel2, NODE, subgrid2, value, min, max),
     ]
 
     when:

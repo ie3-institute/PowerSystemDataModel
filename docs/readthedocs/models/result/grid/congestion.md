@@ -23,16 +23,24 @@ Representation of a congestion result for a given asset.
      -
      - uuid for the associated input model
      
+   * - inputModelType
+     -
+     - the type of the input model (e.g. node, line, etc.)
+     
    * - subgrid
      -
      - Sub grid number
 
    * - min
-     - %
+     - Percent
+     - the actual value that was calculated
+     
+   * - min
+     - Percent
      - minimal value that is possible
 
    * - max
-     - %
+     - Percent
      - maximal value that is possible
 ```
 
