@@ -400,10 +400,8 @@ public class SqlSink {
   private String basicInsertQueryValuesGrid(
       String schemaName, String tableName, String[] headerElements) {
     String[] addParams = {DbGridMetadata.GRID_UUID_COLUMN};
-    return basicInsertQuery(schemaName, tableName)
-        + " "
-        + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams)
-        + "\nVALUES\n";
+    return basicInsertQueryWith(
+        schemaName, tableName, StringUtils.camelCaseToSnakeCase(headerElements), addParams);
   }
 
   /**
@@ -413,16 +411,21 @@ public class SqlSink {
   private String basicInsertQueryValuesITS(
       String schemaName, String tableName, String[] headerElements) {
     String[] addParams = {DbGridMetadata.GRID_UUID_COLUMN, TIME_SERIES};
-    return basicInsertQuery(schemaName, tableName)
-        + " "
-        + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams)
-        + "\nVALUES\n";
+    return basicInsertQueryWith(
+        schemaName, tableName, StringUtils.camelCaseToSnakeCase(headerElements), addParams);
   }
 
   /** Provides the insert, column names, grid identifier, and the VALUES statement for a query. */
   private String basicInsertQueryValuesLPTS(
       String schemaName, String tableName, String[] headerElements) {
     String[] addParams = {DbGridMetadata.GRID_UUID_COLUMN, LOAD_PROFILE};
+    return basicInsertQueryWith(
+        schemaName, tableName, StringUtils.camelCaseToSnakeCase(headerElements), addParams);
+  }
+
+  /** Provides the insert, column names, grid identifier, and the VALUES statement for a query */
+  private String basicInsertQueryWith(
+      String schemaName, String tableName, String[] headerElements, String[] addParams) {
     return basicInsertQuery(schemaName, tableName)
         + " "
         + writeOneLine(StringUtils.camelCaseToSnakeCase(headerElements), addParams)
