@@ -273,7 +273,7 @@ class InfluxDbSinkIT extends Specification {
     }
 
     @Override
-    <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value> Optional<String> getEntityName(T timeSeries) {
+    <T extends TimeSeries<E, V, R>, E extends TimeSeriesEntry<V>, V extends Value, R extends Value> Optional<String> getEntityName(T timeSeries) {
       return Optional.empty()
     }
   }
