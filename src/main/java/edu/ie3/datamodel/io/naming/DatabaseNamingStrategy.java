@@ -82,7 +82,11 @@ public class DatabaseNamingStrategy {
    * @param timeSeries to be named TimeSeries
    * @return the table name
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<?>, V extends Value>
+  public <
+          T extends TimeSeries<E, V, R>,
+          E extends TimeSeriesEntry<V>,
+          V extends Value,
+          R extends Value>
       Optional<String> getEntityName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries individualTimeSeries) {
       Optional<E> maybeFirstElement = individualTimeSeries.getEntries().stream().findFirst();

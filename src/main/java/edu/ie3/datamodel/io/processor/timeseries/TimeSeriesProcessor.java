@@ -22,7 +22,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TimeSeriesProcessor<
-        T extends TimeSeries<E, V>, E extends TimeSeriesEntry<? extends Value>, V extends Value>
+        T extends TimeSeries<E, V, R>,
+        E extends TimeSeriesEntry<V>,
+        V extends Value,
+        R extends Value>
     extends EntityProcessor<TimeSeries> {
   /**
    * List of all combinations of time series class, entry class and value class, this processor is
