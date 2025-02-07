@@ -7,14 +7,12 @@ package edu.ie3.datamodel.models.timeseries.repetitive;
 
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
-import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.Quantities;
 
 /**
  * Describes a bdew load profile time series with repetitive values that can be calculated from a
@@ -26,13 +24,9 @@ public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadVal
       UUID uuid,
       BdewStandardLoadProfile loadProfile,
       Set<LoadProfileEntry<BdewLoadValues>> values,
-      Optional<ComparableQuantity<Power>> maxPower) {
-    super(
-        uuid,
-        loadProfile,
-        values,
-        maxPower,
-        Optional.of(Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR)));
+      ComparableQuantity<Power> maxPower,
+      ComparableQuantity<Energy> profileEnergyScaling) {
+    super(uuid, loadProfile, values, maxPower, profileEnergyScaling);
   }
 
   @Override

@@ -148,8 +148,7 @@ class BdewLoadProfileFactoryTest extends Specification {
     def maxPower = factory.calculateMaxPower(BdewStandardLoadProfile.G0, allEntries)
 
     then:
-    maxPower.isPresent()
-    maxPower.get() == Quantities.getQuantity(77.7, PowerSystemUnits.WATT)
+    maxPower == Quantities.getQuantity(77.7, PowerSystemUnits.WATT)
   }
 
   def "A BDEWLoadProfileFactory does return an energy scaling correctly"() {
@@ -157,7 +156,6 @@ class BdewLoadProfileFactoryTest extends Specification {
     def energyScaling = factory.getLoadProfileEnergyScaling(BdewStandardLoadProfile.G0)
 
     then:
-    energyScaling.isPresent()
-    energyScaling.get() == Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR)
+    energyScaling == Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR)
   }
 }

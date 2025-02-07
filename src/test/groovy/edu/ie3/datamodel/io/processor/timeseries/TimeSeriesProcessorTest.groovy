@@ -213,7 +213,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete LoadProfileTimeSeries correctly"() {
     given:
-    TimeSeriesProcessor<BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues> processor = new TimeSeriesProcessor<>(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues)
+    TimeSeriesProcessor<BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues, PValue> processor = new TimeSeriesProcessor<>(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(loadProfileTimeSeries)
