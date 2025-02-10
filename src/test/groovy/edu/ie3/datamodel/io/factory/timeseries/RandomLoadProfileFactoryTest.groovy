@@ -148,8 +148,7 @@ class RandomLoadProfileFactoryTest extends Specification {
     def maxPower = factory.calculateMaxPower(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE, allEntries)
 
     then:
-    maxPower.isPresent()
-    maxPower.get() == Quantities.getQuantity(159d, PowerSystemUnits.WATT)
+    maxPower == Quantities.getQuantity(159d, PowerSystemUnits.WATT)
   }
 
   def "A RandomLoadProfileFactory does return an energy scaling correctly"() {
@@ -157,7 +156,6 @@ class RandomLoadProfileFactoryTest extends Specification {
     def energyScaling = factory.getLoadProfileEnergyScaling(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE)
 
     then:
-    energyScaling.isPresent()
-    energyScaling.get() == Quantities.getQuantity(716.5416966513656, PowerSystemUnits.KILOWATTHOUR)
+    energyScaling == Quantities.getQuantity(716.5416966513656, PowerSystemUnits.KILOWATTHOUR)
   }
 }

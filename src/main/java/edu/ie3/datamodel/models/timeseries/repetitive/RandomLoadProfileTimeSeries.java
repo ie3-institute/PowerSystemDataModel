@@ -8,12 +8,12 @@ package edu.ie3.datamodel.models.timeseries.repetitive;
 import de.lmu.ifi.dbs.elki.math.statistics.distribution.GeneralizedExtremeValueDistribution;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
-import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import tech.units.indriya.quantity.Quantities;
+import javax.measure.quantity.Energy;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Describes a random load profile time series based on a {@link
@@ -22,13 +22,12 @@ import tech.units.indriya.quantity.Quantities;
 public class RandomLoadProfileTimeSeries extends LoadProfileTimeSeries<RandomLoadValues> {
 
   public RandomLoadProfileTimeSeries(
-      UUID uuid, LoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> entries) {
-    super(
-        uuid,
-        loadProfile,
-        entries,
-        Optional.empty(),
-        Optional.of(Quantities.getQuantity(716.5416966513656, PowerSystemUnits.KILOWATTHOUR)));
+      UUID uuid,
+      LoadProfile loadProfile,
+      Set<LoadProfileEntry<RandomLoadValues>> entries,
+      ComparableQuantity<Power> maxPower,
+      ComparableQuantity<Energy> profileEnergyScaling) {
+    super(uuid, loadProfile, entries, maxPower, profileEnergyScaling);
   }
 
   @Override

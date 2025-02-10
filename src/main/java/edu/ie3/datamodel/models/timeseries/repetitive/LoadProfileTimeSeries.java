@@ -9,12 +9,14 @@ import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.util.quantities.PowerSystemUnits;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 /**
  * Describes a load profile time series with repetitive values that can be calculated from a pattern
@@ -25,8 +27,8 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   private final Map<Integer, V> valueMapping;
 
   /**
-   * The maximum average power consumption per quarter-hour for a given calculated over all seasons
-   * and weekday types of given load profile.
+   * The maximum average power consumption per quarter-hour calculated over all seasons and weekday
+   * types of given load profile.
    */
   public final ComparableQuantity<Power> maxPower;
 
@@ -46,8 +48,13 @@ public class LoadProfileTimeSeries<V extends LoadValues>
             .collect(
                 Collectors.toMap(LoadProfileEntry::getQuarterHour, LoadProfileEntry::getValue));
 
-    this.maxPower = maxPower;
-    this.profileEnergyScaling = profileEnergyScaling;
+    // use default value is null value is given
+    this.maxPower =
+        Optional.ofNullable(maxPower)
+            .orElseGet(() -> Quantities.getQuantity(0d, PowerSystemUnits.KILOWATT));
+    this.profileEnergyScaling =
+        Optional.ofNullable(profileEnergyScaling)
+            .orElseGet(() -> Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR));
   }
 
   /** Returns the {@link LoadProfile}. */
