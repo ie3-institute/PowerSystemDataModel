@@ -101,7 +101,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
 
   def "SQL sink can persist provided elements correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     TimeSeriesProcessorKey timeSeriesProcessorKey = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
     timeSeriesProcessorMap.put(timeSeriesProcessorKey, timeSeriesProcessor)
@@ -167,7 +167,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
 
   def "A SqlSink can persist a time series."() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     TimeSeriesProcessorKey timeSeriesProcessorKey = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
     timeSeriesProcessorMap.put(timeSeriesProcessorKey, timeSeriesProcessor)
@@ -245,7 +245,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     schemaName,
     new ProcessorProvider(
     ProcessorProvider.allEntityProcessors(),
-    new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
+    new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>()),
     namingStrategy,
     connector)
 

@@ -20,7 +20,7 @@ import tech.units.indriya.ComparableQuantity;
  * Describes a load profile time series with repetitive values that can be calculated from a pattern
  */
 public class LoadProfileTimeSeries<V extends LoadValues>
-    extends RepetitiveTimeSeries<LoadProfileEntry<V>, PValue> {
+    extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
   private final LoadProfile loadProfile;
   private final Map<Integer, V> valueMapping;
 
@@ -28,17 +28,17 @@ public class LoadProfileTimeSeries<V extends LoadValues>
    * The maximum average power consumption per quarter-hour for a given calculated over all seasons
    * and weekday types of given load profile.
    */
-  public final Optional<ComparableQuantity<Power>> maxPower;
+  public final ComparableQuantity<Power> maxPower;
 
   /** The profile energy scaling in kWh. */
-  public final Optional<ComparableQuantity<Energy>> profileEnergyScaling;
+  public final ComparableQuantity<Energy> profileEnergyScaling;
 
   public LoadProfileTimeSeries(
       UUID uuid,
       LoadProfile loadProfile,
       Set<LoadProfileEntry<V>> entries,
-      Optional<ComparableQuantity<Power>> maxPower,
-      Optional<ComparableQuantity<Energy>> profileEnergyScaling) {
+      ComparableQuantity<Power> maxPower,
+      ComparableQuantity<Energy> profileEnergyScaling) {
     super(uuid, entries);
     this.loadProfile = loadProfile;
     this.valueMapping =
@@ -62,6 +62,16 @@ public class LoadProfileTimeSeries<V extends LoadValues>
         new TreeSet<>(Comparator.comparing(LoadProfileEntry::getQuarterHour));
     set.addAll(super.getEntries());
     return set;
+  }
+
+  @Override
+  protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
+    return Optional.of(time.minusMinutes(15));
+  }
+
+  @Override
+  protected Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
+    return Optional.of(time.plusMinutes(15));
   }
 
   @Override

@@ -8,20 +8,33 @@ package edu.ie3.datamodel.models.result;
 import edu.ie3.datamodel.models.Entity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 /** Abstract class to hold all mappings common to all result models */
 public abstract class ResultEntity implements Entity {
 
   /** date and time of the produced result */
   private ZonedDateTime time;
+  /** uuid of the input model that produces the result */
+  private UUID inputModel;
 
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
    *
    * @param time date and time when the result is produced
+   * @param inputModel uuid of the input model that produces the result
    */
-  protected ResultEntity(ZonedDateTime time) {
+  protected ResultEntity(ZonedDateTime time, UUID inputModel) {
     this.time = time;
+    this.inputModel = inputModel;
+  }
+
+  public UUID getInputModel() {
+    return inputModel;
+  }
+
+  public void setInputModel(UUID inputID) {
+    inputModel = inputID;
   }
 
   public ZonedDateTime getTime() {
