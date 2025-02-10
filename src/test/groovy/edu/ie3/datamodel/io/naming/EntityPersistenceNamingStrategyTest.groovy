@@ -34,7 +34,7 @@ import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries
+import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.util.quantities.PowerSystemUnits
@@ -409,11 +409,10 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
   }
 
-  def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for load profile input" () {
+  def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for load profile time series" () {
     given:
     EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
-    LoadProfileTimeSeries timeSeries = Mock(LoadProfileTimeSeries)
-    timeSeries.uuid >> uuid
+    BdewLoadProfileTimeSeries timeSeries = Mock(BdewLoadProfileTimeSeries)
     timeSeries.loadProfile >> type
 
     when:
@@ -424,8 +423,8 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz                 | uuid                                                    | type                       || expectedFileName
-    LoadProfileTimeSeries | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || "lpts_g3"
+    clazz                     | type                       || expectedFileName
+    BdewLoadProfileTimeSeries | BdewStandardLoadProfile.G3 || "lpts_g3"
   }
 
   def "A EntityPersistenceNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {

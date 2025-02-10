@@ -55,6 +55,6 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
 
   /** Returns the load profile energy scaling. The default value is 1000 kWh */
   public ComparableQuantity<Energy> getLoadProfileEnergyScaling(P loadProfile) {
-    return Quantities.getQuantity(1000, PowerSystemUnits.KILOWATTHOUR);
+    return Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR);
   }
 }
