@@ -224,6 +224,7 @@ public abstract class Processor<T> {
           "double",
           "String",
           "DayOfWeek",
+          "Season",
           "ChargingPointType",
           "EvcsLocationType" -> resultStringBuilder.append(methodReturnObject.toString());
       case "Quantity", "ComparableQuantity" -> resultStringBuilder.append(
@@ -260,7 +261,8 @@ public abstract class Processor<T> {
           processVoltageLevel((VoltageLevel) methodReturnObject, fieldName));
       case "Point", "LineString" -> resultStringBuilder.append(
           geoJsonWriter.write((Geometry) methodReturnObject));
-      case "LoadProfile" -> resultStringBuilder.append(((LoadProfile) methodReturnObject).getKey());
+      case "LoadProfile", "BdewStandardLoadProfile" -> resultStringBuilder.append(
+          ((LoadProfile) methodReturnObject).getKey());
       case "AssetTypeInput",
           "BmTypeInput",
           "ChpTypeInput",

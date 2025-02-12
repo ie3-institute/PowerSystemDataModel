@@ -5,19 +5,21 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.datamodel.models.result.CongestionResult.InputModelType.NODE
 import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import static tech.units.indriya.unit.Units.METRE_PER_SECOND
+import static tech.units.indriya.unit.Units.PERCENT
 
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.datamodel.models.result.CongestionResult
-import edu.ie3.datamodel.models.result.ModelResultEntity
 import edu.ie3.datamodel.models.result.NodeResult
+import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.SolarIrradianceValue
 import edu.ie3.datamodel.models.value.TemperatureValue
@@ -107,19 +109,19 @@ class UniquenessValidationUtilsTest extends Specification {
     Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PU)
     Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
 
-    Set<ModelResultEntity> uniqueResults = [
+    Set<ResultEntity> uniqueResults = [
       new NodeResult(time, uuid, vMag, vAng),
       new NodeResult(time.plusHours(1), uuid, vMag, vAng)
     ]
 
     when:
-    checkModelResultUniqueness(uniqueResults)
+    checkResultUniqueness(uniqueResults)
 
     then:
     noExceptionThrown()
   }
 
-  def "Duplicates in model result inputs lead to an exception"() {
+  def "Duplicates in result inputs lead to an exception"() {
     given:
     ZonedDateTime time = ZonedDateTime.parse("2024-02-15T13:49:44+01:00[Europe/Berlin]")
     UUID uuid1 = UUID.fromString("4f7938ad-3d8f-4d56-a76c-525f2362e8b6")
@@ -127,7 +129,7 @@ class UniquenessValidationUtilsTest extends Specification {
     Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PU)
     Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
 
-    Set<ModelResultEntity> notUniqueResults = [
+    Set<ResultEntity> notUniqueResults = [
       new NodeResult(time, uuid1, vMag, vAng),
       new NodeResult(time, uuid1, vMag, vAng),
       new NodeResult(time.plusHours(1), uuid2, vMag, vAng),
@@ -135,7 +137,7 @@ class UniquenessValidationUtilsTest extends Specification {
     ]
 
     when:
-    checkModelResultUniqueness(notUniqueResults)
+    checkResultUniqueness(notUniqueResults)
 
     then:
     DuplicateEntitiesException de = thrown()
@@ -145,20 +147,23 @@ class UniquenessValidationUtilsTest extends Specification {
   def "Duplicates in congestion result inputs lead to an exception"() {
     given:
     ZonedDateTime time = ZonedDateTime.parse("2024-02-15T13:49:44+01:00[Europe/Berlin]")
+    UUID inputModel1 = UUID.randomUUID()
+    UUID inputModel2 = UUID.randomUUID()
     int subgrid1 = 1
     int subgrid2 = 2
-    Quantity<Dimensionless> vMin = Quantities.getQuantity(0.9, PU)
-    Quantity<Dimensionless> vMax = Quantities.getQuantity(1.1, PU)
+    Quantity<Dimensionless> value = Quantities.getQuantity(120, PERCENT)
+    Quantity<Dimensionless> min = Quantities.getQuantity(90, PERCENT)
+    Quantity<Dimensionless> max = Quantities.getQuantity(110, PERCENT)
 
     Set<CongestionResult> notUniqueResults = [
-      new CongestionResult(time, subgrid1, vMin, vMax, false, false, false),
-      new CongestionResult(time, subgrid1, vMin, vMax, false, true, false),
-      new CongestionResult(time.plusHours(1), subgrid1, vMin, vMax, false, false, false),
-      new CongestionResult(time.plusHours(1), subgrid2, vMin, vMax, false, true, false),
+      new CongestionResult(time, inputModel1, NODE, subgrid1, value, min, max),
+      new CongestionResult(time, inputModel1, NODE, subgrid2, value, min, max),
+      new CongestionResult(time.plusHours(1), inputModel1, NODE, subgrid1, value, min, max),
+      new CongestionResult(time.plusHours(1), inputModel2, NODE, subgrid2, value, min, max),
     ]
 
     when:
-    checkCongestionResultUniqueness(notUniqueResults)
+    checkResultUniqueness(notUniqueResults)
 
     then:
     DuplicateEntitiesException de = thrown()

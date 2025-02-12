@@ -22,11 +22,21 @@ package models {
     childNote .. input
     childNote .. voltagelevels
 
-    interface StandardLoadProfile {
+    interface LoadProfile {
         + getKey: String
+        + {static} parse(String): LoadProfile
+        + {static} getAllProfiles: LoadProfile[]
+        + {static} getProfile(T[], String): T
         + enum DefaultLoadProfiles
+        + enum RandomLoadProfile
+    }
+
+    DefaultLoadProfiles --|> LoadProfile
+
+    interface StandardLoadProfile {
         + {static} parse(String): StandardLoadProfile
     }
+    StandardLoadProfile ..|> LoadProfile
 
     enum BdewLoadProfile {
         - key: String

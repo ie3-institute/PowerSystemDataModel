@@ -41,7 +41,10 @@ public class ProcessorProvider {
   private final Map<
           TimeSeriesProcessorKey,
           TimeSeriesProcessor<
-              TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>
+              TimeSeries<TimeSeriesEntry<Value>, Value, Value>,
+              TimeSeriesEntry<Value>,
+              Value,
+              Value>>
       timeSeriesProcessors;
 
   /** Get an instance of this class with all existing entity processors */
@@ -62,7 +65,10 @@ public class ProcessorProvider {
       Map<
               TimeSeriesProcessorKey,
               TimeSeriesProcessor<
-                  TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>
+                  TimeSeries<TimeSeriesEntry<Value>, Value, Value>,
+                  TimeSeriesEntry<Value>,
+                  Value,
+                  Value>>
           timeSeriesProcessors) {
     this.entityProcessors = init(entityProcessors);
     this.timeSeriesProcessors = timeSeriesProcessors;
@@ -120,13 +126,19 @@ public class ProcessorProvider {
    * @param <T> Type of the time series
    * @param <E> Type of the time series entries
    * @param <V> Type of the value inside the time series entries
+   * @param <R> Type of the value, the time series will return
    * @return A set of mappings from field name to value
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public <
+          T extends TimeSeries<E, V, R>,
+          E extends TimeSeriesEntry<V>,
+          V extends Value,
+          R extends Value>
       Set<LinkedHashMap<String, String>> handleTimeSeries(T timeSeries)
           throws ProcessorProviderException {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
-    return Try.of(() -> this.<T, E, V>getTimeSeriesProcessor(key), ProcessorProviderException.class)
+    return Try.of(
+            () -> this.<T, E, V, R>getTimeSeriesProcessor(key), ProcessorProviderException.class)
         .flatMap(
             processor ->
                 Try.of(() -> processor.handleTimeSeries(timeSeries), EntityProcessorException.class)
@@ -141,15 +153,20 @@ public class ProcessorProvider {
    * @param <T> Type of the time series
    * @param <E> Type of the entry of the time series
    * @param <V> Type of the entry's value
+   * @param <R> Type of the value, the time series will return
    * @return The correct processor
    * @throws ProcessorProviderException If no fitting processor can be found
    */
   @SuppressWarnings("unchecked cast")
-  private <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      TimeSeriesProcessor<T, E, V> getTimeSeriesProcessor(TimeSeriesProcessorKey processorKey)
+  private <
+          T extends TimeSeries<E, V, R>,
+          E extends TimeSeriesEntry<V>,
+          V extends Value,
+          R extends Value>
+      TimeSeriesProcessor<T, E, V, R> getTimeSeriesProcessor(TimeSeriesProcessorKey processorKey)
           throws ProcessorProviderException {
-    TimeSeriesProcessor<T, E, V> processor =
-        (TimeSeriesProcessor<T, E, V>) timeSeriesProcessors.get(processorKey);
+    TimeSeriesProcessor<T, E, V, R> processor =
+        (TimeSeriesProcessor<T, E, V, R>) timeSeriesProcessors.get(processorKey);
     if (processor == null)
       throw new ProcessorProviderException(
           "Cannot find processor for time series combination '"
@@ -206,7 +223,11 @@ public class ProcessorProvider {
   public String[] getHeaderElements(TimeSeriesProcessorKey processorKey)
       throws ProcessorProviderException {
     try {
-      TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>
+      TimeSeriesProcessor<
+              TimeSeries<TimeSeriesEntry<Value>, Value, Value>,
+              TimeSeriesEntry<Value>,
+              Value,
+              Value>
           processor = getTimeSeriesProcessor(processorKey);
       return processor.getHeaderElements();
     } catch (ProcessorProviderException e) {
@@ -287,7 +308,10 @@ public class ProcessorProvider {
   public static Map<
           TimeSeriesProcessorKey,
           TimeSeriesProcessor<
-              TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>
+              TimeSeries<TimeSeriesEntry<Value>, Value, Value>,
+              TimeSeriesEntry<Value>,
+              Value,
+              Value>>
       allTimeSeriesProcessors() throws EntityProcessorException {
     try {
       return Try.scanStream(
@@ -297,7 +321,7 @@ public class ProcessorProvider {
                           Try.of(
                               () ->
                                   new TimeSeriesProcessor<>(
-                                      (Class<TimeSeries<TimeSeriesEntry<Value>, Value>>)
+                                      (Class<TimeSeries<TimeSeriesEntry<Value>, Value, Value>>)
                                           key.getTimeSeriesClass(),
                                       (Class<TimeSeriesEntry<Value>>) key.getEntryClass(),
                                       (Class<Value>) key.getValueClass()),
