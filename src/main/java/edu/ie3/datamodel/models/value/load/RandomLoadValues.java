@@ -51,9 +51,9 @@ public class RandomLoadValues implements LoadValues {
   /** Scale parameter for a working day */
   private final double sigmaWd;
 
-  private final GeneralizedExtremeValueDistribution gevWd;
-  private final GeneralizedExtremeValueDistribution gevSa;
-  private final GeneralizedExtremeValueDistribution gevSu;
+  private final transient GeneralizedExtremeValueDistribution gevWd;
+  private final transient GeneralizedExtremeValueDistribution gevSa;
+  private final transient GeneralizedExtremeValueDistribution gevSu;
 
   /**
    * @param kSa Shape parameter for a Saturday

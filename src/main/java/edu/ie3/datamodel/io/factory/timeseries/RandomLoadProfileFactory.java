@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE;
+import static tech.units.indriya.unit.Units.WATT;
 
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile;
@@ -90,7 +91,7 @@ public class RandomLoadProfileFactory
   @Override
   public ComparableQuantity<Power> calculateMaxPower(
       RandomLoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> loadProfileEntries) {
-    return Quantities.getQuantity(159d, PowerSystemUnits.WATT);
+    return Quantities.getQuantity(159d, WATT);
   }
 
   @Override
