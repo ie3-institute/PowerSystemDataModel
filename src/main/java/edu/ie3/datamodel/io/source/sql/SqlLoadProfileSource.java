@@ -126,12 +126,12 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
   }
 
   @Override
-  public Optional<ComparableQuantity<Power>> getMaxPower() {
+  public ComparableQuantity<Power> getMaxPower() {
     return entryFactory.calculateMaxPower(loadProfile, getEntries(queryFull, ps -> {}));
   }
 
   @Override
-  public Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling() {
+  public ComparableQuantity<Energy> getLoadProfileEnergyScaling() {
     return entryFactory.getLoadProfileEnergyScaling(loadProfile);
   }
 

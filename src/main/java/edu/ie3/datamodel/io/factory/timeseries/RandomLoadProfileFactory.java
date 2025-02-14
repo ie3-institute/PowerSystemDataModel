@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE;
+import static tech.units.indriya.unit.Units.WATT;
 
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile;
@@ -14,7 +15,6 @@ import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSerie
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -74,7 +74,13 @@ public class RandomLoadProfileFactory
   @Override
   public RandomLoadProfileTimeSeries build(
       LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<RandomLoadValues>> entries) {
-    return new RandomLoadProfileTimeSeries(metaInformation.getUuid(), RANDOM_LOAD_PROFILE, entries);
+    RandomLoadProfile profile = RANDOM_LOAD_PROFILE;
+
+    ComparableQuantity<Power> maxPower = calculateMaxPower(profile, entries);
+    ComparableQuantity<Energy> profileEnergyScaling = getLoadProfileEnergyScaling(profile);
+
+    return new RandomLoadProfileTimeSeries(
+        metaInformation.getUuid(), profile, entries, maxPower, profileEnergyScaling);
   }
 
   @Override
@@ -83,14 +89,13 @@ public class RandomLoadProfileFactory
   }
 
   @Override
-  public Optional<ComparableQuantity<Power>> calculateMaxPower(
+  public ComparableQuantity<Power> calculateMaxPower(
       RandomLoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> loadProfileEntries) {
-    return Optional.of(Quantities.getQuantity(159d, PowerSystemUnits.WATT));
+    return Quantities.getQuantity(159d, WATT);
   }
 
   @Override
-  public Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling(
-      RandomLoadProfile loadProfile) {
-    return Optional.of(Quantities.getQuantity(716.5416966513656, PowerSystemUnits.KILOWATTHOUR));
+  public ComparableQuantity<Energy> getLoadProfileEnergyScaling(RandomLoadProfile loadProfile) {
+    return Quantities.getQuantity(716.5416966513656, PowerSystemUnits.KILOWATTHOUR);
   }
 }

@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
-import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;

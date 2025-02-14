@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.timeseries.repetitive.*;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
+import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;

@@ -83,10 +83,10 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
   public abstract P getLoadProfile();
 
   /** Returns the maximal power value of the time series */
-  public abstract Optional<ComparableQuantity<Power>> getMaxPower();
+  public abstract ComparableQuantity<Power> getMaxPower();
 
   /** Returns the load profile energy scaling for this load profile time series. */
-  public abstract Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling();
+  public abstract ComparableQuantity<Energy> getLoadProfileEnergyScaling();
 
   /**
    * Method to read in the build-in {@link BdewStandardLoadProfile}s.
