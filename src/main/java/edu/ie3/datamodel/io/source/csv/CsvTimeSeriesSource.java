@@ -129,6 +129,15 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   @Override
+  public Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time) {
+    return timeSeries.getPreviousTimeBasedValue(time);
+  }
+
+  public Optional<TimeBasedValue<V>> getNextTimeBasedValue(ZonedDateTime time) {
+    return timeSeries.getNextTimeBasedValue(time);
+  }
+
+  @Override
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
     return timeSeries.getTimeKeysAfter(time);
   }

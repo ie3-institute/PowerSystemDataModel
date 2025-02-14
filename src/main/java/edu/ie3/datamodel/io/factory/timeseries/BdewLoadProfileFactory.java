@@ -83,9 +83,11 @@ public class BdewLoadProfileFactory
       LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<BdewLoadValues>> entries) {
 
     BdewStandardLoadProfile profile = parseProfile(metaInformation.getProfile());
-    Optional<ComparableQuantity<Power>> maxPower = calculateMaxPower(profile, entries);
+    ComparableQuantity<Power> maxPower = calculateMaxPower(profile, entries);
+    ComparableQuantity<Energy> profileEnergyScaling = getLoadProfileEnergyScaling(profile);
 
-    return new BdewLoadProfileTimeSeries(metaInformation.getUuid(), profile, entries, maxPower);
+    return new BdewLoadProfileTimeSeries(
+        metaInformation.getUuid(), profile, entries, maxPower, profileEnergyScaling);
   }
 
   @Override
@@ -98,7 +100,7 @@ public class BdewLoadProfileFactory
   }
 
   @Override
-  public Optional<ComparableQuantity<Power>> calculateMaxPower(
+  public ComparableQuantity<Power> calculateMaxPower(
       BdewStandardLoadProfile loadProfile, Set<LoadProfileEntry<BdewLoadValues>> entries) {
     Function<BdewLoadValues, Stream<Double>> valueExtractor;
 
@@ -112,16 +114,14 @@ public class BdewLoadProfileFactory
     } else {
       valueExtractor = v -> v.values().stream();
     }
-    return entries.stream()
-        .map(TimeSeriesEntry::getValue)
-        .flatMap(valueExtractor)
-        .max(Comparator.naturalOrder())
-        .map(p -> Quantities.getQuantity(p, WATT));
-  }
 
-  @Override
-  public Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling(
-      BdewStandardLoadProfile loadProfile) {
-    return Optional.of(Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR));
+    double maxPower =
+        entries.stream()
+            .map(TimeSeriesEntry::getValue)
+            .flatMap(valueExtractor)
+            .max(Comparator.naturalOrder())
+            .orElse(0d);
+
+    return Quantities.getQuantity(maxPower, WATT);
   }
 }

@@ -50,7 +50,9 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
   public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
       throws SourceException;
 
-  public abstract Optional<V> getValue(ZonedDateTime time) throws SourceException;
+  public abstract Optional<V> getValue(ZonedDateTime time);
+
+  public abstract Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time);
 
   /**
    * Method to return all time keys after a given timestamp.

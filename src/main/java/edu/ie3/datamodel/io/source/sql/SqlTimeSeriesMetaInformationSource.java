@@ -121,7 +121,7 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
         new EntityData(fieldToValues, IndividualTimeSeriesMetaInformation.class);
     return metaInformationFactory
         .get(entityData)
-        .map(meta -> (IndividualTimeSeriesMetaInformation) meta)
+        .map(IndividualTimeSeriesMetaInformation.class::cast)
         .getData();
   }
 
@@ -130,7 +130,7 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
     EntityData entityData = new EntityData(fieldToValues, LoadProfileMetaInformation.class);
     return metaInformationFactory
         .get(entityData)
-        .map(meta -> (LoadProfileMetaInformation) meta)
+        .map(LoadProfileMetaInformation.class::cast)
         .getData();
   }
 }

@@ -114,7 +114,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
       persistIncludeNested(inputEntity);
     } else if (entity instanceof ResultEntity) {
       write(entity);
-    } else if (entity instanceof TimeSeries<?, ?> timeSeries) {
+    } else if (entity instanceof TimeSeries<?, ?, ?> timeSeries) {
       persistTimeSeries(timeSeries);
     } else {
       log.error(
@@ -243,8 +243,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   }
 
   @Override
-  public <E extends TimeSeriesEntry<? extends Value>, V extends Value> void persistTimeSeries(
-      TimeSeries<E, V> timeSeries) {
+  public <E extends TimeSeriesEntry<V>, V extends Value, R extends Value> void persistTimeSeries(
+      TimeSeries<E, V, R> timeSeries) {
     try {
       TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
       String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
@@ -264,8 +264,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     }
   }
 
-  private <E extends TimeSeriesEntry<? extends Value>, V extends Value> void persistTimeSeries(
-      TimeSeries<E, V> timeSeries, BufferedCsvWriter writer) throws ProcessorProviderException {
+  private <E extends TimeSeriesEntry<V>, V extends Value, R extends Value> void persistTimeSeries(
+      TimeSeries<E, V, R> timeSeries, BufferedCsvWriter writer) throws ProcessorProviderException {
     try {
       Set<LinkedHashMap<String, String>> entityFieldData =
           processorProvider.handleTimeSeries(timeSeries);

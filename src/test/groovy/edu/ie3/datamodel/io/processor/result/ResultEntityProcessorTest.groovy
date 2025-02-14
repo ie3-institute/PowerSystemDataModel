@@ -7,8 +7,8 @@ package edu.ie3.datamodel.io.processor.result
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.result.ModelResultEntity
 import edu.ie3.datamodel.models.result.NodeResult
+import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
@@ -285,7 +285,7 @@ class ResultEntityProcessorTest extends Specification {
     thrown(EntityProcessorException)
   }
 
-  private static class InvalidTestResult extends ModelResultEntity {
+  private static class InvalidTestResult extends ResultEntity {
 
     InvalidTestResult(ZonedDateTime time, UUID inputModel) {
       super(time, inputModel)

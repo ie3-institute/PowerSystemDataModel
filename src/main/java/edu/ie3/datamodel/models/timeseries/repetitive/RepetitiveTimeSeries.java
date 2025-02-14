@@ -13,8 +13,8 @@ import java.util.*;
 
 /** Describes a TimeSeries with repetitive values that can be calculated from a pattern */
 public abstract class RepetitiveTimeSeries<
-        E extends TimeSeriesEntry<? extends Value>, V extends Value>
-    extends TimeSeries<E, V> {
+        E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
+    extends TimeSeries<E, V, R> {
 
   protected RepetitiveTimeSeries(UUID uuid, Set<E> entries) {
     super(uuid, entries);
@@ -26,21 +26,11 @@ public abstract class RepetitiveTimeSeries<
    * @param time Questioned time
    * @return The value for the queried time
    */
-  protected abstract V calc(ZonedDateTime time);
+  protected abstract R calc(ZonedDateTime time);
 
   @Override
-  public Optional<V> getValue(ZonedDateTime time) {
+  public Optional<R> getValue(ZonedDateTime time) {
     return Optional.ofNullable(calc(time));
-  }
-
-  @Override
-  protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
-    return Optional.of(time.minusHours(1));
-  }
-
-  @Override
-  protected Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
-    return Optional.of(time.plusHours(1));
   }
 
   @Override
