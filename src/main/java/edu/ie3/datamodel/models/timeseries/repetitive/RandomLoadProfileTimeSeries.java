@@ -8,7 +8,6 @@ package edu.ie3.datamodel.models.timeseries.repetitive;
 import de.lmu.ifi.dbs.elki.math.statistics.distribution.GeneralizedExtremeValueDistribution;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
@@ -36,26 +35,7 @@ public class RandomLoadProfileTimeSeries extends LoadProfileTimeSeries<RandomLoa
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    return super.equals(o);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode());
-  }
-
-  @Override
   public String toString() {
-    return "RandomLoadProfileTimeSeries{"
-        + "uuid="
-        + getUuid()
-        + "loadProfile="
-        + getLoadProfile()
-        + ", valueMapping="
-        + getValueMapping()
-        + '}';
+    return "Random" + super.toString();
   }
 }
