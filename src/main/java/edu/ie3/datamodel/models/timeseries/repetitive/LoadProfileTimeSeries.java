@@ -9,14 +9,12 @@ import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
-import edu.ie3.util.quantities.PowerSystemUnits;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.Quantities;
 
 /**
  * Describes a load profile time series with repetitive values that can be calculated from a pattern
@@ -30,10 +28,10 @@ public class LoadProfileTimeSeries<V extends LoadValues>
    * The maximum average power consumption per quarter-hour calculated over all seasons and weekday
    * types of given load profile.
    */
-  public final ComparableQuantity<Power> maxPower;
+  private final ComparableQuantity<Power> maxPower;
 
   /** The profile energy scaling in kWh. */
-  public final ComparableQuantity<Energy> profileEnergyScaling;
+  private final ComparableQuantity<Energy> profileEnergyScaling;
 
   public LoadProfileTimeSeries(
       UUID uuid,
@@ -48,13 +46,21 @@ public class LoadProfileTimeSeries<V extends LoadValues>
             .collect(
                 Collectors.toMap(LoadProfileEntry::getQuarterHour, LoadProfileEntry::getValue));
 
-    // use default value is null value is given
-    this.maxPower =
-        Optional.ofNullable(maxPower)
-            .orElseGet(() -> Quantities.getQuantity(0d, PowerSystemUnits.KILOWATT));
-    this.profileEnergyScaling =
-        Optional.ofNullable(profileEnergyScaling)
-            .orElseGet(() -> Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR));
+    this.maxPower = maxPower;
+    this.profileEnergyScaling = profileEnergyScaling;
+  }
+
+  /**
+   * Returns the maximum average power consumption per quarter-hour calculated over all seasons and
+   * weekday types of given load profile in Watt.
+   */
+  public Optional<ComparableQuantity<Power>> maxPower() {
+    return Optional.ofNullable(maxPower);
+  }
+
+  /** Returns the profile energy scaling in kWh. */
+  public Optional<ComparableQuantity<Energy>> loadProfileScaling() {
+    return Optional.ofNullable(profileEnergyScaling);
   }
 
   /** Returns the {@link LoadProfile}. */
