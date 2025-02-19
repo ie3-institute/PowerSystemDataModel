@@ -88,12 +88,28 @@ public class RandomLoadProfileFactory
     return RANDOM_LOAD_PROFILE;
   }
 
+  /**
+   * This is the 95 % quantile resulting from 10,000 evaluations of the year 2019. It is only
+   * needed, when the load is meant to be scaled to rated active power.
+   *
+   * @return Reference active power to use for later model calculations
+   */
   @Override
   public ComparableQuantity<Power> calculateMaxPower(
       RandomLoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> loadProfileEntries) {
     return Quantities.getQuantity(159d, WATT);
   }
 
+  /**
+   * Returns the profile energy scaling factor, the random profile is scaled to.
+   *
+   * <p>It is said in 'Kays - Agent-based simulation environment for improving the planning of
+   * distribution grids', that the Generalized Extreme Value distribution's parameters are sampled
+   * from input data, that is normalized to 1,000 kWh annual energy consumption. However, due to
+   * inaccuracies in random data reproduction, the sampled values will lead to an average annual
+   * energy consumption of approx. this value. It has been found by 1,000 evaluations of the year
+   * 2019.
+   */
   @Override
   public ComparableQuantity<Energy> getLoadProfileEnergyScaling(RandomLoadProfile loadProfile) {
     return Quantities.getQuantity(716.5416966513656, PowerSystemUnits.KILOWATTHOUR);
