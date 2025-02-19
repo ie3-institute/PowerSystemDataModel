@@ -116,6 +116,27 @@ node {
         sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew javadoc''', returnStdout: true)
       }
 
+      // sonarqube analysis
+      stage('sonarqube analysis') {
+        String sonarqubeCurrentBranchName = prFromFork() ? prJsonObj.head.repo.full_name : currentBranchName // forks needs to be handled differently
+        String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, sonarqubeCurrentBranchName, targetBranchName, orgName, projectName, projectName)
+        withSonarQubeEnv() {
+          // will pick the global server connection from jenkins for sonarqube
+          gradle(sonarqubeCmd, projectName)
+        }
+      }
+
+      // sonarqube quality gate
+      stage("quality gate") {
+        timeout(time: 1, unit: 'HOURS') {
+          // just in case something goes wrong, pipeline will be killed after a timeout
+          def qg = waitForQualityGate() // reuse taskId previously collected by withSonarQubeEnv
+          if (qg.status != 'OK') {
+            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+          }
+        }
+      }
+
       // deploy stage only if branch is main or dev
       if (env.BRANCH_NAME == "main" || env.BRANCH_NAME == "dev") {
         stage('deploy') {
