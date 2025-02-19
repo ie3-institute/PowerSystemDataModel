@@ -25,13 +25,13 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   private final Map<Integer, V> valueMapping;
 
   /**
-   * The maximum average power consumption per quarter-hour for a given calculated over all seasons
-   * and weekday types of given load profile.
+   * The maximum average power consumption per quarter-hour calculated over all seasons and weekday
+   * types of given load profile.
    */
-  public final ComparableQuantity<Power> maxPower;
+  private final ComparableQuantity<Power> maxPower;
 
   /** The profile energy scaling in kWh. */
-  public final ComparableQuantity<Energy> profileEnergyScaling;
+  private final ComparableQuantity<Energy> profileEnergyScaling;
 
   public LoadProfileTimeSeries(
       UUID uuid,
@@ -48,6 +48,19 @@ public class LoadProfileTimeSeries<V extends LoadValues>
 
     this.maxPower = maxPower;
     this.profileEnergyScaling = profileEnergyScaling;
+  }
+
+  /**
+   * Returns the maximum average power consumption per quarter-hour calculated over all seasons and
+   * weekday types of given load profile in Watt.
+   */
+  public Optional<ComparableQuantity<Power>> maxPower() {
+    return Optional.ofNullable(maxPower);
+  }
+
+  /** Returns the profile energy scaling in kWh. */
+  public Optional<ComparableQuantity<Energy>> loadProfileScaling() {
+    return Optional.ofNullable(profileEnergyScaling);
   }
 
   /** Returns the {@link LoadProfile}. */
