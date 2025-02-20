@@ -2,7 +2,7 @@
 
 # Domestic Hot Water Storage
 
-Result of a domestic hot water storage using a fluent to store thermal energy.
+Result of a domestic hot water storage using a fluid to store thermal energy.
 
 ## Attributes, Units and Remarks
 
