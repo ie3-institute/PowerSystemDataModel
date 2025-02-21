@@ -11,6 +11,7 @@ import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.*;
 import edu.ie3.datamodel.utils.Try;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -125,7 +126,8 @@ public class ThermalSource extends AssetEntitySource {
    * @return a map of UUID to object- and uuid-unique {@link ThermalStorageInput} entities
    */
   public Map<UUID, ThermalStorageInput> getThermalStorages() throws SourceException {
-    return Stream.concat(getCylindricalStorages().stream(), getDomesticHotWaterStorages().stream())
+    return Stream.of(getCylindricalStorages(), getDomesticHotWaterStorages())
+        .flatMap(Collection::stream)
         .collect(Collectors.toMap(ThermalStorageInput::getUuid, storage -> storage));
   }
 
@@ -151,9 +153,8 @@ public class ThermalSource extends AssetEntitySource {
   public Map<UUID, ThermalStorageInput> getThermalStorages(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
-    return Stream.concat(
-            getCylindricalStorages(operators, thermalBuses).stream(),
-            getDomesticHotWaterStorages(operators, thermalBuses).stream())
+    return Stream.of(getCylindricalStorages(), getDomesticHotWaterStorages())
+        .flatMap(Collection::stream)
         .collect(Collectors.toMap(ThermalStorageInput::getUuid, storage -> storage));
   }
 
