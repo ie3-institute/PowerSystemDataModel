@@ -14,7 +14,7 @@ import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
 
 public abstract class AbstractThermalStorageInputFactory<T extends AssetInput>
-extends AssetInputEntityFactory<T, ThermalUnitInputEntityData> {
+    extends AssetInputEntityFactory<T, ThermalUnitInputEntityData> {
 
   private static final String STORAGE_VOLUME_LVL = "storageVolumeLvl";
   private static final String INLET_TEMP = "inletTemp";
