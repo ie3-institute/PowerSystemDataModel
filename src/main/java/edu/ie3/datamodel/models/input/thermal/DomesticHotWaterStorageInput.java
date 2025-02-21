@@ -112,7 +112,7 @@ public class DomesticHotWaterStorageInput extends CylindricalStorageInput {
   public static class DomesticHotWaterStorageInputCopyBuilder
       extends CylindricalStorageInputCopyBuilder {
 
-    public DomesticHotWaterStorageInputCopyBuilder(DomesticHotWaterStorageInput entity) {
+    protected DomesticHotWaterStorageInputCopyBuilder(DomesticHotWaterStorageInput entity) {
       super(entity);
     }
   }

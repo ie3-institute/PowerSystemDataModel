@@ -163,13 +163,13 @@ public class CylindricalStorageInput extends ThermalStorageInput {
   public static class CylindricalStorageInputCopyBuilder
       extends ThermalStorageInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
 
-    ComparableQuantity<Volume> storageVolumeLvl;
-    ComparableQuantity<Temperature> inletTemp;
-    ComparableQuantity<Temperature> returnTemp;
-    ComparableQuantity<SpecificHeatCapacity> c;
-    ComparableQuantity<Power> pThermalMax;
+    private ComparableQuantity<Volume> storageVolumeLvl;
+    private ComparableQuantity<Temperature> inletTemp;
+    private ComparableQuantity<Temperature> returnTemp;
+    private ComparableQuantity<SpecificHeatCapacity> c;
+    private ComparableQuantity<Power> pThermalMax;
 
-    CylindricalStorageInputCopyBuilder(CylindricalStorageInput entity) {
+    protected CylindricalStorageInputCopyBuilder(CylindricalStorageInput entity) {
       super(entity);
       this.storageVolumeLvl = entity.getStorageVolumeLvl();
       this.inletTemp = entity.getInletTemp();
