@@ -2,7 +2,7 @@
 
 # Cylindrical Thermal Storage
 
-Model of a cylindrical thermal storage using a fluent to store thermal energy.
+Model of a cylindrical thermal storage using a fluid to store thermal energy.
 
 ## Attributes, Units and Remarks
 
