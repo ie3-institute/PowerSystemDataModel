@@ -63,7 +63,6 @@ public class CsvThermalGridSource {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, ThermalBusInput> buses = thermalSource.getThermalBuses();
 
-    // calling Map.values() because we want to map the inputs to their thermal bus
     Try<Collection<ThermalHouseInput>, SourceException> houses =
         Try.of(
             () -> thermalSource.getThermalHouses(operators, buses).values(), SourceException.class);
