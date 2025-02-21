@@ -52,6 +52,7 @@ public class CylindricalStorageInput extends AbstractThermalStorageInput {
         returnTemp,
         c,
         pThermalMax);
+    this.pThermalMax = pThermalMax.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   /**

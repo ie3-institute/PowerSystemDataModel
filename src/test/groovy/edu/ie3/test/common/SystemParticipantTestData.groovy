@@ -187,7 +187,6 @@ class SystemParticipantTestData {
   returnTemp,
   c,
   pThermalMax
-
   )
 
   public static final ChpInput chpInput = new ChpInput(
