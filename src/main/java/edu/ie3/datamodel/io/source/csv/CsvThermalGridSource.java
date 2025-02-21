@@ -14,10 +14,7 @@ import edu.ie3.datamodel.io.source.ThermalSource;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.ThermalGrid;
-import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
-import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
-import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
-import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
+import edu.ie3.datamodel.models.input.thermal.*;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
 import java.util.*;
@@ -70,13 +67,11 @@ public class CsvThermalGridSource {
     Try<Collection<ThermalHouseInput>, SourceException> houses =
         Try.of(
             () -> thermalSource.getThermalHouses(operators, buses).values(), SourceException.class);
-    Try<Collection<ThermalStorageInput>, SourceException> heatStorages =
+    Try<Collection<CylindricalStorageInput>, SourceException> heatStorages =
+        Try.of(() -> thermalSource.getCylindricalStorages(operators, buses), SourceException.class);
+    Try<Collection<DomesticHotWaterStorageInput>, SourceException> waterStorages =
         Try.of(
-            () -> thermalSource.getThermalStorages(operators, buses).values(),
-            SourceException.class);
-    Try<Collection<ThermalStorageInput>, SourceException> waterStorages =
-        Try.of(
-            () -> thermalSource.getThermalStorages(operators, buses).values(),
+            () -> thermalSource.getDomesticHotWaterStorages(operators, buses),
             SourceException.class);
 
     List<? extends Exception> exceptions = Try.getExceptions(houses, heatStorages, waterStorages);
