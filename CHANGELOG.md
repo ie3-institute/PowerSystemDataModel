@@ -19,9 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Attributes `housingType` and `numberInhabitants` for `ThermalHouse`s [#1131](https://github.com/ie3-institute/PowerSystemDataModel/issues/1131)
 - Added domestic hot water storage model [#1131](https://github.com/ie3-institute/PowerSystemDataModel/issues/1131)
 - Extend ValidationUtils for validating ThermalGrids [#1216](https://github.com/ie3-institute/PowerSystemDataModel/issues/1216) 
-- Attribute `pThermalRated` for `ThermalStorage`s [#679](https://github.com/ie3-institute/PowerSystemDataModel/issues/679)
-- Attributes `housingType` and `numberInhabitants` for `ThermalHouse`s [#1131](https://github.com/ie3-institute/PowerSystemDataModel/issues/1131)
-- Added domestic hot water storage model [#1131](https://github.com/ie3-institute/PowerSystemDataModel/issues/1131)
 
 ### Fixed
 - Removing opened `SwitchInput` during connectivity check [#1221](https://github.com/ie3-institute/PowerSystemDataModel/issues/1221)
