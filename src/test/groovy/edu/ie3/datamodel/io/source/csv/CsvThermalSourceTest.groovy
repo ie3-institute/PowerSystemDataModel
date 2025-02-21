@@ -68,6 +68,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
       inletTemp == sptd.inletTemp
       returnTemp == sptd.returnTemp
       c == sptd.c
+      pThermalMax == sptd.pThermalMax
     }
 
     //test method when operators and thermal buses are provided as constructor parameters
