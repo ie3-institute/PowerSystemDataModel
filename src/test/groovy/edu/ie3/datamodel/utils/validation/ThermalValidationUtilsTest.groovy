@@ -17,6 +17,7 @@ import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.util.TimeUtil
+import edu.ie3.util.quantities.PowerSystemUnits
 import edu.ie3.util.quantities.interfaces.HeatCapacity
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
 import edu.ie3.util.quantities.interfaces.ThermalConductance
@@ -24,6 +25,7 @@ import spock.lang.Specification
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
+import javax.measure.quantity.Power
 import javax.measure.quantity.Temperature
 import javax.measure.quantity.Volume
 
@@ -50,6 +52,7 @@ class ThermalValidationUtilsTest extends Specification {
   private static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
+  private static final ComparableQuantity<Power> pThermalMax = Quantities.getQuantity(10.2, StandardUnits.ACTIVE_POWER_IN)
 
   // Thermal House
 
@@ -88,7 +91,7 @@ class ThermalValidationUtilsTest extends Specification {
 
   def "Smoke Test: Correct thermal cylindrical storage throws no exception"() {
     given:
-    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricStorageInput
+    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricalStorageInput
 
     when:
     ValidationUtils.check(cylindricalStorageInput)
@@ -108,17 +111,18 @@ class ThermalValidationUtilsTest extends Specification {
     ex.message == expectedException.message
 
     where:
-    invalidCylindricalStorage                                                                                                                                                                                                                                       || expectedSize || expectedException
-    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c)            || 1            || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature", invalidCylindricalStorage)
-    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(100, StandardUnits.TEMPERATURE), c)            || 1            || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature", invalidCylindricalStorage)
-    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)) || 1            || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -1.05 kWh/K*m³", invalidCylindricalStorage)
+    invalidCylindricalStorage                                                                                                                                                                                                                                                                                                || expectedSize || expectedException
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c, pThermalMax)                                                        || 1            || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature", invalidCylindricalStorage)
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(100, StandardUnits.TEMPERATURE), c, pThermalMax)                                                        || 1            || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature", invalidCylindricalStorage)
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY), pThermalMax)                                             || 1            || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -1.05 kWh/K*m³", invalidCylindricalStorage)
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY),  Quantities.getQuantity(-20, PowerSystemUnits.KILOWATT)) || 1            || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -1.05 kWh/K*m³, -20 kW", invalidCylindricalStorage)
   }
 
   def "ThermalUnitValidationUtils.check() works for complete ThermalGrid as well"() {
     when:
     def thermalBus = ThermalUnitInputTestData.thermalBus
     def cylindricalStorageInput = [
-      ThermalUnitInputTestData.cylindricStorageInput
+      ThermalUnitInputTestData.cylindricalStorageInput
     ]
 
 

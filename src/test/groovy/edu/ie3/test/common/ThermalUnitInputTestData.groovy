@@ -17,6 +17,7 @@ import edu.ie3.util.quantities.interfaces.ThermalConductance
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
+import javax.measure.quantity.Power
 import javax.measure.quantity.Temperature
 import javax.measure.quantity.Volume
 
@@ -48,20 +49,22 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   UPPER_TEMPERATURE_LIMIT,
   LOWER_TEMPERATURE_LIMIT)
 
-  // thermal cylindric storage input
+  // thermal cylindrical storage input
   private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
   private static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
+  private static final ComparableQuantity<Power> pThermalMax = Quantities.getQuantity(20, StandardUnits.ACTIVE_POWER_IN)
 
-  public static final cylindricStorageInput = new CylindricalStorageInput(
+  public static final cylindricalStorageInput = new CylindricalStorageInput(
   thermalUnitUuid,
-  "test_cylindricStorageInput",
+  "testCylindricalStorageInput",
   operator,
   operationTime,
   thermalBus,
   storageVolumeLvl,
   inletTemp,
   returnTemp,
-  c)
+  c,
+  pThermalMax)
 }
