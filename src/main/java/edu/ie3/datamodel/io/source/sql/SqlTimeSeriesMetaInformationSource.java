@@ -94,6 +94,9 @@ public class SqlTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
       Map<String, String> fieldToValues) {
     EntityData entityData =
         new EntityData(fieldToValues, IndividualTimeSeriesMetaInformation.class);
-    return mappingFactory.get(entityData).getData();
+    return mappingFactory
+        .get(entityData)
+        .map(IndividualTimeSeriesMetaInformation.class::cast)
+        .getData();
   }
 }

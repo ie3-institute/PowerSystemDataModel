@@ -85,8 +85,8 @@ public class InfluxDbSink implements OutputDataSink {
   }
 
   @Override
-  public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
-      TimeSeries<E, V> timeSeries) throws ProcessorProviderException {
+  public <E extends TimeSeriesEntry<V>, V extends Value, R extends Value> void persistTimeSeries(
+      TimeSeries<E, V, R> timeSeries) throws ProcessorProviderException {
     Set<Point> points = transformToPoints(timeSeries);
     writeAll(points);
   }
@@ -146,8 +146,9 @@ public class InfluxDbSink implements OutputDataSink {
    *
    * @param timeSeries the time series to transform
    */
-  private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
-      TimeSeries<E, V> timeSeries) throws ProcessorProviderException {
+  private <E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
+      Set<Point> transformToPoints(TimeSeries<E, V, R> timeSeries)
+          throws ProcessorProviderException {
     if (timeSeries.getEntries().isEmpty()) return Collections.emptySet();
 
     Optional<String> measurementName = entityPersistenceNamingStrategy.getEntityName(timeSeries);
@@ -169,8 +170,9 @@ public class InfluxDbSink implements OutputDataSink {
    * @param timeSeries the time series to transform
    * @param measurementName equivalent to the name of a relational table
    */
-  private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
-      TimeSeries<E, V> timeSeries, String measurementName) throws ProcessorProviderException {
+  private <E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
+      Set<Point> transformToPoints(TimeSeries<E, V, R> timeSeries, String measurementName)
+          throws ProcessorProviderException {
     Set<Point> points = new HashSet<>();
     Set<LinkedHashMap<String, String>> entityFieldData =
         processorProvider.handleTimeSeries(timeSeries);
@@ -204,7 +206,7 @@ public class InfluxDbSink implements OutputDataSink {
     /* Distinguish between result models and time series */
     if (entity instanceof ResultEntity resultEntity) {
       points.add(transformToPoint(resultEntity));
-    } else if (entity instanceof TimeSeries<?, ?> timeSeries) {
+    } else if (entity instanceof TimeSeries<?, ?, ?> timeSeries) {
       points.addAll(transformToPoints(timeSeries));
     } else {
       log.error(

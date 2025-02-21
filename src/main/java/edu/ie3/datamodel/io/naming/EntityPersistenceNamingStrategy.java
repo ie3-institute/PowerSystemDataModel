@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
@@ -17,7 +17,7 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
 import java.util.Optional;
@@ -60,7 +60,7 @@ public class EntityPersistenceNamingStrategy {
    * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
    */
   private static final String LOAD_PROFILE_TIME_SERIES =
-      "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>" + UUID_STRING + ")";
+      "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})";
 
   /**
    * Pattern to identify load profile time series in this instance of the naming strategy (takes
@@ -156,15 +156,13 @@ public class EntityPersistenceNamingStrategy {
    * @param fileName File name to extract information from
    * @return Meta information form load profile time series file name
    */
-  public LoadProfileTimeSeriesMetaInformation loadProfileTimesSeriesMetaInformation(
-      String fileName) {
+  public LoadProfileMetaInformation loadProfileTimesSeriesMetaInformation(String fileName) {
     Matcher matcher = getLoadProfileTimeSeriesPattern().matcher(fileName);
     if (!matcher.matches())
       throw new IllegalArgumentException(
           "Cannot extract meta information on load profile time series from '" + fileName + "'.");
 
-    return new LoadProfileTimeSeriesMetaInformation(
-        UUID.fromString(matcher.group("uuid")), matcher.group("profile"));
+    return new LoadProfileMetaInformation(matcher.group("profile"));
   }
 
   /**
@@ -215,8 +213,6 @@ public class EntityPersistenceNamingStrategy {
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
       return getAssetInputEntityName(cls.asSubclass(AssetInput.class));
-    if (RandomLoadParameters.class.isAssignableFrom(cls))
-      return getRandomLoadParametersEntityName(cls.asSubclass(RandomLoadParameters.class));
     if (GraphicInput.class.isAssignableFrom(cls))
       return getGraphicsInputEntityName(cls.asSubclass(GraphicInput.class));
     if (OperatorInput.class.isAssignableFrom(cls))
@@ -272,19 +268,6 @@ public class EntityPersistenceNamingStrategy {
       Class<? extends CharacteristicInput> assetCharClass) {
     String assetCharString = camelCaseToSnakeCase(assetCharClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetCharString));
-  }
-
-  /**
-   * Get the entity name for all {@link RandomLoadParameters}
-   *
-   * @param randomLoadParamClass the random load parameters class an entity name string should be
-   *     generated from
-   * @return the entity name string
-   */
-  public Optional<String> getRandomLoadParametersEntityName(
-      Class<? extends RandomLoadParameters> randomLoadParamClass) {
-    String loadParamString = camelCaseToSnakeCase(randomLoadParamClass.getSimpleName());
-    return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
   }
 
   /**
@@ -359,7 +342,11 @@ public class EntityPersistenceNamingStrategy {
    * @param timeSeries Time series to derive naming information from
    * @return A file name for this particular time series
    */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public <
+          T extends TimeSeries<E, V, R>,
+          E extends TimeSeriesEntry<V>,
+          V extends Value,
+          R extends Value>
       Optional<String> getEntityName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries) {
       Optional<E> maybeFirstElement = timeSeries.getEntries().stream().findFirst();
@@ -383,14 +370,12 @@ public class EntityPersistenceNamingStrategy {
         logger.error("Unable to determine content of time series {}", timeSeries);
         return Optional.empty();
       }
-    } else if (timeSeries instanceof LoadProfileInput loadProfileInput) {
+    } else if (timeSeries instanceof LoadProfileTimeSeries<?> loadProfileTimeSeries) {
       return Optional.of(
           prefix
               .concat("lpts")
               .concat("_")
-              .concat(loadProfileInput.getType().getKey())
-              .concat("_")
-              .concat(loadProfileInput.getUuid().toString())
+              .concat(loadProfileTimeSeries.getLoadProfile().getKey())
               .concat(suffix));
     } else {
       logger.error("There is no naming strategy defined for {}", timeSeries);

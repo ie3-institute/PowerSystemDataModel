@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** Describes a TimeSeries with individual values per time step */
-public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedValue<V>, V> {
+public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedValue<V>, V, V> {
   /** Maps a time to its respective value to retrieve faster */
   private final Map<ZonedDateTime, TimeBasedValue<V>> timeToValue;
 
@@ -55,14 +55,14 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
   @Override
   protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
     return timeToValue.keySet().stream()
-        .filter(valueTime -> valueTime.compareTo(time) <= 0)
+        .filter(valueTime -> valueTime.compareTo(time) < 0)
         .max(Comparator.naturalOrder());
   }
 
   @Override
   protected Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
     return timeToValue.keySet().stream()
-        .filter(valueTime -> valueTime.compareTo(time) >= 0)
+        .filter(valueTime -> valueTime.compareTo(time) > 0)
         .min(Comparator.naturalOrder());
   }
 

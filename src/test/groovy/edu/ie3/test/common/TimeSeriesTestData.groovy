@@ -17,16 +17,16 @@ import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.value.*
+import edu.ie3.datamodel.models.value.load.BdewLoadValues
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.geom.PrecisionModel
 import tech.units.indriya.quantity.Quantities
 
-import java.time.DayOfWeek
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -401,43 +401,59 @@ trait TimeSeriesTestData {
     ] as LinkedHashMap
   ] as Set
 
-  LoadProfileInput loadProfileInput =  new LoadProfileInput(
-  UUID.fromString("b56853fe-b800-4c18-b324-db1878b22a28"),
+  BdewLoadProfileTimeSeries loadProfileTimeSeries =  new BdewLoadProfileTimeSeries(
+  UUID.fromString("b0ad5ba2-0d5e-4c9b-b818-4079cebf59cc"),
   BdewStandardLoadProfile.G2,
   [
-    new LoadProfileEntry(
-    new PValue(Quantities.getQuantity(5d, KILOWATT)),
-    DayOfWeek.MONDAY,
-    0
+    new LoadProfileEntry<>(
+    new BdewLoadValues(63.1, 50.6, 60.8, 73.1, 64.2, 70.5, 80.6, 73.7, 77.4), 0
     ),
-    new LoadProfileEntry(
-    new PValue(Quantities.getQuantity(15d, KILOWATT)),
-    DayOfWeek.MONDAY,
-    1
+    new LoadProfileEntry<>(
+    new BdewLoadValues(58.0, 47.4, 53.0, 67.6, 60.7, 61.9, 74.6, 68.7, 67.4), 1),
+    new LoadProfileEntry<>(
+    new BdewLoadValues(53.5, 44.3, 46.0, 62.8, 56.9, 54.4, 69.2, 63.6, 58.4), 2
     ),
-    new LoadProfileEntry(
-    new PValue(Quantities.getQuantity(10d, KILOWATT)),
-    DayOfWeek.MONDAY,
-    2
-    )
-  ] as Set
+  ] as Set,
+  Quantities.getQuantity(80.6, WATT),
+  Quantities.getQuantity(1000d, KILOWATTHOUR)
   )
 
-  Set<LinkedHashMap<String, String>> loadProfileInputProcessed = [
+  Set<LinkedHashMap<String, String>> loadProfileTimeSeriesProcessed = [
     [
-      "dayOfWeek"			: "MONDAY",
-      "p"					: "5.0",
-      "quarterHourOfDay"	: "0"
+      "suSa": "63.1",
+      "suSu": "50.6",
+      "suWd": "60.8",
+      "trSa": "73.1",
+      "trSu": "64.2",
+      "trWd": "70.5",
+      "wiSa": "80.6",
+      "wiSu": "73.7",
+      "wiWd": "77.4",
+      "quarterHour": "0"
     ] as LinkedHashMap,
     [
-      "dayOfWeek"			: "MONDAY",
-      "p"					: "15.0",
-      "quarterHourOfDay"	: "1"
+      "suSa": "58.0",
+      "suSu": "47.4",
+      "suWd": "53.0",
+      "trSa": "67.6",
+      "trSu": "60.7",
+      "trWd": "61.9",
+      "wiSa": "74.6",
+      "wiSu": "68.7",
+      "wiWd": "67.4",
+      "quarterHour": "1"
     ] as LinkedHashMap,
     [
-      "dayOfWeek"			: "MONDAY",
-      "p"					: "10.0",
-      "quarterHourOfDay"	: "2"
+      "suSa": "53.5",
+      "suSu": "44.3",
+      "suWd": "46.0",
+      "trSa": "62.8",
+      "trSu": "56.9",
+      "trWd": "54.4",
+      "wiSa": "69.2",
+      "wiSu": "63.6",
+      "wiWd": "58.4",
+      "quarterHour": "2"
     ] as LinkedHashMap
   ] as Set
 
@@ -450,6 +466,6 @@ trait TimeSeriesTestData {
     individualPTimeSeries,
     individualSTimeSeries,
     individualWeatherTimeSeries,
-    loadProfileInput
+    loadProfileTimeSeries
   ]
 }
