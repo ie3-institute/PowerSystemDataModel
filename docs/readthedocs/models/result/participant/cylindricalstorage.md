@@ -2,7 +2,7 @@
 
 # Cylindrical Thermal Storage
 
-Result of a cylindrical thermal storage using a fluent to store thermal energy.
+Result of a cylindrical thermal storage using a fluid to store thermal energy.
 
 ## Attributes, Units and Remarks
 

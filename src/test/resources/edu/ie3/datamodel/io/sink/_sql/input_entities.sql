@@ -89,6 +89,7 @@ CREATE TABLE public.cylindrical_storage_input
     return_temp double precision NOT NULL,
     storage_volume_lvl double precision NOT NULL,
     thermal_bus uuid NOT NULL,
+    p_thermal_max DOUBLE PRECISION NOT NULL,
     grid_uuid uuid NOT NULL
 )
     WITHOUT OIDS

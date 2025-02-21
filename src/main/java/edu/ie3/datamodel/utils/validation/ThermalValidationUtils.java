@@ -254,7 +254,9 @@ public class ThermalValidationUtils extends ValidationUtils {
             () ->
                 detectZeroOrNegativeQuantities(
                     new Quantity<?>[] {
-                      cylindricalStorageInput.getStorageVolumeLvl(), cylindricalStorageInput.getC()
+                      cylindricalStorageInput.getStorageVolumeLvl(),
+                      cylindricalStorageInput.getC(),
+                      cylindricalStorageInput.getpThermalMax()
                     },
                     cylindricalStorageInput),
             InvalidEntityException.class));

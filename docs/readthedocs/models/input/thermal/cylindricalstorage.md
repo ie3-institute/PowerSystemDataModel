@@ -2,7 +2,7 @@
 
 # Cylindrical Thermal Storage
 
-Model of a cylindrical thermal storage using a fluent to store thermal energy.
+Model of a cylindrical thermal storage using a fluid to store thermal energy.
 
 ## Attributes, Units and Remarks
 
@@ -51,6 +51,10 @@ Model of a cylindrical thermal storage using a fluent to store thermal energy.
    * - c
      - kWh / (K :math:`\cdot` m³)
      - Specific heat capacity of the storage medium
+     
+   * - pThermalMax
+     - kW
+     - Maximum permissible thermal power of the storage
 
 ```
 
