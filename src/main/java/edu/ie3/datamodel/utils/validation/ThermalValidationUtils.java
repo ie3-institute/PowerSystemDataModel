@@ -14,7 +14,6 @@ import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 import javax.measure.Quantity;
 
 public class ThermalValidationUtils extends ValidationUtils {
@@ -88,12 +87,13 @@ public class ThermalValidationUtils extends ValidationUtils {
       exceptions.addAll(checkThermalHouse(house));
     }
 
-    // Validate storages
-    for (ThermalStorageInput storage :
-        Stream.concat(
-                thermalGrid.heatStorages().stream(),
-                thermalGrid.domesticHotWaterStorages().stream())
-            .toList()) {
+    // Validate heat storages
+    for (ThermalStorageInput storage : thermalGrid.heatStorages()) {
+      exceptions.addAll(check(storage));
+    }
+
+    // Validate domestic hot water storages
+    for (ThermalStorageInput storage : thermalGrid.domesticHotWaterStorages()) {
       exceptions.addAll(check(storage));
     }
 
