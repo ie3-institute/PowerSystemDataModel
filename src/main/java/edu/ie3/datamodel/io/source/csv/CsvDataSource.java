@@ -54,6 +54,13 @@ public class CsvDataSource implements DataSource {
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
+  public CsvDataSource(
+      String csvSep, CsvFileConnector connector, FileNamingStrategy fileNamingStrategy) {
+    this.csvSep = csvSep;
+    this.connector = connector;
+    this.fileNamingStrategy = fileNamingStrategy;
+  }
+
   @Override
   public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass)
       throws SourceException {
@@ -83,6 +90,15 @@ public class CsvDataSource implements DataSource {
   public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
       throws SourceException {
     return buildStreamWithFieldsToAttributesMap(entityClass, true).getOrThrow();
+  }
+
+  /**
+   * @param filePath to the csv file
+   * @return a stream of maps that represent the rows in the csv file
+   * @throws SourceException on error while reading the source file
+   */
+  public Stream<Map<String, String>> getSourceData(Path filePath) throws SourceException {
+    return buildStreamWithFieldsToAttributesMap(filePath, true).getOrThrow();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -231,8 +247,7 @@ public class CsvDataSource implements DataSource {
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       Class<? extends Entity> entityClass, boolean allowFileNotExisting) {
     return getFilePath(entityClass)
-        .flatMap(
-            path -> buildStreamWithFieldsToAttributesMap(entityClass, path, allowFileNotExisting));
+        .flatMap(path -> buildStreamWithFieldsToAttributesMap(path, allowFileNotExisting));
   }
 
   /**
@@ -240,14 +255,12 @@ public class CsvDataSource implements DataSource {
    * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
    * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
-   * @param entityClass the entity class that should be build
    * @param filePath the path of the file to read
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
-  protected <T extends Entity>
-      Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-          Class<T> entityClass, Path filePath, boolean allowFileNotExisting) {
+  protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
+      Path filePath, boolean allowFileNotExisting) {
     try (BufferedReader reader = connector.initReader(filePath)) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
@@ -264,9 +277,7 @@ public class CsvDataSource implements DataSource {
         return Failure.of(new SourceException("Unable to find file '" + filePath + "'.", e));
       }
     } catch (IOException e) {
-      return Failure.of(
-          new SourceException(
-              "Cannot read file to build entity '" + entityClass.getSimpleName() + "'", e));
+      return Failure.of(new SourceException("Cannot read file '" + filePath + "'.", e));
     }
   }
 
