@@ -187,7 +187,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
         + lowerTemperatureLimit
         + ", housingType="
         + housingType
-        + ", #Inhabitants="
+        + ", #inhabitants="
         + numberInhabitants
         + '}';
   }

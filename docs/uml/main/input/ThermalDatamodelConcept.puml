@@ -108,7 +108,7 @@ package models {
                 - upperTemperatureLimit: ComparableQuantity<Temperature> [°C]
                 - lowerTemperatureLimit: ComparableQuantity<Temperature> [°C]
                 - houseType: String ['house' or 'flat']
-                - numberInhabitants: Integer
+                - numberInhabitants: Double
             }
             ThermalHouseInput --|> ThermalSinkInput
 

@@ -109,7 +109,7 @@ CREATE TABLE public.thermal_house_input
     thermal_bus UUID NOT NULL,
     upper_temperature_limit DOUBLE PRECISION NOT NULL,
     housing_type TEXT NOT NULL,
-    number_of_inhabitants TEXT NOT NULL,
+    number_of_inhabitants DOUBLE PRECISION NOT NULL,
     grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
