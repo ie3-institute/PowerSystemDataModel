@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `RandomLoadProfileTimeSeries` [#1232](https://github.com/ie3-institute/PowerSystemDataModel/issues/1232)
 - Attribute `pThermalRated` for `ThermalStorage`s [#679](https://github.com/ie3-institute/PowerSystemDataModel/issues/679)
 - Attributes `housingType` and `numberInhabitants` for `ThermalHouse`s [#1253](https://github.com/ie3-institute/PowerSystemDataModel/issues/1253)
-- Added domestic hot water storage model [#1131](https://github.com/ie3-institute/PowerSystemDataModel/issues/1131) 
+- Added domestic hot water storage model [#1257](https://github.com/ie3-institute/PowerSystemDataModel/issues/1257) 
 
 ### Fixed
 - Removing opened `SwitchInput` during connectivity check [#1221](https://github.com/ie3-institute/PowerSystemDataModel/issues/1221)
