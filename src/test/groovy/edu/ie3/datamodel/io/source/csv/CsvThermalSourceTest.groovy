@@ -115,6 +115,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
       targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
       upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
       lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
+      housingType == ThermalUnitInputTestData.thermalHouseInput.housingType
+      numberOfInhabitants == ThermalUnitInputTestData.thermalHouseInput.numberOfInhabitants
     }
 
     //test method when operators and thermal buses are provided as constructor parameters
@@ -135,6 +137,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
       targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
       upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
       lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
+      housingType == ThermalUnitInputTestData.thermalHouseInput.housingType
+      numberOfInhabitants == ThermalUnitInputTestData.thermalHouseInput.numberOfInhabitants
     }
   }
 }

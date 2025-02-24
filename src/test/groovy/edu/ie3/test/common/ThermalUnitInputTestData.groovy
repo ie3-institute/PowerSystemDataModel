@@ -37,9 +37,12 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   private static final ComparableQuantity<Temperature> TARGET_TEMPERATURE = Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> UPPER_TEMPERATURE_LIMIT = Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> LOWER_TEMPERATURE_LIMIT = Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
+  private static final String HOUSING_TYPE = "house"
+  private static final double NUMBER_INHABITANTS = 2.0
+
   public static final thermalHouseInput = new ThermalHouseInput(
   thermalUnitUuid,
-  "test_thermalHouseInput",
+  "testThermalHouseInput",
   operator,
   operationTime,
   thermalBus,
@@ -47,7 +50,9 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   ethCapa,
   TARGET_TEMPERATURE,
   UPPER_TEMPERATURE_LIMIT,
-  LOWER_TEMPERATURE_LIMIT)
+  LOWER_TEMPERATURE_LIMIT,
+  HOUSING_TYPE,
+  NUMBER_INHABITANTS)
 
   // thermal cylindrical storage input
   private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
