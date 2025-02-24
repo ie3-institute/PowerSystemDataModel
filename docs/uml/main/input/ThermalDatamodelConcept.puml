@@ -129,6 +129,7 @@ package models {
                             - inletTemp: ComparableQuantity<Temperature> [°C]
                             - returnTemp: ComparableQuantity<Temperature> [°C]
                             - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
+                            - pThermalMax: ComparableQuantity<Power> [kW]
                         }
                         DomesticHotWaterStorageInput --|> ThermalStorageInput
         }
