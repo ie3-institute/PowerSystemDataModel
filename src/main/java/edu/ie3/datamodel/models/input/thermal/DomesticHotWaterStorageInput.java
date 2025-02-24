@@ -14,7 +14,7 @@ import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
 
-public class DomesticHotWaterStorageInput extends AbstractThermalStorageInput {
+public class DomesticHotWaterStorageInput extends CylindricalStorageInput {
 
   /**
    * Constructor for DomesticHotWaterStorageInput
@@ -78,8 +78,39 @@ public class DomesticHotWaterStorageInput extends AbstractThermalStorageInput {
     super(uuid, id, bus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
   }
 
+  @Override
+  public DomesticHotWaterStorageInputCopyBuilder copy() {
+    return new DomesticHotWaterStorageInputCopyBuilder(this);
+  }
+
+  @Override
+  public String toString() {
+    return "DomesticHotWaterStorageInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", bus="
+        + getThermalBus().getUuid()
+        + ", storageVolumeLvl="
+        + getStorageVolumeLvl()
+        + ", inletTemp="
+        + getInletTemp()
+        + ", returnTemp="
+        + getReturnTemp()
+        + ", c="
+        + getC()
+        + ", pThermalMax="
+        + getpThermalMax()
+        + '}';
+  }
+
   public static class DomesticHotWaterStorageInputCopyBuilder
-      extends AbstractThermalStorageInputCopyBuilder {
+      extends CylindricalStorageInputCopyBuilder {
 
     protected DomesticHotWaterStorageInputCopyBuilder(DomesticHotWaterStorageInput entity) {
       super(entity);
