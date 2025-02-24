@@ -63,7 +63,7 @@ This reflects a simple shoe box with transmission losses
      
    * - numberInhabititans
      - –
-     - Number of people living in the house
+     - Number of people living in the house. Double values to enable modeling based on statistical data sources.
 
 ```
 

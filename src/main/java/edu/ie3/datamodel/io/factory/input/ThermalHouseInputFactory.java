@@ -62,7 +62,7 @@ public class ThermalHouseInputFactory
     final ComparableQuantity<Temperature> lowerTemperatureLimit =
         data.getQuantity(LOWER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE);
     final String housingType = data.getField(HOUSING_TYPE);
-    final Integer numberInhabitants = data.getInt(NUMBER_INHABITANTS);
+    final double numberInhabitants = data.getDouble(NUMBER_INHABITANTS);
     return new ThermalHouseInput(
         uuid,
         id,

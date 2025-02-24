@@ -61,7 +61,7 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
       assert upperTemperatureLimit == getQuant(parameter["upperTemperatureLimit"], StandardUnits.TEMPERATURE)
       assert lowerTemperatureLimit == getQuant(parameter["lowerTemperatureLimit"], StandardUnits.TEMPERATURE)
       assert housingType == parameter["housingType"]
-      assert numberInhabitants == parameter["numberInhabitants"].toInteger()
+      assert numberInhabitants == parameter["numberInhabitants"].toDouble()
     }
   }
 }
