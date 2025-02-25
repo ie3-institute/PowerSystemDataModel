@@ -83,13 +83,13 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues>
   }
 
   @Override
-  public ComparableQuantity<Power> getMaxPower() {
-    return loadProfileTimeSeries.maxPower;
+  public Optional<ComparableQuantity<Power>> getMaxPower() {
+    return loadProfileTimeSeries.maxPower();
   }
 
   @Override
-  public ComparableQuantity<Energy> getLoadProfileEnergyScaling() {
-    return loadProfileTimeSeries.profileEnergyScaling;
+  public Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling() {
+    return loadProfileTimeSeries.loadProfileScaling();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
