@@ -1,14 +1,14 @@
-(cylindricalstorage-model)=
+(domestichotwaterstorage-model)=
 
-# Cylindrical Thermal Storage
+# Domestic Hot Water Storage
 
-Model of a cylindrical thermal storage using a fluid to store thermal energy.
+Model of a domestic hot water storage using a fluid to store thermal energy.
 
 ## Attributes, Units and Remarks
 
-```{list-table}
-   :widths: auto
-   :class: wrapping
+```{eval-rst}
+.. list-table::
+   :widths: 33 33 33
    :header-rows: 1
 
 
@@ -17,28 +17,28 @@ Model of a cylindrical thermal storage using a fluid to store thermal energy.
      - Remarks
 
    * - uuid
-     -
+     - --
      -
 
    * - id
-     -
+     - --
      - Human readable identifier
 
    * - operator
-     -
+     - --
      -
 
    * - operationTime
-     -
+     - --
      - Timely restriction of operation
 
    * - thermalBus
-     -
+     - --
      - Connection point to the thermal system
 
    * - storageVolumeLvl
      - m³
-     - Overall usable storage volume
+     - Overall available storage volume
 
    * - inletTemp
      - °C

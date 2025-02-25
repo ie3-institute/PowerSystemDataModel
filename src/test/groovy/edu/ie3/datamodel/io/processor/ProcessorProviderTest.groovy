@@ -24,6 +24,7 @@ import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
+import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.CongestionResult
@@ -34,6 +35,7 @@ import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
+import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.TimeSeries
@@ -88,6 +90,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       /* -- ThermalUnitInput */
       ThermalHouseInput,
       CylindricalStorageInput,
+      DomesticHotWaterStorageInput,
       /* - GraphicInput */
       NodeGraphicInput,
       LineGraphicInput,
@@ -121,7 +124,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       NodeResult,
       CongestionResult,
       ThermalHouseResult,
-      CylindricalStorageResult
+      CylindricalStorageResult,
+      DomesticHotWaterStorageResult
     ]
     // currently known processors
 

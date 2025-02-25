@@ -35,17 +35,17 @@ public class CsvFileConnector implements DataConnector {
   private final Map<Class<? extends Entity>, BufferedCsvWriter> entityWriters = new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
   private final Path baseDirectory;
-  private final Optional<Function<String, InputStream>> inputStreamSupplier;
+  private final Optional<Function<String, InputStream>> customInputStream;
   private static final String FILE_ENDING = ".csv";
 
   public CsvFileConnector(Path baseDirectory) {
     this.baseDirectory = baseDirectory;
-    this.inputStreamSupplier = Optional.empty();
+    this.customInputStream = Optional.empty();
   }
 
   public CsvFileConnector(Path baseDirectory, Function<String, InputStream> inputStreamSupplier) {
     this.baseDirectory = baseDirectory;
-    this.inputStreamSupplier = Optional.ofNullable(inputStreamSupplier);
+    this.customInputStream = Optional.ofNullable(inputStreamSupplier);
   }
 
   /** Returns the base directory of this connector. */
@@ -171,8 +171,8 @@ public class CsvFileConnector implements DataConnector {
 
     InputStream inputStream;
 
-    if (inputStreamSupplier.isPresent()) {
-      inputStream = inputStreamSupplier.get().apply(fullPath.toString());
+    if (customInputStream.isPresent()) {
+      inputStream = customInputStream.get().apply(fullPath.toString());
     } else {
       inputStream = new FileInputStream(fullPath.toFile());
     }

@@ -107,19 +107,34 @@ package models {
                 - targetTemperature: ComparableQuantity<Temperature> [°C]
                 - upperTemperatureLimit: ComparableQuantity<Temperature> [°C]
                 - lowerTemperatureLimit: ComparableQuantity<Temperature> [°C]
+                - houseType: String ['house' or 'flat']
+                - numberInhabitants: Double
             }
             ThermalHouseInput --|> ThermalSinkInput
 
             abstract class ThermalStorageInput
             ThermalStorageInput --|> ThermalUnitInput
 
+            abstract class AbstractStorageInput
+            AbstractStorageInput --|> ThermalStorageInput
+
             class CylindricalStorageInput {
                 - storageVolumeLvl: ComparableQuantity<Volume> [m³]
                 - inletTemp: ComparableQuantity<Temperature> [°C]
                 - returnTemp: ComparableQuantity<Temperature> [°C]
                 - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
+                - pThermalMax: ComparableQuantity<Power> [kW]
             }
-            CylindricalStorageInput --|> ThermalStorageInput
+            CylindricalStorageInput --|> AbstractStorageInput
+
+            class DomesticHotWaterStorageInput {
+                - storageVolumeLvl: ComparableQuantity<Volume> [m³]
+                - inletTemp: ComparableQuantity<Temperature> [°C]
+                - returnTemp: ComparableQuantity<Temperature> [°C]
+                - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
+                - pThermalMax: ComparableQuantity<Power> [kW]
+            }
+            DomesticHotWaterStorageInput --|> AbstractStorageInput
         }
     }
 }

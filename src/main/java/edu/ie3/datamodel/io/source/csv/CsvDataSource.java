@@ -96,6 +96,15 @@ public class CsvDataSource implements DataSource {
     return buildStreamWithFieldsToAttributesMap(entityClass, true).getOrThrow();
   }
 
+  /**
+   * @param filePath to the csv file
+   * @return a stream of maps that represent the rows in the csv file
+   * @throws SourceException on error while reading the source file
+   */
+  public Stream<Map<String, String>> getSourceData(Path filePath) throws SourceException {
+    return buildStreamWithFieldsToAttributesMap(filePath, true).getOrThrow();
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /** Returns the set {@link FileNamingStrategy}. */

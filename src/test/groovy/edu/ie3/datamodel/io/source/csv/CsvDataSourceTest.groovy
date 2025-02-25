@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
@@ -17,6 +18,7 @@ import spock.lang.Specification
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.function.Function
 import java.util.stream.Collectors
 
 class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
@@ -30,6 +32,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     DummyCsvSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
       super(csvSep, folderPath, fileNamingStrategy)
     }
+
 
     Map<String, String> buildFieldsToAttributes(
         final String csvRow, final String[] headline) {
@@ -85,6 +88,22 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.connector != null
     dummyCsvSource.connector.baseDirectory == testBaseFolderPath
     dummyCsvSource.connector.entityWriters.isEmpty()
+  }
+
+
+  def "A DataSource can be created wih a custom connector correctly"() {
+    given:
+    Path resourcePath = Path.of(".", "src", "main", "resources", "load")
+    Function<String, InputStream> fcn = filePath -> new FileInputStream(new File(filePath))
+
+    CsvFileConnector connector = new CsvFileConnector(resourcePath, fcn)
+
+    when:
+    def dataSource = new CsvDataSource(csvSep, connector, fileNamingStrategy)
+    def sourceData = dataSource.getSourceData(Path.of("lpts_g0")).toList()
+
+    then:
+    sourceData.size() == 96
   }
 
   def "A CsvDataSource should return column names from a valid CSV file as expected"() {
@@ -378,9 +397,9 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     when:
     def actual = dummyCsvSource.getCsvIndividualTimeSeriesMetaInformation(
-        ColumnScheme.ENERGY_PRICE,
-        ColumnScheme.ACTIVE_POWER
-        )
+    ColumnScheme.ENERGY_PRICE,
+    ColumnScheme.ACTIVE_POWER
+    )
 
     then:
     actual == expected
