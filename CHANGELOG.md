@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix spotless deprecations [#1123](https://github.com/ie3-institute/PowerSystemDataModel/issues/1223)
 - Refactored `CongestionResult`, removed `ModelResultEntity` [#1234](https://github.com/ie3-institute/PowerSystemDataModel/issues/1234)
 - Replaced `LoadProfileInput` with `LoadProfileTimeSeries` [#1228](https://github.com/ie3-institute/PowerSystemDataModel/issues/1228)
+- Enhance `CsvDataSource` [#1246](https://github.com/ie3-institute/PowerSystemDataModel/issues/1246)
 
 ## [5.1.0] - 2024-06-24
 
