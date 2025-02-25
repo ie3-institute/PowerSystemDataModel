@@ -17,6 +17,7 @@ import edu.ie3.util.quantities.interfaces.ThermalConductance
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
+import javax.measure.quantity.Power
 import javax.measure.quantity.Temperature
 import javax.measure.quantity.Volume
 
@@ -36,9 +37,12 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   private static final ComparableQuantity<Temperature> TARGET_TEMPERATURE = Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> UPPER_TEMPERATURE_LIMIT = Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> LOWER_TEMPERATURE_LIMIT = Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
+  private static final String HOUSING_TYPE = "house"
+  private static final double NUMBER_INHABITANTS = 2.0
+
   public static final thermalHouseInput = new ThermalHouseInput(
   thermalUnitUuid,
-  "test_thermalHouseInput",
+  "testThermalHouseInput",
   operator,
   operationTime,
   thermalBus,
@@ -46,22 +50,26 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   ethCapa,
   TARGET_TEMPERATURE,
   UPPER_TEMPERATURE_LIMIT,
-  LOWER_TEMPERATURE_LIMIT)
+  LOWER_TEMPERATURE_LIMIT,
+  HOUSING_TYPE,
+  NUMBER_INHABITANTS)
 
-  // thermal cylindric storage input
+  // thermal cylindrical storage input
   private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
   private static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
+  private static final ComparableQuantity<Power> pThermalMax = Quantities.getQuantity(20, StandardUnits.ACTIVE_POWER_IN)
 
-  public static final cylindricStorageInput = new CylindricalStorageInput(
+  public static final cylindricalStorageInput = new CylindricalStorageInput(
   thermalUnitUuid,
-  "test_cylindricStorageInput",
+  "testCylindricalStorageInput",
   operator,
   operationTime,
   thermalBus,
   storageVolumeLvl,
   inletTemp,
   returnTemp,
-  c)
+  c,
+  pThermalMax)
 }

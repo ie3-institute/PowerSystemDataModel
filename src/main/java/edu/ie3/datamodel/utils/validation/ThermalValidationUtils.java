@@ -13,6 +13,7 @@ import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.measure.Quantity;
 
 public class ThermalValidationUtils extends ValidationUtils {
@@ -172,6 +173,8 @@ public class ThermalValidationUtils extends ValidationUtils {
    *   <li>its thermal capacity is positive
    *   <li>its upper temperature limit is higher than the lower temperature limit
    *   <li>its target temperature lies between the upper und lower limit temperatures
+   *   <li>its housing type is either `house` or `flat`
+   *   <li>its number of inhabitants is higher than zero
    * </ul>
    *
    * @param thermalHouseInput ThermalHouseInput to validate
@@ -210,7 +213,31 @@ public class ThermalValidationUtils extends ValidationUtils {
                   thermalHouseInput)));
     }
 
+    if (!isValidHousingType(thermalHouseInput.getHousingType())) {
+      exceptions.add(
+          new Failure<>(
+              new InvalidEntityException(
+                  "Housing type must be either 'house' or 'flat'", thermalHouseInput)));
+    }
+
+    if (thermalHouseInput.getNumberOfInhabitants() <= 0) {
+      exceptions.add(
+          new Failure<>(
+              new InvalidEntityException(
+                  "Number of inhabitants must be greater than zero", thermalHouseInput)));
+    }
+
     return exceptions;
+  }
+
+  /**
+   * Checks if the housing type is valid (either "house" or "flat").
+   *
+   * @param housingType The housing type to check
+   * @return true if valid, false otherwise
+   */
+  private static boolean isValidHousingType(String housingType) {
+    return Set.of("house", "flat").contains(housingType.toLowerCase());
   }
 
   /**
@@ -254,7 +281,9 @@ public class ThermalValidationUtils extends ValidationUtils {
             () ->
                 detectZeroOrNegativeQuantities(
                     new Quantity<?>[] {
-                      cylindricalStorageInput.getStorageVolumeLvl(), cylindricalStorageInput.getC()
+                      cylindricalStorageInput.getStorageVolumeLvl(),
+                      cylindricalStorageInput.getC(),
+                      cylindricalStorageInput.getpThermalMax()
                     },
                     cylindricalStorageInput),
             InvalidEntityException.class));
