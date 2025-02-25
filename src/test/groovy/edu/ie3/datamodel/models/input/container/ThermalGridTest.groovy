@@ -47,6 +47,7 @@ class ThermalGridTest extends Specification {
     def modifiedHouses = [Mock(ThermalHouseInput)]
     def modifiedHeatStorages = [Mock(CylindricalStorageInput)]
     def modifiedDomesticHotWaterStorages = [Mock(CylindricalStorageInput)]
+
     when:
     def modifiedThermalGrid = thermalGrid.copy()
         .houses(modifiedHouses as Set)
