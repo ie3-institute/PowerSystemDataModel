@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2024. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -12,10 +12,10 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Represents the results of Cylindrical Storage */
-public class CylindricalStorageResult extends AbstractThermalStorageResult {
+/** Represents the results of Domestic Hot Water Storage */
+public class DomesticHotWaterStorageResult extends AbstractThermalStorageResult {
 
-  public CylindricalStorageResult(
+  public DomesticHotWaterStorageResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Energy> energy,

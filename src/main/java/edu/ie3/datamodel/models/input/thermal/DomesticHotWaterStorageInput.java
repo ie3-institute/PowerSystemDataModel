@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2024. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -14,10 +14,12 @@ import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
 
-/** Thermal storage with cylindrical shape */
-public class CylindricalStorageInput extends AbstractStorageInput {
+public class DomesticHotWaterStorageInput extends AbstractStorageInput {
+
   /**
-   * @param uuid Unique identifier of a cylindrical storage
+   * Constructor for DomesticHotWaterStorageInput
+   *
+   * @param uuid Unique identifier of a domestic hot water storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
    * @param operationTime operation time of the asset
@@ -28,7 +30,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
    * @param c Specific heat capacity of the storage medium
    * @param pThermalMax Maximum thermal power of the storage
    */
-  public CylindricalStorageInput(
+  public DomesticHotWaterStorageInput(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -53,7 +55,9 @@ public class CylindricalStorageInput extends AbstractStorageInput {
   }
 
   /**
-   * @param uuid Unique identifier of a cylindrical storage
+   * Alternative constructor for DomesticHotWaterStorageInput
+   *
+   * @param uuid Unique identifier of a domestic hot water storage
    * @param id Identifier of the thermal unit
    * @param bus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
@@ -62,7 +66,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
    * @param c Specific heat capacity of the storage medium
    * @param pThermalMax Maximum thermal power of the storage
    */
-  public CylindricalStorageInput(
+  public DomesticHotWaterStorageInput(
       UUID uuid,
       String id,
       ThermalBusInput bus,
@@ -75,13 +79,13 @@ public class CylindricalStorageInput extends AbstractStorageInput {
   }
 
   @Override
-  public CylindricalStorageInputCopyBuilder copy() {
-    return new CylindricalStorageInputCopyBuilder(this);
+  public DomesticHotWaterStorageInputCopyBuilder copy() {
+    return new DomesticHotWaterStorageInputCopyBuilder(this);
   }
 
   @Override
   public String toString() {
-    return "CylindricalStorageInput{"
+    return "DomesticHotWaterStorageInput{"
         + "uuid="
         + getUuid()
         + ", id="
@@ -105,21 +109,16 @@ public class CylindricalStorageInput extends AbstractStorageInput {
         + '}';
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link CylindricalStorageInput} entities
-   * with altered field values. For detailed field descriptions refer to java docs of {@link
-   * CylindricalStorageInput}
-   */
-  public static class CylindricalStorageInputCopyBuilder
-      extends AbstractStorageInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
+  public static class DomesticHotWaterStorageInputCopyBuilder
+      extends AbstractStorageInputCopyBuilder<DomesticHotWaterStorageInputCopyBuilder> {
 
-    protected CylindricalStorageInputCopyBuilder(CylindricalStorageInput entity) {
+    protected DomesticHotWaterStorageInputCopyBuilder(DomesticHotWaterStorageInput entity) {
       super(entity);
     }
 
     @Override
-    public CylindricalStorageInput build() {
-      return new CylindricalStorageInput(
+    public DomesticHotWaterStorageInput build() {
+      return new DomesticHotWaterStorageInput(
           getUuid(),
           getId(),
           getOperator(),
@@ -133,7 +132,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
     }
 
     @Override
-    protected CylindricalStorageInputCopyBuilder thisInstance() {
+    protected DomesticHotWaterStorageInputCopyBuilder thisInstance() {
       return this;
     }
   }

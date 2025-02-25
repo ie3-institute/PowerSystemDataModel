@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
+import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.utils.Try;
 import java.time.format.DateTimeFormatter;
@@ -95,6 +96,7 @@ public class ResultEntitySource extends EntitySource {
         List.of(
             validate(ThermalHouseResult.class, dataSource, thermalResultFactory),
             validate(CylindricalStorageResult.class, dataSource, thermalResultFactory),
+            validate(DomesticHotWaterStorageResult.class, dataSource, thermalResultFactory),
             validate(SwitchResult.class, dataSource, switchResultFactory),
             validate(NodeResult.class, dataSource, nodeResultFactory),
             validate(LineResult.class, dataSource, connectorResultFactory),
@@ -334,6 +336,21 @@ public class ResultEntitySource extends EntitySource {
    */
   public Set<CylindricalStorageResult> getCylindricalStorageResult() throws SourceException {
     return getResultEntities(CylindricalStorageResult.class, thermalResultFactory);
+  }
+
+  /**
+   * Returns a unique set of {@link DomesticHotWaterStorageResult} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link DomesticHotWaterStorageResult} which has to
+   * be checked manually, as {@link DomesticHotWaterStorageResult#equals(Object)} is NOT restricted
+   * by the uuid of {@link DomesticHotWaterStorageResult}.
+   *
+   * @return a set of object and uuid unique {@link DomesticHotWaterStorageResult} entities
+   */
+  public Set<DomesticHotWaterStorageResult> getDomesticHotWaterStorageResult()
+      throws SourceException {
+    return getResultEntities(DomesticHotWaterStorageResult.class, thermalResultFactory);
   }
 
   /**

@@ -31,6 +31,7 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
+import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.system.EmResult
@@ -131,6 +132,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new InputEntityProcessor(LineGraphicInput),
           new InputEntityProcessor(NodeGraphicInput),
           new InputEntityProcessor(CylindricalStorageInput),
+          new InputEntityProcessor(DomesticHotWaterStorageInput),
           new InputEntityProcessor(ThermalHouseInput),
           new InputEntityProcessor(OperatorInput),
           new InputEntityProcessor(LineInput),
@@ -166,6 +168,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
       GridTestData.lineGraphicCtoD,
       GridTestData.nodeGraphicC,
       ThermalUnitInputTestData.cylindricalStorageInput,
+      ThermalUnitInputTestData.domesticHotWaterStorageInput,
       ThermalUnitInputTestData.thermalHouseInput,
       SystemParticipantTestData.evcsInput,
       SystemParticipantTestData.loadInput,
@@ -185,6 +188,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("transformer_2_w_input.csv").toFile().exists()
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
     testBaseFolderPath.resolve("cylindrical_storage_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("domestic_hot_water_storage_input.csv").toFile().exists()
     testBaseFolderPath.resolve("line_graphic_input.csv").toFile().exists()
     testBaseFolderPath.resolve("line_input.csv").toFile().exists()
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()

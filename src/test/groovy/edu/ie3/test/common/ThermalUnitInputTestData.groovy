@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
+import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.HeatCapacity
@@ -64,6 +65,18 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   public static final cylindricalStorageInput = new CylindricalStorageInput(
   thermalUnitUuid,
   "testCylindricalStorageInput",
+  operator,
+  operationTime,
+  thermalBus,
+  storageVolumeLvl,
+  inletTemp,
+  returnTemp,
+  c,
+  pThermalMax)
+
+  public static final domesticHotWaterStorageInput = new DomesticHotWaterStorageInput(
+  thermalUnitUuid,
+  "testDomesticHotWaterStorageInput",
   operator,
   operationTime,
   thermalBus,
