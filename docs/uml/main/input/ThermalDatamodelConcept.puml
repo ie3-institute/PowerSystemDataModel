@@ -115,6 +115,9 @@ package models {
             abstract class ThermalStorageInput
             ThermalStorageInput --|> ThermalUnitInput
 
+            abstract class AbstractStorageInput
+            AbstractStorageInput --|> ThermalStorageInput
+
             class CylindricalStorageInput {
                 - storageVolumeLvl: ComparableQuantity<Volume> [m³]
                 - inletTemp: ComparableQuantity<Temperature> [°C]
@@ -122,7 +125,7 @@ package models {
                 - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
                 - pThermalMax: ComparableQuantity<Power> [kW]
             }
-            CylindricalStorageInput --|> ThermalStorageInput
+            CylindricalStorageInput --|> AbstractStorageInput
 
             class DomesticHotWaterStorageInput {
                 - storageVolumeLvl: ComparableQuantity<Volume> [m³]
@@ -131,7 +134,7 @@ package models {
                 - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
                 - pThermalMax: ComparableQuantity<Power> [kW]
             }
-            DomesticHotWaterStorageInput --|> ThermalStorageInput
+            DomesticHotWaterStorageInput --|> AbstractStorageInput
         }
     }
 }
