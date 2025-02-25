@@ -140,22 +140,22 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
 
     public ChpTypeInputCopyBuilder setEtaEl(ComparableQuantity<Dimensionless> etaEl) {
       this.etaEl = etaEl;
-      return this;
+      return thisInstance();
     }
 
     public ChpTypeInputCopyBuilder setEtaThermal(ComparableQuantity<Dimensionless> etaThermal) {
       this.etaThermal = etaThermal;
-      return this;
+      return thisInstance();
     }
 
     public ChpTypeInputCopyBuilder setpThermal(ComparableQuantity<Power> pThermal) {
       this.pThermal = pThermal;
-      return this;
+      return thisInstance();
     }
 
     public ChpTypeInputCopyBuilder setpOwn(ComparableQuantity<Power> pOwn) {
       this.pOwn = pOwn;
-      return this;
+      return thisInstance();
     }
 
     public ComparableQuantity<Dimensionless> getEtaEl() {
@@ -180,7 +180,7 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       setsRated(getsRated().multiply(factor));
       setpThermal(getpThermal().multiply(factor));
       setpOwn(getpOwn().multiply(factor));
-      return this;
+      return thisInstance();
     }
 
     @Override

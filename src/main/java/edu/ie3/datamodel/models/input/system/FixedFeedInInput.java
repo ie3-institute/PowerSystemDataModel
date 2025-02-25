@@ -146,18 +146,18 @@ public class FixedFeedInInput extends SystemParticipantInput {
 
     public FixedFeedInInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
-      return this;
+      return thisInstance();
     }
 
     public FixedFeedInInputCopyBuilder cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public FixedFeedInInputCopyBuilder scale(Double factor) {
       sRated(sRated.multiply(factor));
-      return this;
+      return thisInstance();
     }
 
     @Override
