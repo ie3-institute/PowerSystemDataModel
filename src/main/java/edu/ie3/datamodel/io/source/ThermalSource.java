@@ -152,7 +152,9 @@ public class ThermalSource extends AssetEntitySource {
   public Map<UUID, ThermalStorageInput> getThermalStorages(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
-    return Stream.of(getCylindricalStorages(), getDomesticHotWaterStorages())
+    return Stream.of(
+            getCylindricalStorages(operators, thermalBuses),
+            getDomesticHotWaterStorages(operators, thermalBuses))
         .flatMap(Collection::stream)
         .collect(toMap());
   }
