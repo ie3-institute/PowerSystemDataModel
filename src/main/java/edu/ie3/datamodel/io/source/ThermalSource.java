@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -128,7 +127,7 @@ public class ThermalSource extends AssetEntitySource {
   public Map<UUID, ThermalStorageInput> getThermalStorages() throws SourceException {
     return Stream.of(getCylindricalStorages(), getDomesticHotWaterStorages())
         .flatMap(Collection::stream)
-        .collect(Collectors.toMap(ThermalStorageInput::getUuid, storage -> storage));
+        .collect(toMap());
   }
 
   /**
@@ -155,7 +154,7 @@ public class ThermalSource extends AssetEntitySource {
       throws SourceException {
     return Stream.of(getCylindricalStorages(), getDomesticHotWaterStorages())
         .flatMap(Collection::stream)
-        .collect(Collectors.toMap(ThermalStorageInput::getUuid, storage -> storage));
+        .collect(toMap());
   }
 
   /**
