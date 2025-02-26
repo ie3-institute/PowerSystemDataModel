@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Attributes `housingType` and `numberInhabitants` for `ThermalHouse`s [#1253](https://github.com/ie3-institute/PowerSystemDataModel/issues/1253)
 - Added domestic hot water storage model [#1257](https://github.com/ie3-institute/PowerSystemDataModel/issues/1257)
 - Validation for BDEW load profile values [#1243](https://github.com/ie3-institute/PowerSystemDataModel/issues/1243)
+- Added load profiles sources [#1106](https://github.com/ie3-institute/PowerSystemDataModel/issues/1106)
 
 ### Fixed
 - Removing opened `SwitchInput` during connectivity check [#1221](https://github.com/ie3-institute/PowerSystemDataModel/issues/1221)
