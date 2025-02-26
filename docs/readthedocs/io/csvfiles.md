@@ -94,9 +94,9 @@ Csv id coordinate sources can have two different ways to represent their coordin
    * - Model
      - File Name
    * - individual time series
-     - *prefix_* its *_columnScheme_UUID *_suffix*
+     - *prefix_* its *_columnScheme_UUID* *_suffix*
    * - load profile input
-     - *prefix_* lpts *_profileKey *_suffix*
+     - *prefix_* lpts *_profileKey* *_suffix*
 ```
 
 #### Individual Time Series
@@ -166,13 +166,14 @@ The following profiles are supported until now:
    :header-rows: 1
 
    * - Key
-     - Information and supported head line.
+     - Information
+     - Supported head line.
    * - e.g.: H0
-     -
-       Permissible head line: ``SuSa,SuSu,SuWd,TrSa,TrSu,TrWd,WiSa,WiSu,WiWd,quarterHour``
+     - BDEW standard load profiles ([source](https://www.bdew.de/energie/standardlastprofile-strom/))
+     - Permissible head line: ``SuSa,SuSu,SuWd,TrSa,TrSu,TrWd,WiSa,WiSu,WiWd,quarterHour``
    * - random
-     -
-       Permissible head line: ``kSa,kSu,kWd,mySa,mySu,myWd,sigmaSa,sigmaSu,sigmaWd,quarterHour``
+     - A random load proile based on: ``Kays - Agent-based simulation environment for improving the planning of distribution grids``
+     - Permissible head line: ``kSa,kSu,kWd,mySa,mySu,myWd,sigmaSa,sigmaSu,sigmaWd,quarterHour``
 
 ```
 
