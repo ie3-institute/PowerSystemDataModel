@@ -94,10 +94,12 @@ Csv id coordinate sources can have two different ways to represent their coordin
    * - Model
      - File Name
    * - individual time series
-     - *prefix_* its *_columnScheme_UUID_suffix*
+     - *prefix_* its *_columnScheme_UUID *_suffix*
    * - load profile input
-     - *prefix_* rts *_profileKey_UUID_suffix*
+     - *prefix_* lpts *_profileKey *_suffix*
 ```
+
+#### Individual Time Series
 
 Let's spend a few more words on the individual time series:
 Those files are meant to carry different types of content - one might give information about wholesale market prices,
@@ -151,6 +153,26 @@ The following keys are supported until now:
    * - weather
      - Weather information.
        Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
+
+```
+
+
+##### Load Profile Time Series
+
+The following profiles are supported until now:
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+   * - Key
+     - Information and supported head line.
+   * - e.g.: H0
+     -
+       Permissible head line: ``SuSa,SuSu,SuWd,TrSa,TrSu,TrWd,WiSa,WiSu,WiWd,quarterHour``
+   * - random
+     -
+       Permissible head line: ``kSa,kSu,kWd,mySa,mySu,myWd,sigmaSa,sigmaSu,sigmaWd,quarterHour``
 
 ```
 
