@@ -11,12 +11,10 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.value.load.BdewLoadValues
-import edu.ie3.util.TimeUtil
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Path
-import java.time.ZonedDateTime
 import java.util.function.Function
 
 class BdewLoadProfileTest extends Specification {
@@ -26,6 +24,12 @@ class BdewLoadProfileTest extends Specification {
 
   @Shared
   private BdewLoadProfileFactory factory = new BdewLoadProfileFactory()
+
+  @Shared
+  private List<String> keys = ['su', 'tr', 'wi']
+
+  @Shared
+  private Map results = [:]
 
   def setupSpec() {
     Path resourcePath = Path.of(".", "src", "main", "resources", "load")
@@ -37,9 +41,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G0)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
@@ -66,9 +67,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G1)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
@@ -95,9 +93,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G2)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
@@ -124,9 +119,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G3)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
@@ -153,9 +145,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G4)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
@@ -182,9 +171,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G5)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
@@ -211,9 +197,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G6)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
@@ -240,9 +223,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.H0)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
@@ -264,7 +244,7 @@ class BdewLoadProfileTest extends Specification {
     results["wiWd"] == 10223.7
   }
 
-  def "The BDEW dynamization function for the profile H= should work as expected"() {
+  def "The BDEW dynamization function for the profile H0 should work as expected"() {
     when:
     def dynamizedValue = BdewLoadValues.dynamization(value, dayOfTheYear)
 
@@ -283,9 +263,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.L0)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
@@ -312,9 +289,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.L1)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
@@ -341,9 +315,6 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.L2)
 
     when:
-    def keys = ['su', 'tr', 'wi']
-    def results = [:]
-
     keys.each {
       key ->
       results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
