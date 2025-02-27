@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+## [6.0.0] - 2025-02-27
+
 ### Added
 - Enhance `TimeSeriesSource` with method to retrieve all time keys after a given key [#543](https://github.com/ie3-institute/PowerSystemDataModel/issues/543)
 - Enhance `WeatherSource` with method to retrieve all time keys after a given key [#572](https://github.com/ie3-institute/PowerSystemDataModel/issues/572)
@@ -331,7 +333,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.1.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/6.0.0...HEAD
+[6.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.1.0...6.0.0
 [5.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.1...5.1.0
 [5.0.1]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.1.0...5.0.0
