@@ -74,7 +74,7 @@ The ValidationUtils include validation checks for...
         - HpTypeInput
         - StorageTypeInput
         - WecTypeInput
-- ThermalUnitValidationUtils
+- ThermalValidationUtils
     - ThermalUnitInput
         - ThermalSinkInput
             - ThermalHouseInput
