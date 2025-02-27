@@ -169,22 +169,24 @@ class SystemParticipantTestData {
   operationTime
   )
   public static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(1.039154027, VOLUME)
-  public static final ComparableQuantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(0.3, VOLUME)
   public static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(110, TEMPERATURE)
   public static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, TEMPERATURE)
   public static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(
   1, SPECIFIC_HEAT_CAPACITY)
+  public static final ComparableQuantity<Power> pThermalMax = Quantities.getQuantity(
+  20, ACTIVE_POWER_IN)
+
   public static final ThermalStorageInput thermalStorage = new CylindricalStorageInput(
   UUID.fromString("8851813b-3a7d-4fee-874b-4df9d724e4b3"),
-  "test_cylindricThermalStorage",
+  "test_cylindricalThermalStorage",
   GridTestData.profBroccoli,
   OperationTime.notLimited(),
   thermalBus,
   storageVolumeLvl,
-  storageVolumeLvlMin,
   inletTemp,
   returnTemp,
-  c
+  c,
+  pThermalMax
   )
 
   public static final ChpInput chpInput = new ChpInput(
@@ -266,7 +268,6 @@ class SystemParticipantTestData {
   cosPhiFixed,
   emInput,
   standardLoadProfile,
-  false,
   eConsAnnual,
   sRated,
   cosPhiRated

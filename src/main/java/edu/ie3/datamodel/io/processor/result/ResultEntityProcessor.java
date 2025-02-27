@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
+import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.*;
@@ -58,6 +59,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
           NodeResult.class,
           ThermalHouseResult.class,
           CylindricalStorageResult.class,
+          DomesticHotWaterStorageResult.class,
           EmResult.class,
           FlexOptionsResult.class,
           CongestionResult.class);

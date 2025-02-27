@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.RandomLoadParameters
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -239,7 +238,6 @@ class InputEntityProcessorTest extends Specification {
     LoadInput        | SystemParticipantTestData.loadInput        || [
       "uuid"               : SystemParticipantTestData.loadInput.uuid.toString(),
       "cosPhiRated"        : SystemParticipantTestData.loadInput.cosPhiRated.toString(),
-      "dsm"                : SystemParticipantTestData.loadInput.dsm.toString(),
       "eConsAnnual"        : SystemParticipantTestData.loadInput.eConsAnnual.getValue().doubleValue().toString(),
       "id"                 : SystemParticipantTestData.loadInput.id,
       "node"               : SystemParticipantTestData.loadInput.node.uuid.toString(),
@@ -358,43 +356,6 @@ class InputEntityProcessorTest extends Specification {
 
     when:
     Map<String, String> actual = processor.handleEntity(operator)
-
-    then:
-    actual == expected
-  }
-
-  def "The InputEntityProcessor should serialize a provided RandomLoadParameters correctly"() {
-    given:
-    InputEntityProcessor processor = new InputEntityProcessor(RandomLoadParameters)
-    RandomLoadParameters parameters = new RandomLoadParameters(
-    UUID.fromString("a5b0f432-27b5-4b3e-b87a-61867b9edd79"),
-    4,
-    1.2,
-    2.3,
-    3.4,
-    4.5,
-    5.6,
-    6.7,
-    7.8,
-    8.9,
-    9.10
-    )
-    Map expected = [
-      "uuid"       : "a5b0f432-27b5-4b3e-b87a-61867b9edd79",
-      "quarterHour": "4",
-      "kWd"        : "1.2",
-      "kSa"        : "2.3",
-      "kSu"        : "3.4",
-      "myWd"       : "4.5",
-      "mySa"       : "5.6",
-      "mySu"       : "6.7",
-      "sigmaWd"    : "7.8",
-      "sigmaSa"    : "8.9",
-      "sigmaSu"    : "9.1"
-    ]
-
-    when:
-    Map<String, String> actual = processor.handleEntity(parameters)
 
     then:
     actual == expected
@@ -630,7 +591,7 @@ class InputEntityProcessorTest extends Specification {
     def validResult = new TimeSeriesMappingSource.MappingEntry(UUID.fromString("7eb7b296-f4c4-4020-acf3-e865453b5dbd"), UUID.fromString("bc581c6c-3044-48a1-aea1-5b2cb1370356"))
 
     Map expectedResults = [
-      "participant": "7eb7b296-f4c4-4020-acf3-e865453b5dbd",
+      "asset": "7eb7b296-f4c4-4020-acf3-e865453b5dbd",
       "timeSeries": "bc581c6c-3044-48a1-aea1-5b2cb1370356"
     ]
 

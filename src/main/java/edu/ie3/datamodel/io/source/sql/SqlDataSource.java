@@ -177,11 +177,15 @@ public class SqlDataSource implements DataSource {
    * table name.
    */
   protected Stream<Map<String, String>> executeQuery(String query, AddParams addParams) {
-    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
+    try {
+      PreparedStatement ps = connector.getConnection().prepareStatement(query);
       addParams.addParams(ps);
 
-      ResultSet resultSet = ps.executeQuery();
-      return connector.extractFieldMaps(resultSet).stream();
+      // don't work with `try with resource`, therefore manual closing is necessary
+      // closes automatically after all dependent resultSets are closed
+      ps.closeOnCompletion();
+
+      return connector.toStream(ps, 1000);
     } catch (SQLException e) {
       log.error("Error during execution of query {}", query, e);
     }

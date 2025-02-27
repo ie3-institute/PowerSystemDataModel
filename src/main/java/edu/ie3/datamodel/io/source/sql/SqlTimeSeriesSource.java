@@ -23,10 +23,7 @@ import edu.ie3.util.interval.ClosedInterval;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +47,8 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final String queryFull;
 
   private final String queryTimeInterval;
+  private final String queryTimeKeysAfter;
+  private final String queryForValueBefore;
   private final String queryTime;
 
   public SqlTimeSeriesSource(
@@ -65,13 +64,16 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     final ColumnScheme columnScheme = ColumnScheme.parse(valueClass).orElseThrow();
     this.tableName = sqlDataSource.databaseNamingStrategy.getTimeSeriesEntityName(columnScheme);
 
+    String schemaName = sqlDataSource.schemaName;
+
     String dbTimeColumnName =
         sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
 
-    this.queryFull = createQueryFull(sqlDataSource.schemaName, tableName);
-    this.queryTimeInterval =
-        createQueryForTimeInterval(sqlDataSource.schemaName, tableName, dbTimeColumnName);
-    this.queryTime = createQueryForTime(sqlDataSource.schemaName, tableName, dbTimeColumnName);
+    this.queryFull = createQueryFull(schemaName, tableName);
+    this.queryTimeInterval = createQueryForTimeInterval(schemaName, tableName, dbTimeColumnName);
+    this.queryTimeKeysAfter = createQueryForTimeKeysAfter(schemaName, tableName, dbTimeColumnName);
+    this.queryForValueBefore = createQueryForValueBefore(schemaName, tableName, dbTimeColumnName);
+    this.queryTime = createQueryForTime(schemaName, tableName, dbTimeColumnName);
   }
 
   /**
@@ -179,6 +181,24 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     return Optional.of(timeBasedValues.stream().toList().get(0).getValue());
   }
 
+  @Override
+  public Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time) {
+    return getTimeBasedValueSet(
+            queryForValueBefore, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
+        .stream()
+        .max(TimeBasedValue::compareTo);
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
+    return dataSource
+        .executeQuery(
+            queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
+        .map(valueFactory::extractTime)
+        .sorted()
+        .toList();
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /** Creates a set of TimeBasedValues from database */
@@ -243,8 +263,55 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   /**
-   * Creates a basic query to retrieve an entry for the given time series uuid and time with the
-   * following pattern: <br>
+   * Creates a base query to retrieve all entities for given time series uuid and in the given time
+   * frame with the following pattern: <br>
+   * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column> > ?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @param timeColumnName the name of the column holding the timestamp info
+   * @return the query string
+   */
+  private String createQueryForTimeKeysAfter(
+      String schemaName, String tableName, String timeColumnName) {
+    return "SELECT time FROM "
+        + schemaName
+        + "."
+        + tableName
+        + WHERE
+        + TIME_SERIES
+        + " = '"
+        + timeSeriesUuid.toString()
+        + "' AND "
+        + timeColumnName
+        + " > ?;";
+  }
+
+  /**
+   * Creates a base query to retrieve all time keys after a given time for given time series with
+   * the following pattern: <br>
+   * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column> < ?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @param timeColumnName the name of the column holding the timestamp info
+   * @return the query string
+   */
+  private String createQueryForValueBefore(
+      String schemaName, String tableName, String timeColumnName) {
+    return createBaseQueryString(schemaName, tableName)
+        + WHERE
+        + TIME_SERIES
+        + " = '"
+        + timeSeriesUuid.toString()
+        + "' AND "
+        + timeColumnName
+        + " < ?"
+        + "ORDER BY time DESC LIMIT 1;";
+  }
+  /**
+   * Creates a base query to retrieve all time keys before a given time for given time series with
+   * the following pattern: <br>
    * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column>=?;}
    *
    * @param schemaName the name of the database schema

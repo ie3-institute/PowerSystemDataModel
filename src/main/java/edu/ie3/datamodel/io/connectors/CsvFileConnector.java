@@ -17,6 +17,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +35,17 @@ public class CsvFileConnector implements DataConnector {
   private final Map<Class<? extends Entity>, BufferedCsvWriter> entityWriters = new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
   private final Path baseDirectory;
+  private final Optional<Function<String, InputStream>> customInputStream;
   private static final String FILE_ENDING = ".csv";
 
   public CsvFileConnector(Path baseDirectory) {
     this.baseDirectory = baseDirectory;
+    this.customInputStream = Optional.empty();
+  }
+
+  public CsvFileConnector(Path baseDirectory, Function<String, InputStream> inputStreamSupplier) {
+    this.baseDirectory = baseDirectory;
+    this.customInputStream = Optional.ofNullable(inputStreamSupplier);
   }
 
   /** Returns the base directory of this connector. */
@@ -63,7 +71,11 @@ public class CsvFileConnector implements DataConnector {
     }
   }
 
-  public synchronized <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public synchronized <
+          T extends TimeSeries<E, V, R>,
+          E extends TimeSeriesEntry<V>,
+          V extends Value,
+          R extends Value>
       BufferedCsvWriter getOrInitWriter(T timeSeries, CsvFileDefinition fileDefinition)
           throws ConnectorException {
     /* Try to the right writer */
@@ -155,9 +167,17 @@ public class CsvFileConnector implements DataConnector {
    * @throws FileNotFoundException if no file with the provided file name can be found
    */
   public BufferedReader initReader(Path filePath) throws FileNotFoundException {
-    File fullPath = baseDirectory.resolve(filePath.toString() + FILE_ENDING).toFile();
-    return new BufferedReader(
-        new InputStreamReader(new FileInputStream(fullPath), StandardCharsets.UTF_8), 16384);
+    Path fullPath = baseDirectory.resolve(filePath.toString() + FILE_ENDING);
+
+    InputStream inputStream;
+
+    if (customInputStream.isPresent()) {
+      inputStream = customInputStream.get().apply(fullPath.toString());
+    } else {
+      inputStream = new FileInputStream(fullPath.toFile());
+    }
+
+    return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8), 16384);
   }
 
   @Override

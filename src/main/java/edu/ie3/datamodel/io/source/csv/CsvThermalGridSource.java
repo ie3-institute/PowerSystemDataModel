@@ -14,10 +14,7 @@ import edu.ie3.datamodel.io.source.ThermalSource;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.ThermalGrid;
-import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
-import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
-import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
-import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
+import edu.ie3.datamodel.models.input.thermal.*;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
 import java.util.*;
@@ -66,16 +63,17 @@ public class CsvThermalGridSource {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, ThermalBusInput> buses = thermalSource.getThermalBuses();
 
-    // calling Map.values() because we want to map the inputs to their thermal bus
     Try<Collection<ThermalHouseInput>, SourceException> houses =
         Try.of(
             () -> thermalSource.getThermalHouses(operators, buses).values(), SourceException.class);
-    Try<Collection<ThermalStorageInput>, SourceException> storages =
+    Try<Collection<CylindricalStorageInput>, SourceException> heatStorages =
+        Try.of(() -> thermalSource.getCylindricalStorages(operators, buses), SourceException.class);
+    Try<Collection<DomesticHotWaterStorageInput>, SourceException> waterStorages =
         Try.of(
-            () -> thermalSource.getThermalStorages(operators, buses).values(),
+            () -> thermalSource.getDomesticHotWaterStorages(operators, buses),
             SourceException.class);
 
-    List<? extends Exception> exceptions = Try.getExceptions(houses, storages);
+    List<? extends Exception> exceptions = Try.getExceptions(houses, heatStorages, waterStorages);
 
     if (!exceptions.isEmpty()) {
       throw new SourceException(
@@ -87,16 +85,20 @@ public class CsvThermalGridSource {
       Map<ThermalBusInput, Set<ThermalHouseInput>> houseInputs =
           houses.getOrThrow().stream()
               .collect(Collectors.groupingBy(ThermalUnitInput::getThermalBus, Collectors.toSet()));
-      Map<ThermalBusInput, Set<ThermalStorageInput>> storageInputs =
-          storages.getOrThrow().stream()
+      Map<ThermalBusInput, Set<ThermalStorageInput>> heatStorageInputs =
+          heatStorages.getOrThrow().stream()
+              .collect(Collectors.groupingBy(ThermalUnitInput::getThermalBus, Collectors.toSet()));
+      Map<ThermalBusInput, Set<ThermalStorageInput>> waterStorageInputs =
+          waterStorages.getOrThrow().stream()
               .collect(Collectors.groupingBy(ThermalUnitInput::getThermalBus, Collectors.toSet()));
 
       return buses.values().stream()
           .map(
               bus -> {
                 Set<ThermalHouseInput> h = houseInputs.getOrDefault(bus, emptySet());
-                Set<ThermalStorageInput> s = storageInputs.getOrDefault(bus, emptySet());
-                return new ThermalGrid(bus, h, s);
+                Set<ThermalStorageInput> hs = heatStorageInputs.getOrDefault(bus, emptySet());
+                Set<ThermalStorageInput> ws = waterStorageInputs.getOrDefault(bus, emptySet());
+                return new ThermalGrid(bus, h, hs, ws);
               })
           .toList();
     }

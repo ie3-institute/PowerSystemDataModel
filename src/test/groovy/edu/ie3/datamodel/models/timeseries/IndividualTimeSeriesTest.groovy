@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.models.timeseries
 
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
@@ -71,7 +72,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
     Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)))
 
     when:
-    Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
+    Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 5, 0, 0, ZoneId.of("UTC")))
 
     then:
     expected.present
@@ -102,11 +103,30 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
     Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), new IntValue(4)))
 
     when:
-    Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
+    Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
 
     then:
     expected.present
     expected.get().time == actual.get().time
     expected.get().value.value == actual.get().value.value
+  }
+
+  def "The individual time series returns all keys after a given timestamp correctly"() {
+    def time = ZonedDateTime.now()
+    def entry1 = new TimeBasedValue(time, new IntValue(1))
+    def entry2 = new TimeBasedValue(time.plusHours(1), new IntValue(3))
+    def entry3 = new TimeBasedValue(time.plusDays(1), new IntValue(4))
+
+    def timeSeries = new IndividualTimeSeries([entry1, entry2, entry3] as Set)
+
+    expect:
+    timeSeries.getTimeKeysAfter(time) == [
+      time.plusHours(1),
+      time.plusDays(1)
+    ]
+
+    timeSeries.getTimeKeysAfter(time.plusHours(1)) == [time.plusDays(1)]
+
+    timeSeries.getTimeKeysAfter(time.plusDays(1)) == []
   }
 }

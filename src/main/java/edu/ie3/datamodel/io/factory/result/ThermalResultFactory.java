@@ -10,6 +10,7 @@ import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
+import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import java.time.ZonedDateTime;
@@ -21,14 +22,17 @@ import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
-public class ThermalResultFactory extends ModelResultFactory<ThermalUnitResult> {
+public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
   private static final String Q_DOT = "qDot";
   private static final String INDOOR_TEMPERATURE = "indoorTemperature";
   private static final String ENERGY = "energy";
   private static final String FILL_LEVEL = "fillLevel";
 
   public ThermalResultFactory() {
-    super(ThermalHouseResult.class, CylindricalStorageResult.class);
+    super(
+        ThermalHouseResult.class,
+        CylindricalStorageResult.class,
+        DomesticHotWaterStorageResult.class);
   }
 
   /**
@@ -38,7 +42,11 @@ public class ThermalResultFactory extends ModelResultFactory<ThermalUnitResult> 
    * @param dateTimeFormatter parse date time strings
    */
   public ThermalResultFactory(DateTimeFormatter dateTimeFormatter) {
-    super(dateTimeFormatter, ThermalHouseResult.class, CylindricalStorageResult.class);
+    super(
+        dateTimeFormatter,
+        ThermalHouseResult.class,
+        CylindricalStorageResult.class,
+        DomesticHotWaterStorageResult.class);
   }
 
   @Override
@@ -48,6 +56,8 @@ public class ThermalResultFactory extends ModelResultFactory<ThermalUnitResult> 
     if (entityClass.equals(ThermalHouseResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, INDOOR_TEMPERATURE);
     } else if (entityClass.equals(CylindricalStorageResult.class)) {
+      minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
+    } else if (entityClass.equals(DomesticHotWaterStorageResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
     }
 
@@ -74,6 +84,14 @@ public class ThermalResultFactory extends ModelResultFactory<ThermalUnitResult> 
           data.getQuantity(FILL_LEVEL, StandardUnits.FILL_LEVEL);
 
       return new CylindricalStorageResult(
+          zdtTime, inputModelUuid, energyQuantity, qDotQuantity, fillLevelQuantity);
+    } else if (clazz.equals(DomesticHotWaterStorageResult.class)) {
+      ComparableQuantity<Energy> energyQuantity =
+          data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT);
+      ComparableQuantity<Dimensionless> fillLevelQuantity =
+          data.getQuantity(FILL_LEVEL, StandardUnits.FILL_LEVEL);
+
+      return new DomesticHotWaterStorageResult(
           zdtTime, inputModelUuid, energyQuantity, qDotQuantity, fillLevelQuantity);
     } else {
       throw new FactoryException("Cannot process " + clazz.getSimpleName() + ".class.");

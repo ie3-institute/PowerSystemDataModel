@@ -128,6 +128,20 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     return timeSeries.getValue(time);
   }
 
+  @Override
+  public Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time) {
+    return timeSeries.getPreviousTimeBasedValue(time);
+  }
+
+  public Optional<TimeBasedValue<V>> getNextTimeBasedValue(ZonedDateTime time) {
+    return timeSeries.getNextTimeBasedValue(time);
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
+    return timeSeries.getTimeKeysAfter(time);
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
@@ -149,7 +163,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       throws SourceException {
     Try<Stream<TimeBasedValue<V>>, SourceException> timeBasedValues =
         dataSource
-            .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, filePath, false)
+            .buildStreamWithFieldsToAttributesMap(filePath, false)
             .flatMap(
                 stream ->
                     Try.scanStream(stream.map(fieldToValueFunction), "TimeBasedValue<V>")

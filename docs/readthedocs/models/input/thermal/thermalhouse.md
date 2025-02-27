@@ -7,9 +7,9 @@ This reflects a simple shoe box with transmission losses
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -18,23 +18,23 @@ This reflects a simple shoe box with transmission losses
      - Remarks
 
    * - uuid
-     - --
+     -
      - 
 
    * - id
-     - --
+     -
      - Human readable identifier
      
    * - bus
-     - --
+     -
      - Thermal bus, the model is connected to
 
    * - operator
-     - --
+     -
      - 
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - ethLosses
@@ -56,6 +56,14 @@ This reflects a simple shoe box with transmission losses
    * - lowerTemperatureLimit
      - °C
      - Lower temperature boundary
+     
+   * - housingType
+     - –
+     - Type of building can either be house or flat
+     
+   * - numberInhabititans
+     - –
+     - Number of people living in the house. Double values to enable modeling based on statistical data sources.
 
 ```
 

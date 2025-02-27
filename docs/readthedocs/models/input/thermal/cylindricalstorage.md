@@ -2,13 +2,13 @@
 
 # Cylindrical Thermal Storage
 
-Model of a cylindrical thermal storage using a fluent to store thermal energy.
+Model of a cylindrical thermal storage using a fluid to store thermal energy.
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -17,32 +17,28 @@ Model of a cylindrical thermal storage using a fluent to store thermal energy.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - thermalBus
-     - --
+     -
      - Connection point to the thermal system
 
    * - storageVolumeLvl
      - m³
-     - Overall available storage volume
-
-   * - storageVolumeLvlMin
-     - m³
-     - Minimum permissible storage volume
+     - Overall usable storage volume
 
    * - inletTemp
      - °C
@@ -55,6 +51,10 @@ Model of a cylindrical thermal storage using a fluent to store thermal energy.
    * - c
      - kWh / (K :math:`\cdot` m³)
      - Specific heat capacity of the storage medium
+     
+   * - pThermalMax
+     - kW
+     - Maximum permissible thermal power of the storage
 
 ```
 

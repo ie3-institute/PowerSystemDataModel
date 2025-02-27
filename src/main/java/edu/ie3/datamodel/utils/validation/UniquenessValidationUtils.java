@@ -11,8 +11,7 @@ import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
-import edu.ie3.datamodel.models.result.CongestionResult;
-import edu.ie3.datamodel.models.result.ModelResultEntity;
+import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.Try;
@@ -28,12 +27,10 @@ public class UniquenessValidationUtils extends ValidationUtils {
   protected static final FieldSetSupplier<UniqueEntity> uuidFieldSupplier =
       entity -> Set.of(entity.getUuid());
   protected static final FieldSetSupplier<AssetInput> idFieldSupplier = e -> Set.of(e.getId());
-  protected static final FieldSetSupplier<ModelResultEntity> modelResultFieldSupplier =
+  protected static final FieldSetSupplier<ResultEntity> resultFieldSupplier =
       entity -> Set.of(entity.getTime(), entity.getInputModel());
-  protected static final FieldSetSupplier<CongestionResult> congestionResultFieldSupplier =
-      entity -> Set.of(entity.getTime(), entity.getSubgrid());
   protected static final FieldSetSupplier<MappingEntry> mappingFieldSupplier =
-      entity -> Set.of(entity.participant());
+      entity -> Set.of(entity.getAsset());
   protected static final FieldSetSupplier<IdCoordinateInput> idCoordinateSupplier =
       entity -> Set.of(entity.id(), entity.point());
   protected static final FieldSetSupplier<TimeBasedValue<WeatherValue>> weatherValueFieldSupplier =
@@ -72,25 +69,14 @@ public class UniquenessValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Checks the uniqueness of a collection of {@link CongestionResult}.
+   * Checks the uniqueness of a collection of {@link ResultEntity}.
    *
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated
    */
-  public static void checkCongestionResultUniqueness(
-      Collection<? extends CongestionResult> entities) throws DuplicateEntitiesException {
-    checkUniqueness(entities, congestionResultFieldSupplier).getOrThrow();
-  }
-
-  /**
-   * Checks the uniqueness of a collection of {@link ModelResultEntity}.
-   *
-   * @param entities to be checked
-   * @throws DuplicateEntitiesException if uniqueness is violated
-   */
-  public static void checkModelResultUniqueness(Collection<? extends ModelResultEntity> entities)
+  public static void checkResultUniqueness(Collection<? extends ResultEntity> entities)
       throws DuplicateEntitiesException {
-    checkUniqueness(entities, modelResultFieldSupplier).getOrThrow();
+    checkUniqueness(entities, resultFieldSupplier).getOrThrow();
   }
 
   /**

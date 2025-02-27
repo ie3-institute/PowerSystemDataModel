@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,6 +166,37 @@ public class CouchbaseWeatherSource extends WeatherSource {
     }
   }
 
+  @Override
+  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time) {
+    String query = createQueryStringForFollowingTimeKeys(time);
+    CompletableFuture<QueryResult> futureResult = connector.query(query);
+    QueryResult queryResult = futureResult.join();
+    List<JsonObject> jsonWeatherInputs = Collections.emptyList();
+    try {
+      jsonWeatherInputs = queryResult.rowsAsObject();
+    } catch (DecodingFailureException ex) {
+      logger.error("Querying weather inputs failed!", ex);
+    }
+    if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
+      return groupTime(
+          jsonWeatherInputs.stream()
+              .map(
+                  json -> {
+                    int coordinateId = json.getInt(COORDINATE_ID);
+                    Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
+                    ZonedDateTime timestamp =
+                        weatherFactory.toZonedDateTime(
+                            json.getString(weatherFactory.getTimeFieldString()));
+                    if (coordinate.isEmpty()) {
+                      log.warn("Unable to match coordinate ID {} to a point", coordinateId);
+                    }
+                    return Pair.of(coordinate, timestamp);
+                  })
+              .filter(value -> value.getValue().isAfter(time)));
+    }
+    return Collections.emptyMap();
+  }
+
   /**
    * Generates a key for weather documents with the pattern: {@code
    * weather::<coordinate_id>::<time>}
@@ -196,6 +228,18 @@ public class CouchbaseWeatherSource extends WeatherSource {
         " WHERE META().id >= '" + generateWeatherKey(timeInterval.getLower(), coordinateId);
     whereClause +=
         "' AND META().id <= '" + generateWeatherKey(timeInterval.getUpper(), coordinateId) + "'";
+    return basicQuery + whereClause;
+  }
+
+  /**
+   * Create a query string to search for all time keys that comes after the given time.
+   *
+   * @param time given timestamp
+   * @return the query string
+   */
+  public String createQueryStringForFollowingTimeKeys(ZonedDateTime time) {
+    String basicQuery = "SELECT a.coordinateid, a.time FROM " + connector.getBucketName() + " AS a";
+    String whereClause = " WHERE META().id > '" + generateWeatherKey(time, 0) + "'";
     return basicQuery + whereClause;
   }
 

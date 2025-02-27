@@ -25,7 +25,8 @@ public class TimeSeriesUtils {
           ENERGY_PRICE,
           APPARENT_POWER_AND_HEAT_DEMAND,
           ACTIVE_POWER_AND_HEAT_DEMAND,
-          HEAT_DEMAND);
+          HEAT_DEMAND,
+          VOLTAGE);
 
   /** Private Constructor as this class is not meant to be instantiated */
   private TimeSeriesUtils() {
@@ -67,5 +68,15 @@ public class TimeSeriesUtils {
    */
   public static boolean isSchemeAccepted(ColumnScheme scheme) {
     return ACCEPTED_COLUMN_SCHEMES.contains(scheme);
+  }
+
+  /**
+   * Method to calculate the quarter-hour of a day from a given time.
+   *
+   * @param time given time
+   * @return the quarter-hour
+   */
+  public static int calculateQuarterHourOfDay(ZonedDateTime time) {
+    return time.getHour() * 4 + time.getMinute() / 15;
   }
 }

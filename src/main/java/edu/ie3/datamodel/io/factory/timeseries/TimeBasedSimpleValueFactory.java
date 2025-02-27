@@ -11,7 +11,6 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
-import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -26,29 +25,21 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private static final String REACTIVE_POWER = "q";
   private static final String HEAT_DEMAND = "heatDemand";
 
-  private final TimeUtil timeUtil;
+  /* voltage */
+  private static final String VMAG = "vMag";
+  private static final String VANG = "VAng";
 
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
     super(valueClasses);
-    this.timeUtil = TimeUtil.withDefaults;
   }
 
   public TimeBasedSimpleValueFactory(
       Class<? extends V> valueClasses, DateTimeFormatter dateTimeFormatter) {
-    super(valueClasses);
-    this.timeUtil = new TimeUtil(dateTimeFormatter);
-  }
-
-  /**
-   * Return the field name for the date time
-   *
-   * @return the field name for the date time
-   */
-  public String getTimeFieldString() {
-    return TIME;
+    super(valueClasses, dateTimeFormatter);
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   protected TimeBasedValue<V> buildModel(SimpleTimeBasedValueData<V> data) {
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     V value;
@@ -78,6 +69,12 @@ public class TimeBasedSimpleValueFactory<V extends Value>
                   data.getQuantity(REACTIVE_POWER, REACTIVE_POWER_IN));
     } else if (PValue.class.isAssignableFrom(data.getTargetClass())) {
       value = (V) new PValue(data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN));
+    } else if (VoltageValue.class.isAssignableFrom(data.getTargetClass())) {
+      value =
+          (V)
+              new VoltageValue(
+                  data.getQuantity(VMAG, VOLTAGE_MAGNITUDE),
+                  data.getQuantityOptional(VANG, VOLTAGE_ANGLE));
     } else {
       throw new FactoryException(
           "The given factory cannot handle target class '" + data.getTargetClass() + "'.");
@@ -102,6 +99,8 @@ public class TimeBasedSimpleValueFactory<V extends Value>
       minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, REACTIVE_POWER));
     } else if (PValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.add(ACTIVE_POWER);
+    } else if (VoltageValue.class.isAssignableFrom(entityClass)) {
+      minConstructorParams.addAll(List.of(VMAG, VANG));
     } else {
       throw new FactoryException(
           "The given factory cannot handle target class '" + entityClass + "'.");

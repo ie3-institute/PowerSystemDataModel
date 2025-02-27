@@ -13,16 +13,20 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.timeseries.repetitive.*;
 import edu.ie3.datamodel.models.value.*;
+import edu.ie3.datamodel.models.value.load.BdewLoadValues;
+import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TimeSeriesProcessor<
-        T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+        T extends TimeSeries<E, V, R>,
+        E extends TimeSeriesEntry<V>,
+        V extends Value,
+        R extends Value>
     extends EntityProcessor<TimeSeries> {
   /**
    * List of all combinations of time series class, entry class and value class, this processor is
@@ -50,7 +54,10 @@ public class TimeSeriesProcessor<
               IndividualTimeSeries.class, TimeBasedValue.class, SValue.class),
           new TimeSeriesProcessorKey(
               IndividualTimeSeries.class, TimeBasedValue.class, HeatAndSValue.class),
-          new TimeSeriesProcessorKey(LoadProfileInput.class, LoadProfileEntry.class, PValue.class));
+          new TimeSeriesProcessorKey(
+              BdewLoadProfileTimeSeries.class, LoadProfileEntry.class, BdewLoadValues.class),
+          new TimeSeriesProcessorKey(
+              RandomLoadProfileTimeSeries.class, LoadProfileEntry.class, RandomLoadValues.class));
 
   /**
    * Specific combination of time series class, entry class and value class, this processor is
@@ -110,7 +117,8 @@ public class TimeSeriesProcessor<
       throws EntityProcessorException {
     /* Get the mapping from field name to getter method ignoring the getter for returning all entries */
     Map<String, FieldSourceToMethod> timeSeriesMapping =
-        mapFieldNameToGetter(timeSeriesClass, Arrays.asList("entries", "uuid", "type"))
+        mapFieldNameToGetter(
+                timeSeriesClass, Arrays.asList("entries", "uuid", "type", "loadProfile"))
             .entrySet()
             .stream()
             .collect(

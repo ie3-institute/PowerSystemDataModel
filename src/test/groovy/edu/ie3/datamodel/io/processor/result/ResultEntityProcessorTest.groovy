@@ -7,14 +7,15 @@ package edu.ie3.datamodel.io.processor.result
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.result.ModelResultEntity
 import edu.ie3.datamodel.models.result.NodeResult
+import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
+import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult
 import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Shared
 import spock.lang.Specification
@@ -252,6 +253,30 @@ class ResultEntityProcessorTest extends Specification {
     validProcessedElement == expectedResults
   }
 
+  def "A ResultEntityProcessor should serialize a DomesticHotWaterStorageResult correctly"() {
+    given:
+    def sysPartResProcessor = new ResultEntityProcessor(DomesticHotWaterStorageResult)
+
+    Quantity<Power> qDot = Quantities.getQuantity(2, StandardUnits.Q_DOT_RESULT)
+    Quantity<Energy> energy = Quantities.getQuantity(3, StandardUnits.ENERGY_RESULT)
+    Quantity<Dimensionless> fillLevel = Quantities.getQuantity(20, Units.PERCENT)
+
+    def validResult = new DomesticHotWaterStorageResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, energy, qDot, fillLevel)
+
+    def expectedResults = [
+      energy    : '3.0',
+      fillLevel : '20.0',
+      inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+      qDot      : '2.0',
+      time      : '2020-01-30T17:26:44Z']
+
+    when:
+    def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
+
+    then:
+    validProcessedElement == expectedResults
+  }
+
   def "A ResultEntityProcessor should throw an EntityProcessorException when it receives an entity result that is not eligible"() {
 
     given:
@@ -270,7 +295,7 @@ class ResultEntityProcessorTest extends Specification {
 
   def "The list of eligible entity classes for a ResultEntityProcessor should be valid"() {
     given:
-    int noOfElements = 20 // number of all currently implemented entity results
+    int noOfElements = 21 // number of all currently implemented entity results
 
     expect:
     ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements
@@ -285,7 +310,7 @@ class ResultEntityProcessorTest extends Specification {
     thrown(EntityProcessorException)
   }
 
-  private static class InvalidTestResult extends ModelResultEntity {
+  private static class InvalidTestResult extends ResultEntity {
 
     InvalidTestResult(ZonedDateTime time, UUID inputModel) {
       super(time, inputModel)

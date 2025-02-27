@@ -19,7 +19,7 @@ public class TimeSeriesProcessorKey {
   private final Class<? extends TimeSeriesEntry> entryClass;
   private final Class<? extends Value> valueClass;
 
-  public TimeSeriesProcessorKey(TimeSeries<? extends TimeSeriesEntry<?>, ?> timeSeries) {
+  public TimeSeriesProcessorKey(TimeSeries<? extends TimeSeriesEntry<?>, ?, ?> timeSeries) {
     this.timeSeriesClass = timeSeries.getClass();
     this.entryClass =
         timeSeries.getEntries().stream()

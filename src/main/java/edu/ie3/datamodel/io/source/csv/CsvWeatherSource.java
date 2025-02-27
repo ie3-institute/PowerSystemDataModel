@@ -41,6 +41,7 @@ import org.locationtech.jts.geom.Point;
 
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
 public class CsvWeatherSource extends WeatherSource {
+  private final Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries;
 
   private final CsvDataSource dataSource;
 
@@ -64,8 +65,7 @@ public class CsvWeatherSource extends WeatherSource {
       throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
-
-    coordinateToTimeSeries = getWeatherTimeSeries();
+    this.coordinateToTimeSeries = getWeatherTimeSeries();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -109,6 +109,12 @@ public class CsvWeatherSource extends WeatherSource {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
     if (timeSeries == null) return Optional.empty();
     return timeSeries.getTimeBasedValue(date);
+  }
+
+  @Override
+  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time) {
+    return coordinateToTimeSeries.entrySet().stream()
+        .collect(Collectors.toMap(Map.Entry::getKey, t -> t.getValue().getTimeKeysAfter(time)));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -234,7 +240,7 @@ public class CsvWeatherSource extends WeatherSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      return Success.of(dataSource.csvRowFieldValueMapping(reader, headline).parallelStream());
+      return dataSource.csvRowFieldValueMapping(reader, headline);
     } catch (IOException e) {
       return Failure.of(
           new SourceException(
