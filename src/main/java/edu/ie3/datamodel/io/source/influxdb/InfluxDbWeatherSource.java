@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.influxdb;
 
+import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -67,6 +68,9 @@ public class InfluxDbWeatherSource extends WeatherSource {
           optTimeBasedValueStream(queryResult);
       Set<TimeBasedValue<WeatherValue>> timeBasedValues =
           filterEmptyOptionals(optValues).collect(Collectors.toSet());
+      if (timeBasedValues.isEmpty()) {
+        throw new NoDataException("No weather data found");
+      }
       Map<Point, Set<TimeBasedValue<WeatherValue>>> coordinateToValues =
           timeBasedValues.stream()
               .collect(
@@ -76,6 +80,9 @@ public class InfluxDbWeatherSource extends WeatherSource {
       return coordinateToValues.entrySet().stream()
           .collect(
               Collectors.toMap(Map.Entry::getKey, e -> new IndividualTimeSeries<>(e.getValue())));
+    } catch (NoDataException e) {
+      log.error("No data available for coordinate", e);
+      return Collections.emptyMap();
     }
   }
 
@@ -97,25 +104,43 @@ public class InfluxDbWeatherSource extends WeatherSource {
               optTimeBasedValueStream(queryResult);
           Set<TimeBasedValue<WeatherValue>> timeBasedValues =
               filterEmptyOptionals(optValues).collect(Collectors.toSet());
+          if (timeBasedValues.isEmpty()) {
+            throw new NoDataException("No weather data found");
+          }
           IndividualTimeSeries<WeatherValue> timeSeries =
               new IndividualTimeSeries<>(timeBasedValues);
           coordinateToTimeSeries.put(entry.getKey(), timeSeries);
         }
       }
+    } catch (NoDataException e) {
+      return Collections.emptyMap();
     }
     return coordinateToTimeSeries;
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
-    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (coordinateId.isEmpty()) {
-      return Optional.empty();
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
+      throws NoDataException {
+    Optional<Integer> coordinateId;
+    try {
+      coordinateId = idCoordinateSource.getId(coordinate);
+      if (coordinateId.isEmpty()) {
+        throw new NoDataException("No coordinate ID found for the given point.");
+      }
+    } catch (NoDataException e) {
+      log.error("No data available for coordinate {} and date {}", coordinate, date, e);
+      return null;
     }
+
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForCoordinateAndTime(date, coordinateId.get());
       QueryResult queryResult = session.query(new Query(query));
-      return filterEmptyOptionals(optTimeBasedValueStream(queryResult)).findFirst();
+      return filterEmptyOptionals(optTimeBasedValueStream(queryResult))
+          .findFirst()
+          .orElseThrow(
+              () ->
+                  new NoDataException(
+                      "No weather data available for the given date and coordinate."));
     }
   }
 
@@ -167,9 +192,14 @@ public class InfluxDbWeatherSource extends WeatherSource {
    * @return weather data for the specified time and coordinate
    */
   public IndividualTimeSeries<WeatherValue> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Point coordinate) {
-    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (coordinateId.isEmpty()) {
+      ClosedInterval<ZonedDateTime> timeInterval, Point coordinate) throws NoDataException {
+    Optional<Integer> coordinateId;
+    try {
+      coordinateId = idCoordinateSource.getId(coordinate);
+      if (coordinateId.isEmpty()) {
+        throw new NoDataException("No data for given coordinates");
+      }
+    } catch (NoDataException e) {
       return new IndividualTimeSeries<>(UUID.randomUUID(), Collections.emptySet());
     }
     try (InfluxDB session = connector.getSession()) {

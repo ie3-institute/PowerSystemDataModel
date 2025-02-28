@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
+import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -92,7 +93,7 @@ public class SqlWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) throws SourceException {
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException, SourceException {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         buildTimeBasedValues(
             weatherFactory,
@@ -102,20 +103,28 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
+    if (timeBasedValues.isEmpty()) {
+      throw new NoDataException("No weather data found");
+    }
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
-      throws SourceException {
-    Set<Integer> coordinateIds =
-        coordinates.stream()
-            .map(idCoordinateSource::getId)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
-    if (coordinateIds.isEmpty()) {
-      log.warn("Unable to match coordinates to coordinate ID");
+      throws SourceException, NoDataException {
+    Set<Integer> coordinateIds;
+    try {
+      coordinateIds =
+          coordinates.stream()
+              .map(idCoordinateSource::getId)
+              .flatMap(Optional::stream)
+              .collect(Collectors.toSet());
+      if (coordinateIds.isEmpty()) {
+        log.warn("Unable to match coordinates to coordinate ID");
+        throw new NoDataException("No coordinates found");
+      }
+    } catch (NoDataException e) {
       return Collections.emptyMap();
     }
 
@@ -136,12 +145,18 @@ public class SqlWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate)
-      throws SourceException {
-    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (coordinateId.isEmpty()) {
-      log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
-      return Optional.empty();
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
+      throws SourceException, NoDataException {
+    Optional<Integer> coordinateId;
+    try {
+      coordinateId = idCoordinateSource.getId(coordinate);
+      if (coordinateId.isEmpty()) {
+        log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+        throw new NoDataException("No coordinate ID found for the given point.");
+      }
+    } catch (NoDataException e) {
+      log.error("No data available for coordinate {} and date {}", coordinate, date, e);
+      return null;
     }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
@@ -154,10 +169,10 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(2, Timestamp.from(date.toInstant()));
                 }));
 
-    if (timeBasedValues.isEmpty()) return Optional.empty();
+    if (timeBasedValues.isEmpty()) throw new NoDataException("No weather data found");
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
-    return Optional.of(timeBasedValues.get(0));
+    return timeBasedValues.get(0);
   }
 
   @Override
