@@ -119,7 +119,7 @@ public class EmInput extends AssetInput implements HasEm {
 
     public EmInputCopyBuilder controlStrategy(String controlStrategy) {
       this.controlStrategy = controlStrategy;
-      return this;
+      return thisInstance();
     }
 
     public EmInputCopyBuilder parentEm(EmInput parentEm) {

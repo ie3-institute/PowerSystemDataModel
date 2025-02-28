@@ -204,28 +204,28 @@ public class ChpInput extends SystemParticipantInput
 
     public ChpInputCopyBuilder type(ChpTypeInput type) {
       this.type = type;
-      return this;
+      return thisInstance();
     }
 
     public ChpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
       this.thermalBus = thermalBus;
-      return this;
+      return thisInstance();
     }
 
     public ChpInputCopyBuilder thermalStorage(ThermalStorageInput thermalStorage) {
       this.thermalStorage = thermalStorage;
-      return this;
+      return thisInstance();
     }
 
     public ChpInputCopyBuilder marketReaction(boolean marketReaction) {
       this.marketReaction = marketReaction;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public ChpInputCopyBuilder scale(Double factor) {
       this.type = this.type.copy().scale(factor).build();
-      return this;
+      return thisInstance();
     }
 
     @Override

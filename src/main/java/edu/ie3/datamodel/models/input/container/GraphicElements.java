@@ -125,7 +125,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
      */
     public GraphicElementsCopyBuilder nodeGraphics(Set<NodeGraphicInput> nodeGraphics) {
       this.nodeGraphics = nodeGraphics;
-      return this;
+      return thisInstance();
     }
 
     /**
@@ -136,12 +136,16 @@ public class GraphicElements implements InputContainer<GraphicInput> {
      */
     public GraphicElementsCopyBuilder lineGraphics(Set<LineGraphicInput> lineGraphics) {
       this.lineGraphics = lineGraphics;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public GraphicElements build() {
       return new GraphicElements(nodeGraphics, lineGraphics);
+    }
+
+    protected GraphicElements.GraphicElementsCopyBuilder thisInstance() {
+      return this;
     }
   }
 }

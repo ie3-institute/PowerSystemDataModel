@@ -129,13 +129,13 @@ public class EvInput extends SystemParticipantInput implements HasType {
 
     public EvInputCopyBuilder type(EvTypeInput type) {
       this.type = type;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public EvInputCopyBuilder scale(Double factor) {
       type(type.copy().scale(factor).build());
-      return this;
+      return thisInstance();
     }
 
     @Override
