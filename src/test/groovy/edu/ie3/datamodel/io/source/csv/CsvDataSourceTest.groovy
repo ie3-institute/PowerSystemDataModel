@@ -6,15 +6,19 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.models.input.system.LoadInput
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.function.Function
 import java.util.stream.Collectors
 
 class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
@@ -28,6 +32,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     DummyCsvSource(String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
       super(csvSep, folderPath, fileNamingStrategy)
     }
+
 
     Map<String, String> buildFieldsToAttributes(
         final String csvRow, final String[] headline) {
@@ -48,6 +53,8 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
   FileNamingStrategy fileNamingStrategy
   @Shared
   Set<Path> timeSeriesPaths
+  @Shared
+  Set<Path> loadProfileTimeSeriesPaths
 
   @Shared
   DummyCsvSource dummyCsvSource
@@ -67,6 +74,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b.csv"
     ].stream().map { file -> Path.of(file) }.collect(Collectors.toSet())
     timeSeriesPaths.forEach { path -> Files.createFile(testBaseFolderPath.resolve(path)) }
+
+    loadProfileTimeSeriesPaths = [
+      "lpts_r1.csv",
+      "lpts_r2.csv",
+      "lpts_g0.csv"
+    ].stream().map { file -> Path.of(file) }.collect(Collectors.toSet())
+    loadProfileTimeSeriesPaths.forEach { path -> Files.createFile(testBaseFolderPath.resolve(path)) }
   }
 
   def "A DataSource should contain a valid connector after initialization"() {
@@ -74,6 +88,22 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.connector != null
     dummyCsvSource.connector.baseDirectory == testBaseFolderPath
     dummyCsvSource.connector.entityWriters.isEmpty()
+  }
+
+
+  def "A DataSource can be created wih a custom connector correctly"() {
+    given:
+    Path resourcePath = Path.of(".", "src", "main", "resources", "load")
+    Function<String, InputStream> fcn = filePath -> new FileInputStream(new File(filePath))
+
+    CsvFileConnector connector = new CsvFileConnector(resourcePath, fcn)
+
+    when:
+    def dataSource = new CsvDataSource(csvSep, connector, fileNamingStrategy)
+    def sourceData = dataSource.getSourceData(Path.of("lpts_g0")).toList()
+
+    then:
+    sourceData.size() == 96
   }
 
   def "A CsvDataSource should return column names from a valid CSV file as expected"() {
@@ -327,13 +357,17 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The CsvDataSource is able to provide correct paths to time series files"() {
     when:
-    def actual = dummyCsvSource.getIndividualTimeSeriesFilePaths()
+    def actualIndividual = dummyCsvSource.getTimeSeriesFilePaths(fileNamingStrategy.individualTimeSeriesPattern)
+    def actualLoad = dummyCsvSource.getTimeSeriesFilePaths(fileNamingStrategy.loadProfileTimeSeriesPattern)
 
     then:
     noExceptionThrown()
 
-    actual.size() == timeSeriesPaths.size()
-    actual.containsAll(timeSeriesPaths)
+    actualIndividual.size() == timeSeriesPaths.size()
+    actualIndividual.containsAll(timeSeriesPaths)
+
+    actualLoad.size() == loadProfileTimeSeriesPaths.size()
+    actualLoad.containsAll(loadProfileTimeSeriesPaths)
   }
 
   def "The CsvDataSource is able to build correct uuid to meta information mapping"() {
@@ -363,11 +397,31 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     when:
     def actual = dummyCsvSource.getCsvIndividualTimeSeriesMetaInformation(
-        ColumnScheme.ENERGY_PRICE,
-        ColumnScheme.ACTIVE_POWER
-        )
+    ColumnScheme.ENERGY_PRICE,
+    ColumnScheme.ACTIVE_POWER
+    )
 
     then:
     actual == expected
+  }
+
+  def "The CsvDataSource is able to build correct load profile meta information"() {
+    when:
+    def actual = dummyCsvSource.getCsvLoadProfileMetaInformation()
+
+    then:
+    actual.size() == 3
+    actual.get("r1").fullFilePath == Path.of("lpts_r1")
+    actual.get("r2").fullFilePath == Path.of("lpts_r2")
+    actual.get("g0").fullFilePath == Path.of("lpts_g0")
+  }
+
+  def "The CsvDataSource is able to build correct load profile meta information when restricting load profile"() {
+    when:
+    def actual = dummyCsvSource.getCsvLoadProfileMetaInformation(BdewStandardLoadProfile.G0)
+
+    then:
+    actual.size() == 1
+    actual.get("g0").fullFilePath == Path.of("lpts_g0")
   }
 }

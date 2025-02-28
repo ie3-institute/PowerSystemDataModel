@@ -130,6 +130,7 @@ class ResultEntitySource {
     + Set<EvResult> getEvResults() throws SourceException
     + Set<HpResult> getHpResults() throws SourceException
     + Set<CylindricalStorageResult> getCylindricalStorageResult() throws SourceException
+    + Set<DomesticHotStorageResult> getDomesticHotWaterStorageResult() throws SourceException
     + Set<ThermalHouseResult> getThermalHouseResults() throws SourceException
     + Set<EmResult> getEmResults() throws SourceException
     + Set<CongestionResult> getCongestionResults() throws SourceException
@@ -179,6 +180,7 @@ class ThermalSource {
     - TypeSource typeSource
     - ThermalBusInputFactory thermalBusInputFactory
     - CylindricalStorageInputFactory cylindricalStorageInputFactory
+    - DomesticHotWaterStorageInputFactory domesticHotWaterStorageInputFactory
     - ThermalHouseInputFactory thermalHouseInputFactory
     + ThermalSource(TypeSource, DataSource)
     + Map<UUID, ThermalBusInput> getThermalBuses() throws SourceException
@@ -187,8 +189,10 @@ class ThermalSource {
     + Map<UUID, ThermalStorageInput> getThermalStorages(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
     + Map<UUID, ThermalHouseInput> getThermalHouses() throws SourceException
     + Map<UUID, ThermalHouseInput> getThermalHouses(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
-    + Set<CylindricalStorageInput> getCylindricStorages() throws SourceException
-    + Set<CylindricalStorageInput> getCylindricStorages(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
+    + Set<CylindricalStorageInput> getCylindricalStorages() throws SourceException
+    + Set<CylindricalStorageInput> getCylindricalStorages(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
+    + Set<DomesticHotWaterStorageInput> getDomesticHotWaterStorages() throws SourceException
+    + Set<DomesticHotWaterStorageInput> getDomesticHotWaterStorages(Map<UUID, OperatorInput>, Map<UUID, ThermalBusInput>) throws SourceException
 }
 
 abstract class TimeSeriesMappingSource {

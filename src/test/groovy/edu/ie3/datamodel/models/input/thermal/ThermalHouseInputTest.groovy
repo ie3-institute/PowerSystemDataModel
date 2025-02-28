@@ -38,6 +38,8 @@ class ThermalHouseInputTest extends Specification {
       assert targetTemperature == ThermalUnitInputTestData.TARGET_TEMPERATURE
       assert upperTemperatureLimit == ThermalUnitInputTestData.UPPER_TEMPERATURE_LIMIT
       assert lowerTemperatureLimit == ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT
+      assert housingType == ThermalUnitInputTestData.HOUSING_TYPE
+      assert numberOfInhabitants == ThermalUnitInputTestData.NUMBER_INHABITANTS
     }
   }
 
@@ -67,12 +69,17 @@ class ThermalHouseInputTest extends Specification {
         Quantities.getQuantity(20, StandardUnits.HEAT_CAPACITY),
         Quantities.getQuantity(20, StandardUnits.TEMPERATURE),
         Quantities.getQuantity(25, StandardUnits.TEMPERATURE),
-        Quantities.getQuantity(15, StandardUnits.TEMPERATURE))
+        Quantities.getQuantity(15, StandardUnits.TEMPERATURE),
+        "house",
+        2.0
+        )
 
     expect:
     thermalHouseInput.targetTemperature == Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
     thermalHouseInput.upperTemperatureLimit == Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
     thermalHouseInput.lowerTemperatureLimit == Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
+    thermalHouseInput.housingType == "house"
+    thermalHouseInput.numberOfInhabitants == 2.0
   }
 
   def "Scaling a ThermalHouseInput via builder should work as expected"() {
@@ -94,6 +101,8 @@ class ThermalHouseInputTest extends Specification {
       assert targetTemperature == thermalHouseInput.targetTemperature
       assert upperTemperatureLimit == thermalHouseInput.upperTemperatureLimit
       assert lowerTemperatureLimit == thermalHouseInput.lowerTemperatureLimit
+      assert housingType == thermalHouseInput.housingType
+      assert numberOfInhabitants == thermalHouseInput.numberOfInhabitants * 2d
     }
   }
 }
