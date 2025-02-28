@@ -45,6 +45,7 @@ apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 apply from: scriptsLocation + 'sonarqube.gradle'
 apply from: scriptsLocation + 'vcs.gradle'
 apply from: scriptsLocation + 'semVer.gradle'
+apply from: scriptsLocation + 'branchName.gradle' // checks naming scheme of branches
 
 repositories {
   mavenCentral() // searches in Sonatype's repository 'Maven Central'
