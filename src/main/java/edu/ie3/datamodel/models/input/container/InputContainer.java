@@ -31,6 +31,5 @@ public interface InputContainer<T extends UniqueInputEntity> extends Serializabl
     /** Returns the altered {@link InputContainer} */
     InputContainer<T> build() throws ValidationException;
 
-    GraphicElements.GraphicElementsCopyBuilder thisInstance();
   }
 }
