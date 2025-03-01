@@ -55,4 +55,9 @@ The following different values are available:
    * - `WeatherValue`
      - Combination of irradiance, temperature and wind information
            
+   * - `BdewLoadValues`
+     - Values for combination of seasons and day types
+
+   * - `RandomLoadValues`
+     - Parameters for a probability density function to draw random power consumptions
 ```

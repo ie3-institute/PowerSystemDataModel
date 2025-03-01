@@ -9,19 +9,22 @@ import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMetaInformationSource;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * CSV implementation for retrieving {@link TimeSeriesMetaInformationSource} from input directory
  * structures
  */
-public class CsvTimeSeriesMetaInformationSource implements TimeSeriesMetaInformationSource {
+public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
 
   protected final CsvDataSource dataSource;
 
@@ -36,17 +39,29 @@ public class CsvTimeSeriesMetaInformationSource implements TimeSeriesMetaInforma
    */
   public CsvTimeSeriesMetaInformationSource(
       String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
-    this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
+    this(new CsvDataSource(csvSep, folderPath, fileNamingStrategy));
+  }
+
+  /**
+   * Creates a time series type source
+   *
+   * @param dataSource a csv data source
+   */
+  public CsvTimeSeriesMetaInformationSource(CsvDataSource dataSource) {
+    this.dataSource = dataSource;
     // retrieve only the desired time series
     this.timeSeriesMetaInformation =
         dataSource.getCsvIndividualTimeSeriesMetaInformation(
             TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
+
+    this.loadProfileMetaInformation =
+        dataSource.getCsvLoadProfileMetaInformation().values().stream()
+            .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
   }
 
   @Override
   public Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation() {
-    return timeSeriesMetaInformation.entrySet().stream()
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    return Collections.unmodifiableMap(timeSeriesMetaInformation);
   }
 
   @Override
