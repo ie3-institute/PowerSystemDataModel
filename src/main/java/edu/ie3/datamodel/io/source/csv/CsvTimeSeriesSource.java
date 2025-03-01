@@ -163,7 +163,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       throws SourceException {
     Try<Stream<TimeBasedValue<V>>, SourceException> timeBasedValues =
         dataSource
-            .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, filePath, false)
+            .buildStreamWithFieldsToAttributesMap(filePath, false)
             .flatMap(
                 stream ->
                     Try.scanStream(stream.map(fieldToValueFunction), "TimeBasedValue<V>")

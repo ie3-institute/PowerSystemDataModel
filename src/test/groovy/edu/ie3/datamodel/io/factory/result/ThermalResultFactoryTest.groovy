@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
+import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult
 import edu.ie3.datamodel.utils.Try
@@ -23,7 +24,8 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
     def resultFactory = new ThermalResultFactory()
     def expectedClasses = [
       ThermalHouseResult,
-      CylindricalStorageResult
+      CylindricalStorageResult,
+      DomesticHotWaterStorageResult
     ]
 
     expect:
@@ -47,6 +49,31 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
     result.success
     result.data.get().getClass() == CylindricalStorageResult
     ((CylindricalStorageResult) result.data.get()).with {
+      assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
+      assert inputModel == UUID.fromString(parameter.get("inputModel"))
+      assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
+      assert energy == Quantities.getQuantity(Double.parseDouble(parameter.get("energy")), StandardUnits.ENERGY_RESULT)
+      assert fillLevel == Quantities.getQuantity(Double.parseDouble(parameter.get("fillLevel")), StandardUnits.FILL_LEVEL)
+    }
+  }
+
+  def "A ThermalResultFactory should parse a DomesticHotWaterStorageResult correctly"() {
+    given: "a thermal result factory and model data"
+    def resultFactory = new ThermalResultFactory()
+    Map<String, String> parameter = [
+      "time"      : "2020-01-30T17:26:44Z",
+      "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
+      "qDot"      : "2",
+      "energy"    : "3",
+      "fillLevel" : "20"
+    ]
+    when:
+    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new EntityData(parameter, DomesticHotWaterStorageResult))
+
+    then:
+    result.success
+    result.data.get().getClass() == DomesticHotWaterStorageResult
+    ((DomesticHotWaterStorageResult) result.data.get()).with {
       assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
       assert inputModel == UUID.fromString(parameter.get("inputModel"))
       assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)

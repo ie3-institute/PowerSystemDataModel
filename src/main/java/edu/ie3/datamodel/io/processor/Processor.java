@@ -261,8 +261,8 @@ public abstract class Processor<T> {
           processVoltageLevel((VoltageLevel) methodReturnObject, fieldName));
       case "Point", "LineString" -> resultStringBuilder.append(
           geoJsonWriter.write((Geometry) methodReturnObject));
-      case "LoadProfile", "BdewStandardLoadProfile" -> resultStringBuilder.append(
-          ((LoadProfile) methodReturnObject).getKey());
+      case "LoadProfile", "BdewStandardLoadProfile", "RandomLoadProfile" -> resultStringBuilder
+          .append(((LoadProfile) methodReturnObject).getKey());
       case "AssetTypeInput",
           "BmTypeInput",
           "ChpTypeInput",
