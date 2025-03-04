@@ -144,7 +144,8 @@ public class GraphicElements implements InputContainer<GraphicInput> {
       return new GraphicElements(nodeGraphics, lineGraphics);
     }
 
-    protected GraphicElements.GraphicElementsCopyBuilder thisInstance() {
+    @Override
+    public GraphicElementsCopyBuilder thisInstance() {
       return this;
     }
   }

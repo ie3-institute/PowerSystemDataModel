@@ -404,6 +404,11 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder wecPlants(Set<WecInput> wecPlants) {
       this.wecPlants = wecPlants;
+      return (SystemParticipantsCopyBuilder) thisInstance();
+    }
+
+    @Override
+    public InputContainerCopyBuilder<SystemParticipantInput> thisInstance() {
       return this;
     }
 

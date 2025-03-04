@@ -170,6 +170,6 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     }
 
     /** Returns the current instance of builder with the correct subclass type */
-    protected abstract B thisInstance();
+    public abstract B thisInstance();
   }
 }

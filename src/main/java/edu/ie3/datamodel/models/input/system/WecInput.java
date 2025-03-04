@@ -148,7 +148,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
     @Override
     public WecInputCopyBuilder scale(Double factor) {
       type(type.copy().scale(factor).build());
-      return this;
+      return thisInstance();
     }
 
     @Override
@@ -167,12 +167,12 @@ public class WecInput extends SystemParticipantInput implements HasType {
 
     public WecInputCopyBuilder type(WecTypeInput type) {
       this.type = type;
-      return this;
+      return thisInstance();
     }
 
     public WecInputCopyBuilder marketReaction(boolean marketReaction) {
       this.marketReaction = marketReaction;
-      return this;
+      return thisInstance();
     }
 
     @Override

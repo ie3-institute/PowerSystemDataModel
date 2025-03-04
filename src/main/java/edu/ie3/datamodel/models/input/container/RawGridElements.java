@@ -217,7 +217,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      */
     public RawGridElementsCopyBuilder nodes(Set<NodeInput> nodes) {
       this.nodes = nodes;
-      return this;
+      return thisInstance();
     }
 
     /**
@@ -228,7 +228,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      */
     public RawGridElementsCopyBuilder lines(Set<LineInput> lines) {
       this.lines = lines;
-      return this;
+      return thisInstance();
     }
 
     /**
@@ -239,7 +239,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      */
     public RawGridElementsCopyBuilder transformers2Ws(Set<Transformer2WInput> transformer2Ws) {
       this.transformer2Ws = transformer2Ws;
-      return this;
+      return thisInstance();
     }
 
     /**
@@ -250,7 +250,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      */
     public RawGridElementsCopyBuilder transformer3Ws(Set<Transformer3WInput> transformer3Ws) {
       this.transformer3Ws = transformer3Ws;
-      return this;
+      return thisInstance();
     }
 
     /**
@@ -261,7 +261,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
      */
     public RawGridElementsCopyBuilder switches(Set<SwitchInput> switches) {
       this.switches = switches;
-      return this;
+      return thisInstance();
     }
 
     /**
@@ -272,6 +272,11 @@ public class RawGridElements implements InputContainer<AssetInput> {
      */
     public RawGridElementsCopyBuilder measurementUnits(Set<MeasurementUnitInput> measurementUnits) {
       this.measurementUnits = measurementUnits;
+      return thisInstance();
+    }
+
+    @Override
+    public RawGridElementsCopyBuilder thisInstance() {
       return this;
     }
 

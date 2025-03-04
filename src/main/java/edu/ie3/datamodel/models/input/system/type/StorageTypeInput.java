@@ -147,38 +147,38 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
     public StorageTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
       this.eStorage = eStorage;
-      return this;
+      return thisInstance();
     }
 
     public StorageTypeInputCopyBuilder setpMax(ComparableQuantity<Power> pMax) {
       this.pMax = pMax;
-      return this;
+      return thisInstance();
     }
 
     public StorageTypeInputCopyBuilder setActivePowerGradient(
         ComparableQuantity<DimensionlessRate> activePowerGradient) {
       this.activePowerGradient = activePowerGradient;
-      return this;
+      return thisInstance();
     }
 
     public StorageTypeInputCopyBuilder setEta(ComparableQuantity<Dimensionless> eta) {
       this.eta = eta;
-      return this;
+      return thisInstance();
     }
 
     public StorageTypeInputCopyBuilder setDod(ComparableQuantity<Dimensionless> dod) {
       this.dod = dod;
-      return this;
+      return thisInstance();
     }
 
     public StorageTypeInputCopyBuilder setLifeTime(ComparableQuantity<Time> lifeTime) {
       this.lifeTime = lifeTime;
-      return this;
+      return thisInstance();
     }
 
     public StorageTypeInputCopyBuilder setLifeCycle(int lifeCycle) {
       this.lifeCycle = lifeCycle;
-      return this;
+      return thisInstance();
     }
 
     public ComparableQuantity<Energy> geteStorage() {
@@ -215,7 +215,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       setsRated(getsRated().multiply(factor));
       seteStorage(geteStorage().multiply(factor));
       setpMax(getpMax().multiply(factor));
-      return this;
+      return thisInstance();
     }
 
     @Override
