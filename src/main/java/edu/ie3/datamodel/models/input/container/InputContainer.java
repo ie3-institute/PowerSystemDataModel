@@ -26,11 +26,11 @@ public interface InputContainer<T extends UniqueInputEntity> extends Serializabl
    * @version 3.1
    * @since 14.02.23
    */
-  interface InputContainerCopyBuilder<T extends UniqueInputEntity> {
+  abstract class InputContainerCopyBuilder<T extends UniqueInputEntity> {
 
     /** Returns the altered {@link InputContainer} */
-    InputContainer<T> build() throws ValidationException;
+    public abstract InputContainer<T> build() throws ValidationException;
 
-    InputContainerCopyBuilder<T> thisInstance();
+    protected abstract InputContainerCopyBuilder<T> thisInstance();
   }
 }

@@ -267,7 +267,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
    * @since 14.02.23
    */
   public static class SystemParticipantsCopyBuilder
-      implements InputContainerCopyBuilder<SystemParticipantInput> {
+      extends InputContainerCopyBuilder<SystemParticipantInput> {
     private Set<BmInput> bmPlants;
     private Set<ChpInput> chpPlants;
     private Set<EvcsInput> evcs;
@@ -408,7 +408,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     }
 
     @Override
-    public InputContainerCopyBuilder<SystemParticipantInput> thisInstance() {
+    protected InputContainerCopyBuilder<SystemParticipantInput> thisInstance() {
       return this;
     }
 

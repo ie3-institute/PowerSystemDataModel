@@ -102,8 +102,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
    * @version 3.1
    * @since 14.02.23
    */
-  public static class GraphicElementsCopyBuilder
-      implements InputContainerCopyBuilder<GraphicInput> {
+  public static class GraphicElementsCopyBuilder extends InputContainerCopyBuilder<GraphicInput> {
     private Set<NodeGraphicInput> nodeGraphics;
     private Set<LineGraphicInput> lineGraphics;
 
@@ -145,7 +144,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     }
 
     @Override
-    public GraphicElementsCopyBuilder thisInstance() {
+    protected GraphicElementsCopyBuilder thisInstance() {
       return this;
     }
   }
