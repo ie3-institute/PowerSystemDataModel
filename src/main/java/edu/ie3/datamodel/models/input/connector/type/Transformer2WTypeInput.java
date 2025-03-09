@@ -216,4 +216,169 @@ public class Transformer2WTypeInput extends AssetTypeInput {
         + tapMax
         + '}';
   }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link
+   * Transformer2WTypeInput}
+   */
+  public abstract static class Transformer2WTypeInputCopyBuilder<
+          B extends Transformer2WTypeInputCopyBuilder<B>>
+      extends AssetTypeInput.AssetTypeInputCopyBuilder<B> {
+
+    private ComparableQuantity<ElectricResistance> rSc;
+    private ComparableQuantity<ElectricResistance> xSc;
+    private ComparableQuantity<Power> sRated;
+    private ComparableQuantity<ElectricPotential> vRatedA;
+    private ComparableQuantity<ElectricPotential> vRatedB;
+    private ComparableQuantity<ElectricConductance> gM;
+    private ComparableQuantity<ElectricConductance> bM;
+    private ComparableQuantity<Dimensionless> dV;
+    private ComparableQuantity<Angle> dPhi;
+    private boolean tapSide;
+    private int tapNeutr;
+    private int tapMin;
+    private int tapMax;
+
+    protected Transformer2WTypeInputCopyBuilder(Transformer2WTypeInput entity) {
+      super(entity);
+      this.rSc = entity.rSc;
+      this.xSc = entity.xSc;
+      this.sRated = entity.sRated;
+      this.vRatedA = entity.vRatedA;
+      this.vRatedB = entity.vRatedB;
+      this.gM = entity.gM;
+      this.bM = entity.bM;
+      this.dV = entity.dV;
+      this.dPhi = entity.dPhi;
+      this.tapSide = entity.tapSide;
+      this.tapNeutr = entity.tapNeutr;
+      this.tapMin = entity.tapMin;
+      this.tapMax = entity.tapMax;
+    }
+
+    /** Setter */
+    public B setRSc(ComparableQuantity<ElectricResistance> rSc) {
+      this.rSc = rSc;
+      return thisInstance();
+    }
+
+    public B setXSc(ComparableQuantity<ElectricResistance> xSc) {
+      this.xSc = xSc;
+      return thisInstance();
+    }
+
+    public B setsRated(ComparableQuantity<Power> sRated) {
+      this.sRated = sRated;
+      return thisInstance();
+    }
+
+    public B setvRatedA(ComparableQuantity<ElectricPotential> vRatedA) {
+      this.vRatedA = vRatedA;
+      return thisInstance();
+    }
+
+    public B setvRatedB(ComparableQuantity<ElectricPotential> vRatedB) {
+      this.vRatedB = vRatedB;
+      return thisInstance();
+    }
+
+    public B setgM(ComparableQuantity<ElectricConductance> gM) {
+      this.gM = gM;
+      return thisInstance();
+    }
+
+    public B setbM(ComparableQuantity<ElectricConductance> bM) {
+      this.bM = bM;
+      return thisInstance();
+    }
+
+    public B setdV(ComparableQuantity<Dimensionless> dV) {
+      this.dV = dV;
+      return thisInstance();
+    }
+
+    public B setdPhi(ComparableQuantity<Angle> dPhi) {
+      this.dPhi = dPhi;
+      return thisInstance();
+    }
+
+    public B settapSide(boolean tapSide) {
+      this.tapSide = tapSide;
+      return thisInstance();
+    }
+
+    public B settapNeutr(int tapNeutr) {
+      this.tapNeutr = tapNeutr;
+      return thisInstance();
+    }
+
+    public B settapMin(int tapMin) {
+      this.tapMin = tapMin;
+      return thisInstance();
+    }
+
+    public B settapMax(int tapMax) {
+      this.tapMax = tapMax;
+      return thisInstance();
+    }
+
+    /** Getter */
+    public ComparableQuantity<ElectricResistance> getrSc() {
+      return rSc;
+    }
+
+    public ComparableQuantity<ElectricResistance> getxSc() {
+      return xSc;
+    }
+
+    public ComparableQuantity<Power> getsRated() {
+      return sRated;
+    }
+
+    public ComparableQuantity<ElectricPotential> getvRatedA() {
+      return vRatedA;
+    }
+
+    public ComparableQuantity<ElectricPotential> getvRatedB() {
+      return vRatedB;
+    }
+
+    public ComparableQuantity<ElectricConductance> getgM() {
+      return gM;
+    }
+
+    public ComparableQuantity<ElectricConductance> getbM() {
+      return bM;
+    }
+
+    public ComparableQuantity<Dimensionless> getdV() {
+      return dV;
+    }
+
+    public ComparableQuantity<Angle> getdPhi() {
+      return dPhi;
+    }
+
+    public boolean isTapSide() {
+      return tapSide;
+    }
+
+    public int getTapNeutr() {
+      return tapNeutr;
+    }
+
+    public int getTapMin() {
+      return tapMin;
+    }
+
+    public int getTapMax() {
+      return tapMax;
+    }
+
+    @Override
+    public abstract Transformer2WTypeInput build();
+
+    @Override
+    protected abstract B thisInstance();
+  }
 }

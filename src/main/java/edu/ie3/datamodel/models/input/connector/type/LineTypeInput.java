@@ -121,4 +121,92 @@ public class LineTypeInput extends AssetTypeInput {
         + vRated
         + '}';
   }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link
+   * LineTypeInput}
+   */
+  public abstract static class LineTypeInputCopyBuilder<
+          B extends LineTypeInput.LineTypeInputCopyBuilder<B>>
+      extends AssetTypeInput.AssetTypeInputCopyBuilder<B> {
+
+    private ComparableQuantity<SpecificConductance> b;
+    private ComparableQuantity<SpecificConductance> g;
+    private ComparableQuantity<SpecificResistance> r;
+    private ComparableQuantity<SpecificResistance> x;
+    private ComparableQuantity<ElectricCurrent> iMax;
+    private ComparableQuantity<ElectricPotential> vRated;
+
+    protected LineTypeInputCopyBuilder(LineTypeInput entity) {
+      super(entity);
+      this.b = entity.b;
+      this.g = entity.g;
+      this.r = entity.r;
+      this.x = entity.x;
+      this.iMax = entity.iMax;
+      this.vRated = entity.vRated;
+    }
+
+    /** Setter */
+    public B setB(ComparableQuantity<SpecificConductance> b) {
+      this.b = b;
+      return thisInstance();
+    }
+
+    public B setG(ComparableQuantity<SpecificConductance> g) {
+      this.g = g;
+      return thisInstance();
+    }
+
+    public B setR(ComparableQuantity<SpecificResistance> r) {
+      this.r = r;
+      return thisInstance();
+    }
+
+    public B setX(ComparableQuantity<SpecificResistance> x) {
+      this.x = x;
+      return thisInstance();
+    }
+
+    public B setiMax(ComparableQuantity<ElectricCurrent> iMax) {
+      this.iMax = iMax;
+      return thisInstance();
+    }
+
+    public B setvRated(ComparableQuantity<ElectricPotential> vRated) {
+      this.vRated = vRated;
+      return thisInstance();
+    }
+
+    /** Getter */
+    public ComparableQuantity<SpecificConductance> getB() {
+      return b;
+    }
+
+    public ComparableQuantity<SpecificConductance> getG() {
+      return g;
+    }
+
+    public ComparableQuantity<SpecificResistance> getR() {
+      return r;
+    }
+
+    public ComparableQuantity<SpecificResistance> getX() {
+      return x;
+    }
+
+    public ComparableQuantity<ElectricCurrent> getiMax() {
+      return iMax;
+    }
+
+    public ComparableQuantity<ElectricPotential> getvRated() {
+      return vRated;
+    }
+
+    @Override
+    public abstract LineTypeInput build();
+
+    @Override
+    protected abstract B thisInstance();
+  }
 }
