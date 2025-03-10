@@ -105,7 +105,7 @@ public class SubGridContainer extends GridContainer {
     }
 
     @Override
-    public SubGridContainerCopyBuilder thisInstance() {
+    protected SubGridContainerCopyBuilder thisInstance() {
       return this;
     }
 
