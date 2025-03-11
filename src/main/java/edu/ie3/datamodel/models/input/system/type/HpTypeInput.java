@@ -98,7 +98,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
 
     public HpTypeInputCopyBuilder setpThermal(ComparableQuantity<Power> pThermal) {
       this.pThermal = pThermal;
-      return this;
+      return thisInstance();
     }
 
     public ComparableQuantity<Power> getpThermal() {
@@ -110,7 +110,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
       setCapex(getCapex().multiply(factor));
       setsRated(getsRated().multiply(factor));
       setpThermal(getpThermal().multiply(factor));
-      return this;
+      return thisInstance();
     }
 
     @Override
