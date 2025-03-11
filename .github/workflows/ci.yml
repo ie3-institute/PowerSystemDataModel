@@ -71,8 +71,8 @@ jobs:
       - name: Run Tests
         run: ./gradlew spotbugsTest test jacocoTestReport jacocoTestCoverageVerification
 
-      - name: Build Scala-Docs
-        run: ./gradlew scaladoc
+      - name: Build Java-Docs
+        run: ./gradlew javadoc
 
       - name: SonarQube
         run: |
