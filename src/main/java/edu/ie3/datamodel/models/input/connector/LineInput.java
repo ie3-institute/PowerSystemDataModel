@@ -205,22 +205,22 @@ public class LineInput extends ConnectorInput implements HasType {
 
     public LineInputCopyBuilder geoPosition(LineString geoPosition) {
       this.geoPosition = geoPosition;
-      return this;
+      return thisInstance();
     }
 
     public LineInputCopyBuilder type(LineTypeInput type) {
       this.type = type;
-      return this;
+      return thisInstance();
     }
 
     public LineInputCopyBuilder length(ComparableQuantity<Length> length) {
       this.length = length;
-      return this;
+      return thisInstance();
     }
 
     public LineInputCopyBuilder olmCharacteristic(OlmCharacteristicInput olmCharacteristic) {
       this.olmCharacteristic = olmCharacteristic;
-      return this;
+      return thisInstance();
     }
 
     @Override

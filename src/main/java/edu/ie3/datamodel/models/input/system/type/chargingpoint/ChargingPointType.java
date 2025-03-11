@@ -8,7 +8,10 @@ package edu.ie3.datamodel.models.input.system.type.chargingpoint;
 import edu.ie3.datamodel.models.ElectricCurrentType;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -125,23 +128,23 @@ public class ChargingPointType implements Serializable {
 
     public ChargingPointTypeCopyBuilder setId(String id) {
       this.id = id;
-      return this;
+      return thisInstance();
     }
 
     public ChargingPointTypeCopyBuilder setsRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
-      return this;
+      return thisInstance();
     }
 
     public ChargingPointTypeCopyBuilder setElectricCurrentType(
         ElectricCurrentType electricCurrentType) {
       this.electricCurrentType = electricCurrentType;
-      return this;
+      return thisInstance();
     }
 
     public ChargingPointTypeCopyBuilder setSynonymousIds(Set<String> synonymousIds) {
       this.synonymousIds = synonymousIds;
-      return this;
+      return thisInstance();
     }
 
     public String getId() {
@@ -168,6 +171,10 @@ public class ChargingPointType implements Serializable {
     public ChargingPointType build() {
       return new ChargingPointType(
           getId(), getsRated(), getElectricCurrentType(), getSynonymousIds());
+    }
+
+    protected ChargingPointType.ChargingPointTypeCopyBuilder thisInstance() {
+      return this;
     }
   }
 }
