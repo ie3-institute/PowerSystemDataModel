@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Enhancing value retrieval in `TimeSeriesSource` [1280](https://github.com/ie3-institute/PowerSystemDataModel/issues/1280)
 
 ### Fixed
 
@@ -29,7 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added domestic hot water storage model [#1257](https://github.com/ie3-institute/PowerSystemDataModel/issues/1257)
 - Validation for BDEW load profile values [#1243](https://github.com/ie3-institute/PowerSystemDataModel/issues/1243)
 - Added load profiles sources [#1106](https://github.com/ie3-institute/PowerSystemDataModel/issues/1106)
-- Enhancing value retrieval in `TimeSeriesSource` [1280](https://github.com/ie3-institute/PowerSystemDataModel/issues/1280)
 
 ### Fixed
 - Removing opened `SwitchInput` during connectivity check [#1221](https://github.com/ie3-institute/PowerSystemDataModel/issues/1221)
