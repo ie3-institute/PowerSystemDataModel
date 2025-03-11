@@ -66,10 +66,10 @@ jobs:
           java-version: 17
 
       - name: Build Project
-        run: ./gradlew --refresh-dependencies clean assemble spotlessCheck spotbugsMain
+        run: ./gradlew --refresh-dependencies clean assemble spotlessCheck
 
       - name: Run Tests
-        run: ./gradlew spotbugsTest test jacocoTestReport jacocoTestCoverageVerification
+        run: ./gradlew pmdMain pmdTest spotbugsMain spotbugsTest test jacocoTestReport jacocoTestCoverageVerification
 
       - name: Build Java-Docs
         run: ./gradlew javadoc
