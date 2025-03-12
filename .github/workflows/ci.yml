@@ -83,7 +83,7 @@ jobs:
           -Dsonar.qualitygate.wait=true
 
       - name: Upload Problems Report
-        uses: actions/upload-artifact
+        uses: actions/upload-artifact@v2
         with:
           name: problems-report
           path: build/reports/problems/problems-report.html
