@@ -85,7 +85,7 @@ jobs:
       - name: Upload Problems Report
       - uses: actions/upload-artifact@v4
         with:
-          name: problems-report
+          name: problems-reports
           path: build/reports/problems/problems-report.html
 
 
