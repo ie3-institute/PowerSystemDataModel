@@ -278,53 +278,53 @@ public class PvInput extends SystemParticipantInput {
 
     public PvInputCopyBuilder albedo(double albedo) {
       this.albedo = albedo;
-      return this;
+      return thisInstance();
     }
 
     public PvInputCopyBuilder azimuth(ComparableQuantity<Angle> azimuth) {
       this.azimuth = azimuth;
-      return this;
+      return thisInstance();
     }
 
     public PvInputCopyBuilder etaConv(ComparableQuantity<Dimensionless> etaConv) {
       this.etaConv = etaConv;
-      return this;
+      return thisInstance();
     }
 
     public PvInputCopyBuilder elevationAngle(ComparableQuantity<Angle> elevationAngle) {
       this.elevationAngle = elevationAngle;
-      return this;
+      return thisInstance();
     }
 
     public PvInputCopyBuilder kG(double kG) {
       this.kG = kG;
-      return this;
+      return thisInstance();
     }
 
     public PvInputCopyBuilder kT(double kT) {
       this.kT = kT;
-      return this;
+      return thisInstance();
     }
 
     public PvInputCopyBuilder marketReaction(boolean marketReaction) {
       this.marketReaction = marketReaction;
-      return this;
+      return thisInstance();
     }
 
     public PvInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
-      return this;
+      return thisInstance();
     }
 
     public PvInputCopyBuilder cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public PvInputCopyBuilder scale(Double factor) {
       this.sRated = this.sRated.multiply(factor);
-      return this;
+      return thisInstance();
     }
 
     @Override

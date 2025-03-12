@@ -161,7 +161,7 @@ public class Transformer2WInput extends TransformerInput implements HasType {
 
     public Transformer2WInputCopyBuilder type(Transformer2WTypeInput type) {
       this.type = type;
-      return this;
+      return thisInstance();
     }
 
     @Override
