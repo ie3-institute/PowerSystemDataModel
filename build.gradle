@@ -115,7 +115,7 @@ tasks.withType(Javadoc){
   failOnError = false // TODO: Temp until JavaDoc issues are resolved
 }
 
-task printVersion {
+tasks.register('printVersion') {
   doLast {
     println project.version
   }
