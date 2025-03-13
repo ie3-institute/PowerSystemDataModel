@@ -82,9 +82,6 @@ jobs:
           -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.qualitygate.wait=true
 
-      - name: Read F
-        run: cat build/reports/problems/problems-report.html
-
       #Deployment
       - name: Deploy
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
