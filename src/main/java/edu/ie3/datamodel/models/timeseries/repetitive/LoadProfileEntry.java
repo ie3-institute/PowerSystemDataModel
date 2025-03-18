@@ -6,27 +6,20 @@
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
-import edu.ie3.datamodel.models.value.PValue;
-import java.time.DayOfWeek;
+import edu.ie3.datamodel.models.value.load.LoadValues;
 import java.util.Objects;
 
-/** Unique entry to a {@link LoadProfileInput} */
-public class LoadProfileEntry extends TimeSeriesEntry<PValue> {
-  private final DayOfWeek dayOfWeek;
-  private final int quarterHourOfDay;
+/** Unique entry to a {@link LoadProfileTimeSeries} */
+public class LoadProfileEntry<L extends LoadValues> extends TimeSeriesEntry<L> {
+  private final int quarterHour;
 
-  public LoadProfileEntry(PValue value, DayOfWeek dayOfWeek, int quarterHourOfDay) {
-    super(value);
-    this.dayOfWeek = dayOfWeek;
-    this.quarterHourOfDay = quarterHourOfDay;
+  public LoadProfileEntry(L values, int quarterHour) {
+    super(values);
+    this.quarterHour = quarterHour;
   }
 
-  public DayOfWeek getDayOfWeek() {
-    return dayOfWeek;
-  }
-
-  public int getQuarterHourOfDay() {
-    return quarterHourOfDay;
+  public int getQuarterHour() {
+    return quarterHour;
   }
 
   @Override
@@ -34,24 +27,17 @@ public class LoadProfileEntry extends TimeSeriesEntry<PValue> {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    LoadProfileEntry that = (LoadProfileEntry) o;
-    return quarterHourOfDay == that.quarterHourOfDay && dayOfWeek == that.dayOfWeek;
+    LoadProfileEntry<?> that = (LoadProfileEntry<?>) o;
+    return quarterHour == that.quarterHour;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), dayOfWeek, quarterHourOfDay);
+    return Objects.hash(super.hashCode(), quarterHour);
   }
 
   @Override
   public String toString() {
-    return "LoadProfileEntry{"
-        + "dayOfWeek="
-        + dayOfWeek
-        + ", quarterHourOfDay="
-        + quarterHourOfDay
-        + ", value="
-        + value
-        + '}';
+    return "LoadProfileEntry{" + "quarterHour=" + quarterHour + ", value=" + value + '}';
   }
 }

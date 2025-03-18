@@ -24,61 +24,59 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 
 ### Input
 
-```{eval-rst}
-.. list-table::
-   :widths: auto
+```{list-table}
    :header-rows: 1
+   :widths: auto
 
-   * - Model
-     - File Name
-   * - operator
-     - *prefix_* operator_input *_suffix*
-   * - node
-     - *prefix_* node_input *_suffix*
-   * - line
-     - | *prefix_* line_input *_suffix*
-       | *prefix_* line_type_input *_suffix*
-   * - switch
-     - *prefix_* switch_input *_suffix*
-   * - two winding transformer
-     - | *prefix_* transformer2w_input *_suffix*
-       | *prefix_* transformer2w_type_input *_suffix*
-   * - three winding transformer
-     - | *prefix_* transformer3w_input *_suffix*
-       | *prefix_* transformer3w_type_input *_suffix*
-   * - measurement unit
-     - *prefix_* measurement_unit_input *_suffix*
-   * - biomass plant
-     - | *prefix_* bm_input *_suffix*
-       | *prefix_* bm_type_input *_suffix*
-   * - combined heat and power plant
-     - | *prefix_* chp_input *_suffix*
-       | *prefix_* chp_type_input *_suffix*
-   * - electric vehicle
-     - | *prefix_* ev_input *_suffix*
-       | *prefix_* ev_type_input *_suffix*
-   * - electric vehicle charging station
-     - *prefix_* evcs_input *_suffix*
-   * - fixed feed in facility
-     - *prefix_* fixed_feed_in_input *_suffix*
-   * - heat pump
-     - | *prefix_* hp_input *_suffix*
-       | *prefix_* hp_type_input *_suffix*
-   * - load
-     - *prefix_* load_input *_suffix*
-   * - photovoltaic power plant
-     - *prefix_* pv_input *_suffix*
-   * - electrical energy storage
-     - | *prefix_* storage_input *_suffix*
-       | *prefix_* storage_type_input *_suffix*
-   * - wind energy converter
-     - | *prefix_* wec_input *_suffix*
-       | *prefix_* wec_type_input *_suffix*
-   * - schematic node graphic
-     - *prefix_* node_graphic_input *_suffix*
-   * - schematic line graphic
-     - *prefix_* line_graphic_input *_suffix*
-
+* - Model
+  - File Name
+* - operator
+  - *prefix_* operator_input *_suffix*
+* - node
+  - *prefix_* node_input *_suffix*
+* - line
+  - *prefix_* line_input *_suffix*  
+    *prefix_* line_type_input *_suffix*
+* - switch
+  - *prefix_* switch_input *_suffix*
+* - two winding transformer
+  - *prefix_* transformer2w_input *_suffix*  
+    *prefix_* transformer2w_type_input *_suffix*
+* - three winding transformer
+  - *prefix_* transformer3w_input *_suffix*  
+    *prefix_* transformer3w_type_input *_suffix*
+* - measurement unit
+  - *prefix_* measurement_unit_input *_suffix*
+* - biomass plant
+  - *prefix_* bm_input *_suffix*  
+    *prefix_* bm_type_input *_suffix*
+* - combined heat and power plant
+  - *prefix_* chp_input *_suffix*  
+    *prefix_* chp_type_input *_suffix*
+* - electric vehicle
+  - *prefix_* ev_input *_suffix*  
+    *prefix_* ev_type_input *_suffix*
+* - electric vehicle charging station
+  - *prefix_* evcs_input *_suffix*
+* - fixed feed in facility
+  - *prefix_* fixed_feed_in_input *_suffix*
+* - heat pump
+  - *prefix_* hp_input *_suffix*  
+    *prefix_* hp_type_input *_suffix*
+* - load
+  - *prefix_* load_input *_suffix*
+* - photovoltaic power plant
+  - *prefix_* pv_input *_suffix*
+* - electrical energy storage
+  - *prefix_* storage_input *_suffix*  
+    *prefix_* storage_type_input *_suffix*
+* - wind energy converter
+  - *prefix_* wec_input *_suffix*  
+    *prefix_* wec_type_input *_suffix*
+* - schematic node graphic
+  - *prefix_* node_graphic_input *_suffix*
+* - schematic line graphic
+  - *prefix_* line_graphic_input *_suffix*
 ```
 
 ### Id Coordinate
@@ -89,18 +87,19 @@ Csv id coordinate sources can have two different ways to represent their coordin
 
 ### Time Series
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: 50 50
    :header-rows: 1
 
    * - Model
      - File Name
    * - individual time series
-     - *prefix_* its *_columnScheme_UUID_suffix*
+     - *prefix_* its *_columnScheme_UUID* *_suffix*
    * - load profile input
-     - *prefix_* rts *_profileKey_UUID_suffix*
+     - *prefix_* lpts *_profileKey* *_suffix*
 ```
+
+#### Individual Time Series
 
 Let's spend a few more words on the individual time series:
 Those files are meant to carry different types of content - one might give information about wholesale market prices,
@@ -123,41 +122,64 @@ You can also use the Method `java.util.UUID#randomUUID` to create a UUID.
 This is the UUID from the example above `2fcb3e53-b94a-4b96-bea4-c469e499f1a1`.
 
 The following keys are supported until now:
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: auto
+   :class: wrapping
    :header-rows: 1
 
    * - Key
-     - Information and supported head line
+     - Information and supported head line.
    * - c
-     - | An energy price (e.g. in €/MWh; c stands for charge).
-       | Permissible head line: ``time,price``
+     - An energy price (e.g. in €/MWh; c stands for charge).
+       Permissible head line: ``time,price``
    * - p
-     - | Active power
-       | Permissible head line: ``time,p``
+     - Active power.
+       Permissible head line: ``time,p``
    * - pq
-     - | Active and reactive power
-       | Permissible head line: ``time,p,q``
+     - Active and reactive power.
+       Permissible head line: ``time,p,q``
    * - h
-     - | Heat power demand
-       | Permissible head line: ``time,h``
+     - Heat power demand.
+       Permissible head line: ``time,h``
    * - ph
-     - | Active and heat power
-       | Permissible head line: ``time,p,h``
+     - Active and heat power.
+       Permissible head line: ``time,p,h``
    * - pqh
-     - | Active, reactive and heat power
-       | Permissible head line: ``time,p,q,h``
+     - Active, reactive and heat power.
+       Permissible head line: ``time,p,q,h``
+   * - v
+     - Voltage mangnitude in pu and angle in °.
+       Permissible head line: ``time,vMag,vAng``
    * - weather
-     - | Weather information
-       | Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
+     - Weather information.
+       Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
+
+```
+
+
+##### Load Profile Time Series
+
+The following profiles are supported until now:
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+   * - Key
+     - Information
+     - Supported head line.
+   * - e.g.: H0
+     - BDEW standard load profiles ([source](https://www.bdew.de/energie/standardlastprofile-strom/))
+     - Permissible head line: ``SuSa,SuSu,SuWd,TrSa,TrSu,TrWd,WiSa,WiSu,WiWd,quarterHour``
+   * - random
+     - A random load proile based on: ``Kays - Agent-based simulation environment for improving the planning of distribution grids``
+     - Permissible head line: ``kSa,kSu,kWd,mySa,mySu,myWd,sigmaSa,sigmaSu,sigmaWd,quarterHour``
 
 ```
 
 ### Results
 
-```{eval-rst}
-.. list-table::
+```{list-table}
    :widths: auto
    :header-rows: 1
 

@@ -21,7 +21,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EnergyManagementSource extends EntitySource {
+public class EnergyManagementSource extends AssetEntitySource {
 
   private final TypeSource typeSource;
 
@@ -34,7 +34,7 @@ public class EnergyManagementSource extends EntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    validate(EmInput.class, emInputFactory).getOrThrow();
+    validate(EmInput.class, dataSource, emInputFactory).getOrThrow();
   }
 
   /**
@@ -68,14 +68,15 @@ public class EnergyManagementSource extends EntitySource {
    * @return a map of UUID to {@link EmInput} entities
    */
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
-    return createEmInputs(buildAssetInputEntityData(EmInput.class, operators));
+    return createEmInputs(
+        buildEntityData(EmInput.class, dataSource, data -> assetEnricher.apply(data, operators)));
   }
 
   /**
    * Since each EM can itself be controlled by another EM, it does not suffice to link {@link
-   * EmInput}s via {@link EntitySource#optionallyEnrichEntityData} as we do for system participants
-   * in {@link SystemParticipantSource}. Instead, we use a recursive approach, starting with EMs at
-   * root level (which are not EM-controlled themselves).
+   * EmInput}s via {@link EntitySource#enrichFunction} as we do for system participants in {@link
+   * SystemParticipantSource}. Instead, we use a recursive approach, starting with EMs at root level
+   * (which are not EM-controlled themselves).
    *
    * @param assetEntityDataStream the data stream of {@link AssetInputEntityData} {@link Try}
    *     objects
@@ -103,15 +104,16 @@ public class EnergyManagementSource extends EntitySource {
 
     // at the start, this is only root ems
     Map<UUID, EmInput> allEms =
-        unpackMap(
-            rootEmsEntityData.stream()
-                .parallel()
-                .map(
-                    entityDataTry ->
-                        entityDataTry.map(
-                            entityData -> new EmAssetInputEntityData(entityData, null)))
-                .map(emInputFactory::get),
-            EmInput.class);
+        unpack(
+                rootEmsEntityData.stream()
+                    .parallel()
+                    .map(
+                        entityDataTry ->
+                            entityDataTry.map(
+                                entityData -> new EmAssetInputEntityData(entityData, null)))
+                    .map(emInputFactory::get),
+                EmInput.class)
+            .collect(toMap());
 
     if (!others.isEmpty()) {
       // there's more EM levels beyond root level. Build them recursively
@@ -175,16 +177,17 @@ public class EnergyManagementSource extends EntitySource {
     } else {
       // New EMs can be built at this level
       Map<UUID, EmInput> newEms =
-          unpackMap(
-              toBeBuiltAtThisLevel.stream()
-                  .map(
-                      data -> {
-                        // exists because we checked above
-                        EmInput parentEm = lastLevelEms.get(data.parentEm);
-                        return emInputFactory.get(
-                            new EmAssetInputEntityData(data.entityData, parentEm));
-                      }),
-              EmInput.class);
+          unpack(
+                  toBeBuiltAtThisLevel.stream()
+                      .map(
+                          data -> {
+                            // exists because we checked above
+                            EmInput parentEm = lastLevelEms.get(data.parentEm);
+                            return emInputFactory.get(
+                                new EmAssetInputEntityData(data.entityData, parentEm));
+                          }),
+                  EmInput.class)
+              .collect(toMap());
 
       if (!toBeBuiltAtNextLevel.isEmpty()) {
         // If there's more EMs left to build, the new EMs have to function as parents there

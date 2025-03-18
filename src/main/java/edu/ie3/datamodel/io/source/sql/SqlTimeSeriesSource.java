@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.sql;
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
@@ -18,7 +19,6 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
-import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
@@ -32,6 +32,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlTimeSeriesSource.class);
   private final SqlDataSource dataSource;
+  private final String tableName;
 
   private final UUID timeSeriesUuid;
 
@@ -46,43 +47,33 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final String queryFull;
 
   private final String queryTimeInterval;
+  private final String queryTimeKeysAfter;
+  private final String queryForValueBefore;
   private final String queryTime;
 
   public SqlTimeSeriesSource(
       SqlDataSource sqlDataSource,
       UUID timeSeriesUuid,
       Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory)
-      throws SourceException {
+      TimeBasedSimpleValueFactory<V> factory) {
     super(valueClass, factory);
     this.dataSource = sqlDataSource;
 
     this.timeSeriesUuid = timeSeriesUuid;
 
-    this.valueClass = valueClass;
-    this.valueFactory = factory;
-
     final ColumnScheme columnScheme = ColumnScheme.parse(valueClass).orElseThrow();
-    final String tableName =
-        sqlDataSource.databaseNamingStrategy.getTimeSeriesEntityName(columnScheme);
+    this.tableName = sqlDataSource.databaseNamingStrategy.getTimeSeriesEntityName(columnScheme);
 
-    Try.of(() -> dataSource.getSourceFields(tableName), SourceException.class)
-        .flatMap(
-            fieldsOpt ->
-                fieldsOpt
-                    .map(
-                        fields ->
-                            factory.validate(fields, valueClass).transformF(SourceException::new))
-                    .orElse(Try.Success.empty()))
-        .getOrThrow();
+    String schemaName = sqlDataSource.schemaName;
 
     String dbTimeColumnName =
         sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
 
-    this.queryFull = createQueryFull(sqlDataSource.schemaName, tableName);
-    this.queryTimeInterval =
-        createQueryForTimeInterval(sqlDataSource.schemaName, tableName, dbTimeColumnName);
-    this.queryTime = createQueryForTime(sqlDataSource.schemaName, tableName, dbTimeColumnName);
+    this.queryFull = createQueryFull(schemaName, tableName);
+    this.queryTimeInterval = createQueryForTimeInterval(schemaName, tableName, dbTimeColumnName);
+    this.queryTimeKeysAfter = createQueryForTimeKeysAfter(schemaName, tableName, dbTimeColumnName);
+    this.queryForValueBefore = createQueryForValueBefore(schemaName, tableName, dbTimeColumnName);
+    this.queryTime = createQueryForTime(schemaName, tableName, dbTimeColumnName);
   }
 
   /**
@@ -101,13 +92,17 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       DatabaseNamingStrategy namingStrategy,
       UUID timeSeriesUuid,
       Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory)
-      throws SourceException {
+      TimeBasedSimpleValueFactory<V> factory) {
     this(
         new SqlDataSource(connector, schemaName, namingStrategy),
         timeSeriesUuid,
         valueClass,
         factory);
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    validate(valueClass, () -> dataSource.getSourceFields(tableName), valueFactory);
   }
 
   /**
@@ -149,8 +144,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       DatabaseNamingStrategy namingStrategy,
       UUID timeSeriesUuid,
       Class<T> valClass,
-      DateTimeFormatter dateTimeFormatter)
-      throws SourceException {
+      DateTimeFormatter dateTimeFormatter) {
     TimeBasedSimpleValueFactory<T> valueFactory =
         new TimeBasedSimpleValueFactory<>(valClass, dateTimeFormatter);
     return new SqlTimeSeriesSource<>(
@@ -185,6 +179,24 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.stream().toList().get(0).getValue());
+  }
+
+  @Override
+  public Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time) {
+    return getTimeBasedValueSet(
+            queryForValueBefore, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
+        .stream()
+        .max(TimeBasedValue::compareTo);
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
+    return dataSource
+        .executeQuery(
+            queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
+        .map(valueFactory::extractTime)
+        .sorted()
+        .toList();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -251,8 +263,55 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   /**
-   * Creates a basic query to retrieve an entry for the given time series uuid and time with the
-   * following pattern: <br>
+   * Creates a base query to retrieve all entities for given time series uuid and in the given time
+   * frame with the following pattern: <br>
+   * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column> > ?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @param timeColumnName the name of the column holding the timestamp info
+   * @return the query string
+   */
+  private String createQueryForTimeKeysAfter(
+      String schemaName, String tableName, String timeColumnName) {
+    return "SELECT time FROM "
+        + schemaName
+        + "."
+        + tableName
+        + WHERE
+        + TIME_SERIES
+        + " = '"
+        + timeSeriesUuid.toString()
+        + "' AND "
+        + timeColumnName
+        + " > ?;";
+  }
+
+  /**
+   * Creates a base query to retrieve all time keys after a given time for given time series with
+   * the following pattern: <br>
+   * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column> < ?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @param timeColumnName the name of the column holding the timestamp info
+   * @return the query string
+   */
+  private String createQueryForValueBefore(
+      String schemaName, String tableName, String timeColumnName) {
+    return createBaseQueryString(schemaName, tableName)
+        + WHERE
+        + TIME_SERIES
+        + " = '"
+        + timeSeriesUuid.toString()
+        + "' AND "
+        + timeColumnName
+        + " < ?"
+        + "ORDER BY time DESC LIMIT 1;";
+  }
+  /**
+   * Creates a base query to retrieve all time keys before a given time for given time series with
+   * the following pattern: <br>
    * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column>=?;}
    *
    * @param schemaName the name of the database schema

@@ -13,11 +13,11 @@ class CylindricalStorageInputTest extends Specification {
 
   def "A CylindricalStorageInput copy method should work as expected"() {
     given:
-    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricStorageInput
+    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricalStorageInput
 
     when:
     def alteredUnit = cylindricalStorageInput.copy().storageVolumeLvl(ThermalUnitInputTestData.storageVolumeLvl)
-        .storageVolumeLvlMin(ThermalUnitInputTestData.storageVolumeLvlMin).inletTemp(ThermalUnitInputTestData.inletTemp)
+        .inletTemp(ThermalUnitInputTestData.inletTemp)
         .returnTemp(ThermalUnitInputTestData.returnTemp).c(ThermalUnitInputTestData.c)
         .thermalBus(ThermalUnitInputTestData.thermalBus).build()
 
@@ -30,7 +30,6 @@ class CylindricalStorageInputTest extends Specification {
       assert operationTime == cylindricalStorageInput.operationTime
       assert thermalBus == cylindricalStorageInput.thermalBus
       assert storageVolumeLvl == ThermalUnitInputTestData.storageVolumeLvl
-      assert storageVolumeLvlMin == ThermalUnitInputTestData.storageVolumeLvlMin
       assert inletTemp == ThermalUnitInputTestData.inletTemp
       assert returnTemp == ThermalUnitInputTestData.returnTemp
       assert c == ThermalUnitInputTestData.c
@@ -39,7 +38,7 @@ class CylindricalStorageInputTest extends Specification {
 
   def "Scaling a CylindricalStorageInput via builder should work as expected"() {
     given:
-    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricStorageInput
+    def cylindricalStorageInput = ThermalUnitInputTestData.cylindricalStorageInput
 
     when:
     def alteredUnit = cylindricalStorageInput.copy().scale(2d).build()
@@ -52,10 +51,10 @@ class CylindricalStorageInputTest extends Specification {
       assert operationTime == cylindricalStorageInput.operationTime
       assert thermalBus == cylindricalStorageInput.thermalBus
       assert storageVolumeLvl == cylindricalStorageInput.storageVolumeLvl * 2d
-      assert storageVolumeLvlMin == cylindricalStorageInput.storageVolumeLvlMin * 2d
       assert inletTemp == cylindricalStorageInput.inletTemp
       assert returnTemp == cylindricalStorageInput.returnTemp
       assert c == cylindricalStorageInput.c
+      assert pThermalMax == cylindricalStorageInput.pThermalMax * 2d
     }
   }
 }

@@ -260,33 +260,33 @@ public class EvcsInput extends SystemParticipantInput {
 
     public EvcsInputCopyBuilder type(ChargingPointType type) {
       this.type = type;
-      return this;
+      return thisInstance();
     }
 
     public EvcsInputCopyBuilder chargingPoints(int noChargingPoints) {
       this.chargingPoints = noChargingPoints;
-      return this;
+      return thisInstance();
     }
 
     public EvcsInputCopyBuilder cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
-      return this;
+      return thisInstance();
     }
 
     public EvcsInputCopyBuilder locationType(EvcsLocationType locationType) {
       this.locationType = locationType;
-      return this;
+      return thisInstance();
     }
 
     public EvcsInputCopyBuilder v2gSupport(boolean v2gSupport) {
       this.v2gSupport = v2gSupport;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public EvcsInputCopyBuilder scale(Double factor) {
       type(type.copy().scale(factor).build());
-      return this;
+      return thisInstance();
     }
 
     @Override

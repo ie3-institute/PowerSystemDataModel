@@ -7,12 +7,11 @@ package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
-import edu.ie3.datamodel.models.input.RandomLoadParameters
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -61,7 +60,7 @@ import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Shared
@@ -199,7 +198,7 @@ class FileNamingStrategyTest extends Specification {
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffix should return valid directory path for load profile time series"() {
     given:
     def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
-    def timeSeries = Mock(LoadProfileInput)
+    def timeSeries = Mock(LoadProfileTimeSeries)
 
     when:
     def actual = strategy.getDirectoryPath(timeSeries)
@@ -210,7 +209,7 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     clazz            || expected
-    LoadProfileInput || Path.of("test_grid", "input", "global")
+    LoadProfileTimeSeries || Path.of("test_grid", "input", "participants", "time_series")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and should return valid directory path for individual time series"() {
@@ -335,38 +334,6 @@ class FileNamingStrategyTest extends Specification {
     WecTypeInput           || Path.of("test_grid", "input", "global", "wec_type_input")
   }
 
-  def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory path for a Load Parameter Model"() {
-    given: "a file naming strategy without pre- or suffixes"
-    def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
-
-    when:
-    def res = strategy.getDirectoryPath(modelClass)
-
-    then:
-    res.present
-    res.get() == expectedPath
-
-    where:
-    modelClass           || expectedPath
-    RandomLoadParameters || Path.of("test_grid", "input", "global")
-  }
-
-  def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file path for a Load Parameter Model"() {
-    given: "a file naming strategy without pre- or suffixes"
-    def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
-
-    when:
-    def res = strategy.getFilePath(modelClass)
-
-    then:
-    res.present
-    res.get() == expectedPath
-
-    where:
-    modelClass           || expectedPath
-    RandomLoadParameters || Path.of("test_grid", "input", "global", "random_load_parameters_input")
-  }
-
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file paths for a graphic input Model"() {
     given: "a file naming strategy without pre- or suffixes"
     def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
@@ -431,9 +398,8 @@ class FileNamingStrategyTest extends Specification {
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffix should return valid file path for load profile time series"() {
     given:
     def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
-    def timeSeries = Mock(LoadProfileInput)
-    timeSeries.uuid >> uuid
-    timeSeries.type >> type
+    def timeSeries = Mock(LoadProfileTimeSeries)
+    timeSeries.loadProfile >> type
 
     when:
     def actual = strategy.getFilePath(timeSeries)
@@ -443,8 +409,8 @@ class FileNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz            | uuid                                                    | type                       || expectedFileName
-    LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || Path.of("test_grid", "input", "global", "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304")
+    clazz                 | type                       || expectedFileName
+    LoadProfileTimeSeries | BdewStandardLoadProfile.G3 || Path.of("test_grid", "input", "participants", "time_series", "lpts_g3")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory path for time series mapping"() {
@@ -601,14 +567,13 @@ class FileNamingStrategyTest extends Specification {
 
     where:
     modelClass               || expected
-    RandomLoadParameters     || Optional.empty()
     TimeSeriesMappingSource.MappingEntry  || Optional.empty()
   }
 
   def "A FileNamingStrategy with FlatHierarchy does return empty sub directory path for load profile time series"() {
     given: "a naming strategy without pre- or suffixes"
     def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-    def timeSeries = Mock(LoadProfileInput)
+    def timeSeries = Mock(LoadProfileTimeSeries)
 
     when:
     def actual = strategy.getDirectoryPath(timeSeries)
@@ -739,9 +704,8 @@ class FileNamingStrategyTest extends Specification {
   def "A FileNamingStrategy with FlatHierarchy does return valid file path for load profile time series"() {
     given: "a naming strategy without pre- or suffixes"
     def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-    def timeSeries = Mock(LoadProfileInput)
-    timeSeries.uuid >> uuid
-    timeSeries.type >> type
+    def timeSeries = Mock(LoadProfileTimeSeries)
+    timeSeries.loadProfile >> type
 
     when:
     def actual = strategy.getFilePath(timeSeries)
@@ -751,8 +715,8 @@ class FileNamingStrategyTest extends Specification {
     actual.get() == expectedFilePath
 
     where:
-    clazz            | uuid                                                    | type               || expectedFilePath
-    LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || Path.of("lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304")
+    clazz                 | type               || expectedFilePath
+    LoadProfileTimeSeries | BdewStandardLoadProfile.G3 || Path.of("lpts_g3")
   }
 
   def "A FileNamingStrategy with FlatHierarchy does return valid file path for individual time series"() {
@@ -798,7 +762,7 @@ class FileNamingStrategyTest extends Specification {
     def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
     then:
-    actual == "test_grid" + escapedFileSeparator + "input" + escapedFileSeparator + "global" + escapedFileSeparator + "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+    actual == "test_grid" + escapedFileSeparator + "input" + escapedFileSeparator + "participants" + escapedFileSeparator + "time_series" + escapedFileSeparator + "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
   }
 
   def "A FileNamingStrategy with FlatHierarchy returns correct individual time series file name pattern"() {
@@ -820,7 +784,7 @@ class FileNamingStrategyTest extends Specification {
     def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
     then:
-    actual == "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+    actual == "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
   }
 
   def "Trying to extract time series meta information throws an Exception, if it is provided a malformed string"() {
@@ -942,15 +906,14 @@ class FileNamingStrategyTest extends Specification {
   def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
     given:
     def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-    def path = Path.of("/bla/foo/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304.csv")
+    def path = Path.of("/bla/foo/lpts_g3.csv")
 
     when:
     def metaInformation = fns.timeSeriesMetaInformation(path)
 
     then:
-    LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
-    (metaInformation as LoadProfileTimeSeriesMetaInformation).with {
-      assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
+    LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
+    (metaInformation as LoadProfileMetaInformation).with {
       assert profile == "g3"
     }
   }
@@ -958,15 +921,14 @@ class FileNamingStrategyTest extends Specification {
   def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name with pre- and suffix"() {
     given:
     def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
-    def path = Path.of("/bla/foo/prefix_lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304_suffix.csv")
+    def path = Path.of("/bla/foo/prefix_lpts_g3_suffix.csv")
 
     when:
     def metaInformation = fns.timeSeriesMetaInformation(path)
 
     then:
-    LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
-    (metaInformation as LoadProfileTimeSeriesMetaInformation).with {
-      assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
+    LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
+    (metaInformation as LoadProfileMetaInformation).with {
       assert profile == "g3"
     }
   }

@@ -87,7 +87,7 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
 
     public LineGraphicInputCopyBuilder line(LineInput line) {
       this.line = line;
-      return this;
+      return thisInstance();
     }
   }
 }

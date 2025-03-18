@@ -6,6 +6,7 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
 import edu.ie3.util.geo.CoordinateDistance
@@ -19,7 +20,7 @@ import javax.measure.quantity.Length
 
 abstract class WeatherTestData {
 
-  static final class DummyIdCoordinateSource implements CsvTestDataMeta, IdCoordinateSource {
+  static final class DummyIdCoordinateSource extends IdCoordinateSource implements CsvTestDataMeta {
 
     @Override
     Optional<Set<String>> getSourceFields() throws SourceException {
@@ -85,13 +86,17 @@ abstract class WeatherTestData {
     List<CoordinateDistance> findCornerPoints(Point coordinate, ComparableQuantity<Length> distance) {
       throw new UnsupportedOperationException("This method is not supported!")
     }
+
+    @Override
+    void validate() throws ValidationException {
+    }
   }
 
   public static final IdCoordinateSource coordinateSource = new DummyIdCoordinateSource()
 
-  public static final COORDINATE_193186 = coordinateSource.getCoordinate(193186).get()
-  public static final COORDINATE_193187 = coordinateSource.getCoordinate(193187).get()
-  public static final COORDINATE_193188 = coordinateSource.getCoordinate(193188).get()
-  public static final COORDINATE_67775 = coordinateSource.getCoordinate(67775).get()
-  public static final COORDINATE_67776 = coordinateSource.getCoordinate(67776).get()
+  public static final Point COORDINATE_193186 = coordinateSource.getCoordinate(193186).get()
+  public static final Point COORDINATE_193187 = coordinateSource.getCoordinate(193187).get()
+  public static final Point COORDINATE_193188 = coordinateSource.getCoordinate(193188).get()
+  public static final Point COORDINATE_67775 = coordinateSource.getCoordinate(67775).get()
+  public static final Point COORDINATE_67776 = coordinateSource.getCoordinate(67776).get()
 }

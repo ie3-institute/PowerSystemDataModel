@@ -6,13 +6,14 @@
 package edu.ie3.datamodel.io.source
 
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.util.geo.CoordinateDistance
 import org.locationtech.jts.geom.Point
 import tech.units.indriya.ComparableQuantity
 
 import javax.measure.quantity.Length
 
-class IdCoordinateSourceMock implements IdCoordinateSource {
+class IdCoordinateSourceMock extends IdCoordinateSource {
 
   @Override
   Optional<Set<String>> getSourceFields() throws SourceException {
@@ -52,5 +53,9 @@ class IdCoordinateSourceMock implements IdCoordinateSource {
   @Override
   List<CoordinateDistance> findCornerPoints(Point coordinate, ComparableQuantity<Length> distance) {
     return Collections.emptyList()
+  }
+
+  @Override
+  void validate() throws ValidationException {
   }
 }

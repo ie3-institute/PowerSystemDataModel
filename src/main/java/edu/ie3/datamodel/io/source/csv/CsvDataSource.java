@@ -8,12 +8,15 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.models.Entity;
+import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
@@ -25,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -51,6 +55,13 @@ public class CsvDataSource implements DataSource {
   public CsvDataSource(String csvSep, Path directoryPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(directoryPath);
+    this.fileNamingStrategy = fileNamingStrategy;
+  }
+
+  public CsvDataSource(
+      String csvSep, CsvFileConnector connector, FileNamingStrategy fileNamingStrategy) {
+    this.csvSep = csvSep;
+    this.connector = connector;
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
@@ -85,6 +96,15 @@ public class CsvDataSource implements DataSource {
     return buildStreamWithFieldsToAttributesMap(entityClass, true).getOrThrow();
   }
 
+  /**
+   * @param filePath to the csv file
+   * @return a stream of maps that represent the rows in the csv file
+   * @throws SourceException on error while reading the source file
+   */
+  public Stream<Map<String, String>> getSourceData(Path filePath) throws SourceException {
+    return buildStreamWithFieldsToAttributesMap(filePath, true).getOrThrow();
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /** Returns the set {@link FileNamingStrategy}. */
@@ -102,7 +122,8 @@ public class CsvDataSource implements DataSource {
    */
   public Map<UUID, CsvIndividualTimeSeriesMetaInformation>
       getCsvIndividualTimeSeriesMetaInformation(final ColumnScheme... columnSchemes) {
-    return getIndividualTimeSeriesFilePaths().parallelStream()
+    return getTimeSeriesFilePaths(fileNamingStrategy.getIndividualTimeSeriesPattern())
+        .parallelStream()
         .map(
             filePath -> {
               /* Extract meta information from file path and enhance it with the file path itself */
@@ -121,12 +142,40 @@ public class CsvDataSource implements DataSource {
   }
 
   /**
+   * Receive the information for specific load profile time series. They are given back mapped to
+   * their uuid.
+   *
+   * @return A mapping from profile to the load profile time series meta information
+   */
+  public Map<String, CsvLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
+      LoadProfile... profiles) {
+    return getTimeSeriesFilePaths(fileNamingStrategy.getLoadProfileTimeSeriesPattern())
+        .parallelStream()
+        .map(
+            filePath -> {
+              /* Extract meta information from file path and enhance it with the file path itself */
+              LoadProfileMetaInformation metaInformation =
+                  fileNamingStrategy.loadProfileTimeSeriesMetaInformation(filePath.toString());
+              return new CsvLoadProfileMetaInformation(
+                  metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
+            })
+        .filter(
+            metaInformation ->
+                profiles == null
+                    || profiles.length == 0
+                    || Stream.of(profiles)
+                        .anyMatch(profile -> profile.getKey().equals(metaInformation.getProfile())))
+        .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
+  }
+
+  /**
    * Returns a set of relative paths strings to time series files, with respect to the base folder
    * path
    *
+   * @param pattern for matching the time series
    * @return A set of relative paths to time series files, with respect to the base folder path
    */
-  protected Set<Path> getIndividualTimeSeriesFilePaths() {
+  protected Set<Path> getTimeSeriesFilePaths(Pattern pattern) {
     Path baseDirectory = connector.getBaseDirectory();
     try (Stream<Path> pathStream = Files.walk(baseDirectory)) {
       return pathStream
@@ -135,10 +184,7 @@ public class CsvDataSource implements DataSource {
               path -> {
                 Path withoutEnding =
                     Path.of(FileNamingStrategy.removeFileNameEnding(path.toString()));
-                return fileNamingStrategy
-                    .getIndividualTimeSeriesPattern()
-                    .matcher(withoutEnding.toString())
-                    .matches();
+                return pattern.matcher(withoutEnding.toString()).matches();
               })
           .collect(Collectors.toSet());
     } catch (IOException e) {
@@ -161,41 +207,44 @@ public class CsvDataSource implements DataSource {
    *     occurred
    */
   protected Map<String, String> buildFieldsToAttributes(
-      final String csvRow, final String[] headline) {
+      final String csvRow, final String[] headline) throws SourceException {
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    try {
-      String[] fieldVals = parseCsvRow(csvRow, csvSep);
-      insensitiveFieldsToAttributes.putAll(
-          IntStream.range(0, fieldVals.length)
-              .boxed()
-              .collect(
-                  Collectors.toMap(
-                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+    String[] fieldVals = parseCsvRow(csvRow, csvSep);
+    insensitiveFieldsToAttributes.putAll(
+        IntStream.range(0, Math.min(fieldVals.length, headline.length))
+            .boxed()
+            .collect(
+                Collectors.toMap(
+                    k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
 
-      if (insensitiveFieldsToAttributes.size() != headline.length) {
-        Set<String> fieldsToAttributesKeySet = insensitiveFieldsToAttributes.keySet();
-        insensitiveFieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        throw new SourceException(
-            "The size of the headline does not fit to the size of the resulting fields to attributes mapping.\nHeadline: "
-                + String.join(", ", headline)
-                + "\nResultingMap: "
-                + String.join(", ", fieldsToAttributesKeySet)
-                + "\nCsvRow: "
-                + csvRow.trim()
-                + ".\nIs the csv separator in the file matching the separator provided in the constructor ('"
-                + csvSep
-                + "') and does the number of columns match the number of headline fields?");
-      }
-    } catch (Exception e) {
-      log.error(
-          "Cannot build fields to attributes map for row '{}' with headline '{}'.\nException: {}",
-          csvRow.trim(),
-          String.join(",", headline),
-          e);
+    if (fieldVals.length != headline.length) {
+      throw new SourceException(
+          "The size of the headline ("
+              + headline.length
+              + ") does not fit to the size of the attribute fields ("
+              + fieldVals.length
+              + ").\nHeadline: "
+              + String.join(", ", headline)
+              + "\nRow: "
+              + csvRow.trim()
+              + ".\nPlease check:"
+              + "\n - is the csv separator in the file matching the separator provided in the constructor ('"
+              + csvSep
+              + "')"
+              + "\n - does the number of columns match the number of headline fields "
+              + "\n - are you using a valid RFC 4180 formatted csv row?");
     }
+
+    if (insensitiveFieldsToAttributes.size() != fieldVals.length) {
+      throw new SourceException(
+          "There might be duplicate headline elements.\nHeadline: "
+              + String.join(", ", headline)
+              + ".\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
+    }
+
     return insensitiveFieldsToAttributes;
   }
 
@@ -228,8 +277,7 @@ public class CsvDataSource implements DataSource {
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       Class<? extends Entity> entityClass, boolean allowFileNotExisting) {
     return getFilePath(entityClass)
-        .flatMap(
-            path -> buildStreamWithFieldsToAttributesMap(entityClass, path, allowFileNotExisting));
+        .flatMap(path -> buildStreamWithFieldsToAttributesMap(path, allowFileNotExisting));
   }
 
   /**
@@ -237,14 +285,12 @@ public class CsvDataSource implements DataSource {
    * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
    * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
-   * @param entityClass the entity class that should be build
    * @param filePath the path of the file to read
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
-  protected <T extends Entity>
-      Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-          Class<T> entityClass, Path filePath, boolean allowFileNotExisting) {
+  protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
+      Path filePath, boolean allowFileNotExisting) {
     try (BufferedReader reader = connector.initReader(filePath)) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
@@ -252,7 +298,7 @@ public class CsvDataSource implements DataSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      return Success.of(csvRowFieldValueMapping(reader, headline).parallelStream());
+      return csvRowFieldValueMapping(reader, headline);
     } catch (FileNotFoundException e) {
       if (allowFileNotExisting) {
         log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
@@ -261,9 +307,7 @@ public class CsvDataSource implements DataSource {
         return Failure.of(new SourceException("Unable to find file '" + filePath + "'.", e));
       }
     } catch (IOException e) {
-      return Failure.of(
-          new SourceException(
-              "Cannot read file to build entity '" + entityClass.getSimpleName() + "'", e));
+      return Failure.of(new SourceException("Cannot read file '" + filePath + "'.", e));
     }
   }
 
@@ -282,13 +326,20 @@ public class CsvDataSource implements DataSource {
    * @param headline of the file
    * @return a list of mapping
    */
-  protected List<Map<String, String>> csvRowFieldValueMapping(
+  protected Try<Stream<Map<String, String>>, SourceException> csvRowFieldValueMapping(
       BufferedReader reader, String[] headline) {
-    return reader
-        .lines()
-        .parallel()
-        .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-        .filter(map -> !map.isEmpty())
-        .toList();
+    return Try.scanStream(
+            reader
+                .lines()
+                .parallel()
+                .map(
+                    csvRow ->
+                        Try.of(
+                            () -> buildFieldsToAttributes(csvRow, headline),
+                            SourceException.class)),
+            "Map<String, String>")
+        .transform(
+            stream -> stream.filter(map -> !map.isEmpty()),
+            e -> new SourceException("Parsing csv row failed.", e));
   }
 }

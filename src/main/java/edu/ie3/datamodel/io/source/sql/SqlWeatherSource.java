@@ -16,9 +16,9 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,7 +30,6 @@ public class SqlWeatherSource extends WeatherSource {
   private final SqlDataSource dataSource;
 
   private static final String WHERE = " WHERE ";
-  private final String factoryCoordinateFieldName;
   private final String tableName;
 
   /**
@@ -41,6 +40,8 @@ public class SqlWeatherSource extends WeatherSource {
 
   private final String queryTimeAndCoordinate;
   private final String queryTimeIntervalAndCoordinates;
+  private final String queryTimeKeysAfter;
+  private final String getQueryTimeKeysAfterAndCoordinate;
 
   /**
    * Initializes a new SqlWeatherSource
@@ -56,24 +57,11 @@ public class SqlWeatherSource extends WeatherSource {
       IdCoordinateSource idCoordinateSource,
       String schemaName,
       String weatherTableName,
-      TimeBasedWeatherValueFactory weatherFactory)
-      throws SourceException {
+      TimeBasedWeatherValueFactory weatherFactory) {
     super(idCoordinateSource, weatherFactory);
-    this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
+    String factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
     this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy());
     this.tableName = weatherTableName;
-
-    Try.of(() -> getSourceFields(WeatherValue.class), SourceException.class)
-        .flatMap(
-            fieldsOpt ->
-                fieldsOpt
-                    .map(
-                        fields ->
-                            weatherFactory
-                                .validate(fields, WeatherValue.class)
-                                .transformF(SourceException::new))
-                    .orElse(Try.Success.empty()))
-        .getOrThrow();
 
     String dbTimeColumnName =
         dataSource.getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
@@ -89,10 +77,16 @@ public class SqlWeatherSource extends WeatherSource {
     this.queryTimeIntervalAndCoordinates =
         createQueryStringForTimeIntervalAndCoordinates(
             schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
+
+    this.queryTimeKeysAfter =
+        createQueryStringForTimeKeysAfter(schemaName, weatherTableName, dbTimeColumnName);
+    this.getQueryTimeKeysAfterAndCoordinate =
+        createQueryStringForTimeKeysAfterAndCoordinate(
+            schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
   }
 
   @Override
-  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
+  public Optional<Set<String>> getSourceFields() {
     return dataSource.getSourceFields(tableName);
   }
 
@@ -166,6 +160,36 @@ public class SqlWeatherSource extends WeatherSource {
     return Optional.of(timeBasedValues.get(0));
   }
 
+  @Override
+  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
+      throws SourceException {
+    return toTimeKeys(
+        dataSource.executeQuery(
+            queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant()))),
+        weatherFactory);
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
+      throws SourceException {
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
+    if (coordinateId.isEmpty()) {
+      log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+      return Collections.emptyList();
+    }
+
+    return dataSource
+        .executeQuery(
+            getQueryTimeKeysAfterAndCoordinate,
+            ps -> {
+              ps.setInt(1, coordinateId.get());
+              ps.setTimestamp(2, Timestamp.from(time.toInstant()));
+            })
+        .map(fieldMap -> weatherFactory.extractTime(fieldMap))
+        .sorted()
+        .toList();
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
@@ -184,6 +208,54 @@ public class SqlWeatherSource extends WeatherSource {
         + WHERE
         + timeColumnName
         + " BETWEEN ? AND ?;";
+  }
+
+  /**
+   * Creates a base query to retrieve all time keys after the given time with the following pattern:
+   * <br>
+   * {@code <base query> WHERE <time column> > ?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param weatherTableName the name of the database table
+   * @param timeColumnName the name of the column holding the timestamp info
+   * @return the query string
+   */
+  private static String createQueryStringForTimeKeysAfter(
+      String schemaName, String weatherTableName, String timeColumnName) {
+    return "SELECT coordinate_id, time FROM "
+        + schemaName
+        + "."
+        + weatherTableName
+        + WHERE
+        + timeColumnName
+        + " > ?;";
+  }
+
+  /**
+   * Creates a basic query to retrieve an entry for the given time and coordinate with the following
+   * pattern: <br>
+   * {@code <base query> WHERE <coordinate column>=? AND <time column> > ?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param weatherTableName the name of the database table
+   * @param timeColumnName the name of the column holding the timestamp info
+   * @param coordinateColumnName name of the column holding the coordinate id
+   * @return the query string
+   */
+  private static String createQueryStringForTimeKeysAfterAndCoordinate(
+      String schemaName,
+      String weatherTableName,
+      String timeColumnName,
+      String coordinateColumnName) {
+    return "SELECT coordinate_id, time FROM "
+        + schemaName
+        + "."
+        + weatherTableName
+        + WHERE
+        + coordinateColumnName
+        + "=? AND "
+        + timeColumnName
+        + " > ?;";
   }
 
   /**

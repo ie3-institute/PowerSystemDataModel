@@ -30,8 +30,6 @@ public class LoadInput extends SystemParticipantInput {
    * model
    */
   private final LoadProfile loadProfile;
-  /** True, if demand side management is activated for this load */
-  private final boolean dsm;
   /** Annually consumed energy (typically in kWh) */
   private final ComparableQuantity<Energy> eConsAnnual;
   /** Active Power (typically in kVA) */
@@ -50,7 +48,6 @@ public class LoadInput extends SystemParticipantInput {
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param loadProfile Load profile to use for this model
-   * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
@@ -64,13 +61,11 @@ public class LoadInput extends SystemParticipantInput {
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
       LoadProfile loadProfile,
-      boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.loadProfile = loadProfile;
-    this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
@@ -89,7 +84,6 @@ public class LoadInput extends SystemParticipantInput {
    * @param loadProfileKey Load profile key corresponding to {@link
    *     edu.ie3.datamodel.models.profile.BdewStandardLoadProfile} or {@link
    *     edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
-   * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
@@ -103,7 +97,6 @@ public class LoadInput extends SystemParticipantInput {
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
       String loadProfileKey,
-      boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
       double cosPhiRated)
@@ -118,7 +111,6 @@ public class LoadInput extends SystemParticipantInput {
         qCharacteristics,
         em,
         LoadProfile.parse(loadProfileKey),
-        dsm,
         eConsAnnual,
         sRated,
         cosPhiRated);
@@ -133,7 +125,6 @@ public class LoadInput extends SystemParticipantInput {
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param loadProfile Standard load profile to use for this model
-   * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
@@ -145,13 +136,11 @@ public class LoadInput extends SystemParticipantInput {
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
       LoadProfile loadProfile,
-      boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
     super(uuid, id, node, qCharacteristics, em);
     this.loadProfile = loadProfile;
-    this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
@@ -168,7 +157,6 @@ public class LoadInput extends SystemParticipantInput {
    * @param loadProfileKey load profile key corresponding to {@link
    *     edu.ie3.datamodel.models.profile.BdewStandardLoadProfile} or {@link
    *     edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
-   * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
@@ -180,7 +168,6 @@ public class LoadInput extends SystemParticipantInput {
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
       String loadProfileKey,
-      boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
       double cosPhiRated)
@@ -192,7 +179,6 @@ public class LoadInput extends SystemParticipantInput {
         qCharacteristics,
         em,
         LoadProfile.parse(loadProfileKey),
-        dsm,
         eConsAnnual,
         sRated,
         cosPhiRated);
@@ -200,10 +186,6 @@ public class LoadInput extends SystemParticipantInput {
 
   public LoadProfile getLoadProfile() {
     return loadProfile;
-  }
-
-  public boolean isDsm() {
-    return dsm;
   }
 
   public ComparableQuantity<Energy> geteConsAnnual() {
@@ -227,8 +209,7 @@ public class LoadInput extends SystemParticipantInput {
     if (this == o) return true;
     if (!(o instanceof LoadInput loadInput)) return false;
     if (!super.equals(o)) return false;
-    return dsm == loadInput.dsm
-        && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0
+    return Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0
         && eConsAnnual.equals(loadInput.eConsAnnual)
         && loadProfile.equals(loadInput.loadProfile)
         && sRated.equals(loadInput.sRated);
@@ -236,7 +217,7 @@ public class LoadInput extends SystemParticipantInput {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), dsm, eConsAnnual, sRated, cosPhiRated);
+    return Objects.hash(super.hashCode(), eConsAnnual, sRated, cosPhiRated);
   }
 
   @Override
@@ -256,8 +237,6 @@ public class LoadInput extends SystemParticipantInput {
         + getqCharacteristics()
         + "', em="
         + getControllingEm()
-        + ", dsm="
-        + dsm
         + ", eConsAnnual="
         + eConsAnnual
         + ", sRated="
@@ -278,7 +257,6 @@ public class LoadInput extends SystemParticipantInput {
       extends SystemParticipantInputCopyBuilder<LoadInputCopyBuilder> {
 
     private LoadProfile loadProfile;
-    private boolean dsm;
     private ComparableQuantity<Energy> eConsAnnual;
     private ComparableQuantity<Power> sRated;
     private double cosPhiRated;
@@ -286,7 +264,6 @@ public class LoadInput extends SystemParticipantInput {
     private LoadInputCopyBuilder(LoadInput entity) {
       super(entity);
       this.loadProfile = entity.getLoadProfile();
-      this.dsm = entity.isDsm();
       this.eConsAnnual = entity.geteConsAnnual();
       this.sRated = entity.getsRated();
       this.cosPhiRated = entity.getCosPhiRated();
@@ -294,34 +271,29 @@ public class LoadInput extends SystemParticipantInput {
 
     public LoadInputCopyBuilder loadprofile(StandardLoadProfile standardLoadProfile) {
       this.loadProfile = standardLoadProfile;
-      return this;
-    }
-
-    public LoadInputCopyBuilder dsm(boolean dsm) {
-      this.dsm = dsm;
-      return this;
+      return thisInstance();
     }
 
     public LoadInputCopyBuilder eConsAnnual(ComparableQuantity<Energy> eConsAnnual) {
       this.eConsAnnual = eConsAnnual;
-      return this;
+      return thisInstance();
     }
 
     public LoadInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
-      return this;
+      return thisInstance();
     }
 
     public LoadInputCopyBuilder cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public LoadInputCopyBuilder scale(Double factor) {
       eConsAnnual(eConsAnnual.multiply(factor));
       sRated(sRated.multiply(factor));
-      return this;
+      return thisInstance();
     }
 
     @Override
@@ -335,7 +307,6 @@ public class LoadInput extends SystemParticipantInput {
           getqCharacteristics(),
           getEm(),
           loadProfile,
-          dsm,
           eConsAnnual,
           sRated,
           cosPhiRated);

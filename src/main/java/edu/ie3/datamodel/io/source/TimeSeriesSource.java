@@ -21,10 +21,10 @@ import java.util.*;
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
  */
-public abstract class TimeSeriesSource<V extends Value> {
+public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
 
   protected Class<V> valueClass;
-  protected TimeBasedSimpleValueFactory<V> valueFactory;
+  protected final TimeBasedSimpleValueFactory<V> valueFactory;
 
   protected TimeSeriesSource(Class<V> valueClass, TimeBasedSimpleValueFactory<V> factory) {
     this.valueFactory = factory;
@@ -50,5 +50,15 @@ public abstract class TimeSeriesSource<V extends Value> {
   public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
       throws SourceException;
 
-  public abstract Optional<V> getValue(ZonedDateTime time) throws SourceException;
+  public abstract Optional<V> getValue(ZonedDateTime time);
+
+  public abstract Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time);
+
+  /**
+   * Method to return all time keys after a given timestamp.
+   *
+   * @param time given time
+   * @return a list of time keys
+   */
+  public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time);
 }

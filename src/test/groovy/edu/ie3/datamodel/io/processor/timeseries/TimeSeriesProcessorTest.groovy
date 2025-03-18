@@ -10,9 +10,10 @@ import edu.ie3.datamodel.io.processor.Processor
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.value.*
+import edu.ie3.datamodel.models.value.load.BdewLoadValues
 import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
 
@@ -21,7 +22,7 @@ import java.lang.reflect.Method
 class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestData {
   def "A TimeSeriesProcessor is instantiated correctly"() {
     when:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     Map expectedSourceMapping = [
       "price": FieldSourceToMethod.FieldSource.VALUE,
       "time": FieldSourceToMethod.FieldSource.ENTRY]
@@ -56,7 +57,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessor throws an Exception, when the simple handle method is called"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
 
     when:
     processor.handleEntity(individualEnergyPriceTimeSeries)
@@ -68,7 +69,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessor correctly extracts the field name to getter map"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
 
     when:
     Map<String, Method> actual = processor.extractFieldToMethod(source)
@@ -85,7 +86,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessor handles an entry correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     Map<String, String> expected = Processor.putUuidFirst([
       "price": "5.0",
       "time" : "2020-04-02 10:00:00"
@@ -102,7 +103,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with EnergyPriceValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualEnergyPriceTimeSeries)
@@ -113,7 +114,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with TemperatureValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, TemperatureValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, TemperatureValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, TemperatureValue, TemperatureValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, TemperatureValue)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualTemperatureTimeSeries)
@@ -124,7 +125,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with WindValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WindValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WindValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WindValue, WindValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WindValue)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualWindTimeSeries)
@@ -135,7 +136,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with IrradianceValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue,SolarIrradianceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SolarIrradianceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, SolarIrradianceValue, SolarIrradianceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SolarIrradianceValue)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualIrradianceTimeSeries)
@@ -146,7 +147,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with WeatherValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WeatherValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WeatherValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WeatherValue, WeatherValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WeatherValue)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualWeatherTimeSeries)
@@ -157,7 +158,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with HeatDemandValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatDemandValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatDemandValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatDemandValue, HeatDemandValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatDemandValue)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualHeatDemandTimeSeries)
@@ -168,7 +169,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with PValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, PValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, PValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, PValue, PValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, PValue)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualPTimeSeries)
@@ -179,7 +180,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with HeatAndPValues correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatAndPValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatAndPValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatAndPValue, HeatAndPValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatAndPValue)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualHeatAndPTimeSeries)
@@ -190,7 +191,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with SValue correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, SValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, SValue, SValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SValue)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualSTimeSeries)
@@ -201,7 +202,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete time series with HeatAndSValue correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatAndSValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatAndSValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatAndSValue, HeatAndSValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatAndSValue)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(individualHeatAndSTimeSeries)
@@ -210,14 +211,14 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
     actual == individualHeatAndSTimeSeriesProcessed
   }
 
-  def "A TimeSeriesProcessors handles a complete LoadProfileInput correctly"() {
+  def "A TimeSeriesProcessors handles a complete LoadProfileTimeSeries correctly"() {
     given:
-    TimeSeriesProcessor<LoadProfileInput, LoadProfileEntry, PValue> processor = new TimeSeriesProcessor<>(LoadProfileInput, LoadProfileEntry, PValue)
+    TimeSeriesProcessor<BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues, PValue> processor = new TimeSeriesProcessor<>(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues)
 
     when:
-    Set<Map<String, String>> actual = processor.handleTimeSeries(loadProfileInput)
+    Set<Map<String, String>> actual = processor.handleTimeSeries(loadProfileTimeSeries)
 
     then:
-    actual == loadProfileInputProcessed
+    actual == loadProfileTimeSeriesProcessed
   }
 }

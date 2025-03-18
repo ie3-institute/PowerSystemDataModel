@@ -7,23 +7,76 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Implemented GitHub Actions for automatic code integration. [#1237](https://github.com/ie3-institute/PowerSystemDataModel/issues/1237)
+
+### Fixed
+- Fixed SonarQube junit path issue in GitHub Actions [#1284](https://github.com/ie3-institute/PowerSystemDataModel/issues/1284)
+### Changed
+- Replaced `return this` with `return thisInstance` in CopyBuilders [#1250](https://github.com/ie3-institute/PowerSystemDataModel/issues/1250)
+
+## [6.0.0] - 2025-02-27
+
+### Added
+- Enhance `TimeSeriesSource` with method to retrieve all time keys after a given key [#543](https://github.com/ie3-institute/PowerSystemDataModel/issues/543)
+- Enhance `WeatherSource` with method to retrieve all time keys after a given key [#572](https://github.com/ie3-institute/PowerSystemDataModel/issues/572)
+- Adding timeseries for voltage values [#1128](https://github.com/ie3-institute/PowerSystemDataModel/issues/1128)
+- Added Staudt to list of reviewers [#1190](https://github.com/ie3-institute/PowerSystemDataModel/issues/1190)
+- Extend ValidationUtils for validating ThermalGrids [#1216](https://github.com/ie3-institute/PowerSystemDataModel/issues/1216) 
+- Enhance `TimeSeriesSource` with method to retrieve the previous value before a given key [#1182](https://github.com/ie3-institute/PowerSystemDataModel/issues/1182)
+- Added `BdewLoadProfileTimeSeries` [#1230](https://github.com/ie3-institute/PowerSystemDataModel/issues/1230)
+- Added `RandomLoadProfileTimeSeries` [#1232](https://github.com/ie3-institute/PowerSystemDataModel/issues/1232)
+- Attribute `pThermalRated` for `ThermalStorage`s [#679](https://github.com/ie3-institute/PowerSystemDataModel/issues/679) 
+- Attributes `housingType` and `numberInhabitants` for `ThermalHouse`s [#1253](https://github.com/ie3-institute/PowerSystemDataModel/issues/1253)
+- Added domestic hot water storage model [#1257](https://github.com/ie3-institute/PowerSystemDataModel/issues/1257)
+- Validation for BDEW load profile values [#1243](https://github.com/ie3-institute/PowerSystemDataModel/issues/1243)
+- Added load profiles sources [#1106](https://github.com/ie3-institute/PowerSystemDataModel/issues/1106)
+
+### Fixed
+- Removing opened `SwitchInput` during connectivity check [#1221](https://github.com/ie3-institute/PowerSystemDataModel/issues/1221)
+- Fixed example in ReadTheDocs [#1244](https://github.com/ie3-institute/PowerSystemDataModel/issues/1244)
+- Remove double test in ThermalValidationUtils [#1260](https://github.com/ie3-institute/PowerSystemDataModel/issues/1260)]
+
+### Changed
+- Storage minimum level parameter removed from cylindrical thermal storage [#1123](https://github.com/ie3-institute/PowerSystemDataModel/issues/1123)
+- Converted eval-rst to myst syntax in ReadTheDocs, fixed line wrapping and widths [#1137](https://github.com/ie3-institute/PowerSystemDataModel/issues/1137)
+- Improving usage of streams on sql fetches [#827](https://github.com/ie3-institute/PowerSystemDataModel/issues/827)
+- Improving error message when using the outdated csv format [#1112](https://github.com/ie3-institute/PowerSystemDataModel/issues/1112)
+- Changed ThermalUnitValidation: Ensure that thermal boundaries of thermal house are not the same [#1186](https://github.com/ie3-institute/PowerSystemDataModel/issues/1186)
+- Converted `MappingEntry` into a normal class [#1087](https://github.com/ie3-institute/PowerSystemDataModel/issues/1087)
+- Renamed timeseries mapping `participant` column to `asset` [#1191](https://github.com/ie3-institute/PowerSystemDataModel/issues/1191)
+- Removed attribute `dsm` from `LoadInput` [#1195](https://github.com/ie3-institute/PowerSystemDataModel/issues/1195)
+- Fix spotless deprecations [#1123](https://github.com/ie3-institute/PowerSystemDataModel/issues/1223)
+- Refactored `CongestionResult`, removed `ModelResultEntity` [#1234](https://github.com/ie3-institute/PowerSystemDataModel/issues/1234)
+- Replaced `LoadProfileInput` with `LoadProfileTimeSeries` [#1228](https://github.com/ie3-institute/PowerSystemDataModel/issues/1228)
+- Enhance `CsvDataSource` [#1246](https://github.com/ie3-institute/PowerSystemDataModel/issues/1246)
+- Updated `_joint_grid` csv files from simona [#750](https://github.com/ie3-institute/PowerSystemDataModel/issues/750)
+
+### Updates
+- Updated gradle to v8.13 [#1264](https://github.com/ie3-institute/PowerSystemDataModel/issues/1264)
+
+## [5.1.0] - 2024-06-24
+
+### Added
 - Enhancing `VoltageLevel` with `equals` method [#1063](https://github.com/ie3-institute/PowerSystemDataModel/issues/1063)
 - `ConnectorValidationUtils` checks if parallel devices is > 0 [#1077](https://github.com/ie3-institute/PowerSystemDataModel/issues/1077)
 - `GridContainerValidationUtils` checks the connectivity for all defined operation time intervals [#1091](https://github.com/ie3-institute/PowerSystemDataModel/issues/1091)
+- Implemented a `CongestionResult` [#1097](https://github.com/ie3-institute/PowerSystemDataModel/issues/1097)
 
 ### Fixed
 - Fixed `MappingEntryies` not getting processed by adding `Getter` methods for record fields [#1084](https://github.com/ie3-institute/PowerSystemDataModel/issues/1084) 
+- Fixed "depth of discharge" in documentation [#872](https://github.com/ie3-institute/PowerSystemDataModel/issues/872)
+- Fixed project being build twice in CI [#994](https://github.com/ie3-institute/PowerSystemDataModel/issues/994)
 
 ### Changed
 - Improvements to the search for corner points in `IdCoordinateSource` [#1016](https://github.com/ie3-institute/PowerSystemDataModel/issues/1016)
 - Refactor `CsvFileConnector` and `CsvDataSource` [#1007](https://github.com/ie3-institute/PowerSystemDataModel/issues/1007)
-
+- Make `EntitySource` completely static [#975](https://github.com/ie3-institute/PowerSystemDataModel/issues/975)
+- Abstract commonly used functionality from `EntitySource` [#981](https://github.com/ie3-institute/PowerSystemDataModel/issues/981)
 
 ## [5.0.1] - 2024-03-07
 
 ### Fixed
 - Fixed `equals` of `ResultEntity` and `TimeSeriesEntry` [#1037](https://github.com/ie3-institute/PowerSystemDataModel/issues/1037)
-- Fixed "depth of discharge" in documentation [#872](https://github.com/ie3-institute/PowerSystemDataModel/issues/872)
 
 ## [5.0.0] - 2024-03-06
 
@@ -291,9 +344,11 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.1...HEAD
-[5.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.0...5.0.1
-[4.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.1.0...5.0.0
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/6.0.0...HEAD
+[6.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.1.0...6.0.0
+[5.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.1...5.1.0
+[5.0.1]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.0...5.0.1
+[5.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.1.0...5.0.0
 [4.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/3.0.0...4.0.0
 [3.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...3.0.0

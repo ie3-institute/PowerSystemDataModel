@@ -18,18 +18,21 @@ import java.time.format.DateTimeFormatter;
  * @version 0.1
  * @since 11.02.20
  */
-abstract class ResultEntityFactory<T extends ResultEntity> extends EntityFactory<T, EntityData> {
+public abstract class ResultEntityFactory<T extends ResultEntity>
+    extends EntityFactory<T, EntityData> {
 
   protected static final String TIME = "time";
   protected static final String INPUT_MODEL = "inputModel";
 
   protected final TimeUtil timeUtil;
 
+  @SafeVarargs
   protected ResultEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
     timeUtil = TimeUtil.withDefaults;
   }
 
+  @SafeVarargs
   protected ResultEntityFactory(
       DateTimeFormatter dateTimeFormatter, Class<? extends T>... allowedClasses) {
     super(allowedClasses);

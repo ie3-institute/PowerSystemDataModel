@@ -183,27 +183,27 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
 
     public MeasurementUnitInputCopyBuilder node(NodeInput node) {
       this.node = node;
-      return this;
+      return thisInstance();
     }
 
     public MeasurementUnitInputCopyBuilder vMag(boolean vMag) {
       this.vMag = vMag;
-      return this;
+      return thisInstance();
     }
 
     public MeasurementUnitInputCopyBuilder vAng(boolean vAng) {
       this.vAng = vAng;
-      return this;
+      return thisInstance();
     }
 
     public MeasurementUnitInputCopyBuilder p(boolean p) {
       this.p = p;
-      return this;
+      return thisInstance();
     }
 
     public MeasurementUnitInputCopyBuilder q(boolean q) {
       this.q = q;
-      return this;
+      return thisInstance();
     }
 
     @Override

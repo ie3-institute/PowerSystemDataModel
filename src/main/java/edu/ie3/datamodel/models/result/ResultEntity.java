@@ -50,16 +50,16 @@ public abstract class ResultEntity implements Entity {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ResultEntity that = (ResultEntity) o;
-    return time.equals(that.time) && inputModel.equals(that.inputModel);
+    return time.equals(that.time);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), time, inputModel);
+    return Objects.hash(super.hashCode(), time);
   }
 
   @Override
   public String toString() {
-    return "ResultEntity{time=" + time + ", inputModel=" + inputModel + '}';
+    return "ResultEntity{time=" + time + '}';
   }
 }

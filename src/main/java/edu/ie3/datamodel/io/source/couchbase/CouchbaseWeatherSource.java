@@ -10,7 +10,6 @@ import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -19,7 +18,6 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +60,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
       IdCoordinateSource coordinateSource,
       String coordinateIdColumnName,
       TimeBasedWeatherValueFactory weatherFactory,
-      String timeStampPattern)
-      throws SourceException {
+      String timeStampPattern) {
     this(
         connector,
         coordinateSource,
@@ -91,30 +89,16 @@ public class CouchbaseWeatherSource extends WeatherSource {
       String coordinateIdColumnName,
       String keyPrefix,
       TimeBasedWeatherValueFactory weatherFactory,
-      String timeStampPattern)
-      throws SourceException {
+      String timeStampPattern) {
     super(idCoordinateSource, weatherFactory);
     this.connector = connector;
     this.coordinateIdColumnName = coordinateIdColumnName;
     this.keyPrefix = keyPrefix;
     this.timeStampPattern = timeStampPattern;
-
-    // validating
-    Try.of(() -> getSourceFields(WeatherValue.class), SourceException.class)
-        .flatMap(
-            fieldsOpt ->
-                fieldsOpt
-                    .map(
-                        fields ->
-                            weatherFactory
-                                .validate(fields, WeatherValue.class)
-                                .transformF(SourceException::new))
-                    .orElse(Try.Success.empty()))
-        .getOrThrow();
   }
 
   @Override
-  public <C extends WeatherValue> Optional<Set<String>> getSourceFields(Class<C> entityClass) {
+  public Optional<Set<String>> getSourceFields() {
     return connector.getSourceFields();
   }
 
@@ -182,6 +166,37 @@ public class CouchbaseWeatherSource extends WeatherSource {
     }
   }
 
+  @Override
+  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time) {
+    String query = createQueryStringForFollowingTimeKeys(time);
+    CompletableFuture<QueryResult> futureResult = connector.query(query);
+    QueryResult queryResult = futureResult.join();
+    List<JsonObject> jsonWeatherInputs = Collections.emptyList();
+    try {
+      jsonWeatherInputs = queryResult.rowsAsObject();
+    } catch (DecodingFailureException ex) {
+      logger.error("Querying weather inputs failed!", ex);
+    }
+    if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
+      return groupTime(
+          jsonWeatherInputs.stream()
+              .map(
+                  json -> {
+                    int coordinateId = json.getInt(COORDINATE_ID);
+                    Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
+                    ZonedDateTime timestamp =
+                        weatherFactory.toZonedDateTime(
+                            json.getString(weatherFactory.getTimeFieldString()));
+                    if (coordinate.isEmpty()) {
+                      log.warn("Unable to match coordinate ID {} to a point", coordinateId);
+                    }
+                    return Pair.of(coordinate, timestamp);
+                  })
+              .filter(value -> value.getValue().isAfter(time)));
+    }
+    return Collections.emptyMap();
+  }
+
   /**
    * Generates a key for weather documents with the pattern: {@code
    * weather::<coordinate_id>::<time>}
@@ -190,7 +205,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @param coordinateId the coordinate Id of the weather data
    * @return a weather document key
    */
-  public String generateWeatherKey(ZonedDateTime time, Integer coordinateId) {
+  private String generateWeatherKey(ZonedDateTime time, Integer coordinateId) {
     String key = keyPrefix + "::";
     key += coordinateId + "::";
     key += time.format(DateTimeFormatter.ofPattern(timeStampPattern));
@@ -205,7 +220,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @param coordinateId the coordinate ID for which the documents are queried
    * @return the query string
    */
-  public String createQueryStringForIntervalAndCoordinate(
+  private String createQueryStringForIntervalAndCoordinate(
       ClosedInterval<ZonedDateTime> timeInterval, int coordinateId) {
     String basicQuery =
         "SELECT " + connector.getBucketName() + ".* FROM " + connector.getBucketName();
@@ -213,6 +228,18 @@ public class CouchbaseWeatherSource extends WeatherSource {
         " WHERE META().id >= '" + generateWeatherKey(timeInterval.getLower(), coordinateId);
     whereClause +=
         "' AND META().id <= '" + generateWeatherKey(timeInterval.getUpper(), coordinateId) + "'";
+    return basicQuery + whereClause;
+  }
+
+  /**
+   * Create a query string to search for all time keys that comes after the given time.
+   *
+   * @param time given timestamp
+   * @return the query string
+   */
+  public String createQueryStringForFollowingTimeKeys(ZonedDateTime time) {
+    String basicQuery = "SELECT a.coordinateid, a.time FROM " + connector.getBucketName() + " AS a";
+    String whereClause = " WHERE META().id > '" + generateWeatherKey(time, 0) + "'";
     return basicQuery + whereClause;
   }
 
@@ -247,7 +274,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @param jsonObj the JsonObject to convert
    * @return an optional weather value
    */
-  public Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(JsonObject jsonObj) {
+  private Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(JsonObject jsonObj) {
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(jsonObj);
     if (data.isEmpty()) {
       logger.warn("Unable to parse json object");

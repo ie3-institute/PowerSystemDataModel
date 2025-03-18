@@ -47,6 +47,22 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     actual.data.get() == expected
   }
 
+  def "The csv time series source returns the time keys after a given key correctly"() {
+    given:
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-12-31T23:59:59Z")
+
+    when:
+    def actual = source.getTimeKeysAfter(time)
+
+    then:
+    actual == [
+      TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:00:00Z"),
+      TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:15:00Z")
+    ]
+  }
+
   def "The factory method in csv time series source refuses to build time series with unsupported column type"() {
     given:
     def metaInformation = new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), ColumnScheme.WEATHER, Path.of("its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"))
@@ -78,5 +94,6 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7") | ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND   | Path.of("its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7")  || 2               | HeatAndPValue
     UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26") | ColumnScheme.APPARENT_POWER                 | Path.of("its_pq_3fbfaa97-cff4-46d4-95ba-a95665e87c26")  || 2               | SValue
     UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047") | ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND | Path.of("its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047") || 2               | HeatAndSValue
+    UUID.fromString("eeccbe3c-a47e-448e-8eca-1f369d3c24e6") | ColumnScheme.VOLTAGE                        | Path.of("its_v_eeccbe3c-a47e-448e-8eca-1f369d3c24e6")   || 2               | VoltageValue
   }
 }

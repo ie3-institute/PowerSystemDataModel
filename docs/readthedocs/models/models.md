@@ -129,6 +129,7 @@ maxdepth: 1
 input/thermal/thermalbus
 input/thermal/thermalhouse
 input/thermal/cylindricalstorage
+input/thermal/domestichotwaterstorage
 ```
 
 ### Participant Related Models
@@ -185,6 +186,7 @@ result/grid/switch
 result/grid/transformer
 result/grid/transformer2w
 result/grid/transformer3w
+result/grid/congestion
 ```
 
 ### Participant Related Models
@@ -208,6 +210,7 @@ result/participant/thermalstorage
 result/participant/thermalunit
 result/participant/thermalhouse
 result/participant/cylindricalstorage
+result/participant/domestichotwaterstorage
 result/participant/systemparticipant
 result/participant/flexoption
 result/participant/em

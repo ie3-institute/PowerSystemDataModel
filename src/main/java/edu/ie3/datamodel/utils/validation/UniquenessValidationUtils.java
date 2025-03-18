@@ -30,7 +30,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
   protected static final FieldSetSupplier<ResultEntity> resultFieldSupplier =
       entity -> Set.of(entity.getTime(), entity.getInputModel());
   protected static final FieldSetSupplier<MappingEntry> mappingFieldSupplier =
-      entity -> Set.of(entity.participant());
+      entity -> Set.of(entity.getAsset());
   protected static final FieldSetSupplier<IdCoordinateInput> idCoordinateSupplier =
       entity -> Set.of(entity.id(), entity.point());
   protected static final FieldSetSupplier<TimeBasedValue<WeatherValue>> weatherValueFieldSupplier =

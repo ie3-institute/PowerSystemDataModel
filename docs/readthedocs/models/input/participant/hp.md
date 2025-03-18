@@ -8,9 +8,9 @@ Model of a heat pump.
 
 ### Type Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -19,11 +19,11 @@ Model of a heat pump.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - capex
@@ -32,15 +32,15 @@ Model of a heat pump.
 
    * - opex
      - € / MWh
-     - | Operational expenditure to operate one entity of
-       | this type
+     - Operational expenditure to operate one entity of
+       this type
 
    * - sRated
      - kVA
      - Rated apparent power
 
    * - cosPhiRated
-     - --
+     -
      - Rated power factor
 
    * - pThermal
@@ -51,9 +51,9 @@ Model of a heat pump.
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -62,42 +62,42 @@ Model of a heat pump.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - node
-     - --
+     -
      -
 
    * - thermalBus
-     - --
+     -
      - Connection point to the thermal system
 
    * - qCharacteristics
-     - --
-     - :ref:`Reactive power characteristic<participant-general-q-characteristic>` to follow
+     -
+     - [Reactive power characteristic](#participant-general-q-characteristic) to follow
 
    * - type
-     - --
+     -
      -
 
    * - em
-     - --
-     - | UUID reference to an :ref:`Energy Management Unit<em_model>` that is controlling
-       | this system participant. Field can be empty or missing, if this participant
-       | is not controlled.
+     -
+     - UUID reference to an [Energy Management Unit](#em_model) that is controlling
+       this system participant. Field can be empty or missing, if this participant
+       is not controlled.
 
 
 ```

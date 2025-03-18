@@ -22,9 +22,9 @@ name: Equivalent circuit diagram of a three winding transformer
 
 All impedances and admittances are given with respect to the higher voltage side.
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -120,9 +120,9 @@ All impedances and admittances are given with respect to the higher voltage side
 
 ### Entity Model
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -131,49 +131,49 @@ All impedances and admittances are given with respect to the higher voltage side
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - nodeA
-     - --
+     -
      - Higher voltage node
 
    * - nodeB
-     - --
+     -
      - Intermediate voltage node
 
    * - nodeC
-     - --
+     -
      - Lowest voltage node
 
    * - parallelDevices
-     - --
-     - | overall amount of parallel transformers to automatically
-       | construct (e.g. parallelDevices = 2 will build a
-       | total of two transformers using the specified parameters)
+     -
+     - overall amount of parallel transformers to automatically
+       construct (e.g. parallelDevices = 2 will build a
+       total of two transformers using the specified parameters)
 
    * - type
-     - --
+     -
      -
 
    * - tapPos
-     - --
+     -
      - Current position of the tap changer
 
    * - autoTap
-     - --
+     -
      - true, if there is a tap regulation apparent and active
 
 ```

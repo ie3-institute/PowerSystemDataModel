@@ -41,6 +41,21 @@ public class Transformer3WInputEntityData
 
   /**
    * Creates a new Transformer3WInputEntityData object based on a given {@link
+   * ConnectorInputEntityData} object, a given third node as well as a given {@link
+   * Transformer3WTypeInput}.
+   *
+   * @param entityData The TypedConnectorInputEntityData object to enhance
+   * @param nodeC The third node
+   * @param type of the transformer
+   */
+  public Transformer3WInputEntityData(
+      ConnectorInputEntityData entityData, NodeInput nodeC, Transformer3WTypeInput type) {
+    super(entityData, type);
+    this.nodeC = nodeC;
+  }
+
+  /**
+   * Creates a new Transformer3WInputEntityData object based on a given {@link
    * TypedConnectorInputEntityData} object and given third node
    *
    * @param entityData The TypedConnectorInputEntityData object to enhance

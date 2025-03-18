@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -27,6 +28,7 @@ import java.util.stream.Stream;
 public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final IndividualTimeSeries<V> timeSeries;
   private final CsvDataSource dataSource;
+  private final Path filePath;
 
   /**
    * Factory method to build a source from given meta information
@@ -91,6 +93,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       TimeBasedSimpleValueFactory<V> factory) {
     super(valueClass, factory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
+    this.filePath = filePath;
 
     /* Read in the full time series */
     try {
@@ -106,6 +109,11 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   @Override
+  public void validate() throws ValidationException {
+    validate(valueClass, () -> dataSource.getSourceFields(filePath), valueFactory);
+  }
+
+  @Override
   public IndividualTimeSeries<V> getTimeSeries() {
     return timeSeries;
   }
@@ -118,6 +126,20 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   @Override
   public Optional<V> getValue(ZonedDateTime time) {
     return timeSeries.getValue(time);
+  }
+
+  @Override
+  public Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time) {
+    return timeSeries.getPreviousTimeBasedValue(time);
+  }
+
+  public Optional<TimeBasedValue<V>> getNextTimeBasedValue(ZonedDateTime time) {
+    return timeSeries.getNextTimeBasedValue(time);
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
+    return timeSeries.getTimeKeysAfter(time);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -141,7 +163,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       throws SourceException {
     Try<Stream<TimeBasedValue<V>>, SourceException> timeBasedValues =
         dataSource
-            .buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, filePath, false)
+            .buildStreamWithFieldsToAttributesMap(filePath, false)
             .flatMap(
                 stream ->
                     Try.scanStream(stream.map(fieldToValueFunction), "TimeBasedValue<V>")

@@ -36,7 +36,7 @@ import tech.units.indriya.unit.Units;
  * Implementation of {@link IdCoordinateSource} to read the mapping between coordinate id and actual
  * coordinate from csv file and build a mapping from it.
  */
-public class CsvIdCoordinateSource implements IdCoordinateSource {
+public class CsvIdCoordinateSource extends IdCoordinateSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvIdCoordinateSource.class);
 
@@ -56,6 +56,11 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
     /* set up the coordinate id to lat/long mapping */
     idToCoordinate = setupIdToCoordinateMap();
     coordinateToId = invert(idToCoordinate);
+  }
+
+  @Override
+  public void validate() throws ValidationException {
+    validate(IdCoordinateInput.class, this::getSourceFields, factory);
   }
 
   /**
@@ -174,7 +179,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
   }
 
   public int getCoordinateCount() {
-    return idToCoordinate.keySet().size();
+    return idToCoordinate.size();
   }
 
   private Collection<Point> getCoordinatesInBoundingBox(
@@ -204,7 +209,7 @@ public class CsvIdCoordinateSource implements IdCoordinateSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      return Success.of(dataSource.csvRowFieldValueMapping(reader, headline).parallelStream());
+      return dataSource.csvRowFieldValueMapping(reader, headline);
     } catch (IOException e) {
       return Failure.of(
           new SourceException("Cannot read the file for coordinate id to coordinate mapping.", e));

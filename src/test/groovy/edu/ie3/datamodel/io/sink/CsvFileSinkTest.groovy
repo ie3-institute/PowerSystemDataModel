@@ -31,6 +31,7 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
+import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.system.EmResult
@@ -131,6 +132,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new InputEntityProcessor(LineGraphicInput),
           new InputEntityProcessor(NodeGraphicInput),
           new InputEntityProcessor(CylindricalStorageInput),
+          new InputEntityProcessor(DomesticHotWaterStorageInput),
           new InputEntityProcessor(ThermalHouseInput),
           new InputEntityProcessor(OperatorInput),
           new InputEntityProcessor(LineInput),
@@ -165,7 +167,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
       GridTestData.transformerCtoG,
       GridTestData.lineGraphicCtoD,
       GridTestData.nodeGraphicC,
-      ThermalUnitInputTestData.cylindricStorageInput,
+      ThermalUnitInputTestData.cylindricalStorageInput,
+      ThermalUnitInputTestData.domesticHotWaterStorageInput,
       ThermalUnitInputTestData.thermalHouseInput,
       SystemParticipantTestData.evcsInput,
       SystemParticipantTestData.loadInput,
@@ -185,6 +188,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("transformer_2_w_input.csv").toFile().exists()
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
     testBaseFolderPath.resolve("cylindrical_storage_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("domestic_hot_water_storage_input.csv").toFile().exists()
     testBaseFolderPath.resolve("line_graphic_input.csv").toFile().exists()
     testBaseFolderPath.resolve("line_input.csv").toFile().exists()
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
@@ -199,7 +203,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
   def "A valid CsvFileSink should persist a time series correctly"() {
     given:
-    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     TimeSeriesProcessorKey timeSeriesProcessorKey = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
     timeSeriesProcessorMap.put(timeSeriesProcessorKey, timeSeriesProcessor)
@@ -236,7 +240,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("its_ph_56c20b88-c001-4225-8dac-cd13a75c6b48.csv").toFile().exists()
     testBaseFolderPath.resolve("its_pqh_83b577cc-06b1-47a1-bfff-ad648a00784b.csv").toFile().exists()
     testBaseFolderPath.resolve("its_c_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").toFile().exists()
-    testBaseFolderPath.resolve("lpts_g2_b56853fe-b800-4c18-b324-db1878b22a28.csv").toFile().exists()
+    testBaseFolderPath.resolve("lpts_g2.csv").toFile().exists()
     testBaseFolderPath.resolve("its_weather_4fcbdfcd-4ff0-46dd-b0df-f3af7ae3ed98.csv").toFile().exists()
   }
 
@@ -316,7 +320,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         testBaseFolderPath,
         new ProcessorProvider(
         ProcessorProvider.allEntityProcessors(),
-        new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
+        new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>()),
         new FileNamingStrategy(),
         ",")
 
@@ -346,7 +350,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("line_input.csv").toFile().exists()
     testBaseFolderPath.resolve("line_type_input.csv").toFile().exists()
     testBaseFolderPath.resolve("load_input.csv").toFile().exists()
-    testBaseFolderPath.resolve( "node_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("node_input.csv").toFile().exists()
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
     testBaseFolderPath.resolve("pv_input.csv").toFile().exists()
     testBaseFolderPath.resolve("storage_input.csv").toFile().exists()

@@ -7,9 +7,9 @@ having control over one or more physical entitites.
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -18,11 +18,11 @@ having control over one or more physical entitites.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
 ```
@@ -36,7 +36,7 @@ having control over one or more physical entitites.
 
 OperatorInput profBroccoli = new OperatorInput(
         UUID.fromString("f15105c4-a2de-4ab8-a621-4bc98e372d92"),
-        "Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli"
+        "Univ.-Prof. Dr. rer. hort. Klaus-Dieter Broccoli"
       )
 ```
 

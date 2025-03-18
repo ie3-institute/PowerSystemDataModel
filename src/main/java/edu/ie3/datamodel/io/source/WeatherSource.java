@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -17,18 +18,17 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Abstract class for WeatherSource by Csv and Sql Data */
-public abstract class WeatherSource {
+public abstract class WeatherSource extends EntitySource {
 
   protected static final Logger log = LoggerFactory.getLogger(WeatherSource.class);
 
   protected TimeBasedWeatherValueFactory weatherFactory;
-
-  protected Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries;
 
   protected IdCoordinateSource idCoordinateSource;
 
@@ -43,11 +43,14 @@ public abstract class WeatherSource {
   /**
    * Method to retrieve the fields found in the source.
    *
-   * @param entityClass class of the source
    * @return an option for fields found in the source
    */
-  public abstract <C extends WeatherValue> Optional<Set<String>> getSourceFields(
-      Class<C> entityClass) throws SourceException;
+  public abstract Optional<Set<String>> getSourceFields() throws SourceException;
+
+  @Override
+  public void validate() throws ValidationException {
+    validate(WeatherValue.class, this::getSourceFields, weatherFactory);
+  }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -60,6 +63,14 @@ public abstract class WeatherSource {
 
   public abstract Optional<TimeBasedValue<WeatherValue>> getWeather(
       ZonedDateTime date, Point coordinate) throws SourceException;
+
+  public abstract Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
+      throws SourceException;
+
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
+      throws SourceException {
+    return getTimeKeysAfter(time).getOrDefault(coordinate, Collections.emptyList());
+  }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -107,6 +118,37 @@ public abstract class WeatherSource {
     return coordinateToTimeSeriesMap;
   }
 
+  protected Map<Point, List<ZonedDateTime>> toTimeKeys(
+      Stream<Map<String, String>> fieldMaps, TimeBasedWeatherValueFactory factory) {
+    return groupTime(
+        fieldMaps.map(
+            fieldMap -> {
+              String coordinateValue = fieldMap.get(COORDINATE_ID);
+              int coordinateId = Integer.parseInt(coordinateValue);
+              Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
+              ZonedDateTime time = factory.extractTime(fieldMap);
+
+              if (coordinate.isEmpty()) {
+                log.warn("Unable to match coordinate ID {} to a point", coordinateId);
+              }
+              return Pair.of(coordinate, time);
+            }));
+  }
+
+  protected Map<Point, List<ZonedDateTime>> groupTime(
+      Stream<Pair<Optional<Point>, ZonedDateTime>> values) {
+    return values
+        .filter(pair -> pair.getKey().isPresent())
+        .map(pair -> Pair.of(pair.getKey().get(), pair.getValue()))
+        .collect(Collectors.groupingBy(Pair::getKey, Collectors.toSet()))
+        .entrySet()
+        .stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                e -> e.getValue().stream().map(Pair::getValue).sorted().toList()));
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
@@ -116,7 +158,7 @@ public abstract class WeatherSource {
    * @param inputStream stream of fields to convert into TimeBasedValues
    * @return a list of that TimeBasedValues
    */
-  public List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
+  protected List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
       TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream)
       throws SourceException {
     return Try.scanStream(

@@ -16,9 +16,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.ConnectorInput;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
@@ -241,6 +239,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
                 graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
     rawGridElements.getSwitches().stream()
         .filter(isInOperation)
+        .filter(SwitchInput::isClosed)
         .forEach(
             connector ->
                 graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
