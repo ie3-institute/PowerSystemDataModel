@@ -143,22 +143,22 @@ public class WecTypeInput extends SystemParticipantTypeInput {
 
     public WecTypeInputCopyBuilder setCpCharacteristic(WecCharacteristicInput cpCharacteristic) {
       this.cpCharacteristic = cpCharacteristic;
-      return this;
+      return thisInstance();
     }
 
     public WecTypeInputCopyBuilder setEtaConv(ComparableQuantity<Dimensionless> etaConv) {
       this.etaConv = etaConv;
-      return this;
+      return thisInstance();
     }
 
     public WecTypeInputCopyBuilder setRotorArea(ComparableQuantity<Area> rotorArea) {
       this.rotorArea = rotorArea;
-      return this;
+      return thisInstance();
     }
 
     public WecTypeInputCopyBuilder setHubHeight(ComparableQuantity<Length> hubHeight) {
       this.hubHeight = hubHeight;
-      return this;
+      return thisInstance();
     }
 
     public WecCharacteristicInput getCpCharacteristic() {
@@ -182,7 +182,7 @@ public class WecTypeInput extends SystemParticipantTypeInput {
       setCapex(getCapex().multiply(factor));
       setsRated(getsRated().multiply(factor));
       setRotorArea(getRotorArea().multiply(factor));
-      return this;
+      return thisInstance();
     }
 
     @Override

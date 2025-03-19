@@ -79,7 +79,7 @@ public class OperatorInput extends UniqueInputEntity {
 
     public OperatorInputCopyBuilder id(String id) {
       this.id = id;
-      return this;
+      return thisInstance();
     }
 
     @Override

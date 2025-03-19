@@ -328,17 +328,17 @@ public class Transformer3WInput extends TransformerInput implements HasType {
 
     public Transformer3WInputCopyBuilder type(Transformer3WTypeInput type) {
       this.type = type;
-      return this;
+      return thisInstance();
     }
 
     public Transformer3WInputCopyBuilder nodeC(NodeInput nodeC) {
       this.nodeC = nodeC;
-      return this;
+      return thisInstance();
     }
 
     public Transformer3WInputCopyBuilder internalSlack(boolean internalNodeIsSlack) {
       this.internSlack = internalNodeIsSlack;
-      return this;
+      return thisInstance();
     }
 
     @Override

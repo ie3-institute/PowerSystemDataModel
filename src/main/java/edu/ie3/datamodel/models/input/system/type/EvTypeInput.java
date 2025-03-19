@@ -127,17 +127,17 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
     public EvTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
       this.eStorage = eStorage;
-      return this;
+      return thisInstance();
     }
 
     public EvTypeInputCopyBuilder seteCons(ComparableQuantity<SpecificEnergy> eCons) {
       this.eCons = eCons;
-      return this;
+      return thisInstance();
     }
 
     public EvTypeInputCopyBuilder setsRatedDC(ComparableQuantity<Power> sRatedDC) {
       this.sRatedDC = sRatedDC;
-      return this;
+      return thisInstance();
     }
 
     public ComparableQuantity<Energy> geteStorage() {
@@ -159,7 +159,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       seteStorage(geteStorage().multiply(factor));
       seteCons(geteCons().multiply(factor));
       setsRatedDC(getsRatedDC().multiply(factor));
-      return this;
+      return thisInstance();
     }
 
     @Override

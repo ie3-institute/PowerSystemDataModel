@@ -148,18 +148,18 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
 
     public HpInputCopyBuilder type(HpTypeInput type) {
       this.type = type;
-      return this;
+      return thisInstance();
     }
 
     public HpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
       this.thermalBus = thermalBus;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public HpInputCopyBuilder scale(Double factor) {
       type(type.copy().scale(factor).build());
-      return this;
+      return thisInstance();
     }
 
     @Override

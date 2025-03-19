@@ -123,7 +123,7 @@ public class SwitchInput extends ConnectorInput {
 
     public SwitchInputCopyBuilder closed(boolean closed) {
       this.closed = closed;
-      return this;
+      return thisInstance();
     }
 
     @Override

@@ -1,18 +1,18 @@
 test {
   useJUnitPlatform()
   testLogging {
-    events "skipped", "failed"
+    events = ["skipped", "failed"]
   }
 
   // Improve logging for failed Spock tests
   testLogging {
-    exceptionFormat "Full"
+    exceptionFormat = "Full"
   }
 }
 
-task unitTest(type: Test) {
-  description 'Run only unit tests.'
-  group 'Verification'
+tasks.register('unitTest', Test) {
+  description = 'Run only unit tests.'
+  group = 'Verification'
 
   filter {
     includeTestsMatching '*Test*.*'
@@ -20,13 +20,13 @@ task unitTest(type: Test) {
   }
   useJUnitPlatform()
   testLogging {
-    events "skipped", "failed"
+    events = ["skipped", "failed"]
   }
 }
 
-task integrationTest(type: Test) {
-  description 'Run only the integration tests.'
-  group 'Verification'
+tasks.register('integrationTest', Test) {
+  description = 'Run only the integration tests.'
+  group = 'Verification'
 
   filter {
     includeTestsMatching '*IT.*'
@@ -34,7 +34,7 @@ task integrationTest(type: Test) {
   }
   useJUnitPlatform()
   testLogging {
-    events "skipped", "failed"
+    events = ["skipped", "failed"]
   }
 
   mustRunAfter unitTest
