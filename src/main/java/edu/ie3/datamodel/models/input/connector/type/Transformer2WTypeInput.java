@@ -226,7 +226,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
    * Abstract class for all builder that build child entities of abstract class {@link
    * Transformer2WTypeInput}
    */
-  public final static class Transformer2WTypeInputCopyBuilder
+  public static final class Transformer2WTypeInputCopyBuilder
       extends AssetTypeInput.AssetTypeInputCopyBuilder<Transformer2WTypeInputCopyBuilder> {
 
     private ComparableQuantity<ElectricResistance> rSc;
@@ -276,12 +276,14 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setvRatedA(ComparableQuantity<ElectricPotential> vRatedA) {
+    public Transformer2WTypeInputCopyBuilder setvRatedA(
+        ComparableQuantity<ElectricPotential> vRatedA) {
       this.vRatedA = vRatedA;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setvRatedB(ComparableQuantity<ElectricPotential> vRatedB) {
+    public Transformer2WTypeInputCopyBuilder setvRatedB(
+        ComparableQuantity<ElectricPotential> vRatedB) {
       this.vRatedB = vRatedB;
       return thisInstance();
     }
@@ -326,31 +328,16 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
+    @Override
+    public Transformer2WTypeInput build() {
+      return new Transformer2WTypeInput(
+          getUuid(), getId(), rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide,
+          tapNeutr, tapMin, tapMax);
+    }
 
-      @Override
-      public Transformer2WTypeInput build() {
-          return new Transformer2WTypeInput(
-                  getUuid(),
-                  getId(),
-                  rSc,
-                  xSc,
-                  sRated,
-                  vRatedA,
-                  vRatedB,
-                  gM,
-                  bM,
-                  dV,
-                  dPhi,
-                  tapSide,
-                  tapNeutr,
-                  tapMin,
-                  tapMax
-          );
-      }
-
-      @Override
-      protected Transformer2WTypeInputCopyBuilder thisInstance() {
-          return this;
-      }
+    @Override
+    protected Transformer2WTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

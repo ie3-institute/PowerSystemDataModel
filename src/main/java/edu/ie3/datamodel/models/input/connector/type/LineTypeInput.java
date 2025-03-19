@@ -131,7 +131,7 @@ public class LineTypeInput extends AssetTypeInput {
    * Abstract class for all builder that build child entities of abstract class {@link
    * LineTypeInput}
    */
-  public final static class LineTypeInputCopyBuilder
+  public static final class LineTypeInputCopyBuilder
       extends AssetTypeInput.AssetTypeInputCopyBuilder<LineTypeInputCopyBuilder> {
 
     private ComparableQuantity<SpecificConductance> b;
@@ -183,22 +183,13 @@ public class LineTypeInput extends AssetTypeInput {
     }
 
     @Override
-    public LineTypeInput build(){
-      return new LineTypeInput(
-              getUuid(),
-              getId(),
-              b,
-              g,
-              r,
-              x,
-              iMax,
-              vRated);
+    public LineTypeInput build() {
+      return new LineTypeInput(getUuid(), getId(), b, g, r, x, iMax, vRated);
     }
 
-
-      @Override
-      protected LineTypeInputCopyBuilder thisInstance() {
-          return this;
-      }
+    @Override
+    protected LineTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

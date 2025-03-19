@@ -304,7 +304,7 @@ public class Transformer3WTypeInput extends AssetTypeInput {
    * Abstract class for all builder that build child entities of abstract class {@link
    * Transformer3WTypeInput}
    */
-  public final static class Transformer3WTypeInputCopyBuilder
+  public static final class Transformer3WTypeInputCopyBuilder
       extends AssetTypeInput.AssetTypeInputCopyBuilder<Transformer3WTypeInputCopyBuilder> {
 
     private ComparableQuantity<Power> sRatedA;
@@ -366,12 +366,14 @@ public class Transformer3WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setvRatedA(ComparableQuantity<ElectricPotential> vRatedA) {
+    public Transformer3WTypeInputCopyBuilder setvRatedA(
+        ComparableQuantity<ElectricPotential> vRatedA) {
       this.vRatedA = vRatedA;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setvRatedB(ComparableQuantity<ElectricPotential> vRatedB) {
+    public Transformer3WTypeInputCopyBuilder setvRatedB(
+        ComparableQuantity<ElectricPotential> vRatedB) {
       this.vRatedB = vRatedB;
       return thisInstance();
     }
@@ -381,7 +383,8 @@ public class Transformer3WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setvRatedC(ComparableQuantity<ElectricPotential> vRatedC) {
+    public Transformer3WTypeInputCopyBuilder setvRatedC(
+        ComparableQuantity<ElectricPotential> vRatedC) {
       this.vRatedC = vRatedC;
       return thisInstance();
     }
@@ -446,36 +449,16 @@ public class Transformer3WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-      @Override
-      public Transformer3WTypeInput build() {
-          return new Transformer3WTypeInput(
-                  getUuid(),
-                  getId(),
-                  sRatedA,
-                  sRatedB,
-                  sRatedC,
-                  vRatedA,
-                  vRatedB,
-                  vRatedC,
-                  rScA,
-                  rScB,
-                  rScC,
-                  xScA,
-                  xScB,
-                  xScC,
-                  gM,
-                  bM,
-                  dV,
-                  dPhi,
-                  tapNeutr,
-                  tapMin,
-                  tapMax
-          );
-      }
+    @Override
+    public Transformer3WTypeInput build() {
+      return new Transformer3WTypeInput(
+          getUuid(), getId(), sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB,
+          rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax);
+    }
 
-      @Override
-      protected Transformer3WTypeInputCopyBuilder thisInstance() {
-          return this;
-      }
+    @Override
+    protected Transformer3WTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }
