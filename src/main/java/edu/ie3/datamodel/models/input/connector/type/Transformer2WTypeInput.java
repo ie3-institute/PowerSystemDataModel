@@ -261,12 +261,12 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     }
 
     /** Setter */
-    public Transformer2WTypeInputCopyBuilder setRSc(ComparableQuantity<ElectricResistance> rSc) {
+    public Transformer2WTypeInputCopyBuilder setrSc(ComparableQuantity<ElectricResistance> rSc) {
       this.rSc = rSc;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setXSc(ComparableQuantity<ElectricResistance> xSc) {
+    public Transformer2WTypeInputCopyBuilder setxSc(ComparableQuantity<ElectricResistance> xSc) {
       this.xSc = xSc;
       return thisInstance();
     }

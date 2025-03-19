@@ -434,17 +434,17 @@ public class Transformer3WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setTapNeutr(int tapNeutr) {
+    public Transformer3WTypeInputCopyBuilder settapNeutr(int tapNeutr) {
       this.tapNeutr = tapNeutr;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setTapMin(int tapMin) {
+    public Transformer3WTypeInputCopyBuilder settapMin(int tapMin) {
       this.tapMin = tapMin;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setTapMax(int tapMax) {
+    public Transformer3WTypeInputCopyBuilder settapMax(int tapMax) {
       this.tapMax = tapMax;
       return thisInstance();
     }
