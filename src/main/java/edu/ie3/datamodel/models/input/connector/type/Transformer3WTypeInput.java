@@ -197,6 +197,11 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   }
 
   @Override
+  public Transformer3WTypeInputCopyBuilder copy() {
+    return new Transformer3WTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof Transformer3WTypeInput that)) return false;
@@ -299,9 +304,8 @@ public class Transformer3WTypeInput extends AssetTypeInput {
    * Abstract class for all builder that build child entities of abstract class {@link
    * Transformer3WTypeInput}
    */
-  public abstract static class Transformer3WTypeInputCopyBuilder<
-          B extends Transformer3WTypeInput.Transformer3WTypeInputCopyBuilder<B>>
-      extends AssetTypeInput.AssetTypeInputCopyBuilder<B> {
+  public final static class Transformer3WTypeInputCopyBuilder
+      extends AssetTypeInput.AssetTypeInputCopyBuilder<Transformer3WTypeInputCopyBuilder> {
 
     private ComparableQuantity<Power> sRatedA;
     private ComparableQuantity<Power> sRatedB;
@@ -323,7 +327,7 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     private int tapMin;
     private int tapMax;
 
-    protected Transformer3WTypeInputCopyBuilder(Transformer3WTypeInput entity) {
+    private Transformer3WTypeInputCopyBuilder(Transformer3WTypeInput entity) {
       super(entity);
       this.sRatedA = entity.sRatedA;
       this.sRatedB = entity.sRatedB;
@@ -347,182 +351,131 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     }
 
     /** Setter */
-    public B setsRatedA(ComparableQuantity<Power> sRatedA) {
+    public Transformer3WTypeInputCopyBuilder setsRatedA(ComparableQuantity<Power> sRatedA) {
       this.sRatedA = sRatedA;
       return thisInstance();
     }
 
-    public B setsRatedB(ComparableQuantity<Power> sRatedB) {
+    public Transformer3WTypeInputCopyBuilder setsRatedB(ComparableQuantity<Power> sRatedB) {
       this.sRatedB = sRatedB;
       return thisInstance();
     }
 
-    public B setsRatedC(ComparableQuantity<Power> sRatedC) {
+    public Transformer3WTypeInputCopyBuilder setsRatedC(ComparableQuantity<Power> sRatedC) {
       this.sRatedC = sRatedC;
       return thisInstance();
     }
 
-    public B setvRatedA(ComparableQuantity<ElectricPotential> vRatedA) {
+    public Transformer3WTypeInputCopyBuilder setvRatedA(ComparableQuantity<ElectricPotential> vRatedA) {
       this.vRatedA = vRatedA;
       return thisInstance();
     }
 
-    public B setvRatedB(ComparableQuantity<ElectricPotential> vRatedB) {
+    public Transformer3WTypeInputCopyBuilder setvRatedB(ComparableQuantity<ElectricPotential> vRatedB) {
       this.vRatedB = vRatedB;
       return thisInstance();
     }
 
-    public B setrScA(ComparableQuantity<ElectricResistance> rScA) {
+    public Transformer3WTypeInputCopyBuilder setrScA(ComparableQuantity<ElectricResistance> rScA) {
       this.rScA = rScA;
       return thisInstance();
     }
 
-    public B setvRatedC(ComparableQuantity<ElectricPotential> vRatedC) {
+    public Transformer3WTypeInputCopyBuilder setvRatedC(ComparableQuantity<ElectricPotential> vRatedC) {
       this.vRatedC = vRatedC;
       return thisInstance();
     }
 
-    public B setrScB(ComparableQuantity<ElectricResistance> rScB) {
+    public Transformer3WTypeInputCopyBuilder setrScB(ComparableQuantity<ElectricResistance> rScB) {
       this.rScB = rScB;
       return thisInstance();
     }
 
-    public B setrScC(ComparableQuantity<ElectricResistance> rScC) {
+    public Transformer3WTypeInputCopyBuilder setrScC(ComparableQuantity<ElectricResistance> rScC) {
       this.rScC = rScC;
       return thisInstance();
     }
 
-    public B setxScA(ComparableQuantity<ElectricResistance> xScA) {
+    public Transformer3WTypeInputCopyBuilder setxScA(ComparableQuantity<ElectricResistance> xScA) {
       this.xScA = xScA;
       return thisInstance();
     }
 
-    public B setxScB(ComparableQuantity<ElectricResistance> xScB) {
+    public Transformer3WTypeInputCopyBuilder setxScB(ComparableQuantity<ElectricResistance> xScB) {
       this.xScB = xScB;
       return thisInstance();
     }
 
-    public B setxScC(ComparableQuantity<ElectricResistance> xScC) {
+    public Transformer3WTypeInputCopyBuilder setxScC(ComparableQuantity<ElectricResistance> xScC) {
       this.xScC = xScC;
       return thisInstance();
     }
 
-    public B setgM(ComparableQuantity<ElectricConductance> gM) {
+    public Transformer3WTypeInputCopyBuilder setgM(ComparableQuantity<ElectricConductance> gM) {
       this.gM = gM;
       return thisInstance();
     }
 
-    public B setbM(ComparableQuantity<ElectricConductance> bM) {
+    public Transformer3WTypeInputCopyBuilder setbM(ComparableQuantity<ElectricConductance> bM) {
       this.bM = bM;
       return thisInstance();
     }
 
-    public B setdV(ComparableQuantity<Dimensionless> dV) {
+    public Transformer3WTypeInputCopyBuilder setdV(ComparableQuantity<Dimensionless> dV) {
       this.dV = dV;
       return thisInstance();
     }
 
-    public B setdPhi(ComparableQuantity<Angle> dPhi) {
+    public Transformer3WTypeInputCopyBuilder setdPhi(ComparableQuantity<Angle> dPhi) {
       this.dPhi = dPhi;
       return thisInstance();
     }
 
-    public B setTapNeutr(int tapNeutr) {
+    public Transformer3WTypeInputCopyBuilder setTapNeutr(int tapNeutr) {
       this.tapNeutr = tapNeutr;
       return thisInstance();
     }
 
-    public B setTapMin(int tapMin) {
+    public Transformer3WTypeInputCopyBuilder setTapMin(int tapMin) {
       this.tapMin = tapMin;
       return thisInstance();
     }
 
-    public B setTapMax(int tapMax) {
+    public Transformer3WTypeInputCopyBuilder setTapMax(int tapMax) {
       this.tapMax = tapMax;
       return thisInstance();
     }
 
-    /** Getter */
-    public ComparableQuantity<Power> getsRatedA() {
-      return sRatedA;
-    }
+      @Override
+      public Transformer3WTypeInput build() {
+          return new Transformer3WTypeInput(
+                  getUuid(),
+                  getId(),
+                  sRatedA,
+                  sRatedB,
+                  sRatedC,
+                  vRatedA,
+                  vRatedB,
+                  vRatedC,
+                  rScA,
+                  rScB,
+                  rScC,
+                  xScA,
+                  xScB,
+                  xScC,
+                  gM,
+                  bM,
+                  dV,
+                  dPhi,
+                  tapNeutr,
+                  tapMin,
+                  tapMax
+          );
+      }
 
-    public ComparableQuantity<Power> getsRatedB() {
-      return sRatedB;
-    }
-
-    public ComparableQuantity<Power> getsRatedC() {
-      return sRatedC;
-    }
-
-    public ComparableQuantity<ElectricPotential> getvRatedA() {
-      return vRatedA;
-    }
-
-    public ComparableQuantity<ElectricPotential> getvRatedB() {
-      return vRatedB;
-    }
-
-    public ComparableQuantity<ElectricPotential> getvRatedC() {
-      return vRatedC;
-    }
-
-    public ComparableQuantity<ElectricResistance> getrScA() {
-      return rScA;
-    }
-
-    public ComparableQuantity<ElectricResistance> getrScB() {
-      return rScB;
-    }
-
-    public ComparableQuantity<ElectricResistance> getrScC() {
-      return rScC;
-    }
-
-    public ComparableQuantity<ElectricResistance> getxScA() {
-      return xScA;
-    }
-
-    public ComparableQuantity<ElectricResistance> getxScB() {
-      return xScB;
-    }
-
-    public ComparableQuantity<ElectricResistance> getxScC() {
-      return xScC;
-    }
-
-    public ComparableQuantity<ElectricConductance> getgM() {
-      return gM;
-    }
-
-    public ComparableQuantity<ElectricConductance> getbM() {
-      return bM;
-    }
-
-    public ComparableQuantity<Dimensionless> getdV() {
-      return dV;
-    }
-
-    public ComparableQuantity<Angle> getdPhi() {
-      return dPhi;
-    }
-
-    public int getTapNeutr() {
-      return tapNeutr;
-    }
-
-    public int getTapMin() {
-      return tapMin;
-    }
-
-    public int getTapMax() {
-      return tapMax;
-    }
-
-    @Override
-    public abstract Transformer2WTypeInput build();
-
-    @Override
-    protected abstract B thisInstance();
+      @Override
+      protected Transformer3WTypeInputCopyBuilder thisInstance() {
+          return this;
+      }
   }
 }

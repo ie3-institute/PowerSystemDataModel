@@ -83,6 +83,11 @@ public class LineTypeInput extends AssetTypeInput {
   }
 
   @Override
+  public LineTypeInputCopyBuilder copy() {
+    return new LineTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof LineTypeInput that)) return false;
@@ -126,9 +131,8 @@ public class LineTypeInput extends AssetTypeInput {
    * Abstract class for all builder that build child entities of abstract class {@link
    * LineTypeInput}
    */
-  public abstract static class LineTypeInputCopyBuilder<
-          B extends LineTypeInput.LineTypeInputCopyBuilder<B>>
-      extends AssetTypeInput.AssetTypeInputCopyBuilder<B> {
+  public final static class LineTypeInputCopyBuilder
+      extends AssetTypeInput.AssetTypeInputCopyBuilder<LineTypeInputCopyBuilder> {
 
     private ComparableQuantity<SpecificConductance> b;
     private ComparableQuantity<SpecificConductance> g;
@@ -148,65 +152,53 @@ public class LineTypeInput extends AssetTypeInput {
     }
 
     /** Setter */
-    public B setB(ComparableQuantity<SpecificConductance> b) {
+    public LineTypeInputCopyBuilder setB(ComparableQuantity<SpecificConductance> b) {
       this.b = b;
       return thisInstance();
     }
 
-    public B setG(ComparableQuantity<SpecificConductance> g) {
+    public LineTypeInputCopyBuilder setG(ComparableQuantity<SpecificConductance> g) {
       this.g = g;
       return thisInstance();
     }
 
-    public B setR(ComparableQuantity<SpecificResistance> r) {
+    public LineTypeInputCopyBuilder setR(ComparableQuantity<SpecificResistance> r) {
       this.r = r;
       return thisInstance();
     }
 
-    public B setX(ComparableQuantity<SpecificResistance> x) {
+    public LineTypeInputCopyBuilder setX(ComparableQuantity<SpecificResistance> x) {
       this.x = x;
       return thisInstance();
     }
 
-    public B setiMax(ComparableQuantity<ElectricCurrent> iMax) {
+    public LineTypeInputCopyBuilder setiMax(ComparableQuantity<ElectricCurrent> iMax) {
       this.iMax = iMax;
       return thisInstance();
     }
 
-    public B setvRated(ComparableQuantity<ElectricPotential> vRated) {
+    public LineTypeInputCopyBuilder setvRated(ComparableQuantity<ElectricPotential> vRated) {
       this.vRated = vRated;
       return thisInstance();
     }
 
-    /** Getter */
-    public ComparableQuantity<SpecificConductance> getB() {
-      return b;
-    }
-
-    public ComparableQuantity<SpecificConductance> getG() {
-      return g;
-    }
-
-    public ComparableQuantity<SpecificResistance> getR() {
-      return r;
-    }
-
-    public ComparableQuantity<SpecificResistance> getX() {
-      return x;
-    }
-
-    public ComparableQuantity<ElectricCurrent> getiMax() {
-      return iMax;
-    }
-
-    public ComparableQuantity<ElectricPotential> getvRated() {
-      return vRated;
-    }
-
     @Override
-    public abstract LineTypeInput build();
+    public LineTypeInput build(){
+      return new LineTypeInput(
+              getUuid(),
+              getId(),
+              b,
+              g,
+              r,
+              x,
+              iMax,
+              vRated);
+    }
 
-    @Override
-    protected abstract B thisInstance();
+
+      @Override
+      protected LineTypeInputCopyBuilder thisInstance() {
+          return this;
+      }
   }
 }

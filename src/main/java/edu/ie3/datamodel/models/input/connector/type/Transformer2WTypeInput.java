@@ -143,6 +143,11 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   }
 
   @Override
+  public Transformer2WTypeInputCopyBuilder copy() {
+    return new Transformer2WTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof Transformer2WTypeInput that)) return false;
@@ -221,9 +226,8 @@ public class Transformer2WTypeInput extends AssetTypeInput {
    * Abstract class for all builder that build child entities of abstract class {@link
    * Transformer2WTypeInput}
    */
-  public abstract static class Transformer2WTypeInputCopyBuilder<
-          B extends Transformer2WTypeInputCopyBuilder<B>>
-      extends AssetTypeInput.AssetTypeInputCopyBuilder<B> {
+  public final static class Transformer2WTypeInputCopyBuilder
+      extends AssetTypeInput.AssetTypeInputCopyBuilder<Transformer2WTypeInputCopyBuilder> {
 
     private ComparableQuantity<ElectricResistance> rSc;
     private ComparableQuantity<ElectricResistance> xSc;
@@ -239,7 +243,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     private int tapMin;
     private int tapMax;
 
-    protected Transformer2WTypeInputCopyBuilder(Transformer2WTypeInput entity) {
+    private Transformer2WTypeInputCopyBuilder(Transformer2WTypeInput entity) {
       super(entity);
       this.rSc = entity.rSc;
       this.xSc = entity.xSc;
@@ -257,128 +261,96 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     }
 
     /** Setter */
-    public B setRSc(ComparableQuantity<ElectricResistance> rSc) {
+    public Transformer2WTypeInputCopyBuilder setRSc(ComparableQuantity<ElectricResistance> rSc) {
       this.rSc = rSc;
       return thisInstance();
     }
 
-    public B setXSc(ComparableQuantity<ElectricResistance> xSc) {
+    public Transformer2WTypeInputCopyBuilder setXSc(ComparableQuantity<ElectricResistance> xSc) {
       this.xSc = xSc;
       return thisInstance();
     }
 
-    public B setsRated(ComparableQuantity<Power> sRated) {
+    public Transformer2WTypeInputCopyBuilder setsRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
       return thisInstance();
     }
 
-    public B setvRatedA(ComparableQuantity<ElectricPotential> vRatedA) {
+    public Transformer2WTypeInputCopyBuilder setvRatedA(ComparableQuantity<ElectricPotential> vRatedA) {
       this.vRatedA = vRatedA;
       return thisInstance();
     }
 
-    public B setvRatedB(ComparableQuantity<ElectricPotential> vRatedB) {
+    public Transformer2WTypeInputCopyBuilder setvRatedB(ComparableQuantity<ElectricPotential> vRatedB) {
       this.vRatedB = vRatedB;
       return thisInstance();
     }
 
-    public B setgM(ComparableQuantity<ElectricConductance> gM) {
+    public Transformer2WTypeInputCopyBuilder setgM(ComparableQuantity<ElectricConductance> gM) {
       this.gM = gM;
       return thisInstance();
     }
 
-    public B setbM(ComparableQuantity<ElectricConductance> bM) {
+    public Transformer2WTypeInputCopyBuilder setbM(ComparableQuantity<ElectricConductance> bM) {
       this.bM = bM;
       return thisInstance();
     }
 
-    public B setdV(ComparableQuantity<Dimensionless> dV) {
+    public Transformer2WTypeInputCopyBuilder setdV(ComparableQuantity<Dimensionless> dV) {
       this.dV = dV;
       return thisInstance();
     }
 
-    public B setdPhi(ComparableQuantity<Angle> dPhi) {
+    public Transformer2WTypeInputCopyBuilder setdPhi(ComparableQuantity<Angle> dPhi) {
       this.dPhi = dPhi;
       return thisInstance();
     }
 
-    public B settapSide(boolean tapSide) {
+    public Transformer2WTypeInputCopyBuilder settapSide(boolean tapSide) {
       this.tapSide = tapSide;
       return thisInstance();
     }
 
-    public B settapNeutr(int tapNeutr) {
+    public Transformer2WTypeInputCopyBuilder settapNeutr(int tapNeutr) {
       this.tapNeutr = tapNeutr;
       return thisInstance();
     }
 
-    public B settapMin(int tapMin) {
+    public Transformer2WTypeInputCopyBuilder settapMin(int tapMin) {
       this.tapMin = tapMin;
       return thisInstance();
     }
 
-    public B settapMax(int tapMax) {
+    public Transformer2WTypeInputCopyBuilder settapMax(int tapMax) {
       this.tapMax = tapMax;
       return thisInstance();
     }
 
-    /** Getter */
-    public ComparableQuantity<ElectricResistance> getrSc() {
-      return rSc;
-    }
 
-    public ComparableQuantity<ElectricResistance> getxSc() {
-      return xSc;
-    }
+      @Override
+      public Transformer2WTypeInput build() {
+          return new Transformer2WTypeInput(
+                  getUuid(),
+                  getId(),
+                  rSc,
+                  xSc,
+                  sRated,
+                  vRatedA,
+                  vRatedB,
+                  gM,
+                  bM,
+                  dV,
+                  dPhi,
+                  tapSide,
+                  tapNeutr,
+                  tapMin,
+                  tapMax
+          );
+      }
 
-    public ComparableQuantity<Power> getsRated() {
-      return sRated;
-    }
-
-    public ComparableQuantity<ElectricPotential> getvRatedA() {
-      return vRatedA;
-    }
-
-    public ComparableQuantity<ElectricPotential> getvRatedB() {
-      return vRatedB;
-    }
-
-    public ComparableQuantity<ElectricConductance> getgM() {
-      return gM;
-    }
-
-    public ComparableQuantity<ElectricConductance> getbM() {
-      return bM;
-    }
-
-    public ComparableQuantity<Dimensionless> getdV() {
-      return dV;
-    }
-
-    public ComparableQuantity<Angle> getdPhi() {
-      return dPhi;
-    }
-
-    public boolean isTapSide() {
-      return tapSide;
-    }
-
-    public int getTapNeutr() {
-      return tapNeutr;
-    }
-
-    public int getTapMin() {
-      return tapMin;
-    }
-
-    public int getTapMax() {
-      return tapMax;
-    }
-
-    @Override
-    public abstract Transformer2WTypeInput build();
-
-    @Override
-    protected abstract B thisInstance();
+      @Override
+      protected Transformer2WTypeInputCopyBuilder thisInstance() {
+          return this;
+      }
   }
 }
