@@ -172,12 +172,12 @@ public class LineTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    public LineTypeInputCopyBuilder setiMax(ComparableQuantity<ElectricCurrent> iMax) {
+    public LineTypeInputCopyBuilder setIMax(ComparableQuantity<ElectricCurrent> iMax) {
       this.iMax = iMax;
       return thisInstance();
     }
 
-    public LineTypeInputCopyBuilder setvRated(ComparableQuantity<ElectricPotential> vRated) {
+    public LineTypeInputCopyBuilder setVRated(ComparableQuantity<ElectricPotential> vRated) {
       this.vRated = vRated;
       return thisInstance();
     }

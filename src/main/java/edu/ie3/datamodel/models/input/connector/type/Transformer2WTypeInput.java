@@ -261,69 +261,69 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     }
 
     /** Setter */
-    public Transformer2WTypeInputCopyBuilder setrSc(ComparableQuantity<ElectricResistance> rSc) {
+    public Transformer2WTypeInputCopyBuilder setRSc(ComparableQuantity<ElectricResistance> rSc) {
       this.rSc = rSc;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setxSc(ComparableQuantity<ElectricResistance> xSc) {
+    public Transformer2WTypeInputCopyBuilder setXSc(ComparableQuantity<ElectricResistance> xSc) {
       this.xSc = xSc;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setsRated(ComparableQuantity<Power> sRated) {
+    public Transformer2WTypeInputCopyBuilder setSRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setvRatedA(
+    public Transformer2WTypeInputCopyBuilder setVRatedA(
         ComparableQuantity<ElectricPotential> vRatedA) {
       this.vRatedA = vRatedA;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setvRatedB(
+    public Transformer2WTypeInputCopyBuilder setVRatedB(
         ComparableQuantity<ElectricPotential> vRatedB) {
       this.vRatedB = vRatedB;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setgM(ComparableQuantity<ElectricConductance> gM) {
+    public Transformer2WTypeInputCopyBuilder setGM(ComparableQuantity<ElectricConductance> gM) {
       this.gM = gM;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setbM(ComparableQuantity<ElectricConductance> bM) {
+    public Transformer2WTypeInputCopyBuilder setBM(ComparableQuantity<ElectricConductance> bM) {
       this.bM = bM;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setdV(ComparableQuantity<Dimensionless> dV) {
+    public Transformer2WTypeInputCopyBuilder setDV(ComparableQuantity<Dimensionless> dV) {
       this.dV = dV;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder setdPhi(ComparableQuantity<Angle> dPhi) {
+    public Transformer2WTypeInputCopyBuilder setDPhi(ComparableQuantity<Angle> dPhi) {
       this.dPhi = dPhi;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder settapSide(boolean tapSide) {
+    public Transformer2WTypeInputCopyBuilder setTapSide(boolean tapSide) {
       this.tapSide = tapSide;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder settapNeutr(int tapNeutr) {
+    public Transformer2WTypeInputCopyBuilder setTapNeutr(int tapNeutr) {
       this.tapNeutr = tapNeutr;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder settapMin(int tapMin) {
+    public Transformer2WTypeInputCopyBuilder setTapMin(int tapMin) {
       this.tapMin = tapMin;
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder settapMax(int tapMax) {
+    public Transformer2WTypeInputCopyBuilder setTapMax(int tapMax) {
       this.tapMax = tapMax;
       return thisInstance();
     }

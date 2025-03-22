@@ -351,100 +351,100 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     }
 
     /** Setter */
-    public Transformer3WTypeInputCopyBuilder setsRatedA(ComparableQuantity<Power> sRatedA) {
+    public Transformer3WTypeInputCopyBuilder setSRatedA(ComparableQuantity<Power> sRatedA) {
       this.sRatedA = sRatedA;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setsRatedB(ComparableQuantity<Power> sRatedB) {
+    public Transformer3WTypeInputCopyBuilder setSRatedB(ComparableQuantity<Power> sRatedB) {
       this.sRatedB = sRatedB;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setsRatedC(ComparableQuantity<Power> sRatedC) {
+    public Transformer3WTypeInputCopyBuilder setSRatedC(ComparableQuantity<Power> sRatedC) {
       this.sRatedC = sRatedC;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setvRatedA(
+    public Transformer3WTypeInputCopyBuilder setVRatedA(
         ComparableQuantity<ElectricPotential> vRatedA) {
       this.vRatedA = vRatedA;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setvRatedB(
+    public Transformer3WTypeInputCopyBuilder setVRatedB(
         ComparableQuantity<ElectricPotential> vRatedB) {
       this.vRatedB = vRatedB;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setrScA(ComparableQuantity<ElectricResistance> rScA) {
+    public Transformer3WTypeInputCopyBuilder setRScA(ComparableQuantity<ElectricResistance> rScA) {
       this.rScA = rScA;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setvRatedC(
+    public Transformer3WTypeInputCopyBuilder setVRatedC(
         ComparableQuantity<ElectricPotential> vRatedC) {
       this.vRatedC = vRatedC;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setrScB(ComparableQuantity<ElectricResistance> rScB) {
+    public Transformer3WTypeInputCopyBuilder setRScB(ComparableQuantity<ElectricResistance> rScB) {
       this.rScB = rScB;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setrScC(ComparableQuantity<ElectricResistance> rScC) {
+    public Transformer3WTypeInputCopyBuilder setRScC(ComparableQuantity<ElectricResistance> rScC) {
       this.rScC = rScC;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setxScA(ComparableQuantity<ElectricResistance> xScA) {
+    public Transformer3WTypeInputCopyBuilder setXScA(ComparableQuantity<ElectricResistance> xScA) {
       this.xScA = xScA;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setxScB(ComparableQuantity<ElectricResistance> xScB) {
+    public Transformer3WTypeInputCopyBuilder setXScB(ComparableQuantity<ElectricResistance> xScB) {
       this.xScB = xScB;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setxScC(ComparableQuantity<ElectricResistance> xScC) {
+    public Transformer3WTypeInputCopyBuilder setXScC(ComparableQuantity<ElectricResistance> xScC) {
       this.xScC = xScC;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setgM(ComparableQuantity<ElectricConductance> gM) {
+    public Transformer3WTypeInputCopyBuilder setGM(ComparableQuantity<ElectricConductance> gM) {
       this.gM = gM;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setbM(ComparableQuantity<ElectricConductance> bM) {
+    public Transformer3WTypeInputCopyBuilder setBM(ComparableQuantity<ElectricConductance> bM) {
       this.bM = bM;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setdV(ComparableQuantity<Dimensionless> dV) {
+    public Transformer3WTypeInputCopyBuilder setDV(ComparableQuantity<Dimensionless> dV) {
       this.dV = dV;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder setdPhi(ComparableQuantity<Angle> dPhi) {
+    public Transformer3WTypeInputCopyBuilder setDPhi(ComparableQuantity<Angle> dPhi) {
       this.dPhi = dPhi;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder settapNeutr(int tapNeutr) {
+    public Transformer3WTypeInputCopyBuilder setTapNeutr(int tapNeutr) {
       this.tapNeutr = tapNeutr;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder settapMin(int tapMin) {
+    public Transformer3WTypeInputCopyBuilder setTapMin(int tapMin) {
       this.tapMin = tapMin;
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder settapMax(int tapMax) {
+    public Transformer3WTypeInputCopyBuilder setTapMax(int tapMax) {
       this.tapMax = tapMax;
       return thisInstance();
     }

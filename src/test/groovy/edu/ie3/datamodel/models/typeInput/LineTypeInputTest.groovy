@@ -25,8 +25,8 @@ class LineTypeInputTest extends Specification {
         .setG(Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE))
         .setR(Quantities.getQuantity(0.5d, PowerSystemUnits.OHM_PER_KILOMETRE))
         .setX(Quantities.getQuantity(0.4d, PowerSystemUnits.OHM_PER_KILOMETRE))
-        .setiMax(Quantities.getQuantity(310d, Units.AMPERE))
-        .setvRated(Quantities.getQuantity(30d, Units.VOLT))
+        .setIMax(Quantities.getQuantity(310d, Units.AMPERE))
+        .setVRated(Quantities.getQuantity(30d, Units.VOLT))
         .build()
 
     then:
