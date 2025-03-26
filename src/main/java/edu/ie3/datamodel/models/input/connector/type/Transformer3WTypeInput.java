@@ -378,14 +378,14 @@ public class Transformer3WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    public Transformer3WTypeInputCopyBuilder rScA(ComparableQuantity<ElectricResistance> rScA) {
-      this.rScA = rScA;
-      return thisInstance();
-    }
-
     public Transformer3WTypeInputCopyBuilder vRatedC(
         ComparableQuantity<ElectricPotential> vRatedC) {
       this.vRatedC = vRatedC;
+      return thisInstance();
+    }
+
+    public Transformer3WTypeInputCopyBuilder rScA(ComparableQuantity<ElectricResistance> rScA) {
+      this.rScA = rScA;
       return thisInstance();
     }
 
