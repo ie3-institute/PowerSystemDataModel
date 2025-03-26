@@ -119,22 +119,22 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
       this.cosPhiRated = entity.getCosPhiRated();
     }
 
-    public B setCapex(ComparableQuantity<Currency> capex) {
+    public B capex(ComparableQuantity<Currency> capex) {
       this.capex = capex;
       return thisInstance();
     }
 
-    public B setOpex(ComparableQuantity<EnergyPrice> opex) {
+    public B opex(ComparableQuantity<EnergyPrice> opex) {
       this.opex = opex;
       return thisInstance();
     }
 
-    public B setsRated(ComparableQuantity<Power> sRated) {
+    public B sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
       return thisInstance();
     }
 
-    public B setCosPhiRated(double cosPhiRated) {
+    public B cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
       return thisInstance();
     }
