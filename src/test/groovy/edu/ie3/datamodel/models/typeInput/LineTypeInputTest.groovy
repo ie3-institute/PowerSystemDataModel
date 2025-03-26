@@ -21,12 +21,12 @@ class LineTypeInputTest extends Specification {
     when:
     def alteredUnit = lineTypeInput.copy()
         .id("lineTypeInput_copy")
-        .setB(Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE))
-        .setG(Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE))
-        .setR(Quantities.getQuantity(0.5d, PowerSystemUnits.OHM_PER_KILOMETRE))
-        .setX(Quantities.getQuantity(0.4d, PowerSystemUnits.OHM_PER_KILOMETRE))
-        .setIMax(Quantities.getQuantity(310d, Units.AMPERE))
-        .setVRated(Quantities.getQuantity(30d, Units.VOLT))
+        .b(Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE))
+        .g(Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE))
+        .r(Quantities.getQuantity(0.5d, PowerSystemUnits.OHM_PER_KILOMETRE))
+        .x(Quantities.getQuantity(0.4d, PowerSystemUnits.OHM_PER_KILOMETRE))
+        .iMax(Quantities.getQuantity(310d, Units.AMPERE))
+        .vRated(Quantities.getQuantity(30d, Units.VOLT))
         .build()
 
     then:

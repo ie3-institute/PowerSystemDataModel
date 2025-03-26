@@ -96,7 +96,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
       this.pThermal = entity.getpThermal();
     }
 
-    public HpTypeInputCopyBuilder setpThermal(ComparableQuantity<Power> pThermal) {
+    public HpTypeInputCopyBuilder pThermal(ComparableQuantity<Power> pThermal) {
       this.pThermal = pThermal;
       return thisInstance();
     }
@@ -107,9 +107,9 @@ public class HpTypeInput extends SystemParticipantTypeInput {
 
     @Override
     public HpTypeInput.HpTypeInputCopyBuilder scale(Double factor) {
-      setCapex(getCapex().multiply(factor));
-      setsRated(getsRated().multiply(factor));
-      setpThermal(getpThermal().multiply(factor));
+      capex(getCapex().multiply(factor));
+      sRated(getsRated().multiply(factor));
+      pThermal(getpThermal().multiply(factor));
       return thisInstance();
     }
 

@@ -152,32 +152,32 @@ public class LineTypeInput extends AssetTypeInput {
     }
 
     /** Setter */
-    public LineTypeInputCopyBuilder setB(ComparableQuantity<SpecificConductance> b) {
+    public LineTypeInputCopyBuilder b(ComparableQuantity<SpecificConductance> b) {
       this.b = b;
       return thisInstance();
     }
 
-    public LineTypeInputCopyBuilder setG(ComparableQuantity<SpecificConductance> g) {
+    public LineTypeInputCopyBuilder g(ComparableQuantity<SpecificConductance> g) {
       this.g = g;
       return thisInstance();
     }
 
-    public LineTypeInputCopyBuilder setR(ComparableQuantity<SpecificResistance> r) {
+    public LineTypeInputCopyBuilder r(ComparableQuantity<SpecificResistance> r) {
       this.r = r;
       return thisInstance();
     }
 
-    public LineTypeInputCopyBuilder setX(ComparableQuantity<SpecificResistance> x) {
+    public LineTypeInputCopyBuilder x(ComparableQuantity<SpecificResistance> x) {
       this.x = x;
       return thisInstance();
     }
 
-    public LineTypeInputCopyBuilder setIMax(ComparableQuantity<ElectricCurrent> iMax) {
+    public LineTypeInputCopyBuilder iMax(ComparableQuantity<ElectricCurrent> iMax) {
       this.iMax = iMax;
       return thisInstance();
     }
 
-    public LineTypeInputCopyBuilder setVRated(ComparableQuantity<ElectricPotential> vRated) {
+    public LineTypeInputCopyBuilder vRated(ComparableQuantity<ElectricPotential> vRated) {
       this.vRated = vRated;
       return thisInstance();
     }
