@@ -96,12 +96,12 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
 
     public NodeGraphicInputCopyBuilder point(Point point) {
       this.point = point;
-      return this;
+      return thisInstance();
     }
 
     public NodeGraphicInputCopyBuilder node(NodeInput node) {
       this.node = node;
-      return this;
+      return thisInstance();
     }
 
     @Override
