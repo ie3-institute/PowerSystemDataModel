@@ -61,7 +61,7 @@ This reflects a simple shoe box with transmission losses
      - –
      - Type of building can either be house or flat
      
-   * - numberInhabititans
+   * - numberInhabitants
      - –
      - Number of people living in the house. Double values to enable modeling based on statistical data sources.
 
