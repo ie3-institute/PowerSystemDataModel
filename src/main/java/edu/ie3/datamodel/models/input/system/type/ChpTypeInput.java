@@ -138,22 +138,22 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       this.pOwn = entity.getpOwn();
     }
 
-    public ChpTypeInputCopyBuilder setEtaEl(ComparableQuantity<Dimensionless> etaEl) {
+    public ChpTypeInputCopyBuilder etaEl(ComparableQuantity<Dimensionless> etaEl) {
       this.etaEl = etaEl;
       return thisInstance();
     }
 
-    public ChpTypeInputCopyBuilder setEtaThermal(ComparableQuantity<Dimensionless> etaThermal) {
+    public ChpTypeInputCopyBuilder etaThermal(ComparableQuantity<Dimensionless> etaThermal) {
       this.etaThermal = etaThermal;
       return thisInstance();
     }
 
-    public ChpTypeInputCopyBuilder setpThermal(ComparableQuantity<Power> pThermal) {
+    public ChpTypeInputCopyBuilder pThermal(ComparableQuantity<Power> pThermal) {
       this.pThermal = pThermal;
       return thisInstance();
     }
 
-    public ChpTypeInputCopyBuilder setpOwn(ComparableQuantity<Power> pOwn) {
+    public ChpTypeInputCopyBuilder pOwn(ComparableQuantity<Power> pOwn) {
       this.pOwn = pOwn;
       return thisInstance();
     }
@@ -176,10 +176,10 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
 
     @Override
     public ChpTypeInput.ChpTypeInputCopyBuilder scale(Double factor) {
-      setCapex(getCapex().multiply(factor));
-      setsRated(getsRated().multiply(factor));
-      setpThermal(getpThermal().multiply(factor));
-      setpOwn(getpOwn().multiply(factor));
+      capex(getCapex().multiply(factor));
+      sRated(getsRated().multiply(factor));
+      pThermal(getpThermal().multiply(factor));
+      pOwn(getpOwn().multiply(factor));
       return thisInstance();
     }
 

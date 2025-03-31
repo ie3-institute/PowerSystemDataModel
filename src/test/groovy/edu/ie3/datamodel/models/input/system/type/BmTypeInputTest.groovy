@@ -21,9 +21,9 @@ class BmTypeInputTest extends Specification {
 
     when:
     def alteredUnit = bmTypeInput.copy()
-        .setsRated(Quantities.getQuantity(50d, ACTIVE_POWER_IN))
-        .setCapex(Quantities.getQuantity(110d, CAPEX))
-        .setOpex(Quantities.getQuantity(20d, ENERGY_PRICE))
+        .sRated(Quantities.getQuantity(50d, ACTIVE_POWER_IN))
+        .capex(Quantities.getQuantity(110d, CAPEX))
+        .opex(Quantities.getQuantity(20d, ENERGY_PRICE))
         .build()
 
     then:
