@@ -12,8 +12,10 @@ import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
+import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import edu.ie3.util.quantities.PowerSystemUnits;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 import javax.measure.quantity.Energy;
@@ -86,6 +88,12 @@ public class RandomLoadProfileFactory
   @Override
   public RandomLoadProfile parseProfile(String profile) {
     return RANDOM_LOAD_PROFILE;
+  }
+
+  @Override
+  public LoadValues.Provider buildProvider(
+      RandomLoadValues loadValue, ZonedDateTime time, RandomLoadProfile loadProfile) {
+    return last -> loadValue.sample(time);
   }
 
   /**

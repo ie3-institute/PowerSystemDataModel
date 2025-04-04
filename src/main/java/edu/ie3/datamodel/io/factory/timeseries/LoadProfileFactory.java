@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.util.quantities.PowerSystemUnits;
+import java.time.ZonedDateTime;
 import java.util.Set;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -36,6 +37,16 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
       LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<V>> entries);
 
   public abstract P parseProfile(String profile);
+
+  /**
+   * Method to build a {@link LoadValues.Provider}.
+   *
+   * @param loadValue used for the provider
+   * @param time used for the provider
+   * @param loadProfile used for the provider
+   * @return a value provider
+   */
+  public abstract LoadValues.Provider buildProvider(V loadValue, ZonedDateTime time, P loadProfile);
 
   /**
    * Calculates the maximum average power consumption per quarter-hour for a given calculated over

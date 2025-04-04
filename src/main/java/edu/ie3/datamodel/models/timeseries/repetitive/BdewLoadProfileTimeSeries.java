@@ -7,6 +7,8 @@ package edu.ie3.datamodel.models.timeseries.repetitive;
 
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
+import edu.ie3.datamodel.models.value.load.LoadValues;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -27,6 +29,11 @@ public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadVal
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
     super(uuid, loadProfile, values, maxPower, profileEnergyScaling);
+  }
+
+  @Override
+  protected LoadValues.Provider buildFunction(BdewLoadValues loadValue, ZonedDateTime time) {
+    return last -> loadValue.getValue(time, (BdewStandardLoadProfile) loadProfile);
   }
 
   @Override
