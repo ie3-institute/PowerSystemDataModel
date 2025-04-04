@@ -19,8 +19,8 @@ class HpTypeInputTest extends Specification {
 
     when:
     def alteredUnit = hpTypeInput.copy()
-        .setpThermal(Quantities.getQuantity(10, ACTIVE_POWER_IN))
-        .setCosPhiRated(0.97d)
+        .pThermal(Quantities.getQuantity(10, ACTIVE_POWER_IN))
+        .cosPhiRated(0.97d)
         .build()
 
     then:
