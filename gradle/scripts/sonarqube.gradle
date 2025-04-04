@@ -14,7 +14,7 @@ sonarqube {
       'src/test/groovy'] // test src dirs
     // reports stuff (for all languages)
     property 'sonar.junit.reportPaths', [
-      'build/test-results/allTests'] // Comma-delimited list of paths to Surefire XML-format reports.
+      'build/test-results/test'] // Comma-delimited list of paths to Surefire XML-format reports.
     // unit tests reports dirs
     property "sonar.coverage.jacoco.xmlReportsPath", [
       "build/reports/jacoco/test/jacocoTestReport.xml"] // Comma-separated list of paths to JaCoCo (jacoco.xml) report files.

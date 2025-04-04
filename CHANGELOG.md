@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Implemented GitHub Actions for automatic code integration. [#1237](https://github.com/ie3-institute/PowerSystemDataModel/issues/1237)
+- Added `CopyBuilders` to `Line-/Transformer2W-/Tranformer3WTypeInput` [#1275](https://github.com/ie3-institute/PowerSystemDataModel/issues/1275)
 
 ### Fixed
-
+- Fixed SonarQube junit path issue in GitHub Actions [#1284](https://github.com/ie3-institute/PowerSystemDataModel/issues/1284)
 ### Changed
 - Replaced `return this` with `return thisInstance` in CopyBuilders [#1250](https://github.com/ie3-institute/PowerSystemDataModel/issues/1250)
 - Enhancing load profile source [#1294](https://github.com/ie3-institute/PowerSystemDataModel/issues/1294)
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added domestic hot water storage model [#1257](https://github.com/ie3-institute/PowerSystemDataModel/issues/1257)
 - Validation for BDEW load profile values [#1243](https://github.com/ie3-institute/PowerSystemDataModel/issues/1243)
 - Added load profiles sources [#1106](https://github.com/ie3-institute/PowerSystemDataModel/issues/1106)
+- Add `v2gSupport` parameter to documentation of `EvcsModel` [#1278](https://github.com/ie3-institute/PowerSystemDataModel/issues/1278)
 
 ### Fixed
 - Removing opened `SwitchInput` during connectivity check [#1221](https://github.com/ie3-institute/PowerSystemDataModel/issues/1221)

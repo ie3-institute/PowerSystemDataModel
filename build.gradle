@@ -9,7 +9,7 @@ plugins {
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "6.0.1.5171" // sonarqube
+  id "org.sonarqube" version "6.1.0.5360" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
   id "com.github.johnrengelman.shadow" version "8.1.1" // fat jar
 }
@@ -45,6 +45,7 @@ apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 apply from: scriptsLocation + 'sonarqube.gradle'
 apply from: scriptsLocation + 'vcs.gradle'
 apply from: scriptsLocation + 'semVer.gradle'
+apply from: scriptsLocation + 'branchName.gradle' // checks naming scheme of branches
 
 repositories {
   mavenCentral() // searches in Sonatype's repository 'Maven Central'
@@ -80,7 +81,7 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.4' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.17.2' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.17.5' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
@@ -96,8 +97,8 @@ dependencies {
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
   // Databases
-  implementation 'org.influxdb:influxdb-java:2.24'
-  implementation 'com.couchbase.client:java-client:3.7.8'
+  implementation 'org.influxdb:influxdb-java:2.25'
+  implementation 'com.couchbase.client:java-client:3.7.9'
   runtimeOnly 'org.postgresql:postgresql:42.7.5' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.18.0' // I/O functionalities
@@ -114,7 +115,7 @@ tasks.withType(Javadoc){
   failOnError = false // TODO: Temp until JavaDoc issues are resolved
 }
 
-task printVersion {
+tasks.register('printVersion') {
   doLast {
     println project.version
   }
