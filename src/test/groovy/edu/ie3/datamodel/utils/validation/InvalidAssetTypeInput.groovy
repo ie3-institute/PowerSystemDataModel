@@ -12,6 +12,10 @@ class InvalidAssetTypeInput extends AssetTypeInput {
     super(uuid, id)
   }
 
+  AssetTypeInputCopyBuilder copy() {
+    return null
+  }
+
   InvalidAssetTypeInput() {
     super(UUID.randomUUID(), "invalid_asset_type")
   }
