@@ -13,7 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed SonarQube junit path issue in GitHub Actions [#1284](https://github.com/ie3-institute/PowerSystemDataModel/issues/1284)
-### Changed
+- Fix returning null in TimeBasedWeatherValueData [#356](https://github.com/ie3-institute/PowerSystemDataModel/issues/356)
+
+- ### Changed
 - Replaced `return this` with `return thisInstance` in CopyBuilders [#1250](https://github.com/ie3-institute/PowerSystemDataModel/issues/1250)
 
 ## [6.0.0] - 2025-02-27
