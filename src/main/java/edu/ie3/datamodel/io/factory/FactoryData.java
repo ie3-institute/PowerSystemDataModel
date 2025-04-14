@@ -73,7 +73,9 @@ public abstract class FactoryData {
    * @param unit unit of Quantity
    * @param <Q> unit type parameter
    * @return Quantity of given field with given unit
+   * @deprecated Use {@link #getQuantityOptional(String, Unit)} instead.
    */
+  @Deprecated
   public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
     return Quantities.getQuantity(getDouble(field), unit);
   }

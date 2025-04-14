@@ -7,10 +7,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.models.value.WeatherValue;
 import java.util.Map;
-import javax.measure.Quantity;
-import javax.measure.Unit;
 import org.locationtech.jts.geom.Point;
-import tech.units.indriya.ComparableQuantity;
 
 public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> {
 
@@ -29,11 +26,6 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
 
   public Point getCoordinate() {
     return coordinate;
-  }
-
-  @Override
-  public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
-    return getField(field).isEmpty() ? null : super.getQuantity(field, unit);
   }
 
   @Override

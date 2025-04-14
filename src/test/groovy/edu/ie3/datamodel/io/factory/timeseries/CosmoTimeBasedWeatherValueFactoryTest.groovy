@@ -34,12 +34,12 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
     def expectedResults = new TimeBasedValue(
-        time, new WeatherValue(coordinate,
-        Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
-        Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
-        null,
-        Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY)))
+        time, new WeatherValue(  coordinate,
+        data.getQuantityOptional("directIrradiance", StandardUnits.SOLAR_IRRADIANCE).orElse(null),
+        data.getQuantityOptional("diffuseIrradiance", StandardUnits.SOLAR_IRRADIANCE).orElse(null),
+        data.getQuantityOptional("temperature", StandardUnits.TEMPERATURE).orElse(null),
+        data.getQuantityOptional("windDirection", StandardUnits.WIND_DIRECTION).orElse(null),
+        data.getQuantityOptional("windVelocity", StandardUnits.WIND_VELOCITY).orElse(null)))
 
     when:
     def model = factory.buildModel(data)
@@ -67,12 +67,16 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
     def expectedResults = new TimeBasedValue(
-        time, new WeatherValue(coordinate,
-        Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
-        Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
-        Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
-        Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY)))
+        time, new WeatherValue(
+        coordinate,
+        data.getQuantityOptional("directIrradiance", StandardUnits.SOLAR_IRRADIANCE).orElse(null),
+        data.getQuantityOptional("diffuseIrradiance", StandardUnits.SOLAR_IRRADIANCE).orElse(null),
+        data.getQuantityOptional("temperature", StandardUnits.TEMPERATURE).orElse(null),
+        data.getQuantityOptional("windDirection", StandardUnits.WIND_DIRECTION).orElse(null),
+        data.getQuantityOptional("windVelocity", StandardUnits.WIND_VELOCITY).orElse(null)
+        )
+        )
+
 
     when:
     def model = factory.buildModel(data)

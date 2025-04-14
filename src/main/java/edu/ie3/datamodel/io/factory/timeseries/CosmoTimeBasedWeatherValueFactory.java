@@ -63,15 +63,18 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
     Point coordinate = data.getCoordinate();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
-        data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
+        data.getQuantityOptional(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE)
+            .orElse(null);
     ComparableQuantity<Irradiance> diffuseIrradiance =
-        data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
+        data.getQuantityOptional(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE)
+            .orElse(null);
     ComparableQuantity<Temperature> temperature =
-        data.getQuantity(TEMPERATURE, StandardUnits.TEMPERATURE);
+        data.getQuantityOptional(TEMPERATURE, StandardUnits.TEMPERATURE).orElse(null);
     ComparableQuantity<Angle> windDirection =
-        data.getQuantity(WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
+        data.getQuantityOptional(WIND_DIRECTION, StandardUnits.WIND_DIRECTION).orElse(null);
     ComparableQuantity<Speed> windVelocity =
-        data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
+        data.getQuantityOptional(WIND_VELOCITY, StandardUnits.WIND_VELOCITY).orElse(null);
+
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
@@ -80,6 +83,7 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             temperature,
             windDirection,
             windVelocity);
+
     return new TimeBasedValue<>(time, weatherValue);
   }
 }
