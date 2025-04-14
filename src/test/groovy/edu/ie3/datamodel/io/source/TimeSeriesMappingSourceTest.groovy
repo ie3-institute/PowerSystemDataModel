@@ -5,11 +5,14 @@
  */
 package edu.ie3.datamodel.io.source
 
+import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.exceptions.FailureException
 import edu.ie3.datamodel.exceptions.SourceException
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.util.stream.Stream
+import javax.xml.transform.Source
 
 class TimeSeriesMappingSourceTest extends Specification {
 
@@ -40,16 +43,17 @@ class TimeSeriesMappingSourceTest extends Specification {
         case "INVALID_ASSET":
           return Stream.of(
           Map.of("asset", "invalidAsset", "timeSeries", "3fbfaa97-cff4-46d4-95ba-a95665e87c26"),
-          Map.of("asset", "b86e95b0-e579-4a80-a534–37c7a470a409", "timeSeries", "9185b8c1–86ba– 4a16– 8dea– 5ac898e8caa5")
+          Map.of("asset", "c7ebcc6c-55fc-479b-aa6b-6fa82ccac6b8", "timeSeries", "3fbfaa97-cff4-46d4-95ba-a95665e87c26")
           )
         case "INVALID_TIMESERIES":
           return Stream.of(
           Map.of("asset", "90a96daa-012b-4fea-82dc-24ba7a7ab81c", "timeSeries", "invalidTimeSeries"),
-          Map.of("asset","b86e95b0-e579– 4a80-a534–37c7a470a409","timeSeries","9185b8c1– 86ba– 4a16– 8dea– 5ac898e8caa5")
+          Map.of("asset","90a96daa-012b-4fea-82dc-24ba7a7ab81c","timeSeries","3fbfaa97-cff4-46d4-95ba-a95665e87c26")
           )
         case "INVALID_ALL":
           return Stream.of(
           Map.of("asset", "invalidAsset", "timeSeries", "invalidTimeSeries"),
+          Map.of("asset", "invalidAsset2", "timeSeries", "invalidTimeSeries2")
           )
       }
     }
@@ -93,7 +97,9 @@ class TimeSeriesMappingSourceTest extends Specification {
     validSource.getMapping()
 
     then:
-    thrown(SourceException)
+    def ex = thrown(SourceException)
+    ex.cause.class == FailureException
+    ex.cause.message.startsWith("1 exception(s) occurred within \"MappingEntry\" data")
   }
 
   def "should throw SourceException for invalid timeSeries"(){
@@ -103,7 +109,9 @@ class TimeSeriesMappingSourceTest extends Specification {
     validSource.getMapping()
 
     then:
-    thrown(SourceException)
+    def ex = thrown(SourceException)
+    ex.cause.class == FailureException
+    ex.cause.message.startsWith("1 exception(s) occurred within \"MappingEntry\" data")
   }
 
   def "should throw SourceException for invalid timeSeries and asset"(){
@@ -113,6 +121,8 @@ class TimeSeriesMappingSourceTest extends Specification {
     validSource.getMapping()
 
     then:
-    thrown(SourceException)
+    def ex = thrown(SourceException)
+    ex.cause.class == FailureException
+    ex.cause.message.startsWith("2 exception(s) occurred within \"MappingEntry\" data")
   }
 }
