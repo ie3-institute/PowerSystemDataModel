@@ -59,7 +59,7 @@ dependencies {
   //	 ie³ power system utils
   implementation 'com.github.ie3-institute:PowerSystemUtils:3.0.0'
 
-  implementation 'tech.units:indriya:2.2.2'
+  implementation 'tech.units:indriya:2.2.3'
 
   // JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
   implementation ('org.locationtech.jts:jts-core:1.20.0'){
