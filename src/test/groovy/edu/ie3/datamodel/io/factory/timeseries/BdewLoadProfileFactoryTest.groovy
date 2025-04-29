@@ -72,7 +72,7 @@ class BdewLoadProfileFactoryTest extends Specification {
 
   def "A BDEWLoadProfileFactory returns the correct fields"() {
     given:
-    def expectedFields = [
+    def expectedScheme1999 = [
       "SuSa",
       "SuSu",
       "SuWd",
@@ -85,12 +85,53 @@ class BdewLoadProfileFactoryTest extends Specification {
       "quarterHour"
     ] as Set
 
+    def expectedScheme2025 = [
+      "JanSa",
+      "JanSu",
+      "JanWd",
+      "FebSa",
+      "FebSu",
+      "FebWd",
+      "MarSa",
+      "MarSu",
+      "MarWd",
+      "AprSa",
+      "AprSu",
+      "AprWd",
+      "MaySa",
+      "MaySu",
+      "MayWd",
+      "JunSa",
+      "JunSu",
+      "JunWd",
+      "JulSa",
+      "JulSu",
+      "JulWd",
+      "AugSa",
+      "AugSu",
+      "AugWd",
+      "SepSa",
+      "SepSu",
+      "SepWd",
+      "OctSa",
+      "OctSu",
+      "OctWd",
+      "NovSa",
+      "NovSu",
+      "NovWd",
+      "DecSa",
+      "DecSu",
+      "DecWd",
+      "quarterHour"
+    ] as Set
+
     when:
     def actual = factory.getFields(BdewLoadValues)
 
     then:
-    actual.size() == 1
-    actual.head() == expectedFields
+    actual.size() == 2
+    actual.head() == expectedScheme1999
+    actual.last() == expectedScheme2025
   }
 
   def "A BDEWLoadProfileFactory refuses to build from invalid data"() {
@@ -104,7 +145,8 @@ class BdewLoadProfileFactoryTest extends Specification {
     actual.failure
     actual.exception.get().message == "The provided fields [Sa, Su, Wd] are invalid for instance of 'BdewLoadValues'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'BdewLoadValues' are possible (NOT case-sensitive!):\n" +
-        "0: [quarterHour, SuSa, SuSu, SuWd, TrSa, TrSu, TrWd, WiSa, WiSu, WiWd] or [quarter_hour, su_sa, su_su, su_wd, tr_sa, tr_su, tr_wd, wi_sa, wi_su, wi_wd]\n"
+        "0: [quarterHour, SuSa, SuSu, SuWd, TrSa, TrSu, TrWd, WiSa, WiSu, WiWd] or [quarter_hour, su_sa, su_su, su_wd, tr_sa, tr_su, tr_wd, wi_sa, wi_su, wi_wd]\n" +
+            "1: [AprSa, AprSu, AprWd, AugSa, AugSu, AugWd, DecSa, DecSu, DecWd, FebSa, FebSu, FebWd, JanSa, JanSu, JanWd, JulSa, JulSu, JulWd, JunSa, JunSu, JunWd, MarSa, MarSu, MarWd, MaySa, MaySu, MayWd, NovSa, NovSu, NovWd, OctSa, OctSu, OctWd, quarterHour, SepSa, SepSu, SepWd] or [apr_sa, apr_su, apr_wd, aug_sa, aug_su, aug_wd, dec_sa, dec_su, dec_wd, feb_sa, feb_su, feb_wd, jan_sa, jan_su, jan_wd, jul_sa, jul_su, jul_wd, jun_sa, jun_su, jun_wd, mar_sa, mar_su, mar_wd, may_sa, may_su, may_wd, nov_sa, nov_su, nov_wd, oct_sa, oct_su, oct_wd, quarter_hour, sep_sa, sep_su, sep_wd]\n"
   }
 
   def "A BDEWLoadProfileFactory builds model from valid data"() {
@@ -126,7 +168,7 @@ class BdewLoadProfileFactoryTest extends Specification {
     def entry = factory.buildModel(new LoadProfileData<>(data, BdewLoadValues))
 
     then:
-    entry.value.class == BdewLoadValues
+    entry.value.class == BdewLoadValues.BDEW1999
   }
 
   def "A BDEWLoadProfileFactory builds time series from entries"() {

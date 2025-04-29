@@ -11,7 +11,7 @@ import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
 
 /** Interface for load values. */
-public interface LoadValues extends Value {
+public interface LoadValues<P extends LoadProfile> extends Value {
 
   /**
    * Method to calculate an actual load power value for the given time.
@@ -19,5 +19,5 @@ public interface LoadValues extends Value {
    * @param time given time
    * @return a new {@link PValue}
    */
-  PValue getValue(ZonedDateTime time, LoadProfile loadProfile);
+  PValue getValue(ZonedDateTime time, P loadProfile);
 }

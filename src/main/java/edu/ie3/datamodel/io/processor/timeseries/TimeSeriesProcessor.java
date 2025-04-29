@@ -55,7 +55,13 @@ public class TimeSeriesProcessor<
           new TimeSeriesProcessorKey(
               IndividualTimeSeries.class, TimeBasedValue.class, HeatAndSValue.class),
           new TimeSeriesProcessorKey(
-              BdewLoadProfileTimeSeries.class, LoadProfileEntry.class, BdewLoadValues.class),
+              BdewLoadProfileTimeSeries.class,
+              LoadProfileEntry.class,
+              BdewLoadValues.BDEW1999.class),
+          new TimeSeriesProcessorKey(
+              BdewLoadProfileTimeSeries.class,
+              LoadProfileEntry.class,
+              BdewLoadValues.BDEW2025.class),
           new TimeSeriesProcessorKey(
               RandomLoadProfileTimeSeries.class, LoadProfileEntry.class, RandomLoadValues.class));
 

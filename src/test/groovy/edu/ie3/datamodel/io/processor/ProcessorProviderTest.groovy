@@ -148,7 +148,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatAndPValue),
       new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, SValue),
       new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatAndSValue),
-      new TimeSeriesProcessorKey(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues),
+      new TimeSeriesProcessorKey(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues.BDEW1999),
+      new TimeSeriesProcessorKey(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues.BDEW2025),
       new TimeSeriesProcessorKey(RandomLoadProfileTimeSeries, LoadProfileEntry, RandomLoadValues)
     ] as Set
 
