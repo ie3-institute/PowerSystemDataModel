@@ -9,9 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Implemented GitHub Actions for automatic code integration. [#1237](https://github.com/ie3-institute/PowerSystemDataModel/issues/1237)
 - Added `CopyBuilders` to `Line-/Transformer2W-/Tranformer3WTypeInput` [#1275](https://github.com/ie3-institute/PowerSystemDataModel/issues/1275)
+- Implementing auto-merge for dependabot PRs [#1299](https://github.com/ie3-institute/PowerSystemDataModel/issues/1299)
 
 ### Fixed
 - Fixed SonarQube junit path issue in GitHub Actions [#1284](https://github.com/ie3-institute/PowerSystemDataModel/issues/1284)
+- Fixed no errors thrown in `getMapping()` in `TimeSeriesMappingSource` [#1287](https://github.com/ie3-institute/PowerSystemDataModel/issues/1287)
+
 ### Changed
 - Replaced `return this` with `return thisInstance` in CopyBuilders [#1250](https://github.com/ie3-institute/PowerSystemDataModel/issues/1250)
 - Enhancing load profile source [#1294](https://github.com/ie3-institute/PowerSystemDataModel/issues/1294)
