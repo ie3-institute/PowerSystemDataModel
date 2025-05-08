@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Replaced `return this` with `return thisInstance` in CopyBuilders [#1250](https://github.com/ie3-institute/PowerSystemDataModel/issues/1250)
 - Removed Jenkinsfile [#1315](https://github.com/ie3-institute/PowerSystemDataModel/issues/1315)
+- Updated readthedocs config [#1317](https://github.com/ie3-institute/PowerSystemDataModel/issues/1317)
 
 ## [6.0.0] - 2025-02-27
 
