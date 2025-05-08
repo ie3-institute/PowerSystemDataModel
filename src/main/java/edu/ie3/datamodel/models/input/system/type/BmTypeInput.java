@@ -114,12 +114,12 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     public BmTypeInputCopyBuilder setActivePowerGradient(
         ComparableQuantity<DimensionlessRate> activePowerGradient) {
       this.activePowerGradient = activePowerGradient;
-      return this;
+      return thisInstance();
     }
 
     public BmTypeInputCopyBuilder setEtaConv(ComparableQuantity<Dimensionless> etaConv) {
       this.etaConv = etaConv;
-      return this;
+      return thisInstance();
     }
 
     public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
@@ -132,9 +132,9 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
     @Override
     public BmTypeInputCopyBuilder scale(Double factor) {
-      setCapex(getCapex().multiply(factor));
-      setsRated(getsRated().multiply(factor));
-      return this;
+      capex(getCapex().multiply(factor));
+      sRated(getsRated().multiply(factor));
+      return thisInstance();
     }
 
     @Override

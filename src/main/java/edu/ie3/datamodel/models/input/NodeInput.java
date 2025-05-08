@@ -203,27 +203,27 @@ public class NodeInput extends AssetInput {
 
     public NodeInputCopyBuilder vTarget(ComparableQuantity<Dimensionless> vTarget) {
       this.vTarget = vTarget;
-      return this;
+      return thisInstance();
     }
 
     public NodeInputCopyBuilder slack(boolean isSlack) {
       this.slack = isSlack;
-      return this;
+      return thisInstance();
     }
 
     public NodeInputCopyBuilder geoPosition(Point geoPosition) {
       this.geoPosition = geoPosition;
-      return this;
+      return thisInstance();
     }
 
     public NodeInputCopyBuilder voltLvl(VoltageLevel voltLvl) {
       this.voltLvl = voltLvl;
-      return this;
+      return thisInstance();
     }
 
     public NodeInputCopyBuilder subnet(int subnet) {
       this.subnet = subnet;
-      return this;
+      return thisInstance();
     }
 
     @Override

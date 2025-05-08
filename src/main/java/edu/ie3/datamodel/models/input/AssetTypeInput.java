@@ -26,6 +26,8 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
     return id;
   }
 
+  public abstract AssetTypeInputCopyBuilder<?> copy();
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

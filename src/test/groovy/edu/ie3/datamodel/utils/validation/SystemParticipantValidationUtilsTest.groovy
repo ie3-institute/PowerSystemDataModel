@@ -11,7 +11,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType
@@ -454,7 +453,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     where:
     invalidWecType                                                                                                                                                              || expectedException
     new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, Quantities.getQuantity(110d, EFFICIENCY), rotorArea, hubHeight)                             || new InvalidEntityException("Efficiency of the converter of WecTypeInput must be between 0% and 100%", invalidWecType)
-    new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, etaConv, Quantities.getQuantity(-10, ROTOR_AREA), Quantities.getQuantity(-200, HUB_HEIGHT)) || new InvalidEntityException("The following quantities have to be zero or positive: -10 ㎡, -200 m", invalidWecType)
+    new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, etaConv, Quantities.getQuantity(-10, ROTOR_AREA), Quantities.getQuantity(-200, HUB_HEIGHT)) || new InvalidEntityException("The following quantities have to be zero or positive: -10 m², -200 m", invalidWecType)
   }
 
   def "SystemParticipantValidationUtils.checkEvcs() recognizes all potential errors for a evcs"() {

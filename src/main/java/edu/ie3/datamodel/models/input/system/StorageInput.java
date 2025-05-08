@@ -129,13 +129,13 @@ public class StorageInput extends SystemParticipantInput implements HasType {
 
     public StorageInputCopyBuilder type(StorageTypeInput type) {
       this.type = type;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public StorageInputCopyBuilder scale(Double factor) {
       type(type.copy().scale(factor).build());
-      return this;
+      return thisInstance();
     }
 
     @Override

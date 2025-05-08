@@ -87,7 +87,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
    * @since 14.02.23
    */
   protected abstract static class GridContainerCopyBuilder<B extends GridContainerCopyBuilder<B>>
-      implements InputContainerCopyBuilder<UniqueInputEntity> {
+      extends InputContainerCopyBuilder<UniqueInputEntity> {
     private String gridName;
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;

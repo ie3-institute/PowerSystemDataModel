@@ -83,6 +83,11 @@ public class LineTypeInput extends AssetTypeInput {
   }
 
   @Override
+  public LineTypeInputCopyBuilder copy() {
+    return new LineTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof LineTypeInput that)) return false;
@@ -120,5 +125,71 @@ public class LineTypeInput extends AssetTypeInput {
         + ", vRated="
         + vRated
         + '}';
+  }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link
+   * LineTypeInput}
+   */
+  public static final class LineTypeInputCopyBuilder
+      extends AssetTypeInput.AssetTypeInputCopyBuilder<LineTypeInputCopyBuilder> {
+
+    private ComparableQuantity<SpecificConductance> b;
+    private ComparableQuantity<SpecificConductance> g;
+    private ComparableQuantity<SpecificResistance> r;
+    private ComparableQuantity<SpecificResistance> x;
+    private ComparableQuantity<ElectricCurrent> iMax;
+    private ComparableQuantity<ElectricPotential> vRated;
+
+    protected LineTypeInputCopyBuilder(LineTypeInput entity) {
+      super(entity);
+      this.b = entity.b;
+      this.g = entity.g;
+      this.r = entity.r;
+      this.x = entity.x;
+      this.iMax = entity.iMax;
+      this.vRated = entity.vRated;
+    }
+
+    /** Setter */
+    public LineTypeInputCopyBuilder b(ComparableQuantity<SpecificConductance> b) {
+      this.b = b;
+      return thisInstance();
+    }
+
+    public LineTypeInputCopyBuilder g(ComparableQuantity<SpecificConductance> g) {
+      this.g = g;
+      return thisInstance();
+    }
+
+    public LineTypeInputCopyBuilder r(ComparableQuantity<SpecificResistance> r) {
+      this.r = r;
+      return thisInstance();
+    }
+
+    public LineTypeInputCopyBuilder x(ComparableQuantity<SpecificResistance> x) {
+      this.x = x;
+      return thisInstance();
+    }
+
+    public LineTypeInputCopyBuilder iMax(ComparableQuantity<ElectricCurrent> iMax) {
+      this.iMax = iMax;
+      return thisInstance();
+    }
+
+    public LineTypeInputCopyBuilder vRated(ComparableQuantity<ElectricPotential> vRated) {
+      this.vRated = vRated;
+      return thisInstance();
+    }
+
+    @Override
+    public LineTypeInput build() {
+      return new LineTypeInput(getUuid(), getId(), b, g, r, x, iMax, vRated);
+    }
+
+    @Override
+    protected LineTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

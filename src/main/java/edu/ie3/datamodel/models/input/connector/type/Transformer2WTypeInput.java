@@ -143,6 +143,11 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   }
 
   @Override
+  public Transformer2WTypeInputCopyBuilder copy() {
+    return new Transformer2WTypeInputCopyBuilder(this);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof Transformer2WTypeInput that)) return false;
@@ -215,5 +220,124 @@ public class Transformer2WTypeInput extends AssetTypeInput {
         + ", tapMax="
         + tapMax
         + '}';
+  }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link
+   * Transformer2WTypeInput}
+   */
+  public static final class Transformer2WTypeInputCopyBuilder
+      extends AssetTypeInput.AssetTypeInputCopyBuilder<Transformer2WTypeInputCopyBuilder> {
+
+    private ComparableQuantity<ElectricResistance> rSc;
+    private ComparableQuantity<ElectricResistance> xSc;
+    private ComparableQuantity<Power> sRated;
+    private ComparableQuantity<ElectricPotential> vRatedA;
+    private ComparableQuantity<ElectricPotential> vRatedB;
+    private ComparableQuantity<ElectricConductance> gM;
+    private ComparableQuantity<ElectricConductance> bM;
+    private ComparableQuantity<Dimensionless> dV;
+    private ComparableQuantity<Angle> dPhi;
+    private boolean tapSide;
+    private int tapNeutr;
+    private int tapMin;
+    private int tapMax;
+
+    private Transformer2WTypeInputCopyBuilder(Transformer2WTypeInput entity) {
+      super(entity);
+      this.rSc = entity.rSc;
+      this.xSc = entity.xSc;
+      this.sRated = entity.sRated;
+      this.vRatedA = entity.vRatedA;
+      this.vRatedB = entity.vRatedB;
+      this.gM = entity.gM;
+      this.bM = entity.bM;
+      this.dV = entity.dV;
+      this.dPhi = entity.dPhi;
+      this.tapSide = entity.tapSide;
+      this.tapNeutr = entity.tapNeutr;
+      this.tapMin = entity.tapMin;
+      this.tapMax = entity.tapMax;
+    }
+
+    /** Setter */
+    public Transformer2WTypeInputCopyBuilder rSc(ComparableQuantity<ElectricResistance> rSc) {
+      this.rSc = rSc;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder xSc(ComparableQuantity<ElectricResistance> xSc) {
+      this.xSc = xSc;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
+      this.sRated = sRated;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder vRatedA(
+        ComparableQuantity<ElectricPotential> vRatedA) {
+      this.vRatedA = vRatedA;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder vRatedB(
+        ComparableQuantity<ElectricPotential> vRatedB) {
+      this.vRatedB = vRatedB;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder gM(ComparableQuantity<ElectricConductance> gM) {
+      this.gM = gM;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder bM(ComparableQuantity<ElectricConductance> bM) {
+      this.bM = bM;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder dV(ComparableQuantity<Dimensionless> dV) {
+      this.dV = dV;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder dPhi(ComparableQuantity<Angle> dPhi) {
+      this.dPhi = dPhi;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder tapSide(boolean tapSide) {
+      this.tapSide = tapSide;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder tapNeutr(int tapNeutr) {
+      this.tapNeutr = tapNeutr;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder tapMin(int tapMin) {
+      this.tapMin = tapMin;
+      return thisInstance();
+    }
+
+    public Transformer2WTypeInputCopyBuilder tapMax(int tapMax) {
+      this.tapMax = tapMax;
+      return thisInstance();
+    }
+
+    @Override
+    public Transformer2WTypeInput build() {
+      return new Transformer2WTypeInput(
+          getUuid(), getId(), rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide,
+          tapNeutr, tapMin, tapMax);
+    }
+
+    @Override
+    protected Transformer2WTypeInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }
