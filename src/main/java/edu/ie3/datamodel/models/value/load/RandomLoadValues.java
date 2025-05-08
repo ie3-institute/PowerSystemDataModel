@@ -9,7 +9,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT;
 
 import de.lmu.ifi.dbs.elki.math.statistics.distribution.GeneralizedExtremeValueDistribution;
 import de.lmu.ifi.dbs.elki.utilities.random.RandomFactory;
-import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
@@ -23,7 +22,7 @@ import tech.units.indriya.quantity.Quantities;
  * sampled for each quarter hour of a day, subdivided into workdays, Saturdays and Sundays. In
  * general the GEV is described by the three parameters "location", "scale" and "shape"
  */
-public class RandomLoadValues implements LoadValues {
+public final class RandomLoadValues implements LoadValues {
   /** Shape parameter for a Saturday */
   private final double kSa;
 
@@ -89,13 +88,18 @@ public class RandomLoadValues implements LoadValues {
     RandomFactory factory = RandomFactory.get(new Random().nextLong());
 
     this.gevWd = new GeneralizedExtremeValueDistribution(myWd, sigmaWd, kWd, factory.getRandom());
-
     this.gevSa = new GeneralizedExtremeValueDistribution(mySa, sigmaSa, kSa, factory.getRandom());
     this.gevSu = new GeneralizedExtremeValueDistribution(mySu, sigmaSu, kSu, factory.getRandom());
   }
 
-  @Override
-  public PValue getValue(ZonedDateTime time, LoadProfile loadProfile) {
+  /**
+   * Method to sample a new random {@link PValue} from the {@link
+   * GeneralizedExtremeValueDistribution}.
+   *
+   * @param time to use for the sampling
+   * @return a new {@link PValue}
+   */
+  public PValue sample(ZonedDateTime time) {
     return new PValue(Quantities.getQuantity(getValue(time.getDayOfWeek()), KILOWATT));
   }
 

@@ -17,7 +17,6 @@ import edu.ie3.datamodel.io.source.LoadProfileSource;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
-import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
@@ -112,12 +111,14 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
   }
 
   @Override
-  public Optional<PValue> getValue(ZonedDateTime time) throws SourceException {
+  public Optional<LoadValues.Provider> getValue(ZonedDateTime time) throws SourceException {
     Set<LoadProfileEntry<V>> entries =
         getEntries(queryTime, ps -> ps.setInt(1, TimeSeriesUtils.calculateQuarterHourOfDay(time)));
     if (entries.isEmpty()) return Optional.empty();
     if (entries.size() > 1) log.warn("Retrieved more than one result value, using the first");
-    return Optional.of(entries.stream().toList().get(0).getValue().getValue(time, loadProfile));
+
+    V loadValue = entries.stream().toList().get(0).getValue();
+    return Optional.of(entryFactory.buildProvider(loadValue, time, loadProfile));
   }
 
   @Override

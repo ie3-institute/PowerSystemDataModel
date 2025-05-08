@@ -21,8 +21,6 @@ import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
-import edu.ie3.datamodel.models.value.PValue;
-import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
@@ -48,8 +46,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
   }
 
   /**
-   * Build a list of type {@code E}, whereas the underlying {@link Value} does not need any
-   * additional information.
+   * Build a {@link LoadProfileEntry} of type {@code V}.
    *
    * @param fieldToValues Mapping from field id to values
    * @return {@link Try} of simple time based value
@@ -77,7 +74,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    * @return an optional
    * @throws SourceException if an exception occurred
    */
-  public abstract Optional<PValue> getValue(ZonedDateTime time) throws SourceException;
+  public abstract Optional<LoadValues.Provider> getValue(ZonedDateTime time) throws SourceException;
 
   /** Returns the load profile of this source. */
   public abstract P getLoadProfile();

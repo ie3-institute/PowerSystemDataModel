@@ -12,7 +12,6 @@ import static tech.units.indriya.unit.Units.WATT;
 
 import edu.ie3.datamodel.models.BdewSeason;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
-import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.Objects;
 import tech.units.indriya.quantity.Quantities;
 
 /** Load values for a {@link BdewStandardLoadProfile} */
-public class BdewLoadValues implements LoadValues {
+public final class BdewLoadValues implements LoadValues {
   private final double suSa;
   private final double suSu;
   private final double suWd;
@@ -53,8 +52,13 @@ public class BdewLoadValues implements LoadValues {
     this.wiWd = wiWd;
   }
 
-  @Override
-  public PValue getValue(ZonedDateTime time, LoadProfile loadProfile) {
+  /**
+   * Method to calculate an actual load power value for the given time.
+   *
+   * @param time given time
+   * @return a new {@link PValue}
+   */
+  public PValue getValue(ZonedDateTime time, BdewStandardLoadProfile loadProfile) {
     Map<BdewSeason, Double> mapping =
         switch (time.getDayOfWeek()) {
           case SATURDAY -> Map.of(

@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
 import edu.ie3.datamodel.models.profile.LoadProfile;
-import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.time.ZonedDateTime;
@@ -18,10 +17,12 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Describes a load profile time series with repetitive values that can be calculated from a pattern
+ *
+ * @param <V> type of {@link LoadValues} used in this time series.
  */
-public class LoadProfileTimeSeries<V extends LoadValues>
-    extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
-  private final LoadProfile loadProfile;
+public abstract class LoadProfileTimeSeries<V extends LoadValues>
+    extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, LoadValues.Provider> {
+  protected final LoadProfile loadProfile;
   private final Map<Integer, V> valueMapping;
 
   /**
@@ -33,7 +34,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   /** The profile energy scaling in kWh. */
   private final ComparableQuantity<Energy> profileEnergyScaling;
 
-  public LoadProfileTimeSeries(
+  protected LoadProfileTimeSeries(
       UUID uuid,
       LoadProfile loadProfile,
       Set<LoadProfileEntry<V>> entries,
@@ -49,6 +50,21 @@ public class LoadProfileTimeSeries<V extends LoadValues>
     this.maxPower = maxPower;
     this.profileEnergyScaling = profileEnergyScaling;
   }
+
+  @Override
+  protected LoadValues.Provider calc(ZonedDateTime time) {
+    int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
+    return buildFunction(valueMapping.get(quarterHour), time);
+  }
+
+  /**
+   * Method to build a {@link LoadValues.Provider} for the given {@link LoadValues} and time.
+   *
+   * @param loadValue used for the provider
+   * @param time used for the provider
+   * @return a {@link LoadValues.Provider}
+   */
+  protected abstract LoadValues.Provider buildFunction(V loadValue, ZonedDateTime time);
 
   /**
    * Returns the maximum average power consumption per quarter-hour calculated over all seasons and
@@ -95,12 +111,6 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   /** Returns the value mapping. */
   protected Map<Integer, V> getValueMapping() {
     return valueMapping;
-  }
-
-  @Override
-  protected PValue calc(ZonedDateTime time) {
-    int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
-    return valueMapping.get(quarterHour).getValue(time, loadProfile);
   }
 
   @Override

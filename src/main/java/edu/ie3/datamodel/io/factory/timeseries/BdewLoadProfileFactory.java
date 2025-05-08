@@ -15,6 +15,8 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
+import edu.ie3.datamodel.models.value.load.LoadValues;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -96,6 +98,12 @@ public class BdewLoadProfileFactory
     } catch (ParsingException e) {
       throw new FactoryException("An error occurred while parsing the profile: " + profile, e);
     }
+  }
+
+  @Override
+  public LoadValues.Provider buildProvider(
+      BdewLoadValues loadValue, ZonedDateTime time, BdewStandardLoadProfile loadProfile) {
+    return last -> loadValue.getValue(time, loadProfile);
   }
 
   @Override

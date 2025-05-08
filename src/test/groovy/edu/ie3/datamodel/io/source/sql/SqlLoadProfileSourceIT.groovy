@@ -69,7 +69,7 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
 
     then:
     value.present
-    value.get().p.get() == G3_VALUE_00MIN.p.get()
+    value.get().provide().p.get() == G3_VALUE_00MIN.p.get()
   }
 
   def "A SqlTimeSeriesSource can read all value data"() {
