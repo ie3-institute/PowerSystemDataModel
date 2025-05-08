@@ -57,7 +57,7 @@ repositories {
 dependencies {
 
   //	 ie³ power system utils
-  implementation 'com.github.ie3-institute:PowerSystemUtils:3.0.0'
+  implementation 'com.github.ie3-institute:PowerSystemUtils:3.1.0'
 
   implementation 'tech.units:indriya:2.2.3'
 
