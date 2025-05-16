@@ -6,8 +6,7 @@
 package edu.ie3.test.common
 
 import static edu.ie3.util.quantities.PowerSystemUnits.*
-import static tech.units.indriya.unit.Units.CELSIUS
-import static tech.units.indriya.unit.Units.METRE_PER_SECOND
+import static tech.units.indriya.unit.Units.*
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
@@ -406,12 +405,12 @@ trait TimeSeriesTestData {
   BdewStandardLoadProfile.G2,
   [
     new LoadProfileEntry<>(
-    new BdewLoadValues(63.1, 50.6, 60.8, 73.1, 64.2, 70.5, 80.6, 73.7, 77.4), 0
+    new BdewLoadValues.BDEW1999(63.1, 50.6, 60.8, 73.1, 64.2, 70.5, 80.6, 73.7, 77.4), 0
     ),
     new LoadProfileEntry<>(
-    new BdewLoadValues(58.0, 47.4, 53.0, 67.6, 60.7, 61.9, 74.6, 68.7, 67.4), 1),
+    new BdewLoadValues.BDEW1999(58.0, 47.4, 53.0, 67.6, 60.7, 61.9, 74.6, 68.7, 67.4), 1),
     new LoadProfileEntry<>(
-    new BdewLoadValues(53.5, 44.3, 46.0, 62.8, 56.9, 54.4, 69.2, 63.6, 58.4), 2
+    new BdewLoadValues.BDEW1999(53.5, 44.3, 46.0, 62.8, 56.9, 54.4, 69.2, 63.6, 58.4), 2
     ),
   ] as Set,
   Quantities.getQuantity(80.6, WATT),

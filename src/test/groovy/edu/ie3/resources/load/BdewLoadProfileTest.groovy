@@ -29,12 +29,30 @@ class BdewLoadProfileTest extends Specification {
   private List<String> keys = ['su', 'tr', 'wi']
 
   @Shared
+  private List<String> months = [
+    'jan',
+    'feb',
+    'mar',
+    'apr',
+    'may',
+    'jun',
+    'jul',
+    'aug',
+    'sep',
+    'oct',
+    'nov',
+    'dec'
+  ]
+
+  @Shared
   private Map results = [:]
 
   def setupSpec() {
     Path resourcePath = Path.of(".", "src", "main", "resources", "load")
     source = new CsvDataSource(",", resourcePath, new FileNamingStrategy())
   }
+
+  // profiles with the 1999 scheme
 
   def "The BDEW profile G0 should be correct"() {
     given:
@@ -336,6 +354,322 @@ class BdewLoadProfileTest extends Specification {
     results["wiWd"] == 11847.5
   }
 
+  // profiles with the 2025 scheme
+
+  def "The BDEW profile G25 should be correct"() {
+    given:
+    def data = read(BdewStandardLoadProfile.G25)
+    Map results = [:]
+
+    when:
+    months.each {
+      month ->
+      results["${month}Sa"] = sumValues(data, v -> v."${month}Sa")
+      results["${month}Su"] = sumValues(data, v -> v."${month}Su")
+      results["${month}Wd"] = sumValues(data, v -> v."${month}Wd")
+    }
+
+    then:
+    results["janSa"] == 2138.953
+    results["janSu"] == 1606.713
+    results["janWd"] == 3554.476
+
+    results["febSa"] == 2109.825
+    results["febSu"] == 1627.338
+    results["febWd"] == 3510.431
+
+    results["marSa"] == 2062.480
+    results["marSu"] == 1588.284
+    results["marWd"] == 3406.751
+
+    results["aprSa"] == 1957.4089999999999 // 1957.409
+    results["aprSu"] == 1513.385
+    results["aprWd"] == 3178.702
+
+    results["maySa"] == 1864.490
+    results["maySu"] == 1439.740
+    results["mayWd"] == 3004.823
+
+    results["junSa"] == 1867.560
+    results["junSu"] == 1569.091
+    results["junWd"] == 2983.980
+
+    results["julSa"] == 1859.625
+    results["julSu"] == 1434.583
+    results["julWd"] == 2818.939
+
+    results["augSa"] == 1865.794
+    results["augSu"] == 1440.782
+    results["augWd"] == 2880.367
+
+    results["sepSa"] ==1844.127
+    results["sepSu"] ==1434.353
+    results["sepWd"] ==2989.369
+
+    results["octSa"] ==	1945.162
+    results["octSu"] ==	1481.594
+    results["octWd"] == 3086.210
+
+    results["novSa"] == 2087.148
+    results["novSu"] == 1721.967
+    results["novWd"] == 3515.913
+
+    results["decSa"] == 2187.194
+    results["decSu"] == 1652.092
+    results["decWd"] ==	3479.094
+  }
+
+  def "The BDEW profile H25 should be correct"() {
+    given:
+    def data = read(BdewStandardLoadProfile.H25)
+    Map results = [:]
+
+    when:
+    months.each {
+      month ->
+      results["${month}Sa"] = sumValues(data, v -> v."${month}Sa")
+      results["${month}Su"] = sumValues(data, v -> v."${month}Su")
+      results["${month}Wd"] = sumValues(data, v -> v."${month}Wd")
+    }
+
+    then:
+    results["janSa"] == 2842.961
+    results["janSu"] == 2903.033
+    results["janWd"] == 2476.450
+
+    results["febSa"] == 2844.567
+    results["febSu"] == 2944.478
+    results["febWd"] == 2448.516
+
+    results["marSa"] == 2784.877
+    results["marSu"] == 2866.433
+    results["marWd"] == 2398.8849999999998 // 2398.885
+
+    results["aprSa"] == 2961.768
+    results["aprSu"] == 3047.309
+    results["aprWd"] == 2554.9519999999998 // 2554.952
+
+    results["maySa"] == 3024.437
+    results["maySu"] == 3087.454
+    results["mayWd"] == 2632.023
+
+    results["junSa"] == 3139.621
+    results["junSu"] == 3216.223
+    results["junWd"] == 2773.430
+
+    results["julSa"] == 3277.933
+    results["julSu"] == 3361.232
+    results["julWd"] == 2915.474
+
+    results["augSa"] == 3170.155
+    results["augSu"] == 3254.218
+    results["augWd"] == 2820.521
+
+    results["sepSa"] == 3040.361
+    results["sepSu"] == 3190.438
+    results["sepWd"] == 2656.074
+
+    results["octSa"] ==	2972.852
+    results["octSu"] ==	3127.245
+    results["octWd"] == 2633.577
+
+    results["novSa"] == 2944.428
+    results["novSu"] == 3042.968
+    results["novWd"] == 2541.863
+
+    results["decSa"] == 2816.414
+    results["decSu"] ==	2936.746
+    results["decWd"] ==	2536.519
+  }
+
+  def "The BDEW profile L25 should be correct"() {
+    given:
+    def data = read(BdewStandardLoadProfile.L25)
+    Map results = [:]
+
+    when:
+    months.each {
+      month ->
+      results["${month}Sa"] = sumValues(data, v -> v."${month}Sa")
+      results["${month}Su"] = sumValues(data, v -> v."${month}Su")
+      results["${month}Wd"] = sumValues(data, v -> v."${month}Wd")
+    }
+
+    then:
+    results["janSa"] == 2863.175
+    results["janSu"] == 3001.700
+    results["janWd"] == 2983.575
+
+    results["febSa"] == 2863.175
+    results["febSu"] == 3001.700
+    results["febWd"] == 2983.575
+
+    results["marSa"] == 2797.291
+    results["marSu"] == 2918.857
+    results["marWd"] == 2899.859
+
+    results["aprSa"] == 2665.525
+    results["aprSu"] == 2753.175
+    results["aprWd"] == 2732.425
+
+    results["maySa"] == 2524.8
+    results["maySu"] == 2656.983
+    results["mayWd"] ==	2614.388
+
+    results["junSa"] == 2384.025
+    results["junSu"] ==	2560.750
+    results["junWd"] == 2496.300
+
+    results["julSa"] == 2384.025
+    results["julSu"] ==	2560.750
+    results["julWd"] == 2496.300
+
+    results["augSa"] == 2384.025
+    results["augSu"] == 2560.750
+    results["augWd"] == 2496.300
+
+    results["sepSa"] == 2524.8
+    results["sepSu"] == 2656.983
+    results["sepWd"] == 2614.388
+
+    results["octSa"] ==	2665.525
+    results["octSu"] ==	2753.175
+    results["octWd"] ==	2732.425
+
+    results["novSa"] == 2863.175
+    results["novSu"] ==	3001.700
+    results["novWd"] ==	2983.575
+
+    results["decSa"] == 2863.175
+    results["decSu"] ==	3001.700
+    results["decWd"] ==	2983.575
+  }
+
+  def "The BDEW profile P25 should be correct"() {
+    given:
+    def data = read(BdewStandardLoadProfile.P25)
+    Map results = [:]
+
+    when:
+    months.each {
+      month ->
+      results["${month}Sa"] = sumValues(data, v -> v."${month}Sa")
+      results["${month}Su"] = sumValues(data, v -> v."${month}Su")
+      results["${month}Wd"] = sumValues(data, v -> v."${month}Wd")
+    }
+
+    then:
+    results["janSa"] == 3937.182
+    results["janSu"] ==	3826.787
+    results["janWd"] == 3676.576
+
+    results["febSa"] == 3221.188
+    results["febSu"] ==	3352.444
+    results["febWd"] == 3022.281
+
+    results["marSa"] == 2776.773
+    results["marSu"] ==	2837.057
+    results["marWd"] ==	2680.670
+
+    results["aprSa"] == 2521.392
+    results["aprSu"] ==	2465.958
+    results["aprWd"] ==	2316.198
+
+    results["maySa"] == 1593.953
+    results["maySu"] == 1640.973
+    results["mayWd"] == 1612.535
+
+    results["junSa"] == 1562.425
+    results["junSu"] ==	1632.361
+    results["junWd"] ==	1653.580
+
+    results["julSa"] == 1858.290
+    results["julSu"] == 1755.261
+    results["julWd"] == 1685.281
+
+    results["augSa"] == 1934.920
+    results["augSu"] == 1961.067
+    results["augWd"] ==	1842.870
+
+    results["sepSa"] == 1960.462
+    results["sepSu"] ==	2120.285
+    results["sepWd"] ==	2042.071
+
+    results["octSa"] ==	2762.563
+    results["octSu"] ==	2610.414
+    results["octWd"] ==	2570.650
+
+    results["novSa"] == 3595.329
+    results["novSu"] ==	3570.977
+    results["novWd"] == 3463.9900000000002
+
+    results["decSa"] == 4358.588
+    results["decSu"] ==	4474.190
+    results["decWd"] ==	4233.233
+  }
+
+  def "The BDEW profile S25 should be correct"() {
+    given:
+    def data = read(BdewStandardLoadProfile.S25)
+    Map results = [:]
+
+    when:
+    months.each {
+      month ->
+      results["${month}Sa"] = sumValues(data, v -> v."${month}Sa")
+      results["${month}Su"] = sumValues(data, v -> v."${month}Su")
+      results["${month}Wd"] = sumValues(data, v -> v."${month}Wd")
+    }
+
+    then:
+    results["janSa"] == 5772.512
+    results["janSu"] == 5675.793
+    results["janWd"] == 5178.520
+
+    results["febSa"] == 3873.464
+    results["febSu"] == 3982.030
+    results["febWd"] == 3526.293
+
+    results["marSa"] == 2320.319
+    results["marSu"] ==	2281.753
+    results["marWd"] == 2231.144
+
+    results["aprSa"] == 1925.482
+    results["aprSu"] ==	1602.650
+    results["aprWd"] == 1242.171
+
+    results["maySa"] == 521.384
+    results["maySu"] ==	517.552
+    results["mayWd"] ==	528.821
+
+    results["junSa"] == 469.686
+    results["junSu"] ==	402.993
+    results["junWd"] == 437.111
+
+    results["julSa"] == 660.072
+    results["julSu"] == 567.734
+    results["julWd"] ==	549.828
+
+    results["augSa"] == 789.160
+    results["augSu"] == 784.639
+    results["augWd"] ==	729.175
+
+    results["sepSa"] == 846.852
+    results["sepSu"] ==	810.538
+    results["sepWd"] == 841.354
+
+    results["octSa"] == 2532.381
+    results["octSu"] ==	2158.282
+    results["octWd"] == 2322.616
+
+    results["novSa"] == 4641.930
+    results["novSu"] ==	4351.746
+    results["novWd"] ==	4624.885
+
+    results["decSa"] == 6788.41
+    results["decSu"] == 6777.526
+    results["decWd"] ==	6455.487
+  }
 
   // helper methods
 
