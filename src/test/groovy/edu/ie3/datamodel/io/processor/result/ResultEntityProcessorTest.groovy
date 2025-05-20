@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.processor.result
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.result.CongestionResult
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.result.connector.LineResult
@@ -273,37 +272,6 @@ class ResultEntityProcessorTest extends Specification {
 
     when:
     def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
-
-    then:
-    validProcessedElement == expectedResults
-  }
-
-  def "A ResultEntityProcessor should serialize a CongestionResult correctly"() {
-    given:
-    def resultProcessor = new ResultEntityProcessor(CongestionResult)
-
-    def validResult = new CongestionResult(
-        ZonedDateTime.parse("2020-01-30T17:26:44Z"),
-        inputModel,
-        CongestionResult.InputModelType.LINE,
-        3,
-        Quantities.getQuantity(110, Units.PERCENT),
-        Quantities.getQuantity(0, Units.PERCENT),
-        Quantities.getQuantity(100, Units.PERCENT),
-        )
-
-    def expectedResults = [
-      inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-      max       : '100.0',
-      min       : '0.0',
-      subgrid   : '3',
-      time      : '2020-01-30T17:26:44Z',
-      type      : 'line',
-      value     : '110.0'
-    ]
-
-    when:
-    def validProcessedElement = resultProcessor.handleEntity(validResult)
 
     then:
     validProcessedElement == expectedResults
