@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
