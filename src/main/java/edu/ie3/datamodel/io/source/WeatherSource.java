@@ -20,6 +20,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.Quantity;
+import javax.measure.quantity.Speed;
+import javax.measure.quantity.Temperature;
+
+import edu.ie3.util.quantities.interfaces.Irradiance;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
@@ -150,6 +154,34 @@ public abstract class WeatherSource extends EntitySource {
 
   public abstract Optional<TimeBasedValue<WeatherValue>> getWeather(
       ZonedDateTime date, Point coordinate) throws SourceException;
+
+  public Optional<WeatherValue> getWeatherInterpolated(ZonedDateTime date, Point coordinate, int plus, int minus) throws SourceException {
+
+    ClosedInterval<ZonedDateTime> interpolationInterval = new ClosedInterval<>(
+            date.minusHours(minus), date.plusHours(plus)
+    );
+   IndividualTimeSeries<WeatherValue>ts=getWeather(interpolationInterval,List.of(coordinate)).get(coordinate);
+
+   Optional<WeatherValue> value = ts.getValue(date);
+
+   if(value.isPresent() && value.get().isComplete()){
+     return value;
+   }
+
+
+     Optional<Pair<ComparableQuantity<Irradiance>,Integer>> dirIrrPre = Optional.empty();
+     Optional<Pair<ComparableQuantity<Irradiance>,Integer>> diffIrrPre = Optional.empty();
+     Optional<Pair<ComparableQuantity<Temperature>,Integer>> tempPre = Optional.empty();
+     var velocityPre = Optional.empty();
+
+     for (int i = 1;i<=minus*4;i++){
+       ZonedDateTime current = date.minusMinutes(i*15L);
+       ts.getValue(current).map(WeatherValue::getDiffIrradiance) = ;
+       ///
+     }
+  }
+
+
 
   public abstract Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
       throws SourceException;
