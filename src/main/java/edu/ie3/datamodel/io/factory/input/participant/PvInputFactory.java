@@ -50,7 +50,7 @@ public class PvInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getEm().orElse(null);
+    final EmInput em = data.getControllingEm().orElse(null);
     final double albedo = data.getDouble(ALBEDO);
     final ComparableQuantity<Angle> azimuth = data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH);
     final ComparableQuantity<Dimensionless> etaConv =

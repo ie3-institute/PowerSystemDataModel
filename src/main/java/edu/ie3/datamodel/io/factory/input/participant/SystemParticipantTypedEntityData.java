@@ -80,7 +80,7 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
    */
   public SystemParticipantTypedEntityData(
       SystemParticipantEntityData systemParticipantEntityData, T typeInput) {
-    super(systemParticipantEntityData, systemParticipantEntityData.getEm().orElse(null));
+    super(systemParticipantEntityData, systemParticipantEntityData.getControllingEm().orElse(null));
     this.typeInput = typeInput;
   }
 
@@ -94,7 +94,7 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
         + "typeInput="
         + typeInput.getUuid()
         + ", em="
-        + getEm().map(EmInput::toString).orElse("")
+        + getControllingEm().map(EmInput::toString).orElse("")
         + ", node="
         + getNode().getUuid()
         + ", operatorInput="

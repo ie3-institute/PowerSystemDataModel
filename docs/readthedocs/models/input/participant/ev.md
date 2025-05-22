@@ -97,7 +97,7 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
      -
      - 
 
-   * - em
+   * - controllingEm
      -
      - UUID reference to an [Energy Management Unit](#em_model) that is controlling
        this system participant. Field can be empty or missing, if this participant

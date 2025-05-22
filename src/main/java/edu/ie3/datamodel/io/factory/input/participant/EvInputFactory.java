@@ -36,7 +36,7 @@ public class EvInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getEm().orElse(null);
+    final EmInput em = data.getControllingEm().orElse(null);
 
     return new EvInput(
         uuid, id, operator, operationTime, node, qCharacteristics, em, data.getTypeInput());

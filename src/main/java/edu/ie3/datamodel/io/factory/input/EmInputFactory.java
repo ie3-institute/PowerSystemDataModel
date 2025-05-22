@@ -3,10 +3,8 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.io.factory.input.participant;
+package edu.ie3.datamodel.io.factory.input;
 
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
-import edu.ie3.datamodel.io.factory.input.EmAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -19,7 +17,7 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInpu
 
   private static final String CONTROL_STRATEGY = "controlStrategy";
 
-  public static final String PARENT_EM = "parentem";
+  public static final String CONTROLLING_EM = "controllingEm";
 
   public EmInputFactory() {
     super(EmInput.class);
@@ -30,7 +28,7 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInpu
     List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
 
     List<Set<String>> withEm =
-        fields.stream().map(f -> (Set<String>) expandSet(f, PARENT_EM)).toList();
+        fields.stream().map(f -> (Set<String>) expandSet(f, CONTROLLING_EM)).toList();
 
     fields.addAll(withEm);
 
@@ -51,7 +49,7 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInpu
       OperationTime operationTime) {
     String controlStrategy = data.getField(CONTROL_STRATEGY);
 
-    EmInput parentEm = data.getEmUnit();
+    EmInput parentEm = data.getControllingEm();
 
     return new EmInput(uuid, id, operator, operationTime, controlStrategy, parentEm);
   }

@@ -22,7 +22,7 @@ import java.util.Optional;
 public class SystemParticipantEntityData extends NodeAssetInputEntityData {
 
   /** Energy management unit that is managing the system participant. Can be null. */
-  private final EmInput em;
+  private final EmInput controllingEm;
 
   /**
    * Creates a new SystemParticipantEntityData object for an operated, always on system participant
@@ -31,20 +31,20 @@ public class SystemParticipantEntityData extends NodeAssetInputEntityData {
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param node input node
-   * @param em The energy management unit that is managing the system participant. Null, if the
-   *     system participant is not managed.
+   * @param controllingEm The energy management unit that is managing the system participant. Null,
+   *     if the system participant is not managed.
    */
   public SystemParticipantEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       NodeInput node,
-      EmInput em) {
+      EmInput controllingEm) {
     super(fieldsToAttributes, entityClass, node);
-    this.em = em;
+    this.controllingEm = controllingEm;
   }
 
-  public Optional<EmInput> getEm() {
-    return Optional.ofNullable(em);
+  public Optional<EmInput> getControllingEm() {
+    return Optional.ofNullable(controllingEm);
   }
 
   /**
@@ -54,17 +54,17 @@ public class SystemParticipantEntityData extends NodeAssetInputEntityData {
    * @param entityClass class of the entity to be created with this data
    * @param operator operator input
    * @param node input node
-   * @param em The energy management unit that is managing the system participant. Null, if the
-   *     system participant is not managed.
+   * @param controllingEm The energy management unit that is managing the system participant. Null,
+   *     if the system participant is not managed.
    */
   public SystemParticipantEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator,
       NodeInput node,
-      EmInput em) {
+      EmInput controllingEm) {
     super(fieldsToAttributes, entityClass, operator, node);
-    this.em = em;
+    this.controllingEm = controllingEm;
   }
 
   /**
@@ -72,20 +72,20 @@ public class SystemParticipantEntityData extends NodeAssetInputEntityData {
    * NodeAssetInputEntityData} object and given energy management unit
    *
    * @param nodeAssetInputEntityData The node asset entity data object to use attributes of
-   * @param em The energy management unit that is managing the system participant. Null, if the
-   *     system participant is not managed.
+   * @param controllingEm The energy management unit that is managing the system participant. Null,
+   *     if the system participant is not managed.
    */
   public SystemParticipantEntityData(
-      NodeAssetInputEntityData nodeAssetInputEntityData, EmInput em) {
+      NodeAssetInputEntityData nodeAssetInputEntityData, EmInput controllingEm) {
     super(nodeAssetInputEntityData, nodeAssetInputEntityData.getNode());
-    this.em = em;
+    this.controllingEm = controllingEm;
   }
 
   @Override
   public String toString() {
     return "SystemParticipantEntityData{"
         + "em="
-        + getEm().map(EmInput::toString).orElse("")
+        + getControllingEm().map(EmInput::toString).orElse("")
         + ", node="
         + getNode().getUuid()
         + ", operatorInput="
@@ -103,11 +103,11 @@ public class SystemParticipantEntityData extends NodeAssetInputEntityData {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SystemParticipantEntityData that = (SystemParticipantEntityData) o;
-    return getEm().equals(that.getEm());
+    return getControllingEm().equals(that.getControllingEm());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getEm());
+    return Objects.hash(super.hashCode(), getControllingEm());
   }
 }

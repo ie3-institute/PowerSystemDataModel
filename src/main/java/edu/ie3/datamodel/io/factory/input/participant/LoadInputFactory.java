@@ -58,7 +58,7 @@ public class LoadInputFactory
           id);
       loadProfile = LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
     }
-    final EmInput em = data.getEm().orElse(null);
+    final EmInput em = data.getControllingEm().orElse(null);
 
     final ComparableQuantity<Energy> eConsAnnual =
         data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN);

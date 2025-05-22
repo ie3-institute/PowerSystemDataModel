@@ -5,13 +5,13 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.io.factory.input.participant.EmInputFactory.PARENT_EM;
+import static edu.ie3.datamodel.io.factory.input.EmInputFactory.CONTROLLING_EM;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.EmAssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.participant.EmInputFactory;
+import edu.ie3.datamodel.io.factory.input.EmInputFactory;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.Try;
@@ -96,7 +96,8 @@ public class EnergyManagementSource extends AssetEntitySource {
                     dataTry
                         .map(
                             data ->
-                                data.containsKey(PARENT_EM) && !data.getField(PARENT_EM).isBlank())
+                                data.containsKey(CONTROLLING_EM)
+                                    && !data.getField(CONTROLLING_EM).isBlank())
                         .getOrElse(() -> true)));
 
     List<Try<AssetInputEntityData, SourceException>> rootEmsEntityData = split.get(false);
@@ -129,7 +130,7 @@ public class EnergyManagementSource extends AssetEntitySource {
                               data -> {
                                 // we already filtered out those entities that do not have a parent,
                                 // so the field should exist
-                                String uuidString = data.getField(PARENT_EM);
+                                String uuidString = data.getField(CONTROLLING_EM);
                                 return Try.of(
                                         () -> UUID.fromString(uuidString),
                                         IllegalArgumentException.class)
@@ -138,7 +139,7 @@ public class EnergyManagementSource extends AssetEntitySource {
                                             new SourceException(
                                                 String.format(
                                                     "Exception while trying to parse UUID of field \"%s\" with value \"%s\"",
-                                                    PARENT_EM, uuidString),
+                                                    CONTROLLING_EM, uuidString),
                                                 iae))
                                     // failed UUID parses are filtered out at this point. We save
                                     // the parsed UUID with the asset data
@@ -199,7 +200,7 @@ public class EnergyManagementSource extends AssetEntitySource {
 
   /**
    * Helper data record that holds an {@link AssetInputEntityData} and the UUID successfully parsed
-   * from {@link EmInputFactory#PARENT_EM} field
+   * from {@link EmInputFactory#CONTROLLING_EM} field
    */
   private record AssetDataAndValidParentUuid(AssetInputEntityData entityData, UUID parentEm) {}
 }

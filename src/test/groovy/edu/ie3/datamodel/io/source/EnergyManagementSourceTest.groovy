@@ -24,35 +24,35 @@ class EnergyManagementSourceTest extends Specification {
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-0",
       "id": "root",
-      "parentem" : "",
+      "controllingem" : "",
       "controlstrategy" : ""],
     EmInput
     ),
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-1",
       "id": "child 1",
-      "parentem" : "0-0-0-0-0",
+      "controllingem" : "0-0-0-0-0",
       "controlstrategy" : ""],
     EmInput
     ),
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-11",
       "id": "child 1-1",
-      "parentem" : "0-0-0-0-1",
+      "controllingem" : "0-0-0-0-1",
       "controlstrategy" : ""],
     EmInput
     ),
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-2",
       "id": "child 2",
-      "parentem" : "0-0-0-0-0",
+      "controllingem" : "0-0-0-0-0",
       "controlstrategy" : ""],
     EmInput
     ),
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-21",
       "id": "child 2-1",
-      "parentem" : "0-0-0-0-2",
+      "controllingem" : "0-0-0-0-2",
       "controlstrategy" : ""],
     EmInput
     ),
@@ -101,21 +101,21 @@ class EnergyManagementSourceTest extends Specification {
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-1",
       "id": "em 1",
-      "parentem" : "",
+      "controllingem" : "",
       "controlstrategy" : ""],
     EmInput
     ),
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-2",
       "id": "em 2",
-      "parentem" : "",
+      "controllingem" : "",
       "controlstrategy" : "strat_b"],
     EmInput
     ),
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-3",
       "id": "em 3",
-      "parentem" : "",
+      "controllingem" : "",
       "controlstrategy" : "other"],
     EmInput
     ),
@@ -152,14 +152,14 @@ class EnergyManagementSourceTest extends Specification {
     new Try.Success<AssetInputEntityData, SourceException>(new AssetInputEntityData(
     ["uuid": "0-0-0-0-1",
       "id": "em 1",
-      "parentem" : "",
+      "controllingem" : "",
       "controlstrategy" : ""],
     EmInput
     )),
     new Try.Success<AssetInputEntityData, SourceException>(new AssetInputEntityData(
     ["uuid": "0-0-0-0-2",
       "id": "em 2",
-      "parentem" : "",
+      "controllingem" : "",
       "controlstrategy" : ""],
     EmInput
     )),
@@ -180,14 +180,14 @@ class EnergyManagementSourceTest extends Specification {
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-1",
       "id": "em 1",
-      "parentem" : "",
+      "controllingem" : "",
       "controlstrategy" : ""],
     EmInput
     ),
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-2",
       "id": "em 2",
-      "parentem" : "not-a-uuid",
+      "controllingem" : "not-a-uuid",
       "controlstrategy" : ""],
     EmInput
     ),
@@ -198,7 +198,7 @@ class EnergyManagementSourceTest extends Specification {
 
     then:
     def exc = thrown(SourceException)
-    exc.cause.message.contains("Exception while trying to parse UUID of field \"parentem\" with value \"not-a-uuid\"")
+    exc.cause.message.contains("Exception while trying to parse UUID of field \"controllingEm\" with value \"not-a-uuid\"")
   }
 
   def "An EnergyManagementSource should fail if the factory fails for one EM"() {
@@ -207,13 +207,13 @@ class EnergyManagementSourceTest extends Specification {
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-1",
       "id": "em 1",
-      "parentem" : "",
+      "controllingem" : "",
       "controlstrategy" : ""],
     EmInput
     ),
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-2", // id is missing
-      "parentem" : "",
+      "controllingem" : "",
       "controlstrategy" : ""],
     EmInput
     ),
@@ -234,14 +234,14 @@ class EnergyManagementSourceTest extends Specification {
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-1",
       "id": "em 1",
-      "parentem" : "",
+      "controllingem" : "",
       "controlstrategy" : ""],
     EmInput
     ),
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-2",
       "id": "em 2",
-      "parentem" : "1-2-3-4-5", // does not exist
+      "controllingem" : "1-2-3-4-5", // does not exist
       "controlstrategy" : ""],
     EmInput
     ),
@@ -261,14 +261,14 @@ class EnergyManagementSourceTest extends Specification {
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-1",
       "id": "em 1",
-      "parentem" : "1-2-3-4-5", // does not exist
+      "controllingem" : "1-2-3-4-5", // does not exist
       "controlstrategy" : ""],
     EmInput
     ),
     new AssetInputEntityData(
     ["uuid": "0-0-0-0-2",
       "id": "em 2",
-      "parentem" : "1-2-3-4-5", // does not exist
+      "controllingem" : "1-2-3-4-5", // does not exist
       "controlstrategy" : ""],
     EmInput
     ),
