@@ -36,7 +36,7 @@ public class StorageInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getEm().orElse(null);
+    final EmInput em = data.getControllingEm().orElse(null);
     final StorageTypeInput typeInput = data.getTypeInput();
     return new StorageInput(
         uuid, id, operator, operationTime, node, qCharacteristics, em, typeInput);

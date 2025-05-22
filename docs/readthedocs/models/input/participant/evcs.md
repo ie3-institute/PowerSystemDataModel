@@ -63,7 +63,7 @@ station and has some limitations outlined below.
      - Boolean
      - Vehicle to grid (V2G) support, true if the charging station supports feed in.
 
-   * - em
+   * - controllingEm
      -
      - UUID reference to an [Energy Management Unit](#em_model) that is controlling
        this system participant. Field can be empty or missing, if this participant
