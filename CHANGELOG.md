@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added updated `BdewStandardLoadProfiles` [#1292](https://github.com/ie3-institute/PowerSystemDataModel/issues/1292)
 
+### Fixed
+- Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
+
+### Changed
+- Updated dependabot workflow and added CODEOWNERS [#1328](https://github.com/ie3-institute/PowerSystemDataModel/issues/1328)
+
 ## [7.0.0] - 2025-05-08
 
 ### Added
