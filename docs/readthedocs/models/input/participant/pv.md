@@ -44,8 +44,7 @@ Detailed model of a photovoltaic power plant.
 
    * - azimuth
      - °
-     - Inclination in a compass direction
-       South = 0°, West = 90°, East = -90°
+     - South = 0°, West = 90°, East = -90°, North = +/- 180°  
 
    * - etaConv
      - %
