@@ -441,7 +441,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       throw new InvalidEntityException(
           "Azimuth angle of "
               + pvInput.getClass().getSimpleName()
-              + " must be between  0° (south), 90° (west), -90° (east), +/- 180° (north)",
+              + " must be between 0° (south), 90° (west), -90° (east), +/- 180° (north)",
           pvInput);
   }
 
