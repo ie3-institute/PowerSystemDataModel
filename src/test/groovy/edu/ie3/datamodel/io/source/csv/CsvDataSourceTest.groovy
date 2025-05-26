@@ -123,7 +123,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "q_characteristics",
       "e_cons_annual",
       "operator",
-      "em"
+      "controlling_em"
     ] as Set
   }
 
