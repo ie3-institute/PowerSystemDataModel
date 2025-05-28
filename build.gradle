@@ -4,12 +4,12 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '7.0.3' //code format
-  id 'com.github.spotbugs' version '6.1.11' // code check, working on byte code
+  id 'com.diffplug.spotless' version '7.0.4' //code format
+  id 'com.github.spotbugs' version '6.1.12' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "6.1.0.5360" // sonarqube
+  id "org.sonarqube" version "6.2.0.5505" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
   id "com.github.johnrengelman.shadow" version "8.1.1" // fat jar
 }
@@ -18,7 +18,7 @@ ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
-  groovyBinaryVersion = "4.0.26"
+  groovyBinaryVersion = "4.0.27"
 
   junitVersion = '1.12.0'
   testcontainersVersion = '1.21.0'
