@@ -20,10 +20,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.Quantity;
-import javax.measure.quantity.Speed;
-import javax.measure.quantity.Temperature;
-
-import edu.ie3.util.quantities.interfaces.Irradiance;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
@@ -106,23 +102,16 @@ public abstract class WeatherSource extends EntitySource {
   }
 
   private WeatherValue interpolateWeatherValue(WeatherValue start, WeatherValue end, double ratio) {
-    var startSolar = start.getSolarIrradiance();
-    var endSolar = end.getSolarIrradiance();
-
-    var direct =
-        interpolateOptional(
-            startSolar.getDirectIrradiance(), endSolar.getDirectIrradiance(), ratio);
-    var diffuse =
-        interpolateOptional(
-            startSolar.getDiffuseIrradiance(), endSolar.getDiffuseIrradiance(), ratio);
+    var direct = interpolateOptional(start.getDirectIrradiance(), end.getDirectIrradiance(), ratio);
+    var diffuse = interpolateOptional(start.getDiffuseIrradiance(), end.getDiffuseIrradiance(), ratio);
 
     var temp = interpolateDirect(start.getTemperature(), end.getTemperature(), ratio);
-    var dir =
-        interpolateDirect(start.getWind().getDirection(), end.getWind().getDirection(), ratio);
-    var vel = interpolateDirect(start.getWind().getVelocity(), end.getWind().getVelocity(), ratio);
+    var dir = interpolateDirect(start.getWindDirection(), end.getWindDirection(), ratio);
+    var vel = interpolateDirect(start.getWindVelocity(), end.getWindVelocity(), ratio);
 
     return new WeatherValue(start.getCoordinate(), direct, diffuse, temp, dir, vel);
   }
+
 
   private <Q extends Quantity<Q>> ComparableQuantity<Q> interpolateOptional(
       Optional<ComparableQuantity<Q>> startOpt,
@@ -155,32 +144,50 @@ public abstract class WeatherSource extends EntitySource {
   public abstract Optional<TimeBasedValue<WeatherValue>> getWeather(
       ZonedDateTime date, Point coordinate) throws SourceException;
 
-  public Optional<WeatherValue> getWeatherInterpolated(ZonedDateTime date, Point coordinate, int plus, int minus) throws SourceException {
+  public Optional<WeatherValue> getWeatherInterpolated(
+          ZonedDateTime date, Point coordinate, int plus, int minus) throws SourceException {
 
-    ClosedInterval<ZonedDateTime> interpolationInterval = new ClosedInterval<>(
-            date.minusHours(minus), date.plusHours(plus)
-    );
-   IndividualTimeSeries<WeatherValue>ts=getWeather(interpolationInterval,List.of(coordinate)).get(coordinate);
+    ClosedInterval<ZonedDateTime> interpolationInterval =
+            new ClosedInterval<>(date.minusHours(minus), date.plusHours(plus));
+    IndividualTimeSeries<WeatherValue> ts =
+            getWeather(interpolationInterval, List.of(coordinate)).get(coordinate);
 
-   Optional<WeatherValue> value = ts.getValue(date);
+    if (ts == null) {
+      log.warn("No time series available for coordinate {}", coordinate);
+      return Optional.empty();
+    }
 
-   if(value.isPresent() && value.get().isComplete()){
-     return value;
-   }
+    Optional<WeatherValue> value = ts.getValue(date);
 
+    if (value.isPresent() && value.get().isComplete()) {
+      return value;
+    }
 
-     Optional<Pair<ComparableQuantity<Irradiance>,Integer>> dirIrrPre = Optional.empty();
-     Optional<Pair<ComparableQuantity<Irradiance>,Integer>> diffIrrPre = Optional.empty();
-     Optional<Pair<ComparableQuantity<Temperature>,Integer>> tempPre = Optional.empty();
-     var velocityPre = Optional.empty();
+    Optional<TimeBasedValue<WeatherValue>> prevValue = ts.getPreviousTimeBasedValue(date);
+    Optional<TimeBasedValue<WeatherValue>> nextValue = ts.getNextTimeBasedValue(date);
 
-     for (int i = 1;i<=minus*4;i++){
-       ZonedDateTime current = date.minusMinutes(i*15L);
-       ts.getValue(current).map(WeatherValue::getDiffIrradiance) = ;
-       ///
-     }
+    if (prevValue.isEmpty() || nextValue.isEmpty()) {
+      log.warn(
+              "Not enough data to interpolate weather value at {} for coordinate {}", date, coordinate);
+      return Optional.empty();
+    }
+
+    TimeBasedValue<WeatherValue> prev = prevValue.get();
+    TimeBasedValue<WeatherValue> next = nextValue.get();
+
+    Duration totalDuration = Duration.between(prev.getTime(), next.getTime());
+    Duration partialDuration = Duration.between(prev.getTime(), date);
+
+    if (totalDuration.isZero()) {
+      return Optional.of(prev.getValue());
+    }
+
+    double ratio = (double) partialDuration.toSeconds() / totalDuration.toSeconds();
+
+    WeatherValue interpolated = interpolateWeatherValue(prev.getValue(), next.getValue(), ratio);
+
+    return Optional.of(interpolated);
   }
-
 
 
   public abstract Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)

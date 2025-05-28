@@ -82,6 +82,34 @@ public class WeatherValue implements Value {
     return wind;
   }
 
+  public Optional<ComparableQuantity<Irradiance>> getDirectIrradiance() {
+    return solarIrradiance.getDirectIrradiance();
+  }
+
+  public Optional<ComparableQuantity<Irradiance>> getDiffuseIrradiance() {
+    return solarIrradiance.getDiffuseIrradiance();
+  }
+
+  public ComparableQuantity<Temperature> getTemperature() {
+    return temperature.getTemperature();
+  }
+
+  public ComparableQuantity<Angle> getWindDirection() {
+    return wind.getDirection();
+  }
+  public ComparableQuantity<Speed> getWindVelocity() {
+    return wind.getVelocity();
+  }
+  
+  /**
+   * Checks if all mandatory values are present.
+   *
+   * @return true if all values are present, false otherwise
+   */
+  public boolean isComplete() {
+    return solarIrradiance != null && temperature != null && wind != null;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
