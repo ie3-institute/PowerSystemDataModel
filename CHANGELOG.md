@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
+- Consider None-equivalent value for missing data points in weather [#1304](https://github.com/ie3-institute/PowerSystemDataModel/issues/1304)
 
 ### Changed
 - Updated dependabot workflow and added CODEOWNERS [#1328](https://github.com/ie3-institute/PowerSystemDataModel/issues/1328)
