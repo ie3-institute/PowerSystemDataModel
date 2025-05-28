@@ -35,7 +35,7 @@ public class ChpInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getEm().orElse(null);
+    final EmInput em = data.getControllingEm().orElse(null);
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
 
     return new ChpInput(
