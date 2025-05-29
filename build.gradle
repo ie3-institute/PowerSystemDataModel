@@ -4,8 +4,8 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '7.0.3' //code format
-  id 'com.github.spotbugs' version '6.1.12' // code check, working on byte code
+  id 'com.diffplug.spotless' version '7.0.4' //code format
+  id 'com.github.spotbugs' version '6.1.13' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
@@ -18,7 +18,7 @@ ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_17
   groovyVersion = "4.0"
-  groovyBinaryVersion = "4.0.26"
+  groovyBinaryVersion = "4.0.27"
 
   junitVersion = '1.12.0'
   testcontainersVersion = '1.21.0'
@@ -99,7 +99,7 @@ dependencies {
   // Databases
   implementation 'org.influxdb:influxdb-java:2.25'
   implementation 'com.couchbase.client:java-client:3.8.1'
-  runtimeOnly 'org.postgresql:postgresql:42.7.5' // postgresql jdbc driver required during runtime
+  runtimeOnly 'org.postgresql:postgresql:42.7.6' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.19.0' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.18.0' // needed by commons-compress
