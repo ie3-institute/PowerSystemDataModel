@@ -23,7 +23,7 @@ import tech.units.indriya.quantity.Quantities;
  * sampled for each quarter hour of a day, subdivided into workdays, Saturdays and Sundays. In
  * general the GEV is described by the three parameters "location", "scale" and "shape"
  */
-public class RandomLoadValues implements LoadValues {
+public class RandomLoadValues implements LoadValues<LoadProfile> {
   /** Shape parameter for a Saturday */
   private final double kSa;
 
