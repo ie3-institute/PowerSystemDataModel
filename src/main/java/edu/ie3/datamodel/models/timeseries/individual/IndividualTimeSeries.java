@@ -53,7 +53,7 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
   }
 
   @Override
-  protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
+  public Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
     return timeToValue.keySet().stream()
         .filter(valueTime -> valueTime.compareTo(time) < 0)
         .max(Comparator.naturalOrder());
