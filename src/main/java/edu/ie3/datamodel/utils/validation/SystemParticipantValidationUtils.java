@@ -393,7 +393,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * <ul>
    *   <li>its rated apparent power is not negative
    *   <li>its albedo value of the plant's surrounding is between 0 and 1
-   *   <li>its inclination in a compass direction (azimuth) is between -90° and 90°
+   *   <li>its inclination in a compass direction (azimuth) is between -180° and 180°
    *   <li>its efficiency of the asset's inverter (etaConv) is between 0% and 100%
    *   <li>its tilted inclination from horizontal (elevation angle) is between 0° and 90°
    *   <li>its rated power factor is between 0 and 1
@@ -431,17 +431,17 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Check if azimuth angle of pvInput is between -90° and 90°
+   * Check if azimuth angle of pvInput is between -180° and 180°
    *
    * @param pvInput PvInput to validate
    */
   private static void checkAzimuth(PvInput pvInput) throws InvalidEntityException {
-    if (pvInput.getAzimuth().isLessThan(Quantities.getQuantity(-90d, AZIMUTH))
-        || pvInput.getAzimuth().isGreaterThan(Quantities.getQuantity(90d, AZIMUTH)))
+    if (pvInput.getAzimuth().isLessThan(Quantities.getQuantity(-180d, AZIMUTH))
+        || pvInput.getAzimuth().isGreaterThan(Quantities.getQuantity(180d, AZIMUTH)))
       throw new InvalidEntityException(
           "Azimuth angle of "
               + pvInput.getClass().getSimpleName()
-              + " must be between -90° (east) and 90° (west)",
+              + " must be between -180° and 180°",
           pvInput);
   }
 
