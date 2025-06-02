@@ -21,7 +21,7 @@ ext {
   groovyBinaryVersion = "4.0.27"
 
   junitVersion = '1.12.0'
-  testcontainersVersion = '1.21.0'
+  testcontainersVersion = '1.21.1'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
