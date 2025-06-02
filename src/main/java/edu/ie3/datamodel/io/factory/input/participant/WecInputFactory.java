@@ -38,7 +38,7 @@ public class WecInputFactory
       OperatorInput operator,
       OperationTime operationTime) {
     WecTypeInput typeInput = data.getTypeInput();
-    EmInput em = data.getEm().orElse(null);
+    EmInput em = data.getControllingEm().orElse(null);
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
 
     return new WecInput(

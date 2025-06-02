@@ -64,7 +64,7 @@ public class SystemParticipantSource extends AssetEntitySource {
                   .andThen(enrich(NODE, nodes, NodeAssetInputEntityData::new))
                   .andThen(
                       enrichWithDefault(
-                          SystemParticipantInputEntityFactory.EM,
+                          SystemParticipantInputEntityFactory.CONTROLLING_EM,
                           emUnits,
                           null,
                           SystemParticipantEntityData::new))
