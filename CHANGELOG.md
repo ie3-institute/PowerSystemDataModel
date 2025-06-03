@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - -Fixed em fields in input models [#1331](https://github.com/ie3-institute/PowerSystemDataModel/issues/1331)
 - Add interpolation functionality to estimate missing weather values [#1304](https://github.com/ie3-institute/PowerSystemDataModel/issues/1304)
 
-
 ### Changed
 - Updated dependabot workflow and added CODEOWNERS [#1328](https://github.com/ie3-institute/PowerSystemDataModel/issues/1328)
 - Extend azimuth angle range to [-180°, 180°] for PV inputs [#1330](https://github.com/ie3-institute/PowerSystemDataModel/issues/1330)
