@@ -2,7 +2,7 @@
  * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
- */
+*/
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.util.quantities.interfaces.Irradiance;
@@ -33,10 +33,10 @@ public class WeatherValue implements Value {
    * @param wind values for this coordinate
    */
   public WeatherValue(
-          Point coordinate,
-          SolarIrradianceValue solarIrradiance,
-          TemperatureValue temperature,
-          WindValue wind) {
+      Point coordinate,
+      SolarIrradianceValue solarIrradiance,
+      TemperatureValue temperature,
+      WindValue wind) {
     this.coordinate = coordinate;
     this.solarIrradiance = solarIrradiance;
     this.temperature = temperature;
@@ -53,17 +53,17 @@ public class WeatherValue implements Value {
    * @param velocity Wind velocity for this coordinate (typically in m/s)
    */
   public WeatherValue(
-          Point coordinate,
-          ComparableQuantity<Irradiance> directSolarIrradiance,
-          ComparableQuantity<Irradiance> diffuseSolarIrradiance,
-          ComparableQuantity<Temperature> temperature,
-          ComparableQuantity<Angle> direction,
-          ComparableQuantity<Speed> velocity) {
+      Point coordinate,
+      ComparableQuantity<Irradiance> directSolarIrradiance,
+      ComparableQuantity<Irradiance> diffuseSolarIrradiance,
+      ComparableQuantity<Temperature> temperature,
+      ComparableQuantity<Angle> direction,
+      ComparableQuantity<Speed> velocity) {
     this(
-            coordinate,
-            new SolarIrradianceValue(directSolarIrradiance, diffuseSolarIrradiance),
-            new TemperatureValue(temperature),
-            new WindValue(direction, velocity));
+        coordinate,
+        new SolarIrradianceValue(directSolarIrradiance, diffuseSolarIrradiance),
+        new TemperatureValue(temperature),
+        new WindValue(direction, velocity));
   }
 
   public Point getCoordinate() {
@@ -90,14 +90,15 @@ public class WeatherValue implements Value {
     return solarIrradiance.getDiffuseIrradiance();
   }
 
-  public ComparableQuantity<Temperature> getTemperature() {
+  public Optional<ComparableQuantity<Temperature>> getTemperatureValue() {
     return temperature.getTemperature();
   }
 
-  public ComparableQuantity<Angle> getWindDirection() {
+  public Optional<ComparableQuantity<Angle>> getWindDirection() {
     return wind.getDirection();
   }
-  public ComparableQuantity<Speed> getWindVelocity() {
+
+  public Optional<ComparableQuantity<Speed>> getWindVelocity() {
     return wind.getVelocity();
   }
 
@@ -106,8 +107,8 @@ public class WeatherValue implements Value {
    *
    * @return true if all values are present, false otherwise
    */
-  public boolean isComplete() {
-    return solarIrradiance != null && temperature != null && wind != null;
+  public boolean hasPartialValues() {
+    return solarIrradiance != null || temperature != null || wind != null;
   }
 
   @Override
@@ -116,9 +117,9 @@ public class WeatherValue implements Value {
     if (o == null || getClass() != o.getClass()) return false;
     WeatherValue that = (WeatherValue) o;
     return coordinate.equals(that.coordinate)
-            && solarIrradiance.equals(that.solarIrradiance)
-            && temperature.equals(that.temperature)
-            && wind.equals(that.wind);
+        && solarIrradiance.equals(that.solarIrradiance)
+        && temperature.equals(that.temperature)
+        && wind.equals(that.wind);
   }
 
   @Override
@@ -129,14 +130,14 @@ public class WeatherValue implements Value {
   @Override
   public String toString() {
     return "WeatherValue{"
-            + "coordinate="
-            + coordinate
-            + ", solarIrradiance="
-            + solarIrradiance
-            + ", temperature="
-            + temperature
-            + ", wind="
-            + wind
-            + '}';
+        + "coordinate="
+        + coordinate
+        + ", solarIrradiance="
+        + solarIrradiance
+        + ", temperature="
+        + temperature
+        + ", wind="
+        + wind
+        + '}';
   }
 }
