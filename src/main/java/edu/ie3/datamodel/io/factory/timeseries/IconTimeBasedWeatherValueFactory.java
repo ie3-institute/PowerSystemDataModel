@@ -34,6 +34,11 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
 
+  /** Ground-/Skin-Temperature at surface (0m) */
+  private static final String GROUND_TEMP_SURFACE = "tG";
+  /** Soil-Temperature at 100cm depth (example parameter name) */
+  private static final String SOIL_TEMP_100CM = "tso100cm";
+
   public IconTimeBasedWeatherValueFactory() {
     super();
   }

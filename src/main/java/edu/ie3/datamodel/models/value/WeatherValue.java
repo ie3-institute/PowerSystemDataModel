@@ -6,8 +6,12 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.util.quantities.interfaces.Irradiance;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
@@ -25,11 +29,14 @@ public class WeatherValue implements Value {
   /** Wind values for this coordinate */
   private final WindValue wind;
 
+  /** Optional: A map of ground temperatures at different depths. The key represents the depth. */
+  private Map<ComparableQuantity<Length>, TemperatureValue> groundTemperatures = Map.of();
   /**
    * @param coordinate of this weather value set
    * @param solarIrradiance values for this coordinate
    * @param temperature values for this coordinate
    * @param wind values for this coordinate
+   * @param groundTemperatures A map of ground temperatures at different depths
    */
   public WeatherValue(
       Point coordinate,
@@ -40,6 +47,7 @@ public class WeatherValue implements Value {
     this.solarIrradiance = solarIrradiance;
     this.temperature = temperature;
     this.wind = wind;
+    this.groundTemperatures = Collections.unmodifiableMap(new HashMap<>(groundTemperatures));
   }
 
   /**
@@ -81,6 +89,16 @@ public class WeatherValue implements Value {
     return wind;
   }
 
+  /**
+   * Returns a map of ground temperatures, with the depth as key. The map is unmodifiable. Returns
+   * an empty map if no values are available.
+   *
+   * @return A map of ground temperatures.
+   */
+  public Map<ComparableQuantity<Length>, TemperatureValue> getGroundTemperatures() {
+    return groundTemperatures;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -89,12 +107,13 @@ public class WeatherValue implements Value {
     return coordinate.equals(that.coordinate)
         && solarIrradiance.equals(that.solarIrradiance)
         && temperature.equals(that.temperature)
-        && wind.equals(that.wind);
+        && wind.equals(that.wind)
+        && groundTemperatures.equals(that.groundTemperatures);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(coordinate, solarIrradiance, temperature, wind);
+    return Objects.hash(coordinate, solarIrradiance, temperature, wind, groundTemperatures);
   }
 
   @Override
@@ -108,6 +127,8 @@ public class WeatherValue implements Value {
         + temperature
         + ", wind="
         + wind
+        + groundTemperatures
+        + ", groundTemperatures="
         + '}';
   }
 }
