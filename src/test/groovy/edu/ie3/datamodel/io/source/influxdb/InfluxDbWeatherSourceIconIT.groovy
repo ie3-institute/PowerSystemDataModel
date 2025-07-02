@@ -22,8 +22,12 @@ import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.util.Collections
+import java.util.Optional
+import java.util.UUID
+
 @Testcontainers
-class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper, TestContainerHelper {
+class InfluxDbWeatherSourceIconIT extends Specification implements TestContainerHelper {
 
   @Shared
   InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8.10"))
@@ -34,8 +38,6 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
   InfluxDbWeatherSource source
 
   def setupSpec() {
-    // Copy import file into docker and then import it via influx CLI
-    // more information on file format and usage here: https://docs.influxdata.com/influxdb/v1.7/tools/shell/#import-data-from-a-file-with-import
     MountableFile influxWeatherImportFile = getMountableFile("_weather/icon/weather.txt")
     influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather_icon.txt")
 
@@ -64,7 +66,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
     then:
     optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
   }
 
   def "An InfluxDbWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -90,8 +92,8 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775), timeseries67775)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776), timeseries67776)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775), timeseries67775)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776), timeseries67776)
   }
 
   def "An InfluxDbWeatherSource can read all weather data in a given time interval"() {
@@ -114,8 +116,8 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeseries67775.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeseries67776.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeseries67775.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeseries67776.entries)
   }
 
   def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to its ID"() {
@@ -142,9 +144,9 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
     then:
     coordinateAtDate == Optional.empty()
-    equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
     coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
-    equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries67775)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries67775)
   }
 
   def "The InfluxDbWeatherSource returns all time keys after a given time key correctly"() {

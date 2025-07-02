@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+- Add ground temperature (1m) as  option to weather data. [#1343](https://github.com/ie3-institute/PowerSystemDataModel/issues/1343)
+
 ### Fixed
 - Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
 - -Fixed em fields in input models [#1331](https://github.com/ie3-institute/PowerSystemDataModel/issues/1331)

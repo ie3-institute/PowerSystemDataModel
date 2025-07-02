@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
+import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.couchbase.BucketDefinition
@@ -25,7 +26,7 @@ import spock.lang.Specification
 import java.time.Duration
 
 @Testcontainers
-class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
+class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContainerHelper {
 
   @Shared
   BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
@@ -34,7 +35,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
   CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.6.0")
   .withBucket(bucketDefinition)
   .withExposedPorts(8091, 8092, 8093, 8094, 11210)
-  .withStartupAttempts(3) // 3 attempts because startup (node renaming) sometimes fails when executed too early
+  .withStartupAttempts(3)
 
   @Shared
   CouchbaseWeatherSource source
@@ -42,18 +43,15 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
   static String coordinateIdColumnName = "coordinateid"
 
   def setupSpec() {
-    // Copy import file with json array of documents into docker
     MountableFile couchbaseWeatherJsonsFile = getMountableFile("_weather/cosmo/weather.json")
     couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather_cosmo.json")
 
-    // create an index for the document keys
     couchbaseContainer.execInContainer("cbq",
         "-e", "http://localhost:8093",
         "-u", couchbaseContainer.username,
         "-p", couchbaseContainer.password,
         "-s", "CREATE index id_idx ON `" + bucketDefinition.name + "` (META().id);")
 
-    //import the json documents from the copied file
     couchbaseContainer.execInContainer("cbimport", "json",
         "-cluster", "http://localhost:8091",
         "--bucket", "ie3_in",
@@ -63,7 +61,6 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
         "--dataset", "file:///home/weather_cosmo.json")
 
-    // increased timeout to deal with CI under high load
     def connector = new CouchbaseConnector(
         couchbaseContainer.connectionString,
         bucketDefinition.name,
@@ -71,7 +68,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         couchbaseContainer.password,
         Duration.ofSeconds(20))
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-    def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
+    def weatherFactory = new CosmoTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
     source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
   }
 
@@ -91,7 +88,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
 
     then:
     optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
   }
 
   def "A CouchbaseWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -115,8 +112,8 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
 
 
@@ -143,9 +140,9 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
     then:
     coordinateToTimeSeries.keySet().size() == 3
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
   }
 
   def "A CouchbaseWeatherSource returns all time keys after a given time key correctly"() {
