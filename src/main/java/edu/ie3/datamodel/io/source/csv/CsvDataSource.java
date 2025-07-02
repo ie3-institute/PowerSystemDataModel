@@ -79,8 +79,19 @@ public class CsvDataSource implements DataSource {
    */
   public Optional<Set<String>> getSourceFields(Path filePath) throws SourceException {
     try (BufferedReader reader = connector.initReader(filePath)) {
-      return Optional.of(
-          Arrays.stream(parseCsvRow(reader.readLine(), csvSep)).collect(Collectors.toSet()));
+      String line = reader.readLine();
+      String[] headline = parseCsvRow(line, csvSep);
+
+      if (headline.length <= 1) {
+        throw new SourceException(
+            "The given file has less than two columns! (Used separator '"
+                + csvSep
+                + "' on headline '"
+                + line
+                + "')");
+      }
+
+      return Optional.of(Arrays.stream(headline).collect(Collectors.toSet()));
     } catch (FileNotFoundException e) {
       // A file not existing can be acceptable in many cases, and is handled elsewhere.
       log.debug("The source for the given entity couldn't be found! Cause: {}", e.getMessage());
@@ -208,35 +219,39 @@ public class CsvDataSource implements DataSource {
    */
   protected Map<String, String> buildFieldsToAttributes(
       final String csvRow, final String[] headline) throws SourceException {
-
-    TreeMap<String, String> insensitiveFieldsToAttributes =
-        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-
+    // parse row
     String[] fieldVals = parseCsvRow(csvRow, csvSep);
-    insensitiveFieldsToAttributes.putAll(
-        IntStream.range(0, Math.min(fieldVals.length, headline.length))
-            .boxed()
-            .collect(
-                Collectors.toMap(
-                    k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
 
+    // check if the number row elements matched the number of headline elements
     if (fieldVals.length != headline.length) {
+      String headlineElements = "['" + String.join("', '", headline) + "']";
+      String parsedRow = "['" + String.join("', '", fieldVals) + "']";
+
       throw new SourceException(
           "The size of the headline ("
               + headline.length
               + ") does not fit to the size of the attribute fields ("
               + fieldVals.length
               + ").\nHeadline: "
-              + String.join(", ", headline)
-              + "\nRow: "
-              + csvRow.trim()
+              + headlineElements
+              + "\nParsed row: "
+              + parsedRow
               + ".\nPlease check:"
-              + "\n - is the csv separator in the file matching the separator provided in the constructor ('"
+              + "\n - is the csv separator in the row matching the provided separator '"
               + csvSep
-              + "')"
+              + "'"
               + "\n - does the number of columns match the number of headline fields "
               + "\n - are you using a valid RFC 4180 formatted csv row?");
     }
+
+    TreeMap<String, String> insensitiveFieldsToAttributes =
+        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    insensitiveFieldsToAttributes.putAll(
+        IntStream.range(0, Math.min(fieldVals.length, headline.length))
+            .boxed()
+            .collect(
+                Collectors.toMap(
+                    k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
 
     if (insensitiveFieldsToAttributes.size() != fieldVals.length) {
       throw new SourceException(
@@ -298,7 +313,9 @@ public class CsvDataSource implements DataSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      return csvRowFieldValueMapping(reader, headline);
+      return csvRowFieldValueMapping(reader, headline, filePath.getFileName())
+          .transformF(
+              e -> new SourceException("The file '" + filePath + "' could not be parsed.", e));
     } catch (FileNotFoundException e) {
       if (allowFileNotExisting) {
         log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
@@ -324,10 +341,11 @@ public class CsvDataSource implements DataSource {
    *
    * @param reader for the file
    * @param headline of the file
+   * @param fileName the name of the file, that is read
    * @return a list of mapping
    */
   protected Try<Stream<Map<String, String>>, SourceException> csvRowFieldValueMapping(
-      BufferedReader reader, String[] headline) {
+      BufferedReader reader, String[] headline, Path fileName) {
     return Try.scanStream(
             reader
                 .lines()
@@ -337,7 +355,7 @@ public class CsvDataSource implements DataSource {
                         Try.of(
                             () -> buildFieldsToAttributes(csvRow, headline),
                             SourceException.class)),
-            "Map<String, String>")
+            fileName.toString())
         .transform(
             stream -> stream.filter(map -> !map.isEmpty()),
             e -> new SourceException("Parsing csv row failed.", e));

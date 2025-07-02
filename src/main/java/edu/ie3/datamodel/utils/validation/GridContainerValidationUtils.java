@@ -99,10 +99,15 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     /* sanity check to ensure uniqueness */
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-    exceptions.add(
-        Try.ofVoid(
-            () -> checkAssetUniqueness(rawGridElements.allEntitiesAsList()),
-            DuplicateEntitiesException.class));
+    exceptions.addAll(
+        Try.ofVoids(
+            DuplicateEntitiesException.class,
+            () -> checkAssetUniqueness(rawGridElements.getNodes()),
+            () -> checkAssetUniqueness(rawGridElements.getLines()),
+            () -> checkAssetUniqueness(rawGridElements.getSwitches()),
+            () -> checkAssetUniqueness(rawGridElements.getTransformer2Ws()),
+            () -> checkAssetUniqueness(rawGridElements.getTransformer3Ws()),
+            () -> checkAssetUniqueness(rawGridElements.getMeasurementUnits())));
 
     /* Checking nodes */
     Set<NodeInput> nodes = rawGridElements.getNodes();
@@ -287,10 +292,6 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     /* sanity check to ensure uniqueness */
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-    exceptions.add(
-        Try.ofVoid(
-            () -> checkAssetUniqueness(systemParticipants.allEntitiesAsList()),
-            DuplicateEntitiesException.class));
 
     exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
@@ -306,8 +307,8 @@ public class GridContainerValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Checks the validity of specific system participant. Moreover, it checks, if the systems are
-   * connected to a node that is not in the provided set
+   * Checks the validity and uniqueness of specific system participant. Moreover, it checks, if the
+   * systems are connected to a node that is not in the provided set
    *
    * @param participants a set of specific system participants
    * @param nodes Set of already known nodes
@@ -316,18 +317,17 @@ public class GridContainerValidationUtils extends ValidationUtils {
    */
   protected static List<Try<Void, ? extends ValidationException>> checkSystemParticipants(
       Set<? extends SystemParticipantInput> participants, Set<NodeInput> nodes) {
-    return participants.stream()
-        .map(
-            entity -> {
-              List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    exceptions.add(
+        Try.ofVoid(() -> checkAssetUniqueness(participants), DuplicateEntitiesException.class));
 
-              exceptions.add(checkNodeAvailability(entity, nodes));
-              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
+    participants.forEach(
+        participant -> {
+          exceptions.add(checkNodeAvailability(participant, nodes));
+          exceptions.addAll(SystemParticipantValidationUtils.check(participant));
+        });
 
-              return exceptions;
-            })
-        .flatMap(List::stream)
-        .toList();
+    return exceptions;
   }
 
   /**

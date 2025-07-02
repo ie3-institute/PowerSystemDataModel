@@ -177,9 +177,11 @@ public class CsvWeatherSource extends WeatherSource {
         this::buildWeatherValue;
     /* Reading in weather time series */
     for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
+      Path path = data.getFullFilePath();
+
       // we need a reader for each file
-      try (BufferedReader reader = connector.initReader(data.getFullFilePath())) {
-        buildStreamWithFieldsToAttributesMap(reader)
+      try (BufferedReader reader = connector.initReader(path)) {
+        buildStreamWithFieldsToAttributesMap(reader, path.getFileName())
             .getOrThrow()
             .map(fieldToValueFunction)
             .flatMap(Optional::stream)
@@ -227,7 +229,7 @@ public class CsvWeatherSource extends WeatherSource {
   }
 
   private Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
-      BufferedReader bufferedReader) throws ValidationException {
+      BufferedReader bufferedReader, Path fileName) throws ValidationException {
     Class<? extends Entity> entityClass = TimeBasedValue.class;
 
     try (BufferedReader reader = bufferedReader) {
@@ -240,7 +242,7 @@ public class CsvWeatherSource extends WeatherSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      return dataSource.csvRowFieldValueMapping(reader, headline);
+      return dataSource.csvRowFieldValueMapping(reader, headline, fileName);
     } catch (IOException e) {
       return Failure.of(
           new SourceException(

@@ -68,6 +68,20 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
+   * Method to create multiple {@link Try} object easily.
+   *
+   * @param suppliers that either return no data or throw an exception
+   * @param clazz class of the exception
+   * @return a collection of try objects
+   * @param <E> type of exception that could be thrown
+   */
+  @SafeVarargs
+  public static <E extends Exception> Collection<Try<Void, E>> ofVoids(
+      Class<E> clazz, VoidSupplier<E>... suppliers) {
+    return Arrays.stream(suppliers).map(supplier -> ofVoid(supplier, clazz)).toList();
+  }
+
+  /**
    * Method to create a {@link Try} object easily.
    *
    * @param failure a {@link Failure} is returned.
