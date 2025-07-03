@@ -14,7 +14,6 @@ import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.profile.StandardLoadProfile
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.SystemParticipantTestData
@@ -345,7 +344,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
   }
 
   // Helper method to create invalid standard load profiles for testing
-  private StandardLoadProfile createInvalidStandardLoadProfile(String profileName) {
+  private static StandardLoadProfile createInvalidStandardLoadProfile(String profileName) {
     return new StandardLoadProfile() {
           @Override
           String getKey() {
@@ -359,6 +358,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
           @Override
           boolean equals(Object obj) {
+            if (obj instanceof String) {
+              return obj == "Simona"
+            }
             return false
           }
 
