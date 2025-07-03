@@ -358,6 +358,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * <ul>
    *   <li>its standard load profile is not null
+   *   <li>its standard load profile matches the supported types / profile names
    *   <li>its rated apparent power is not negative
    *   <li>its annual energy consumption is not negative
    *   <li>its rated power factor is between 0 and 1
