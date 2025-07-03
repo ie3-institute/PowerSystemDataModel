@@ -14,6 +14,7 @@ import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType
+import edu.ie3.datamodel.models.profile.StandardLoadProfile
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.util.quantities.interfaces.Currency
@@ -336,6 +337,35 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantTestData.loadInput.copy().loadprofile(null).build() 																						   || 1            || new InvalidEntityException("No standard load profile defined for load", invalidLoad)
     SystemParticipantTestData.loadInput.copy().sRated(Quantities.getQuantity(-25d, ACTIVE_POWER_IN)).eConsAnnual(Quantities.getQuantity(-4000, ENERGY_IN)).build() || 1            || new InvalidEntityException("The following quantities have to be zero or positive: -25 kVA, -4000 kWh", invalidLoad)
     SystemParticipantTestData.loadInput.copy().cosPhiRated(2).build()                                                                                              || 1            || new InvalidEntityException("Rated power factor of LoadInput must be between 0 and 1", invalidLoad)
+    SystemParticipantTestData.loadInput.copy().loadprofile(createInvalidStandardLoadProfile("h1")).build()                                                         || 1            || new InvalidEntityException("Load profile must contain at least one valid entry: h0, g[0-6], l[0-3], ep1, ez2 or NO_LOAD_PROFILE", invalidLoad)
+    SystemParticipantTestData.loadInput.copy().loadprofile(createInvalidStandardLoadProfile("g7")).build()                                                         || 1            || new InvalidEntityException("Load profile must contain at least one valid entry: h0, g[0-6], l[0-3], ep1, ez2 or NO_LOAD_PROFILE", invalidLoad)
+    SystemParticipantTestData.loadInput.copy().loadprofile(createInvalidStandardLoadProfile("l3")).build()                                                         || 1            || new InvalidEntityException("Load profile must contain at least one valid entry: h0, g[0-6], l[0-3], ep1, ez2 or NO_LOAD_PROFILE", invalidLoad)
+    SystemParticipantTestData.loadInput.copy().loadprofile(createInvalidStandardLoadProfile("invalid")).build()                                                    || 1            || new InvalidEntityException("Load profile must contain at least one valid entry: h0, g[0-6], l[0-3], ep1, ez2 or NO_LOAD_PROFILE", invalidLoad)
+  }
+
+  // Helper method to create invalid standard load profiles for testing
+  private StandardLoadProfile createInvalidStandardLoadProfile(String profileName) {
+    return new StandardLoadProfile() {
+          @Override
+          String getKey() {
+            return profileName
+          }
+
+          @Override
+          String toString() {
+            return profileName
+          }
+
+          @Override
+          boolean equals(Object obj) {
+            return false // Ensure it doesn't match any default profiles
+          }
+
+          @Override
+          int hashCode() {
+            return profileName.hashCode()
+          }
+        }
   }
 
   // PV

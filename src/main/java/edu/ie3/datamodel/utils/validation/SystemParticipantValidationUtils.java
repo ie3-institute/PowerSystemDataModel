@@ -5,13 +5,15 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import static edu.ie3.datamodel.models.StandardUnits.*;
+import static edu.ie3.datamodel.models.StandardUnits.AZIMUTH;
+import static edu.ie3.datamodel.models.StandardUnits.SOLAR_ELEVATION_ANGLE;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.TryException;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
@@ -374,6 +376,28 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
             () ->
                 new InvalidEntityException(
                     "No standard load profile defined for load", loadInput)));
+
+    String regexPattern = "^(h0|g[0-6]|l[0-2]|ep1|ez2)$";
+    LoadProfile profile = loadInput.getLoadProfile();
+
+    exceptions.add(
+        Try.ofVoid(
+            profile.equals(LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE)
+                || profile.equals(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE)
+                || !profile.toString().matches(regexPattern),
+            () ->
+                new InvalidEntityException(
+                    "Load profile must contain at least one valid entry: h0, g[0-6], l[0-3], ep1, ez2 or NO_LOAD_PROFILE",
+                    loadInput)));
+
+    exceptions.addAll(
+        Try.ofVoid(
+            InvalidEntityException.class,
+            () ->
+                detectNegativeQuantities(
+                    new Quantity<?>[] {loadInput.getsRated(), loadInput.geteConsAnnual()},
+                    loadInput),
+            () -> checkRatedPowerFactor(loadInput, loadInput.getCosPhiRated())));
 
     exceptions.addAll(
         Try.ofVoid(
