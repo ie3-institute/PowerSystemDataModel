@@ -110,8 +110,8 @@ public class SystemParticipantSource extends AssetEntitySource {
                 validate(StorageInput.class, dataSource, storageInputFactory),
                 validate(WecInput.class, dataSource, wecInputFactory),
                 validate(EvcsInput.class, dataSource, evcsInputFactory)),
-            "Validation")
-        .transformF(FailedValidationException::new)
+            "Validation",
+            FailedValidationException::new)
         .getOrThrow();
   }
 
@@ -212,22 +212,20 @@ public class SystemParticipantSource extends AssetEntitySource {
 
     List<SourceException> exceptions =
         Try.getExceptions(
-            List.of(
-                fixedFeedInInputs,
-                pvInputs,
-                loads,
-                bmInputs,
-                storages,
-                wecInputs,
-                evs,
-                evcs,
-                chpInputs,
-                hpInputs));
+            fixedFeedInInputs,
+            pvInputs,
+            loads,
+            bmInputs,
+            storages,
+            wecInputs,
+            evs,
+            evcs,
+            chpInputs,
+            hpInputs);
 
     if (!exceptions.isEmpty()) {
       throw new SystemParticipantsException(
-          exceptions.size() + " error(s) occurred while initializing system participants. ",
-          exceptions);
+          "Some exception(s) occurred while initializing system participants.", exceptions);
     } else {
       // if everything is fine, return a system participants container
       // getOrThrow should not throw an exception in this context, because all exception are

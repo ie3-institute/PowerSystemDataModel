@@ -268,7 +268,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     then: "the optional is empty"
     actual == null
     SourceException ex = thrown()
-    ex.message == "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"NodeInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: An error occurred when creating instance of NodeInput.class."
+    ex.message == "1 exception(s) occurred within \"NodeInput\" data: \n" +
+        "        edu.ie3.datamodel.exceptions.FactoryException: An error occurred when creating instance of NodeInput.class. Caused by: edu.ie3.datamodel.exceptions.FactoryException: Exception while trying to parse UUID of field \"uuid\" with value \"bd837a25-58f3-44ac-aa90-c6b6e3 cd91b2\""
   }
 
   def "The CsvRawGridSource returns an empty grid, if the RawGridElements contain no single element"() {
@@ -308,6 +309,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
     Exception ex = rawGridElements.exception.get()
     ex.class == SourceException
-    ex.message.startsWith("edu.ie3.datamodel.exceptions.FailureException: 2 exception(s) occurred within \"LineInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid ")
+    ex.message == "2 exception(s) occurred within \"LineInput\" data: \n" +
+    "        edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid bd837a25-58f3-44ac-aa90-c6b6e3cd91b2 was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid bd837a25-58f3-44ac-aa90-c6b6e3cd91b2 was not provided."
   }
 }

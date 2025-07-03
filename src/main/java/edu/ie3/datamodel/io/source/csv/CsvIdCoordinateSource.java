@@ -77,8 +77,7 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
                             fieldToValues ->
                                 new SimpleFactoryData(fieldToValues, IdCoordinateInput.class))
                         .map(factory::get))
-            .flatMap(
-                s -> Try.scanStream(s, "Pair<Integer, Point>").transformF(SourceException::new))
+            .flatMap(s -> Try.scanStream(s, "Pair<Integer, Point>", SourceException::new))
             .getOrThrow()
             .toList();
 

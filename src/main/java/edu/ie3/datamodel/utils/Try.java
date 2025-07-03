@@ -7,7 +7,6 @@ package edu.ie3.datamodel.utils;
 
 import static java.util.stream.Collectors.partitioningBy;
 
-import edu.ie3.datamodel.exceptions.FailureException;
 import edu.ie3.datamodel.exceptions.TryException;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -35,7 +34,7 @@ public abstract class Try<T, E extends Exception> {
       return new Success<>(supplier.get());
     } catch (Exception e) {
       // this is necessary because we only want to catch exceptions that are of type E
-      if (e.getClass().isAssignableFrom(clazz)) {
+      if (clazz.isAssignableFrom(e.getClass())) {
         return new Failure<>((E) e);
       } else {
         throw new TryException("Wrongly caught exception: ", e);
@@ -133,8 +132,7 @@ public abstract class Try<T, E extends Exception> {
    * @param tries collection of {@link Try} objects
    * @return a list of {@link Exception}'s
    */
-  public static <D, E extends Exception> List<E> getExceptions(
-      Collection<Try<? extends D, E>> tries) {
+  public static <D, E extends Exception> List<E> getExceptions(Collection<Try<D, E>> tries) {
     return getExceptions(tries.stream());
   }
 
@@ -144,7 +142,7 @@ public abstract class Try<T, E extends Exception> {
    * @param tries stream of {@link Try} objects
    * @return a list of {@link Exception}'s
    */
-  public static <D, E extends Exception> List<E> getExceptions(Stream<Try<? extends D, E>> tries) {
+  public static <D, E extends Exception> List<E> getExceptions(Stream<Try<D, E>> tries) {
     return tries.filter(Try::isFailure).map(t -> ((Failure<?, E>) t).get()).toList();
   }
 
@@ -163,13 +161,15 @@ public abstract class Try<T, E extends Exception> {
    * Method to scan a collection of {@link Try} objects for {@link Failure}'s.
    *
    * @param c collection of {@link Try} objects
-   * @param typeOfData type of data
+   * @param typeOfData information added to exception to help identify the place, that needs to be
+   *     fixed
+   * @param exceptionBuilder function to build the failure message
    * @return a {@link Success} if no {@link Failure}'s are found in the collection
    * @param <U> type of data
    */
-  public static <U, E extends Exception> Try<Set<U>, FailureException> scanCollection(
-      Collection<Try<U, E>> c, Class<U> typeOfData) {
-    return scanStream(c.stream(), typeOfData.getSimpleName())
+  public static <U, E extends Exception, RE extends Exception> Try<Set<U>, RE> scanCollection(
+      Collection<Try<U, E>> c, Class<U> typeOfData, Function<String, RE> exceptionBuilder) {
+    return scanStream(c.stream(), typeOfData.getSimpleName(), exceptionBuilder)
         .transformS(stream -> stream.collect(Collectors.toSet()));
   }
 
@@ -177,11 +177,14 @@ public abstract class Try<T, E extends Exception> {
    * Method to scan a stream of {@link Try} objects for {@link Failure}'s.
    *
    * @param stream of {@link Try} objects
+   * @param typeOfData information added to exception to help identify the place, that needs to be
+   *     fixed
+   * @param exceptionBuilder function to build the failure message
    * @return a {@link Success} if no {@link Failure}'s are found in the stream
    * @param <U> type of data
    */
-  public static <U, E extends Exception> Try<Stream<U>, FailureException> scanStream(
-      Stream<Try<U, E>> stream, String typeOfData) {
+  public static <U, E extends Exception, RE extends Exception> Try<Stream<U>, RE> scanStream(
+      Stream<Try<U, E>> stream, String typeOfData, Function<String, RE> exceptionBuilder) {
     Map<Boolean, List<Try<U, E>>> map = stream.collect(partitioningBy(Try::isSuccess));
 
     List<Try<U, E>> successes = map.get(true);
@@ -191,16 +194,15 @@ public abstract class Try<T, E extends Exception> {
     assert successes != null && failures != null;
 
     if (!failures.isEmpty()) {
-      E first = ((Failure<U, E>) failures.get(0)).exception;
+      List<E> exceptions = failures.stream().map(f -> ((Failure<U, E>) f).exception).toList();
 
       return new Failure<>(
-          new FailureException(
-              failures.size()
+          exceptionBuilder.apply(
+              exceptions.size()
                   + " exception(s) occurred within \""
                   + typeOfData
-                  + "\" data, one is: "
-                  + first,
-              first.getCause()));
+                  + "\" data: \n "
+                  + ExceptionUtils.combineExceptions(exceptions)));
     } else {
       return new Success<>(successes.stream().map(t -> ((Success<U, E>) t).data));
     }

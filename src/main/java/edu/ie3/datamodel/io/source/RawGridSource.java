@@ -5,11 +5,19 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.*;
+import edu.ie3.datamodel.exceptions.FailedValidationException;
+import edu.ie3.datamodel.exceptions.RawGridException;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.input.*;
-import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.MeasurementUnitInput;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.connector.LineInput;
+import edu.ie3.datamodel.models.input.connector.SwitchInput;
+import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
@@ -62,8 +70,8 @@ public class RawGridSource extends AssetEntitySource {
                 validate(Transformer3WInput.class, dataSource, transformer3WInputFactory),
                 validate(SwitchInput.class, dataSource, switchInputFactory),
                 validate(MeasurementUnitInput.class, dataSource, measurementUnitInputFactory)),
-            "Validation")
-        .transformF(FailedValidationException::new)
+            "Validation",
+            FailedValidationException::new)
         .getOrThrow();
   }
 
@@ -146,12 +154,11 @@ public class RawGridSource extends AssetEntitySource {
         Try.of(() -> getMeasurementUnits(operators, nodes), SourceException.class);
 
     List<SourceException> exceptions =
-        Try.getExceptions(
-            List.of(transformer2WInputs, transformer3WInputs, switches, measurementUnits));
+        Try.getExceptions(transformer2WInputs, transformer3WInputs, switches, measurementUnits);
 
     if (!exceptions.isEmpty()) {
       throw new RawGridException(
-          exceptions.size() + " error(s) occurred while initializing raw grid. ", exceptions);
+          "Some exception(s) occurred while initializing raw grid.", exceptions);
     } else {
       /* build and return the grid if it is not empty */
       // getOrThrow should not throw an exception in this context, because all exception are

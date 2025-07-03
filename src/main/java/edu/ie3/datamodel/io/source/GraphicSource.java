@@ -59,8 +59,8 @@ public class GraphicSource extends AssetEntitySource {
             Stream.of(
                 validate(NodeGraphicInput.class, dataSource, nodeGraphicInputFactory),
                 validate(LineGraphicInput.class, dataSource, lineGraphicInputFactory)),
-            "Validation")
-        .transformF(FailedValidationException::new)
+            "Validation",
+            FailedValidationException::new)
         .getOrThrow();
   }
 
@@ -95,12 +95,11 @@ public class GraphicSource extends AssetEntitySource {
     Try<Set<LineGraphicInput>, SourceException> lineGraphics =
         Try.of(() -> getLineGraphicInput(lines), SourceException.class);
 
-    List<SourceException> exceptions = Try.getExceptions(List.of(nodeGraphics, lineGraphics));
+    List<SourceException> exceptions = Try.getExceptions(nodeGraphics, lineGraphics);
 
     if (!exceptions.isEmpty()) {
       throw new GraphicSourceException(
-          exceptions.size() + " error(s) occurred while initializing graphic elements. ",
-          exceptions);
+          "Some exception(s) occurred while initializing graphic elements. ", exceptions);
     } else {
       // if everything is fine, return a GraphicElements instance
       // getOrThrow should not throw an exception in this context, because all exception are

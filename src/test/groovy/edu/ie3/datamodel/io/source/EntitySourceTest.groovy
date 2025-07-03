@@ -48,7 +48,8 @@ class EntitySourceTest extends Specification {
 
     then:
     SourceException ex = thrown()
-    ex.message == "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"OperatorInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: An error occurred when creating instance of OperatorInput.class."
+    ex.message == "1 exception(s) occurred within \"OperatorInput\" data: \n" +
+    "        edu.ie3.datamodel.exceptions.FactoryException: An error occurred when creating instance of OperatorInput.class. Caused by: edu.ie3.datamodel.exceptions.FactoryException: Field \"id\" not found in EntityData"
   }
 
   def "An EntitySource can build EntityData correctly"() {

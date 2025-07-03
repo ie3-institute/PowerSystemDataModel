@@ -224,7 +224,7 @@ public class CsvWeatherSource extends WeatherSource {
     if (exceptions.isEmpty()) {
       return weatherTimeSeries;
     } else {
-      throw new SourceException("Due to: " + ExceptionUtils.getMessages(exceptions));
+      throw new SourceException("Due to: " + ExceptionUtils.combineExceptions(exceptions));
     }
   }
 

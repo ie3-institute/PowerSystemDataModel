@@ -204,14 +204,12 @@ public abstract class EntitySource {
    * @return a stream of the entity data wrapped in a {@link Try}
    */
   protected static Stream<Try<EntityData, SourceException>> buildEntityData(
-      Class<? extends Entity> entityClass, DataSource dataSource) {
-    return Try.of(() -> dataSource.getSourceData(entityClass), SourceException.class)
-        .convert(
-            data ->
-                data.map(
-                    fieldsToAttributes ->
-                        new Try.Success<>(new EntityData(fieldsToAttributes, entityClass))),
-            exception -> Stream.of(Failure.of(exception)));
+      Class<? extends Entity> entityClass, DataSource dataSource) throws SourceException {
+    Stream<Map<String, String>> dataStream =
+        Try.of(() -> dataSource.getSourceData(entityClass), SourceException.class).getOrThrow();
+
+    return dataStream.map(
+        fieldsToAttributes -> new Try.Success<>(new EntityData(fieldsToAttributes, entityClass)));
   }
 
   /**
@@ -227,7 +225,8 @@ public abstract class EntitySource {
   protected static <E extends EntityData> Stream<Try<E, SourceException>> buildEntityData(
       Class<? extends Entity> entityClass,
       DataSource dataSource,
-      WrappedFunction<EntityData, E> converter) {
+      WrappedFunction<EntityData, E> converter)
+      throws SourceException {
     return buildEntityData(entityClass, dataSource).map(converter);
   }
 
@@ -356,9 +355,7 @@ public abstract class EntitySource {
    */
   protected static <S, E extends Exception> Stream<S> unpack(
       Stream<Try<S, E>> inputStream, Class<S> clazz) throws SourceException {
-    return Try.scanStream(inputStream, clazz.getSimpleName())
-        .transformF(SourceException::new)
-        .getOrThrow();
+    return Try.scanStream(inputStream, clazz.getSimpleName(), SourceException::new).getOrThrow();
   }
 
   /**

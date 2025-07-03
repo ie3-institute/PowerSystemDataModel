@@ -232,22 +232,22 @@ public class CsvDataSource implements DataSource {
               + headline.length
               + ") does not fit to the size of the attribute fields ("
               + fieldVals.length
-              + ").\nHeadline: "
+              + ").\n     Headline fields: "
               + headlineElements
-              + "\nParsed row: "
+              + "\n     Row values: "
               + parsedRow
-              + ".\nPlease check:"
-              + "\n - is the csv separator in the row matching the provided separator '"
+              + ".\n     Please check:"
+              + "\n      - is the csv separator in the row matching the provided separator '"
               + csvSep
               + "'"
-              + "\n - does the number of columns match the number of headline fields "
-              + "\n - are you using a valid RFC 4180 formatted csv row?");
+              + "\n      - does the number of columns match the number of headline fields "
+              + "\n      - are you using a valid RFC 4180 formatted csv row?");
     }
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     insensitiveFieldsToAttributes.putAll(
-        IntStream.range(0, Math.min(fieldVals.length, headline.length))
+        IntStream.range(0, headline.length)
             .boxed()
             .collect(
                 Collectors.toMap(
@@ -255,9 +255,9 @@ public class CsvDataSource implements DataSource {
 
     if (insensitiveFieldsToAttributes.size() != fieldVals.length) {
       throw new SourceException(
-          "There might be duplicate headline elements.\nHeadline: "
-              + String.join(", ", headline)
-              + ".\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
+          "There might be duplicate headline elements.\nHeadline fields: ['"
+              + String.join("', '", headline)
+              + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
     }
 
     return insensitiveFieldsToAttributes;
@@ -313,9 +313,7 @@ public class CsvDataSource implements DataSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      return csvRowFieldValueMapping(reader, headline, filePath.getFileName())
-          .transformF(
-              e -> new SourceException("The file '" + filePath + "' could not be parsed.", e));
+      return csvRowFieldValueMapping(reader, headline, filePath.getFileName());
     } catch (FileNotFoundException e) {
       if (allowFileNotExisting) {
         log.warn("Unable to find file '{}': {}", filePath, e.getMessage());
@@ -355,9 +353,8 @@ public class CsvDataSource implements DataSource {
                         Try.of(
                             () -> buildFieldsToAttributes(csvRow, headline),
                             SourceException.class)),
-            fileName.toString())
-        .transform(
-            stream -> stream.filter(map -> !map.isEmpty()),
-            e -> new SourceException("Parsing csv row failed.", e));
+            fileName.toString(),
+            SourceException::new)
+        .transformS(stream -> stream.filter(map -> !map.isEmpty()));
   }
 }
