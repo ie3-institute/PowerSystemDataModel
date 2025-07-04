@@ -36,6 +36,6 @@ class EmValidationUtilsTest extends Specification {
 
     where:
     invalidEm                                                            	      || expectedSize || expectedException
-    GridTestData.energyManagementInput.copy().controlStrategy("invalid").build()  || 1            || new InvalidEntityException("Control strategy of energy management system must be one of the following: PRIORITIZED, PROPORTIONAL.", invalidEm)
+    GridTestData.energyManagementInput.copy().controlStrategy(null).build()       || 1            || new InvalidEntityException("No control strategy of energy management defined for", invalidEm)
   }
 }
