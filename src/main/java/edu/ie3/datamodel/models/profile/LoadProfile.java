@@ -8,8 +8,9 @@ package edu.ie3.datamodel.models.profile;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public interface LoadProfile extends Serializable {
   /** @return The identifying String */
@@ -28,12 +29,15 @@ public interface LoadProfile extends Serializable {
     return LoadProfile.getProfile(getAllProfiles(), key);
   }
 
+  /**
+   * Returns all {@link LoadProfile}s, that are either provided by the PSDM or provided using the
+   * {@link LoadProfileProvider}.
+   */
   static LoadProfile[] getAllProfiles() {
-    return Stream.of(
-            BdewStandardLoadProfile.values(),
-            NbwTemperatureDependantLoadProfile.values(),
-            (LoadProfile[]) RandomLoadProfile.values())
-        .flatMap(Arrays::stream)
+    return ServiceLoader.load(LoadProfileProvider.class).stream()
+        .map(ServiceLoader.Provider::get)
+        .map(LoadProfileProvider::getProfiles)
+        .flatMap(Collection::stream)
         .toArray(LoadProfile[]::new);
   }
 
