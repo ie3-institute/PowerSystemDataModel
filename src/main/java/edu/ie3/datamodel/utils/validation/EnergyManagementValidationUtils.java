@@ -43,7 +43,6 @@ public class EnergyManagementValidationUtils extends ValidationUtils {
                 new InvalidEntityException(
                     "No control strategy of energy management defined for", energyManagement)));
 
-
     return exceptions;
   }
 }
