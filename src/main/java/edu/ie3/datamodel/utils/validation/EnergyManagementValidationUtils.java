@@ -24,7 +24,6 @@ public class EnergyManagementValidationUtils extends ValidationUtils {
    *
    * <ul>
    *   <li>its control strategy is not null
-   *   <li>its control strategy matches the supported strategies
    * </ul>
    *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
@@ -44,14 +43,6 @@ public class EnergyManagementValidationUtils extends ValidationUtils {
                 new InvalidEntityException(
                     "No control strategy of energy management defined for", energyManagement)));
 
-    exceptions.add(
-        Try.ofVoid(
-            !(energyManagement.getControlStrategy().equals("PRIORITIZED")
-                || energyManagement.getControlStrategy().equals("PROPORTIONAL")),
-            () ->
-                new InvalidEntityException(
-                    "Control strategy of energy management system must be one of the following: PRIORITIZED, PROPORTIONAL.",
-                    energyManagement)));
 
     return exceptions;
   }
