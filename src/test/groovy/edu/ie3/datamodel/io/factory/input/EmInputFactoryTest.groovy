@@ -24,6 +24,79 @@ class EmInputFactoryTest extends Specification {
     inputFactory.supportedClasses == expectedClasses
   }
 
+  def "An EmInputFactory should return the valid fields correctly"() {
+    given:
+    def inputFactory = new EmInputFactory()
+    def validCombinations = [
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm"
+      ] as Set,
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesFrom"
+      ] as Set,
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesUntil"
+      ] as Set,
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesFrom",
+        "operatesUntil"
+      ] as Set,
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator"
+      ] as Set,
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesFrom"
+      ] as Set,
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesUntil"
+      ] as Set,
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesFrom",
+        "operatesUntil"
+      ] as Set,
+    ]
+
+    when:
+    def fieldCombinations = inputFactory.getFields(EmInput)
+
+    then:
+    fieldCombinations == validCombinations
+  }
+
   def "A EmInputFactory should parse a valid EmInput with parent EM correctly"() {
     given:
     def inputFactory = new EmInputFactory()
