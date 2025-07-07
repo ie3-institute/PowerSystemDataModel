@@ -6,10 +6,9 @@
 package edu.ie3.datamodel.models.profile;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.provider.LoadProfileProvider;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 public interface LoadProfile extends Serializable {
@@ -34,11 +33,7 @@ public interface LoadProfile extends Serializable {
    * {@link LoadProfileProvider}.
    */
   static LoadProfile[] getAllProfiles() {
-    return ServiceLoader.load(LoadProfileProvider.class).stream()
-        .map(ServiceLoader.Provider::get)
-        .map(LoadProfileProvider::getProfiles)
-        .flatMap(Collection::stream)
-        .toArray(LoadProfile[]::new);
+    return LoadProfileProvider.loadedProfiles.toArray(LoadProfile[]::new);
   }
 
   /**

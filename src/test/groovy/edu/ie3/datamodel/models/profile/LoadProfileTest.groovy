@@ -187,6 +187,6 @@ class LoadProfileTest extends Specification {
 
     then:
     def e = thrown(ParsingException)
-    e.message == "No predefined load profile with key 'not_a_key' found. Please provide one of the following keys: h0, l0, l1, l2, g0, g1, g2, g3, g4, g5, g6, ep1, ez2, random"
+    e.message == "No predefined load profile with key 'not_a_key' found. Please provide one of the following keys: h0, l0, l1, l2, g0, g1, g2, g3, g4, g5, g6, ep1, ez2, random, No load profile assigned"
   }
 }
