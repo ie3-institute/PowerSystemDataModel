@@ -12,6 +12,7 @@ import edu.ie3.datamodel.utils.Try
 import spock.lang.Specification
 
 import java.time.ZonedDateTime
+import java.util.stream.Collectors
 
 class EmInputFactoryTest extends Specification {
 
@@ -27,67 +28,40 @@ class EmInputFactoryTest extends Specification {
   def "An EmInputFactory should return the valid fields correctly"() {
     given:
     def inputFactory = new EmInputFactory()
-    def validCombinations = [
+
+    def requiredFields = [
+      "uuid",
+      "id",
+      "controlStrategy",
+      "controllingEm"
+    ] as Set
+
+    def operationCombinations = [
+      ["operatesFrom"],
+      ["operatesUntil"],
       [
-        "uuid",
-        "id",
-        "controlStrategy",
-        "controllingEm"
-      ] as Set,
-      [
-        "uuid",
-        "id",
-        "controlStrategy",
-        "controllingEm",
-        "operatesFrom"
-      ] as Set,
-      [
-        "uuid",
-        "id",
-        "controlStrategy",
-        "controllingEm",
-        "operatesUntil"
-      ] as Set,
-      [
-        "uuid",
-        "id",
-        "controlStrategy",
-        "controllingEm",
         "operatesFrom",
         "operatesUntil"
-      ] as Set,
+      ],
+      ["operator"],
+      ["operatesFrom", "operator"],
+      ["operatesUntil", "operator"],
       [
-        "uuid",
-        "id",
-        "controlStrategy",
-        "controllingEm",
+        "operatesFrom",
+        "operatesUntil",
         "operator"
-      ] as Set,
-      [
-        "uuid",
-        "id",
-        "controlStrategy",
-        "controllingEm",
-        "operator",
-        "operatesFrom"
-      ] as Set,
-      [
-        "uuid",
-        "id",
-        "controlStrategy",
-        "controllingEm",
-        "operator",
-        "operatesUntil"
-      ] as Set,
-      [
-        "uuid",
-        "id",
-        "controlStrategy",
-        "controllingEm",
-        "operator",
-        "operatesFrom",
-        "operatesUntil"
-      ] as Set,
+      ]
+    ]
+
+    def validCombinations = [
+      requiredFields,
+      requiredFields + operationCombinations.get(0),
+      requiredFields + operationCombinations.get(1),
+      requiredFields + operationCombinations.get(2),
+      requiredFields + operationCombinations.get(3),
+      requiredFields + operationCombinations.get(4),
+      requiredFields + operationCombinations.get(5),
+      requiredFields + operationCombinations.get(6),
     ]
 
     when:
