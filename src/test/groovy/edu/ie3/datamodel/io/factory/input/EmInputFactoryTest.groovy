@@ -28,41 +28,68 @@ class EmInputFactoryTest extends Specification {
   def "An EmInputFactory should return the valid fields correctly"() {
     given:
     def inputFactory = new EmInputFactory()
-
-    def requiredFields = [
-      "uuid",
-      "id",
-      "controlStrategy",
-      "controllingEm"
-    ] as Set
-
-    def operationCombinations = [
-      ["operatesFrom"],
-      ["operatesUntil"],
+    def validCombinations = [
       [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesFrom"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesUntil"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
         "operatesFrom",
         "operatesUntil"
       ],
-      ["operator"],
-      ["operatesFrom", "operator"],
-      ["operatesUntil", "operator"],
       [
-        "operatesFrom",
-        "operatesUntil",
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
         "operator"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesFrom"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesUntil"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesFrom",
+        "operatesUntil"
       ]
-    ]
-
-    def validCombinations = [
-      requiredFields,
-      requiredFields + operationCombinations.get(0),
-      requiredFields + operationCombinations.get(1),
-      requiredFields + operationCombinations.get(2),
-      requiredFields + operationCombinations.get(3),
-      requiredFields + operationCombinations.get(4),
-      requiredFields + operationCombinations.get(5),
-      requiredFields + operationCombinations.get(6),
-    ]
+    ].collect { it as Set }
 
     when:
     def fieldCombinations = inputFactory.getFields(EmInput)
