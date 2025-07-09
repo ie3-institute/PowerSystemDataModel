@@ -72,7 +72,7 @@ dependencies {
   implementation 'org.jgrapht:jgrapht-core:1.5.2'
 
   // Statistics (for random load model)
-  implementation 'de.lmu.ifi.dbs.elki:elki:0.7.5'
+  implementation 'de.lmu.ifi.dbs.elki:elki-core-math:0.7.5'
 
   // testing
   testImplementation "org.apache.groovy:groovy:$groovyBinaryVersion"

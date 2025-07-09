@@ -6,10 +6,10 @@
 package edu.ie3.datamodel.models.profile;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.provider.LoadProfileProvider;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public interface LoadProfile extends Serializable {
   /** @return The identifying String */
@@ -28,13 +28,12 @@ public interface LoadProfile extends Serializable {
     return LoadProfile.getProfile(getAllProfiles(), key);
   }
 
+  /**
+   * Returns all {@link LoadProfile}s, that are either provided by the PSDM or provided using the
+   * {@link LoadProfileProvider}.
+   */
   static LoadProfile[] getAllProfiles() {
-    return Stream.of(
-            BdewStandardLoadProfile.values(),
-            NbwTemperatureDependantLoadProfile.values(),
-            (LoadProfile[]) RandomLoadProfile.values())
-        .flatMap(Arrays::stream)
-        .toArray(LoadProfile[]::new);
+    return LoadProfileProvider.loadedProfiles.toArray(LoadProfile[]::new);
   }
 
   /**
