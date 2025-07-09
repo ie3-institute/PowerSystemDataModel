@@ -19,6 +19,24 @@ public class ExceptionUtils {
    * @param exceptions list of exceptions
    * @return str containing the messages
    */
+  public static String combineMessages(List<? extends Exception> exceptions) {
+    String messageSeparator = "\n ";
+
+    String messages =
+        exceptions.stream()
+            .map(Throwable::getMessage)
+            .reduce("", (a, b) -> a + messageSeparator + b);
+
+    // some formating
+    return messages.replace("\n", "\n       ").replaceFirst(messageSeparator, "");
+  }
+
+  /**
+   * Creates a string containing multiple exception messages.
+   *
+   * @param exceptions list of exceptions
+   * @return str containing the messages
+   */
   public static String combineExceptions(List<? extends Exception> exceptions) {
     String messageSeparator = "\n ";
 

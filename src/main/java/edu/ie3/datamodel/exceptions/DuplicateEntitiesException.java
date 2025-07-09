@@ -20,6 +20,6 @@ public class DuplicateEntitiesException extends ValidationException {
         "The following exception(s) occurred while checking the uniqueness of '"
             + entityName
             + "' entities: \n"
-            + ExceptionUtils.combineExceptions(exceptions));
+            + ExceptionUtils.combineMessages(exceptions));
   }
 }

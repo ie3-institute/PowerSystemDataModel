@@ -98,7 +98,7 @@ class UniquenessValidationUtilsTest extends Specification {
     then:
     DuplicateEntitiesException de = thrown()
     de.message == "The following exception(s) occurred while checking the uniqueness of 'AssetInput' entities: \n" +
-        "       edu.ie3.datamodel.exceptions.DuplicateEntitiesException: 'DummyAssetInput' entities with duplicated String key, but different field values found! Affected primary keys: [first]"
+        "       'DummyAssetInput' entities with duplicated String key, but different field values found! Affected primary keys: [first]"
   }
 
   def "Checking if result entities are unique"() {
