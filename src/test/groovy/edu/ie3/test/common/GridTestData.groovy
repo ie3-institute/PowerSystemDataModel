@@ -9,7 +9,6 @@ import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.datamodel.models.OperationTime
-import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -387,14 +386,5 @@ class GridTestData {
   true,
   true,
   true
-  )
-
-  public static final EmInput energyManagementInput = new EmInput(
-  UUID.fromString("4bef6955-5e31-4283-8920-5e4cae267a23"),
-  "test_energyManagement",
-  profBroccoli,
-  defaultOperationTime,
-  "PRIORITIZED",
-  null,
   )
 }

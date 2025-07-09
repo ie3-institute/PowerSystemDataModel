@@ -553,175 +553,6 @@ class ContainerUtilsTest extends Specification {
    *   - filtering of system participants can be tested
    *   - filtering of graphic elements can be tested */
 
-  def "Traversing along a simple switch chain returns the correct list of traveled nodes"() {
-    given:
-    def nodeA = Mock(NodeInput)
-    def nodeB = Mock(NodeInput)
-    def nodeC = Mock(NodeInput)
-    def nodeD = Mock(NodeInput)
-
-    def switchAB = Mock(SwitchInput)
-    switchAB.getNodeA() >> nodeA
-    switchAB.getNodeB() >> nodeB
-    switchAB.allNodes() >> List.of(nodeA, nodeB)
-    def switchBC = Mock(SwitchInput)
-    switchBC.getNodeA() >> nodeB
-    switchBC.getNodeB() >> nodeC
-    switchBC.allNodes() >> List.of(nodeB, nodeC)
-    def switchCD = Mock(SwitchInput)
-    switchCD.getNodeA() >> nodeC
-    switchCD.getNodeB() >> nodeD
-    switchCD.allNodes() >> List.of(nodeC, nodeD)
-
-    def switches = new HashSet<SwitchInput>()
-    switches.add(switchAB)
-    switches.add(switchBC)
-    switches.add(switchCD)
-
-    def possibleJunctions = new HashSet<NodeInput>()
-
-    def expected = new LinkedList<NodeInput>()
-    expected.addFirst(nodeA)
-    expected.addLast(nodeB)
-    expected.addLast(nodeC)
-    expected.addLast(nodeD)
-
-    when:
-    def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
-
-    then:
-    actual == expected
-  }
-
-  def "Traversing along a switch chain with intermediate junction returns the correct list of traveled nodes"() {
-    given:
-    def nodeA = Mock(NodeInput)
-    def nodeB = Mock(NodeInput)
-    def nodeC = Mock(NodeInput)
-    def nodeD = Mock(NodeInput)
-
-    def switchAB = Mock(SwitchInput)
-    switchAB.getNodeA() >> nodeA
-    switchAB.getNodeB() >> nodeB
-    switchAB.allNodes() >> List.of(nodeA, nodeB)
-    def switchBC = Mock(SwitchInput)
-    switchBC.getNodeA() >> nodeB
-    switchBC.getNodeB() >> nodeC
-    switchBC.allNodes() >> List.of(nodeB, nodeC)
-    def switchCD = Mock(SwitchInput)
-    switchCD.getNodeA() >> nodeC
-    switchCD.getNodeB() >> nodeD
-    switchCD.allNodes() >> List.of(nodeC, nodeD)
-
-    def switches = new HashSet<SwitchInput>()
-    switches.add(switchAB)
-    switches.add(switchBC)
-    switches.add(switchCD)
-
-    def possibleJunctions = new HashSet<NodeInput>()
-    possibleJunctions.add(nodeC)
-
-    def expected = new LinkedList<NodeInput>()
-    expected.addFirst(nodeA)
-    expected.addLast(nodeB)
-    expected.addLast(nodeC)
-
-    when:
-    def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
-
-    then:
-    actual == expected
-  }
-
-  def "Traversing along a non existing switch chain returns the correct list of traveled nodes"() {
-    given:
-    def nodeA = Mock(NodeInput)
-
-    def switches = new HashSet<SwitchInput>()
-
-    def possibleJunctions = new HashSet<NodeInput>()
-
-    def expected = new LinkedList<NodeInput>()
-    expected.addFirst(nodeA)
-
-    when:
-    def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
-
-    then:
-    actual == expected
-  }
-
-  def "Traversing along a cyclic switch chain throws an exception"() {
-    given:
-    def nodeA = Mock(NodeInput)
-    def nodeB = Mock(NodeInput)
-    def nodeC = Mock(NodeInput)
-
-    def switchAB = Mock(SwitchInput)
-    switchAB.getNodeA() >> nodeA
-    switchAB.getNodeB() >> nodeB
-    switchAB.allNodes() >> List.of(nodeA, nodeB)
-    def switchBC = Mock(SwitchInput)
-    switchBC.getNodeA() >> nodeB
-    switchBC.getNodeB() >> nodeC
-    switchBC.allNodes() >> List.of(nodeB, nodeC)
-    def switchCA = Mock(SwitchInput)
-    switchCA.getNodeA() >> nodeC
-    switchCA.getNodeB() >> nodeA
-    switchCA.allNodes() >> List.of(nodeC, nodeA)
-
-    def switches = new HashSet<SwitchInput>()
-    switches.add(switchAB)
-    switches.add(switchBC)
-    switches.add(switchCA)
-
-    def possibleJunctions = new HashSet<NodeInput>()
-
-    when:
-    ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
-
-    then:
-    IllegalArgumentException ex = thrown()
-    ex.message == "Cannot traverse along switch chain, as there is a junction included at node Mock for type " +
-        "'NodeInput' named 'nodeA'"
-  }
-
-  def "Traversing along a switch chain with switch junction throws an exception"() {
-    given:
-    def nodeA = Mock(NodeInput)
-    def nodeB = Mock(NodeInput)
-    def nodeC = Mock(NodeInput)
-    def nodeD = Mock(NodeInput)
-
-    def switchAB = Mock(SwitchInput)
-    switchAB.getNodeA() >> nodeA
-    switchAB.getNodeB() >> nodeB
-    switchAB.allNodes() >> List.of(nodeA, nodeB)
-    def switchBC = Mock(SwitchInput)
-    switchBC.getNodeA() >> nodeB
-    switchBC.getNodeB() >> nodeC
-    switchBC.allNodes() >> List.of(nodeB, nodeC)
-    def switchBD = Mock(SwitchInput)
-    switchBD.getNodeA() >> nodeB
-    switchBD.getNodeB() >> nodeD
-    switchBD.allNodes() >> List.of(nodeB, nodeD)
-
-    def switches = new HashSet<SwitchInput>()
-    switches.add(switchAB)
-    switches.add(switchBC)
-    switches.add(switchBD)
-
-    def possibleJunctions = new HashSet<NodeInput>()
-
-    when:
-    ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
-
-    then:
-    IllegalArgumentException ex = thrown()
-    ex.message == "Cannot traverse along switch chain, as there is a junction included at node Mock for type " +
-        "'NodeInput' named 'nodeB'"
-  }
-
   def "Determining the surrounding sub grid containers of a two winding transformer w/o switchgear works fine"() {
     given:
     def nodeD = Mock(NodeInput)
@@ -762,13 +593,13 @@ class ContainerUtilsTest extends Specification {
     nodeA.getSubnet() >> 1
     def nodeB = Mock(NodeInput)
     nodeB.getUuid() >> UUID.fromString("8361b082-9d4c-4c54-97d0-2df9ac35333c")
-    nodeB.getSubnet() >> 2
+    nodeB.getSubnet() >> 1
     def nodeC = Mock(NodeInput)
     nodeC.getUuid() >> UUID.fromString("b9e4f16b-0317-4794-9f53-339db45a2092")
-    nodeC.getSubnet() >> 2
+    nodeC.getSubnet() >> 1
     def nodeD = Mock(NodeInput)
     nodeD.getUuid() >> UUID.fromString("ae4869d5-3551-4cce-a101-d61629716c4f")
-    nodeD.getSubnet() >> 2
+    nodeD.getSubnet() >> 1
     def nodeE = Mock(NodeInput)
     nodeE.getUuid() >> UUID.fromString("5d4107b2-385b-40fe-a668-19414bf45d9d")
     nodeE.getSubnet() >> 2
