@@ -14,6 +14,7 @@ import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
@@ -24,6 +25,10 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
+/**
+ * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
+ * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
+ */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
   private static final String TIME = "time";
   private static final String COORDINATE_ID = "coordinateId";
@@ -37,6 +42,14 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
 
   public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
+  }
+
+  public CosmoTimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
+    super(dateTimeFormatter);
+  }
+
+  public CosmoTimeBasedWeatherValueFactory() {
+    super();
   }
 
   @Override

@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.util.quantities.QuantityUtil
 
-class WeatherSourceTestHelper {
+trait WeatherSourceTestHelper {
 
   static boolean equalsIgnoreUUID(IndividualTimeSeries<WeatherValue> ts1,
       IndividualTimeSeries<WeatherValue> ts2) {

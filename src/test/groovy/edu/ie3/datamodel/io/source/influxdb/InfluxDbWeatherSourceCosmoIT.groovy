@@ -28,7 +28,7 @@ import spock.lang.Specification
 import java.time.Duration
 
 @Testcontainers
-class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContainerHelper {
+class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
 
   @Shared
   InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8.10"))
@@ -39,6 +39,8 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
   InfluxDbWeatherSource source
 
   def setupSpec() {
+    // Copy import file into docker and then import it via influx CLI
+    // more information on file format and usage here: https://docs.influxdata.com/influxdb/v1.7/tools/shell/#import-data-from-a-file-with-import
     MountableFile influxWeatherImportFile = getMountableFile("_weather/cosmo/weather.txt")
     influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather_cosmo.txt")
 
@@ -67,7 +69,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
     then:
     optTimeBasedValue.present
-    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
   }
 
   def "An InfluxDbWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -93,8 +95,8 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeseries_193186)
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeseries_193187)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeseries_193186)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeseries_193187)
   }
 
   def "An InfluxDbWeatherSource can read all weather data in a given time interval"() {
@@ -121,9 +123,9 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
     then:
     coordinateToTimeSeries.keySet().size() == 3
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeseries_193186.entries)
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeseries_193187.entries)
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeseries_193188.entries)
+   equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeseries_193186.entries)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeseries_193187.entries)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeseries_193188.entries)
   }
 
   def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to its ID"() {
@@ -150,9 +152,9 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
     then:
     coordinateAtDate == Optional.empty()
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
+    equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
     coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries_193186)
+    equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries_193186)
   }
 
   def "A InfluxDbWeatherSource returns all time keys after a given time key correctly"() {

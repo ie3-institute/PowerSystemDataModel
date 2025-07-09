@@ -25,7 +25,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelper {
+class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
 
   @Shared
   PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
@@ -37,8 +37,10 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
   static String weatherTableName = "weather"
 
   def setupSpec() {
+    // Copy sql import script into docker
     MountableFile sqlImportFile = getMountableFile("_weather/cosmo/weather.sql")
     postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather_cosmo.sql")
+    // Execute import script
     Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather_cosmo.sql")
     assert res.stderr.empty
 
@@ -56,7 +58,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     optTimeBasedValue.present
-    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
+    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
   }
 
   def "A SqlWeatherSource returns nothing for an invalid coordinate"() {
@@ -90,8 +92,8 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
 
   def "A SqlWeatherSource returns nothing for invalid coordinates"() {
@@ -133,9 +135,9 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     coordinateToTimeSeries.keySet().size() == 3
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
-    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
   }
 
   def "A SqlWeatherSource returns all time keys after a given time key correctly"() {
