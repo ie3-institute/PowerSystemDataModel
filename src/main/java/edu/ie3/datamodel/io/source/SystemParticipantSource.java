@@ -225,7 +225,10 @@ public class SystemParticipantSource extends AssetEntitySource {
 
     if (!exceptions.isEmpty()) {
       throw new SystemParticipantsException(
-          "Some exception(s) occurred while initializing system participants.", exceptions);
+          "Exception(s) occurred in "
+              + exceptions.size()
+              + " input files while initializing system participants.",
+          exceptions);
     } else {
       // if everything is fine, return a system participants container
       // getOrThrow should not throw an exception in this context, because all exception are

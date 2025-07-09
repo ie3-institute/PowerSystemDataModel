@@ -158,7 +158,10 @@ public class RawGridSource extends AssetEntitySource {
 
     if (!exceptions.isEmpty()) {
       throw new RawGridException(
-          "Some exception(s) occurred while initializing raw grid.", exceptions);
+          "Exception(s) occurred in "
+              + exceptions.size()
+              + " input files while initializing raw grid.",
+          exceptions);
     } else {
       /* build and return the grid if it is not empty */
       // getOrThrow should not throw an exception in this context, because all exception are
