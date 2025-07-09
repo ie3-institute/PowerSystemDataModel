@@ -19,41 +19,24 @@ public class ExceptionUtils {
    * @param exceptions list of exceptions
    * @return str containing the messages
    */
-  public static String combineMessages(List<? extends Exception> exceptions) {
-    String messageSeparator = "\n ";
-
-    String messages =
-        exceptions.stream()
-            .map(Throwable::getMessage)
-            .reduce("", (a, b) -> a + messageSeparator + b);
-
-    // some formating
-    return messages.replace("\n", "\n       ").replaceFirst(messageSeparator, "");
-  }
-
-  /**
-   * Creates a string containing multiple exception messages.
-   *
-   * @param exceptions list of exceptions
-   * @return str containing the messages
-   */
   public static String combineExceptions(List<? extends Exception> exceptions) {
     String messageSeparator = "\n ";
 
     // function to convert an exception into a string
     Function<Exception, String> converter =
         e -> {
-          String clazz = e.getClass().getName();
           String message = e.getMessage();
           Throwable cause = e.getCause();
 
-          String res = clazz + ": " + message;
-
           if (cause != null) {
-            res += " Caused by: " + cause.getClass().getName() + ": " + cause.getMessage();
+            String causeMessage = cause.getMessage();
+
+            if (!message.equalsIgnoreCase(causeMessage)) {
+              message += " Caused by: " + cause.getMessage();
+            }
           }
 
-          return res;
+          return message;
         };
 
     String messages =

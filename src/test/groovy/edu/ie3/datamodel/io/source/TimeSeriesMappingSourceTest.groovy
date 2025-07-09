@@ -121,7 +121,7 @@ class TimeSeriesMappingSourceTest extends Specification {
     then:
     def ex = thrown(SourceException)
     ex.message == "2 exception(s) occurred within \"MappingEntry\" data: \n" +
-        "        edu.ie3.datamodel.exceptions.FactoryException: An error occurred when creating instance of MappingEntry.class. Caused by: edu.ie3.datamodel.exceptions.FactoryException: Exception while trying to parse UUID of field \"asset\" with value \"invalidAsset\"\n" +
-        "        edu.ie3.datamodel.exceptions.FactoryException: An error occurred when creating instance of MappingEntry.class. Caused by: edu.ie3.datamodel.exceptions.FactoryException: Exception while trying to parse UUID of field \"asset\" with value \"invalidAsset2\""
+        "        An error occurred when creating instance of MappingEntry.class. Caused by: Exception while trying to parse UUID of field \"asset\" with value \"invalidAsset\"\n" +
+        "        An error occurred when creating instance of MappingEntry.class. Caused by: Exception while trying to parse UUID of field \"asset\" with value \"invalidAsset2\""
   }
 }

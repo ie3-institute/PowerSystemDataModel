@@ -225,7 +225,7 @@ class EnergyManagementSourceTest extends Specification {
     then:
     def exc = thrown(SourceException)
     exc.message == "1 exception(s) occurred within \"EmInput\" data: \n" +
-    "        edu.ie3.datamodel.exceptions.FactoryException: An error occurred when creating instance of EmInput.class. Caused by: edu.ie3.datamodel.exceptions.FactoryException: Field \"id\" not found in EntityData"
+    "        An error occurred when creating instance of EmInput.class. Caused by: Field \"id\" not found in EntityData"
   }
 
   def "An EnergyManagementSource should fail if a parent em is not provided"() {

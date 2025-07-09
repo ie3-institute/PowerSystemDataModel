@@ -99,7 +99,10 @@ public class GraphicSource extends AssetEntitySource {
 
     if (!exceptions.isEmpty()) {
       throw new GraphicSourceException(
-          "Some exception(s) occurred while initializing graphic elements. ", exceptions);
+          "Exception(s) occurred in "
+              + exceptions.size()
+              + " input file(s) while initializing graphic elements. ",
+          exceptions);
     } else {
       // if everything is fine, return a GraphicElements instance
       // getOrThrow should not throw an exception in this context, because all exception are

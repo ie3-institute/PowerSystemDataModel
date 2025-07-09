@@ -205,11 +205,11 @@ public abstract class EntitySource {
    */
   protected static Stream<Try<EntityData, SourceException>> buildEntityData(
       Class<? extends Entity> entityClass, DataSource dataSource) throws SourceException {
-    Stream<Map<String, String>> dataStream =
-        Try.of(() -> dataSource.getSourceData(entityClass), SourceException.class).getOrThrow();
-
-    return dataStream.map(
-        fieldsToAttributes -> new Try.Success<>(new EntityData(fieldsToAttributes, entityClass)));
+    return dataSource
+        .getSourceData(entityClass)
+        .map(
+            fieldsToAttributes ->
+                new Try.Success<>(new EntityData(fieldsToAttributes, entityClass)));
   }
 
   /**
@@ -373,16 +373,14 @@ public abstract class EntitySource {
     return entityData.flatMap(
         data ->
             Try.of(() -> data.getUUID(fieldName), FactoryException.class)
+                .flatMap(entityUuid -> extractFunction(entityUuid, entities))
                 .transformF(
                     exception ->
                         new SourceException(
-                            "Extracting UUID field "
+                            "Extracting UUID for field '"
                                 + fieldName
-                                + " from entity data "
-                                + entityData
-                                + " failed.",
-                            exception))
-                .flatMap(entityUuid -> extractFunction(entityUuid, entities)));
+                                + "' failed. Caused by: "
+                                + exception.getMessage())));
   }
 
   /**
@@ -393,13 +391,13 @@ public abstract class EntitySource {
    * @return a try of the {@link Entity}
    * @param <T> type of entity
    */
-  protected static <T> Try<T, SourceException> extractFunction(UUID uuid, Map<UUID, T> entityMap) {
+  protected static <T> Try<T, FactoryException> extractFunction(UUID uuid, Map<UUID, T> entityMap) {
     return Optional.ofNullable(entityMap.get(uuid))
         // We either find a matching entity for given UUID, thus return a success
-        .map(entity -> Try.of(() -> entity, SourceException.class))
+        .map(entity -> Try.of(() -> entity, FactoryException.class))
         // ... or find no matching entity, returning a failure.
         .orElse(
-            new Failure<>(new SourceException("Entity with uuid " + uuid + " was not provided.")));
+            new Failure<>(new FactoryException("Entity with uuid " + uuid + " was not provided.")));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

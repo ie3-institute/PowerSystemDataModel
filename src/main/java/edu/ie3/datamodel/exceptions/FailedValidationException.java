@@ -23,6 +23,6 @@ public class FailedValidationException extends ValidationException {
 
   /** @param exceptions List of exceptions, which must not be empty */
   public FailedValidationException(List<? extends Exception> exceptions) {
-    super("Validation failed due to: " + ExceptionUtils.combineExceptions(exceptions));
+    super("Validation failed due to:\n " + ExceptionUtils.combineExceptions(exceptions));
   }
 }

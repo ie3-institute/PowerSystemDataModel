@@ -160,7 +160,7 @@ public class RawGridSource extends AssetEntitySource {
       throw new RawGridException(
           "Exception(s) occurred in "
               + exceptions.size()
-              + " input files while initializing raw grid.",
+              + " input file(s) while initializing raw grid.",
           exceptions);
     } else {
       /* build and return the grid if it is not empty */

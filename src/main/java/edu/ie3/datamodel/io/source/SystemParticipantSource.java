@@ -227,7 +227,7 @@ public class SystemParticipantSource extends AssetEntitySource {
       throw new SystemParticipantsException(
           "Exception(s) occurred in "
               + exceptions.size()
-              + " input files while initializing system participants.",
+              + " input file(s) while initializing system participants.",
           exceptions);
     } else {
       // if everything is fine, return a system participants container

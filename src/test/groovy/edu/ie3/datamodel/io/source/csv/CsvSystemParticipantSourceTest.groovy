@@ -76,27 +76,27 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     Exception ex = systemParticipants.exception.get()
     ex.class == SystemParticipantsException
-    ex.message == "Exception(s) occurred in 10 input files while initializing system participants.\n" +
-    "        edu.ie3.datamodel.exceptions.SourceException: 1 exception(s) occurred within \"FixedFeedInInput\" data: \n" +
-    "               edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-    "        edu.ie3.datamodel.exceptions.SourceException: 1 exception(s) occurred within \"PvInput\" data: \n" +
-    "               edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-    "        edu.ie3.datamodel.exceptions.SourceException: 1 exception(s) occurred within \"LoadInput\" data: \n" +
-    "               edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-    "        edu.ie3.datamodel.exceptions.SourceException: 1 exception(s) occurred within \"BmInput\" data: \n" +
-    "               edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-    "        edu.ie3.datamodel.exceptions.SourceException: 1 exception(s) occurred within \"StorageInput\" data: \n" +
-    "               edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-    "        edu.ie3.datamodel.exceptions.SourceException: 1 exception(s) occurred within \"WecInput\" data: \n" +
-    "               edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-    "        edu.ie3.datamodel.exceptions.SourceException: 1 exception(s) occurred within \"EvInput\" data: \n" +
-    "               edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-    "        edu.ie3.datamodel.exceptions.SourceException: 1 exception(s) occurred within \"EvcsInput\" data: \n" +
-    "               edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-    "        edu.ie3.datamodel.exceptions.SourceException: 1 exception(s) occurred within \"ChpInput\" data: \n" +
-    "               edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-    "        edu.ie3.datamodel.exceptions.SourceException: 1 exception(s) occurred within \"HpInput\" data: \n" +
-    "               edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided. Caused by: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided."
+    ex.message == "Exception(s) occurred in 10 input file(s) while initializing system participants.\n" +
+    "        1 exception(s) occurred within \"FixedFeedInInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        1 exception(s) occurred within \"PvInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        1 exception(s) occurred within \"LoadInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        1 exception(s) occurred within \"BmInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        1 exception(s) occurred within \"StorageInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        1 exception(s) occurred within \"WecInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        1 exception(s) occurred within \"EvInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        1 exception(s) occurred within \"EvcsInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        1 exception(s) occurred within \"ChpInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        1 exception(s) occurred within \"HpInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided."
   }
 
   def "A SystemParticipantSource with csv input should return data from valid input file as expected"() {

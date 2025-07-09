@@ -244,7 +244,7 @@ class TryTest extends Specification {
     then:
     scan.failure
     scan.exception.get().message == "1 exception(s) occurred within \"String\" data: \n" +
-    "        java.lang.Exception: exception Caused by: edu.ie3.datamodel.exceptions.SourceException: source exception"
+    "        exception Caused by: source exception"
   }
 
   def "A scan for exceptions should work as expected when no failures are included"() {
