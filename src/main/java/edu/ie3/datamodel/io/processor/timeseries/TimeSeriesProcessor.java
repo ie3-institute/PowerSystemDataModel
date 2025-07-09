@@ -70,6 +70,7 @@ public class TimeSeriesProcessor<
    * invoke
    */
   private final SortedMap<String, FieldSourceToMethod> fieldToSource;
+
   private final String[] flattenedHeaderElements;
 
   public TimeSeriesProcessor(Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass)

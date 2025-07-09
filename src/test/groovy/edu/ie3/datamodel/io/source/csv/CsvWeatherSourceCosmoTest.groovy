@@ -49,7 +49,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 
     then:
     optTimeBasedValue.present
-   equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
   }
 
   def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -105,8 +105,8 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     then:
     coordinateToTimeSeries.keySet().size() == 3
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
-   equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
-   equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
   }
 
   def "The CsvWeatherSource is able to build a single WeatherValue from field to value mapping"() {

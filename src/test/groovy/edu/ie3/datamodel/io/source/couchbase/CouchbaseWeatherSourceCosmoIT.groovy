@@ -35,7 +35,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
   CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.6.0")
   .withBucket(bucketDefinition)
   .withExposedPorts(8091, 8092, 8093, 8094, 11210)
-          .withStartupAttempts(3) // 3 attempts because startup (node renaming) sometimes fails when executed too early
+  .withStartupAttempts(3) // 3 attempts because startup (node renaming) sometimes fails when executed too early
 
   @Shared
   CouchbaseWeatherSource source
@@ -46,13 +46,13 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     // Copy import file with json array of documents into docker
     MountableFile couchbaseWeatherJsonsFile = getMountableFile("_weather/cosmo/weather.json")
     couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather_cosmo.json")
-// create an index for the document keys
+    // create an index for the document keys
     couchbaseContainer.execInContainer("cbq",
         "-e", "http://localhost:8093",
         "-u", couchbaseContainer.username,
         "-p", couchbaseContainer.password,
         "-s", "CREATE index id_idx ON `" + bucketDefinition.name + "` (META().id);")
-//import the json documents from the copied file
+    //import the json documents from the copied file
     couchbaseContainer.execInContainer("cbimport", "json",
         "-cluster", "http://localhost:8091",
         "--bucket", "ie3_in",
@@ -142,7 +142,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     then:
     coordinateToTimeSeries.keySet().size() == 3
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
-   equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
   }
 

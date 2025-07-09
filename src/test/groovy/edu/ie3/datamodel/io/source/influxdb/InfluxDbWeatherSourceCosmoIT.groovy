@@ -123,7 +123,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
     then:
     coordinateToTimeSeries.keySet().size() == 3
-   equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeseries_193186.entries)
+    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeseries_193186.entries)
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeseries_193187.entries)
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeseries_193188.entries)
   }
