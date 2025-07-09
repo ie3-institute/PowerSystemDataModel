@@ -42,6 +42,6 @@ public class ExceptionUtils {
         exceptions.stream().map(converter).reduce("", (a, b) -> a + messageSeparator + b);
 
     // some formating
-    return messages.replaceAll("\n", "\n       ").replaceFirst(messageSeparator, "");
+    return messages.replace("\n", "\n       ").replaceFirst(messageSeparator, "");
   }
 }

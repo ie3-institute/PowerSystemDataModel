@@ -167,8 +167,8 @@ public abstract class Try<T, E extends Exception> {
    * @return a {@link Success} if no {@link Failure}'s are found in the collection
    * @param <U> type of data
    */
-  public static <U, E extends Exception, RE extends Exception> Try<Set<U>, RE> scanCollection(
-      Collection<Try<U, E>> c, Class<U> typeOfData, Function<String, RE> exceptionBuilder) {
+  public static <U, E extends Exception, R extends Exception> Try<Set<U>, R> scanCollection(
+      Collection<Try<U, E>> c, Class<U> typeOfData, Function<String, R> exceptionBuilder) {
     return scanStream(c.stream(), typeOfData.getSimpleName(), exceptionBuilder)
         .transformS(stream -> stream.collect(Collectors.toSet()));
   }
@@ -183,8 +183,8 @@ public abstract class Try<T, E extends Exception> {
    * @return a {@link Success} if no {@link Failure}'s are found in the stream
    * @param <U> type of data
    */
-  public static <U, E extends Exception, RE extends Exception> Try<Stream<U>, RE> scanStream(
-      Stream<Try<U, E>> stream, String typeOfData, Function<String, RE> exceptionBuilder) {
+  public static <U, E extends Exception, R extends Exception> Try<Stream<U>, R> scanStream(
+      Stream<Try<U, E>> stream, String typeOfData, Function<String, R> exceptionBuilder) {
     Map<Boolean, List<Try<U, E>>> map = stream.collect(partitioningBy(Try::isSuccess));
 
     List<Try<U, E>> successes = map.get(true);
