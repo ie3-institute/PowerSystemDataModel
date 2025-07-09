@@ -8,10 +8,7 @@ package edu.ie3.datamodel.io.factory.input;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInputEntityData> {
 
@@ -24,20 +21,8 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInpu
   }
 
   @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
-
-    List<Set<String>> withEm =
-        fields.stream().map(f -> (Set<String>) expandSet(f, CONTROLLING_EM)).toList();
-
-    fields.addAll(withEm);
-
-    return fields;
-  }
-
-  @Override
   protected String[] getAdditionalFields() {
-    return new String[] {CONTROL_STRATEGY};
+    return new String[] {CONTROL_STRATEGY, CONTROLLING_EM};
   }
 
   @Override
