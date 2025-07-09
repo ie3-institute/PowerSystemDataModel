@@ -426,41 +426,11 @@ public class ContainerUtils {
    */
   public static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid, int subnet)
       throws InvalidGridException {
-    /* Exclude all nodes, that are at the high voltage side of the transformer */
-    Set<NodeInput> gridNodes = new HashSet<>(rawGrid.getNodes());
-    gridNodes.removeAll(
-        /* Remove all nodes, that are upstream of transformers, this comprises all those, that are connected by
-         * switches */
-        rawGrid.getTransformer2Ws().stream()
-            .flatMap(
-                transformer ->
-                    ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
-                        .stream())
-            .collect(Collectors.toSet()));
-    gridNodes.removeAll(
-        rawGrid.getTransformer3Ws().stream()
-            .flatMap(
-                transformer -> {
-                  if (transformer.getNodeA().getSubnet() == subnet)
-                    return Stream.of(transformer.getNodeB(), transformer.getNodeC());
-                  else if (transformer.getNodeB().getSubnet() == subnet)
-                    return Stream.concat(
-                        ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
-                            .stream(),
-                        Stream.of(transformer.getNodeC(), transformer.getNodeInternal()));
-                  else
-                    return Stream.concat(
-                        ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
-                            .stream(),
-                        Stream.of(transformer.getNodeB(), transformer.getNodeInternal()));
-                })
-            .collect(Collectors.toSet()));
-
     /* Build a mapping, which voltage level appears how often */
     Map<VoltageLevel, Long> voltageLevelCount =
-        gridNodes.stream()
-            .map(NodeInput::getVoltLvl)
-            .collect(Collectors.groupingBy(voltLvl -> voltLvl, Collectors.counting()));
+        rawGrid.getNodes().stream()
+            .filter(n -> n.getSubnet() == subnet)
+            .collect(Collectors.groupingBy(NodeInput::getVoltLvl, Collectors.counting()));
 
     /* At this point only one voltage level should be apparent */
     int amountOfVoltLvl = voltageLevelCount.size();
@@ -677,14 +647,8 @@ public class ContainerUtils {
       RawGridElements rawGridElements,
       Map<Integer, SubGridContainer> subGrids)
       throws TopologyException {
-    /* Get the sub grid container at port A - travel upstream as long as nodes are connected
-     * _only_ by switches */
-    NodeInput topNode = traverseAlongSwitchChain(transformer.getNodeA(), rawGridElements).getLast();
-    if (Objects.isNull(topNode))
-      throw new TopologyException(
-          "Cannot find most upstream node of transformer '" + transformer + "'");
-
-    SubGridContainer containerA = subGrids.get(topNode.getSubnet());
+    /* Get the sub grid container at port A */
+    SubGridContainer containerA = subGrids.get(transformer.getNodeA().getSubnet());
 
     /* Get the sub grid container at port B */
     SubGridContainer containerB = subGrids.get(transformer.getNodeB().getSubnet());
@@ -694,81 +658,6 @@ public class ContainerUtils {
       SubGridContainer containerC = subGrids.get(transformer3WInput.getNodeC().getSubnet());
       return new TransformerSubGridContainers(containerA, containerB, containerC);
     } else return new TransformerSubGridContainers(containerA, containerB);
-  }
-
-  /**
-   * Traversing along a chain of switches and return the traveled nodes. The end thereby is defined
-   * by a node, that either is a dead end or is connected to any other type of connector (e.g.
-   * lines, transformers) and therefore leads to other parts of a "real" grid. If the starting node
-   * is not part of any switch, the starting node is returned.
-   *
-   * @param startNode Node that is meant to be the start of the switch chain
-   * @param rawGridElements Elements of the pure grid structure.
-   * @return The end node of the switch chain
-   */
-  public static LinkedList<NodeInput> traverseAlongSwitchChain(
-      NodeInput startNode, RawGridElements rawGridElements) {
-    Set<NodeInput> possibleJunctions =
-        Stream.concat(
-                Stream.concat(
-                    rawGridElements.getLines().parallelStream(),
-                    rawGridElements.getTransformer2Ws().parallelStream()),
-                rawGridElements.getTransformer3Ws().parallelStream())
-            .flatMap(connector -> connector.allNodes().parallelStream())
-            .collect(Collectors.toSet());
-    return traverseAlongSwitchChain(startNode, rawGridElements.getSwitches(), possibleJunctions);
-  }
-
-  /**
-   * Traversing along a chain of switches and return the traveled nodes. The end thereby is defined
-   * by a node, that either is a dead end or part of the provided node set. If the starting node is
-   * not part of any switch, the starting node is returned.
-   *
-   * @param startNode Node that is meant to be the start of the switch chain
-   * @param switches Set of available switches
-   * @param possibleJunctions Set of nodes that denote possible junctions to "real" grid
-   * @return The end node of the switch chain
-   */
-  private static LinkedList<NodeInput> traverseAlongSwitchChain(
-      NodeInput startNode, Set<SwitchInput> switches, Set<NodeInput> possibleJunctions) {
-    LinkedList<NodeInput> traveledNodes = new LinkedList<>();
-    traveledNodes.addFirst(startNode);
-
-    /* Get the switch, that is connected to the starting node and determine the next node */
-    List<SwitchInput> nextSwitches =
-        switches.stream().filter(switcher -> switcher.allNodes().contains(startNode)).toList();
-    switch (nextSwitches.size()) {
-      case 0:
-        /* No further switch found -> Return the starting node */
-        break;
-      case 1:
-        /* One next switch has been found -> Travel in this direction */
-        SwitchInput nextSwitch = nextSwitches.get(0);
-        Optional<NodeInput> candidateNodes =
-            nextSwitch.allNodes().stream().filter(node -> node != startNode).findFirst();
-        NodeInput nextNode =
-            candidateNodes.orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        "There is no further node available at switch " + nextSwitch));
-        if (possibleJunctions.contains(nextNode)) {
-          /* This is a junction, leading to another Connector than a switch */
-          traveledNodes.addLast(nextNode);
-        } else {
-          /* Add the traveled nodes to the nodes to be excluded, to avoid endless loops in cyclic switch topologies */
-          HashSet<NodeInput> newNodesToExclude = new HashSet<>(possibleJunctions);
-          newNodesToExclude.add(nextNode);
-          HashSet<SwitchInput> newSwitches = new HashSet<>(switches);
-          newSwitches.remove(nextSwitch);
-          traveledNodes.addAll(traverseAlongSwitchChain(nextNode, newSwitches, newNodesToExclude));
-        }
-        break;
-      default:
-        throw new IllegalArgumentException(
-            "Cannot traverse along switch chain, as there is a junction included at node "
-                + startNode);
-    }
-    return traveledNodes;
   }
 
   /**

@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated dependabot workflow and added CODEOWNERS [#1328](https://github.com/ie3-institute/PowerSystemDataModel/issues/1328)
 - Extend azimuth angle range to [-180°, 180°] for PV inputs [#1330](https://github.com/ie3-institute/PowerSystemDataModel/issues/1330)
+- Changed `SubgridContainer` to represent galvanically seperated grids [#1226](https://github.com/ie3-institute/PowerSystemDataModel/issues/1226)
 
 ## [7.0.0] - 2025-05-08
 
