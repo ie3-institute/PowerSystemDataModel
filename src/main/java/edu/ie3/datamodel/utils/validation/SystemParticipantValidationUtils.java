@@ -5,16 +5,21 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import static edu.ie3.datamodel.models.StandardUnits.*;
+import static edu.ie3.datamodel.models.StandardUnits.AZIMUTH;
+import static edu.ie3.datamodel.models.StandardUnits.SOLAR_ELEVATION_ANGLE;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.TryException;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
+import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
@@ -356,6 +361,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * <ul>
    *   <li>its standard load profile is not null
+   *   <li>its standard load profile matches the supported types / profile names
    *   <li>its rated apparent power is not negative
    *   <li>its annual energy consumption is not negative
    *   <li>its rated power factor is between 0 and 1
@@ -375,6 +381,36 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                 new InvalidEntityException(
                     "No standard load profile defined for load", loadInput)));
 
+    if (loadInput.getLoadProfile() != null) {
+      LoadProfile profile = loadInput.getLoadProfile();
+
+      // Validate if the profile is one of the allowed profiles
+      exceptions.add(
+          Try.ofVoid(
+              !(profile.equals(LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE)
+                  || profile.equals(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE)
+                  || Arrays.asList(
+                          BdewStandardLoadProfile.H0,
+                          BdewStandardLoadProfile.G0,
+                          BdewStandardLoadProfile.G1,
+                          BdewStandardLoadProfile.G2,
+                          BdewStandardLoadProfile.G3,
+                          BdewStandardLoadProfile.G4,
+                          BdewStandardLoadProfile.G5,
+                          BdewStandardLoadProfile.G6,
+                          BdewStandardLoadProfile.L0,
+                          BdewStandardLoadProfile.L1,
+                          BdewStandardLoadProfile.L2,
+                          NbwTemperatureDependantLoadProfile.EP1,
+                          NbwTemperatureDependantLoadProfile.EZ2)
+                      .contains(profile)),
+              () ->
+                  new InvalidEntityException(
+                      "Load profile must contain at least one valid entry: h0, g[0-6], l[0-2], ep1, ez2, random, or LoadProfile#NO_LOAD_PROFILE.",
+                      loadInput)));
+    }
+
+    // Check negative quantities and power factor
     exceptions.addAll(
         Try.ofVoid(
             InvalidEntityException.class,
