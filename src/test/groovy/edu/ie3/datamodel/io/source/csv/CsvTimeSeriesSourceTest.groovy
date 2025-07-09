@@ -47,6 +47,19 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     actual.data.get() == expected
   }
 
+  def "The csv time series source returns the last value, if there is no current value"() {
+    given:
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
+    def time = TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:13:00Z")
+
+    when:
+    def actual = source.getValueOrLast(time)
+
+    then:
+    actual == Optional.of(new EnergyPriceValue(Quantities.getQuantity(100.0, ENERGY_PRICE)))
+  }
+
   def "The csv time series source returns the time keys after a given key correctly"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
@@ -61,6 +74,27 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
       TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:00:00Z"),
       TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:15:00Z")
     ]
+  }
+
+  def "The csv time series source returns the time key before a given key correctly"() {
+    given:
+    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
+
+    when:
+    def time = TimeUtil.withDefaults.toZonedDateTime(timeKey)
+
+    def actual = source.getLastTimeKeyBefore(time)
+
+    then:
+    actual == expectedKey
+
+    where:
+    timeKey                | expectedKey
+    "2019-12-31T23:59:59Z" | Optional.empty()
+    "2020-01-01T00:00:00Z" | Optional.empty()
+    "2020-01-01T00:15:00Z" | Optional.of(TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:00:00Z"))
+    "2020-01-03T00:00:00Z" | Optional.of(TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:15:00Z"))
   }
 
   def "The factory method in csv time series source refuses to build time series with unsupported column type"() {
