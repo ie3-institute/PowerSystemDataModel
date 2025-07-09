@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+- Extend Validation to EnergyManagement Systems. [#1356](https://github.com/ie3-institute/PowerSystemDataModel/issues/1356)
+
 ### Fixed
 - Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
 - Fixed em fields in input models [#1331](https://github.com/ie3-institute/PowerSystemDataModel/issues/1331)
