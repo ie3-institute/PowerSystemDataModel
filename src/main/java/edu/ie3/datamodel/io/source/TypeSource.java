@@ -74,9 +74,7 @@ public class TypeSource extends EntitySource {
             validate(Transformer2WTypeInput.class, dataSource, transformer2WTypeInputFactory),
             validate(Transformer3WTypeInput.class, dataSource, transformer3WTypeInputFactory)));
 
-    Try.scanCollection(participantResults, Void.class)
-        .transformF(FailedValidationException::new)
-        .getOrThrow();
+    Try.scanCollection(participantResults, Void.class, FailedValidationException::new).getOrThrow();
   }
 
   /**

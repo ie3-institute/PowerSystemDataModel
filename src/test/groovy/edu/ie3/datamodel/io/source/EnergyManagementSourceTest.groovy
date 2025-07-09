@@ -171,7 +171,7 @@ class EnergyManagementSourceTest extends Specification {
 
     then:
     def exc = thrown(SourceException)
-    exc.cause.message.contains("test failure abc")
+    exc.message.contains("test failure abc")
   }
 
   def "An EnergyManagementSource should fail if a parent EM UUID is malformed"() {
@@ -198,7 +198,7 @@ class EnergyManagementSourceTest extends Specification {
 
     then:
     def exc = thrown(SourceException)
-    exc.cause.message.contains("Exception while trying to parse UUID of field \"controllingEm\" with value \"not-a-uuid\"")
+    exc.message.contains("Exception while trying to parse UUID of field \"controllingEm\" with value \"not-a-uuid\"")
   }
 
   def "An EnergyManagementSource should fail if the factory fails for one EM"() {
@@ -224,8 +224,8 @@ class EnergyManagementSourceTest extends Specification {
 
     then:
     def exc = thrown(SourceException)
-    exc.cause.message.contains("An error occurred when creating instance of EmInput")
-    exc.cause.cause.class == FactoryException
+    exc.message == "1 exception(s) occurred within \"EmInput\" data: \n" +
+    "        An error occurred when creating instance of EmInput.class. Caused by: Field \"id\" not found in EntityData"
   }
 
   def "An EnergyManagementSource should fail if a parent em is not provided"() {

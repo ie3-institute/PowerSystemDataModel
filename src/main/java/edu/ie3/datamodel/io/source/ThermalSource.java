@@ -65,8 +65,8 @@ public class ThermalSource extends AssetEntitySource {
                     dataSource,
                     domesticHotWaterStorageInputFactory),
                 validate(ThermalHouseInput.class, dataSource, thermalHouseInputFactory)),
-            "Validation")
-        .transformF(FailedValidationException::new)
+            "Validation",
+            FailedValidationException::new)
         .getOrThrow();
   }
 
