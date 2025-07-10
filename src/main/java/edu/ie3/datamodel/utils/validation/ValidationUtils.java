@@ -5,12 +5,12 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import edu.ie3.datamodel.exceptions.*;
+import edu.ie3.datamodel.exceptions.FailedValidationException;
+import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.UnsafeEntityException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.datamodel.models.input.MeasurementUnitInput;
-import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
@@ -22,8 +22,11 @@ import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
-import java.util.*;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
@@ -157,6 +160,8 @@ public class ValidationUtils {
       exceptions.addAll(ThermalValidationUtils.check((ThermalUnitInput) assetInput));
     else if (ThermalGrid.class.isAssignableFrom(assetInput.getClass()))
       exceptions.addAll(ThermalValidationUtils.check((ThermalUnitInput) assetInput));
+    else if (EmInput.class.isAssignableFrom(assetInput.getClass()))
+      exceptions.addAll(EnergyManagementValidationUtils.check((EmInput) assetInput));
     else {
       logNotImplemented(assetInput);
     }

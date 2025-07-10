@@ -7,15 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Extend Validation to EnergyManagement Systems. [#1356](https://github.com/ie3-institute/PowerSystemDataModel/issues/1356)
 - Add ground temperature (1m) as  option to weather data. [#1343](https://github.com/ie3-institute/PowerSystemDataModel/issues/1343)
 
 ### Fixed
 - Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
-- -Fixed em fields in input models [#1331](https://github.com/ie3-institute/PowerSystemDataModel/issues/1331)
+- Fixed em fields in input models [#1331](https://github.com/ie3-institute/PowerSystemDataModel/issues/1331)
+- Fixed valid fields for `EmInput` [#1360](https://github.com/ie3-institute/PowerSystemDataModel/issues/1360)
 
 ### Changed
 - Updated dependabot workflow and added CODEOWNERS [#1328](https://github.com/ie3-institute/PowerSystemDataModel/issues/1328)
 - Extend azimuth angle range to [-180°, 180°] for PV inputs [#1330](https://github.com/ie3-institute/PowerSystemDataModel/issues/1330)
+- Improved error messages when reading and validating an invalid grid [#1354](https://github.com/ie3-institute/PowerSystemDataModel/issues/1354)
 
 ## [7.0.0] - 2025-05-08
 

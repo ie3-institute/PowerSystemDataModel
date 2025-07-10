@@ -24,8 +24,9 @@ import java.util.*;
 public abstract class AssetInputEntityFactory<T extends AssetInput, D extends AssetInputEntityData>
     extends UniqueEntityFactory<T, D> {
 
-  private static final String OPERATES_FROM = "operatesFrom";
-  private static final String OPERATES_UNTIL = "operatesUntil";
+  protected static final String OPERATOR = "operator";
+  protected static final String OPERATES_FROM = "operatesFrom";
+  protected static final String OPERATES_UNTIL = "operatesUntil";
 
   @SafeVarargs
   protected AssetInputEntityFactory(Class<? extends T>... allowedClasses) {
@@ -48,14 +49,33 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
     Set<String> constructorParamsUntil = expandSet(constructorParamsMin, OPERATES_UNTIL);
     Set<String> constructorParamsBoth = expandSet(constructorParamsFrom, OPERATES_UNTIL);
 
+    // with operator field
+    Set<String> constructorParamsOperator = expandSet(constructorParamsMin, OPERATOR);
+    Set<String> constructorParamsOperatorFrom = expandSet(constructorParamsFrom, OPERATOR);
+    Set<String> constructorParamsOperatorUntil = expandSet(constructorParamsUntil, OPERATOR);
+    Set<String> constructorParamsOperatorBoth = expandSet(constructorParamsBoth, OPERATOR);
+
     final String[] additionalFields = getAdditionalFields();
 
     constructorParamsMin = expandSet(constructorParamsMin, additionalFields);
     constructorParamsFrom = expandSet(constructorParamsFrom, additionalFields);
     constructorParamsUntil = expandSet(constructorParamsUntil, additionalFields);
     constructorParamsBoth = expandSet(constructorParamsBoth, additionalFields);
+
+    constructorParamsOperator = expandSet(constructorParamsOperator, additionalFields);
+    constructorParamsOperatorFrom = expandSet(constructorParamsOperatorFrom, additionalFields);
+    constructorParamsOperatorUntil = expandSet(constructorParamsOperatorUntil, additionalFields);
+    constructorParamsOperatorBoth = expandSet(constructorParamsOperatorBoth, additionalFields);
+
     return Arrays.asList(
-        constructorParamsMin, constructorParamsFrom, constructorParamsUntil, constructorParamsBoth);
+        constructorParamsMin,
+        constructorParamsFrom,
+        constructorParamsUntil,
+        constructorParamsBoth,
+        constructorParamsOperator,
+        constructorParamsOperatorFrom,
+        constructorParamsOperatorUntil,
+        constructorParamsOperatorBoth);
   }
 
   /**
