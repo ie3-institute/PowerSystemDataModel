@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -30,8 +30,6 @@ import tech.units.indriya.unit.Units;
  * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
  */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
-  private static final String TIME = "time";
-  private static final String COORDINATE_ID = "coordinateId";
   private static final String DIFFUSE_IRRADIANCE = "diffuseIrradiance";
   private static final String DIRECT_IRRADIANCE = "directIrradiance";
   private static final String TEMPERATURE = "temperature";
@@ -58,7 +56,6 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
         new HashSet<>(
             Set.of(
                 COORDINATE_ID,
-                TIME,
                 DIFFUSE_IRRADIANCE,
                 DIRECT_IRRADIANCE,
                 TEMPERATURE,
@@ -76,7 +73,6 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
     Point coordinate = data.getCoordinate();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
-
     ComparableQuantity<Irradiance> directIrradiance =
         data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Irradiance> diffuseIrradiance =

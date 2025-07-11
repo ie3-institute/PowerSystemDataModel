@@ -17,63 +17,77 @@ import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
+/** Describes weather as a combination of solar irradiance, temperature and wind values */
 public class WeatherValue implements Value {
+  /** The coordinate of this weather value set */
   private final Point coordinate;
-  private final ComparableQuantity<Irradiance> diffSolar;
-  private final ComparableQuantity<Irradiance> directSolar;
-  private final ComparableQuantity<Temperature> temperature;
-  private final ComparableQuantity<Angle> windDir;
-  private final ComparableQuantity<Speed> windVel;
+  /** solar irradiance values for this coordinate */
+  private final SolarIrradianceValue solarIrradiance;
+
+  /** Temperature value for this coordinate */
+  private final TemperatureValue temperature;
+  /** Wind values for this coordinate */
+  private final WindValue wind;
+
   private final Map<ComparableQuantity<Length>, TemperatureValue> groundTemperatures;
 
   /**
    * @param coordinate of this weather value set
-   * @param directSolar Direct solar irradiance
-   * @param diffSolar Diffuse solar irradiance
-   * @param temperature Temperature in 2m height
-   * @param windDir Wind direction
-   * @param windVel Wind velocity
+   * @param solarIrradiance values for this coordinate
+   * @param temperature values for this coordinate
+   * @param wind values for this coordinate
    * @param groundTemperatures A map of ground temperatures at different depths
    */
   public WeatherValue(
       Point coordinate,
-      ComparableQuantity<Irradiance> directSolar,
-      ComparableQuantity<Irradiance> diffSolar,
-      ComparableQuantity<Temperature> temperature,
-      ComparableQuantity<Angle> windDir,
-      ComparableQuantity<Speed> windVel,
-      Map<ComparableQuantity<Length>, TemperatureValue> groundTemperatures) {
+      SolarIrradianceValue solarIrradiance,
+      TemperatureValue temperature,
+      WindValue wind,Map<ComparableQuantity<Length>, TemperatureValue> groundTemperatures) {
     this.coordinate = coordinate;
     this.directSolar = directSolar;
     this.diffSolar = diffSolar;
     this.temperature = temperature;
-    this.windDir = windDir;
-    this.windVel = windVel;
-    this.groundTemperatures = Collections.unmodifiableMap(new HashMap<>(groundTemperatures));
+    this.wind = wind;
+  }
+
+  /**
+   * @param coordinate of this weather value set
+   * @param directSolarIrradiance Direct sun irradiance for this coordinate (typically in W/m²)
+   * @param diffuseSolarIrradiance Diffuse sun irradiance for this coordinate (typically in W/m²)
+   * @param temperature for this coordinate (typically in K)
+   * @param direction Direction, the wind comes from as an angle from north increasing clockwise
+   *     (typically in rad)
+   * @param velocity Wind velocity for this coordinate (typically in m/s)
+   */
+  public WeatherValue(
+      Point coordinate,
+      ComparableQuantity<Irradiance> directSolarIrradiance,
+      ComparableQuantity<Irradiance> diffuseSolarIrradiance,
+      ComparableQuantity<Temperature> temperature,
+      ComparableQuantity<Angle> direction,
+      ComparableQuantity<Speed> velocity) {
+    this.groundTemperatures = Collections.unmodifiableMap(new HashMap<>(groundTemperatures)
+    this(
+        coordinate,
+        new SolarIrradianceValue(directSolarIrradiance, diffuseSolarIrradiance),
+        new TemperatureValue(temperature),
+        new WindValue(direction, velocity));
   }
 
   public Point getCoordinate() {
     return coordinate;
   }
 
-  public ComparableQuantity<Irradiance> getDiffSolar() {
-    return diffSolar;
+  public SolarIrradianceValue getSolarIrradiance() {
+    return solarIrradiance;
   }
 
-  public ComparableQuantity<Irradiance> getDirectSolar() {
-    return directSolar;
-  }
-
-  public ComparableQuantity<Temperature> getTemperature() {
+  public TemperatureValue getTemperature() {
     return temperature;
   }
 
-  public ComparableQuantity<Angle> getWindDir() {
-    return windDir;
-  }
-
-  public ComparableQuantity<Speed> getWindVel() {
-    return windVel;
+  public WindValue getWind() {
+    return wind;
   }
 
   /**
@@ -84,7 +98,6 @@ public class WeatherValue implements Value {
    */
   public Map<ComparableQuantity<Length>, TemperatureValue> getGroundTemperatures() {
     return groundTemperatures;
-  }
 
   @Override
   public boolean equals(Object o) {
@@ -92,18 +105,15 @@ public class WeatherValue implements Value {
     if (o == null || getClass() != o.getClass()) return false;
     WeatherValue that = (WeatherValue) o;
     return coordinate.equals(that.coordinate)
-        && diffSolar.equals(that.diffSolar)
-        && directSolar.equals(that.directSolar)
+        && solarIrradiance.equals(that.solarIrradiance)
         && temperature.equals(that.temperature)
-        && windDir.equals(that.windDir)
-        && windVel.equals(that.windVel)
-        && groundTemperatures.equals(that.groundTemperatures);
+        && wind.equals(that.wind)
+            && groundTemperatures.equals(that.groundTemperatures);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        coordinate, diffSolar, directSolar, temperature, windDir, windVel, groundTemperatures);
+    return Objects.hash(coordinate, solarIrradiance, temperature, wind,groundTemperatures);
   }
 
   @Override
@@ -111,18 +121,14 @@ public class WeatherValue implements Value {
     return "WeatherValue{"
         + "coordinate="
         + coordinate
-        + ", diffSolar="
-        + diffSolar
-        + ", directSolar="
-        + directSolar
+        + ", solarIrradiance="
+        + solarIrradiance
         + ", temperature="
         + temperature
-        + ", windDir="
-        + windDir
-        + ", windVel="
-        + windVel
-        + ", groundTemperatures="
-        + groundTemperatures
+        + ", wind="
+        + wind
+            + ", groundTemperatures="
+            + groundTemperatures
         + '}';
   }
 }

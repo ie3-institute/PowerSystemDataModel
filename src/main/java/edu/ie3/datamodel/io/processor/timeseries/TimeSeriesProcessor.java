@@ -65,6 +65,7 @@ public class TimeSeriesProcessor<
    * foreseen to handle.
    */
   private final TimeSeriesProcessorKey registeredKey;
+
   /**
    * Mapping from field name to the source, where to find the information and which getter method to
    * invoke
@@ -77,6 +78,7 @@ public class TimeSeriesProcessor<
       throws EntityProcessorException {
     super(timeSeriesClass);
 
+    /* Check, if this processor can handle the foreseen combination of time series, entry and value */
     TimeSeriesProcessorKey timeSeriesKey =
         new TimeSeriesProcessorKey(timeSeriesClass, entryClass, valueClass);
     if (!eligibleKeys.contains(timeSeriesKey))
@@ -91,13 +93,17 @@ public class TimeSeriesProcessor<
                   .collect(Collectors.joining(", ")));
     this.registeredKey = timeSeriesKey;
 
+    /* Register, where to get which information from */
     this.fieldToSource = buildFieldToSource(timeSeriesClass, entryClass, valueClass);
+
+    /* Collect all header elements */
     this.flattenedHeaderElements = fieldToSource.keySet().toArray(new String[0]);
   }
 
   public TimeSeriesProcessorKey getRegisteredKey() {
     return registeredKey;
   }
+
   /**
    * Collects the mapping, where to find which information and how to get them (in terms of getter
    * method).
@@ -147,11 +153,13 @@ public class TimeSeriesProcessor<
                       Map.Entry::getKey,
                       entry -> new FieldSourceToMethod(VALUE, entry.getValue())));
     }
+
     /* Put everything together */
     HashMap<String, FieldSourceToMethod> jointMapping = new HashMap<>();
     jointMapping.putAll(timeSeriesMapping);
     jointMapping.putAll(entryMapping);
     jointMapping.putAll(valueMapping);
+
     /* Let uuid be the first entry */
     return putUuidFirst(jointMapping);
   }
@@ -161,6 +169,7 @@ public class TimeSeriesProcessor<
     throw new UnsupportedOperationException(
         "Don't invoke this simple method, but TimeSeriesProcessor#handleTimeSeries(TimeSeries).");
   }
+
   /**
    * Handles the time series by processing each entry and collecting the results
    *
@@ -184,12 +193,14 @@ public class TimeSeriesProcessor<
 
     for (E entry : timeSeries.getEntries()) {
       Map<String, String> entryResult = handleEntry(timeSeries, entry);
+
       /* Prepare the actual result and add them to the set of all results */
       fieldToValueSet.add(new LinkedHashMap<>(entryResult));
     }
 
     return fieldToValueSet;
   }
+
   /**
    * Processes a single entry to a mapping from field name to value as String representation. The
    * information from the time series are added as well.
@@ -203,12 +214,26 @@ public class TimeSeriesProcessor<
     Map<String, Method> timeSeriesFieldToMethod = extractFieldToMethod(TIMESERIES);
     LinkedHashMap<String, String> timeSeriesResults =
         processObject(timeSeries, timeSeriesFieldToMethod);
+
     /* Handle the information in the entry */
     Map<String, Method> entryFieldToMethod = extractFieldToMethod(ENTRY);
     LinkedHashMap<String, String> entryResults = processObject(entry, entryFieldToMethod);
+
     /* Handle the information in the value */
     Map<String, Method> valueFieldToMethod = extractFieldToMethod(VALUE);
     LinkedHashMap<String, String> valueResult = processObject(entry.getValue(), valueFieldToMethod);
+    /* Treat WeatherValues specially, as they are nested ones */
+    if (entry.getValue() instanceof WeatherValue weatherValue) {
+      Map<String, Method> irradianceFieldToMethod = extractFieldToMethod(WEATHER_IRRADIANCE);
+      valueResult.putAll(processObject(weatherValue.getSolarIrradiance(), irradianceFieldToMethod));
+
+      Map<String, Method> temperatureFieldToMethod = extractFieldToMethod(WEATHER_TEMPERATURE);
+      valueResult.putAll(processObject(weatherValue.getTemperature(), temperatureFieldToMethod));
+
+      Map<String, Method> windFieldToMethod = extractFieldToMethod(WEATHER_WIND);
+      valueResult.putAll(processObject(weatherValue.getWind(), windFieldToMethod));
+    }
+
     /* Join all information and sort them */
     Map<String, String> combinedResult = new HashMap<>();
     combinedResult.putAll(timeSeriesResults);
@@ -216,6 +241,7 @@ public class TimeSeriesProcessor<
     combinedResult.putAll(valueResult);
     return putUuidFirst(combinedResult);
   }
+
   /**
    * Extracts the field name to method map for the specific source
    *

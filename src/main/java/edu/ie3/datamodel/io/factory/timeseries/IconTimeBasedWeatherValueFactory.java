@@ -147,8 +147,11 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    */
   private static ComparableQuantity<Angle> getWindDirection(TimeBasedWeatherValueData data) {
     /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
-    double u = data.getDouble(WIND_VELOCITY_U);
-    double v = data.getDouble(WIND_VELOCITY_V);
+    double u =
+        data.getDouble(WIND_VELOCITY_U); // Wind component from west to east (parallel to latitudes)
+    double v =
+        data.getDouble(
+            WIND_VELOCITY_V); // Wind component from south to north (parallel to longitudes)
 
     double angle = Math.toDegrees(Math.atan2(-u, -v));
     return Quantities.getQuantity(angle < 0 ? angle + 360d : angle, PowerSystemUnits.DEGREE_GEOM)
