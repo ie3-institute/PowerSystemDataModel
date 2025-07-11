@@ -553,7 +553,7 @@ class ContainerUtilsTest extends Specification {
    *   - filtering of system participants can be tested
    *   - filtering of graphic elements can be tested */
 
-  def "Determining the surrounding sub grid containers of a two winding transformer w/o switchgear works fine"() {
+  def "Determining the surrounding sub grid containers of a two winding transformer works fine"() {
     given:
     def nodeD = Mock(NodeInput)
     nodeD.getUuid() >> UUID.fromString("ae4869d5-3551-4cce-a101-d61629716c4f")
