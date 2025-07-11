@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.profile
 
 import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE
 
-import edu.ie3.datamodel.exceptions.ParsingException
 import spock.lang.Specification
 
 class LoadProfileTest extends Specification {
@@ -181,12 +180,19 @@ class LoadProfileTest extends Specification {
     "ez_2"    || NbwTemperatureDependantLoadProfile.EZ2
   }
 
-  def "Throws an exception when encountering an unknown key"() {
+  def "Return a custom load profile when encountering an unknown key"() {
     when:
-    LoadProfile.parse("not_a_key")
+    def custom = LoadProfile.parse("not_a_key")
 
     then:
-    def e = thrown(ParsingException)
-    e.message == "No predefined load profile with key 'not_a_key' found. Please provide one of the following keys: h0, l0, l1, l2, g0, g1, g2, g3, g4, g5, g6, ep1, ez2, random"
+    custom == new LoadProfile.CustomLoadProfile("notakey")
+  }
+
+  def "Return nothing when encountering an empty key"() {
+    when:
+    def actual = LoadProfile.parse(null)
+
+    then:
+    actual == LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE
   }
 }
