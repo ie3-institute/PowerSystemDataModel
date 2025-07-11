@@ -98,8 +98,7 @@ class TimeSeriesMappingSourceTest extends Specification {
 
     then:
     def ex = thrown(SourceException)
-    ex.cause.class == FailureException
-    ex.cause.message.startsWith("1 exception(s) occurred within \"MappingEntry\" data")
+    ex.message.startsWith("1 exception(s) occurred within \"MappingEntry\" data")
   }
 
   def "should throw SourceException for invalid timeSeries"(){
@@ -110,8 +109,7 @@ class TimeSeriesMappingSourceTest extends Specification {
 
     then:
     def ex = thrown(SourceException)
-    ex.cause.class == FailureException
-    ex.cause.message.startsWith("1 exception(s) occurred within \"MappingEntry\" data")
+    ex.message.startsWith("1 exception(s) occurred within \"MappingEntry\" data")
   }
 
   def "should throw SourceException for invalid timeSeries and asset"(){
@@ -122,7 +120,8 @@ class TimeSeriesMappingSourceTest extends Specification {
 
     then:
     def ex = thrown(SourceException)
-    ex.cause.class == FailureException
-    ex.cause.message.startsWith("2 exception(s) occurred within \"MappingEntry\" data")
+    ex.message == "2 exception(s) occurred within \"MappingEntry\" data: \n" +
+        "        An error occurred when creating instance of MappingEntry.class. Caused by: Exception while trying to parse UUID of field \"asset\" with value \"invalidAsset\"\n" +
+        "        An error occurred when creating instance of MappingEntry.class. Caused by: Exception while trying to parse UUID of field \"asset\" with value \"invalidAsset2\""
   }
 }
