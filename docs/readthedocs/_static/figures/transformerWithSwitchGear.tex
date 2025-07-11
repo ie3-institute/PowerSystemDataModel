@@ -159,9 +159,9 @@
 	    \begin{tikzpicture}
 	    % === Anschlüsse ===
 	        \node[circle, draw = tuGreen, fill = tuGreen, inner sep = 0, minimum height = 1.5mm] (port_a) at (0,0){};
-	        \node[circle, draw = tuOrange, fill = tuOrange, inner sep = 0, minimum height = 1.5mm] (port_b) at (15mm,0){};
-	        \node[circle, draw = tuOrange, fill = tuOrange, inner sep = 0, minimum height = 1.5mm] (port_c) at (30mm,0){};
-	        \node[circle, draw = tuOrange, fill = tuOrange, inner sep = 0, minimum height = 1.5mm] (port_d) at (45mm,0){};
+	        \node[circle, draw = tuOrange, fill = tuGreen, inner sep = 0, minimum height = 1.5mm] (port_b) at (15mm,0){};
+	        \node[circle, draw = tuOrange, fill = tuGreen, inner sep = 0, minimum height = 1.5mm] (port_c) at (30mm,0){};
+	        \node[circle, draw = tuOrange, fill = tuGreen, inner sep = 0, minimum height = 1.5mm] (port_d) at (45mm,0){};
 	        \node[circle, draw = tuOrange, fill = tuOrange, inner sep = 0, minimum height = 1.5mm] (port_e) at (62.5mm,0){};
 	        
 	        \draw (port_a.west) -- ++(-3mm, -1mm) -- ++(0mm, -2mm) edge[densely dotted] ++(0mm, -1.8mm);
@@ -176,9 +176,9 @@
 	        \draw (port_d.east) -- (winding_a.west) (winding_b.east) -- (port_e.west);
 	        
 	        \node[tuGreen, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_a.south) {A \\ \SI{110}{\kV} \\ 1};
-	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_b.south) {B \\ \SI{110}{\kV} \\ 2};
-	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_c.south) {C \\ \SI{110}{\kV} \\ 2};
-	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_d.south) {D \\ \SI{110}{\kV} \\ 2};
+	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_b.south) {B \\ \SI{110}{\kV} \\ 1};
+	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_c.south) {C \\ \SI{110}{\kV} \\ 1};
+	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_d.south) {D \\ \SI{110}{\kV} \\ 1};
 	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_e.south) {E \\ \SI{10}{\kV} \\ 2};
 	    \end{tikzpicture}
 \end{document}

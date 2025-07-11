@@ -20,6 +20,17 @@ Why predominant?
 As of convention, the `SubGridContainers` hold also reference to the transformers leading to higher sub grids
 and their higher voltage coupling point.
 
+![Sub grid boundary definition for transformers with upstream switchgear](../../../_static/figures/transformerWithSwitchGear.png)
+
+Let's shed a more detailed light on the boundaries of a sub grid as of our definition.
+This especially is important, if the switchgear of the transformer is modeled in detail.
+We defined, that all nodes in upstream direction of the transformer, including those, which are connected by switches *only*
+(therefore are within the switchgear) are counted towards the superior sub grid structure (here "1"), because they belong
+to a different voltage level.
+If a switchgear should be operated by the inferior grid, one can set the operator, that is used in the inferior grid, for
+the switchgear. This can be necessary, if we assume, that the interest to operate on the given switchgear will most likely
+be placed in the inferior grid structure.
+
 A synoptic overview of both classes' attributes is given here:
 
 ## Attributes, Units and Remarks
