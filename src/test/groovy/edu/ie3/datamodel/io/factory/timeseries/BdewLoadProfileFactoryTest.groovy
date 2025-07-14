@@ -14,6 +14,8 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
+import java.time.Month
+
 class BdewLoadProfileFactoryTest extends Specification {
   @Shared
   BdewLoadProfileFactory factory
@@ -72,58 +74,9 @@ class BdewLoadProfileFactoryTest extends Specification {
 
   def "A BDEWLoadProfileFactory returns the correct fields"() {
     given:
-    def expectedScheme1999 = [
-      "SuSa",
-      "SuSu",
-      "SuWd",
-      "TrSa",
-      "TrSu",
-      "TrWd",
-      "WiSa",
-      "WiSu",
-      "WiWd",
-      "quarterHour"
-    ] as Set
+    def expectedScheme1999 = (BdewLoadValues.BDEWKey.getFields(BdewLoadValues.BdewSeason.values()).values() + "quarterHour") as Set
 
-    def expectedScheme2025 = [
-      "JanSa",
-      "JanSu",
-      "JanWd",
-      "FebSa",
-      "FebSu",
-      "FebWd",
-      "MarSa",
-      "MarSu",
-      "MarWd",
-      "AprSa",
-      "AprSu",
-      "AprWd",
-      "MaySa",
-      "MaySu",
-      "MayWd",
-      "JunSa",
-      "JunSu",
-      "JunWd",
-      "JulSa",
-      "JulSu",
-      "JulWd",
-      "AugSa",
-      "AugSu",
-      "AugWd",
-      "SepSa",
-      "SepSu",
-      "SepWd",
-      "OctSa",
-      "OctSu",
-      "OctWd",
-      "NovSa",
-      "NovSu",
-      "NovWd",
-      "DecSa",
-      "DecSu",
-      "DecWd",
-      "quarterHour"
-    ] as Set
+    def expectedScheme2025 = (BdewLoadValues.BDEWKey.getFields(Month.values()).values() + "quarterHour") as Set
 
     when:
     def actual = factory.getFields(BdewLoadValues)
