@@ -5,26 +5,34 @@
 */
 package edu.ie3.datamodel.models.value.load;
 
-import static edu.ie3.datamodel.models.BdewSeason.*;
+import static edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewSeason.*;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.time.Month.*;
-import static java.util.Map.entry;
+import static java.util.Calendar.SATURDAY;
+import static java.util.Calendar.SUNDAY;
 import static tech.units.indriya.unit.Units.WATT;
 
-import edu.ie3.datamodel.models.BdewSeason;
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.Month;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import tech.units.indriya.quantity.Quantities;
 
 /** Load values for a {@link BdewStandardLoadProfile} */
-public sealed interface BdewLoadValues extends LoadValues<BdewStandardLoadProfile>
+public abstract sealed class BdewLoadValues<S> implements LoadValues<BdewStandardLoadProfile>
     permits BdewLoadValues.BDEW1999, BdewLoadValues.BDEW2025 {
+  private final Map<BDEWKey<S>, Double> values;
+
+  protected BdewLoadValues(Map<BDEWKey<S>, Double> values) {
+    this.values = values;
+  }
 
   /**
    * Returns the actual power for the given time.
@@ -32,16 +40,40 @@ public sealed interface BdewLoadValues extends LoadValues<BdewStandardLoadProfil
    * @param time given time.
    * @return the power in kW as double
    */
-  double getPower(ZonedDateTime time);
+  public abstract double getPower(ZonedDateTime time);
+
+  /**
+   * Getter for the actual power value in kW.
+   *
+   * @param key of the value, e.g. january saturday
+   * @return the value
+   */
+  public double get(BDEWKey<S> key) {
+    return values.get(key);
+  }
+
+  /**
+   * Getter for the actual power value in kW.
+   *
+   * @param season either the {@link BdewSeason} for {@link BDEW1999} values or the {@link Month}
+   *     for {@link BDEW2025} values
+   * @param type day type of the value
+   * @return the value
+   */
+  public double get(S season, DayType type) {
+    return get(new BDEWKey<>(season, type));
+  }
 
   /** Returns the values, that may contain the last day of the year, as a stream. */
-  Stream<Double> lastDayOfYearValues();
+  public abstract Stream<Double> lastDayOfYearValues();
 
   /** Returns the values as a stream. */
-  Stream<Double> values();
+  public Stream<Double> values() {
+    return values.values().stream();
+  }
 
   @Override
-  default PValue getValue(ZonedDateTime time, BdewStandardLoadProfile loadProfile) {
+  public PValue getValue(ZonedDateTime time, BdewStandardLoadProfile loadProfile) {
     double power =
         switch (loadProfile) {
           case H0, H25, P25, S25 ->
@@ -62,7 +94,7 @@ public sealed interface BdewLoadValues extends LoadValues<BdewStandardLoadProfil
    * @param t day of year (1-366)
    * @return dynamization factor
    */
-  static double dynamization(double load, int t) {
+  public static double dynamization(double load, int t) {
     double factor =
         (-3.92e-10 * pow(t, 4) + 3.2e-7 * pow(t, 3) - 7.02e-5 * pow(t, 2) + 2.1e-3 * t + 1.24);
     double rndFactor = round(factor * 1e4) / 1e4; // round to 4 decimal places
@@ -70,593 +102,407 @@ public sealed interface BdewLoadValues extends LoadValues<BdewStandardLoadProfil
   }
 
   /** Scheme for old profiles from the year 1999. */
-  final class BDEW1999 implements BdewLoadValues {
-    private final double suSa;
-    private final double suSu;
-    private final double suWd;
-    private final double trSa;
-    private final double trSu;
-    private final double trWd;
-    private final double wiSa;
-    private final double wiSu;
-    private final double wiWd;
+  public static final class BDEW1999 extends BdewLoadValues<BdewSeason> {
 
-    public BDEW1999(
-        double suSa,
-        double suSu,
-        double suWd,
-        double trSa,
-        double trSu,
-        double trWd,
-        double wiSa,
-        double wiSu,
-        double wiWd) {
-      this.suSa = suSa;
-      this.suSu = suSu;
-      this.suWd = suWd;
-      this.trSa = trSa;
-      this.trSu = trSu;
-      this.trWd = trWd;
-      this.wiSa = wiSa;
-      this.wiSu = wiSu;
-      this.wiWd = wiWd;
+    public BDEW1999(Map<BDEWKey<BdewSeason>, Double> values) {
+      super(values);
     }
 
     @Override
     public double getPower(ZonedDateTime time) {
-      Map<BdewSeason, Double> mapping =
+      DayType type =
           switch (time.getDayOfWeek()) {
-            case SATURDAY -> Map.of(
-                SUMMER, suSa,
-                WINTER, wiSa,
-                TRANSITION, trSa);
-            case SUNDAY -> Map.of(
-                SUMMER, suSu,
-                WINTER, wiSu,
-                TRANSITION, trSu);
-            default -> Map.of(
-                SUMMER, suWd,
-                WINTER, wiWd,
-                TRANSITION, trWd);
+            case SATURDAY -> DayType.SATURDAY;
+            case SUNDAY -> DayType.SUNDAY;
+            default -> DayType.WEEKDAY;
           };
 
-      return mapping.get(getSeason(time));
+      return get(getSeason(time), type);
     }
 
     public double getSuSa() {
-      return suSa;
+      return get(SUMMER, DayType.SATURDAY);
     }
 
     public double getSuSu() {
-      return suSu;
+      return get(SUMMER, DayType.SUNDAY);
     }
 
     public double getSuWd() {
-      return suWd;
+      return get(SUMMER, DayType.WEEKDAY);
     }
 
     public double getTrSa() {
-      return trSa;
+      return get(TRANSITION, DayType.SATURDAY);
     }
 
     public double getTrSu() {
-      return trSu;
+      return get(TRANSITION, DayType.SUNDAY);
     }
 
     public double getTrWd() {
-      return trWd;
+      return get(TRANSITION, DayType.WEEKDAY);
     }
 
     public double getWiSa() {
-      return wiSa;
+      return get(WINTER, DayType.SATURDAY);
     }
 
     public double getWiSu() {
-      return wiSu;
+      return get(WINTER, DayType.SUNDAY);
     }
 
     public double getWiWd() {
-      return wiWd;
+      return get(WINTER, DayType.WEEKDAY);
     }
 
     public Stream<Double> lastDayOfYearValues() {
-      return Stream.of(wiSa, wiSu, wiWd);
-    }
-
-    public Stream<Double> values() {
-      return Stream.of(suSa, suSu, suWd, trSa, trSu, trWd, wiSa, wiSu, wiWd);
+      return Stream.of(
+              new BDEWKey<>(WINTER, DayType.SATURDAY),
+              new BDEWKey<>(WINTER, DayType.SUNDAY),
+              new BDEWKey<>(WINTER, DayType.WEEKDAY))
+          .map(this::get);
     }
 
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-      BDEW1999 that = (BDEW1999) o;
-      return Objects.equals(suSa, that.suSa)
-          && Objects.equals(suSu, that.suSu)
-          && Objects.equals(suWd, that.suWd)
-          && Objects.equals(trSa, that.trSa)
-          && Objects.equals(trSu, that.trSu)
-          && Objects.equals(trWd, that.trWd)
-          && Objects.equals(wiSa, that.wiSa)
-          && Objects.equals(wiSu, that.wiSu)
-          && Objects.equals(wiWd, that.wiWd);
+      return o != null && getClass() == o.getClass();
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(suSa, suSu, suWd, trSa, trSu, trWd, wiSa, wiSu, wiWd);
+      return super.hashCode();
     }
 
     @Override
     public String toString() {
-      return "BDEW1999{"
-          + "suSa="
-          + suSa
-          + ", suSu="
-          + suSu
-          + ", suWd="
-          + suWd
-          + ", trSa="
-          + trSa
-          + ", trSu="
-          + trSu
-          + ", trWd="
-          + trWd
-          + ", wiSa="
-          + wiSa
-          + ", wiSu="
-          + wiSu
-          + ", wiWd="
-          + wiWd
-          + '}';
+      String values =
+          BDEWKey.getKeys(BdewSeason.values()).stream()
+              .map(
+                  key -> {
+                    double value = get(key);
+                    return key.getName() + "=" + value + ", ";
+                  })
+              .reduce("", (a, b) -> a + b);
+
+      return "BDEW1999{" + values + '}';
     }
   }
 
   /** Scheme for updated profiles from the year 2025. */
-  final class BDEW2025 implements BdewLoadValues {
-    private final double janSa;
-    private final double janSu;
-    private final double janWd;
-    private final double febSa;
-    private final double febSu;
-    private final double febWd;
-    private final double marSa;
-    private final double marSu;
-    private final double marWd;
-    private final double aprSa;
-    private final double aprSu;
-    private final double aprWd;
-    private final double maySa;
-    private final double maySu;
-    private final double mayWd;
-    private final double junSa;
-    private final double junSu;
-    private final double junWd;
-    private final double julSa;
-    private final double julSu;
-    private final double julWd;
-    private final double augSa;
-    private final double augSu;
-    private final double augWd;
-    private final double sepSa;
-    private final double sepSu;
-    private final double sepWd;
-    private final double octSa;
-    private final double octSu;
-    private final double octWd;
-    private final double novSa;
-    private final double novSu;
-    private final double novWd;
-    private final double decSa;
-    private final double decSu;
-    private final double decWd;
+  public static final class BDEW2025 extends BdewLoadValues<Month> {
 
-    public BDEW2025(
-        double janSa,
-        double janSu,
-        double janWd,
-        double febSa,
-        double febSu,
-        double febWd,
-        double marSa,
-        double marSu,
-        double marWd,
-        double aprSa,
-        double aprSu,
-        double aprWd,
-        double maySa,
-        double maySu,
-        double mayWd,
-        double junSa,
-        double junSu,
-        double junWd,
-        double julSa,
-        double julSu,
-        double julWd,
-        double augSa,
-        double augSu,
-        double augWd,
-        double sepSa,
-        double sepSu,
-        double sepWd,
-        double octSa,
-        double octSu,
-        double octWd,
-        double novSa,
-        double novSu,
-        double novWd,
-        double decSa,
-        double decSu,
-        double decWd) {
-      this.janSa = janSa;
-      this.janSu = janSu;
-      this.janWd = janWd;
-      this.febSa = febSa;
-      this.febSu = febSu;
-      this.febWd = febWd;
-      this.marSa = marSa;
-      this.marSu = marSu;
-      this.marWd = marWd;
-      this.aprSa = aprSa;
-      this.aprSu = aprSu;
-      this.aprWd = aprWd;
-      this.maySa = maySa;
-      this.maySu = maySu;
-      this.mayWd = mayWd;
-      this.junSa = junSa;
-      this.junSu = junSu;
-      this.junWd = junWd;
-      this.julSa = julSa;
-      this.julSu = julSu;
-      this.julWd = julWd;
-      this.augSa = augSa;
-      this.augSu = augSu;
-      this.augWd = augWd;
-      this.sepSa = sepSa;
-      this.sepSu = sepSu;
-      this.sepWd = sepWd;
-      this.octSa = octSa;
-      this.octSu = octSu;
-      this.octWd = octWd;
-      this.novSa = novSa;
-      this.novSu = novSu;
-      this.novWd = novWd;
-      this.decSa = decSa;
-      this.decSu = decSu;
-      this.decWd = decWd;
+    public BDEW2025(Map<BDEWKey<Month>, Double> values) {
+      super(values);
     }
 
     @Override
     public double getPower(ZonedDateTime time) {
-      Map<Month, Double> mapping =
-          switch (time.getDayOfWeek()) {
-            case SATURDAY -> Map.ofEntries(
-                entry(JANUARY, janSa),
-                entry(FEBRUARY, febSa),
-                entry(MARCH, marSa),
-                entry(APRIL, aprSa),
-                entry(MAY, maySa),
-                entry(JUNE, junSa),
-                entry(JULY, julSa),
-                entry(AUGUST, augSa),
-                entry(SEPTEMBER, sepSa),
-                entry(OCTOBER, octSa),
-                entry(NOVEMBER, novSa),
-                entry(DECEMBER, decSa));
-            case SUNDAY -> Map.ofEntries(
-                entry(JANUARY, janSu),
-                entry(FEBRUARY, febSu),
-                entry(MARCH, marSu),
-                entry(APRIL, aprSu),
-                entry(MAY, maySu),
-                entry(JUNE, junSu),
-                entry(JULY, julSu),
-                entry(AUGUST, augSu),
-                entry(SEPTEMBER, sepSu),
-                entry(OCTOBER, octSu),
-                entry(NOVEMBER, novSu),
-                entry(DECEMBER, decSu));
-            default -> Map.ofEntries(
-                entry(JANUARY, janWd),
-                entry(FEBRUARY, febWd),
-                entry(MARCH, marWd),
-                entry(APRIL, aprWd),
-                entry(MAY, mayWd),
-                entry(JUNE, junWd),
-                entry(JULY, julWd),
-                entry(AUGUST, augWd),
-                entry(SEPTEMBER, sepWd),
-                entry(OCTOBER, octWd),
-                entry(NOVEMBER, novWd),
-                entry(DECEMBER, decWd));
+      DayType type =
+          switch (time.getDayOfYear()) {
+            case SATURDAY -> DayType.SATURDAY;
+            case SUNDAY -> DayType.SUNDAY;
+            default -> DayType.WEEKDAY;
           };
 
-      return mapping.get(time.getMonth());
+      return get(time.getMonth(), type);
+    }
+
+    @Override
+    public Stream<Double> lastDayOfYearValues() {
+      return Stream.of(
+              new BDEWKey<>(DECEMBER, DayType.SATURDAY),
+              new BDEWKey<>(DECEMBER, DayType.SUNDAY),
+              new BDEWKey<>(DECEMBER, DayType.WEEKDAY))
+          .map(this::get);
     }
 
     public double getJanSa() {
-      return janSa;
+      return get(JANUARY, DayType.SATURDAY);
     }
 
     public double getJanSu() {
-      return janSu;
+      return get(JANUARY, DayType.SUNDAY);
     }
 
     public double getJanWd() {
-      return janWd;
+      return get(JANUARY, DayType.WEEKDAY);
     }
 
     public double getFebSa() {
-      return febSa;
+      return get(FEBRUARY, DayType.SATURDAY);
     }
 
     public double getFebSu() {
-      return febSu;
+      return get(FEBRUARY, DayType.SUNDAY);
     }
 
     public double getFebWd() {
-      return febWd;
+      return get(FEBRUARY, DayType.WEEKDAY);
     }
 
     public double getMarSa() {
-      return marSa;
+      return get(MARCH, DayType.SATURDAY);
     }
 
     public double getMarSu() {
-      return marSu;
+      return get(MARCH, DayType.SUNDAY);
     }
 
     public double getMarWd() {
-      return marWd;
+      return get(MARCH, DayType.WEEKDAY);
     }
 
     public double getAprSa() {
-      return aprSa;
+      return get(APRIL, DayType.SATURDAY);
     }
 
     public double getAprSu() {
-      return aprSu;
+      return get(APRIL, DayType.SUNDAY);
     }
 
     public double getAprWd() {
-      return aprWd;
+      return get(APRIL, DayType.WEEKDAY);
     }
 
     public double getMaySa() {
-      return maySa;
+      return get(MAY, DayType.SATURDAY);
     }
 
     public double getMaySu() {
-      return maySu;
+      return get(MAY, DayType.SUNDAY);
     }
 
     public double getMayWd() {
-      return mayWd;
+      return get(MAY, DayType.WEEKDAY);
     }
 
     public double getJunSa() {
-      return junSa;
+      return get(JUNE, DayType.SATURDAY);
     }
 
     public double getJunSu() {
-      return junSu;
+      return get(JUNE, DayType.SUNDAY);
     }
 
     public double getJunWd() {
-      return junWd;
+      return get(JUNE, DayType.WEEKDAY);
     }
 
     public double getJulSa() {
-      return julSa;
+      return get(JULY, DayType.SATURDAY);
     }
 
     public double getJulSu() {
-      return julSu;
+      return get(JULY, DayType.SUNDAY);
     }
 
     public double getJulWd() {
-      return julWd;
+      return get(JULY, DayType.WEEKDAY);
     }
 
     public double getAugSa() {
-      return augSa;
+      return get(AUGUST, DayType.SATURDAY);
     }
 
     public double getAugSu() {
-      return augSu;
+      return get(AUGUST, DayType.SUNDAY);
     }
 
     public double getAugWd() {
-      return augWd;
+      return get(AUGUST, DayType.WEEKDAY);
     }
 
     public double getSepSa() {
-      return sepSa;
+      return get(SEPTEMBER, DayType.SATURDAY);
     }
 
     public double getSepSu() {
-      return sepSu;
+      return get(SEPTEMBER, DayType.SUNDAY);
     }
 
     public double getSepWd() {
-      return sepWd;
+      return get(SEPTEMBER, DayType.WEEKDAY);
     }
 
     public double getOctSa() {
-      return octSa;
+      return get(OCTOBER, DayType.SATURDAY);
     }
 
     public double getOctSu() {
-      return octSu;
+      return get(OCTOBER, DayType.SUNDAY);
     }
 
     public double getOctWd() {
-      return octWd;
+      return get(OCTOBER, DayType.WEEKDAY);
     }
 
     public double getNovSa() {
-      return novSa;
+      return get(NOVEMBER, DayType.SATURDAY);
     }
 
     public double getNovSu() {
-      return novSu;
+      return get(NOVEMBER, DayType.SUNDAY);
     }
 
     public double getNovWd() {
-      return novWd;
+      return get(NOVEMBER, DayType.WEEKDAY);
     }
 
     public double getDecSa() {
-      return decSa;
+      return get(DECEMBER, DayType.SATURDAY);
     }
 
     public double getDecSu() {
-      return decSu;
+      return get(DECEMBER, DayType.SUNDAY);
     }
 
     public double getDecWd() {
-      return decWd;
-    }
-
-    public Stream<Double> lastDayOfYearValues() {
-      return Stream.of(decSa, decSa, decWd);
-    }
-
-    public Stream<Double> values() {
-      return Stream.of(
-          janSa, janSu, janWd, febSa, febSu, febWd, marSa, marSu, marWd, aprSa, aprSu, aprWd, maySa,
-          maySu, mayWd, junSa, junSu, junWd, julSa, julSu, julWd, augSa, augSu, augWd, sepSa, sepSu,
-          sepWd, octSa, octSu, octWd, novSa, novSu, novWd, decSa, decSu, decWd);
+      return get(DECEMBER, DayType.WEEKDAY);
     }
 
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-      BDEW2025 that = (BDEW2025) o;
-      return Objects.equals(janSa, that.janSa)
-          && Objects.equals(janSu, that.janSu)
-          && Objects.equals(janWd, that.janWd)
-          && Objects.equals(febSa, that.febSa)
-          && Objects.equals(febSu, that.febSu)
-          && Objects.equals(febWd, that.febWd)
-          && Objects.equals(marSa, that.marSa)
-          && Objects.equals(marSu, that.marSu)
-          && Objects.equals(marWd, that.marWd)
-          && Objects.equals(aprSa, that.aprSa)
-          && Objects.equals(aprSu, that.aprSu)
-          && Objects.equals(aprWd, that.aprWd)
-          && Objects.equals(maySa, that.maySa)
-          && Objects.equals(maySu, that.maySu)
-          && Objects.equals(mayWd, that.mayWd)
-          && Objects.equals(junSa, that.junSa)
-          && Objects.equals(junSu, that.junSu)
-          && Objects.equals(junWd, that.junWd)
-          && Objects.equals(julSa, that.julSa)
-          && Objects.equals(julSu, that.julSu)
-          && Objects.equals(julWd, that.julWd)
-          && Objects.equals(augSa, that.augSa)
-          && Objects.equals(augSu, that.augSu)
-          && Objects.equals(augWd, that.augWd)
-          && Objects.equals(sepSa, that.sepSa)
-          && Objects.equals(sepSu, that.sepSu)
-          && Objects.equals(sepWd, that.sepWd)
-          && Objects.equals(octSa, that.octSa)
-          && Objects.equals(octSu, that.octSu)
-          && Objects.equals(octWd, that.octWd)
-          && Objects.equals(novSa, that.novSa)
-          && Objects.equals(novSu, that.novSu)
-          && Objects.equals(novWd, that.novWd)
-          && Objects.equals(decSa, that.decSa)
-          && Objects.equals(decSu, that.decSu)
-          && Objects.equals(decWd, that.decWd);
+      return o != null && getClass() == o.getClass();
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(
-          janSa, janSu, janWd, febSa, febSu, febWd, marSa, marSu, marWd, aprSa, aprSu, aprWd, maySa,
-          maySu, mayWd, junSa, junSu, junWd, julSa, julSu, julWd, augSa, augSu, augWd, sepSa, sepSu,
-          sepWd, octSa, octSu, octWd, novSa, novSu, novWd, decSa, decSu, decWd);
+      return super.hashCode();
     }
 
     @Override
     public String toString() {
-      return "BDEW1999{"
-          + "janSa="
-          + janSa
-          + ", janSu="
-          + janSu
-          + ", janWd="
-          + janWd
-          + ", febSa="
-          + febSa
-          + ", febSu="
-          + febSu
-          + ", febWd="
-          + febWd
-          + ", marSa="
-          + marSa
-          + ", marSu="
-          + marSu
-          + ", marWd="
-          + marWd
-          + ", aprSa="
-          + aprSa
-          + ", aprSu="
-          + aprSu
-          + ", aprWd="
-          + aprWd
-          + ", maySa="
-          + maySa
-          + ", maySu="
-          + maySu
-          + ", mayWd="
-          + mayWd
-          + ", junSa="
-          + junSa
-          + ", junSu="
-          + junSu
-          + ", junWd="
-          + junWd
-          + ", julSa="
-          + julSa
-          + ", julSu="
-          + julSu
-          + ", julWd="
-          + julWd
-          + ", augSa="
-          + augSa
-          + ", augSu="
-          + augSu
-          + ", augWd="
-          + augWd
-          + ", sepSa="
-          + sepSa
-          + ", sepSu="
-          + sepSu
-          + ", sepWd="
-          + sepWd
-          + ", octSa="
-          + octSa
-          + ", octSu="
-          + octSu
-          + ", octWd="
-          + octWd
-          + ", novSa="
-          + novSa
-          + ", novSu="
-          + novSu
-          + ", novWd="
-          + novWd
-          + ", decSa="
-          + decSa
-          + ", decSu="
-          + decSu
-          + ", decWd="
-          + decWd
-          + '}';
+      String values =
+          BDEWKey.getKeys(Month.values()).stream()
+              .map(
+                  key -> {
+                    double value = get(key);
+                    return key.getName() + "=" + value + ", ";
+                  })
+              .reduce("", (a, b) -> a + b);
+
+      return "BDEW2025{" + values + '}';
+    }
+  }
+
+  public record BDEWKey<S>(S season, DayType type) {
+
+    public String getName() {
+      String seasonString = season.toString();
+
+      String seasonName;
+
+      if (seasonString.length() >= 3) {
+        seasonName = seasonString.charAt(0) + seasonString.substring(1, 3).toLowerCase();
+      } else {
+        seasonName = seasonString;
+      }
+
+      return seasonName + type.name;
+    }
+
+    public static <S> Collection<BDEWKey<S>> getKeys(S[] seasons) {
+      return Arrays.stream(seasons)
+          .flatMap(
+              m ->
+                  Arrays.stream(BdewLoadValues.DayType.values())
+                      .map(type -> new BDEWKey<>(m, type)))
+          .toList();
+    }
+
+    public static <S> Map<BDEWKey<S>, String> getFields(S[] seasons) {
+      return getKeys(seasons).stream().collect(Collectors.toMap(e -> e, BDEWKey::getName));
+    }
+  }
+
+  public enum BdewSeason {
+    SUMMER("Su"),
+    TRANSITION("Tr"),
+    WINTER("Wi");
+
+    private final String key;
+
+    BdewSeason(String key) {
+      this.key = key;
+    }
+
+    public static BdewSeason parse(String key) throws ParsingException {
+      return switch (key) {
+        case "Wi", "Winter" -> WINTER;
+        case "Su", "Summer" -> SUMMER;
+        case "Tr", "Intermediate" -> TRANSITION;
+        default -> throw new ParsingException(
+            "There is no season for key:"
+                + key
+                + ". Permissible keys: 'Wi', 'Winter', 'Su', 'Summer', 'Tr', 'Intermediate'");
+      };
+    }
+
+    /**
+     * Creates a season from given time
+     *
+     * @param time the time
+     * @return a season
+     */
+    public static BdewSeason getSeason(ZonedDateTime time) {
+      int day = time.getDayOfMonth();
+
+      // winter:      1.11.-20.03.
+      // summer:     15.05.-14.09.
+      // transition: 21.03.-14.05. and
+      //             15.09.-31.10.
+      // (VDEW handbook)
+
+      return switch (time.getMonth()) {
+        case NOVEMBER, DECEMBER, JANUARY, FEBRUARY -> WINTER;
+        case MARCH -> {
+          if (day <= 20) {
+            yield WINTER;
+          } else {
+            yield TRANSITION;
+          }
+        }
+        case MAY -> {
+          if (day >= 15) {
+            yield SUMMER;
+          } else {
+            yield TRANSITION;
+          }
+        }
+        case JUNE, JULY, AUGUST -> SUMMER;
+        case SEPTEMBER -> {
+          if (day <= 14) {
+            yield SUMMER;
+          } else {
+            yield TRANSITION;
+          }
+        }
+        default -> TRANSITION;
+      };
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    @Override
+    public String toString() {
+      return key;
+    }
+  }
+
+  public enum DayType {
+    WEEKDAY("Wd"),
+    SATURDAY("Sa"),
+    SUNDAY("Su");
+
+    public final String name;
+
+    DayType(String name) {
+      this.name = name;
     }
   }
 }

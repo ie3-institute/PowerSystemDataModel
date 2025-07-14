@@ -15,6 +15,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Path
+import java.time.Month
 import java.util.function.Function
 
 class BdewLoadProfileTest extends Specification {
@@ -29,20 +30,7 @@ class BdewLoadProfileTest extends Specification {
   private List<String> keys = ['su', 'tr', 'wi']
 
   @Shared
-  private List<String> months = [
-    'jan',
-    'feb',
-    'mar',
-    'apr',
-    'may',
-    'jun',
-    'jul',
-    'aug',
-    'sep',
-    'oct',
-    'nov',
-    'dec'
-  ]
+  private List<String> months = Month.values().collect { it -> it.toString().substring(0, 3).toLowerCase() }
 
   @Shared
   private Map results = [:]
