@@ -77,8 +77,7 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
                             fieldToValues ->
                                 new SimpleFactoryData(fieldToValues, IdCoordinateInput.class))
                         .map(factory::get))
-            .flatMap(
-                s -> Try.scanStream(s, "Pair<Integer, Point>").transformF(SourceException::new))
+            .flatMap(s -> Try.scanStream(s, "Pair<Integer, Point>", SourceException::new))
             .getOrThrow()
             .toList();
 
@@ -209,7 +208,7 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      return dataSource.csvRowFieldValueMapping(reader, headline);
+      return dataSource.csvRowFieldValueMapping(reader, headline, filePath.getFileName());
     } catch (IOException e) {
       return Failure.of(
           new SourceException("Cannot read the file for coordinate id to coordinate mapping.", e));

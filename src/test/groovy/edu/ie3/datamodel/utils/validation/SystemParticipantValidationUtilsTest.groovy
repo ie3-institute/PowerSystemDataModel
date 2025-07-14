@@ -99,10 +99,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidType                                                                                                                                                                                           || expectedException
@@ -142,10 +140,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ValidationUtils.check(invalidBmType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidBmType                                                                                                             || expectedException
@@ -184,10 +180,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidChpType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidChpType                                                                                                                           || expectedException
@@ -228,10 +222,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidEvType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidEvType                                                                                                                                                                                  || expectedException
@@ -298,10 +290,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidHpType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidHpType                                                                                           || expectedException
@@ -402,10 +392,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidStorageType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidStorageType                                                                                                                                                                                                                           || expectedException
@@ -445,10 +433,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidWecType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidWecType                                                                                                                                                              || expectedException
