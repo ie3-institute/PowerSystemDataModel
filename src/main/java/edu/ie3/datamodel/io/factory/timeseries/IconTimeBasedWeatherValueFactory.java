@@ -5,10 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.TemperatureValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
@@ -16,10 +14,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
@@ -30,14 +29,16 @@ import tech.units.indriya.unit.Units;
  * Weather Service's ICON-EU model
  */
 public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
+
+  private static final Logger logger = LoggerFactory.getLogger(IconTimeBasedWeatherValueFactory.class);
+
   /* Redefine the column names to meet the icon specifications */
   private static final String DIFFUSE_IRRADIANCE = "aswdifdS";
   private static final String DIRECT_IRRADIANCE = "aswdirS";
   private static final String TEMPERATURE = "t2m";
+  private static final String GROUND_TEMPERATURE = "tG";
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
-  private static final String GROUND_TEMP_SURFACE = "tG";
-  private static final String SOIL_TEMP_100CM = "tso100cm";
 
   public IconTimeBasedWeatherValueFactory() {
     super();
@@ -53,10 +54,6 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
         newSet(
             DIFFUSE_IRRADIANCE, DIRECT_IRRADIANCE, TEMPERATURE, WIND_VELOCITY_U, WIND_VELOCITY_V);
 
-    Set<String> minParametersWithGroundTemp = new HashSet<>(minParameters);
-    minParametersWithGroundTemp.add(GROUND_TEMP_SURFACE);
-    minParametersWithGroundTemp.add(SOIL_TEMP_100CM);
-
     Set<String> allParameters =
         expandSet(
             minParameters,
@@ -64,8 +61,6 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "asobs",
             "aswdifuS",
             "tG",
-            GROUND_TEMP_SURFACE,
-            SOIL_TEMP_100CM,
             "u10m",
             "u20m",
             "u216m",
@@ -85,7 +80,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "sobsrad",
             "t131m");
 
-    return Arrays.asList(minParameters, minParametersWithGroundTemp, allParameters);
+    return Arrays.asList(minParameters, allParameters);
   }
 
   @Override
@@ -101,22 +96,13 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
 
-    Map<ComparableQuantity<Length>, TemperatureValue> groundTemperatures = new HashMap<>();
-
+    ComparableQuantity<Temperature> groundTemperature = null;
     try {
-      TemperatureValue tempValue =
-          new TemperatureValue(
-              data.getQuantity(GROUND_TEMP_SURFACE, Units.KELVIN).to(StandardUnits.TEMPERATURE));
-      groundTemperatures.put(Quantities.getQuantity(0, Units.METRE), tempValue);
-    } catch (FactoryException ignored) {
-    }
+      groundTemperature =
+          data.getQuantity(GROUND_TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
+    } catch (IllegalArgumentException e) {
 
-    try {
-      TemperatureValue tempValue =
-          new TemperatureValue(
-              data.getQuantity(SOIL_TEMP_100CM, Units.KELVIN).to(StandardUnits.TEMPERATURE));
-      groundTemperatures.put(Quantities.getQuantity(1, Units.METRE), tempValue);
-    } catch (FactoryException ignored) {
+      logger.warn("Field '{}' not found in data, proceeding without it.", GROUND_TEMPERATURE);
     }
 
     WeatherValue weatherValue =
@@ -127,24 +113,10 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             temperature,
             windDirection,
             windVelocity,
-            groundTemperatures);
-
+            groundTemperature);
     return new TimeBasedValue<>(time, weatherValue);
   }
 
-  /**
-   * Determines the wind direction. In ICON the wind velocity is given in three dimensional
-   * Cartesian coordinates. Here, the upward component is neglected. 0° or 0 rad are defined to
-   * point northwards. The angle increases clockwise. Please note, that the wind direction is the
-   * direction, the wind <b>comes</b> from and not goes to. We choose to use the wind velocity
-   * calculations at 131 m above ground, as this is a height that pretty good matches the common hub
-   * height of today's onshore wind generators, that are commonly connected to the voltage levels of
-   * interest.
-   *
-   * @param data Collective information to convert
-   * @return A {@link ComparableQuantity} of type {@link Speed}, that is converted to {@link
-   *     StandardUnits#WIND_VELOCITY}
-   */
   private static ComparableQuantity<Angle> getWindDirection(TimeBasedWeatherValueData data) {
     /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
     double u =

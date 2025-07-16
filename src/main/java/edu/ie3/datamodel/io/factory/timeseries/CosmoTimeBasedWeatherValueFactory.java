@@ -5,38 +5,39 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.TemperatureValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.Units;
 
 /**
  * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
  * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
  */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
+
+  private static final Logger logger =
+      LoggerFactory.getLogger(CosmoTimeBasedWeatherValueFactory.class);
+
   private static final String DIFFUSE_IRRADIANCE = "diffuseIrradiance";
   private static final String DIRECT_IRRADIANCE = "directIrradiance";
   private static final String TEMPERATURE = "temperature";
+  private static final String GROUND_TEMPERATURE = "groundTemperature";
   private static final String WIND_DIRECTION = "windDirection";
   private static final String WIND_VELOCITY = "windVelocity";
-  private static final String GROUND_TEMPERATURE_SURFACE = "groundTemperatureSurface";
-  private static final String GROUND_TEMPERATURE_1M = "groundTemperature1m";
 
   public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
@@ -53,20 +54,17 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams =
-        new HashSet<>(
-            Set.of(
-                COORDINATE_ID,
-                DIFFUSE_IRRADIANCE,
-                DIRECT_IRRADIANCE,
-                TEMPERATURE,
-                WIND_DIRECTION,
-                WIND_VELOCITY));
+        newSet(
+            COORDINATE_ID,
+            DIFFUSE_IRRADIANCE,
+            DIRECT_IRRADIANCE,
+            TEMPERATURE,
+            WIND_DIRECTION,
+            WIND_VELOCITY);
 
-    Set<String> withGroundTemps = new HashSet<>(minConstructorParams);
-    withGroundTemps.add(GROUND_TEMPERATURE_SURFACE);
-    withGroundTemps.add(GROUND_TEMPERATURE_1M);
+    Set<String> withGroundTemp = expandSet(minConstructorParams, GROUND_TEMPERATURE);
 
-    return List.of(minConstructorParams, withGroundTemps);
+    return List.of(minConstructorParams, withGroundTemp);
   }
 
   @Override
@@ -84,21 +82,12 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
     ComparableQuantity<Speed> windVelocity =
         data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
 
-    Map<ComparableQuantity<Length>, TemperatureValue> groundTemperatures = new HashMap<>();
-
+    ComparableQuantity<Temperature> groundTemperature = null;
     try {
-      TemperatureValue tempValue =
-          new TemperatureValue(
-              data.getQuantity(GROUND_TEMPERATURE_SURFACE, StandardUnits.TEMPERATURE));
-      groundTemperatures.put(Quantities.getQuantity(0, Units.METRE), tempValue);
-    } catch (FactoryException ignored) {
-    }
+      groundTemperature = data.getQuantity(GROUND_TEMPERATURE, StandardUnits.TEMPERATURE);
+    } catch (IllegalArgumentException e) {
 
-    try {
-      TemperatureValue tempValue =
-          new TemperatureValue(data.getQuantity(GROUND_TEMPERATURE_1M, StandardUnits.TEMPERATURE));
-      groundTemperatures.put(Quantities.getQuantity(1, Units.METRE), tempValue);
-    } catch (FactoryException ignored) {
+      logger.warn("Field '{}' not found in data, proceeding without it.", GROUND_TEMPERATURE);
     }
 
     WeatherValue weatherValue =
@@ -109,7 +98,7 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             temperature,
             windDirection,
             windVelocity,
-            groundTemperatures);
+            groundTemperature);
 
     return new TimeBasedValue<>(time, weatherValue);
   }

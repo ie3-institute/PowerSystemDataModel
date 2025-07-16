@@ -22,12 +22,8 @@ import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.util.Collections
-import java.util.Optional
-import java.util.UUID
-
 @Testcontainers
-class InfluxDbWeatherSourceIconIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
+class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper, TestContainerHelper {
 
   @Shared
   InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8.10"))

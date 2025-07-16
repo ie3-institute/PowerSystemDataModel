@@ -44,12 +44,14 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
     // Copy import file with json array of documents into docker
     def couchbaseWeatherJsonsFile = getMountableFile("_weather/icon/weather.json")
     couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather_icon.json")
+
     // create an index for the document keys
     couchbaseContainer.execInContainer("cbq",
         "-e", "http://localhost:8093",
         "-u", couchbaseContainer.username,
         "-p", couchbaseContainer.password,
         "-s", "CREATE index id_idx ON `" + bucketDefinition.name + "` (META().id);")
+
     //import the json documents from the copied file
     couchbaseContainer.execInContainer("cbimport", "json",
         "-cluster", "http://localhost:8091",
@@ -59,6 +61,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
         "--format", "list",
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
         "--dataset", "file:///home/weather_icon.json")
+
     // increased timeout to deal with CI under high load
     def connector = new CouchbaseConnector(
         couchbaseContainer.connectionString,

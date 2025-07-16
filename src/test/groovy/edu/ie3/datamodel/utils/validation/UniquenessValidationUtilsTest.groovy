@@ -21,7 +21,10 @@ import edu.ie3.datamodel.models.result.CongestionResult
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.value.SolarIrradianceValue
+import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
+import edu.ie3.datamodel.models.value.WindValue
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.util.geo.GeoUtils
 import spock.lang.Specification
@@ -29,7 +32,6 @@ import tech.units.indriya.quantity.Quantities
 import tech.units.indriya.unit.Units
 
 import java.time.ZonedDateTime
-import java.util.Collections
 import javax.measure.Quantity
 import javax.measure.quantity.Angle
 import javax.measure.quantity.Dimensionless
@@ -206,12 +208,9 @@ class UniquenessValidationUtilsTest extends Specification {
     ZonedDateTime time = ZonedDateTime.now()
     WeatherValue value = new WeatherValue(
     GeoUtils.buildPoint(50d, 7d),
-    Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE),
-    Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE),
-    Quantities.getQuantity(5d, Units.CELSIUS),
-    Quantities.getQuantity(5d, DEGREE_GEOM),
-    Quantities.getQuantity(10d, METRE_PER_SECOND),
-    Collections.emptyMap()
+    new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
+    new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
+    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))
     )
 
     Set<TimeBasedValue<WeatherValue>> uniqueValues = [
@@ -231,12 +230,9 @@ class UniquenessValidationUtilsTest extends Specification {
     ZonedDateTime time = ZonedDateTime.now()
     WeatherValue value = new WeatherValue(
     GeoUtils.buildPoint(50d, 7d),
-    Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE),
-    Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE),
-    Quantities.getQuantity(5d, Units.CELSIUS),
-    Quantities.getQuantity(5d, DEGREE_GEOM),
-    Quantities.getQuantity(10d, METRE_PER_SECOND),
-    Collections.emptyMap()
+    new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
+    new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
+    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))
     )
     Set<TimeBasedValue<WeatherValue>> notUniqueValues = [
       new TimeBasedValue<WeatherValue>(time, value),

@@ -29,7 +29,6 @@ import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.Collections
 
 trait TimeSeriesTestData {
   GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326)
@@ -59,16 +58,16 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualEnergyPriceTimeSeriesProcessed = [
     [
-      "time"    : "2020-04-02T10:00:00Z",
-      "price"   : "5.0"
+      "time"	: "2020-04-02T10:00:00Z",
+      "price"	: "5.0"
     ] as LinkedHashMap,
     [
-      "time"    : "2020-04-02T10:15:00Z",
-      "price"   : "15.0"
+      "time"	: "2020-04-02T10:15:00Z",
+      "price"	: "15.0"
     ] as LinkedHashMap,
     [
-      "time"    : "2020-04-02T10:30:00Z",
-      "price"   : "10.0"
+      "time"	: "2020-04-02T10:30:00Z",
+      "price"	: "10.0"
     ] as LinkedHashMap
   ] as Set
 
@@ -98,16 +97,16 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualTemperatureTimeSeriesProcessed = [
     [
-      "time"          : "2020-04-02T10:00:00Z",
-      "temperature" : "5.0"
+      "time"			: "2020-04-02T10:00:00Z",
+      "temperature"	: "5.0"
     ] as LinkedHashMap,
     [
-      "time"          : "2020-04-02T10:15:00Z",
-      "temperature" : "15.0"
+      "time"			: "2020-04-02T10:15:00Z",
+      "temperature"	: "15.0"
     ] as LinkedHashMap,
     [
-      "time"          : "2020-04-02T10:30:00Z",
-      "temperature" : "10.0"
+      "time"			: "2020-04-02T10:30:00Z",
+      "temperature"	: "10.0"
     ] as LinkedHashMap
   ] as Set
 
@@ -128,19 +127,19 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualWindTimeSeriesProcessed = [
     [
-      "direction"   : "5.0",
-      "time"       : "2020-04-02T10:00:00Z",
-      "velocity"    : "10.0"
+      "direction"	: "5.0",
+      "time"		: "2020-04-02T10:00:00Z",
+      "velocity"	: "10.0"
     ] as LinkedHashMap,
     [
-      "direction"   : "15.0",
-      "time"       : "2020-04-02T10:15:00Z",
-      "velocity"    : "20.0"
+      "direction"	: "15.0",
+      "time"		: "2020-04-02T10:15:00Z",
+      "velocity"	: "20.0"
     ] as LinkedHashMap,
     [
-      "direction"   : "10.0",
-      "time"       : "2020-04-02T10:30:00Z",
-      "velocity"    : "15.0"
+      "direction"	: "10.0",
+      "time"		: "2020-04-02T10:30:00Z",
+      "velocity"	: "15.0"
     ] as LinkedHashMap
   ] as Set
 
@@ -161,19 +160,19 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>> individualIrradianceTimeSeriesProcessed = [
     [
-      "directIrradiance"       : "5.0",
-      "diffuseIrradiance"   : "10.0",
-      "time"                : "2020-04-02T10:00:00Z"
+      "directIrradiance"		: "5.0",
+      "diffuseIrradiance"	: "10.0",
+      "time"					: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "directIrradiance"       : "15.0",
-      "diffuseIrradiance"   : "20.0",
-      "time"                : "2020-04-02T10:15:00Z"
+      "directIrradiance"		: "15.0",
+      "diffuseIrradiance"	: "20.0",
+      "time"					: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "directIrradiance"       : "10.0",
-      "diffuseIrradiance"   : "15.0",
-      "time"                : "2020-04-02T10:30:00Z"
+      "directIrradiance"		: "10.0",
+      "diffuseIrradiance"	: "15.0",
+      "time"					: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -184,36 +183,27 @@ trait TimeSeriesTestData {
     ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
     new WeatherValue(
     defaultLocation,
-    Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE),
-    Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE),
-    Quantities.getQuantity(5d, CELSIUS),
-    Quantities.getQuantity(5d, DEGREE_GEOM),
-    Quantities.getQuantity(10d, METRE_PER_SECOND),
-    Collections.emptyMap()
+    new SolarIrradianceValue(Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
+    new TemperatureValue(Quantities.getQuantity(5d, CELSIUS)),
+    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))
     )
     ),
     new TimeBasedValue<>(
     ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
     new WeatherValue(
     defaultLocation,
-    Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE),
-    Quantities.getQuantity(20d, StandardUnits.SOLAR_IRRADIANCE),
-    Quantities.getQuantity(15d, CELSIUS),
-    Quantities.getQuantity(15d, DEGREE_GEOM),
-    Quantities.getQuantity(20d, METRE_PER_SECOND),
-    Collections.emptyMap()
+    new SolarIrradianceValue(Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(20d, StandardUnits.SOLAR_IRRADIANCE)),
+    new TemperatureValue(Quantities.getQuantity(15d, CELSIUS)),
+    new WindValue(Quantities.getQuantity(15d, DEGREE_GEOM), Quantities.getQuantity(20d, METRE_PER_SECOND))
     )
     ),
     new TimeBasedValue<>(
     ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
     new WeatherValue(
     defaultLocation,
-    Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE),
-    Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE),
-    Quantities.getQuantity(10d, CELSIUS),
-    Quantities.getQuantity(10d, DEGREE_GEOM),
-    Quantities.getQuantity(15d, METRE_PER_SECOND),
-    Collections.emptyMap()
+    new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE)),
+    new TemperatureValue(Quantities.getQuantity(10d, CELSIUS)),
+    new WindValue(Quantities.getQuantity(10d, DEGREE_GEOM), Quantities.getQuantity(15d, METRE_PER_SECOND))
     )
     ),
   ] as Set
@@ -221,31 +211,31 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualWeatherTimeSeriesProcessed = [
     [
-      "coordinate"  : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "diffSolar"     : "10.0",
-      "directSolar" : "5.0",
-      "windDir"       : "5.0",
-      "temperature" : "5.0",
-      "time"          : "2020-04-02T10:00:00Z",
-      "windVel"       : "10.0"
+      "coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "diffuseIrradiance"	: "10.0",
+      "directIrradiance"		: "5.0",
+      "direction"				: "5.0",
+      "temperature"			: "5.0",
+      "time"					: "2020-04-02T10:00:00Z",
+      "velocity"				: "10.0"
     ] as LinkedHashMap,
     [
-      "coordinate"  : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "diffSolar"     : "20.0",
-      "directSolar" : "15.0",
-      "windDir"       : "15.0",
-      "temperature" : "15.0",
-      "time"          : "2020-04-02T10:15:00Z",
-      "windVel"       : "20.0"
+      "coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "diffuseIrradiance"	: "20.0",
+      "directIrradiance"		: "15.0",
+      "direction"				: "15.0",
+      "temperature"			: "15.0",
+      "time"					: "2020-04-02T10:15:00Z",
+      "velocity"				: "20.0"
     ] as LinkedHashMap,
     [
-      "coordinate"  : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "diffSolar"     : "15.0",
-      "directSolar" : "10.0",
-      "windDir"       : "10.0",
-      "temperature" : "10.0",
-      "time"          : "2020-04-02T10:30:00Z",
-      "windVel"       : "15.0"
+      "coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "diffuseIrradiance"	: "15.0",
+      "directIrradiance"		: "10.0",
+      "direction"				: "10.0",
+      "temperature"			: "10.0",
+      "time"					: "2020-04-02T10:30:00Z",
+      "velocity"				: "15.0"
     ] as LinkedHashMap
   ] as Set
 
@@ -266,16 +256,16 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualHeatDemandTimeSeriesProcessed = [
     [
-      "heatDemand"  : "5.0",
-      "time"          : "2020-04-02T10:00:00Z"
+      "heatDemand"	: "5.0",
+      "time"			: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "15.0",
-      "time"          : "2020-04-02T10:15:00Z"
+      "heatDemand"	: "15.0",
+      "time"			: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "10.0",
-      "time"          : "2020-04-02T10:30:00Z"
+      "heatDemand"	: "10.0",
+      "time"			: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -296,16 +286,16 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualPTimeSeriesProcessed = [
     [
-      "p"      : "5.0",
-      "time"    : "2020-04-02T10:00:00Z"
+      "p"		: "5.0",
+      "time"	: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "p"      : "15.0",
-      "time"    : "2020-04-02T10:15:00Z"
+      "p"		: "15.0",
+      "time"	: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "p"      : "10.0",
-      "time"    : "2020-04-02T10:30:00Z"
+      "p"		: "10.0",
+      "time"	: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -326,19 +316,19 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualHeatAndPTimeSeriesProcessed = [
     [
-      "heatDemand"  : "10.0",
-      "p"            : "5.0",
-      "time"          : "2020-04-02T10:00:00Z"
+      "heatDemand"	: "10.0",
+      "p"				: "5.0",
+      "time"			: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "20.0",
-      "p"            : "15.0",
-      "time"          : "2020-04-02T10:15:00Z"
+      "heatDemand"	: "20.0",
+      "p"				: "15.0",
+      "time"			: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "15.0",
-      "p"            : "10.0",
-      "time"          : "2020-04-02T10:30:00Z"
+      "heatDemand"	: "15.0",
+      "p"				: "10.0",
+      "time"			: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -359,19 +349,19 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualSTimeSeriesProcessed = [
     [
-      "p"      : "5.0",
-      "q"      : "10.0",
-      "time"    : "2020-04-02T10:00:00Z"
+      "p"		: "5.0",
+      "q"		: "10.0",
+      "time"	: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "p"      : "15.0",
-      "q"      : "20.0",
-      "time"    : "2020-04-02T10:15:00Z"
+      "p"		: "15.0",
+      "q"		: "20.0",
+      "time"	: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "p"      : "10.0",
-      "q"      : "15.0",
-      "time"    : "2020-04-02T10:30:00Z"
+      "p"		: "10.0",
+      "q"		: "15.0",
+      "time"	: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
@@ -392,22 +382,22 @@ trait TimeSeriesTestData {
 
   Set<LinkedHashMap<String, String>>  individualHeatAndSTimeSeriesProcessed = [
     [
-      "heatDemand"  : "15.0",
-      "p"            : "5.0",
-      "q"            : "10.0",
-      "time"          : "2020-04-02T10:00:00Z"
+      "heatDemand"	: "15.0",
+      "p"				: "5.0",
+      "q"				: "10.0",
+      "time"			: "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "25.0",
-      "p"            : "15.0",
-      "q"            : "20.0",
-      "time"          : "2020-04-02T10:15:00Z"
+      "heatDemand"	: "25.0",
+      "p"				: "15.0",
+      "q"				: "20.0",
+      "time"			: "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "20.0",
-      "p"            : "10.0",
-      "q"            : "15.0",
-      "time"          : "2020-04-02T10:30:00Z"
+      "heatDemand"	: "20.0",
+      "p"				: "10.0",
+      "q"				: "15.0",
+      "time"			: "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 

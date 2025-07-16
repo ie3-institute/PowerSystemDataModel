@@ -13,15 +13,14 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
-import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.*;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TimeSeriesProcessor<
         T extends TimeSeries<E, V, R>,
@@ -132,13 +131,10 @@ public class TimeSeriesProcessor<
             .collect(
                 Collectors.toMap(
                     Map.Entry::getKey, entry -> new FieldSourceToMethod(ENTRY, entry.getValue())));
-
     Map<String, FieldSourceToMethod> valueMapping;
-    if (valueClass.equals(WeatherValue.class)) {
+    if (!valueClass.equals(WeatherValue.class)) {
       valueMapping =
-          mapFieldNameToGetter(valueClass, Collections.singletonList("groundTemperatures"))
-              .entrySet()
-              .stream()
+          mapFieldNameToGetter(valueClass).entrySet().stream()
               .collect(
                   Collectors.toMap(
                       Map.Entry::getKey,
@@ -147,11 +143,40 @@ public class TimeSeriesProcessor<
       /* Treat the nested weather values specially. */
       /* Flatten the nested structure of Weather value */
       valueMapping =
-          mapFieldNameToGetter(valueClass).entrySet().stream()
-              .collect(
-                  Collectors.toMap(
-                      Map.Entry::getKey,
-                      entry -> new FieldSourceToMethod(VALUE, entry.getValue())));
+          Stream.concat(
+                  Stream.concat(
+                      Stream.concat(
+                          mapFieldNameToGetter(
+                                  valueClass,
+                                  Arrays.asList("solarIrradiance", "temperature", "wind"))
+                              .entrySet()
+                              .stream()
+                              .map(
+                                  entry ->
+                                      new AbstractMap.SimpleEntry<>(
+                                          entry.getKey(),
+                                          new FieldSourceToMethod(VALUE, entry.getValue()))),
+                          mapFieldNameToGetter(SolarIrradianceValue.class).entrySet().stream()
+                              .map(
+                                  entry ->
+                                      new AbstractMap.SimpleEntry<>(
+                                          entry.getKey(),
+                                          new FieldSourceToMethod(
+                                              WEATHER_IRRADIANCE, entry.getValue())))),
+                      mapFieldNameToGetter(TemperatureValue.class).entrySet().stream()
+                          .map(
+                              entry ->
+                                  new AbstractMap.SimpleEntry<>(
+                                      entry.getKey(),
+                                      new FieldSourceToMethod(
+                                          WEATHER_TEMPERATURE, entry.getValue())))),
+                  mapFieldNameToGetter(WindValue.class).entrySet().stream()
+                      .map(
+                          entry ->
+                              new AbstractMap.SimpleEntry<>(
+                                  entry.getKey(),
+                                  new FieldSourceToMethod(WEATHER_WIND, entry.getValue()))))
+              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     /* Put everything together */

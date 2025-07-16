@@ -153,7 +153,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     def coordinateSource = new WeatherTestData.DummyIdCoordinateSource()
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
-    def fieldToValues = [      "datum"       : "2019-08-01 01:00:00",
+    def fieldToValues = [
+      "datum"       : "2019-08-01 01:00:00",
       "albRad"      : "13.015240669",
       "asobS"       : "3.555093673828124",
       "aswdifdS"    : "1.8088226191406245",
@@ -181,7 +182,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
       "p20m"        : "",
       "p65m"        : "",
       "sobsRad"     : "",
-      "t131m"       : ""]
+      "t131m"       : ""
+    ]
 
     when:
     def actual = source.buildWeatherValue(fieldToValues)
@@ -195,7 +197,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     def coordinateSource = new WeatherTestData.DummyIdCoordinateSource()
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
-    def fieldToValues = [          "datum"   : "2019-08-01 01:00:00",
+    def fieldToValues = [
+      "datum"   : "2019-08-01 01:00:00",
       "albRad"  : "13.015240669",
       "asobS"   : "3.555093673828124",
       "aswdifdS": "1.8088226191406245",
@@ -222,7 +225,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
       "p20m"    : "",
       "p65m"    : "",
       "sobsRad" : "",
-      "t131m"   : ""]
+      "t131m"   : ""
+    ]
 
     when:
     def actual = source.buildWeatherValue(fieldToValues)
@@ -233,12 +237,12 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 
   def "The CsvWeatherSource returns no WeatherValue, if the coordinate cannot be obtained"() {
     given:
-    def coordinateSource = Mock(IdCoordinateSource)
-    coordinateSource.getCoordinate(_) >> Optional.empty()
+    def coordinateSource = new WeatherTestData.DummyIdCoordinateSource()
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
-    def fieldToValues = [      "datum"       : "2019-08-01 01:00:00",
-      "albRad"      : "13.015240669",
+    def fieldToValues = [
+      "datum"       : "2019-08-01 01:00:00",
+      "albrad"      : "13.015240669",
       "asobS"       : "3.555093673828124",
       "aswdifdS"    : "1.8088226191406245",
       "aswdifuS"    : "0.5713421484374998",
@@ -265,7 +269,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
       "p20m"        : "",
       "p65m"        : "",
       "sobsRad"     : "",
-      "t131m"       : ""]
+      "t131m"       : ""
+    ]
 
     when:
     def actual = source.buildWeatherValue(fieldToValues)

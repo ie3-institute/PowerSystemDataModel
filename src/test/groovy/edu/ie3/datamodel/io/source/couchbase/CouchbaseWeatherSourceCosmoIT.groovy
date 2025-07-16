@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
-import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.couchbase.BucketDefinition
@@ -46,12 +45,14 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     // Copy import file with json array of documents into docker
     MountableFile couchbaseWeatherJsonsFile = getMountableFile("_weather/cosmo/weather.json")
     couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather_cosmo.json")
+
     // create an index for the document keys
     couchbaseContainer.execInContainer("cbq",
         "-e", "http://localhost:8093",
         "-u", couchbaseContainer.username,
         "-p", couchbaseContainer.password,
         "-s", "CREATE index id_idx ON `" + bucketDefinition.name + "` (META().id);")
+
     //import the json documents from the copied file
     couchbaseContainer.execInContainer("cbimport", "json",
         "-cluster", "http://localhost:8091",
@@ -61,6 +62,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         "--format", "list",
         "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
         "--dataset", "file:///home/weather_cosmo.json")
+
     // increased timeout to deal with CI under high load
     def connector = new CouchbaseConnector(
         couchbaseContainer.connectionString,
@@ -69,7 +71,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         couchbaseContainer.password,
         Duration.ofSeconds(20))
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-    def weatherFactory = new CosmoTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
+    def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
   }
 
