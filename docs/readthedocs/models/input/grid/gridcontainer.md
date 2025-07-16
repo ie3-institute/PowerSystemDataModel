@@ -24,14 +24,11 @@ and their higher voltage coupling point.
 
 Let's shed a more detailed light on the boundaries of a sub grid as of our definition.
 This especially is important, if the switchgear of the transformer is modeled in detail.
-We defined, that all nodes in upstream direction of the transformer, that are connected by switches *only* (therefore
-are within the switchgear) are counted towards the inferior sub grid structure (here "2"), although they belong to a
-different voltage level.
-This decision is taken, because we assume, that the interest to operate on the given switchgear will most likely be
-placed in the inferior grid structure.
-
-The "real" coupling node A is not comprised in the sub grids node collection, but obviously has reference through the
-switch between nodes A and B.
+We defined, that all nodes in upstream direction of the transformer, including those, which are within the switchgear are
+counted towards the superior sub grid structure (here "1"), because they belong to a different voltage level.
+If a switchgear should be operated by the inferior grid, one can set the operator, that is used in the inferior grid, for
+the switchgear. This can be necessary, if we assume, that the interest to operate on the given switchgear will most likely
+be placed in the inferior grid structure.
 
 A synoptic overview of both classes' attributes is given here:
 
