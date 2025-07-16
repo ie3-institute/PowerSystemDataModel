@@ -5,11 +5,10 @@
  */
 package edu.ie3.datamodel.io.processor.timeseries
 
-import edu.ie3.datamodel.io.processor.GetterMethod
-
 import static edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewScheme.*
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException
+import edu.ie3.datamodel.io.processor.GetterMethod
 import edu.ie3.datamodel.io.processor.Processor
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
