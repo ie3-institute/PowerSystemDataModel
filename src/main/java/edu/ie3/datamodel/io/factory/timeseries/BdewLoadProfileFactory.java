@@ -15,12 +15,9 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
-import edu.ie3.datamodel.models.value.load.BdewLoadValues.BDEW1999;
-import edu.ie3.datamodel.models.value.load.BdewLoadValues.BDEW2025;
-import edu.ie3.datamodel.models.value.load.BdewLoadValues.BDEWKey;
-import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewSeason;
+import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewKey;
+import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewScheme;
 import edu.ie3.util.quantities.PowerSystemUnits;
-import java.time.Month;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,12 +30,10 @@ import tech.units.indriya.quantity.Quantities;
 public class BdewLoadProfileFactory
     extends LoadProfileFactory<BdewStandardLoadProfile, BdewLoadValues> {
   // 1999 profile scheme
-  public static final Map<BDEWKey<BdewSeason>, String> BDEW1999_FIELDS =
-      BDEWKey.getFields(BdewSeason.values());
+  public static final Map<BdewKey, String> BDEW1999_FIELDS = BdewKey.toMap(BdewScheme.BDEW1999);
 
   // 2025 profile scheme
-  public static final Map<BDEWKey<Month>, String> BDEW2025_FIELDS =
-      BDEWKey.getFields(Month.values());
+  public static final Map<BdewKey, String> BDEW2025_FIELDS = BdewKey.toMap(BdewScheme.BDEW2025);
 
   public BdewLoadProfileFactory() {
     super(BdewLoadValues.class);
@@ -51,16 +46,19 @@ public class BdewLoadProfileFactory
     boolean is1999Scheme =
         data.containsKey("SuSa") || data.containsKey("su_sa") || data.containsKey("suSa");
 
-    BdewLoadValues<?> values;
+    BdewLoadValues values;
 
     if (is1999Scheme) {
       values =
-          new BDEW1999(
+          new BdewLoadValues(
+              BdewScheme.BDEW1999,
               BDEW1999_FIELDS.entrySet().stream()
                   .collect(Collectors.toMap(Map.Entry::getKey, v -> data.getDouble(v.getValue()))));
+
     } else {
       values =
-          new BDEW2025(
+          new BdewLoadValues(
+              BdewScheme.BDEW2025,
               BDEW2025_FIELDS.entrySet().stream()
                   .collect(Collectors.toMap(Map.Entry::getKey, v -> data.getDouble(v.getValue()))));
     }
@@ -99,7 +97,7 @@ public class BdewLoadProfileFactory
   @Override
   public ComparableQuantity<Power> calculateMaxPower(
       BdewStandardLoadProfile loadProfile, Set<LoadProfileEntry<BdewLoadValues>> entries) {
-    Function<BdewLoadValues<?>, Stream<Double>> valueExtractor =
+    Function<BdewLoadValues, Stream<Double>> valueExtractor =
         switch (loadProfile) {
           case H0, H25, P25, S25 ->
           // maximum dynamization factor is on day 366 (leap year) or day 365 (regular year).
@@ -111,7 +109,6 @@ public class BdewLoadProfileFactory
     double maxPower =
         entries.stream()
             .map(TimeSeriesEntry::getValue)
-            .map(v -> (BdewLoadValues<?>) v)
             .flatMap(valueExtractor)
             .max(Comparator.naturalOrder())
             .orElse(0d);

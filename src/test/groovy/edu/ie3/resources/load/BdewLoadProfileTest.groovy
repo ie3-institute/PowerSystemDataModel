@@ -15,7 +15,6 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Path
-import java.time.Month
 import java.util.function.Function
 
 class BdewLoadProfileTest extends Specification {
@@ -25,12 +24,6 @@ class BdewLoadProfileTest extends Specification {
 
   @Shared
   private BdewLoadProfileFactory factory = new BdewLoadProfileFactory()
-
-  @Shared
-  private List<String> keys = ['su', 'tr', 'wi']
-
-  @Shared
-  private List<String> months = Month.values().collect { it -> it.toString().substring(0, 3).toLowerCase() }
 
   @Shared
   private Map results = [:]
@@ -47,11 +40,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G0)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -73,11 +63,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G1)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -99,11 +86,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G2)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -125,11 +109,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G3)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -151,11 +132,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G4)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -177,11 +155,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G5)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -203,11 +178,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G6)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -229,11 +201,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.H0)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -269,11 +238,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.L0)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -295,11 +261,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.L1)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -321,11 +284,8 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.L2)
 
     when:
-    keys.each {
-      key ->
-      results["${key}Sa"] = sumValues(data, v -> v."${key}Sa")
-      results["${key}Su"] = sumValues(data, v -> v."${key}Su")
-      results["${key}Wd"] = sumValues(data, v -> v."${key}Wd")
+    BdewLoadValues.BdewScheme.BDEW1999.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -350,11 +310,8 @@ class BdewLoadProfileTest extends Specification {
     Map results = [:]
 
     when:
-    months.each {
-      month ->
-      results["${month}Sa"] = sumValues(data, v -> v."${month}Sa")
-      results["${month}Su"] = sumValues(data, v -> v."${month}Su")
-      results["${month}Wd"] = sumValues(data, v -> v."${month}Wd")
+    BdewLoadValues.BdewScheme.BDEW2025.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -413,11 +370,8 @@ class BdewLoadProfileTest extends Specification {
     Map results = [:]
 
     when:
-    months.each {
-      month ->
-      results["${month}Sa"] = sumValues(data, v -> v."${month}Sa")
-      results["${month}Su"] = sumValues(data, v -> v."${month}Su")
-      results["${month}Wd"] = sumValues(data, v -> v."${month}Wd")
+    BdewLoadValues.BdewScheme.BDEW2025.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -476,11 +430,8 @@ class BdewLoadProfileTest extends Specification {
     Map results = [:]
 
     when:
-    months.each {
-      month ->
-      results["${month}Sa"] = sumValues(data, v -> v."${month}Sa")
-      results["${month}Su"] = sumValues(data, v -> v."${month}Su")
-      results["${month}Wd"] = sumValues(data, v -> v."${month}Wd")
+    BdewLoadValues.BdewScheme.BDEW2025.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:
@@ -539,13 +490,9 @@ class BdewLoadProfileTest extends Specification {
     Map results = [:]
 
     when:
-    months.each {
-      month ->
-      results["${month}Sa"] = sumValues(data, v -> v."${month}Sa")
-      results["${month}Su"] = sumValues(data, v -> v."${month}Su")
-      results["${month}Wd"] = sumValues(data, v -> v."${month}Wd")
+    BdewLoadValues.BdewScheme.BDEW2025.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
-
     then:
     results["janSa"] == 3937.182
     results["janSu"] ==	3826.787
@@ -602,11 +549,8 @@ class BdewLoadProfileTest extends Specification {
     Map results = [:]
 
     when:
-    months.each {
-      month ->
-      results["${month}Sa"] = sumValues(data, v -> v."${month}Sa")
-      results["${month}Su"] = sumValues(data, v -> v."${month}Su")
-      results["${month}Wd"] = sumValues(data, v -> v."${month}Wd")
+    BdewLoadValues.BdewScheme.BDEW2025.keys.each {
+      key -> results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
     }
 
     then:

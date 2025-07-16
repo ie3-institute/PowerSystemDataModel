@@ -405,44 +405,47 @@ trait TimeSeriesTestData {
   BdewStandardLoadProfile.G2,
   [
     new LoadProfileEntry<>(
-    new BdewLoadValues.BDEW1999([
-      (new BdewLoadValues.BDEWKey<>(SUMMER, BdewLoadValues.DayType.SATURDAY))     : 63.1d,
-      (new BdewLoadValues.BDEWKey<>(SUMMER, BdewLoadValues.DayType.SUNDAY))       : 50.6d,
-      (new BdewLoadValues.BDEWKey<>(SUMMER, BdewLoadValues.DayType.WEEKDAY))      : 60.8d,
-      (new BdewLoadValues.BDEWKey<>(TRANSITION, BdewLoadValues.DayType.SATURDAY)) : 73.1d,
-      (new BdewLoadValues.BDEWKey<>(TRANSITION, BdewLoadValues.DayType.SUNDAY))   : 64.2d,
-      (new BdewLoadValues.BDEWKey<>(TRANSITION, BdewLoadValues.DayType.WEEKDAY))  : 70.5d,
-      (new BdewLoadValues.BDEWKey<>(WINTER, BdewLoadValues.DayType.SATURDAY))     : 80.6d,
-      (new BdewLoadValues.BDEWKey<>(WINTER, BdewLoadValues.DayType.SUNDAY))       : 73.7d,
-      (new BdewLoadValues.BDEWKey<>(WINTER, BdewLoadValues.DayType.WEEKDAY))      : 77.4d
+    new BdewLoadValues(BdewLoadValues.BdewScheme.BDEW1999,
+    [
+      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SATURDAY))    : 63.1d,
+      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SUNDAY))      : 50.6d,
+      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.WEEKDAY))     : 60.8d,
+      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SATURDAY)): 73.1d,
+      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SUNDAY))  : 64.2d,
+      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.WEEKDAY)) : 70.5d,
+      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SATURDAY))    : 80.6d,
+      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SUNDAY))      : 73.7d,
+      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.WEEKDAY))     : 77.4d
     ]),
     0
     ),
     new LoadProfileEntry<>(
-    new BdewLoadValues.BDEW1999([
-      (new BdewLoadValues.BDEWKey<>(SUMMER, BdewLoadValues.DayType.SATURDAY))     : 58.0d,
-      (new BdewLoadValues.BDEWKey<>(SUMMER, BdewLoadValues.DayType.SUNDAY))       : 47.4d,
-      (new BdewLoadValues.BDEWKey<>(SUMMER, BdewLoadValues.DayType.WEEKDAY))      : 53.0d,
-      (new BdewLoadValues.BDEWKey<>(TRANSITION, BdewLoadValues.DayType.SATURDAY)) : 67.6d,
-      (new BdewLoadValues.BDEWKey<>(TRANSITION, BdewLoadValues.DayType.SUNDAY))   : 60.7d,
-      (new BdewLoadValues.BDEWKey<>(TRANSITION, BdewLoadValues.DayType.WEEKDAY))  : 61.9d,
-      (new BdewLoadValues.BDEWKey<>(WINTER, BdewLoadValues.DayType.SATURDAY))     : 74.6d,
-      (new BdewLoadValues.BDEWKey<>(WINTER, BdewLoadValues.DayType.SUNDAY))       : 68.7d,
-      (new BdewLoadValues.BDEWKey<>(WINTER, BdewLoadValues.DayType.WEEKDAY))      : 67.4d
+    new BdewLoadValues(BdewLoadValues.BdewScheme.BDEW1999,
+    [
+      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SATURDAY))    : 58.0d,
+      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SUNDAY))      : 47.4d,
+      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.WEEKDAY))     : 53.0d,
+      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SATURDAY)): 67.6d,
+      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SUNDAY))  : 60.7d,
+      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.WEEKDAY)) : 61.9d,
+      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SATURDAY))    : 74.6d,
+      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SUNDAY))      : 68.7d,
+      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.WEEKDAY))     : 67.4d
     ]),
     1
     ),
     new LoadProfileEntry<>(
-    new BdewLoadValues.BDEW1999([
-      (new BdewLoadValues.BDEWKey<>(SUMMER, BdewLoadValues.DayType.SATURDAY))     : 53.5d,
-      (new BdewLoadValues.BDEWKey<>(SUMMER, BdewLoadValues.DayType.SUNDAY))       : 44.3d,
-      (new BdewLoadValues.BDEWKey<>(SUMMER, BdewLoadValues.DayType.WEEKDAY))      : 46.0d,
-      (new BdewLoadValues.BDEWKey<>(TRANSITION, BdewLoadValues.DayType.SATURDAY)) : 62.8d,
-      (new BdewLoadValues.BDEWKey<>(TRANSITION, BdewLoadValues.DayType.SUNDAY))   : 56.9d,
-      (new BdewLoadValues.BDEWKey<>(TRANSITION, BdewLoadValues.DayType.WEEKDAY))  : 54.4d,
-      (new BdewLoadValues.BDEWKey<>(WINTER, BdewLoadValues.DayType.SATURDAY))     : 69.2d,
-      (new BdewLoadValues.BDEWKey<>(WINTER, BdewLoadValues.DayType.SUNDAY))       : 63.6d,
-      (new BdewLoadValues.BDEWKey<>(WINTER, BdewLoadValues.DayType.WEEKDAY))      : 58.4d
+    new BdewLoadValues(BdewLoadValues.BdewScheme.BDEW1999,
+    [
+      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SATURDAY))    : 53.5d,
+      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SUNDAY))      : 44.3d,
+      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.WEEKDAY))     : 46.0d,
+      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SATURDAY)): 62.8d,
+      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SUNDAY))  : 56.9d,
+      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.WEEKDAY)) : 54.4d,
+      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SATURDAY))    : 69.2d,
+      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SUNDAY))      : 63.6d,
+      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.WEEKDAY))     : 58.4d
     ]),
     2
     ),

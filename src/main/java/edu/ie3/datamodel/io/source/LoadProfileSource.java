@@ -37,7 +37,7 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadValues>
+public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
     extends EntitySource {
   protected final Class<V> entryClass;
   protected final LoadProfileFactory<P, V> entryFactory;

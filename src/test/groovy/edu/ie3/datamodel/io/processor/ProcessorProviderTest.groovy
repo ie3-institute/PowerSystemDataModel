@@ -148,8 +148,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatAndPValue),
       new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, SValue),
       new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatAndSValue),
-      new TimeSeriesProcessorKey(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues.BDEW1999),
-      new TimeSeriesProcessorKey(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues.BDEW2025),
+      new TimeSeriesProcessorKey(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues, BdewLoadValues.BdewScheme.BDEW1999),
+      new TimeSeriesProcessorKey(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues, BdewLoadValues.BdewScheme.BDEW2025),
       new TimeSeriesProcessorKey(RandomLoadProfileTimeSeries, LoadProfileEntry, RandomLoadValues)
     ] as Set
 
@@ -207,7 +207,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 
     then:
     ProcessorProviderException exception = thrown(ProcessorProviderException)
-    exception.message == "Error during determination of header elements for time series combination 'TimeSeriesProcessorKey{timeSeriesClass=class edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries, entryClass=class edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue, valueClass=class edu.ie3.datamodel.models.timeseries.IntValue}'."
+    exception.message == "Error during determination of header elements for time series combination 'TimeSeriesProcessorKey{timeSeriesClass=class edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries, entryClass=class edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue, valueClass=class edu.ie3.datamodel.models.timeseries.IntValue, scheme=Optional.empty}'."
   }
 
   def "A ProcessorProvider should process an entity known by its underlying processors correctly and do nothing otherwise"() {
@@ -267,7 +267,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
     then:
     Exception ex = thrown()
     ex.class == ProcessorProviderException
-    ex.message == "Cannot find processor for time series combination 'TimeSeriesProcessorKey{timeSeriesClass=class edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries, entryClass=class edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue, valueClass=class edu.ie3.datamodel.models.timeseries.IntValue}'. Either your provider is not properly initialized or there is no implementation to process this entity class!)"
+    ex.message == "Cannot find processor for time series combination 'TimeSeriesProcessorKey{timeSeriesClass=class edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries, entryClass=class edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue, valueClass=class edu.ie3.datamodel.models.timeseries.IntValue, scheme=Optional.empty}'. Either your provider is not properly initialized or there is no implementation to process this entity class!)"
   }
 
   def "A ProcessorProvider handles a time series correctly"() {

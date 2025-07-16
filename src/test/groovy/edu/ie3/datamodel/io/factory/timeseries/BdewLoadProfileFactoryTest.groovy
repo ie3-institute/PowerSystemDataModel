@@ -74,9 +74,9 @@ class BdewLoadProfileFactoryTest extends Specification {
 
   def "A BDEWLoadProfileFactory returns the correct fields"() {
     given:
-    def expectedScheme1999 = (BdewLoadValues.BDEWKey.getFields(BdewLoadValues.BdewSeason.values()).values() + "quarterHour") as Set
+    def expectedScheme1999 = (BdewLoadValues.BdewKey.toMap(BdewLoadValues.BdewScheme.BDEW1999).values() + "quarterHour") as Set
 
-    def expectedScheme2025 = (BdewLoadValues.BDEWKey.getFields(Month.values()).values() + "quarterHour") as Set
+    def expectedScheme2025 = (BdewLoadValues.BdewKey.toMap(BdewLoadValues.BdewScheme.BDEW2025).values() + "quarterHour") as Set
 
     when:
     def actual = factory.getFields(BdewLoadValues)
@@ -121,7 +121,8 @@ class BdewLoadProfileFactoryTest extends Specification {
     def entry = factory.buildModel(new LoadProfileData<>(data, BdewLoadValues))
 
     then:
-    entry.value.class == BdewLoadValues.BDEW1999
+    entry.value.class == BdewLoadValues
+    entry.value.scheme.get() == BdewLoadValues.BdewScheme.BDEW1999
   }
 
   def "A BDEWLoadProfileFactory builds time series from entries"() {
