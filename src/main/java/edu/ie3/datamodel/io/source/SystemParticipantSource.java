@@ -64,7 +64,7 @@ public class SystemParticipantSource extends AssetEntitySource {
                   .andThen(enrich(NODE, nodes, NodeAssetInputEntityData::new))
                   .andThen(
                       enrichWithDefault(
-                          SystemParticipantInputEntityFactory.EM,
+                          SystemParticipantInputEntityFactory.CONTROLLING_EM,
                           emUnits,
                           null,
                           SystemParticipantEntityData::new))
@@ -110,8 +110,8 @@ public class SystemParticipantSource extends AssetEntitySource {
                 validate(StorageInput.class, dataSource, storageInputFactory),
                 validate(WecInput.class, dataSource, wecInputFactory),
                 validate(EvcsInput.class, dataSource, evcsInputFactory)),
-            "Validation")
-        .transformF(FailedValidationException::new)
+            "Validation",
+            FailedValidationException::new)
         .getOrThrow();
   }
 
@@ -212,21 +212,22 @@ public class SystemParticipantSource extends AssetEntitySource {
 
     List<SourceException> exceptions =
         Try.getExceptions(
-            List.of(
-                fixedFeedInInputs,
-                pvInputs,
-                loads,
-                bmInputs,
-                storages,
-                wecInputs,
-                evs,
-                evcs,
-                chpInputs,
-                hpInputs));
+            fixedFeedInInputs,
+            pvInputs,
+            loads,
+            bmInputs,
+            storages,
+            wecInputs,
+            evs,
+            evcs,
+            chpInputs,
+            hpInputs);
 
     if (!exceptions.isEmpty()) {
       throw new SystemParticipantsException(
-          exceptions.size() + " error(s) occurred while initializing system participants. ",
+          "Exception(s) occurred in "
+              + exceptions.size()
+              + " input file(s) while initializing system participants.",
           exceptions);
     } else {
       // if everything is fine, return a system participants container

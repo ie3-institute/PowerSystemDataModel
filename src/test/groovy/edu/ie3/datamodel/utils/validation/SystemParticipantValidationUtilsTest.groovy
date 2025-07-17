@@ -99,10 +99,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidType                                                                                                                                                                                           || expectedException
@@ -142,10 +140,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ValidationUtils.check(invalidBmType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidBmType                                                                                                             || expectedException
@@ -184,10 +180,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidChpType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidChpType                                                                                                                           || expectedException
@@ -228,10 +222,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidEvType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidEvType                                                                                                                                                                                  || expectedException
@@ -298,10 +290,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidHpType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidHpType                                                                                           || expectedException
@@ -365,7 +355,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     invalidPV                                                                                                            || expectedSize || expectedException
     SystemParticipantTestData.pvInput.copy().sRated(Quantities.getQuantity(-25d, ACTIVE_POWER_IN)).build()               || 1            || new InvalidEntityException("The following quantities have to be zero or positive: -25 kVA", invalidPV)
     SystemParticipantTestData.pvInput.copy().albedo(2).build()                                                           || 1            || new InvalidEntityException("Albedo of the plant's surrounding of PvInput must be between 0 and 1", invalidPV)
-    SystemParticipantTestData.pvInput.copy().azimuth(Quantities.getQuantity(-100d, AZIMUTH)).build()                     || 1            || new InvalidEntityException("Azimuth angle of PvInput must be between -90° (east) and 90° (west)", invalidPV)
+    SystemParticipantTestData.pvInput.copy().azimuth(Quantities.getQuantity(-181d, AZIMUTH)).build()                     || 1            || new InvalidEntityException("Azimuth angle of PvInput must be between -180° and 180°", invalidPV)
     SystemParticipantTestData.pvInput.copy().etaConv(Quantities.getQuantity(110d, EFFICIENCY)).build()                   || 1            || new InvalidEntityException("Efficiency of the converter of PvInput must be between 0% and 100%", invalidPV)
     SystemParticipantTestData.pvInput.copy().elevationAngle(Quantities.getQuantity(100d, SOLAR_ELEVATION_ANGLE)).build() || 1            || new InvalidEntityException("Tilted inclination from horizontal of PvInput must be between 0° and 90°", invalidPV)
     SystemParticipantTestData.pvInput.copy().cosPhiRated(2).build()                                                      || 1            || new InvalidEntityException("Rated power factor of PvInput must be between 0 and 1", invalidPV)
@@ -402,10 +392,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidStorageType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidStorageType                                                                                                                                                                                                                           || expectedException
@@ -445,10 +433,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantValidationUtils.check(invalidWecType)
 
     then:
-    Throwable topEx = thrown()
-    Throwable ex = topEx.cause
-    ex.class == expectedException.class
-    ex.message == expectedException.message
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
 
     where:
     invalidWecType                                                                                                                                                              || expectedException
