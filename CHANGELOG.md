@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+
+### Fixed
+
+### Changed
+
+## [8.0.0] - 2025-07-17
+
+### Added
+- Extend Validation to EnergyManagement Systems. [#1356](https://github.com/ie3-institute/PowerSystemDataModel/issues/1356)
+
+### Fixed
+- Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
+- Fixed em fields in input models [#1331](https://github.com/ie3-institute/PowerSystemDataModel/issues/1331)
+- Fixed valid fields for `EmInput` [#1360](https://github.com/ie3-institute/PowerSystemDataModel/issues/1360)
+
+### Changed
+- Updated dependabot workflow and added CODEOWNERS [#1328](https://github.com/ie3-institute/PowerSystemDataModel/issues/1328)
+- Extend azimuth angle range to [-180°, 180°] for PV inputs [#1330](https://github.com/ie3-institute/PowerSystemDataModel/issues/1330)
+- Improved error messages when reading and validating an invalid grid [#1354](https://github.com/ie3-institute/PowerSystemDataModel/issues/1354)
+- Changed `SubgridContainer` to represent galvanically seperated grids [#1226](https://github.com/ie3-institute/PowerSystemDataModel/issues/1226)
+
 ## [7.0.0] - 2025-05-08
 
 ### Added
@@ -357,7 +379,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...HEAD
+[Unreleased/Snapshot]: 
+[8.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...8.0.0
 [7.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/6.0.0...7.0.0
 [6.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.1.0...6.0.0
 [5.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.1...5.1.0
