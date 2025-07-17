@@ -15,10 +15,12 @@ import static tech.units.indriya.unit.Units.WATT;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
+import java.io.Serializable;
 import java.time.Month;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import tech.units.indriya.quantity.Quantities;
@@ -26,9 +28,9 @@ import tech.units.indriya.quantity.Quantities;
 /** Load values for a {@link BdewStandardLoadProfile} */
 public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile> {
   public final BdewScheme scheme;
-  private final Map<BdewKey, Double> values;
+  private final HashMap<BdewKey, Double> values;
 
-  public BdewLoadValues(BdewScheme scheme, Map<BdewKey, Double> values) {
+  public BdewLoadValues(BdewScheme scheme, HashMap<BdewKey, Double> values) {
     this.scheme = scheme;
     this.values = values;
   }
@@ -178,8 +180,9 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
      * @param scheme given scheme
      * @return a map: key to field name
      */
-    static Map<BdewKey, String> toMap(BdewScheme scheme) {
-      return scheme.keys.stream().collect(Collectors.toMap(e -> e, BdewKey::getName));
+    static BdewMap<String> toMap(BdewScheme scheme) {
+      return new BdewMap<>(
+          scheme.keys.stream().collect(Collectors.toMap(e -> e, BdewKey::getName)));
     }
 
     private static <S, K extends BdewKey> Collection<K> getKeys(
@@ -202,7 +205,7 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
 
     @Override
     public String getDayTypeName() {
-      return type.name;
+      return type.abbreviation;
     }
   }
 
@@ -215,7 +218,7 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
 
     @Override
     public String getDayTypeName() {
-      return type.name;
+      return type.abbreviation;
     }
   }
 
@@ -302,10 +305,10 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
     SATURDAY("Sa"),
     SUNDAY("Su");
 
-    public final String name;
+    public final String abbreviation;
 
-    DayType(String name) {
-      this.name = name;
+    DayType(String abbreviation) {
+      this.abbreviation = abbreviation;
     }
   }
 
@@ -314,14 +317,133 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
     BDEW1999(BdewKey.getKeys(BdewSeason.values(), Bdew1999Key::new)),
     BDEW2025(BdewKey.getKeys(Month.values(), Bdew2025Key::new));
 
-    public final Collection<BdewKey> keys;
+    private final Collection<BdewKey> keys;
 
     BdewScheme(Collection<BdewKey> keys) {
       this.keys = keys;
     }
 
+    public Collection<BdewKey> getKeys() {
+      return keys;
+    }
+
     public boolean isAccepted(BdewKey key) {
       return keys.contains(key);
+    }
+  }
+
+  /**
+   * Immutable map that take {@link BdewKey}.
+   *
+   * @param <V> type of value
+   */
+  public static final class BdewMap<V> implements Serializable {
+    private final Map<BdewKey, V> values;
+
+    public BdewMap(Map<BdewKey, V> values) {
+      this.values = values;
+    }
+
+    /**
+     * Returns the number of key-value mappings in this map. If the map contains more than {@code
+     * Integer.MAX_VALUE} elements, returns {@code Integer.MAX_VALUE}.
+     *
+     * @return the number of key-value mappings in this map
+     */
+    public int size() {
+      return values.size();
+    }
+
+    /**
+     * Returns {@code true} if this map contains no key-value mappings.
+     *
+     * @return {@code true} if this map contains no key-value mappings
+     */
+    public boolean isEmpty() {
+      return values.isEmpty();
+    }
+
+    /**
+     * Returns {@code true} if this map contains a mapping for the specified key. More formally,
+     * returns {@code true} if and only if this map contains a mapping for a key {@code k} such that
+     * {@code Objects.equals(key, k)}. (There can be at most one such mapping.)
+     *
+     * @param key key whose presence in this map is to be tested
+     * @return {@code true} if this map contains a mapping for the specified key
+     * @throws NullPointerException if the specified key is null and this map does not permit null
+     *     keys (<a
+     *     href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
+     */
+    public boolean containsKey(BdewKey key) {
+      return values.containsKey(key);
+    }
+
+    /**
+     * Returns the value to which the specified key is mapped, or {@code null} if this map contains
+     * no mapping for the key.
+     *
+     * <p>More formally, if this map contains a mapping from a key {@code k} to a value {@code v}
+     * such that {@code Objects.equals(key, k)}, then this method returns {@code v}; otherwise it
+     * returns {@code null}. (There can be at most one such mapping.)
+     *
+     * <p>If this map permits null values, then a return value of {@code null} does not
+     * <i>necessarily</i> indicate that the map contains no mapping for the key; it's also possible
+     * that the map explicitly maps the key to {@code null}. The {@link #containsKey containsKey}
+     * operation may be used to distinguish these two cases.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value to which the specified key is mapped, or {@code null} if this map contains
+     *     no mapping for the key
+     * @throws NullPointerException if the specified key is null and this map does not permit null
+     *     keys (<a
+     *     href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
+     */
+    public V get(BdewKey key) {
+      return values.get(key);
+    }
+
+    /**
+     * Returns a {@link Set} view of the keys contained in this map. The set is backed by the map,
+     * so changes to the map are reflected in the set, and vice-versa. If the map is modified while
+     * an iteration over the set is in progress (except through the iterator's own {@code remove}
+     * operation), the results of the iteration are undefined. The set supports element removal,
+     * which removes the corresponding mapping from the map, via the {@code Iterator.remove}, {@code
+     * Set.remove}, {@code removeAll}, {@code retainAll}, and {@code clear} operations. It does not
+     * support the {@code add} or {@code addAll} operations.
+     *
+     * @return a set view of the keys contained in this map
+     */
+    public Set<BdewKey> keySet() {
+      return values.keySet();
+    }
+
+    /**
+     * Returns a {@link Collection} view of the values contained in this map. The collection is
+     * backed by the map, so changes to the map are reflected in the collection, and vice-versa. If
+     * the map is modified while an iteration over the collection is in progress (except through the
+     * iterator's own {@code remove} operation), the results of the iteration are undefined. The
+     * collection supports element removal, which removes the corresponding mapping from the map,
+     * via the {@code Iterator.remove}, {@code Collection.remove}, {@code removeAll}, {@code
+     * retainAll} and {@code clear} operations. It does not support the {@code add} or {@code
+     * addAll} operations.
+     *
+     * @return a collection view of the values contained in this map
+     */
+    public Collection<V> values() {
+      return values.values();
+    }
+
+    /**
+     * Maps the {@link BdewKey} to a new value.
+     *
+     * @param mapper function
+     * @return the new {@link BdewMap}
+     * @param <R> type of new values
+     */
+    public <R> HashMap<BdewKey, R> map(Function<V, R> mapper) {
+      HashMap<BdewKey, R> map = new HashMap<>();
+      values.forEach((key, value) -> map.put(key, mapper.apply(value)));
+      return map;
     }
   }
 }

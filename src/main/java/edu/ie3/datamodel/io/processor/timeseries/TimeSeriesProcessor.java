@@ -178,7 +178,7 @@ public class TimeSeriesProcessor<
       Collection<BdewLoadValues.BdewKey> keys;
 
       if (scheme.isPresent() && scheme.get() instanceof BdewLoadValues.BdewScheme bdewScheme) {
-        keys = bdewScheme.keys;
+        keys = bdewScheme.getKeys();
       } else {
         keys = Collections.emptySet();
       }

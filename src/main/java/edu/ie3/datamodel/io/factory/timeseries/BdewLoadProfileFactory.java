@@ -18,9 +18,11 @@ import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewKey;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewScheme;
 import edu.ie3.util.quantities.PowerSystemUnits;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -30,10 +32,12 @@ import tech.units.indriya.quantity.Quantities;
 public class BdewLoadProfileFactory
     extends LoadProfileFactory<BdewStandardLoadProfile, BdewLoadValues> {
   // 1999 profile scheme
-  public static final Map<BdewKey, String> BDEW1999_FIELDS = BdewKey.toMap(BdewScheme.BDEW1999);
+  public static final BdewLoadValues.BdewMap<String> BDEW1999_FIELDS =
+      BdewKey.toMap(BdewScheme.BDEW1999);
 
   // 2025 profile scheme
-  public static final Map<BdewKey, String> BDEW2025_FIELDS = BdewKey.toMap(BdewScheme.BDEW2025);
+  public static final BdewLoadValues.BdewMap<String> BDEW2025_FIELDS =
+      BdewKey.toMap(BdewScheme.BDEW2025);
 
   public BdewLoadProfileFactory() {
     super(BdewLoadValues.class);
@@ -49,18 +53,10 @@ public class BdewLoadProfileFactory
     BdewLoadValues values;
 
     if (is1999Scheme) {
-      values =
-          new BdewLoadValues(
-              BdewScheme.BDEW1999,
-              BDEW1999_FIELDS.entrySet().stream()
-                  .collect(Collectors.toMap(Map.Entry::getKey, v -> data.getDouble(v.getValue()))));
+      values = new BdewLoadValues(BdewScheme.BDEW1999, BDEW1999_FIELDS.map(data::getDouble));
 
     } else {
-      values =
-          new BdewLoadValues(
-              BdewScheme.BDEW2025,
-              BDEW2025_FIELDS.entrySet().stream()
-                  .collect(Collectors.toMap(Map.Entry::getKey, v -> data.getDouble(v.getValue()))));
+      values = new BdewLoadValues(BdewScheme.BDEW2025, BDEW2025_FIELDS.map(data::getDouble));
     }
 
     return new LoadProfileEntry<>(values, quarterHour);
@@ -117,6 +113,7 @@ public class BdewLoadProfileFactory
   }
 
   /** Returns the load profile energy scaling. The default value is 1000 kWh */
+  @Override
   public ComparableQuantity<Energy> getLoadProfileEnergyScaling(
       BdewStandardLoadProfile loadProfile) {
 
