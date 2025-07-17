@@ -2,150 +2,151 @@
 
 // Create source and javadoc jars
 tasks.register("sourcesJar", Jar) {
-    archiveClassifier.set("sources")
-    from sourceSets.main.allJava
+  archiveClassifier.set("sources")
+  from sourceSets.main.allJava
 }
 
 tasks.register("javadocJar", Jar) {
-    dependsOn tasks.named("javadoc", Javadoc)
-    archiveClassifier.set("javadoc")
-    from { tasks.named("javadoc", Javadoc).get().destinationDir }
+  dependsOn tasks.named("javadoc", Javadoc)
+  archiveClassifier.set("javadoc")
+  from { tasks.named("javadoc", Javadoc).get().destinationDir }
 }
 
 // Helper function to remove test dependencies from POM
 def removeTestDependenciesFromPom(pom) {
-    pom.withXml {
-        def root = asNode()
-        // eliminate test-scoped dependencies (no need in maven central POMs)
-        root.dependencies.removeAll { dep ->
-            dep.scope == "test"
-        }
+  pom.withXml {
+    def root = asNode()
+    // eliminate test-scoped dependencies (no need in maven central POMs)
+    root.dependencies.removeAll { dep ->
+      dep.scope == "test"
     }
+  }
 }
 
 // Configure publishing
 publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            versionMapping {
-                // resolves dynamic versioning to current version number
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
-                }
-                usage('java-runtime') {
-                    fromResolutionResult()
-                }
-            }
-
-            pom {
-                description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
-                name = 'Power System Data Model'
-                url = 'https://github.com/ie3-institute/PowerSystemDatamodel'
-                organization {
-                    name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
-                    url = 'https://www.ie3.tu-dortmund.de/'
-                }
-                issueManagement {
-                    system = 'GitHub'
-                    url = 'https://github.com/ie3-institute/PowerSystemDataModel/issues'
-                }
-                licenses {
-                    license {
-                        name = 'BSD 3-Clause License'
-                        url = 'https://github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
-                    }
-                }
-                developers {
-                    developer {
-                        organization = "Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University"
-                        organizationUrl = "https://ie3.etit.tu-dortmund.de"
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/ie3-institute/PowerSystemDataModel.git'
-                    developerConnection = 'scm:git:ssh://github.com:ie3-institute/PowerSystemDataModel.git'
-                    url = 'https://github.com/ie3-institute/PowerSystemDataModel'
-                }
-            }
-
-            removeTestDependenciesFromPom(pom)
-            groupId = group
-            artifactId = 'PowerSystemDataModel'
-
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
+  publications {
+    create("mavenJava", MavenPublication) {
+      versionMapping {
+        // resolves dynamic versioning to current version number
+        usage('java-api') {
+          fromResolutionOf('runtimeClasspath')
         }
+        usage('java-runtime') {
+          fromResolutionResult()
+        }
+      }
+
+      pom {
+        description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
+        name = 'Power System Data Model'
+        url = 'https://github.com/ie3-institute/PowerSystemDatamodel'
+        organization {
+          name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
+          url = 'https://www.ie3.tu-dortmund.de/'
+        }
+        issueManagement {
+          system = 'GitHub'
+          url = 'https://github.com/ie3-institute/PowerSystemDataModel/issues'
+        }
+        licenses {
+          license {
+            name = 'BSD 3-Clause License'
+            url = 'https://github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
+          }
+        }
+        developers {
+          developer {
+            organization = "Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University"
+            organizationUrl = "https://ie3.etit.tu-dortmund.de"
+          }
+        }
+        scm {
+          connection = 'scm:git:git://github.com/ie3-institute/PowerSystemDataModel.git'
+          developerConnection = 'scm:git:ssh://github.com:ie3-institute/PowerSystemDataModel.git'
+          url = 'https://github.com/ie3-institute/PowerSystemDataModel'
+        }
+      }
+
+      removeTestDependenciesFromPom(pom)
+      groupId = group
+      artifactId = 'PowerSystemDataModel'
+
+      from components.java
+      artifact sourcesJar
+      artifact javadocJar
     }
+  }
 }
 
 // JReleaser configuration
 jreleaser {
-    project {
-        name = 'PowerSystemDataModel'
-        description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
-        longDescription = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
-        website = 'https://github.com/ie3-institute/PowerSystemDatamodel'
-        authors = ['Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University']
-        license = 'BSD-3-Clause'
-        copyright = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
+  project {
+    name = 'PowerSystemDataModel'
+    description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
+    longDescription = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
+    website = 'https://github.com/ie3-institute/PowerSystemDatamodel'
+    authors = [
+      'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
+    ]
+    license = 'BSD-3-Clause'
+    copyright = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
+  }
 
-    }
+  signing {
+    active = 'ALWAYS'
+    armored = true
+    secretKey = findProperty('signingKey')
+    passphrase = findProperty('signingPassword')
+  }
 
-    signing {
-        active = 'ALWAYS'
-        armored = true
-        secretKey = findProperty('signingKey')
-        passphrase = findProperty('signingPassword')
-    }
-
-    deploy {
-        maven {
-            mavenCentral {
-                sonatype {
-                    active = 'ALWAYS'
-                    url = 'https://central.sonatype.com/api/v1/publisher'
-                    stagingRepository('build/staging-deploy')
-                    username = findProperty('user')
-                    password = findProperty('password')
-                }
-            }
+  deploy {
+    maven {
+      mavenCentral {
+        sonatype {
+          active = 'ALWAYS'
+          url = 'https://central.sonatype.com/api/v1/publisher'
+          stagingRepository('build/staging-deploy')
+          username = findProperty('user')
+          password = findProperty('password')
         }
+      }
     }
+  }
 
-    release {
-        github {
-            enabled = true
-            repoOwner = 'ie3-institute'
-            name = 'PowerSystemDataModel'
-            branch = 'master'
+  release {
+    github {
+      enabled = true
+      repoOwner = 'ie3-institute'
+      name = 'PowerSystemDataModel'
+      branch = 'master'
 
-            changelog {
-                enabled = true
-                formatted = 'ALWAYS'
-                preset = 'conventional-commits'
-            }
-        }
+      changelog {
+        enabled = true
+        formatted = 'ALWAYS'
+        preset = 'conventional-commits'
+      }
     }
+  }
 }
 
 // Helper tasks for JReleaser
 tasks.register('publishToMavenCentral') {
-    dependsOn 'jreleaserDeploy'
-    group = 'publishing'
-    description = 'Publishes artifacts to Maven Central via JReleaser'
+  dependsOn 'jreleaserDeploy'
+  group = 'publishing'
+  description = 'Publishes artifacts to Maven Central via JReleaser'
 }
 
 tasks.register('createGitHubRelease') {
-    dependsOn 'jreleaserRelease'
-    group = 'publishing'
-    description = 'Creates a GitHub release via JReleaser'
+  dependsOn 'jreleaserRelease'
+  group = 'publishing'
+  description = 'Creates a GitHub release via JReleaser'
 }
 
 tasks.register('fullRelease') {
-    dependsOn 'jreleaserFullRelease'
-    group = 'publishing'
-    description = 'Performs a full release (GitHub + Maven Central) via JReleaser'
+  dependsOn 'jreleaserFullRelease'
+  group = 'publishing'
+  description = 'Performs a full release (GitHub + Maven Central) via JReleaser'
 }
 
 /* JReleaser configuration - end */
