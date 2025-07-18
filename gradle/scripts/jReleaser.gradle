@@ -16,9 +16,11 @@ tasks.register('ensureStagingDirectory') {
   doFirst {
     layout.buildDirectory.dir('staging-deploy').get().asFile.mkdirs()
   }
+  println "Staging directory created: ${layout.buildDirectory.dir('staging-deploy').get().asFile.path}"
 }
 
 tasks.named('jreleaserDeploy') {
+
   dependsOn 'ensureStagingDirectory'
 }
 
