@@ -105,12 +105,29 @@ jreleaser {
   }
 }
 
+tasks.register('listStagingFiles') {
+  description = 'List all files in the staging directory'
+  group = 'publishing'
+
+  doLast {
+    def stagingDir = layout.buildDirectory.dir('staging-deploy').get().asFile
+    if (stagingDir.exists() && stagingDir.isDirectory()) {
+      println "Files in staging directory (${stagingDir.path}):"
+      stagingDir.eachFile { file ->
+        println "- ${file.name}"
+      }
+    } else {
+      println "Staging directory does not exist or is not a directory."
+    }
+  }
+}
+
 // Task to publish to Maven Central using JReleaser
 tasks.register('publishToMavenCentral') {
   description = 'Publish to Maven Central using JReleaser'
   group = 'publishing'
   dependsOn 'clean', 'build', 'publish'
-  finalizedBy 'jreleaserDeploy'
+  finalizedBy 'jreleaserDeploy', 'listStagingFiles'
 }
 
 // Helper task to verify JReleaser configuration without secrets (for local testing)
