@@ -14,9 +14,9 @@ tasks.register("javadocJar", Jar) {
 
 tasks.register('ensureStagingDirectory') {
   doFirst {
-    layout.buildDirectory.dir('libs').get().asFile.mkdirs()
+    layout.buildDirectory.dir('staging-deploy').get().asFile.mkdirs()
   }
-  println "Libs directory created: ${layout.buildDirectory.dir('libs').get().asFile.path}"
+  println "Staging directory created: ${layout.buildDirectory.dir('staging-deploy').get().asFile.path}"
 }
 
 tasks.named('jreleaserDeploy') {
@@ -95,7 +95,7 @@ jreleaser {
         sonatype {
           active = 'ALWAYS'
           url = 'https://central.sonatype.com/api/v1/publisher'
-          stagingRepository(layout.buildDirectory.dir('libs').get().asFile.path)
+          stagingRepository(layout.buildDirectory.dir('staging-deploy').get().asFile.path)
           // Credentials from environment variables
           username = System.getenv('ORG_GRADLE_PROJECT_user') ?: (project.hasProperty('user') ? project.property('user') : null)
           password = System.getenv('ORG_GRADLE_PROJECT_password') ?: (project.hasProperty('password') ? project.property('password') : null)
@@ -106,19 +106,19 @@ jreleaser {
 }
 
 tasks.register('listStagingFiles') {
-  description = 'List all files in the libs directory'
+  description = 'List all files in the staging directory'
   group = 'publishing'
 
   doLast {
-    println "Starting to list files in libs directory..."
-    def stagingDir = layout.buildDirectory.dir('libs').get().asFile
+    println "Starting to list files in staging directory..."
+    def stagingDir = layout.buildDirectory.dir('staging-deploy').get().asFile
     if (stagingDir.exists() && stagingDir.isDirectory()) {
-      println "Files in libs directory (${stagingDir.path}):"
+      println "Files in staging directory (${stagingDir.path}):"
       stagingDir.eachFile { file ->
         println "- ${file.name}"
       }
     } else {
-      println "Libs directory does not exist or is not a directory."
+      println "Staging directory does not exist or is not a directory."
     }
     println "Finished listing files."
   }
@@ -128,7 +128,7 @@ tasks.register('listStagingFiles') {
 tasks.register('publishToMavenCentral') {
   description = 'Publish to Maven Central using JReleaser'
   group = 'publishing'
-  dependsOn 'clean', 'build', 'publish'
+  dependsOn 'clean', 'build', 'publish', 'ensureStagingDirectory'
   finalizedBy 'jreleaserDeploy'
 }
 
