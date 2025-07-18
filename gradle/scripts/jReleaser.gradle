@@ -110,6 +110,7 @@ tasks.register('listStagingFiles') {
   group = 'publishing'
 
   doLast {
+    println "Starting to list files in staging directory..."
     def stagingDir = layout.buildDirectory.dir('staging-deploy').get().asFile
     if (stagingDir.exists() && stagingDir.isDirectory()) {
       println "Files in staging directory (${stagingDir.path}):"
@@ -119,6 +120,7 @@ tasks.register('listStagingFiles') {
     } else {
       println "Staging directory does not exist or is not a directory."
     }
+    println "Finished listing files."
   }
 }
 
@@ -157,4 +159,5 @@ tasks.register('deployToMavenCentral') {
   description = 'Deploy to Maven Central (for CI)'
   group = 'publishing'
   dependsOn 'clean', 'build', 'publish', 'jreleaserDeploy'
+  finalizedBy 'listStagingFiles'
 }
