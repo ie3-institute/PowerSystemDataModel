@@ -102,3 +102,7 @@ jobs:
           echo "currentVersion=$currentVersion"
 
           ./gradlew deployToMavenCentral -PdeployVersion=$currentVersion
+          
+      # List files in staging directory
+      - name: List Staging Directory Files
+        run: ./gradlew listStagingFiles
