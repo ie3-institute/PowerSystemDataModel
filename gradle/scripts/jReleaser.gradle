@@ -83,7 +83,7 @@ jreleaser {
         sonatype {
           active = 'ALWAYS'
           url = 'https://central.sonatype.com/api/v1/publisher'
-          stagingRepository('target/staging-deploy')
+          stagingRepository(layout.buildDirectory.dir('staging-deploy').get().asFile.path)
           // Credentials from environment variables
           username = System.getenv('ORG_GRADLE_PROJECT_user') ?: (project.hasProperty('user') ? project.property('user') : null)
           password = System.getenv('ORG_GRADLE_PROJECT_password') ?: (project.hasProperty('password') ? project.property('password') : null)
@@ -110,7 +110,7 @@ tasks.register('jreleaserCheckLocal') {
     println "- Publication configured: ${publishing.publications.maven != null}"
     println "- Sources jar task: ${tasks.findByName('sourcesJar') != null}"
     println "- Javadoc jar task: ${tasks.findByName('javadocJar') != null}"
-    println "- Staging directory: target/staging-deploy"
+    println "- Staging directory: ${layout.buildDirectory.dir('staging-deploy').get().asFile.path}"
     println ""
     println "For full validation with secrets, run 'jreleaserCheck' in CI/CD environment"
   }
