@@ -14,9 +14,24 @@ tasks.register("javadocJar", Jar) {
 
 tasks.register('ensureStagingDirectory') {
   doFirst {
-    layout.buildDirectory.dir('staging-deploy').get().asFile.mkdirs()
+    // Create the staging directory if it doesn't exist
+    def stagingDir = layout.buildDirectory.dir('staging-deploy').get().asFile
+    stagingDir.mkdirs()
+    println "Staging directory created: ${stagingDir.path}"
+
+    def libsDir = layout.buildDirectory.dir('libs').get().asFile
+    if (libsDir.exists() && libsDir.isDirectory()) {
+      // Copy all JAR files from libs to the staging directory
+      copy {
+        from libsDir
+        into stagingDir
+        include '*.jar'
+      }
+      println "Copied JAR files from '${libsDir.path}' to '${stagingDir.path}'."
+    } else {
+      println "No libraries found in '${libsDir.path}'."
+    }
   }
-  println "Staging directory created: ${layout.buildDirectory.dir('staging-deploy').get().asFile.path}"
 }
 
 tasks.named('jreleaserDeploy') {
