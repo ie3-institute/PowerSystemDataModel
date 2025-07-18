@@ -140,7 +140,6 @@ tasks.register('publishToMavenCentral') {
   description = 'Publish to Maven Central using JReleaser'
   group = 'publishing'
   dependsOn 'clean', 'build', 'publish', 'ensureStagingDirectory'
-  finalizedBy 'jreleaserDeploy'
 }
 
 // Helper task to verify JReleaser configuration without secrets (for local testing)
@@ -169,5 +168,5 @@ tasks.register('stageArtifacts') {
 tasks.register('deployToMavenCentral') {
   description = 'Deploy to Maven Central (for CI)'
   group = 'publishing'
-  dependsOn 'clean', 'build', 'publish', 'jreleaserDeploy'
+  dependsOn 'clean', 'build', 'publish'
 }
