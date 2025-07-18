@@ -74,7 +74,7 @@ jreleaser {
     armored = true
     // Only verify if keys are available (for local testing)
     verify = project.hasProperty('JRELEASER_GPG_PUBLIC_KEY') ||
-            System.getenv('JRELEASER_GPG_PUBLIC_KEY') != null
+        System.getenv('JRELEASER_GPG_PUBLIC_KEY') != null
   }
 
   deploy {
@@ -87,7 +87,7 @@ jreleaser {
           stagingRepository('build/staging-deploy')
           // Only enable if credentials are available
           enabled = project.hasProperty('JRELEASER_MAVENCENTRAL_USERNAME') ||
-                  System.getenv('JRELEASER_MAVENCENTRAL_USERNAME') != null
+              System.getenv('JRELEASER_MAVENCENTRAL_USERNAME') != null
         }
       }
     }
