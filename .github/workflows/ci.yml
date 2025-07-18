@@ -84,6 +84,7 @@ jobs:
 
         # Copy JAR files from libs to staging-deploy
       - name: Copy JAR Files to Staging Directory
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         run: |
           echo "Copying JAR files from build/libs to build/staging-deploy..."
           mkdir -p build/staging-deploy
