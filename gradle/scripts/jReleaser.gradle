@@ -12,6 +12,16 @@ tasks.register("javadocJar", Jar) {
   from { tasks.named("javadoc", Javadoc).get().destinationDir }
 }
 
+tasks.register('ensureStagingDirectory') {
+  doFirst {
+    layout.buildDirectory.dir('staging-deploy').get().asFile.mkdirs()
+  }
+}
+
+tasks.named('jreleaserDeploy') {
+  dependsOn 'ensureStagingDirectory'
+}
+
 publishing {
   publications {
     maven(MavenPublication) {
