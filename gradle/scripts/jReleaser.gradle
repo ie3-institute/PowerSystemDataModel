@@ -139,7 +139,7 @@ tasks.register('listStagingFiles') {
 tasks.register('publishToMavenCentral') {
   description = 'Publish to Maven Central using JReleaser'
   group = 'publishing'
-  dependsOn 'clean', 'build', 'publish', 'ensureStagingDirectory'
+  dependsOn 'clean', 'build', 'ensureStagingDirectory', 'publish'
 }
 
 // Helper task to verify JReleaser configuration without secrets (for local testing)
