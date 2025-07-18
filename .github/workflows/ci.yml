@@ -82,11 +82,12 @@ jobs:
           -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
           -Dsonar.qualitygate.wait=true
 
-      #Deployment
-      - name: Deploy
+      #Deployment to Maven Central
+      - name: Deploy to Maven Central
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.MAVENCENTRAL_SIGNINGKEYID }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
           ORG_GRADLE_PROJECT_user: ${{ secrets.MAVENCENTRAL_USER }}
           ORG_GRADLE_PROJECT_password: ${{ secrets.MAVENCENTRAL_PASS }}
@@ -99,4 +100,4 @@ jobs:
           
           echo "currentVersion=$currentVersion"
 
-          ./gradlew publish -PdeployVersion=$currentVersion
+          ./gradlew deployToMavenCentral -PdeployVersion=$currentVersion
