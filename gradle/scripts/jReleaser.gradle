@@ -1,0 +1,53 @@
+jreleaser {
+  project {
+    name.set("PowerSystemDataModel")
+    version.set(project.version)
+    description.set("Elaborated data model to model energy systems with a high granularity @ TU Dortmund University")
+    longDescription.set("This project provides a detailed data model for modeling energy systems, developed at the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) at TU Dortmund University.")
+    license.set("BSD-3-Clause")
+
+    authors.add("Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3), TU Dortmund University")
+
+    links {
+      homepage.set("https://github.com/ie3-institute/PowerSystemDataModel")
+      documentation.set("https://powersystemdatamodel.readthedocs.io")
+      license.set("https://github.com/ie3-institute/PowerSystemDataModel/blob/main/LICENSE")
+      bugTracker.set("https://github.com/ie3-institute/PowerSystemDataModel/issues")
+      vcsBrowser.set("https://github.com/ie3-institute/PowerSystemDataModel")
+      contribute.set("https://github.com/ie3-institute/PowerSystemDataModel/pulls")
+    }
+  }
+
+  release {
+    github {
+      repoOwner = "ie3-institute"
+      name = "PowerSystemDataModel"
+      token = findProperty('GITHUB_TOKEN')
+    }
+  }
+
+  signing {
+    active = 'ALWAYS'
+    armored = true
+
+    passphrase = findProperty('passphrase')
+    publicKey = findProperty('publicKey')
+    secretKey = findProperty('secretKey')
+  }
+  String versionString = project.getVersion()
+  deploy {
+    maven {
+      mavenCentral {
+        register("sonatype"){
+          def releasesRepoUrl = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+          def snapshotsRepoUrl = "https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/"
+          url = versionString.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+          credentials {
+            username project.getProperty('user')
+            password project.getProperty('password')
+          }
+        }
+      }
+    }
+  }
+}
