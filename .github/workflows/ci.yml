@@ -82,6 +82,13 @@ jobs:
           -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
           -Dsonar.qualitygate.wait=true
 
+        # Copy JAR files from libs to staging-deploy
+      - name: Copy JAR Files to Staging Directory
+        run: |
+          echo "Copying JAR files from build/libs to build/staging-deploy..."
+          mkdir -p build/staging-deploy
+          cp build/libs/*.jar build/staging-deploy/ || echo "No JAR files found in build/libs."
+
       #Deployment to Maven Central
       - name: Deploy to Maven Central
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
