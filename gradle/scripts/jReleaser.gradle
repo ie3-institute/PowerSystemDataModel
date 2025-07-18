@@ -34,11 +34,7 @@ tasks.register('ensureStagingDirectory') {
   }
 }
 
-tasks.named('jreleaserDeploy') {
-
-  dependsOn 'ensureStagingDirectory'
-}
-
+// Configure publishing
 publishing {
   publications {
     maven(MavenPublication) {
