@@ -128,7 +128,7 @@ tasks.register('listStagingFiles') {
 tasks.register('publishToMavenCentral') {
   description = 'Publish to Maven Central using JReleaser'
   group = 'publishing'
-  dependsOn 'clean', 'build', 'publish'
+  dependsOn 'clean', 'build', 'publish', 'ensureStagingDirectory', 'checkSetup'
   finalizedBy 'jreleaserDeploy', 'listStagingFiles'
 }
 
@@ -147,6 +147,21 @@ tasks.register('jreleaserCheckLocal') {
   }
 }
 
+tasks.register('checkSetup') {
+  description = 'Check setup and ensure directories are ready'
+  group = 'publishing'
+
+  doLast {
+    def stagingDir = layout.buildDirectory.dir('staging-deploy').get().asFile
+    if (!stagingDir.exists()) {
+      println "Creating missing staging directory..."
+      stagingDir.mkdirs()
+    } else {
+      println "Staging directory already exists at ${stagingDir.path}."
+    }
+  }
+}
+
 // Helper task to stage artifacts locally
 tasks.register('stageArtifacts') {
   description = 'Stage artifacts for publishing'
@@ -159,5 +174,4 @@ tasks.register('deployToMavenCentral') {
   description = 'Deploy to Maven Central (for CI)'
   group = 'publishing'
   dependsOn 'clean', 'build', 'publish', 'jreleaserDeploy'
-  finalizedBy 'listStagingFiles'
 }
