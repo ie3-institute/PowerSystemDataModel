@@ -1,53 +1,132 @@
+/* JReleaser Maven Central Publishing Configuration */
+
+// Ensure we have the necessary publishing tasks
+tasks.register("sourcesJar", Jar) {
+  archiveClassifier.set("sources")
+  from sourceSets.main.allJava
+}
+
+tasks.register("javadocJar", Jar) {
+  dependsOn tasks.named("javadoc", Javadoc)
+  archiveClassifier.set("javadoc")
+  from { tasks.named("javadoc", Javadoc).get().destinationDir }
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      from components.java
+      artifact sourcesJar
+      artifact javadocJar
+
+      pom {
+        name = 'Power System Data Model'
+        description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
+        url = 'https://github.com/ie3-institute/PowerSystemDataModel'
+        inceptionYear = '2021'
+
+        licenses {
+          license {
+            name = 'BSD 3-Clause License'
+            url = 'https://github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
+          }
+        }
+
+        developers {
+          developer {
+            organization = "Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University"
+            organizationUrl = "https://ie3.etit.tu-dortmund.de"
+          }
+        }
+
+        scm {
+          connection = 'scm:git:https://github.com/ie3-institute/PowerSystemDataModel.git'
+          developerConnection = 'scm:git:ssh://github.com/ie3-institute/PowerSystemDataModel.git'
+          url = 'https://github.com/ie3-institute/PowerSystemDataModel'
+        }
+      }
+    }
+  }
+
+  repositories {
+    maven {
+      url = layout.buildDirectory.dir('staging-deploy')
+    }
+  }
+}
+
 jreleaser {
+  // Disable release features since we're only using deploy
   project {
-    name.set("PowerSystemDataModel")
-    version.set(project.version)
-    description.set("Elaborated data model to model energy systems with a high granularity @ TU Dortmund University")
-    longDescription.set("This project provides a detailed data model for modeling energy systems, developed at the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) at TU Dortmund University.")
-    license.set("BSD-3-Clause")
-
-    authors.add("Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3), TU Dortmund University")
-
     links {
-      homepage.set("https://github.com/ie3-institute/PowerSystemDataModel")
-      documentation.set("https://powersystemdatamodel.readthedocs.io")
-      license.set("https://github.com/ie3-institute/PowerSystemDataModel/blob/main/LICENSE")
-      bugTracker.set("https://github.com/ie3-institute/PowerSystemDataModel/issues")
-      vcsBrowser.set("https://github.com/ie3-institute/PowerSystemDataModel")
-      contribute.set("https://github.com/ie3-institute/PowerSystemDataModel/pulls")
+      homepage = 'https://github.com/ie3-institute/PowerSystemDataModel'
     }
   }
 
   release {
     github {
-      repoOwner = "ie3-institute"
-      name = "PowerSystemDataModel"
-      token = findProperty('GITHUB_TOKEN')
+      enabled = false
     }
   }
 
   signing {
     active = 'ALWAYS'
     armored = true
-
-    passphrase = findProperty('passphrase')
-    publicKey = findProperty('publicKey')
-    secretKey = findProperty('secretKey')
+    // Only verify if keys are available (for local testing)
+    verify = project.hasProperty('JRELEASER_GPG_PUBLIC_KEY') ||
+            System.getenv('JRELEASER_GPG_PUBLIC_KEY') != null
   }
-  String versionString = project.getVersion()
+
   deploy {
     maven {
+      // Use the new Central Portal Publisher API for releases
       mavenCentral {
-        register("sonatype"){
-          def releasesRepoUrl = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
-          def snapshotsRepoUrl = "https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/"
-          url = versionString.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-          credentials {
-            username project.getProperty('user')
-            password project.getProperty('password')
-          }
+        sonatype {
+          active = 'RELEASE'
+          url = 'https://central.sonatype.com/api/v1/publisher'
+          stagingRepository('build/staging-deploy')
+          // Only enable if credentials are available
+          enabled = project.hasProperty('JRELEASER_MAVENCENTRAL_USERNAME') ||
+                  System.getenv('JRELEASER_MAVENCENTRAL_USERNAME') != null
         }
       }
     }
   }
+}
+
+// Helper task to verify JReleaser configuration
+tasks.register('jreleaserCheck') {
+  description = 'Verify JReleaser configuration'
+  group = 'publishing'
+  dependsOn 'jreleaserConfig'
+}
+
+// Helper task to verify JReleaser configuration without secrets (for local testing)
+tasks.register('jreleaserCheckLocal') {
+  description = 'Verify JReleaser configuration without requiring secrets'
+  group = 'publishing'
+  doLast {
+    println "JReleaser configuration check (local mode)"
+    println "- Publication configured: ${publishing.publications.maven != null}"
+    println "- Sources jar task: ${tasks.findByName('sourcesJar') != null}"
+    println "- Javadoc jar task: ${tasks.findByName('javadocJar') != null}"
+    println "- Staging directory: build/staging-deploy"
+    println ""
+    println "For full validation with secrets, run 'jreleaserCheck' in CI/CD environment"
+  }
+}
+
+// Helper task to stage artifacts locally
+tasks.register('stageArtifacts') {
+  description = 'Stage artifacts for publishing'
+  group = 'publishing'
+  dependsOn 'publish'
+}
+
+// Helper task for full release process
+tasks.register('releaseToMavenCentral') {
+  description = 'Complete release process to Maven Central'
+  group = 'publishing'
+  dependsOn 'clean', 'stageArtifacts'
+  finalizedBy 'jreleaserFullRelease'
 }
