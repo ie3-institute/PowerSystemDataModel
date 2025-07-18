@@ -72,6 +72,7 @@ jreleaser {
     active = 'ALWAYS'
     armored = true
     // Use environment variables for signing configuration
+    publicKey = System.getenv('ORG_GRADLE_PROJECT_publicKey') ?: (project.hasProperty('publicKey') ? project.property('publicKey') : null)
     secretKey  = System.getenv('ORG_GRADLE_PROJECT_signingKey') ?: (project.hasProperty('signingKey') ? project.property('signingKey') : null)
     passphrase = System.getenv('ORG_GRADLE_PROJECT_signingPassword') ?: (project.hasProperty('signingPassword') ? project.property('signingPassword') : null)
   }

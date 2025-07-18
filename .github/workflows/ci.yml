@@ -86,6 +86,7 @@ jobs:
       - name: Deploy to Maven Central
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         env:
+          ORG_GRADLE_PROJECT_publicKey: ${{ secrets.MAVENCENTRAL_PUBLICKEY }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
           ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.MAVENCENTRAL_SIGNINGKEYID }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
