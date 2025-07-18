@@ -18,12 +18,12 @@ import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
 import edu.ie3.util.TimeUtil;
 import edu.ie3.util.exceptions.QuantityException;
 import java.beans.Introspector;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -110,7 +110,7 @@ public abstract class Processor<T> {
    * @param cls class to use for mapping
    * @return a map of all field values of the class
    */
-  protected SortedMap<String, Method> mapFieldNameToGetter(Class<?> cls)
+  protected SortedMap<String, GetterMethod> mapFieldNameToGetter(Class<?> cls)
       throws EntityProcessorException {
     return mapFieldNameToGetter(cls, Collections.emptyList());
   }
@@ -122,10 +122,10 @@ public abstract class Processor<T> {
    * @param ignoreFields A collection of all field names to ignore during process
    * @return a map of all field values of the class
    */
-  protected SortedMap<String, Method> mapFieldNameToGetter(
+  protected SortedMap<String, GetterMethod> mapFieldNameToGetter(
       Class<?> cls, Collection<String> ignoreFields) throws EntityProcessorException {
     try {
-      final LinkedHashMap<String, Method> resFieldNameToMethod = new LinkedHashMap<>();
+      final LinkedHashMap<String, GetterMethod> resFieldNameToMethod = new LinkedHashMap<>();
       Arrays.stream(Introspector.getBeanInfo(cls, Object.class).getPropertyDescriptors())
           // filter out properties with setters only
           .filter(pd -> Objects.nonNull(pd.getReadMethod()))
@@ -139,19 +139,21 @@ public abstract class Processor<T> {
           .forEach(
               pd -> {
                 String fieldName = pd.getName();
+                GetterMethod method = new GetterMethod(pd.getReadMethod());
+
                 // OperationTime needs to be replaced by operatesFrom and operatesUntil
                 if (fieldName.equalsIgnoreCase(OPERATION_TIME_FIELD_NAME)) {
                   fieldName = OPERATES_FROM;
-                  resFieldNameToMethod.put(OPERATES_UNTIL, pd.getReadMethod());
+                  resFieldNameToMethod.put(OPERATES_UNTIL, method);
                 }
 
                 // VoltageLevel needs to be replaced by id and nominalVoltage
                 if (fieldName.equalsIgnoreCase(VOLT_LVL_FIELD_NAME)) {
                   fieldName = V_RATED;
-                  resFieldNameToMethod.put(VOLT_LVL, pd.getReadMethod());
+                  resFieldNameToMethod.put(VOLT_LVL, method);
                 }
 
-                resFieldNameToMethod.put(fieldName, pd.getReadMethod());
+                resFieldNameToMethod.put(fieldName, method);
               });
 
       return putUuidFirst(resFieldNameToMethod);
@@ -183,12 +185,12 @@ public abstract class Processor<T> {
    * @return Mapping from field name to value as String representation
    */
   protected LinkedHashMap<String, String> processObject(
-      Object object, Map<String, Method> fieldNameToGetter) throws EntityProcessorException {
+      Object object, Map<String, GetterMethod> fieldNameToGetter) throws EntityProcessorException {
     try {
       LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
-      for (Map.Entry<String, Method> entry : fieldNameToGetter.entrySet()) {
+      for (Map.Entry<String, GetterMethod> entry : fieldNameToGetter.entrySet()) {
         String fieldName = entry.getKey();
-        Method getter = entry.getValue();
+        GetterMethod getter = entry.getValue();
         Optional<Object> methodReturnObjectOpt = Optional.ofNullable(getter.invoke(object));
 
         if (methodReturnObjectOpt.isPresent()) {
@@ -212,12 +214,13 @@ public abstract class Processor<T> {
    * @param fieldName Name of the foreseen field
    * @return A String representation of the result
    */
-  protected String processMethodResult(Object methodReturnObject, Method method, String fieldName)
+  protected String processMethodResult(
+      Object methodReturnObject, GetterMethod method, String fieldName)
       throws EntityProcessorException {
 
     StringBuilder resultStringBuilder = new StringBuilder();
 
-    switch (method.getReturnType().getSimpleName()) {
+    switch (method.returnType()) {
         // primitives (Boolean, Character, Byte, Short, Integer, Long, Float, Double, String,
       case "UUID",
           "boolean",
@@ -300,9 +303,9 @@ public abstract class Processor<T> {
           "Unable to process value for attribute/field '"
               + fieldName
               + "' and method return type '"
-              + method.getReturnType().getSimpleName()
+              + method.returnType()
               + "' for method with name '"
-              + method.getName()
+              + method.name()
               + "' in in entity model "
               + getRegisteredClass().getSimpleName()
               + ".class.");

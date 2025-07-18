@@ -169,8 +169,11 @@ The following profiles are supported until now:
      - Information
      - Supported head line.
    * - e.g.: H0
-     - BDEW standard load profiles ([source](https://www.bdew.de/energie/standardlastprofile-strom/))
+     - BDEW standard load profiles 1999 ([source](https://www.bdew.de/energie/standardlastprofile-strom/))
      - Permissible head line: ``SuSa,SuSu,SuWd,TrSa,TrSu,TrWd,WiSa,WiSu,WiWd,quarterHour``
+   * - e.g.: h25
+     - BDEW standard load profiles 2025 ([source](https://www.bdew.de/energie/standardlastprofile-strom/))
+     - Permissible head line: ``janSa,janSu,janWd,febSa,febSu,febWd,marSa,marSu,marWd,aprSa,aprSu,aprWd,maySa,maySu,mayWd,junSa,junSu,junWd,julSa,julSu,julWd,augSa,augSu,augWd,sepSa,sepSu,sepWd,octSa,octSu,octWd,novSa,novSu,novWd,decSa,decSu,decWd,quarterHour``
    * - random
      - A random load proile based on: ``Kays - Agent-based simulation environment for improving the planning of distribution grids``
      - Permissible head line: ``kSa,kSu,kWd,mySa,mySu,myWd,sigmaSa,sigmaSu,sigmaWd,quarterHour``

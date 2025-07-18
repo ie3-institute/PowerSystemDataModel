@@ -9,18 +9,22 @@ import static edu.ie3.datamodel.io.processor.timeseries.FieldSourceToMethod.Fiel
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
+import edu.ie3.datamodel.io.processor.GetterMethod;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.timeseries.repetitive.*;
+import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
+import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
+import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
-import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TimeSeriesProcessor<
         T extends TimeSeries<E, V, R>,
@@ -55,7 +59,15 @@ public class TimeSeriesProcessor<
           new TimeSeriesProcessorKey(
               IndividualTimeSeries.class, TimeBasedValue.class, HeatAndSValue.class),
           new TimeSeriesProcessorKey(
-              BdewLoadProfileTimeSeries.class, LoadProfileEntry.class, BdewLoadValues.class),
+              BdewLoadProfileTimeSeries.class,
+              LoadProfileEntry.class,
+              BdewLoadValues.class,
+              BdewLoadValues.BdewScheme.BDEW1999),
+          new TimeSeriesProcessorKey(
+              BdewLoadProfileTimeSeries.class,
+              LoadProfileEntry.class,
+              BdewLoadValues.class,
+              BdewLoadValues.BdewScheme.BDEW2025),
           new TimeSeriesProcessorKey(
               RandomLoadProfileTimeSeries.class, LoadProfileEntry.class, RandomLoadValues.class));
 
@@ -75,11 +87,26 @@ public class TimeSeriesProcessor<
 
   public TimeSeriesProcessor(Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass)
       throws EntityProcessorException {
+    this(timeSeriesClass, entryClass, valueClass, Optional.empty());
+  }
+
+  public TimeSeriesProcessor(
+      Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass, LoadValues.Scheme scheme)
+      throws EntityProcessorException {
+    this(timeSeriesClass, entryClass, valueClass, Optional.ofNullable(scheme));
+  }
+
+  public TimeSeriesProcessor(
+      Class<T> timeSeriesClass,
+      Class<E> entryClass,
+      Class<V> valueClass,
+      Optional<LoadValues.Scheme> scheme)
+      throws EntityProcessorException {
     super(timeSeriesClass);
 
     /* Check, if this processor can handle the foreseen combination of time series, entry and value */
     TimeSeriesProcessorKey timeSeriesKey =
-        new TimeSeriesProcessorKey(timeSeriesClass, entryClass, valueClass);
+        new TimeSeriesProcessorKey(timeSeriesClass, entryClass, valueClass, scheme);
     if (!eligibleKeys.contains(timeSeriesKey))
       throw new EntityProcessorException(
           "Cannot register time series combination '"
@@ -93,7 +120,7 @@ public class TimeSeriesProcessor<
     this.registeredKey = timeSeriesKey;
 
     /* Register, where to get which information from */
-    this.fieldToSource = buildFieldToSource(timeSeriesClass, entryClass, valueClass);
+    this.fieldToSource = buildFieldToSource(timeSeriesClass, entryClass, valueClass, scheme);
 
     /* Collect all header elements */
     this.flattenedHeaderElements = fieldToSource.keySet().toArray(new String[0]);
@@ -110,80 +137,66 @@ public class TimeSeriesProcessor<
    * @param timeSeriesClass Class of the time series
    * @param entryClass Class of the entry in the time series for the "outer" fields
    * @param valueClass Class of the actual value in the entries for the "inner" fields
+   * @param scheme option for a scheme (used for load values)
    * @return A mapping from field name to a tuple of source information and equivalent getter method
    */
   private SortedMap<String, FieldSourceToMethod> buildFieldToSource(
-      Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass)
+      Class<T> timeSeriesClass,
+      Class<E> entryClass,
+      Class<V> valueClass,
+      Optional<? extends LoadValues.Scheme> scheme)
       throws EntityProcessorException {
+    /* Joined mapping */
+    HashMap<String, FieldSourceToMethod> jointMapping = new HashMap<>();
+
+    Function<FieldSourceToMethod.FieldSource, BiConsumer<String, GetterMethod>> addFunction =
+        source ->
+            (fieldName, getter) ->
+                jointMapping.put(fieldName, new FieldSourceToMethod(source, getter));
+
     /* Get the mapping from field name to getter method ignoring the getter for returning all entries */
-    Map<String, FieldSourceToMethod> timeSeriesMapping =
-        mapFieldNameToGetter(
-                timeSeriesClass, Arrays.asList("entries", "uuid", "type", "loadProfile"))
-            .entrySet()
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry -> new FieldSourceToMethod(TIMESERIES, entry.getValue())));
+    mapFieldNameToGetter(timeSeriesClass, Arrays.asList("entries", "uuid", "type", "loadProfile"))
+        .forEach(addFunction.apply(TIMESERIES));
+
     /* Get the mapping from field name to getter method for the entry, but ignoring the getter for the value */
-    Map<String, FieldSourceToMethod> entryMapping =
-        mapFieldNameToGetter(entryClass, Collections.singletonList("value")).entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey, entry -> new FieldSourceToMethod(ENTRY, entry.getValue())));
-    Map<String, FieldSourceToMethod> valueMapping;
-    if (!valueClass.equals(WeatherValue.class)) {
-      valueMapping =
-          mapFieldNameToGetter(valueClass).entrySet().stream()
-              .collect(
-                  Collectors.toMap(
-                      Map.Entry::getKey,
-                      entry -> new FieldSourceToMethod(VALUE, entry.getValue())));
-    } else {
+    mapFieldNameToGetter(entryClass, Collections.singletonList("value"))
+        .forEach(addFunction.apply(ENTRY));
+
+    if (valueClass.equals(WeatherValue.class)) {
       /* Treat the nested weather values specially. */
       /* Flatten the nested structure of Weather value */
-      valueMapping =
-          Stream.concat(
-                  Stream.concat(
-                      Stream.concat(
-                          mapFieldNameToGetter(
-                                  valueClass,
-                                  Arrays.asList("solarIrradiance", "temperature", "wind"))
-                              .entrySet()
-                              .stream()
-                              .map(
-                                  entry ->
-                                      new AbstractMap.SimpleEntry<>(
-                                          entry.getKey(),
-                                          new FieldSourceToMethod(VALUE, entry.getValue()))),
-                          mapFieldNameToGetter(SolarIrradianceValue.class).entrySet().stream()
-                              .map(
-                                  entry ->
-                                      new AbstractMap.SimpleEntry<>(
-                                          entry.getKey(),
-                                          new FieldSourceToMethod(
-                                              WEATHER_IRRADIANCE, entry.getValue())))),
-                      mapFieldNameToGetter(TemperatureValue.class).entrySet().stream()
-                          .map(
-                              entry ->
-                                  new AbstractMap.SimpleEntry<>(
-                                      entry.getKey(),
-                                      new FieldSourceToMethod(
-                                          WEATHER_TEMPERATURE, entry.getValue())))),
-                  mapFieldNameToGetter(WindValue.class).entrySet().stream()
-                      .map(
-                          entry ->
-                              new AbstractMap.SimpleEntry<>(
-                                  entry.getKey(),
-                                  new FieldSourceToMethod(WEATHER_WIND, entry.getValue()))))
-              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
+      mapFieldNameToGetter(valueClass, Arrays.asList("solarIrradiance", "temperature", "wind"))
+          .forEach(addFunction.apply(VALUE));
 
-    /* Put everything together */
-    HashMap<String, FieldSourceToMethod> jointMapping = new HashMap<>();
-    jointMapping.putAll(timeSeriesMapping);
-    jointMapping.putAll(entryMapping);
-    jointMapping.putAll(valueMapping);
+      mapFieldNameToGetter(SolarIrradianceValue.class)
+          .forEach(addFunction.apply(WEATHER_IRRADIANCE));
+      mapFieldNameToGetter(TemperatureValue.class).forEach(addFunction.apply(WEATHER_TEMPERATURE));
+      mapFieldNameToGetter(WindValue.class).forEach(addFunction.apply(WEATHER_WIND));
+
+    } else if (valueClass.equals(BdewLoadValues.class)) {
+
+      Collection<BdewLoadValues.BdewKey> keys;
+
+      if (scheme.isPresent() && scheme.get() instanceof BdewLoadValues.BdewScheme bdewScheme) {
+        keys = bdewScheme.getKeys();
+      } else {
+        keys = Collections.emptySet();
+      }
+
+      keys.stream()
+          .collect(
+              Collectors.toMap(
+                  BdewLoadValues.BdewKey::getFieldName,
+                  key ->
+                      new GetterMethod(
+                          "get" + key.getName(),
+                          value -> ((BdewLoadValues) value).get(key),
+                          "double")))
+          .forEach(addFunction.apply(VALUE));
+
+    } else {
+      mapFieldNameToGetter(valueClass).forEach(addFunction.apply(VALUE));
+    }
 
     /* Let uuid be the first entry */
     return putUuidFirst(jointMapping);
@@ -236,26 +249,28 @@ public class TimeSeriesProcessor<
    */
   private Map<String, String> handleEntry(T timeSeries, E entry) throws EntityProcessorException {
     /* Handle the information in the time series */
-    Map<String, Method> timeSeriesFieldToMethod = extractFieldToMethod(TIMESERIES);
+    Map<String, GetterMethod> timeSeriesFieldToMethod = extractFieldToMethod(TIMESERIES);
     LinkedHashMap<String, String> timeSeriesResults =
         processObject(timeSeries, timeSeriesFieldToMethod);
 
     /* Handle the information in the entry */
-    Map<String, Method> entryFieldToMethod = extractFieldToMethod(ENTRY);
+    Map<String, GetterMethod> entryFieldToMethod = extractFieldToMethod(ENTRY);
     LinkedHashMap<String, String> entryResults = processObject(entry, entryFieldToMethod);
 
     /* Handle the information in the value */
-    Map<String, Method> valueFieldToMethod = extractFieldToMethod(VALUE);
+    Map<String, GetterMethod> valueFieldToMethod = extractFieldToMethod(VALUE);
     LinkedHashMap<String, String> valueResult = processObject(entry.getValue(), valueFieldToMethod);
+
     /* Treat WeatherValues specially, as they are nested ones */
     if (entry.getValue() instanceof WeatherValue weatherValue) {
-      Map<String, Method> irradianceFieldToMethod = extractFieldToMethod(WEATHER_IRRADIANCE);
+      Map<String, GetterMethod> irradianceFieldToMethod = extractFieldToMethod(WEATHER_IRRADIANCE);
       valueResult.putAll(processObject(weatherValue.getSolarIrradiance(), irradianceFieldToMethod));
 
-      Map<String, Method> temperatureFieldToMethod = extractFieldToMethod(WEATHER_TEMPERATURE);
+      Map<String, GetterMethod> temperatureFieldToMethod =
+          extractFieldToMethod(WEATHER_TEMPERATURE);
       valueResult.putAll(processObject(weatherValue.getTemperature(), temperatureFieldToMethod));
 
-      Map<String, Method> windFieldToMethod = extractFieldToMethod(WEATHER_WIND);
+      Map<String, GetterMethod> windFieldToMethod = extractFieldToMethod(WEATHER_WIND);
       valueResult.putAll(processObject(weatherValue.getWind(), windFieldToMethod));
     }
 
@@ -273,7 +288,7 @@ public class TimeSeriesProcessor<
    * @param source Source to extract field name to methods for
    * @return Field name to methods for the desired source
    */
-  private Map<String, Method> extractFieldToMethod(FieldSourceToMethod.FieldSource source) {
+  private Map<String, GetterMethod> extractFieldToMethod(FieldSourceToMethod.FieldSource source) {
     return fieldToSource.entrySet().stream()
         .filter(entry -> entry.getValue().source().equals(source))
         .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().method()));

@@ -8,7 +8,9 @@ package edu.ie3.datamodel.io.processor.timeseries;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.models.value.load.LoadValues;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Class to bundle a triple of time series class, entry class and value class for later recognition
@@ -19,6 +21,9 @@ public class TimeSeriesProcessorKey {
   private final Class<? extends TimeSeriesEntry> entryClass;
   private final Class<? extends Value> valueClass;
 
+  // for load profile time series
+  private final Optional<LoadValues.Scheme> scheme;
+
   public TimeSeriesProcessorKey(TimeSeries<? extends TimeSeriesEntry<?>, ?, ?> timeSeries) {
     this.timeSeriesClass = timeSeries.getClass();
     this.entryClass =
@@ -27,13 +32,21 @@ public class TimeSeriesProcessorKey {
             .orElseThrow(
                 () -> new IllegalArgumentException("Cannot find entries in the time series."))
             .getClass();
-    this.valueClass =
+
+    Value value =
         timeSeries.getEntries().stream()
             .findFirst()
             .orElseThrow(
                 () -> new IllegalArgumentException("Cannot find entries in the time series."))
-            .getValue()
-            .getClass();
+            .getValue();
+
+    this.valueClass = value.getClass();
+
+    if (value instanceof LoadValues<?> loadValues) {
+      this.scheme = loadValues.getScheme();
+    } else {
+      this.scheme = Optional.empty();
+    }
   }
 
   public TimeSeriesProcessorKey(
@@ -43,6 +56,29 @@ public class TimeSeriesProcessorKey {
     this.timeSeriesClass = timeSeriesClass;
     this.entryClass = entryClass;
     this.valueClass = valueClass;
+    this.scheme = Optional.empty();
+  }
+
+  public TimeSeriesProcessorKey(
+      Class<? extends TimeSeries> timeSeriesClass,
+      Class<? extends TimeSeriesEntry> entryClass,
+      Class<? extends Value> valueClass,
+      LoadValues.Scheme scheme) {
+    this.timeSeriesClass = timeSeriesClass;
+    this.entryClass = entryClass;
+    this.valueClass = valueClass;
+    this.scheme = Optional.ofNullable(scheme);
+  }
+
+  public TimeSeriesProcessorKey(
+      Class<? extends TimeSeries> timeSeriesClass,
+      Class<? extends TimeSeriesEntry> entryClass,
+      Class<? extends Value> valueClass,
+      Optional<LoadValues.Scheme> scheme) {
+    this.timeSeriesClass = timeSeriesClass;
+    this.entryClass = entryClass;
+    this.valueClass = valueClass;
+    this.scheme = scheme;
   }
 
   public Class<? extends TimeSeries> getTimeSeriesClass() {
@@ -57,6 +93,10 @@ public class TimeSeriesProcessorKey {
     return valueClass;
   }
 
+  public Optional<LoadValues.Scheme> getScheme() {
+    return scheme;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -64,12 +104,13 @@ public class TimeSeriesProcessorKey {
     TimeSeriesProcessorKey that = (TimeSeriesProcessorKey) o;
     return timeSeriesClass.equals(that.timeSeriesClass)
         && entryClass.equals(that.entryClass)
-        && valueClass.equals(that.valueClass);
+        && valueClass.equals(that.valueClass)
+        && scheme.equals(that.scheme);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(timeSeriesClass, entryClass, valueClass);
+    return Objects.hash(timeSeriesClass, entryClass, valueClass, scheme);
   }
 
   @Override
@@ -81,6 +122,8 @@ public class TimeSeriesProcessorKey {
         + entryClass
         + ", valueClass="
         + valueClass
+        + ", scheme="
+        + scheme
         + '}';
   }
 }

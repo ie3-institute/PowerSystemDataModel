@@ -5,13 +5,13 @@
 */
 package edu.ie3.datamodel.io.processor.timeseries;
 
-import java.lang.reflect.Method;
+import edu.ie3.datamodel.io.processor.GetterMethod;
 
 /**
- * Represent a tuple of {@link FieldSource} to {@link Method} to highlight, where information of a
- * time series can be obtained from
+ * Represent a tuple of {@link FieldSource} to {@link GetterMethod} to highlight, where information
+ * of a time series can be obtained from
  */
-public record FieldSourceToMethod(FieldSource source, Method method) {
+public record FieldSourceToMethod(FieldSource source, GetterMethod method) {
   @Override
   public String toString() {
     return "FieldSourceToMethod{" + "source=" + source + ", method=" + method + '}';
@@ -24,6 +24,6 @@ public record FieldSourceToMethod(FieldSource source, Method method) {
     VALUE,
     WEATHER_IRRADIANCE,
     WEATHER_TEMPERATURE,
-    WEATHER_WIND
+    WEATHER_WIND,
   }
 }

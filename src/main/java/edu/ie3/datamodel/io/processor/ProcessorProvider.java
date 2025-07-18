@@ -322,7 +322,8 @@ public class ProcessorProvider {
                                     (Class<TimeSeries<TimeSeriesEntry<Value>, Value, Value>>)
                                         key.getTimeSeriesClass(),
                                     (Class<TimeSeriesEntry<Value>>) key.getEntryClass(),
-                                    (Class<Value>) key.getValueClass()),
+                                    (Class<Value>) key.getValueClass(),
+                                    key.getScheme()),
                             EntityProcessorException.class)),
             "time series processors",
             EntityProcessorException::new)
