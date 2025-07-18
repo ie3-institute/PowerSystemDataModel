@@ -110,7 +110,7 @@ tasks.register('listStagingFiles') {
   doLast {
     println "Starting to list files in staging directory..."
     def stagingDir = layout.buildDirectory.dir('staging-deploy').get().asFile
-    if (stagingDir.exists() && stagingDir.isDirectory()) {
+    if (stagingDir.exists()) {
       println "Files in staging directory (${stagingDir.path}):"
       stagingDir.eachFile { file ->
         println "- ${file.name}"
