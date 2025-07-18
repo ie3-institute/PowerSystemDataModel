@@ -15,7 +15,7 @@ import static tech.units.indriya.unit.Units.WATT;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
-import java.io.Serializable;
+import java.io.*;
 import java.time.Month;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -28,11 +28,11 @@ import tech.units.indriya.quantity.Quantities;
 /** Load values for a {@link BdewStandardLoadProfile} */
 public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile> {
   public final BdewScheme scheme;
-  private final HashMap<BdewKey, Double> values;
+  private transient Map<BdewKey, Double> values;
 
-  public BdewLoadValues(BdewScheme scheme, HashMap<BdewKey, Double> values) {
+  public BdewLoadValues(BdewScheme scheme, Map<BdewKey, Double> values) {
     this.scheme = scheme;
-    this.values = values;
+    this.values = Collections.unmodifiableMap(values);
   }
 
   /**
@@ -153,7 +153,22 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
     return round(load * rndFactor * 1e1) / 1e1; // rounded to 1 decimal place
   }
 
-  public sealed interface BdewKey {
+  // custom serialization (needed for the values)
+
+  @Serial
+  private void writeObject(ObjectOutputStream out) throws IOException {
+    out.defaultWriteObject();
+    out.writeObject(values);
+  }
+
+  @Serial
+  @SuppressWarnings("unchecked")
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    this.values = Collections.unmodifiableMap((Map<BdewKey, Double>) in.readObject());
+  }
+
+  public sealed interface BdewKey extends Serializable {
 
     /**
      * Returns the abbreviation of either a {@link BdewSeason} for {@link BdewScheme#BDEW1999} or
@@ -313,7 +328,7 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
   }
 
   /** Scheme for underlying values of a {@link BdewLoadValues}. */
-  public enum BdewScheme implements Scheme {
+  public enum BdewScheme implements Scheme, Serializable {
     BDEW1999(BdewKey.getKeys(BdewSeason.values(), Bdew1999Key::new)),
     BDEW2025(BdewKey.getKeys(Month.values(), Bdew2025Key::new));
 
@@ -337,7 +352,7 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
    *
    * @param <V> type of value
    */
-  public static final class BdewMap<V> implements Serializable {
+  public static final class BdewMap<V> {
     private final Map<BdewKey, V> values;
 
     public BdewMap(Map<BdewKey, V> values) {
@@ -440,7 +455,7 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
      * @return the new {@link BdewMap}
      * @param <R> type of new values
      */
-    public <R> HashMap<BdewKey, R> map(Function<V, R> mapper) {
+    public <R> Map<BdewKey, R> map(Function<V, R> mapper) {
       HashMap<BdewKey, R> map = new HashMap<>();
       values.forEach((key, value) -> map.put(key, mapper.apply(value)));
       return map;
