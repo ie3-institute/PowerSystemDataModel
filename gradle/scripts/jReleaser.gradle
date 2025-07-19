@@ -110,9 +110,9 @@ tasks.register('listStagingFiles') {
   doLast {
     println "Starting to list files in staging directory..."
     // List all directories within the build directory
-    println "Listing all directories within the build directory (${layout.buildDirectory.asFile.path}):"
-    layout.buildDirectory.asFile.eachDir { dir ->
-      println "- ${dir.name}"
+    println "Listing all directories within the build directory (${layout.buildDirectory.asFile.toString()}):"
+    layout.buildDirectory.asFile.each { dir ->
+      println "- ${dir.toString()}"
     }
 
     // Now proceed to list files in the staging directory
