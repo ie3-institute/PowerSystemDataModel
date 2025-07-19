@@ -95,8 +95,11 @@ jobs:
           echo "Copying JAR files from build/libs to build/staging-deploy..."
           mkdir -p build/staging-deploy
           cp build/libs/*.jar build/staging-deploy/ || echo "No JAR files found in build/libs."
+          
+          echo "Listing JAR files in build/staging-deploy..."
+          ls build/staging-deploy/*.jar || echo "No JAR files found in build/staging-deploy."
 
-      #Deployment to Maven Central
+    #Deployment to Maven Central
       - name: Deploy to Maven Central
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         env:
@@ -120,3 +123,16 @@ jobs:
       # List files in staging directory
       - name: List Staging Directory Files
         run: ./gradlew listStagingFiles
+
+      # List JAR files in staging-deploy again
+      - name: Copy JAR Files to Staging Directory again
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+        run: |
+         echo "Listing directories in build..."
+         ls -d build/*/
+             
+         echo "Listing JAR files in build/libs..."
+         ls build/libs/*.jar || echo "No JAR files found in build/libs."
+                  
+         echo "Listing JAR files in build/staging-deploy..."
+         ls build/staging-deploy/*.jar || echo "No JAR files found in build/staging-deploy."
