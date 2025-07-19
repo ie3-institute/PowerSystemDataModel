@@ -125,7 +125,7 @@ jobs:
         run: ./gradlew listStagingFiles
 
       # List JAR files in staging-deploy again
-      - name: Copy JAR Files to Staging Directory again
+      - name: List JAR Files to Staging Directory again
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         run: |
          echo "Listing directories in build..."
