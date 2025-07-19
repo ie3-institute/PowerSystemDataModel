@@ -108,19 +108,24 @@ tasks.register('listStagingFiles') {
   group = 'publishing'
 
   doLast {
-    println "Starting to list files in staging directory..."
-    // List all directories within the build directory
-    println "Listing all directories within the build directory (${layout.buildDirectory.asFile.toString()}):"
-    layout.buildDirectory.asFile.each { dir ->
-      println "- ${dir.toString()}"
+    def buildDir = layout.buildDirectory.get().asFile
+
+    println "Listing all directories within the build directory (${buildDir.path}):"
+
+    if (buildDir.exists()) {
+      buildDir.listFiles().findAll { it.isDirectory() }.each { dir ->
+        println "- ${dir.name}"
+      }
+    } else {
+      println "Build directory does not exist."
     }
 
-    // Now proceed to list files in the staging directory
     println "\nStarting to list files in staging directory..."
+
     def stagingDir = layout.buildDirectory.dir('staging-deploy').get().asFile
 
     if (stagingDir.exists() && stagingDir.isDirectory()) {
-      println "Files in staging directory (${stagingDir.path}):"
+      println "Files in staging directory (${stagingDir.absolutePath}):"
       stagingDir.eachFile { file ->
         println "- ${file.name}"
       }
