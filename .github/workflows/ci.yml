@@ -94,7 +94,7 @@ jobs:
             github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_TEST_PASS }}
 
         run: |
-          echo "GitHub Actor: ${{ github.actor }}"
+          echo "Using MavenCentral Token of GitHub Actor: ${{ github.actor }}"
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
             currentVersion=$(./gradlew -q currentVersion)
           else
