@@ -135,7 +135,7 @@ jobs:
         run: |
          response=$(curl -u "${{ secrets.MAVENCENTRAL_TEST_USER }}:${{ secrets.MAVENCENTRAL_TEST_PASS }}" \
          -X POST \
-         -F "file=@build/libs/PowerSystemDataModel-8.0.0-sources.jar" \
+         -F "file=@build/libs/PowerSystemDataModel-8.0.0.jar" \
          https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.github.ie3-institute?publishing_type=user_managed)
          echo "Response from Sonatype: $response"
 
