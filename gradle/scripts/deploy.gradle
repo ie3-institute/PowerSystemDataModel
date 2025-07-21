@@ -20,7 +20,7 @@ tasks.register('uploadToMavenCentralPortal') {
     bundleArtifactDir.mkdirs()
 
     // Copy artifacts from build/libs using the correct filename
-    def localJarPath = file("${layout.buildDirectory}/libs/${project.name}-${deployVersion}.jar")
+    def localJarPath = file("${buildDir}/libs/${project.name}-${deployVersion}.jar")
 
     if (!localJarPath.exists()) {
       throw new GradleException("Artifacts not found in build/libs: ${localJarPath}")
@@ -32,10 +32,10 @@ tasks.register('uploadToMavenCentralPortal') {
     }
 
     // Copy generated POM file into the bundle directory
-    copy {
-      from layout.buildDirectory.file("generated-pom.xml")
-      into bundleArtifactDir  // Include generated POM in the bundle
-    }
+    //  copy {
+    //    from layout.buildDirectory.file("generated-pom.xml")
+    //    into bundleArtifactDir  // Include generated POM in the bundle
+    //   }
 
     // Create tar.gz bundle including both JAR and POM files
     def bundleFile = layout.buildDirectory.file("${project.name}-${deployVersion}-bundle.tar.gz").get().asFile
