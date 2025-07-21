@@ -88,10 +88,10 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
-          ORG_GRADLE_PROJECT_user: ${{ github.event.pull_request.user.login == 'sebastian-peter' &;&; secrets.MAVENCENTRAL_USER ||
-            github.event.pull_request.user.login == 'danielfeismann' &;&; secrets.MAVENCENTRAL_TEST_USER }}
-          ORG_GRADLE_PROJECT_password: ${{ github.event.pull_request.user.login == 'sebastian-peter' &;&; secrets.MAVENCENTRAL_PASS ||
-            github.event.pull_request.user.login == 'danielfeismann' &;&; secrets.MAVENCENTRAL_TEST_PASS }}
+          ORG_GRADLE_PROJECT_user: ${{ github.event.pull_request.user.login == 'sebastian-peter' && secrets.MAVENCENTRAL_USER ||
+            github.event.pull_request.user.login == 'danielfeismann' && secrets.MAVENCENTRAL_TEST_USER }}
+          ORG_GRADLE_PROJECT_password: ${{ github.event.pull_request.user.login == 'sebastian-peter' && secrets.MAVENCENTRAL_PASS ||
+            github.event.pull_request.user.login == 'danielfeismann' && secrets.MAVENCENTRAL_TEST_PASS }}
 
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
