@@ -99,4 +99,4 @@ jobs:
           
           echo "currentVersion=$currentVersion"
 
-          ./gradlew uploadToCentralPortal
+          ./gradlew uploadToMavenCentralPortal

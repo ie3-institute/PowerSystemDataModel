@@ -1,77 +1,106 @@
-tasks.register("generatePomFileForMavenJavaPublication") {
-  destination = layout.buildDirectory.file("generated-pom.xml").get().asFile
+tasks.register("sourcesJar", Jar) {
+  archiveClassifier.set("sources")
+  from sourceSets.main.allJava
 }
 
-tasks.register('uploadToCentralPortal') {
+tasks.register("javadocJar", Jar) {
+  dependsOn tasks.named("javadoc", Javadoc)
+  archiveClassifier.set("javadoc")
+  from { tasks.named("javadoc", Javadoc).get().destinationDir }
+}
+
+publishing {
+  publications {
+    create("mavenJava", MavenPublication) {
+      versionMapping {
+        usage('java-api') { fromResolutionOf('runtimeClasspath') }
+        usage('java-runtime') { fromResolutionResult() }
+      }
+
+      pom {
+        description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
+        name = 'Power System Data Model'
+        url = 'https://github.com/ie3-institute/PowerSystemDataModel'
+
+        organization {
+          name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
+          url = 'https://www.ie3.tu-dortmund.de/'
+        }
+
+        issueManagement {
+          system = 'GitHub'
+          url = 'https://github.com/ie3-institute/PowerSystemDataModel/issues'
+        }
+
+        licenses {
+          license {
+            name = 'BSD 3-Clause License'
+            url = 'https://github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
+          }
+        }
+
+        developers {
+          developer {
+            organization = "Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University"
+            organizationUrl = "https://ie3.etit.tu-dortmund.de"
+          }
+        }
+
+        scm {
+          connection = 'scm:git:git://github.com/ie3-institute/PowerSystemDataModel.git'
+          developerConnection = 'scm:git:ssh://github.com:ie3-institute/PowerSystemDataModel.git'
+          url = 'https://github.com/ie3-institute/PowerSystemDataModel'
+        }
+      }
+
+      removeTestDependenciesFromPom(pom)
+      groupId = group
+      artifactId = 'PowerSystemDataModel'
+      version = project.findProperty('deployVersion') ?: project.version
+
+
+      from components.java
+      artifact sourcesJar
+      artifact javadocJar
+    }
+  }
+}
+
+// Signing configuration
+signing {
+  useInMemoryPgpKeys(
+      findProperty('signingKey') as String,
+      findProperty('signingPassword') as String
+      )
+
+  sign publishing.publications.mavenJava
+}
+
+def removeTestDependenciesFromPom(pom) {
+  pom.withXml {
+    def rootNode = asNode()
+    rootNode.dependencies.removeAll { dep ->
+      dep.scope == "test"
+    }
+  }
+}
+
+// Task for uploading to Maven Central Portal
+tasks.register('uploadToMavenCentralPortal') {
   group = 'publishing'
   description = 'Upload artifacts to Maven Central Portal for manual approval'
 
-  dependsOn "generatePomFileForMavenJavaPublication"
+  dependsOn publishMavenJavaPublicationToSonatypeRepository
 
   doLast {
     def username = System.getenv('ORG_GRADLE_PROJECT_user')
     def password = System.getenv('ORG_GRADLE_PROJECT_password')
-    def deployVersion = project.findProperty('deployVersion') ?: project.version
 
     if (!username || !password) {
-      throw new GradleException("Sonatype credentials not found. Set sonatypeUser and sonatypePassword properties or environment variables.")
+      throw new GradleException("Sonatype credentials not found.")
     }
 
-    // Create bundle directory
-    def bundleDir = layout.buildDirectory.dir("central-portal-bundle").get().asFile
-    def artifactPath = "${group.toString().replace('.', '/')}/${project.name}/${deployVersion}"
-    def bundleArtifactDir = new File(bundleDir, artifactPath)
-
-    bundleDir.deleteDir()
-    bundleArtifactDir.mkdirs()
-
-    // Copy artifacts from build/libs using the correct filename
-    def localJarPath = file("${layout.buildDirectory}/libs/${project.name}-${deployVersion}.jar")
-
-    if (!localJarPath.exists()) {
-      throw new GradleException("Artifacts not found in build/libs: ${localJarPath}")
-    }
-
-    copy {
-      from localJarPath
-      into bundleArtifactDir
-    }
-
-    // Copy generated POM file into the bundle directory
-    copy {
-      from layout.buildDirectory.file("generated-pom.xml")
-      into bundleArtifactDir  // Include generated POM in the bundle
-    }
-
-    // Create tar.gz bundle including both JAR and POM files
-    def bundleFile = layout.buildDirectory.file("${project.name}-${deployVersion}-bundle.tar.gz").get().asFile
-
-    exec {
-      workingDir bundleDir
-      commandLine 'tar', '-czf', bundleFile.absolutePath, '.'
-    }
-
-    println "Created bundle: ${bundleFile}"
-    println "Bundle size: ${bundleFile.length()} bytes"
-
-
-    // Upload via curl
-    def uploadResult = exec {
-      ignoreExitValue true
-      commandLine 'curl', '-s', '-w', '\n%{http_code}',
-          '-X', 'POST',
-          '-H', 'Content-Type: multipart/form-data',
-          '-F', "bundle=@${bundleFile.absolutePath}",
-          '-F', 'publishingType=USER_MANAGED',
-          '-u', "${username}:${password}",
-          'https://central.sonatype.com/api/v1/publisher/upload'
-    }
-
-    if (uploadResult.exitValue == 0) {
-      println "✓ Upload successful!"
-      println "Check status at: https://central.sonatype.com/publishing/deployments"
-    } else {
-      throw new GradleException("Upload failed")
-    }
+    println "✓ Upload successful!"
+    println "Check status at: https://central.sonatype.com/publishing/deployments"
   }
 }
