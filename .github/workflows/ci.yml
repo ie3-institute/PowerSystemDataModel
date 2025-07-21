@@ -99,4 +99,4 @@ jobs:
           
           echo "currentVersion=$currentVersion"
 
-          ./gradlew clean build uploadToCentralPortal
+          ./gradlew uploadToCentralPortal

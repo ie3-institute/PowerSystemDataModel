@@ -6,8 +6,8 @@ tasks.register('uploadToCentralPortal') {
   description = 'Upload artifacts to Maven Central Portal manually'
 
   doLast {
-    def username = project.findProperty('sonatypeUser') ?: System.getenv('SONATYPE_USERNAME')
-    def password = project.findProperty('sonatypePassword') ?: System.getenv('SONATYPE_PASSWORD')
+    def username = System.getenv('ORG_GRADLE_PROJECT_user')
+    def password = System.getenv('ORG_GRADLE_PROJECT_password')
     def deployVersion = project.findProperty('deployVersion') ?: project.version
 
     if (!username || !password) {
