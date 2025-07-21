@@ -2,8 +2,6 @@ tasks.register('uploadToMavenCentralPortal') {
   group = 'publishing'
   description = 'Upload artifacts to Maven Central Portal for manual approval'
 
-  dependsOn "generatePomFileForMavenJavaPublication"
-
   doLast {
     def username = System.getenv('ORG_GRADLE_PROJECT_user')
     def password = System.getenv('ORG_GRADLE_PROJECT_password')
