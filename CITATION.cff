@@ -55,7 +55,7 @@ authors:
     given-names: Simon
   - family-names: Petersmeier
     given-names: Pierre
-repository-code: https://github.com/ie3-institute/MobilitySimulator
+repository-code: https://github.com/ie3-institute/PowerSystemDataModel
 keywords:
   - power system data model
   - power system
