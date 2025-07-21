@@ -94,6 +94,7 @@ jobs:
             github.event.pull_request.user.login == 'danielfeismann' && secrets.MAVENCENTRAL_TEST_PASS }}
 
         run: |
+          echo "GitHub Username: ${{ github.event.pull_request.user.login }}"
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
             currentVersion=$(./gradlew -q currentVersion)
           else
