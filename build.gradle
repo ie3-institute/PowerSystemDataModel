@@ -3,7 +3,6 @@ plugins {
   id 'groovy' // groovy support
   id 'maven-publish'
   id 'signing'
-  id 'org.jreleaser' version '1.19.0' // publishing
   id 'pmd' // code check, working on source code
   id 'com.diffplug.spotless' version '7.1.0' //code format
   id 'com.github.spotbugs' version '6.2.2' // code check, working on byte code
@@ -42,7 +41,7 @@ apply from: scriptsLocation + 'spotless.gradle'
 apply from: scriptsLocation + 'checkJavaVersion.gradle'
 apply from: scriptsLocation + 'documentation.gradle'
 apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
-apply from: scriptsLocation + 'jReleaser.gradle'
+apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 apply from: scriptsLocation + 'sonarqube.gradle'
 apply from: scriptsLocation + 'vcs.gradle'
 apply from: scriptsLocation + 'semVer.gradle'

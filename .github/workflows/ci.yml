@@ -109,6 +109,8 @@ jobs:
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
           ORG_GRADLE_PROJECT_user: ${{ secrets.MAVENCENTRAL_USER }}
           ORG_GRADLE_PROJECT_password: ${{ secrets.MAVENCENTRAL_PASS }}
+          ORG_GRADLE_TEST_user: ${{ secrets.MAVENCENTRAL_TEST_USER }}
+          ORG_GRADLE_TEST_password: ${{ secrets.MAVENCENTRAL_TEST_PASS }}
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
             currentVersion=$(./gradlew -q currentVersion)

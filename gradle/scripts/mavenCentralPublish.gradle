@@ -1,4 +1,4 @@
-/* Maven publish - start */
+/* Maven publish - Portal OSSRH Staging API with user_managed publishing */
 
 tasks.register("sourcesJar", Jar) {
   archiveClassifier.set("sources")
@@ -11,11 +11,10 @@ tasks.register("javadocJar", Jar) {
   from { tasks.named("javadoc", Javadoc).get().destinationDir }
 }
 
-if (project.hasProperty('user') && project.hasProperty('password') && project.hasProperty('deployVersion')) {
+if (project.hasProperty('ORG_GRADLE_TEST_user') && project.hasProperty('ORG_GRADLE_TEST_password') && project.hasProperty('deployVersion')) {
 
   // snapshot version differs from normal version
   String versionString = project.getProperty('deployVersion')
-
 
   publishing {
     publications {
@@ -33,31 +32,31 @@ if (project.hasProperty('user') && project.hasProperty('password') && project.ha
         pom {
           description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
           name = 'Power System Data Model'
-          url = 'https:github.com/ie3-institute/PowerSystemDatamodel'
+          url = 'https://github.com/ie3-institute/PowerSystemDataModel'
           organization {
             name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
-            url = 'https:www.ie3.tu-dortmund.de/'
+            url = 'https://www.ie3.tu-dortmund.de/'
           }
           issueManagement {
             system = 'GitHub'
-            url = 'https:github.com/ie3-institute/PowerSystemDataModel/issues'
+            url = 'https://github.com/ie3-institute/PowerSystemDataModel/issues'
           }
           licenses {
             license {
               name = 'BSD 3-Clause License'
-              url = 'https:github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
+              url = 'https://github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
             }
           }
           developers {
             developer {
               organization = "Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University"
-              organizationUrl = "https:ie3.etit.tu-dortmund.de"
+              organizationUrl = "https://ie3.etit.tu-dortmund.de"
             }
           }
           scm {
-            connection = 'scm:git:git:github.com/ie3-institute/PowerSystemDataModel.git'
-            developerConnection = 'scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git'
-            url = 'https:github.com/ie3-institute/PowerSystemDataModel'
+            connection = 'scm:git:https://github.com/ie3-institute/PowerSystemDataModel.git'
+            developerConnection = 'scm:git:ssh://github.com:ie3-institute/PowerSystemDataModel.git'
+            url = 'https://github.com/ie3-institute/PowerSystemDataModel'
           }
         }
 
@@ -73,12 +72,13 @@ if (project.hasProperty('user') && project.hasProperty('password') && project.ha
     }
     repositories {
       maven {
+        name = 'portalOSSRH'
         def releasesRepoUrl = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
-        def snapshotsRepoUrl = "https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/"
+        def snapshotsRepoUrl = "https://central.sonatype.com/repository/maven-snapshots/"
         url = versionString.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         credentials {
-          username project.getProperty('user')
-          password project.getProperty('password')
+          username project.getProperty('ORG_GRADLE_TEST_user')
+          password project.getProperty('ORG_GRADLE_TEST_password')
         }
       }
     }
@@ -93,6 +93,47 @@ if (project.hasProperty('user') && project.hasProperty('password') && project.ha
 
   tasks.named("generatePomFileForMavenJavaPublication") {
     destination = layout.buildDirectory.file("generated-pom.xml").get().asFile
+  }
+}
+
+// Task to upload to Portal using manual API for user_managed publishing
+tasks.register('uploadToPortalManual') {
+  description = 'Upload deployment to Portal using manual API with user_managed publishing'
+  group = 'publishing'
+  dependsOn 'publishMavenJavaPublicationToPortalOSSRHRepository'
+
+  doLast {
+    println "Deployment published to Portal OSSRH Staging API"
+    println ""
+    println "Since Gradle's maven-publish plugin requires manual endpoints for user_managed publishing,"
+    println "you need to call the Portal API to upload your deployment:"
+    println ""
+    println "Manual API call required:"
+    println "POST https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.github.ie3-institute?publishing_type=user_managed"
+    println ""
+    println "After successful upload, visit:"
+    println "https://central.sonatype.com/publishing/deployments"
+    println "to review and manually release your deployment to Maven Central"
+  }
+}
+
+tasks.register('deployToMavenCentralPortal') {
+  description = 'Deploy to Maven Central via Portal OSSRH Staging API (user_managed)'
+  group = 'publishing'
+  dependsOn 'clean', 'build', 'uploadToPortalManual'
+
+  doLast {
+    def versionString = project.hasProperty('deployVersion') ? project.getProperty('deployVersion') : project.version
+    println ""
+    println "=== DEPLOYMENT SUMMARY ==="
+    println "Version: ${versionString}"
+    println "Publishing Type: user_managed"
+    println "Next Steps:"
+    println "1. Make the manual API call shown above"
+    println "2. Visit https://central.sonatype.com/publishing/deployments"
+    println "3. Review your deployment"
+    println "4. Click 'Publish' to release to Maven Central"
+    println "=========================="
   }
 }
 
