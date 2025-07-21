@@ -1,6 +1,51 @@
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+      pom {
+        description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
+        name = 'Power System Data Model'
+        url = 'https:github.com/ie3-institute/PowerSystemDatamodel'
+        organization {
+          name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
+          url = 'https:www.ie3.tu-dortmund.de/'
+        }
+        issueManagement {
+          system = 'GitHub'
+          url = 'https:github.com/ie3-institute/PowerSystemDataModel/issues'
+        }
+        licenses {
+          license {
+            name = 'BSD 3-Clause License'
+            url = 'https:github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
+          }
+        }
+        developers {
+          developer {
+            organization = "Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University"
+            organizationUrl = "https:ie3.etit.tu-dortmund.de"
+          }
+        }
+        scm {
+          connection = 'scm:git:git:github.com/ie3-institute/PowerSystemDataModel.git'
+          developerConnection = 'scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git'
+          url = 'https:github.com/ie3-institute/PowerSystemDataModel'
+        }
+      }
+    }
+  }
+}
+
+tasks.register("generatePom", PublishToMavenRepository) {
+  publication = publishing.publications.mavenJava
+  repository = uri("${layout.buildDirectory}/libs")
+}
+
 tasks.register('uploadToMavenCentralPortal') {
   group = 'publishing'
   description = 'Upload artifacts to Maven Central Portal for manual approval'
+
+  dependsOn "generatePom"
 
   doLast {
     def username = System.getenv('ORG_GRADLE_PROJECT_user')
