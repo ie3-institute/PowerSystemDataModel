@@ -1,6 +1,8 @@
-tasks.register('uploadToCentralPortal') {
+tasks.register('uploadToMavenCentralPortal') {
   group = 'publishing'
   description = 'Upload artifacts to Maven Central Portal for manual approval'
+
+  dependsOn "generatePomFileForMavenJavaPublication"
 
   doLast {
     def username = System.getenv('ORG_GRADLE_PROJECT_user')
@@ -16,7 +18,6 @@ tasks.register('uploadToCentralPortal') {
     def artifactPath = "${group.toString().replace('.', '/')}/${project.name}/${deployVersion}"
     def bundleArtifactDir = new File(bundleDir, artifactPath)
 
-    // Clean and create the bundle directory
     bundleDir.deleteDir()
     bundleArtifactDir.mkdirs()
 
@@ -32,62 +33,25 @@ tasks.register('uploadToCentralPortal') {
       into bundleArtifactDir
     }
 
-    def pomFile = new File(bundleArtifactDir, "${project.name}-${deployVersion}.pom")
-    pomFile.text = """
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <groupId>${group}</groupId>
-    <artifactId>${project.name}</artifactId>
-    <version>${deployVersion}</version>
-    
-    <description>Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University</description>
-    
-    <url>https://github.com/ie3-institute/PowerSystemDataModel</url>
-
-    <licenses>
-      <license>
-          <name>BSD 3-Clause License</name>
-          <url>https://github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE</url>
-      </license>
-    </licenses>
-    
-    <issueManagement>
-    <system>Github</system>
-    <url>https://github.com/ie3-institute/PowerSystemDataModel/issues</url>
-  </issueManagement>
-    <developers>
-      <developer>
-          <organization>Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University</organization>
-      <organizationUrl>https://ie3.etit.tu-dortmund.de</organizationUrl>
-      </developer>
-    </developers>
-    
-      <scm>
-    <connection>scm:git:git:github.com/ie3-institute/PowerSystemDataModel.git</connection>
-    <developerConnection>scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git</developerConnection>
-    <tag>HEAD</tag>
-    <url>https://github.com/ie3-institute/PowerSystemDataModel</url>
-  </scm>
-</project>
-"""
-
-    println "Created POM: ${pomFile}"
+    // Copy generated POM file into the bundle directory
+    copy {
+      from layout.buildDirectory.file("generated-pom.xml")
+      into bundleArtifactDir  // Include generated POM in the bundle
+    }
 
     // Create tar.gz bundle including both JAR and POM files
     def bundleFile = layout.buildDirectory.file("${project.name}-${deployVersion}-bundle.tar.gz").get().asFile
 
     exec {
-      workingDir(bundleDir)
+      workingDir bundleDir
       commandLine 'tar', '-czf', bundleFile.absolutePath, '.'
     }
 
     println "Created bundle: ${bundleFile}"
     println "Bundle size: ${bundleFile.length()} bytes"
 
-    // Upload via curl including both JAR and POM files
+
+    // Upload via curl
     def uploadResult = exec {
       ignoreExitValue true
       commandLine 'curl', '-s', '-w', '\n%{http_code}',
