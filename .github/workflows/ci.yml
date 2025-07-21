@@ -124,7 +124,7 @@ jobs:
 
       - name: Check JAR File Existence
         run: |
-         if [ ! -f build/libs/PowerSystemDataModel-8.0.0-sources.jar ]; then
+         if [ ! -f build/libs/PowerSystemDataModel-8.0.0.jar ]; then
             echo "JAR file not found!"
             exit 1
          fi
