@@ -122,15 +122,22 @@ jobs:
 
           ./gradlew deployToMavenCentral -PdeployVersion=$currentVersion
 
+      - name: Check JAR File Existence
+        run: |
+         if [ ! -f build/libs/PowerSystemDataModel-8.0.0-sources.jar ]; then
+            echo "JAR file not found!"
+            exit 1
+         fi
+
       #Upload to Sonatype
       - name: Upload to Sonatype
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         run: |
-         curl -u "${{ secrets.MAVENCENTRAL_TEST_USER }}:${{ secrets.MAVENCENTRAL_TEST_PASS }}" \
+         response=$(curl -u "${{ secrets.MAVENCENTRAL_TEST_USER }}:${{ secrets.MAVENCENTRAL_TEST_PASS }}" \
          -X POST \
          -F "file=@build/libs/PowerSystemDataModel-8.0.0-sources.jar" \
-         https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.github.ie3-institute?publishing_type=user_managed
-         echo "Response from Sonatype: $response" 
+         https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.github.ie3-institute?publishing_type=user_managed)
+         echo "Response from Sonatype: $response"
 
       # List JAR files in staging-deploy again
       - name: List JAR Files to Staging Directory again
