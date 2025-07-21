@@ -82,35 +82,14 @@ jobs:
           -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
           -Dsonar.qualitygate.wait=true
 
-        # Copy JAR files from libs to staging-deploy
-      - name: Copy JAR Files to Staging Directory
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
-        run: |
-          echo "Listing directories in build..."
-          ls -d build/*/
-    
-          echo "Listing JAR files in build/libs..."
-          ls build/libs/*.jar || echo "No JAR files found in build/libs."
-    
-          echo "Copying JAR files from build/libs to build/staging-deploy..."
-          mkdir -p build/staging-deploy
-          cp build/libs/*.jar build/staging-deploy/ || echo "No JAR files found in build/libs."
-          
-          echo "Listing JAR files in build/staging-deploy..."
-          ls build/staging-deploy/*.jar || echo "No JAR files found in build/staging-deploy."
-
-    #Deployment to Maven Central
-      - name: Deploy to Maven Central
+      #Deployment
+      - name: Deploy
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         env:
-          ORG_GRADLE_PROJECT_publicKey: ${{ secrets.MAVENCENTRAL_PUBLICKEY }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
-          ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.MAVENCENTRAL_SIGNINGKEYID }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
           ORG_GRADLE_PROJECT_user: ${{ secrets.MAVENCENTRAL_USER }}
           ORG_GRADLE_PROJECT_password: ${{ secrets.MAVENCENTRAL_PASS }}
-          ORG_GRADLE_TEST_user: ${{ secrets.MAVENCENTRAL_TEST_USER }}
-          ORG_GRADLE_TEST_password: ${{ secrets.MAVENCENTRAL_TEST_PASS }}
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
             currentVersion=$(./gradlew -q currentVersion)
@@ -120,34 +99,4 @@ jobs:
           
           echo "currentVersion=$currentVersion"
 
-          ./gradlew deployToMavenCentral -PdeployVersion=$currentVersion
-
-      - name: Check JAR File Existence
-        run: |
-         if [ ! -f build/libs/PowerSystemDataModel-8.0.0.jar ]; then
-            echo "JAR file not found!"
-            exit 1
-         fi
-
-      #Upload to Sonatype
-      - name: Upload to Sonatype
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
-        run: |
-         response=$(curl -u "${{ secrets.MAVENCENTRAL_TEST_USER }}:${{ secrets.MAVENCENTRAL_TEST_PASS }}" \
-         -X POST \
-         -F "file=@build/libs/PowerSystemDataModel-8.0.0.jar" \
-         https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.github.ie3-institute?publishing_type=user_managed)
-         echo "Response from Sonatype: $response"
-
-      # List JAR files in staging-deploy again
-      - name: List JAR Files to Staging Directory again
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
-        run: |
-         echo "Listing directories in build..."
-         ls -d build/*/
-             
-         echo "Listing JAR files in build/libs..."
-         ls build/libs/*.jar || echo "No JAR files found in build/libs."
-                  
-         echo "Listing JAR files in build/staging-deploy..."
-         ls build/staging-deploy/*.jar || echo "No JAR files found in build/staging-deploy."
+          ./gradlew clean build uploadToCentralPortal
