@@ -100,7 +100,6 @@ if (project.hasProperty('ORG_GRADLE_TEST_user') && project.hasProperty('ORG_GRAD
 tasks.register('uploadToPortalManual') {
   description = 'Upload deployment to Portal using manual API with user_managed publishing'
   group = 'publishing'
-  dependsOn 'publishMavenJavaPublicationToPortalOSSRHRepository'
 
   doLast {
     println "Deployment published to Portal OSSRH Staging API"
