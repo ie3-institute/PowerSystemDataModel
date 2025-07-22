@@ -113,9 +113,9 @@ jobs:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
           ORG_GRADLE_PROJECT_mavenCentalUser: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_USER ||
-            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_TEST_USER }}
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_USER }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_PASS ||
-            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_TEST_PASS }}
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_PASS }}
 
         run: |
           ./gradlew stagingAtMavenCentralPortal
