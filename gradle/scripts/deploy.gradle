@@ -5,46 +5,41 @@ publishing {
       pom {
         description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
         name = 'Power System Data Model'
-        url = 'https:github.com/ie3-institute/PowerSystemDatamodel'
+        url = 'https://github.com/ie3-institute/PowerSystemDatamodel'
         organization {
           name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
-          url = 'https:www.ie3.tu-dortmund.de/'
+          url = 'https://www.ie3.tu-dortmund.de/'
         }
         issueManagement {
           system = 'GitHub'
-          url = 'https:github.com/ie3-institute/PowerSystemDataModel/issues'
+          url = 'https://github.com/ie3-institute/PowerSystemDataModel/issues'
         }
         licenses {
           license {
             name = 'BSD 3-Clause License'
-            url = 'https:github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
+            url = 'https://github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
           }
         }
         developers {
           developer {
             organization = "Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University"
-            organizationUrl = "https:ie3.etit.tu-dortmund.de"
+            organizationUrl = "https://ie3.etit.tu-dortmund.de"
           }
         }
         scm {
-          connection = 'scm:git:git:github.com/ie3-institute/PowerSystemDataModel.git'
-          developerConnection = 'scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git'
-          url = 'https:github.com/ie3-institute/PowerSystemDataModel'
+          connection = 'scm:git:git://github.com/ie3-institute/PowerSystemDataModel.git'
+          developerConnection = 'scm:git:ssh://github.com:ie3-institute/PowerSystemDataModel.git'
+          url = 'https://github.com/ie3-institute/PowerSystemDataModel'
         }
       }
     }
   }
-  repositories {
-    maven {
-      name = "buildDir"
-      url = uri("${layout.buildDirectory}/maven-repo")
+
+  tasks.register("generatePom") {
+    doLast {
+      publishing.publications.mavenJava.pom.writeTo("${layout.buildDirectory}/libs/pom.xml")
     }
   }
-}
-
-tasks.register("generatePom", PublishToMavenRepository) {
-  publication = publishing.publications.mavenJava
-  repository = publishing.repositories.buildDir
 }
 
 tasks.register('uploadToMavenCentralPortal') {
@@ -71,7 +66,7 @@ tasks.register('uploadToMavenCentralPortal') {
     bundleArtifactDir.mkdirs()
 
     // Copy artifacts from build/libs using the correct filename
-    def localJarPath = file("${buildDir}/libs/${project.name}-${deployVersion}.jar")
+    def localJarPath = file("${layout.buildDirectory}/libs/${project.name}-${deployVersion}.jar")
 
     if (!localJarPath.exists()) {
       throw new GradleException("Artifacts not found in build/libs: ${localJarPath}")
@@ -84,8 +79,8 @@ tasks.register('uploadToMavenCentralPortal') {
 
     //Copy generated POM file into the bundle directory
     copy {
-      from layout.buildDirectory.file("generated-pom.xml")
-      into bundleArtifactDir  // Include generated POM in the bundle
+      from layout.buildDirectory.file("pom.xml")
+      into bundleArtifactDir
     }
 
     // Create tar.gz bundle including both JAR and POM files
