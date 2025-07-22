@@ -1,112 +1,36 @@
-publishing {
-  publications {
-    mavenJava(MavenPublication) {
-      from components.java
-      pom {
-        description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
-        name = 'Power System Data Model'
-        url = 'https://github.com/ie3-institute/PowerSystemDatamodel'
-        organization {
-          name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
-          url = 'https://www.ie3.tu-dortmund.de/'
-        }
-        issueManagement {
-          system = 'GitHub'
-          url = 'https://github.com/ie3-institute/PowerSystemDataModel/issues'
-        }
-        licenses {
-          license {
-            name = 'BSD 3-Clause License'
-            url = 'https://github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
-          }
-        }
-        developers {
-          developer {
-            organization = "Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University"
-            organizationUrl = "https://ie3.etit.tu-dortmund.de"
-          }
-        }
-        scm {
-          connection = 'scm:git:git://github.com/ie3-institute/PowerSystemDataModel.git'
-          developerConnection = 'scm:git:ssh://github.com:ie3-institute/PowerSystemDataModel.git'
-          url = 'https://github.com/ie3-institute/PowerSystemDataModel'
-        }
-      }
-    }
-  }
-
-  tasks.register("generatePom", GenerateMavenPom) {
-    destination = file("${layout.buildDirectory}/libs/pom.xml")
-    pom = publishing.publications.mavenJava.pom
-  }
-}
-
-tasks.register('uploadToMavenCentralPortal') {
+tasks.register('stagingAtMavenCentralPortal') {
   group = 'publishing'
   description = 'Upload artifacts to Maven Central Portal for manual approval'
 
-  dependsOn "generatePom"
-
   doLast {
-    def username = System.getenv('ORG_GRADLE_PROJECT_user')
-    def password = System.getenv('ORG_GRADLE_PROJECT_password')
+    def username = project.getProperty('mavenCentralUser')
+    def password =  project.getProperty('mavenCentralPassword')
     def deployVersion = project.findProperty('deployVersion') ?: project.version
 
     if (!username || !password) {
       throw new GradleException("Sonatype credentials not found. Set sonatypeUser and sonatypePassword properties or environment variables.")
     }
 
-    // Create bundle directory
-    def bundleDir = layout.buildDirectory.dir("central-portal-bundle").get().asFile
-    def artifactPath = "${group.toString().replace('.', '/')}/${project.name}/${deployVersion}"
-    def bundleArtifactDir = new File(bundleDir, artifactPath)
+    // Request API for repo key
+    def repositoryString = providers.exec {
+      commandLine 'curl',
+          '-u', "${username}:${password}",
+          'https://ossrh-staging-api.central.sonatype.com/manual/search/repositories'
+    }.getStandardOutput().getAsText().get()
 
-    bundleDir.deleteDir()
-    bundleArtifactDir.mkdirs()
+    def getRepositoryGroovy = new groovy.json.JsonSlurper().parseText(repositoryString)
 
-    // Copy artifacts from build/libs using the correct filename
-    def localJarPath = file("${layout.buildDirectory}/libs/${project.name}-${deployVersion}.jar")
-
-    if (!localJarPath.exists()) {
-      throw new GradleException("Artifacts not found in build/libs: ${localJarPath}")
-    }
-
-    copy {
-      from localJarPath
-      into bundleArtifactDir
-    }
-
-    //Copy generated POM file into the bundle directory
-    copy {
-      from layout.buildDirectory.file("pom.xml")
-      into bundleArtifactDir
-    }
-
-    // Create tar.gz bundle including both JAR and POM files
-    def bundleFile = layout.buildDirectory.file("${project.name}-${deployVersion}-bundle.tar.gz").get().asFile
-
-    exec {
-      workingDir bundleDir
-      commandLine 'tar', '-czf', bundleFile.absolutePath, '.'
-    }
-
-    println "Created bundle: ${bundleFile}"
-    println "Bundle size: ${bundleFile.length()} bytes"
-
+    def key = getRepositoryGroovy.repositories[0].key
 
     // Upload via curl
-    def uploadResult = exec {
+    def stageResult = providers.exec {
       ignoreExitValue true
-      commandLine 'curl', '-s', '-w', '\n%{http_code}',
-          '-X', 'POST',
-          '-H', 'Content-Type: multipart/form-data',
-          '-F', "bundle=@${bundleFile.absolutePath}",
-          '-F', 'publishingType=USER_MANAGED',
+      commandLine 'curl',
           '-u', "${username}:${password}",
-          'https://central.sonatype.com/api/v1/publisher/upload'
+          '-i', '-X', 'POST', "https://ossrh-staging-api.central.sonatype.com/manual/upload/repository/$key"
     }
 
-    if (uploadResult.exitValue == 0) {
+    if (stageResult.result.get().exitValue == 0) {
       println "✓ Upload successful!"
       println "Check status at: https://central.sonatype.com/publishing/deployments"
     } else {

@@ -88,9 +88,9 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
-          ORG_GRADLE_PROJECT_user: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_USER ||
+          ORG_GRADLE_PROJECT_mavencental_user: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_USER ||
             github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_TEST_USER }}
-          ORG_GRADLE_PROJECT_password: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_PASS ||
+          ORG_GRADLE_PROJECT_mavencentral_password: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_PASS ||
             github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_TEST_PASS }}
 
         run: |
@@ -103,4 +103,19 @@ jobs:
           
           echo "currentVersion=$currentVersion"
 
-          ./gradlew uploadToMavenCentralPortal
+          ./gradlew publish -PdeployVersion=$currentVersion
+
+
+      #MavenCentral Staging
+      - name: MavenCentral Staging
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
+          ORG_GRADLE_PROJECT_mavenCentalUser: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_USER ||
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_TEST_USER }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_PASS ||
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_TEST_PASS }}
+
+        run: |
+          ./gradlew stagingAtMavenCentralPortal
