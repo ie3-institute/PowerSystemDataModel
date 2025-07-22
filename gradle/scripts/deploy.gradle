@@ -35,10 +35,9 @@ publishing {
     }
   }
 
-  tasks.register("generatePom") {
-    doLast {
-      publishing.publications.mavenJava.pom.writeTo("${layout.buildDirectory}/libs/pom.xml")
-    }
+  tasks.register("generatePom", GenerateMavenPom) {
+    destination = file("${layout.buildDirectory}/libs/pom.xml")
+    pom = publishing.publications.mavenJava.pom
   }
 }
 
