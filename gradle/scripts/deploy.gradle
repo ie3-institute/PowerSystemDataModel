@@ -37,7 +37,7 @@ publishing {
   repositories {
     maven {
       name = "buildDir"
-      url = uri("${layout.buildDirectory}/libs")
+      url = uri("${layout.buildDirectory}/maven-repo")
     }
   }
 }
