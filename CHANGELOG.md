@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-## [8.0.0] - 2025-07-17
+## [8.0.0] - 2025-07-22
 
 ### Added
 - Extend Validation to EnergyManagement Systems. [#1356](https://github.com/ie3-institute/PowerSystemDataModel/issues/1356)

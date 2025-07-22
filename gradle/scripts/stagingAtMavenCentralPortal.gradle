@@ -1,6 +1,6 @@
 tasks.register('stagingAtMavenCentralPortal') {
   group = 'publishing'
-  description = 'Upload artifacts to Maven Central Portal for manual approval'
+  description = 'Stages uploaded artifacts to Maven Central Portal for manual approval'
 
   doLast {
     def username = project.getProperty('mavenCentralUser')
@@ -18,17 +18,10 @@ tasks.register('stagingAtMavenCentralPortal') {
           'https://ossrh-staging-api.central.sonatype.com/manual/search/repositories'
     }.getStandardOutput().getAsText().get()
 
-    println("repositoryString")
-    println(repositoryString)
-
     def repositoryGroovy = new groovy.json.JsonSlurper().parseText(repositoryString)
-
-    println("repositoryGroovy")
-    println(repositoryGroovy)
-
     def key = repositoryGroovy.repositories[0].key
 
-    // Upload via curl
+    // Stage via curl
     def stageResult = providers.exec {
       ignoreExitValue true
       commandLine 'curl',
@@ -37,10 +30,10 @@ tasks.register('stagingAtMavenCentralPortal') {
     }
 
     if (stageResult.result.get().exitValue == 0) {
-      println "✓ Upload successful!"
+      println "✓ Staging successful!"
       println "Check status at: https://central.sonatype.com/publishing/deployments"
     } else {
-      throw new GradleException("Upload failed")
+      throw new GradleException("Staging failed")
     }
   }
 }
