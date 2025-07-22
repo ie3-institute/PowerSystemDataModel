@@ -18,6 +18,9 @@ tasks.register('stagingAtMavenCentralPortal') {
           'https://ossrh-staging-api.central.sonatype.com/manual/search/repositories'
     }.getStandardOutput().getAsText().get()
 
+    println("repositoryString")
+    println(repositoryString)
+
     def repositoryGroovy = new groovy.json.JsonSlurper().parseText(repositoryString)
 
     println("repositoryGroovy")
