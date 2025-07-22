@@ -34,11 +34,17 @@ publishing {
       }
     }
   }
+  repositories {
+    maven {
+      name = "buildDir"
+      url = uri("${layout.buildDirectory}/libs")
+    }
+  }
 }
 
 tasks.register("generatePom", PublishToMavenRepository) {
   publication = publishing.publications.mavenJava
-  repository = uri("${layout.buildDirectory}/libs")
+  repository = publishing.repositories.buildDir
 }
 
 tasks.register('uploadToMavenCentralPortal') {
@@ -76,11 +82,11 @@ tasks.register('uploadToMavenCentralPortal') {
       into bundleArtifactDir
     }
 
-    // Copy generated POM file into the bundle directory
-    //  copy {
-    //    from layout.buildDirectory.file("generated-pom.xml")
-    //    into bundleArtifactDir  // Include generated POM in the bundle
-    //   }
+    //Copy generated POM file into the bundle directory
+    copy {
+      from layout.buildDirectory.file("generated-pom.xml")
+      into bundleArtifactDir  // Include generated POM in the bundle
+    }
 
     // Create tar.gz bundle including both JAR and POM files
     def bundleFile = layout.buildDirectory.file("${project.name}-${deployVersion}-bundle.tar.gz").get().asFile
