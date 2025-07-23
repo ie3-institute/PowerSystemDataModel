@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Changed
+- Enhanced `ValidationUtils` for `LoadModel` to check for correct profile naming [#1357](https://github.com/ie3-institute/PowerSystemDataModel/issues/1357)
 
 ## [8.0.0] - 2025-07-22
 
@@ -28,7 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extend azimuth angle range to [-180°, 180°] for PV inputs [#1330](https://github.com/ie3-institute/PowerSystemDataModel/issues/1330)
 - Improved error messages when reading and validating an invalid grid [#1354](https://github.com/ie3-institute/PowerSystemDataModel/issues/1354)
 - Changed `SubgridContainer` to represent galvanically seperated grids [#1226](https://github.com/ie3-institute/PowerSystemDataModel/issues/1226)
-- Enhanced `ValidationUtils` for `LoadModel` to check for correct profile naming [#1357](https://github.com/ie3-institute/PowerSystemDataModel/issues/1357)
 
 ## [7.0.0] - 2025-05-08
 
