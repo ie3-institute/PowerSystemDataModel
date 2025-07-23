@@ -12,6 +12,7 @@ import edu.ie3.datamodel.utils.Try
 import spock.lang.Specification
 
 import java.time.ZonedDateTime
+import java.util.stream.Collectors
 
 class EmInputFactoryTest extends Specification {
 
@@ -22,6 +23,79 @@ class EmInputFactoryTest extends Specification {
 
     expect:
     inputFactory.supportedClasses == expectedClasses
+  }
+
+  def "An EmInputFactory should return the valid fields correctly"() {
+    given:
+    def inputFactory = new EmInputFactory()
+    def validCombinations = [
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesFrom"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesUntil"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesFrom",
+        "operatesUntil"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesFrom"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesUntil"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesFrom",
+        "operatesUntil"
+      ]
+    ].collect { it as Set }
+
+    when:
+    def fieldCombinations = inputFactory.getFields(EmInput)
+
+    then:
+    fieldCombinations == validCombinations
   }
 
   def "A EmInputFactory should parse a valid EmInput with parent EM correctly"() {
