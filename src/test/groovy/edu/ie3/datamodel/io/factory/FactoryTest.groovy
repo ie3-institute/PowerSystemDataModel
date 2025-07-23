@@ -18,7 +18,7 @@ class FactoryTest extends Specification {
 
   def "A Factory can return unused fields correctly"() {
     when:
-    def unused = factory.getUnusedFields(actualFields as Set<String>, validFieldSets, [] as Set<String>)
+    def unused = factory.getUnusedFields(actualFields as Set<String>, validFieldSets)
 
     then:
     unused == expected as Set<String>
@@ -97,15 +97,6 @@ class FactoryTest extends Specification {
         ["uuid", "value1", "value3"] as Set<String>,
         ["id", "time", "value1"] as Set<String>
       ]
-    }
-
-    @Override
-    protected Map<String, String> getReplacedFields(Class<?> entityClass) {
-      if (entityClass.isAssignableFrom(EmInput)) {
-        return ["parentEm": "controllingEM"]
-      } else {
-        return [:]
-      }
     }
   }
 }

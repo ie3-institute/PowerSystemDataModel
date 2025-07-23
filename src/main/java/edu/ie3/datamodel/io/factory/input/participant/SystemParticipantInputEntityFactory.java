@@ -44,22 +44,14 @@ public abstract class SystemParticipantInputEntityFactory<
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
+
     for (Set<String> set : fields) {
       set.add(Q_CHARACTERISTICS);
       set.add(NODE);
+      set.add(CONTROLLING_EM);
     }
 
-    List<Set<String>> withEm =
-        fields.stream().map(f -> (Set<String>) expandSet(f, CONTROLLING_EM)).toList();
-
-    fields.addAll(withEm);
-
     return fields;
-  }
-
-  @Override
-  protected Map<String, String> getReplacedFields(Class<?> entityClass) {
-    return newMap(entry("em", CONTROLLING_EM));
   }
 
   @Override

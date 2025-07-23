@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
-- Added check for replaced field names in sources [#1383](https://github.com/ie3-institute/PowerSystemDataModel/issues/1383)
+- Enhanced check for invalid field names in sources [#1383](https://github.com/ie3-institute/PowerSystemDataModel/issues/1383)
 
 ### Fixed
 
