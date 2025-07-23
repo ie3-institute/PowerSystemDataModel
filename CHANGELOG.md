@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Added check for replaced field names in sources [#1383](https://github.com/ie3-institute/PowerSystemDataModel/issues/1383)
 
 ### Fixed
 
@@ -17,7 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Extend Validation to EnergyManagement Systems. [#1356](https://github.com/ie3-institute/PowerSystemDataModel/issues/1356)
 - Added `CITATION.cff` [#1380](https://github.com/ie3-institute/PowerSystemDataModel/issues/1380)
-- Added check for replaced field names in sources [#1383](https://github.com/ie3-institute/PowerSystemDataModel/issues/1383)
 
 ### Fixed
 - Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
