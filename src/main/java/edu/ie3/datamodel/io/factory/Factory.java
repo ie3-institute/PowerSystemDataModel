@@ -112,16 +112,27 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
   protected abstract List<Set<String>> getFields(Class<?> entityClass);
 
   /**
+   * Returns a map: old field name to new field name.
+   *
+   * @param entityClass class that can be used to specify the fields that are returned
+   * @return map of replaced field names
+   */
+  protected Map<String, String> getReplacedFields(Class<?> entityClass) {
+    return Collections.emptyMap();
+  }
+
+  /**
    * Method to find and return additional fields that were found in a source and are not used by the
    * data model. This method will return the minimal unused fields among all field sets, meaning
    * that the set of actual fields is compared to the field set with the least unused fields.
    *
    * @param actualFields found in the source
    * @param validFieldSets that contains at least all fields found in the source
+   * @param replacedFields fields, that are replaced and therefore, reported as unused
    * @return a set of unused fields
    */
   protected Set<String> getUnusedFields(
-      Set<String> actualFields, List<Set<String>> validFieldSets) {
+      Set<String> actualFields, List<Set<String>> validFieldSets, Set<String> replacedFields) {
     // checking for additional fields
     // and returning the set with the least additional fields
     return validFieldSets.stream()
@@ -129,6 +140,7 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
             s -> {
               Set<String> set = new HashSet<>(actualFields);
               set.removeAll(s);
+              set.removeAll(replacedFields);
               return set;
             })
         .min(Comparator.comparing(Collection::size))
@@ -174,10 +186,30 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
                   + "' are possible (NOT case-sensitive!):\n"
                   + possibleOptions));
     } else {
-      Set<String> unused = getUnusedFields(harmonizedActualFields, validFieldSets);
+      // find all replaced fields
+      Map<String, String> replacedFields = getReplacedFields(entityClass);
+
+      Set<String> unsupportedFields =
+          actualFields.stream().filter(replacedFields::containsKey).collect(Collectors.toSet());
+
+      if (!unsupportedFields.isEmpty()) {
+        List<String> strings =
+            unsupportedFields.stream()
+                .map(field -> field + " -> " + replacedFields.get(field))
+                .toList();
+
+        log.warn(
+            "The following field were renamed '{}'. Please rename field like: [{}]",
+            unsupportedFields,
+            String.join(", ", strings));
+      }
+
+      // find all unused fields
+      Set<String> unused =
+          getUnusedFields(harmonizedActualFields, validFieldSets, replacedFields.keySet());
 
       if (!unused.isEmpty()) {
-        log.debug(
+        log.info(
             "The following additional fields were found for entity class of '{}': {}",
             entityClass.getSimpleName(),
             unused);
@@ -214,6 +246,17 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
     TreeSet<String> set = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     set.addAll(Arrays.asList(attributes));
     return set;
+  }
+
+  protected static Map.Entry<String, String> entry(String key, String value) {
+    return new AbstractMap.SimpleEntry<>(key, value);
+  }
+
+  @SafeVarargs
+  protected static Map<String, String> newMap(Map.Entry<String, String>... attributes) {
+    Map<String, String> map = new HashMap<>();
+    Arrays.stream(attributes).forEach(e -> map.put(e.getKey(), e.getValue()));
+    return map;
   }
 
   /**

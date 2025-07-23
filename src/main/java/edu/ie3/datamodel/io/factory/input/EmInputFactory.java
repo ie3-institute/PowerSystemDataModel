@@ -38,4 +38,9 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInpu
 
     return new EmInput(uuid, id, operator, operationTime, controlStrategy, parentEm);
   }
+
+  @Override
+  protected Map<String, String> getReplacedFields(Class<?> entityClass) {
+    return newMap(entry("parentEm", CONTROLLING_EM));
+  }
 }

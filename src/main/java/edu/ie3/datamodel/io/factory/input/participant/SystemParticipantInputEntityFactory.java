@@ -30,10 +30,13 @@ public abstract class SystemParticipantInputEntityFactory<
         T extends SystemParticipantInput, D extends SystemParticipantEntityData>
     extends AssetInputEntityFactory<T, D> {
 
+  private static final String NODE = "node";
+
   private static final String Q_CHARACTERISTICS = "qCharacteristics";
 
   public static final String CONTROLLING_EM = "controllingEm";
 
+  @SafeVarargs
   protected SystemParticipantInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
@@ -41,7 +44,10 @@ public abstract class SystemParticipantInputEntityFactory<
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
-    for (Set<String> set : fields) set.add(Q_CHARACTERISTICS);
+    for (Set<String> set : fields) {
+      set.add(Q_CHARACTERISTICS);
+      set.add(NODE);
+    }
 
     List<Set<String>> withEm =
         fields.stream().map(f -> (Set<String>) expandSet(f, CONTROLLING_EM)).toList();
@@ -49,6 +55,11 @@ public abstract class SystemParticipantInputEntityFactory<
     fields.addAll(withEm);
 
     return fields;
+  }
+
+  @Override
+  protected Map<String, String> getReplacedFields(Class<?> entityClass) {
+    return newMap(entry("em", CONTROLLING_EM));
   }
 
   @Override
