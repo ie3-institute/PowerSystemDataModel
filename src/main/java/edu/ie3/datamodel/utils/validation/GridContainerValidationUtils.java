@@ -20,7 +20,6 @@ import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
-import edu.ie3.datamodel.utils.ContainerUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
@@ -28,7 +27,6 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
@@ -140,26 +138,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
               exceptions.addAll(ConnectorValidationUtils.check(transformer));
             });
 
-    /* Checking switches
-     * Because of the fact, that a transformer with switch gear in "upstream" direction has its corresponding node in
-     * upper grid connected to a switch, instead of to the transformer directly: Collect all nodes at the end of the
-     * upstream switch chain and add them to the set of allowed nodes */
-    HashSet<NodeInput> validSwitchNodes = new HashSet<>(nodes);
-    validSwitchNodes.addAll(
-        Stream.of(rawGridElements.getTransformer2Ws(), rawGridElements.getTransformer2Ws())
-            .flatMap(Set::stream)
-            .parallel()
-            .map(
-                transformer ->
-                    ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGridElements)
-                        .getLast())
-            .toList());
-
+    /* Checking switches */
     rawGridElements
         .getSwitches()
         .forEach(
             switcher -> {
-              exceptions.add(checkNodeAvailability(switcher, validSwitchNodes));
+              exceptions.add(checkNodeAvailability(switcher, nodes));
               exceptions.addAll(ConnectorValidationUtils.check(switcher));
             });
 
