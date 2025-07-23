@@ -105,9 +105,7 @@ public class ResultEntitySource extends EntitySource {
             validate(FlexOptionsResult.class, dataSource, flexOptionsResultFactory),
             validate(CongestionResult.class, dataSource, congestionResultFactory)));
 
-    Try.scanCollection(participantResults, Void.class)
-        .transformF(FailedValidationException::new)
-        .getOrThrow();
+    Try.scanCollection(participantResults, Void.class, FailedValidationException::new).getOrThrow();
   }
 
   /**

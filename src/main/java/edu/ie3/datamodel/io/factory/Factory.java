@@ -73,7 +73,7 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
    *     {@link Failure}
    */
   public Try<R, FactoryException> get(Try<D, ?> data) {
-    return data.transformF(FactoryException::new).flatMap(this::get);
+    return data.transformF(e -> new FactoryException(e.getMessage(), e)).flatMap(this::get);
   }
 
   /**
@@ -174,10 +174,11 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
                   + "' are possible (NOT case-sensitive!):\n"
                   + possibleOptions));
     } else {
+      // find all unused fields
       Set<String> unused = getUnusedFields(harmonizedActualFields, validFieldSets);
 
       if (!unused.isEmpty()) {
-        log.debug(
+        log.info(
             "The following additional fields were found for entity class of '{}': {}",
             entityClass.getSimpleName(),
             unused);

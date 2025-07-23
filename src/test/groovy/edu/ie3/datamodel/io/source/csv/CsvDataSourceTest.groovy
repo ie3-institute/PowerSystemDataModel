@@ -127,6 +127,18 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     ] as Set
   }
 
+  def "A CsvDataSource should throw an exception when retrieving column names from a valid CSV file using the wrong separator"() {
+    given:
+    DummyCsvSource source = new DummyCsvSource(";", participantsFolderPath, fileNamingStrategy)
+
+    when:
+    source.getSourceFields(LoadInput)
+
+    then:
+    SourceException ex = thrown(SourceException)
+    ex.message == "The given file has less than two columns! (Used separator ';' on headline 'uuid,cos_phi_rated,e_cons_annual,id,node,operates_from,operates_until,operator,q_characteristics,s_rated,load_profile,controlling_em')"
+  }
+
   def "A CsvDataSource should return an empty result when retrieving column names for a non-existing CSV file"() {
     given:
     def path = Path.of("this/path/does-not-exist")
@@ -322,15 +334,14 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     def exception = thrown(SourceException)
-    exception.getMessage().startsWith("The size of the headline (8) does not fit to the size of the attribute fields")
+    exception.getMessage() == expectedMessage
 
     where:
-    invalidCsvRow                                                                          || explaination
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too little columns"
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too many columns"
+    invalidCsvRow                                                                          || explaination         || expectedMessage
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"    || "The size of the headline (8) does not fit to the size of the attribute fields (1).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cosphi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0'].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too little columns" || "The size of the headline (8) does not fit to the size of the attribute fields (6).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cosphi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8', '25.0', '100.0', '0.95', '98.0', 'test_bmTypeInput'].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too many columns"   || "The size of the headline (8) does not fit to the size of the attribute fields (10).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cosphi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8', '25.0', '100.0', '0.95', '98.0', 'test_bmTypeInput', '', '', '', ''].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
   }
-
 
   def "A CsvDataSource should throw an exception if there are duplicate headlines"() {
     given:

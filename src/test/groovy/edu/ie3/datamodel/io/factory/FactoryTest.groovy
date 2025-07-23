@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.utils.Try
 import spock.lang.Shared
 import spock.lang.Specification

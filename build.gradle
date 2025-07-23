@@ -4,8 +4,8 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '7.0.4' //code format
-  id 'com.github.spotbugs' version '6.2.0' // code check, working on byte code
+  id 'com.diffplug.spotless' version '7.2.1' //code format
+  id 'com.github.spotbugs' version '6.2.2' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
@@ -21,7 +21,7 @@ ext {
   groovyBinaryVersion = "4.0.27"
 
   junitVersion = '1.12.0'
-  testcontainersVersion = '1.21.2'
+  testcontainersVersion = '1.21.3'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -41,7 +41,8 @@ apply from: scriptsLocation + 'spotless.gradle'
 apply from: scriptsLocation + 'checkJavaVersion.gradle'
 apply from: scriptsLocation + 'documentation.gradle'
 apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
-apply from: scriptsLocation + 'mavenCentralPublish.gradle'
+apply from: scriptsLocation + 'uploadToMavenCentralPortal.gradle' // upload for deploy
+apply from: scriptsLocation + 'stagingAtMavenCentralPortal.gradle' // stage for deploy
 apply from: scriptsLocation + 'sonarqube.gradle'
 apply from: scriptsLocation + 'vcs.gradle'
 apply from: scriptsLocation + 'semVer.gradle'
@@ -91,18 +92,18 @@ dependencies {
   testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
 
   // logging
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.0')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.1')
   implementation 'org.apache.logging.log4j:log4j-api' // log4j
   implementation 'org.apache.logging.log4j:log4j-core' // log4j
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.25'
-  implementation 'com.couchbase.client:java-client:3.8.2'
+  implementation 'com.couchbase.client:java-client:3.8.3'
   runtimeOnly 'org.postgresql:postgresql:42.7.7' // postgresql jdbc driver required during runtime
 
-  implementation 'commons-io:commons-io:2.19.0' // I/O functionalities
-  implementation 'commons-codec:commons-codec:1.18.0' // needed by commons-compress
+  implementation 'commons-io:commons-io:2.20.0' // I/O functionalities
+  implementation 'commons-codec:commons-codec:1.19.0' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.27.1' // I/O functionalities
 }
 
