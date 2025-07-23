@@ -205,7 +205,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         .executeQuery(
             queryForValueBefore, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
         .map(valueFactory::extractTime)
-        .findFirst();
+        .max(ZonedDateTime::compareTo);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
