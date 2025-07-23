@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+
+### Fixed
+
+### Changed
+
+## [8.0.0] - 2025-07-22
+
+### Added
 - Extend Validation to EnergyManagement Systems. [#1356](https://github.com/ie3-institute/PowerSystemDataModel/issues/1356)
 - Added `CITATION.cff` [#1380](https://github.com/ie3-institute/PowerSystemDataModel/issues/1380)
 - Added check for replaced field names in sources [#1383](https://github.com/ie3-institute/PowerSystemDataModel/issues/1383)
@@ -373,7 +381,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.0.0...HEAD
+[8.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...8.0.0
 [7.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/6.0.0...7.0.0
 [6.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.1.0...6.0.0
 [5.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.1...5.1.0
