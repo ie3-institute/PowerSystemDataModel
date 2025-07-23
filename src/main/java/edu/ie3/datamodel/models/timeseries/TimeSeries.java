@@ -62,7 +62,7 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, 
    * @param time Reference in time
    * @return The next earlier known time instant
    */
-  protected abstract Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time);
+  public abstract Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time);
 
   /**
    * Get the next later known time instant
