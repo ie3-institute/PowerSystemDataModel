@@ -187,28 +187,28 @@ public class BmInput extends SystemParticipantInput implements HasType {
 
     public BmInputCopyBuilder type(BmTypeInput type) {
       this.type = type;
-      return this;
+      return thisInstance();
     }
 
     public BmInputCopyBuilder marketReaction(boolean marketReaction) {
       this.marketReaction = marketReaction;
-      return this;
+      return thisInstance();
     }
 
     public BmInputCopyBuilder costControlled(boolean costControlled) {
       this.costControlled = costControlled;
-      return this;
+      return thisInstance();
     }
 
     public BmInputCopyBuilder feedInTariff(ComparableQuantity<EnergyPrice> feedInTariff) {
       this.feedInTariff = feedInTariff;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public BmInputCopyBuilder scale(Double factor) {
       this.type = this.type.copy().scale(factor).build();
-      return this;
+      return thisInstance();
     }
 
     @Override

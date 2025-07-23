@@ -289,7 +289,11 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
         "0: [id, uuid] or [id, uuid]\n" +
         "1: [id, operatesFrom, uuid] or [id, operates_from, uuid]\n" +
         "2: [id, operatesUntil, uuid] or [id, operates_until, uuid]\n" +
-        "3: [id, operatesFrom, operatesUntil, uuid] or [id, operates_from, operates_until, uuid]\n"
+        "3: [id, operatesFrom, operatesUntil, uuid] or [id, operates_from, operates_until, uuid]\n" +
+        "4: [id, operator, uuid] or [id, operator, uuid]\n" +
+        "5: [id, operatesFrom, operator, uuid] or [id, operates_from, operator, uuid]\n" +
+        "6: [id, operatesUntil, operator, uuid] or [id, operates_until, operator, uuid]\n" +
+        "7: [id, operatesFrom, operatesUntil, operator, uuid] or [id, operates_from, operates_until, operator, uuid]\n"
   }
 
   private static class TestAssetInput extends AssetInput {

@@ -72,7 +72,7 @@ public record ThermalGrid(
    * @version 3.1
    * @since 14.02.23
    */
-  public static class ThermalGridCopyBuilder implements InputContainerCopyBuilder<ThermalInput> {
+  public static class ThermalGridCopyBuilder extends InputContainerCopyBuilder<ThermalInput> {
     private ThermalBusInput bus;
     private Set<ThermalHouseInput> houses;
     private Set<ThermalStorageInput> heatStorages;
@@ -98,7 +98,7 @@ public record ThermalGrid(
      */
     public ThermalGridCopyBuilder bus(ThermalBusInput bus) {
       this.bus = bus;
-      return this;
+      return thisInstance();
     }
 
     /**
@@ -109,7 +109,7 @@ public record ThermalGrid(
      */
     public ThermalGridCopyBuilder houses(Set<ThermalHouseInput> houses) {
       this.houses = houses;
-      return this;
+      return thisInstance();
     }
 
     /**
@@ -120,7 +120,7 @@ public record ThermalGrid(
      */
     public ThermalGridCopyBuilder heatStorages(Set<ThermalStorageInput> heatStorages) {
       this.heatStorages = heatStorages;
-      return this;
+      return thisInstance();
     }
 
     /**
@@ -132,7 +132,7 @@ public record ThermalGrid(
     public ThermalGridCopyBuilder domesticHotWaterStorages(
         Set<ThermalStorageInput> domesticHotWaterStorages) {
       this.domesticHotWaterStorages = domesticHotWaterStorages;
-      return this;
+      return thisInstance();
     }
 
     public ThermalGridCopyBuilder scale(Double factor) {
@@ -148,6 +148,11 @@ public record ThermalGrid(
           domesticHotWaterStorages.stream()
               .map(storage -> storage.copy().scale(factor).build())
               .collect(Collectors.toSet()));
+      return thisInstance();
+    }
+
+    @Override
+    protected ThermalGridCopyBuilder thisInstance() {
       return this;
     }
 

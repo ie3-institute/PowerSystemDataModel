@@ -20,9 +20,9 @@ class ChpTypeInputTest extends Specification {
 
     when:
     def alteredUnit = chpTypeInput.copy()
-        .setsRated(Quantities.getQuantity(50d, ACTIVE_POWER_IN))
-        .setEtaEl(Quantities.getQuantity(20, EFFICIENCY))
-        .setpThermal(Quantities.getQuantity(15, ACTIVE_POWER_IN))
+        .sRated(Quantities.getQuantity(50d, ACTIVE_POWER_IN))
+        .etaEl(Quantities.getQuantity(20, EFFICIENCY))
+        .pThermal(Quantities.getQuantity(15, ACTIVE_POWER_IN))
         .build()
 
     then:

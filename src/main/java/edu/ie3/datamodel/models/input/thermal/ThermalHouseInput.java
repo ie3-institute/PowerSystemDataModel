@@ -222,40 +222,40 @@ public class ThermalHouseInput extends ThermalSinkInput {
     public ThermalHouseInputCopyBuilder ethLosses(
         ComparableQuantity<ThermalConductance> ethLosses) {
       this.ethLosses = ethLosses;
-      return this;
+      return thisInstance();
     }
 
     public ThermalHouseInputCopyBuilder ethCapa(ComparableQuantity<HeatCapacity> ethCapa) {
       this.ethCapa = ethCapa;
-      return this;
+      return thisInstance();
     }
 
     public ThermalHouseInputCopyBuilder targetTemperature(
         ComparableQuantity<Temperature> targetTemperature) {
       this.targetTemperature = targetTemperature;
-      return this;
+      return thisInstance();
     }
 
     public ThermalHouseInputCopyBuilder upperTemperatureLimit(
         ComparableQuantity<Temperature> upperTemperatureLimit) {
       this.upperTemperatureLimit = upperTemperatureLimit;
-      return this;
+      return thisInstance();
     }
 
     public ThermalHouseInputCopyBuilder lowerTemperatureLimit(
         ComparableQuantity<Temperature> lowerTemperatureLimit) {
       this.lowerTemperatureLimit = lowerTemperatureLimit;
-      return this;
+      return thisInstance();
     }
 
     public ThermalHouseInputCopyBuilder housingType(String housingType) {
       this.housingType = housingType;
-      return this;
+      return thisInstance();
     }
 
     public ThermalHouseInputCopyBuilder numberInhabitants(double numberInhabitants) {
       this.numberInhabitants = numberInhabitants;
-      return this;
+      return thisInstance();
     }
 
     @Override
@@ -265,7 +265,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
       ethLosses(ethLosses.multiply(factor));
       ethCapa(ethCapa.multiply(factor));
       numberInhabitants(numberInhabitants * factor);
-      return this;
+      return thisInstance();
     }
 
     @Override

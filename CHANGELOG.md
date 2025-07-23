@@ -6,6 +6,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+- Extend Validation to EnergyManagement Systems. [#1356](https://github.com/ie3-institute/PowerSystemDataModel/issues/1356)
+- Added `CITATION.cff` [#1380](https://github.com/ie3-institute/PowerSystemDataModel/issues/1380)
+
+### Fixed
+- Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
+- Fixed em fields in input models [#1331](https://github.com/ie3-institute/PowerSystemDataModel/issues/1331)
+- Fixed valid fields for `EmInput` [#1360](https://github.com/ie3-institute/PowerSystemDataModel/issues/1360)
+
+### Changed
+- Updated dependabot workflow and added CODEOWNERS [#1328](https://github.com/ie3-institute/PowerSystemDataModel/issues/1328)
+- Extend azimuth angle range to [-180°, 180°] for PV inputs [#1330](https://github.com/ie3-institute/PowerSystemDataModel/issues/1330)
+- Improved error messages when reading and validating an invalid grid [#1354](https://github.com/ie3-institute/PowerSystemDataModel/issues/1354)
+- Changed `SubgridContainer` to represent galvanically seperated grids [#1226](https://github.com/ie3-institute/PowerSystemDataModel/issues/1226)
+
+## [7.0.0] - 2025-05-08
+
+### Added
+- Implemented GitHub Actions for automatic code integration. [#1237](https://github.com/ie3-institute/PowerSystemDataModel/issues/1237)
+- Added `CopyBuilders` to `Line-/Transformer2W-/Tranformer3WTypeInput` [#1275](https://github.com/ie3-institute/PowerSystemDataModel/issues/1275)
+- Implementing auto-merge for dependabot PRs [#1299](https://github.com/ie3-institute/PowerSystemDataModel/issues/1299)
+
+### Fixed
+- Fixed SonarQube junit path issue in GitHub Actions [#1284](https://github.com/ie3-institute/PowerSystemDataModel/issues/1284)
+- Fixed no errors thrown in `getMapping()` in `TimeSeriesMappingSource` [#1287](https://github.com/ie3-institute/PowerSystemDataModel/issues/1287)
+
+### Changed
+- Replaced `return this` with `return thisInstance` in CopyBuilders [#1250](https://github.com/ie3-institute/PowerSystemDataModel/issues/1250)
+- Removed Jenkinsfile [#1315](https://github.com/ie3-institute/PowerSystemDataModel/issues/1315)
+- Updated readthedocs config [#1317](https://github.com/ie3-institute/PowerSystemDataModel/issues/1317)
+
+### Updates
+- Updated gradle to v8.14
+- Updated PSU to 3.1.0
+
 ## [6.0.0] - 2025-02-27
 
 ### Added
@@ -23,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added domestic hot water storage model [#1257](https://github.com/ie3-institute/PowerSystemDataModel/issues/1257)
 - Validation for BDEW load profile values [#1243](https://github.com/ie3-institute/PowerSystemDataModel/issues/1243)
 - Added load profiles sources [#1106](https://github.com/ie3-institute/PowerSystemDataModel/issues/1106)
+- Add `v2gSupport` parameter to documentation of `EvcsModel` [#1278](https://github.com/ie3-institute/PowerSystemDataModel/issues/1278)
 
 
 ### Fixed
@@ -338,7 +374,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/6.0.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...HEAD
+[7.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/6.0.0...7.0.0
 [6.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.1.0...6.0.0
 [5.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.1...5.1.0
 [5.0.1]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.0.0...5.0.1

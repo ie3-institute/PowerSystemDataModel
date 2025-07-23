@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.input.participant
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -81,7 +82,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
     def actualFields = FixedFeedInInputFactory.newSet("uuid", "id", "s_rated", "cosphi_rated")
 
     when:
-    Try<Void, FactoryException> input = inputFactory.validate(actualFields, FixedFeedInInput)
+    Try<Void, ValidationException> input = inputFactory.validate(actualFields, FixedFeedInInput)
 
     then:
     input.failure
@@ -91,9 +92,17 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
         "1: [cosPhiRated, id, operatesFrom, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_from, q_characteristics, s_rated, uuid]\n" +
         "2: [cosPhiRated, id, operatesUntil, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_until, q_characteristics, s_rated, uuid]\n" +
         "3: [cosPhiRated, id, operatesFrom, operatesUntil, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_from, operates_until, q_characteristics, s_rated, uuid]\n" +
-        "4: [cosPhiRated, em, id, qCharacteristics, sRated, uuid] or [cos_phi_rated, em, id, q_characteristics, s_rated, uuid]\n" +
-        "5: [cosPhiRated, em, id, operatesFrom, qCharacteristics, sRated, uuid] or [cos_phi_rated, em, id, operates_from, q_characteristics, s_rated, uuid]\n" +
-        "6: [cosPhiRated, em, id, operatesUntil, qCharacteristics, sRated, uuid] or [cos_phi_rated, em, id, operates_until, q_characteristics, s_rated, uuid]\n" +
-        "7: [cosPhiRated, em, id, operatesFrom, operatesUntil, qCharacteristics, sRated, uuid] or [cos_phi_rated, em, id, operates_from, operates_until, q_characteristics, s_rated, uuid]\n"
+        "4: [cosPhiRated, id, operator, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operator, q_characteristics, s_rated, uuid]\n" +
+        "5: [cosPhiRated, id, operatesFrom, operator, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_from, operator, q_characteristics, s_rated, uuid]\n" +
+        "6: [cosPhiRated, id, operatesUntil, operator, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_until, operator, q_characteristics, s_rated, uuid]\n" +
+        "7: [cosPhiRated, id, operatesFrom, operatesUntil, operator, qCharacteristics, sRated, uuid] or [cos_phi_rated, id, operates_from, operates_until, operator, q_characteristics, s_rated, uuid]\n" +
+        "8: [controllingEm, cosPhiRated, id, qCharacteristics, sRated, uuid] or [controlling_em, cos_phi_rated, id, q_characteristics, s_rated, uuid]\n" +
+        "9: [controllingEm, cosPhiRated, id, operatesFrom, qCharacteristics, sRated, uuid] or [controlling_em, cos_phi_rated, id, operates_from, q_characteristics, s_rated, uuid]\n" +
+        "10: [controllingEm, cosPhiRated, id, operatesUntil, qCharacteristics, sRated, uuid] or [controlling_em, cos_phi_rated, id, operates_until, q_characteristics, s_rated, uuid]\n" +
+        "11: [controllingEm, cosPhiRated, id, operatesFrom, operatesUntil, qCharacteristics, sRated, uuid] or [controlling_em, cos_phi_rated, id, operates_from, operates_until, q_characteristics, s_rated, uuid]\n" +
+        "12: [controllingEm, cosPhiRated, id, operator, qCharacteristics, sRated, uuid] or [controlling_em, cos_phi_rated, id, operator, q_characteristics, s_rated, uuid]\n" +
+        "13: [controllingEm, cosPhiRated, id, operatesFrom, operator, qCharacteristics, sRated, uuid] or [controlling_em, cos_phi_rated, id, operates_from, operator, q_characteristics, s_rated, uuid]\n" +
+        "14: [controllingEm, cosPhiRated, id, operatesUntil, operator, qCharacteristics, sRated, uuid] or [controlling_em, cos_phi_rated, id, operates_until, operator, q_characteristics, s_rated, uuid]\n" +
+        "15: [controllingEm, cosPhiRated, id, operatesFrom, operatesUntil, operator, qCharacteristics, sRated, uuid] or [controlling_em, cos_phi_rated, id, operates_from, operates_until, operator, q_characteristics, s_rated, uuid]\n"
   }
 }

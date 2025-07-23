@@ -32,7 +32,7 @@ public abstract class SystemParticipantInputEntityFactory<
 
   private static final String Q_CHARACTERISTICS = "qCharacteristics";
 
-  public static final String EM = "em";
+  public static final String CONTROLLING_EM = "controllingEm";
 
   protected SystemParticipantInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
@@ -43,7 +43,8 @@ public abstract class SystemParticipantInputEntityFactory<
     List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
     for (Set<String> set : fields) set.add(Q_CHARACTERISTICS);
 
-    List<Set<String>> withEm = fields.stream().map(f -> (Set<String>) expandSet(f, EM)).toList();
+    List<Set<String>> withEm =
+        fields.stream().map(f -> (Set<String>) expandSet(f, CONTROLLING_EM)).toList();
 
     fields.addAll(withEm);
 

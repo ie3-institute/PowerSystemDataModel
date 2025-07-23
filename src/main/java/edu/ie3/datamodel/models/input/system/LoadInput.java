@@ -271,29 +271,29 @@ public class LoadInput extends SystemParticipantInput {
 
     public LoadInputCopyBuilder loadprofile(StandardLoadProfile standardLoadProfile) {
       this.loadProfile = standardLoadProfile;
-      return this;
+      return thisInstance();
     }
 
     public LoadInputCopyBuilder eConsAnnual(ComparableQuantity<Energy> eConsAnnual) {
       this.eConsAnnual = eConsAnnual;
-      return this;
+      return thisInstance();
     }
 
     public LoadInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
-      return this;
+      return thisInstance();
     }
 
     public LoadInputCopyBuilder cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
-      return this;
+      return thisInstance();
     }
 
     @Override
     public LoadInputCopyBuilder scale(Double factor) {
       eConsAnnual(eConsAnnual.multiply(factor));
       sRated(sRated.multiply(factor));
-      return this;
+      return thisInstance();
     }
 
     @Override

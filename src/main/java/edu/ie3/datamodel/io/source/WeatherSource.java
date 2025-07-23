@@ -171,8 +171,9 @@ public abstract class WeatherSource extends EntitySource {
                   return factory.get(
                       Try.from(data, () -> new SourceException("Missing data in: " + data)));
                 }),
-            "TimeBasedValue<WeatherValue>")
-        .transform(Stream::toList, SourceException::new)
+            "TimeBasedValue<WeatherValue>",
+            SourceException::new)
+        .transformS(Stream::toList)
         .getOrThrow();
   }
 }

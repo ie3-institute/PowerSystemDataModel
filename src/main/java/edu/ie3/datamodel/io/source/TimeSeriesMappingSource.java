@@ -5,15 +5,12 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,12 +38,13 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
    * @return That mapping
    */
   public Map<UUID, UUID> getMapping() throws SourceException {
-    return getMappingSourceData()
-        .map(this::createMappingEntry)
-        .filter(Try::isSuccess)
-        .map(t -> (Success<MappingEntry, FactoryException>) t)
-        .map(Success::get)
-        .collect(Collectors.toMap(MappingEntry::getAsset, MappingEntry::getTimeSeries));
+    return Try.scanStream(
+            getMappingSourceData().map(this::createMappingEntry),
+            "MappingEntry",
+            SourceException::new)
+        .transformS(
+            s -> s.collect(Collectors.toMap(MappingEntry::getAsset, MappingEntry::getTimeSeries)))
+        .getOrThrow();
   }
 
   /**

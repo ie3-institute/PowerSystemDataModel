@@ -32,6 +32,6 @@ public class SourceException extends Exception {
   }
 
   public SourceException(String message, List<? extends Exception> exceptions) {
-    super(message + " " + ExceptionUtils.getMessages(exceptions), exceptions.get(0));
+    super(message + "\n " + ExceptionUtils.combineExceptions(exceptions));
   }
 }
