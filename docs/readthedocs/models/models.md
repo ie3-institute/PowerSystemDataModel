@@ -166,6 +166,7 @@ Some models can use additional data for their calculations.
 ---
 maxdepth: 1
 ---
+input/additionaldata/weathersource
 input/additionaldata/timeseries
 input/additionaldata/idcoordinatesource
 ```

@@ -3,7 +3,7 @@
 The **`WeatherSource`** is an abstract class that provides a standardized interface for accessing time-series weather data. It serves as a foundation for concrete implementations that fetch data from various providers (e.g., CSV files or SQL databases).
 
 A `WeatherSource` relies on two key components:
-* **[`IdCoordinateSource`](/additionaldata/idcoordinatesource)**: Used to resolve a numeric **coordinate ID** from the source data into a geographic `Point` object.
+* **[`IdCoordinateSource`](idcoordinatesource.md)**: Used to resolve a numeric **coordinate ID** from the source data into a geographic `Point` object.
 * **`TimeBasedWeatherValueFactory`**: Used to construct `WeatherValue` objects from the raw data fields.
 
 ***
