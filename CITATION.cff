@@ -1,4 +1,4 @@
-cff-version: 1.0.0
+cff-version: 1.2.0
 title: "PowerSystemDataModel - Provides an elaborated data model to model energy systems with a high granularity."
 message: "If you use this software, please cite it as below."
 type: software
