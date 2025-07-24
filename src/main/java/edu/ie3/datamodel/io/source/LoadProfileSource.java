@@ -89,6 +89,17 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
   public abstract Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling();
 
   /**
+   * Returns the resolution for the given {@link LoadProfile}.
+   *
+   * @param loadProfile given load profile
+   * @return the resolution in seconds.
+   */
+  public static long getResolution(LoadProfile loadProfile) {
+    // currently all registered profiles and all sources use 15 minutes intervals
+    return 900L;
+  }
+
+  /**
    * Method to read in the build-in {@link BdewStandardLoadProfile}s.
    *
    * @return a map: load profile to load profile source
