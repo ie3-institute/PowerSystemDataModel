@@ -13,9 +13,7 @@ import edu.ie3.datamodel.exceptions.TryException;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.profile.LoadProfile;
-import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
@@ -364,8 +362,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a LoadInput if:
    *
    * <ul>
-   *   <li>its standard load profile is not null
-   *   <li>its standard load profile matches the supported types / profile names
+   *   <li>its load profile is not null
+   *   <li>its load profile matches the supported types / profile names
    *   <li>its rated apparent power is not negative
    *   <li>its annual energy consumption is not negative
    *   <li>its rated power factor is between 0 and 1
@@ -381,9 +379,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             loadInput.getLoadProfile() == null,
-            () ->
-                new InvalidEntityException(
-                    "No standard load profile defined for load", loadInput)));
+            () -> new InvalidEntityException("No load profile defined for load", loadInput)));
 
     if (loadInput.getLoadProfile() != null) {
       LoadProfile profile = loadInput.getLoadProfile();
