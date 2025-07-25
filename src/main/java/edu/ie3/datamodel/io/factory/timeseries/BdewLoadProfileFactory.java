@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Stream;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -93,19 +92,19 @@ public class BdewLoadProfileFactory
   @Override
   public ComparableQuantity<Power> calculateMaxPower(
       BdewStandardLoadProfile loadProfile, Set<LoadProfileEntry<BdewLoadValues>> entries) {
-    Function<BdewLoadValues, Stream<Double>> valueExtractor =
+    Function<BdewLoadValues, Double> valueExtractor =
         switch (loadProfile) {
           case H0, H25, P25, S25 ->
           // maximum dynamization factor is on day 366 (leap year) or day 365 (regular year).
           // The difference between day 365 and day 366 is negligible, thus pick 366
-          v -> v.lastDayOfYearValues().map(p -> BdewLoadValues.dynamization(p, 366));
-          default -> BdewLoadValues::values;
+          v -> BdewLoadValues.dynamization(v.getMaxValue(true), 366);
+          default -> v -> v.getMaxValue(false);
         };
 
     double maxPower =
         entries.stream()
             .map(TimeSeriesEntry::getValue)
-            .flatMap(valueExtractor)
+            .map(valueExtractor)
             .max(Comparator.naturalOrder())
             .orElse(0d);
 

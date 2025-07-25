@@ -70,26 +70,35 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
     return values.get(key);
   }
 
-  /** Returns the values, that may contain the last day of the year, as a stream. */
-  public Stream<Double> lastDayOfYearValues() {
-    Stream<BdewKey> keys =
-        switch (scheme) {
-          case BDEW1999 -> Stream.of(
-              new Bdew1999Key(WINTER, DayType.SATURDAY),
-              new Bdew1999Key(WINTER, DayType.SUNDAY),
-              new Bdew1999Key(WINTER, DayType.WEEKDAY));
-          case BDEW2025 -> Stream.of(
-              new Bdew2025Key(DECEMBER, DayType.SATURDAY),
-              new Bdew2025Key(DECEMBER, DayType.SUNDAY),
-              new Bdew2025Key(DECEMBER, DayType.WEEKDAY));
-        };
+  /**
+   * Method to calculate the maximal value contained in this {@link BdewLoadValues}.
+   *
+   * @param lastDayOfYear if true, only the values, that could occur at the last day of a year, are
+   *     considered
+   * @return the maximal value
+   */
+  public double getMaxValue(boolean lastDayOfYear) {
+    Stream<Double> stream;
 
-    return keys.map(values::get);
-  }
+    if (lastDayOfYear) {
+      Stream<BdewKey> keys =
+          switch (scheme) {
+            case BDEW1999 -> Stream.of(
+                new Bdew1999Key(WINTER, DayType.SATURDAY),
+                new Bdew1999Key(WINTER, DayType.SUNDAY),
+                new Bdew1999Key(WINTER, DayType.WEEKDAY));
+            case BDEW2025 -> Stream.of(
+                new Bdew2025Key(DECEMBER, DayType.SATURDAY),
+                new Bdew2025Key(DECEMBER, DayType.SUNDAY),
+                new Bdew2025Key(DECEMBER, DayType.WEEKDAY));
+          };
 
-  /** Returns the values as a stream. */
-  public Stream<Double> values() {
-    return values.values().stream();
+      stream = keys.map(values::get);
+    } else {
+      stream = values.values().stream();
+    }
+
+    return stream.max(Comparator.naturalOrder()).orElse(0.0);
   }
 
   @Override
