@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [8.1.0] - 2025-07-25
 
 ### Added
+- Added `CITATION.cff` [#1380](https://github.com/ie3-institute/PowerSystemDataModel/issues/1380)
 - Enhanced check for invalid field names in sources [#1383](https://github.com/ie3-institute/PowerSystemDataModel/issues/1383)
 - Enhancing value retrieval in `TimeSeriesSource` [1280](https://github.com/ie3-institute/PowerSystemDataModel/issues/1280)
 - Enhancing the `LoadProfileSource` to return the resolution [1288](https://github.com/ie3-institute/PowerSystemDataModel/issues/1288)
@@ -29,7 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Extend Validation to EnergyManagement Systems. [#1356](https://github.com/ie3-institute/PowerSystemDataModel/issues/1356)
-- Added `CITATION.cff` [#1380](https://github.com/ie3-institute/PowerSystemDataModel/issues/1380)
 
 ### Fixed
 - Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
