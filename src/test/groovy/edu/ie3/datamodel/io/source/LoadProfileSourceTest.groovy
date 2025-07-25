@@ -8,11 +8,25 @@ package edu.ie3.datamodel.io.source
 import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE
 
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import edu.ie3.datamodel.models.profile.LoadProfile
 import spock.lang.Specification
 
 class LoadProfileSourceTest extends Specification {
 
-  def "A LoadProfileSourceTest should read in all build-in BDEWStandardLoadProfiles"() {
+  def "A LoadProfileSource should return the correct profile resolution for a given load profile"() {
+    given:
+    def allProfiles = LoadProfile.getAllProfiles()
+
+
+    when:
+    def resolutions = Arrays.stream(allProfiles).map { it -> LoadProfileSource.getResolution(it) }.toList()
+
+    then:
+    resolutions.every { resolution -> resolution == 900 }
+  }
+
+
+  def "A LoadProfileSource should read in all build-in BDEWStandardLoadProfiles"() {
     when:
     def profiles = LoadProfileSource.bdewLoadProfiles
 
@@ -22,7 +36,7 @@ class LoadProfileSourceTest extends Specification {
     profiles.values().every { it.timeSeries.entries.size() == 96 }
   }
 
-  def "A LoadProfileSourceTest should read in the build-in RandomLoadProfile"() {
+  def "A LoadProfileSource should read in the build-in RandomLoadProfile"() {
     when:
     def random = LoadProfileSource.randomLoadProfile.timeSeries
 
