@@ -44,6 +44,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   private final EnergyManagementSource energyManagementSource;
 
   // factories
+  private final AcInputFactory acInputFactory;
   private final BmInputFactory bmInputFactory;
   private final ChpInputFactory chpInputFactory;
   private final EvInputFactory evInputFactory;
@@ -84,6 +85,7 @@ public class SystemParticipantSource extends AssetEntitySource {
     this.energyManagementSource = energyManagementSource;
 
     // init factories
+    this.acInputFactory = new AcInputFactory();
     this.bmInputFactory = new BmInputFactory();
     this.chpInputFactory = new ChpInputFactory();
     this.evInputFactory = new EvInputFactory();
@@ -100,6 +102,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   public void validate() throws ValidationException {
     Try.scanStream(
             Stream.of(
+                validate(AcInput.class, dataSource, acInputFactory),
                 validate(BmInput.class, dataSource, bmInputFactory),
                 validate(ChpInput.class, dataSource, chpInputFactory),
                 validate(EvInput.class, dataSource, evInputFactory),
@@ -176,6 +179,7 @@ public class SystemParticipantSource extends AssetEntitySource {
     Map<UUID, ChpTypeInput> chpTypes = typeSource.getChpTypes();
     Map<UUID, EvTypeInput> evTypes = typeSource.getEvTypes();
     Map<UUID, HpTypeInput> hpTypes = typeSource.getHpTypes();
+    Map<UUID, AcTypeInput> acTypes = typeSource.getAcTypes();
     Map<UUID, StorageTypeInput> storageTypes = typeSource.getStorageTypes();
     Map<UUID, WecTypeInput> wecTypes = typeSource.getWecTypes();
     Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits();
@@ -209,6 +213,10 @@ public class SystemParticipantSource extends AssetEntitySource {
         Try.of(
             () -> getHeatPumps(operators, nodes, emUnits, hpTypes, thermalBuses),
             SourceException.class);
+    Try<Set<AcInput>, SourceException> acInputs =
+        Try.of(
+            () -> getAirConditions(operators, nodes, emUnits, acTypes, thermalBuses),
+            SourceException.class);
 
     List<SourceException> exceptions =
         Try.getExceptions(
@@ -221,7 +229,8 @@ public class SystemParticipantSource extends AssetEntitySource {
             evs,
             evcs,
             chpInputs,
-            hpInputs);
+            hpInputs,
+            acInputs);
 
     if (!exceptions.isEmpty()) {
       throw new SystemParticipantsException(
@@ -240,6 +249,7 @@ public class SystemParticipantSource extends AssetEntitySource {
           evs.getOrThrow(),
           fixedFeedInInputs.getOrThrow(),
           hpInputs.getOrThrow(),
+          acInputs.getOrThrow(),
           loads.getOrThrow(),
           pvInputs.getOrThrow(),
           storages.getOrThrow(),
@@ -741,6 +751,40 @@ public class SystemParticipantSource extends AssetEntitySource {
                 .andThen(enrich(THERMAL_BUS, thermalBuses, HpInputEntityData::new))
                 .apply(data, operators, nodes, emUnits);
     return getEntities(HpInput.class, dataSource, hpInputFactory, builder).collect(toSet());
+  }
+
+  /**
+   * If one of the sets of {@link NodeInput}, {@link ThermalBusInput} or {@link AcTypeInput}
+   * entities is not exhaustive for all available {@link AcInput} entities (e.g. a {@link NodeInput}
+   * or {@link AcTypeInput} entity is missing) or if an error during the building process occurs a
+   * {@link SourceException} is thrown, else all entities that are able to be built will be
+   * returned.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   *
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
+   * @param types a map of UUID to object- and uuid-unique {@link AcTypeInput} entities
+   * @param thermalBuses a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
+   * @return a set of object- and uuid-unique {@link AcInput} entities
+   */
+  public Set<AcInput> getAirConditions(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, AcTypeInput> types,
+      Map<UUID, ThermalBusInput> thermalBuses)
+      throws SourceException {
+
+    WrappedFunction<EntityData, AcInputEntityData> builder =
+        data ->
+            participantEnricher
+                .andThen(enrichTypes(types))
+                .andThen(enrich(THERMAL_BUS, thermalBuses, AcInputEntityData::new))
+                .apply(data, operators, nodes, emUnits);
+    return getEntities(AcInput.class, dataSource, acInputFactory, builder).collect(toSet());
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

@@ -173,6 +173,15 @@ package models {
             SystemParticipantInput ..|> HasNodes
             SystemParticipantInput ..|> NodeInput
 
+            class AcInput {
+                - type: AcTypeInput
+                - thermalBus: ThermalBusInput
+            }
+            AcInput --|> SystemParticipantInput
+            AcInput ..|> HasType
+            AcInput ..|> HasThermalBus
+            AcInput *-- ThermalBusInput
+
             class BmInput {
                 - type: BmTypeInput
                 - marketReaction: Boolean
@@ -214,7 +223,7 @@ package models {
             HpInput --|> SystemParticipantInput
             HpInput ..|> HasType
             HpInput ..|> HasThermalBus
-            ChpInput *-- ThermalBusInput
+            HpInput *-- ThermalBusInput
 
             class LoadInput {
                 - standardLoadProfile: StandardLoadProfile
