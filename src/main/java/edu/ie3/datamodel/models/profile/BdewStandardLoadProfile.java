@@ -14,16 +14,21 @@ import edu.ie3.datamodel.exceptions.ParsingException;
  */
 public enum BdewStandardLoadProfile implements StandardLoadProfile {
   H0("h0"), // Households
+  H25("h25"), // household (Updated 2025)
   L0("l0"), // Agricultural enterprises without further differentiation
   L1("l1"), // Agricultural enterprises with dairy sector
   L2("l2"), // Agricultural enterprises without dairy sector
+  L25("l25"), // Agricultural enterprises without further differentiation (Updated 2025)
   G0("g0"), // Businesses without further differentiation
   G1("g1"), // Workday businesses from 8 a.m. to 6 p.m.
   G2("g2"), // Businesses with high consumption in evening hours
   G3("g3"), // Businesses with enduring consumption
   G4("g4"), // Vendor or barber shop
   G5("g5"), // Bakery
-  G6("g6"); // Business with main consumption on weekends
+  G6("g6"), // Business with main consumption on weekends
+  G25("g25"), // Businesses without further differentiation (Updated 2025)
+  P25("p25"), // PV profile
+  S25("s25"); // Combined PV and storage profile
 
   private final String key;
 

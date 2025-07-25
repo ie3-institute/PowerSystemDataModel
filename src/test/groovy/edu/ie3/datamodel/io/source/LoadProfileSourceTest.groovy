@@ -31,7 +31,7 @@ class LoadProfileSourceTest extends Specification {
     def profiles = LoadProfileSource.bdewLoadProfiles
 
     then:
-    profiles.size() == 11
+    profiles.size() == 16
     BdewStandardLoadProfile.values().every { profiles.keySet().contains(it) }
     profiles.values().every { it.timeSeries.entries.size() == 96 }
   }
