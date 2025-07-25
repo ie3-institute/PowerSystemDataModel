@@ -294,8 +294,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidHpType                                                                                           || expectedException
-    new HpTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN)) || new InvalidEntityException("The following quantities have to be positive: 0 kW", invalidHpType)
+    invalidHpType                                                                                             || expectedException
+    new HpTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ACTIVE_POWER_IN), cosPhiRated, pThermal) || new InvalidEntityException("The following quantities have to be positive: 0 kW", invalidHpType)
+    new HpTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN))   || new InvalidEntityException("The following quantities have to be positive: 0 kW", invalidHpType)
   }
 
   // Load
