@@ -5,16 +5,19 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import static edu.ie3.datamodel.models.StandardUnits.*;
+import static edu.ie3.datamodel.models.StandardUnits.AZIMUTH;
+import static edu.ie3.datamodel.models.StandardUnits.SOLAR_ELEVATION_ANGLE;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.TryException;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
@@ -359,7 +362,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a LoadInput if:
    *
    * <ul>
-   *   <li>its standard load profile is not null
+   *   <li>its load profile is not null
+   *   <li>its load profile matches the supported types / profile names
    *   <li>its rated apparent power is not negative
    *   <li>its annual energy consumption is not negative
    *   <li>its rated power factor is between 0 and 1
@@ -375,10 +379,23 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             loadInput.getLoadProfile() == null,
-            () ->
-                new InvalidEntityException(
-                    "No standard load profile defined for load", loadInput)));
+            () -> new InvalidEntityException("No load profile defined for load", loadInput)));
 
+    if (loadInput.getLoadProfile() != null) {
+      LoadProfile profile = loadInput.getLoadProfile();
+
+      // Validate if the profile is one of the allowed profiles
+      exceptions.add(
+          Try.ofVoid(
+              !(profile.equals(LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE)
+                  || Arrays.asList(LoadProfile.getAllProfiles()).contains(profile)),
+              () ->
+                  new InvalidEntityException(
+                      "Load profile must contain at least one valid entry: h0, g[0-6], l[0-2], ep1, ez2, random, or LoadProfile#NO_LOAD_PROFILE.",
+                      loadInput)));
+    }
+
+    // Check negative quantities and power factor
     exceptions.addAll(
         Try.ofVoid(
             InvalidEntityException.class,

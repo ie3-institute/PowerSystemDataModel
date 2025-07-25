@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Fixed CFF-Version [#1392](https://github.com/ie3-institute/PowerSystemDataModel/issues/1392)
+- Enhanced `ValidationUtils` for `LoadModel` to check for correct profile naming [#1357](https://github.com/ie3-institute/PowerSystemDataModel/issues/1357)
 
 ## [8.0.0] - 2025-07-22
 
