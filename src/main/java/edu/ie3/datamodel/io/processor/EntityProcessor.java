@@ -9,10 +9,12 @@ import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
 import edu.ie3.util.exceptions.QuantityException;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.SortedMap;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -31,7 +33,7 @@ public abstract class EntityProcessor<T extends Entity> extends Processor<T> {
 
   public static final Logger log = LoggerFactory.getLogger(EntityProcessor.class);
   protected final String[] headerElements;
-  private final SortedMap<String, Method> fieldNameToMethod;
+  private final SortedMap<String, GetterMethod> fieldNameToMethod;
 
   private static final String NODE_INTERNAL = "nodeInternal";
 

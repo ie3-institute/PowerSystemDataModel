@@ -32,6 +32,11 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
     super(valueClass);
   }
 
+  @SafeVarargs
+  protected LoadProfileFactory(Class<? extends V>... valueClass) {
+    super(valueClass);
+  }
+
   public abstract LoadProfileTimeSeries<V> build(
       LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<V>> entries);
 
