@@ -325,7 +325,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     where:
     invalidLoad                                                                                                                                                    || expectedSize || expectedException
-    SystemParticipantTestData.loadInput.copy().loadprofile(null).build() 																						   || 1            || new InvalidEntityException("No standard load profile defined for load", invalidLoad)
+    SystemParticipantTestData.loadInput.copy().loadprofile(null).build() 																						   || 1            || new InvalidEntityException("No load profile defined for load", invalidLoad)
     SystemParticipantTestData.loadInput.copy().sRated(Quantities.getQuantity(-25d, ACTIVE_POWER_IN)).eConsAnnual(Quantities.getQuantity(-4000, ENERGY_IN)).build() || 1            || new InvalidEntityException("The following quantities have to be zero or positive: -25 kVA, -4000 kWh", invalidLoad)
     SystemParticipantTestData.loadInput.copy().cosPhiRated(2).build()                                                                                              || 1            || new InvalidEntityException("Rated power factor of LoadInput must be between 0 and 1", invalidLoad)
     SystemParticipantTestData.loadInput.copy().loadprofile(createInvalidStandardLoadProfile("h1")).build()                                                         || 1            || new InvalidEntityException("Load profile must contain at least one valid entry: h0, g[0-6], l[0-2], ep1, ez2, random, or LoadProfile#NO_LOAD_PROFILE.", invalidLoad)
