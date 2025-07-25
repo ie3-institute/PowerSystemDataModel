@@ -375,9 +375,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             loadInput.getLoadProfile() == null,
-            () ->
-                new InvalidEntityException(
-                    "No standard load profile defined for load", loadInput)));
+            () -> new InvalidEntityException("No load profile defined for load", loadInput)));
 
     exceptions.addAll(
         Try.ofVoid(

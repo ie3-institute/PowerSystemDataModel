@@ -89,19 +89,24 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
   public abstract Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling();
 
   /**
-   * Returns the resolution for the given {@link LoadProfile}.
+   * Returns an option for the resolution for the given {@link LoadProfile}.
+   *
+   * <p>Note: This method does not support {@link LoadProfile.CustomLoadProfile}. If a custom load
+   * profile is provided, no resolution is returned.
    *
    * @param loadProfile given load profile
    * @return the resolution in seconds.
    */
-  public static long getResolution(LoadProfile loadProfile) {
-
+  public static Optional<Long> getResolution(LoadProfile loadProfile) {
     if (loadProfile == LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE) {
-      // since no load profile was assigned, we return the maximal possible value
-      return Long.MAX_VALUE;
+      // since no load profile was assigned, we return no resolution
+      return Optional.empty();
+    } else if (loadProfile instanceof LoadProfile.CustomLoadProfile c) {
+      log.info("Custom load profile {} found. Cannot provide resolution!", c.key());
+      return Optional.empty();
     } else {
       // currently all registered profiles and all sources use 15 minutes intervals
-      return 900L;
+      return Optional.of(900L);
     }
   }
 

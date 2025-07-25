@@ -22,7 +22,7 @@ class LoadProfileSourceTest extends Specification {
     def resolutions = Arrays.stream(allProfiles).map { it -> LoadProfileSource.getResolution(it) }.toList()
 
     then:
-    resolutions.every { resolution -> resolution == 900 }
+    resolutions.every { resolution -> resolution == Optional.of(900L) }
   }
 
 
