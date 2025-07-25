@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.sql
 
 import static edu.ie3.test.common.TimeSeriesSourceTestData.*
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.SqlConnector
@@ -23,6 +24,7 @@ import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 import java.time.format.DateTimeFormatter
 
@@ -124,6 +126,17 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     value.get() == P_VALUE_00MIN
   }
 
+  def "The cSqlTimeSeriesSource returns the last value, if there is no current value"() {
+    given:
+    def time = TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:13:00Z")
+
+    when:
+    def actual = pSource.getValueOrLast(time)
+
+    then:
+    actual == Optional.of(new PValue(Quantities.getQuantity(1000.0, KILOWATT)))
+  }
+
   def "A SqlTimeSeriesSource is able to return the previous value for a given time"() {
     when:
     def actual = pSource.getPreviousTimeBasedValue(time)
@@ -172,5 +185,22 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
       TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:00:00Z"),
       TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:15:00Z")
     ]
+  }
+
+  def "The SqlTimeSeriesSource returns the time key before a given key correctly"() {
+    when:
+    def time = TimeUtil.withDefaults.toZonedDateTime(timeKey)
+
+    def actual = pSource.getLastTimeKeyBefore(time)
+
+    then:
+    actual == expectedKey
+
+    where:
+    timeKey                | expectedKey
+    "2019-12-31T23:59:59Z" | Optional.empty()
+    "2020-01-01T00:00:00Z" | Optional.empty()
+    "2020-01-01T00:15:00Z" | Optional.of(TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:00:00Z"))
+    "2020-01-03T00:00:00Z" | Optional.of(TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:15:00Z"))
   }
 }
