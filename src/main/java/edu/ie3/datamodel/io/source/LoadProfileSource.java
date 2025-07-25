@@ -95,8 +95,14 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    * @return the resolution in seconds.
    */
   public static long getResolution(LoadProfile loadProfile) {
-    // currently all registered profiles and all sources use 15 minutes intervals
-    return 900L;
+
+    if (loadProfile == LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE) {
+      // since no load profile was assigned, we return the maximal possible value
+      return Long.MAX_VALUE;
+    } else {
+      // currently all registered profiles and all sources use 15 minutes intervals
+      return 900L;
+    }
   }
 
   /**
