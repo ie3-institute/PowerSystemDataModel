@@ -25,6 +25,12 @@ class LoadProfileTest extends Specification {
     "H0"     || BdewStandardLoadProfile.H0
     "H-0"    || BdewStandardLoadProfile.H0
     "H_0"    || BdewStandardLoadProfile.H0
+    "h25"    || BdewStandardLoadProfile.H25
+    "h-25"   || BdewStandardLoadProfile.H25
+    "h_25"   || BdewStandardLoadProfile.H25
+    "H25"    || BdewStandardLoadProfile.H25
+    "H-25"   || BdewStandardLoadProfile.H25
+    "H_25"   || BdewStandardLoadProfile.H25
     "l0"     || BdewStandardLoadProfile.L0
     "l-0"    || BdewStandardLoadProfile.L0
     "l_0"    || BdewStandardLoadProfile.L0
@@ -43,6 +49,12 @@ class LoadProfileTest extends Specification {
     "L2"     || BdewStandardLoadProfile.L2
     "L-2"    || BdewStandardLoadProfile.L2
     "L_2"    || BdewStandardLoadProfile.L2
+    "l25"    || BdewStandardLoadProfile.L25
+    "l-25"   || BdewStandardLoadProfile.L25
+    "l_25"   || BdewStandardLoadProfile.L25
+    "L25"    || BdewStandardLoadProfile.L25
+    "L-25"   || BdewStandardLoadProfile.L25
+    "L_25"   || BdewStandardLoadProfile.L25
     "g0"     || BdewStandardLoadProfile.G0
     "g-0"    || BdewStandardLoadProfile.G0
     "g_0"    || BdewStandardLoadProfile.G0
@@ -85,6 +97,24 @@ class LoadProfileTest extends Specification {
     "G6"     || BdewStandardLoadProfile.G6
     "G-6"    || BdewStandardLoadProfile.G6
     "G_6"    || BdewStandardLoadProfile.G6
+    "g25"    || BdewStandardLoadProfile.G25
+    "g-25"   || BdewStandardLoadProfile.G25
+    "g_25"   || BdewStandardLoadProfile.G25
+    "G25"    || BdewStandardLoadProfile.G25
+    "G-25"   || BdewStandardLoadProfile.G25
+    "G_25"   || BdewStandardLoadProfile.G25
+    "p25"    || BdewStandardLoadProfile.P25
+    "p-25"   || BdewStandardLoadProfile.P25
+    "p_25"   || BdewStandardLoadProfile.P25
+    "P25"    || BdewStandardLoadProfile.P25
+    "P-25"   || BdewStandardLoadProfile.P25
+    "P_25"   || BdewStandardLoadProfile.P25
+    "s25"    || BdewStandardLoadProfile.S25
+    "s-25"   || BdewStandardLoadProfile.S25
+    "s_25"   || BdewStandardLoadProfile.S25
+    "S25"    || BdewStandardLoadProfile.S25
+    "S-25"   || BdewStandardLoadProfile.S25
+    "S_25"   || BdewStandardLoadProfile.S25
     "ep1"    || NbwTemperatureDependantLoadProfile.EP1
     "ez2"    || NbwTemperatureDependantLoadProfile.EZ2
     "random" || RANDOM_LOAD_PROFILE
