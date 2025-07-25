@@ -27,6 +27,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     given:
     def typeInputFactory = new SystemParticipantTypeInputFactory()
     def expectedClasses = [
+      AcTypeInput,
       EvTypeInput,
       HpTypeInput,
       BmTypeInput,
