@@ -52,6 +52,7 @@ import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.EvcsResult
 import edu.ie3.datamodel.models.result.system.FixedFeedInResult
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
+import edu.ie3.datamodel.models.result.system.HpResult
 import edu.ie3.datamodel.models.result.system.LoadResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.StorageResult
@@ -105,6 +106,7 @@ class FileNamingStrategyTest extends Specification {
     FixedFeedInResult        || Path.of("test_grid", "results", "participants")
     BmResult                 || Path.of("test_grid", "results", "participants")
     PvResult                 || Path.of("test_grid", "results", "participants")
+    HpResult                 || Path.of("test_grid", "results", "participants")
     ChpResult                || Path.of("test_grid", "results", "participants")
     WecResult                || Path.of("test_grid", "results", "participants")
     StorageResult            || Path.of("test_grid", "results", "participants")
@@ -247,6 +249,7 @@ class FileNamingStrategyTest extends Specification {
     BmResult                 || Path.of("test_grid", "results", "participants", "bm_res")
     PvResult                 || Path.of("test_grid", "results", "participants", "pv_res")
     ChpResult                || Path.of("test_grid", "results", "participants", "chp_res")
+    HpResult                 || Path.of("test_grid", "results", "participants", "hp_res")
     WecResult                || Path.of("test_grid", "results", "participants", "wec_res")
     StorageResult            || Path.of("test_grid", "results", "participants", "storage_res")
     EvcsResult               || Path.of("test_grid", "results", "participants", "evcs_res")
@@ -469,6 +472,7 @@ class FileNamingStrategyTest extends Specification {
     BmResult                 || Optional.empty()
     PvResult                 || Optional.empty()
     ChpResult                || Optional.empty()
+    HpResult                 || Optional.empty()
     WecResult                || Optional.empty()
     StorageResult            || Optional.empty()
     EvcsResult               || Optional.empty()
@@ -612,6 +616,7 @@ class FileNamingStrategyTest extends Specification {
     BmResult                 || Path.of("bm_res")
     PvResult                 || Path.of("pv_res")
     ChpResult                || Path.of("chp_res")
+    HpResult                 || Path.of("hp_res")
     WecResult                || Path.of("wec_res")
     StorageResult            || Path.of("storage_res")
     EvcsResult               || Path.of("evcs_res")

@@ -342,6 +342,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a HpTypeInput if:
    *
    * <ul>
+   *   <li>its rated power is positive
    *   <li>its rated thermal power is positive
    * </ul>
    *
@@ -352,7 +353,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     return Try.ofVoid(
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {hpTypeInput.getpThermal()}, hpTypeInput),
+                new Quantity<?>[] {
+                  hpTypeInput.getsRated(), hpTypeInput.getpThermal(),
+                },
+                hpTypeInput),
         InvalidEntityException.class);
   }
 
