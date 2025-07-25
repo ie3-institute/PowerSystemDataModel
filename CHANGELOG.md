@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Enhanced check for invalid field names in sources [#1383](https://github.com/ie3-institute/PowerSystemDataModel/issues/1383)
 - Enhancing value retrieval in `TimeSeriesSource` [1280](https://github.com/ie3-institute/PowerSystemDataModel/issues/1280)
+- Enhancing the `LoadProfileSource` to return the resolution [1288](https://github.com/ie3-institute/PowerSystemDataModel/issues/1288)
 
 ### Fixed
 
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extend azimuth angle range to [-180°, 180°] for PV inputs [#1330](https://github.com/ie3-institute/PowerSystemDataModel/issues/1330)
 - Improved error messages when reading and validating an invalid grid [#1354](https://github.com/ie3-institute/PowerSystemDataModel/issues/1354)
 - Changed `SubgridContainer` to represent galvanically seperated grids [#1226](https://github.com/ie3-institute/PowerSystemDataModel/issues/1226)
+- Fixed CFF-Version [#1392](https://github.com/ie3-institute/PowerSystemDataModel/issues/1392)
 
 ## [7.0.0] - 2025-05-08
 
