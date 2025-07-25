@@ -52,6 +52,22 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
 
   public abstract Optional<V> getValue(ZonedDateTime time);
 
+  /**
+   * Method to retrieve the value of the given time or the last timestamp before the given time.
+   *
+   * @param time given time
+   * @return an option for a value
+   */
+  public Optional<V> getValueOrLast(ZonedDateTime time) {
+    Optional<V> value = getValue(time);
+
+    if (value.isEmpty()) {
+      return getPreviousTimeBasedValue(time).map(TimeBasedValue::getValue);
+    }
+
+    return value;
+  }
+
   public abstract Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time);
 
   /**
@@ -61,4 +77,12 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
    * @return a list of time keys
    */
   public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time);
+
+  /**
+   * Method to return all last known time keys before a given timestamp.
+   *
+   * @param time given time
+   * @return an option for the time key
+   */
+  public abstract Optional<ZonedDateTime> getLastTimeKeyBefore(ZonedDateTime time);
 }

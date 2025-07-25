@@ -15,9 +15,14 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
-import java.util.*;
+import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewKey;
+import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewScheme;
+import edu.ie3.util.quantities.PowerSystemUnits;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Stream;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -25,56 +30,42 @@ import tech.units.indriya.quantity.Quantities;
 
 public class BdewLoadProfileFactory
     extends LoadProfileFactory<BdewStandardLoadProfile, BdewLoadValues> {
-  public static final String SUMMER_SATURDAY = "SuSa";
-  public static final String SUMMER_SUNDAY = "SuSu";
-  public static final String SUMMER_WEEKDAY = "SuWd";
-  public static final String TRANSITION_SATURDAY = "TrSa";
-  public static final String TRANSITION_SUNDAY = "TrSu";
-  public static final String TRANSITION_WEEKDAY = "TrWd";
-  public static final String WINTER_SATURDAY = "WiSa";
-  public static final String WINTER_SUNDAY = "WiSu";
-  public static final String WINTER_WEEKDAY = "WiWd";
+  // 1999 profile scheme
+  public static final BdewLoadValues.BdewMap<String> BDEW1999_FIELDS =
+      BdewKey.toMap(BdewScheme.BDEW1999);
+
+  // 2025 profile scheme
+  public static final BdewLoadValues.BdewMap<String> BDEW2025_FIELDS =
+      BdewKey.toMap(BdewScheme.BDEW2025);
 
   public BdewLoadProfileFactory() {
-    this(BdewLoadValues.class);
-  }
-
-  public BdewLoadProfileFactory(Class<BdewLoadValues> valueClass) {
-    super(valueClass);
+    super(BdewLoadValues.class);
   }
 
   @Override
   protected LoadProfileEntry<BdewLoadValues> buildModel(LoadProfileData<BdewLoadValues> data) {
     int quarterHour = data.getInt(QUARTER_HOUR);
 
-    return new LoadProfileEntry<>(
-        new BdewLoadValues(
-            data.getDouble(SUMMER_SATURDAY),
-            data.getDouble(SUMMER_SUNDAY),
-            data.getDouble(SUMMER_WEEKDAY),
-            data.getDouble(TRANSITION_SATURDAY),
-            data.getDouble(TRANSITION_SUNDAY),
-            data.getDouble(TRANSITION_WEEKDAY),
-            data.getDouble(WINTER_SATURDAY),
-            data.getDouble(WINTER_SUNDAY),
-            data.getDouble(WINTER_WEEKDAY)),
-        quarterHour);
+    boolean is1999Scheme =
+        data.containsKey("SuSa") || data.containsKey("su_sa") || data.containsKey("suSa");
+
+    BdewLoadValues values;
+
+    if (is1999Scheme) {
+      values = new BdewLoadValues(BdewScheme.BDEW1999, BDEW1999_FIELDS.map(data::getDouble));
+
+    } else {
+      values = new BdewLoadValues(BdewScheme.BDEW2025, BDEW2025_FIELDS.map(data::getDouble));
+    }
+
+    return new LoadProfileEntry<>(values, quarterHour);
   }
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
     return List.of(
-        newSet(
-            QUARTER_HOUR,
-            SUMMER_SATURDAY,
-            SUMMER_SUNDAY,
-            SUMMER_WEEKDAY,
-            TRANSITION_SATURDAY,
-            TRANSITION_SUNDAY,
-            TRANSITION_WEEKDAY,
-            WINTER_SATURDAY,
-            WINTER_SUNDAY,
-            WINTER_WEEKDAY));
+        expandSet(new HashSet<>(BDEW1999_FIELDS.values()), QUARTER_HOUR),
+        expandSet(new HashSet<>(BDEW2025_FIELDS.values()), QUARTER_HOUR));
   }
 
   @Override
@@ -101,26 +92,35 @@ public class BdewLoadProfileFactory
   @Override
   public ComparableQuantity<Power> calculateMaxPower(
       BdewStandardLoadProfile loadProfile, Set<LoadProfileEntry<BdewLoadValues>> entries) {
-    Function<BdewLoadValues, Stream<Double>> valueExtractor;
-
-    if (loadProfile == BdewStandardLoadProfile.H0) {
-      // maximum dynamization factor is on day 366 (leap year) or day 365 (regular year).
-      // The difference between day 365 and day 366 is negligible, thus pick 366
-      valueExtractor =
-          v ->
-              Stream.of(v.getWiSa(), v.getWiSu(), v.getWiWd())
-                  .map(p -> BdewLoadValues.dynamization(p, 366));
-    } else {
-      valueExtractor = v -> v.values().stream();
-    }
+    Function<BdewLoadValues, Double> valueExtractor =
+        switch (loadProfile) {
+          case H0, H25, P25, S25 ->
+          // maximum dynamization factor is on day 366 (leap year) or day 365 (regular year).
+          // The difference between day 365 and day 366 is negligible, thus pick 366
+          v -> BdewLoadValues.dynamization(v.getMaxValue(true), 366);
+          default -> v -> v.getMaxValue(false);
+        };
 
     double maxPower =
         entries.stream()
             .map(TimeSeriesEntry::getValue)
-            .flatMap(valueExtractor)
+            .map(valueExtractor)
             .max(Comparator.naturalOrder())
             .orElse(0d);
 
     return Quantities.getQuantity(maxPower, WATT);
+  }
+
+  /** Returns the load profile energy scaling. The default value is 1000 kWh */
+  @Override
+  public ComparableQuantity<Energy> getLoadProfileEnergyScaling(
+      BdewStandardLoadProfile loadProfile) {
+
+    // the updated profiled are scaled to 1 million kWh -> 1000 MWh
+    // old profiles are scaled to 1000 kWh
+    return switch (loadProfile) {
+      case H25, G25, L25, P25, S25 -> Quantities.getQuantity(1000d, PowerSystemUnits.MEGAWATTHOUR);
+      default -> Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR);
+    };
   }
 }

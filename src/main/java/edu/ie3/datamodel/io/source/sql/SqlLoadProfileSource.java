@@ -39,7 +39,7 @@ import tech.units.indriya.ComparableQuantity;
  * @param <P> type of load profile
  * @param <V> type of load values
  */
-public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues>
+public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
     extends LoadProfileSource<P, V> {
   protected static final Logger log = LoggerFactory.getLogger(SqlTimeSeriesSource.class);
   private final SqlDataSource dataSource;

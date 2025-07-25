@@ -7,15 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
-
-### Fixed
+- Enhanced check for invalid field names in sources [#1383](https://github.com/ie3-institute/PowerSystemDataModel/issues/1383)
+- Enhancing value retrieval in `TimeSeriesSource` [1280](https://github.com/ie3-institute/PowerSystemDataModel/issues/1280)
+- Enhancing the `LoadProfileSource` to return the resolution [1288](https://github.com/ie3-institute/PowerSystemDataModel/issues/1288)
+- Enhancing Validation for sRated of `HpTypeInput` [1394](https://github.com/ie3-institute/PowerSystemDataModel/issues/1394)
+- Added updated `BdewStandardLoadProfiles` [#1292](https://github.com/ie3-institute/PowerSystemDataModel/issues/1292)
 
 ### Changed
+- Fixed CFF-Version [#1392](https://github.com/ie3-institute/PowerSystemDataModel/issues/1392)
+- Enhanced `ValidationUtils` for `LoadModel` to check for correct profile naming [#1357](https://github.com/ie3-institute/PowerSystemDataModel/issues/1357)
 
 ## [8.0.0] - 2025-07-22
 
 ### Added
 - Extend Validation to EnergyManagement Systems. [#1356](https://github.com/ie3-institute/PowerSystemDataModel/issues/1356)
+- Added `CITATION.cff` [#1380](https://github.com/ie3-institute/PowerSystemDataModel/issues/1380)
 
 ### Fixed
 - Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
@@ -379,7 +385,7 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: 
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.0.0...HEAD
 [8.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...8.0.0
 [7.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/6.0.0...7.0.0
 [6.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/5.1.0...6.0.0
