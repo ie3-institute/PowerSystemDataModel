@@ -78,7 +78,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   }
 
   @Override
-  protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
+  public Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
     return Optional.of(time.minusMinutes(15));
   }
 
