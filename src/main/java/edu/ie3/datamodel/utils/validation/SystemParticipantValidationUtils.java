@@ -388,22 +388,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       exceptions.add(
           Try.ofVoid(
               !(profile.equals(LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE)
-                  || profile.equals(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE)
-                  || Arrays.asList(
-                          BdewStandardLoadProfile.H0,
-                          BdewStandardLoadProfile.G0,
-                          BdewStandardLoadProfile.G1,
-                          BdewStandardLoadProfile.G2,
-                          BdewStandardLoadProfile.G3,
-                          BdewStandardLoadProfile.G4,
-                          BdewStandardLoadProfile.G5,
-                          BdewStandardLoadProfile.G6,
-                          BdewStandardLoadProfile.L0,
-                          BdewStandardLoadProfile.L1,
-                          BdewStandardLoadProfile.L2,
-                          NbwTemperatureDependantLoadProfile.EP1,
-                          NbwTemperatureDependantLoadProfile.EZ2)
-                      .contains(profile)),
+                  || Arrays.asList(LoadProfile.getAllProfiles()).contains(profile)),
               () ->
                   new InvalidEntityException(
                       "Load profile must contain at least one valid entry: h0, g[0-6], l[0-2], ep1, ez2, random, or LoadProfile#NO_LOAD_PROFILE.",
