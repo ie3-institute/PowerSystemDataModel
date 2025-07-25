@@ -29,7 +29,7 @@ import tech.units.indriya.ComparableQuantity;
 /**
  * Source that is capable of providing information around load profile time series from csv files.
  */
-public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues>
+public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
     extends LoadProfileSource<P, V> {
   private final LoadProfileTimeSeries<V> loadProfileTimeSeries;
   private final CsvDataSource dataSource;
@@ -49,8 +49,8 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues>
       this.loadProfileTimeSeries = buildLoadProfileTimeSeries(metaInformation, this::createEntries);
     } catch (SourceException e) {
       throw new IllegalArgumentException(
-          "Unable to obtain time series with UUID '"
-              + metaInformation.getUuid()
+          "Unable to obtain load profile time series with profile '"
+              + metaInformation.getProfile()
               + "'. Please check arguments!",
           e);
     }

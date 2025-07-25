@@ -110,6 +110,7 @@ class FileNamingStrategyTest extends Specification {
     FixedFeedInResult        || Path.of("test_grid", "results", "participants")
     BmResult                 || Path.of("test_grid", "results", "participants")
     PvResult                 || Path.of("test_grid", "results", "participants")
+    HpResult                 || Path.of("test_grid", "results", "participants")
     ChpResult                || Path.of("test_grid", "results", "participants")
     HpResult                 || Path.of("test_grid", "results", "participants")
     AcResult                 || Path.of("test_grid", "results", "participants")
