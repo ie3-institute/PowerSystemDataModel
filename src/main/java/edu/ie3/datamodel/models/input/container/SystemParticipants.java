@@ -20,6 +20,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   private final Set<EvInput> evs;
   private final Set<FixedFeedInInput> fixedFeedIns;
   private final Set<HpInput> heatPumps;
+  private final Set<AcInput> airConditions;
   private final Set<LoadInput> loads;
   private final Set<PvInput> pvPlants;
   private final Set<StorageInput> storages;
@@ -32,6 +33,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
       Set<EvInput> evs,
       Set<FixedFeedInInput> fixedFeedIns,
       Set<HpInput> heatPumps,
+      Set<AcInput> airConditions,
       Set<LoadInput> loads,
       Set<PvInput> pvPlants,
       Set<StorageInput> storages,
@@ -42,6 +44,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     this.evs = evs;
     this.fixedFeedIns = fixedFeedIns;
     this.heatPumps = heatPumps;
+    this.airConditions = airConditions;
     this.loads = loads;
     this.pvPlants = pvPlants;
     this.storages = storages;
@@ -77,6 +80,10 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     this.heatPumps =
         systemParticipants.stream()
             .flatMap(participants -> participants.heatPumps.stream())
+            .collect(Collectors.toSet());
+    this.airConditions =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.airConditions.stream())
             .collect(Collectors.toSet());
     this.loads =
         systemParticipants.stream()
@@ -135,6 +142,11 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
             .filter(HpInput.class::isInstance)
             .map(HpInput.class::cast)
             .collect(Collectors.toSet());
+    this.airConditions =
+        systemParticipants.parallelStream()
+            .filter(AcInput.class::isInstance)
+            .map(AcInput.class::cast)
+            .collect(Collectors.toSet());
     this.loads =
         systemParticipants.parallelStream()
             .filter(LoadInput.class::isInstance)
@@ -166,6 +178,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     allEntities.addAll(evs);
     allEntities.addAll(fixedFeedIns);
     allEntities.addAll(heatPumps);
+    allEntities.addAll(airConditions);
     allEntities.addAll(loads);
     allEntities.addAll(pvPlants);
     allEntities.addAll(storages);
@@ -206,6 +219,10 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   public Set<HpInput> getHeatPumps() {
     return Collections.unmodifiableSet(heatPumps);
   }
+  /** @return unmodifiable Set of all air conditions in this grid */
+  public Set<AcInput> getAirConditions() {
+    return Collections.unmodifiableSet(airConditions);
+  }
 
   /** @return unmodifiable Set of all loads in this grid */
   public Set<LoadInput> getLoads() {
@@ -237,6 +254,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
         && Objects.equals(evs, that.evs)
         && Objects.equals(fixedFeedIns, that.fixedFeedIns)
         && Objects.equals(heatPumps, that.heatPumps)
+        && Objects.equals(airConditions, that.airConditions)
         && Objects.equals(loads, that.loads)
         && Objects.equals(pvPlants, that.pvPlants)
         && Objects.equals(storages, that.storages)
@@ -252,6 +270,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
         evs,
         fixedFeedIns,
         heatPumps,
+        airConditions,
         loads,
         pvPlants,
         storages,
@@ -274,6 +293,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     private Set<EvInput> evs;
     private Set<FixedFeedInInput> fixedFeedIns;
     private Set<HpInput> heatPumps;
+    private Set<AcInput> airConditions;
     private Set<LoadInput> loads;
     private Set<PvInput> pvPlants;
     private Set<StorageInput> storages;
@@ -291,6 +311,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
       this.evs = systemParticipants.evs;
       this.fixedFeedIns = systemParticipants.fixedFeedIns;
       this.heatPumps = systemParticipants.heatPumps;
+      this.airConditions = systemParticipants.airConditions;
       this.loads = systemParticipants.loads;
       this.pvPlants = systemParticipants.pvPlants;
       this.storages = systemParticipants.storages;
@@ -364,6 +385,17 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     }
 
     /**
+     * Method to alter {@link AcInput}
+     *
+     * @param airConditions set of altered air conditions
+     * @return this instance of {@link SystemParticipantsCopyBuilder}
+     */
+    public SystemParticipantsCopyBuilder airConditions(Set<AcInput> airConditions) {
+      this.airConditions = airConditions;
+      return thisInstance();
+    }
+
+    /**
      * Method to alter {@link LoadInput}
      *
      * @param loads set of altered loads
@@ -421,6 +453,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
           evs,
           fixedFeedIns,
           heatPumps,
+          airConditions,
           loads,
           pvPlants,
           storages,

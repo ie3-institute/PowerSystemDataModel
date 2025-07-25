@@ -66,6 +66,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     // Further checks for subclasses
     if (BmInput.class.isAssignableFrom(systemParticipant.getClass())) {
       exceptions.addAll(checkBm((BmInput) systemParticipant));
+    } else if (AcInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      exceptions.addAll(checkAc((AcInput) systemParticipant));
     } else if (ChpInput.class.isAssignableFrom(systemParticipant.getClass())) {
       exceptions.addAll(checkChp((ChpInput) systemParticipant));
     } else if (EvInput.class.isAssignableFrom(systemParticipant.getClass())) {
@@ -162,6 +164,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       exceptions.add(checkEvType((EvTypeInput) systemParticipantTypeInput));
     } else if (HpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
       exceptions.add(checkHpType((HpTypeInput) systemParticipantTypeInput));
+    } else if (AcTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
+      exceptions.add(checkAcType((AcTypeInput) systemParticipantTypeInput));
     } else if (StorageTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
       exceptions.addAll(checkStorageType((StorageTypeInput) systemParticipantTypeInput));
     } else if (WecTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
@@ -337,6 +341,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a HpTypeInput if:
    *
    * <ul>
+   *   <li>its rated power is positive
    *   <li>its rated thermal power is positive
    * </ul>
    *
@@ -347,7 +352,48 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     return Try.ofVoid(
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {hpTypeInput.getpThermal()}, hpTypeInput),
+                new Quantity<?>[] {
+                  hpTypeInput.getsRated(), hpTypeInput.getpThermal(),
+                },
+                hpTypeInput),
+        InvalidEntityException.class);
+  }
+
+  /**
+   * Validates a AcInput if:
+   *
+   * <ul>
+   *   <li>{@link SystemParticipantValidationUtils#checkAcType(AcTypeInput)} confirms a valid type
+   *       properties
+   * </ul>
+   *
+   * @param acInput AcInput to validate
+   * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
+   *     Success
+   */
+  private static List<Try<Void, InvalidEntityException>> checkAc(AcInput acInput) {
+    return checkType(acInput.getType());
+  }
+
+  /**
+   * Validates a AcTypeInput if:
+   *
+   * <ul>
+   *   <li>its rated power is positive
+   *   <li>its rated thermal power is positive
+   * </ul>
+   *
+   * @param acTypeInput AcTypeInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
+   */
+  private static Try<Void, InvalidEntityException> checkAcType(AcTypeInput acTypeInput) {
+    return Try.ofVoid(
+        () ->
+            detectZeroOrNegativeQuantities(
+                new Quantity<?>[] {
+                  acTypeInput.getsRated(), acTypeInput.getpThermal(),
+                },
+                acTypeInput),
         InvalidEntityException.class);
   }
 

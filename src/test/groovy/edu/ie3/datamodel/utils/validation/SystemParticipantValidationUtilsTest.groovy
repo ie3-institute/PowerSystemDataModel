@@ -76,7 +76,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
   // Specific data for bm type
   private static final ComparableQuantity<DimensionlessRate> activePowerGradient = Quantities.getQuantity(25, ACTIVE_POWER_GRADIENT)
 
-  // Specific data for CHP type (and HP type)
+  // Specific data for CHP type (and HP type and AC type)
   private static final ComparableQuantity<Dimensionless> etaEl = Quantities.getQuantity(19, EFFICIENCY)
   private static final ComparableQuantity<Dimensionless> etaThermal = Quantities.getQuantity(76, EFFICIENCY)
   private static final ComparableQuantity<Power> pOwn = Quantities.getQuantity(0, ACTIVE_POWER_IN)
@@ -294,9 +294,51 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidHpType                                                                                           || expectedException
-    new HpTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN)) || new InvalidEntityException("The following quantities have to be positive: 0 kW", invalidHpType)
+    invalidHpType                                                                                            || expectedException
+    new HpTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, S_RATED), cosPhiRated, pThermal)        || new InvalidEntityException("The following quantities have to be positive: 0 kVA", invalidHpType)
+    new HpTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN))  || new InvalidEntityException("The following quantities have to be positive: 0 kW", invalidHpType)
   }
+
+  // AC
+
+  def "Smoke Test: Correct AC throws no exception"() {
+    given:
+    def acInput = SystemParticipantTestData.acInput
+
+    when:
+    ValidationUtils.check(acInput)
+
+    then:
+    noExceptionThrown()
+  }
+
+  // No tests for "SystemParticipantValidationUtils.checkAc() recognizes all potential errors for an AC"
+
+  def "Smoke Test: Correct AC type throws no exception"() {
+    given:
+    def acType = SystemParticipantTestData.acTypeInput
+
+    when:
+    ValidationUtils.check(acType)
+
+    then:
+    noExceptionThrown()
+  }
+
+  def "SystemParticipantValidationUtils.checkAcType() recognizes all potential errors for an AC type"() {
+    when:
+    SystemParticipantValidationUtils.check(invalidAcType)
+
+    then:
+    Throwable ex = thrown()
+    ex.message.contains(expectedException.message)
+
+    where:
+    invalidAcType                                                                                           || expectedException
+    new AcTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, S_RATED), cosPhiRated, pThermal)       || new InvalidEntityException("The following quantities have to be positive: 0 kVA", invalidAcType)
+    new AcTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN)) || new InvalidEntityException("The following quantities have to be positive: 0 kW", invalidAcType)
+  }
+
 
   // Load
 

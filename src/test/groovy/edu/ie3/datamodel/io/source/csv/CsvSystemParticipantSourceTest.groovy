@@ -33,13 +33,14 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def systemParticipants = csvSystemParticipantSource.systemParticipants
 
     then:
-    systemParticipants.allEntitiesAsList().size() == 10
+    systemParticipants.allEntitiesAsList().size() == 11
     systemParticipants.pvPlants.first().uuid == sptd.pvInput.uuid
     systemParticipants.bmPlants.first().uuid == sptd.bmInput.uuid
     systemParticipants.chpPlants.first().uuid == sptd.chpInput.uuid
     systemParticipants.evs.first().uuid == sptd.evInput.uuid
     systemParticipants.fixedFeedIns.first().uuid == sptd.fixedFeedInInput.uuid
     systemParticipants.heatPumps.first().uuid == sptd.hpInput.uuid
+    systemParticipants.airConditions.first().uuid == sptd.acInput.uuid
     systemParticipants.loads.first().uuid == sptd.loadInput.uuid
     systemParticipants.wecPlants.first().uuid == sptd.wecInput.uuid
     systemParticipants.storages.first().uuid == sptd.storageInput.uuid
@@ -76,7 +77,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     Exception ex = systemParticipants.exception.get()
     ex.class == SystemParticipantsException
-    ex.message == "Exception(s) occurred in 10 input file(s) while initializing system participants.\n" +
+    ex.message == "Exception(s) occurred in 11 input file(s) while initializing system participants.\n" +
     "        1 exception(s) occurred within \"FixedFeedInInput\" data: \n" +
     "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
     "        1 exception(s) occurred within \"PvInput\" data: \n" +
@@ -96,6 +97,8 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     "        1 exception(s) occurred within \"ChpInput\" data: \n" +
     "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
     "        1 exception(s) occurred within \"HpInput\" data: \n" +
+    "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+    "        1 exception(s) occurred within \"AcInput\" data: \n" +
     "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided."
   }
 
@@ -117,6 +120,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def heatPumps = Try.of(() -> csvSystemParticipantSource.getHeatPumps(operatorMap, nodeMap, emUnitsMap, map([sptd.hpTypeInput]), thermalBusMap), SourceException)
     heatPumps.success
     heatPumps.data.get() == [sptd.hpInput] as Set
+
+    def airConditions = Try.of(() -> csvSystemParticipantSource.getAirConditions(operatorMap, nodeMap, emUnitsMap, map([sptd.acTypeInput]), thermalBusMap), SourceException)
+    airConditions.success
+    airConditions.data.get() == [sptd.acInput] as Set
 
     def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(operatorMap, nodeMap, emUnitsMap, map([sptd.chpTypeInput]), thermalBusMap, thermalStorageMap), SourceException)
     chpUnits.success
@@ -177,6 +184,30 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     []                      | []                  | []
     [sptd.hpInput.operator] | []                  | []
     [sptd.hpInput.operator] | [sptd.hpInput.type] | []
+  }
+
+  def "A SystemParticipantSource with csv input should throw an exception from an invalid air condition input file as expected"() {
+    given:
+    def csvSystemParticipantSource = new SystemParticipantSource(
+    Mock(TypeSource),
+    Mock(ThermalSource),
+    Mock(RawGridSource),
+    Mock(EnergyManagementSource),
+    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    def nodeMap = map([sptd.participantNode])
+    def emUnitsMap = map([sptd.emInput])
+
+    expect:
+    def airConditions = Try.of(() -> csvSystemParticipantSource.getHeatPumps(map(operators), nodeMap, emUnitsMap, map(types), map(thermalBuses)), SourceException)
+
+    airConditions.failure
+    airConditions.exception.get().class == SourceException
+
+    where:
+    operators               | types               | thermalBuses
+    []                      | []                  | []
+    [sptd.acInput.operator] | []                  | []
+    [sptd.acInput.operator] | [sptd.acInput.type] | []
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from a invalid chp input file as expected"() {

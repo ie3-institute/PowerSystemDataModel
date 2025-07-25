@@ -10,8 +10,8 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
-public class HpResult extends SystemParticipantWithHeatResult {
+/** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.AcInput} */
+public class AcResult extends SystemParticipantWithHeatResult {
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -22,7 +22,7 @@ public class HpResult extends SystemParticipantWithHeatResult {
    * @param q reactive power output normally provided in MVAr
    * @param qDot provided heat energy
    */
-  public HpResult(
+  public AcResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
@@ -33,7 +33,7 @@ public class HpResult extends SystemParticipantWithHeatResult {
 
   @Override
   public String toString() {
-    return "HpResult{"
+    return "AcResult{"
         + "time="
         + getTime()
         + ", inputModel="

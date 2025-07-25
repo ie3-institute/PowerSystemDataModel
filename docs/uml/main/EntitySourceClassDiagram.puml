@@ -129,6 +129,7 @@ class ResultEntitySource {
     + Set<EvcsResult> getEvcsResults() throws SourceException
     + Set<EvResult> getEvResults() throws SourceException
     + Set<HpResult> getHpResults() throws SourceException
+    + Set<AcResult> getAcResults() throws SourceException
     + Set<CylindricalStorageResult> getCylindricalStorageResult() throws SourceException
     + Set<DomesticHotStorageResult> getDomesticHotWaterStorageResult() throws SourceException
     + Set<ThermalHouseResult> getThermalHouseResults() throws SourceException
@@ -141,6 +142,7 @@ class SystemParticipantSource{
     - RawGridSource rawGridSource
     - ThermalSource thermalSource
     - EnergyManagementSource energyManagementSource
+    - AcInputFactory acInputFactory
     - BmInputFactory bmInputFactory
     - ChpInputFactory chpInputFactory
     - EvInputFactory evInputFactory
@@ -154,6 +156,8 @@ class SystemParticipantSource{
     + SystemParticipantSource(TypeSource, ThermalSource, RawGridSource, EnergyManagementSource, DataSource)
     + SystemParticipants getSystemParticipants() throws SourceException
     + SystemParticipants getSystemParticipants(Map<UUID, OperatorInput>, Map<UUID, NodeInput>) throws SourceException
+    + Set<AcInput> getAirConditions() throws SourceException
+    + Set<AcInput> getAirConditions(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<AcTypeInput>) throws SourceException
     + Set<BmInput> getBmPlants() throws SourceException
     + Set<BmInput> getBmPlants(Map<UUID, OperatorInput>, Map<UUID, NodeInput>, Set<BmTypeInput>) throws SourceException
     + Set<ChpInput> getChpPlants() throws SourceException

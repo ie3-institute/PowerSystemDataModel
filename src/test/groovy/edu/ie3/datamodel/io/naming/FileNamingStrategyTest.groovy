@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.naming
 
+import edu.ie3.datamodel.io.factory.input.participant.AcInputFactoryTest
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
@@ -21,6 +22,7 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
+import edu.ie3.datamodel.models.input.system.AcInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.ChpInput
 import edu.ie3.datamodel.models.input.system.EvInput
@@ -45,6 +47,7 @@ import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
+import edu.ie3.datamodel.models.result.system.AcResult
 import edu.ie3.datamodel.models.result.system.BmResult
 import edu.ie3.datamodel.models.result.system.ChpResult
 import edu.ie3.datamodel.models.result.system.EmResult
@@ -52,6 +55,7 @@ import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.EvcsResult
 import edu.ie3.datamodel.models.result.system.FixedFeedInResult
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
+import edu.ie3.datamodel.models.result.system.HpResult
 import edu.ie3.datamodel.models.result.system.LoadResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.StorageResult
@@ -99,6 +103,7 @@ class FileNamingStrategyTest extends Specification {
     res.present
     res.get() == expectedPath
 
+
     where:
     modelClass               || expectedPath
     LoadResult               || Path.of("test_grid", "results", "participants")
@@ -106,6 +111,8 @@ class FileNamingStrategyTest extends Specification {
     BmResult                 || Path.of("test_grid", "results", "participants")
     PvResult                 || Path.of("test_grid", "results", "participants")
     ChpResult                || Path.of("test_grid", "results", "participants")
+    HpResult                 || Path.of("test_grid", "results", "participants")
+    AcResult                 || Path.of("test_grid", "results", "participants")
     WecResult                || Path.of("test_grid", "results", "participants")
     StorageResult            || Path.of("test_grid", "results", "participants")
     EvcsResult               || Path.of("test_grid", "results", "participants")
@@ -144,6 +151,7 @@ class FileNamingStrategyTest extends Specification {
     LoadInput               || Path.of("test_grid", "input", "participants")
     StorageInput            || Path.of("test_grid", "input", "participants")
     HpInput                 || Path.of("test_grid", "input", "participants")
+    AcInput                 || Path.of("test_grid", "input", "participants")
     LineInput               || Path.of("test_grid", "input", "grid")
     SwitchInput             || Path.of("test_grid", "input", "grid")
     NodeInput               || Path.of("test_grid", "input", "grid")
@@ -247,6 +255,8 @@ class FileNamingStrategyTest extends Specification {
     BmResult                 || Path.of("test_grid", "results", "participants", "bm_res")
     PvResult                 || Path.of("test_grid", "results", "participants", "pv_res")
     ChpResult                || Path.of("test_grid", "results", "participants", "chp_res")
+    HpResult                 || Path.of("test_grid", "results", "participants", "hp_res")
+    AcResult                 || Path.of("test_grid", "results", "participants", "ac_res")
     WecResult                || Path.of("test_grid", "results", "participants", "wec_res")
     StorageResult            || Path.of("test_grid", "results", "participants", "storage_res")
     EvcsResult               || Path.of("test_grid", "results", "participants", "evcs_res")
@@ -307,6 +317,7 @@ class FileNamingStrategyTest extends Specification {
     LoadInput               || Path.of("test_grid", "input", "participants", "load_input")
     StorageInput            || Path.of("test_grid", "input", "participants", "storage_input")
     HpInput                 || Path.of("test_grid", "input", "participants", "hp_input")
+    AcInput                 || Path.of("test_grid", "input", "participants", "ac_input")
     EvcsInput               || Path.of("test_grid", "input", "participants", "evcs_input")
   }
 
@@ -469,6 +480,7 @@ class FileNamingStrategyTest extends Specification {
     BmResult                 || Optional.empty()
     PvResult                 || Optional.empty()
     ChpResult                || Optional.empty()
+    HpResult                 || Optional.empty()
     WecResult                || Optional.empty()
     StorageResult            || Optional.empty()
     EvcsResult               || Optional.empty()
@@ -506,6 +518,7 @@ class FileNamingStrategyTest extends Specification {
     LoadInput                || Optional.empty()
     StorageInput             || Optional.empty()
     HpInput                  || Optional.empty()
+    AcInput                  || Optional.empty()
     LineInput                || Optional.empty()
     SwitchInput              || Optional.empty()
     NodeInput                || Optional.empty()
@@ -612,6 +625,8 @@ class FileNamingStrategyTest extends Specification {
     BmResult                 || Path.of("bm_res")
     PvResult                 || Path.of("pv_res")
     ChpResult                || Path.of("chp_res")
+    HpResult                 || Path.of("hp_res")
+    AcResult                 || Path.of("ac_res")
     WecResult                || Path.of("wec_res")
     StorageResult            || Path.of("storage_res")
     EvcsResult               || Path.of("evcs_res")
@@ -650,6 +665,7 @@ class FileNamingStrategyTest extends Specification {
     LoadInput                || Path.of("load_input")
     StorageInput             || Path.of("storage_input")
     HpInput                  || Path.of("hp_input")
+    AcInput                  || Path.of("ac_input")
     LineInput                || Path.of("line_input")
     SwitchInput              || Path.of("switch_input")
     NodeInput                || Path.of("node_input")
