@@ -65,8 +65,8 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    optTimeBasedValue != null
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "An InfluxDbWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -148,7 +148,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     ])
 
     then:
-    coordinateAtDate == Optional.empty()
+    assert coordinateAtDate == null
     equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
     coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
     equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries_193186)
