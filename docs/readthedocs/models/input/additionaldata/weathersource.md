@@ -28,3 +28,39 @@ The source data for any `WeatherSource` implementation is expected to contain th
 
    * - **Weather Data**
      - The meteorological values, such as solar irradiance (`direct` and `diffuse`), temperature, and wind data (`speed` and `direction`).
+```
+
+## WeatherData
+
+Weather data is comprised of five key components:
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+   * - Component
+     - Description
+     - Unit
+
+   * - **`directIrradiance`**
+     - Solar radiation that reaches the surface directly from the sun.
+     - W/m²
+
+   * - **`diffuseIrradiance`**
+     - Solar radiation scattered by the atmosphere before reaching the surface.
+     - W/m²
+
+   * - **`temperature`**
+     - Ambient air temperature.
+     - K (Kelvin)
+
+   * - **`windVelocity`**
+     - Wind speed.
+     - m/s (meters per second)
+
+   * - **`windDirection`**
+     - Wind direction, where 0° is North, 90° is East, etc.
+     - ° (degrees)
+```
+Weather data in COSMO and ICON formats is supported. Additional optional weather data can also be provided.
