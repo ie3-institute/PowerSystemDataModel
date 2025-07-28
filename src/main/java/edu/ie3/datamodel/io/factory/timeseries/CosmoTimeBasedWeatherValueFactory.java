@@ -85,9 +85,8 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
     ComparableQuantity<Temperature> groundTemperature = null;
     try {
       groundTemperature = data.getQuantity(GROUND_TEMPERATURE, StandardUnits.TEMPERATURE);
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException ignored) {
 
-      logger.warn("Field '{}' not found in data, proceeding without it.", GROUND_TEMPERATURE);
     }
 
     WeatherValue weatherValue =

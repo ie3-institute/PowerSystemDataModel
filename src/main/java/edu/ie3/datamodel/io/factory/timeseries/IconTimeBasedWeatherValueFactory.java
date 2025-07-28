@@ -100,9 +100,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     try {
       groundTemperature =
           data.getQuantity(GROUND_TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException ignored) {
 
-      logger.warn("Field '{}' not found in data, proceeding without it.", GROUND_TEMPERATURE);
     }
 
     WeatherValue weatherValue =
