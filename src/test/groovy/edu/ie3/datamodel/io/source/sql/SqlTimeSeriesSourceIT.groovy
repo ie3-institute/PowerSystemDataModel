@@ -126,7 +126,7 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     value.get() == P_VALUE_00MIN
   }
 
-  def "The cSqlTimeSeriesSource returns the last value, if there is no current value"() {
+  def "The SqlTimeSeriesSource returns the last value, if there is no current value"() {
     given:
     def time = TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:13:00Z")
 
