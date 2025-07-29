@@ -6,10 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
-### Added 
+### Added
+-Added weathersource documentation [#1390](https://github.com/ie3-institute/PowerSystemDataModel/issues/1390)
 - Create data model for air condition [#1396](https://github.com/ie3-institute/PowerSystemDataModel/issues/1396)
 
 ### Fixed
+- Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
 
 ### Changed
 

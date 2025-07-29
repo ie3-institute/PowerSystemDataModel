@@ -169,6 +169,7 @@ maxdepth: 1
 ---
 input/additionaldata/timeseries
 input/additionaldata/idcoordinatesource
+input/additionaldata/weathersource
 ```
 
 ## Result
