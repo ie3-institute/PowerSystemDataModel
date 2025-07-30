@@ -47,6 +47,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           MeasurementUnitInput.class,
           ThermalBusInput.class,
           /* -- SystemParticipantInput */
+          AcInput.class,
           ChpInput.class,
           BmInput.class,
           EvInput.class,
@@ -67,6 +68,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           NodeGraphicInput.class,
           LineGraphicInput.class,
           /* - AssetTypeInput */
+          AcTypeInput.class,
           BmTypeInput.class,
           ChpTypeInput.class,
           EvTypeInput.class,
