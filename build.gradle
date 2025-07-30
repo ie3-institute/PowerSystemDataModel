@@ -104,7 +104,7 @@ dependencies {
 
   implementation 'commons-io:commons-io:2.20.0' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.19.0' // needed by commons-compress
-  implementation 'org.apache.commons:commons-compress:1.27.1' // I/O functionalities
+  implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
 }
 
 tasks.withType(JavaCompile) {
