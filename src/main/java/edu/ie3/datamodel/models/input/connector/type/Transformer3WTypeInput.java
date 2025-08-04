@@ -16,40 +16,58 @@ import tech.units.indriya.ComparableQuantity;
 public class Transformer3WTypeInput extends AssetTypeInput {
   /** Rated apparent power of the high voltage winding (typically in kVA) */
   private final ComparableQuantity<Power> sRatedA; // Hv
+
   /** Rated apparent power of the medium voltage winding (typically in kVA) */
   private final ComparableQuantity<Power> sRatedB; // Mv
+
   /** Rated apparent power of the low voltage windings (typically in kVA) */
   private final ComparableQuantity<Power> sRatedC; // Lv
+
   /** Rated voltage magnitude of the high voltage winding (typically in kV) */
   private final ComparableQuantity<ElectricPotential> vRatedA; // Hv
+
   /** Rated voltage magnitude of the medium voltage winding (typically in kV) */
   private final ComparableQuantity<ElectricPotential> vRatedB; // Mv
+
   /** Rated voltage magnitude of the low voltage winding (typically in kV) */
   private final ComparableQuantity<ElectricPotential> vRatedC; // Lv
+
   /** Short-circuit resistance of the high voltage winding (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> rScA; // Hv
+
   /** Short-circuit resistance of the medium voltage winding (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> rScB; // Mv
+
   /** Short-circuit resistance of the low voltage winding (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> rScC; // Lv
+
   /** Short-circuit reactance of the high voltage winding (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> xScA; // Hv
+
   /** Short-circuit reactance of the medium voltage winding (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> xScB; // Mv
+
   /** Short-circuit reactance of the low voltage winding (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> xScC; // Lv
+
   /** Phase-to-ground conductance (typically in nS) */
   private final ComparableQuantity<ElectricConductance> gM;
+
   /** Phase-to-ground susceptance (typically in nS) */
   private final ComparableQuantity<ElectricConductance> bM;
+
   /** Voltage magnitude deviation per tap position (typically in %) */
   private final ComparableQuantity<Dimensionless> dV;
+
   /** Voltage angle deviation per tap position (typically in °) */
   private final ComparableQuantity<Angle> dPhi;
+
   /** Neutral tap position */
   private final int tapNeutr;
+
   /** Minimum available tap position */
   private final int tapMin;
+
   /** Maximum available tap position */
   private final int tapMax;
 

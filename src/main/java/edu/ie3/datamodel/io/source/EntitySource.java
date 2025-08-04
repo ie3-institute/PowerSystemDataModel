@@ -138,8 +138,8 @@ public abstract class EntitySource {
           connector =
               new CsvFileConnector(jarFileSystem.getPath(array[1]), clazz::getResourceAsStream);
         }
-        default -> throw new SourceException(
-            "Protocol " + url.getProtocol() + " is nor supported!");
+        default ->
+            throw new SourceException("Protocol " + url.getProtocol() + " is nor supported!");
       }
 
       return new CsvDataSource(",", connector, new FileNamingStrategy());

@@ -41,6 +41,7 @@ public class EntityPersistenceNamingStrategy {
 
   private static final String UUID_STRING =
       "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
+
   /**
    * Regex to match the naming convention of a source for an individual time series. The column
    * scheme is accessible via the named capturing group "columnScheme". The time series' UUID is

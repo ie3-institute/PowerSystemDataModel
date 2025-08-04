@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Changed
+- Change spotless to use googleJavaFormat('1.28.0') [#1408](https://github.com/ie3-institute/PowerSystemDataModel/issues/1408)
 
 ## [8.1.0] - 2025-07-25
 

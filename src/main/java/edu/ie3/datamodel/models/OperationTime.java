@@ -21,8 +21,10 @@ public class OperationTime implements Serializable {
 
   /** Date of operation start */
   private ZonedDateTime startDate;
+
   /** Date of operation end */
   private ZonedDateTime endDate;
+
   /** Is the operation time frame limited? */
   private boolean isLimited;
 
@@ -42,17 +44,23 @@ public class OperationTime implements Serializable {
   /** Constructor for OperationTime without limitations (= always on) */
   private OperationTime() {}
 
-  /** @return an OperationTime without time limitations (= always on) */
+  /**
+   * @return an OperationTime without time limitations (= always on)
+   */
   public static OperationTime notLimited() {
     return new OperationTime();
   }
 
-  /** @return date of operation start, if present */
+  /**
+   * @return date of operation start, if present
+   */
   public Optional<ZonedDateTime> getStartDate() {
     return Optional.ofNullable(startDate);
   }
 
-  /** @return date of operation end, if present */
+  /**
+   * @return date of operation end, if present
+   */
   public Optional<ZonedDateTime> getEndDate() {
     return Optional.ofNullable(endDate);
   }
@@ -119,7 +127,9 @@ public class OperationTime implements Serializable {
         + '}';
   }
 
-  /** @return OperationTimeBuilder instance */
+  /**
+   * @return OperationTimeBuilder instance
+   */
   public static OperationTimeBuilder builder() {
     return new OperationTimeBuilder();
   }

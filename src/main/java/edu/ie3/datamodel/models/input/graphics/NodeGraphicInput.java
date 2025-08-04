@@ -15,6 +15,7 @@ import org.locationtech.jts.geom.Point;
 public class NodeGraphicInput extends GraphicInput implements HasNodes {
   /** The NodeInput to this graphic data */
   private final NodeInput node;
+
   /** The geometric point of this node */
   private final Point point;
 

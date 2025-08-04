@@ -21,6 +21,7 @@ import java.util.UUID;
 public class HpInput extends SystemParticipantInput implements HasType, HasThermalBus {
   /** Type of this heat pump, containing default values for heat pump of this kind */
   private final HpTypeInput type;
+
   /** The thermal bus, this model is connected to */
   private final ThermalBusInput thermalBus;
 

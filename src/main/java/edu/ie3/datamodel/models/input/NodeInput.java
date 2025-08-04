@@ -19,8 +19,10 @@ import tech.units.indriya.ComparableQuantity;
 public class NodeInput extends AssetInput {
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
   private final ComparableQuantity<Dimensionless> vTarget;
+
   /** Is this node a slack node? */
   private final boolean slack;
+
   /**
    * The coordinates of this node, especially relevant for geo-dependant systems, that are connected
    * to this node
@@ -32,6 +34,7 @@ public class NodeInput extends AssetInput {
 
   /** Voltage level of this node */
   private final VoltageLevel voltLvl;
+
   /** Subnet of this node */
   private final int subnet;
 

@@ -11,10 +11,13 @@ import java.util.*;
 public abstract class GridContainer implements InputContainer<UniqueInputEntity> {
   /** Name of this grid */
   protected final String gridName;
+
   /** Accumulated raw grid elements (lines, nodes, transformers, switches) */
   protected final RawGridElements rawGrid;
+
   /** Accumulated system participant elements */
   protected final SystemParticipants systemParticipants;
+
   /** Accumulated graphic data entities (node graphics, line graphics) */
   protected final GraphicElements graphics;
 
