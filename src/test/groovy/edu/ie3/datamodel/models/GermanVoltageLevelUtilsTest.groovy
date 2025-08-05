@@ -24,9 +24,16 @@ class GermanVoltageLevelUtilsTest extends Specification {
     where:
     id      || vRated                                   || expected
     "NS"    || Quantities.getQuantity(0.4d, KILOVOLT)   || LV
+    "0.4kV" || Quantities.getQuantity(0.4d, KILOVOLT)   || LV
+    "10.0kV"|| Quantities.getQuantity(10d, KILOVOLT)    || MV_10KV
+    "10kV"  || Quantities.getQuantity(10d, KILOVOLT)    || MV_10KV
     "MS"    || Quantities.getQuantity(15d, KILOVOLT)    || MV_10KV
     "MS"    || Quantities.getQuantity(20d, KILOVOLT)    || MV_20KV
+    "20.0kV"|| Quantities.getQuantity(20d, KILOVOLT)    || MV_20KV
+    "20kV"  || Quantities.getQuantity(20d, KILOVOLT)    || MV_20KV
     "MS"    || Quantities.getQuantity(35d, KILOVOLT)    || MV_30KV
+    "30.0kV"|| Quantities.getQuantity(30d, KILOVOLT)    || MV_30KV
+    "30kV"  || Quantities.getQuantity(30d, KILOVOLT)    || MV_30KV
     "HS"    || Quantities.getQuantity(110d, KILOVOLT)   || HV
     "HoeS"  || Quantities.getQuantity(220d, KILOVOLT)   || EHV_220KV
     "HoeS"  || Quantities.getQuantity(380d, KILOVOLT)   || EHV_380KV
