@@ -56,14 +56,29 @@ public class FlexOptionsResult extends ResultEntity {
     this.pMax = pMax;
   }
 
+  /**
+   * Gets ref.
+   *
+   * @return the ref
+   */
   public ComparableQuantity<Power> getpRef() {
     return pRef;
   }
 
+  /**
+   * Gets min.
+   *
+   * @return the min
+   */
   public ComparableQuantity<Power> getpMin() {
     return pMin;
   }
 
+  /**
+   * Gets max.
+   *
+   * @return the max
+   */
   public ComparableQuantity<Power> getpMax() {
     return pMax;
   }

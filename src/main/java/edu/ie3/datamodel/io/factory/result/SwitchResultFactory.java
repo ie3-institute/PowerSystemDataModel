@@ -11,10 +11,12 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/** The type Switch result factory. */
 public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
 
   private static final String CLOSED = "closed";
 
+  /** Instantiates a new Switch result factory. */
   public SwitchResultFactory() {
     super(SwitchResult.class);
   }

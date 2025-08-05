@@ -44,8 +44,10 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** The type Sql sink. */
 public class SqlSink {
 
+  /** The constant log. */
   protected static final Logger log = LoggerFactory.getLogger(SqlSink.class);
 
   private final SqlConnector connector;
@@ -56,12 +58,28 @@ public class SqlSink {
   private static final String TIME_SERIES = "time_series";
   private static final String LOAD_PROFILE = "load_profile";
 
+  /**
+   * Instantiates a new Sql sink.
+   *
+   * @param schemaName the schema name
+   * @param databaseNamingStrategy the database naming strategy
+   * @param connector the connector
+   * @throws EntityProcessorException the entity processor exception
+   */
   public SqlSink(
       String schemaName, DatabaseNamingStrategy databaseNamingStrategy, SqlConnector connector)
       throws EntityProcessorException {
     this(schemaName, new ProcessorProvider(), databaseNamingStrategy, connector);
   }
 
+  /**
+   * Instantiates a new Sql sink.
+   *
+   * @param schemaName the schema name
+   * @param processorProvider the processor provider
+   * @param databaseNamingStrategy the database naming strategy
+   * @param connector the connector
+   */
   public SqlSink(
       String schemaName,
       ProcessorProvider processorProvider,
@@ -73,6 +91,7 @@ public class SqlSink {
     this.schemaName = schemaName;
   }
 
+  /** Shutdown. */
   public void shutdown() {
     connector.shutdown();
   }
@@ -82,10 +101,10 @@ public class SqlSink {
   /**
    * Entry point of a data sink to persist multiple entities in a collection.
    *
-   * @param entities a collection of entities that should be persisted
-   * @param identifier identifier of the grid
    * @param <C> bounded to be all unique entities. Handling of specific entities is normally then
    *     executed by a specific {@link EntityProcessor}
+   * @param entities a collection of entities that should be persisted
+   * @param identifier identifier of the grid
    */
   public <C extends Entity> void persistAll(Collection<C> entities, DbGridMetadata identifier) {
     // Extract nested entities and add them to the set of entities
@@ -120,6 +139,7 @@ public class SqlSink {
    * Persist an entity. By default, this method takes care of the extraction process of nested
    * entities (if any)
    *
+   * @param <C> the type parameter
    * @param entity the entity that should be persisted
    * @param identifier identifier of the grid
    * @throws SQLException if an error occurred
@@ -141,8 +161,10 @@ public class SqlSink {
    * Persist an entity. In contrast to {@link SqlSink#persist} this function does not extract nested
    * entities.
    *
+   * @param <C> the type parameter
    * @param entity the entity that should be persisted
    * @param identifier identifier of the grid
+   * @throws SQLException the sql exception
    */
   public <C extends Entity> void persistIgnoreNested(C entity, DbGridMetadata identifier)
       throws SQLException {
@@ -152,6 +174,7 @@ public class SqlSink {
   /**
    * Persist an entity and all nested entities.
    *
+   * @param <C> the type parameter
    * @param entity the entity that should be persisted
    * @param identifier identifier of the grid
    */
@@ -230,7 +253,15 @@ public class SqlSink {
     }
   }
 
-  /** Persist one time series. */
+  /**
+   * Persist one time series.
+   *
+   * @param <E> the type parameter
+   * @param <V> the type parameter
+   * @param <R> the type parameter
+   * @param timeSeries the time series
+   * @param identifier the identifier
+   */
   protected <E extends TimeSeriesEntry<V>, V extends Value, R extends Value> void persistTimeSeries(
       TimeSeries<E, V, R> timeSeries, DbGridMetadata identifier) {
     try {
@@ -296,7 +327,12 @@ public class SqlSink {
     }
   }
 
-  /** Persists a whole {@link JointGridContainer}. */
+  /**
+   * Persists a whole {@link JointGridContainer}.
+   *
+   * @param jointGridContainer the joint grid container
+   * @param gridUUID the grid uuid
+   */
   public void persistJointGrid(JointGridContainer jointGridContainer, UUID gridUUID) {
     DbGridMetadata identifier = new DbGridMetadata(jointGridContainer.getGridName(), gridUUID);
     List<Entity> toAdd = new LinkedList<>(jointGridContainer.allEntitiesAsList());

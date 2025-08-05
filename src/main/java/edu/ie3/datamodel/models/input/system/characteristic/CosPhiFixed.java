@@ -20,15 +20,31 @@ import tech.units.indriya.quantity.Quantities;
  * infeed
  */
 public class CosPhiFixed extends ReactivePowerCharacteristic {
+  /** The constant PREFIX. */
   public static final String PREFIX = "cosPhiFixed";
+
+  /** The constant CONSTANT_CHARACTERISTIC. */
   public static final CosPhiFixed CONSTANT_CHARACTERISTIC = buildConstantCharacteristic();
+
+  /** The constant STARTING_REGEX. */
   public static final String STARTING_REGEX = buildStartingRegex(PREFIX);
 
+  /**
+   * Instantiates a new Cos phi fixed.
+   *
+   * @param characteristicPoints the characteristic points
+   */
   public CosPhiFixed(
       SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints) {
     super(characteristicPoints, PREFIX);
   }
 
+  /**
+   * Instantiates a new Cos phi fixed.
+   *
+   * @param input the input
+   * @throws ParsingException the parsing exception
+   */
   public CosPhiFixed(String input) throws ParsingException {
     super(input, StandardUnits.Q_CHARACTERISTIC, StandardUnits.Q_CHARACTERISTIC, PREFIX);
   }

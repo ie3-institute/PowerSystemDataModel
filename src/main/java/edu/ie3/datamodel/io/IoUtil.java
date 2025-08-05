@@ -9,8 +9,12 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;
 
+/** The type Io util. */
 public class IoUtil {
+  /** The constant FILE_SEPARATOR_REGEX. */
   public static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
+
+  /** The constant FILE_SEPARATOR_REPLACEMENT. */
   public static final String FILE_SEPARATOR_REPLACEMENT =
       File.separator.equals("\\") ? "\\\\" : "/";
 

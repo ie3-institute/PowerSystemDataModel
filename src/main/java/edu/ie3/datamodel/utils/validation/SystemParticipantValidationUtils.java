@@ -25,6 +25,7 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
+/** The type System participant validation utils. */
 public class SystemParticipantValidationUtils extends ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */

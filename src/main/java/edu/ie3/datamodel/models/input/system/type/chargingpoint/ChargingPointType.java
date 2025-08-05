@@ -18,7 +18,7 @@ import tech.units.indriya.ComparableQuantity;
 /**
  * The actual implementation {@link edu.ie3.datamodel.models.input.system.EvcsInput} types. Default
  * type implementations as well as methods to parse a type from a string can be found in {@link
- * ChargingPointTypeUtils}
+ * ChargingPointTypeUtils}*
  *
  * @version 0.1
  * @since 25.07.20
@@ -31,6 +31,13 @@ public class ChargingPointType implements Serializable {
 
   private final Set<String> synonymousIds;
 
+  /**
+   * Instantiates a new Charging point type.
+   *
+   * @param id the id
+   * @param sRated the s rated
+   * @param electricCurrentType the electric current type
+   */
   public ChargingPointType(
       String id, ComparableQuantity<Power> sRated, ElectricCurrentType electricCurrentType) {
     this.id = id;
@@ -39,6 +46,14 @@ public class ChargingPointType implements Serializable {
     this.synonymousIds = new HashSet<>();
   }
 
+  /**
+   * Instantiates a new Charging point type.
+   *
+   * @param id the id
+   * @param sRated the s rated
+   * @param electricCurrentType the electric current type
+   * @param synonymousIds the synonymous ids
+   */
   public ChargingPointType(
       String id,
       ComparableQuantity<Power> sRated,
@@ -50,22 +65,47 @@ public class ChargingPointType implements Serializable {
     this.synonymousIds = synonymousIds;
   }
 
+  /**
+   * Gets id.
+   *
+   * @return the id
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * Gets rated.
+   *
+   * @return the rated
+   */
   public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
+  /**
+   * Gets electric current type.
+   *
+   * @return the electric current type
+   */
   public ElectricCurrentType getElectricCurrentType() {
     return electricCurrentType;
   }
 
+  /**
+   * Gets synonymous ids.
+   *
+   * @return the synonymous ids
+   */
   public Set<String> getSynonymousIds() {
     return synonymousIds;
   }
 
+  /**
+   * Copy charging point type copy builder.
+   *
+   * @return the charging point type copy builder
+   */
   public ChargingPointTypeCopyBuilder copy() {
     return new ChargingPointTypeCopyBuilder(this);
   }
@@ -110,7 +150,7 @@ public class ChargingPointType implements Serializable {
   /**
    * A builder pattern based approach to create copies of {@link ChargingPointType} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * ChargingPointType}
+   * ChargingPointType}*
    */
   public static class ChargingPointTypeCopyBuilder {
 
@@ -126,53 +166,113 @@ public class ChargingPointType implements Serializable {
       this.synonymousIds = entity.getSynonymousIds();
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     * @return the id
+     */
     public ChargingPointTypeCopyBuilder setId(String id) {
       this.id = id;
       return thisInstance();
     }
 
+    /**
+     * Sets rated.
+     *
+     * @param sRated the s rated
+     * @return the rated
+     */
     public ChargingPointTypeCopyBuilder setsRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
       return thisInstance();
     }
 
+    /**
+     * Sets electric current type.
+     *
+     * @param electricCurrentType the electric current type
+     * @return the electric current type
+     */
     public ChargingPointTypeCopyBuilder setElectricCurrentType(
         ElectricCurrentType electricCurrentType) {
       this.electricCurrentType = electricCurrentType;
       return thisInstance();
     }
 
+    /**
+     * Sets synonymous ids.
+     *
+     * @param synonymousIds the synonymous ids
+     * @return the synonymous ids
+     */
     public ChargingPointTypeCopyBuilder setSynonymousIds(Set<String> synonymousIds) {
       this.synonymousIds = synonymousIds;
       return thisInstance();
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public String getId() {
       return id;
     }
 
+    /**
+     * Gets rated.
+     *
+     * @return the rated
+     */
     public ComparableQuantity<Power> getsRated() {
       return sRated;
     }
 
+    /**
+     * Gets electric current type.
+     *
+     * @return the electric current type
+     */
     public ElectricCurrentType getElectricCurrentType() {
       return electricCurrentType;
     }
 
+    /**
+     * Gets synonymous ids.
+     *
+     * @return the synonymous ids
+     */
     public Set<String> getSynonymousIds() {
       return synonymousIds;
     }
 
+    /**
+     * Scale charging point type . charging point type copy builder.
+     *
+     * @param factor the factor
+     * @return the charging point type . charging point type copy builder
+     */
     public ChargingPointType.ChargingPointTypeCopyBuilder scale(Double factor) {
       setsRated(getsRated().multiply(factor));
       return this;
     }
 
+    /**
+     * Build charging point type.
+     *
+     * @return the charging point type
+     */
     public ChargingPointType build() {
       return new ChargingPointType(
           getId(), getsRated(), getElectricCurrentType(), getSynonymousIds());
     }
 
+    /**
+     * This instance charging point type . charging point type copy builder.
+     *
+     * @return the charging point type . charging point type copy builder
+     */
     protected ChargingPointType.ChargingPointTypeCopyBuilder thisInstance() {
       return this;
     }

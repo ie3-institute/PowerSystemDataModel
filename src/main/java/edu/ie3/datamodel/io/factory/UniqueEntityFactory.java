@@ -17,10 +17,17 @@ import edu.ie3.datamodel.models.Entity;
 public abstract class UniqueEntityFactory<T extends Entity, D extends EntityData>
     extends EntityFactory<T, D> {
 
+  /** The constant UUID. */
   protected static final String UUID = "uuid";
 
+  /** The constant ID. */
   protected static final String ID = "id";
 
+  /**
+   * Instantiates a new Unique entity factory.
+   *
+   * @param allowedClasses the allowed classes
+   */
   @SafeVarargs
   protected UniqueEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);

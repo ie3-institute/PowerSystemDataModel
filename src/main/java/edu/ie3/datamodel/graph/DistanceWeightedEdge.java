@@ -21,8 +21,14 @@ import tech.units.indriya.quantity.Quantities;
 public class DistanceWeightedEdge extends DefaultWeightedEdge {
   private static final long serialVersionUID = -3331046813188425728L;
 
+  /** The constant DEFAULT_DISTANCE_UNIT. */
   protected static final Unit<Length> DEFAULT_DISTANCE_UNIT = METRE;
 
+  /**
+   * Gets distance.
+   *
+   * @return the distance
+   */
   public Quantity<Length> getDistance() {
     return Quantities.getQuantity(getWeight(), DEFAULT_DISTANCE_UNIT);
   }

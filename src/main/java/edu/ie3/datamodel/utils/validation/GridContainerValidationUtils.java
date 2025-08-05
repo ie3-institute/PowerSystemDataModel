@@ -32,6 +32,7 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
+/** The type Grid container validation utils. */
 public class GridContainerValidationUtils extends ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */

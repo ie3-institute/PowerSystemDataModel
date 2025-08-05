@@ -33,14 +33,25 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   private static final String WIND_DIRECTION = "windDirection";
   private static final String WIND_VELOCITY = "windVelocity";
 
+  /**
+   * Instantiates a new Cosmo time based weather value factory.
+   *
+   * @param timeUtil the time util
+   */
   public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
   }
 
+  /**
+   * Instantiates a new Cosmo time based weather value factory.
+   *
+   * @param dateTimeFormatter the date time formatter
+   */
   public CosmoTimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
     super(dateTimeFormatter);
   }
 
+  /** Instantiates a new Cosmo time based weather value factory. */
   public CosmoTimeBasedWeatherValueFactory() {
     super();
   }

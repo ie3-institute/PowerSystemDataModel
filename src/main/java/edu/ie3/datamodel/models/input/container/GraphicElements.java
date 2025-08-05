@@ -17,6 +17,12 @@ public class GraphicElements implements InputContainer<GraphicInput> {
   private final Set<NodeGraphicInput> nodeGraphics;
   private final Set<LineGraphicInput> lineGraphics;
 
+  /**
+   * Instantiates a new Graphic elements.
+   *
+   * @param nodeGraphics the node graphics
+   * @param lineGraphics the line graphics
+   */
   public GraphicElements(Set<NodeGraphicInput> nodeGraphics, Set<LineGraphicInput> lineGraphics) {
     this.nodeGraphics = nodeGraphics;
     this.lineGraphics = lineGraphics;
@@ -40,7 +46,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
 
   /**
    * Create an instance based on a list of {@link GraphicInput} entities that are included in {@link
-   * GraphicElements}
+   * GraphicElements}*
    *
    * @param graphics list of grid elements this container instance should created from
    */
@@ -73,6 +79,8 @@ public class GraphicElements implements InputContainer<GraphicInput> {
   }
 
   /**
+   * Gets node graphics.
+   *
    * @return unmodifiable Set of all node graphic data for this grid
    */
   public Set<NodeGraphicInput> getNodeGraphics() {
@@ -80,6 +88,8 @@ public class GraphicElements implements InputContainer<GraphicInput> {
   }
 
   /**
+   * Gets line graphics.
+   *
    * @return unmodifiable Set of all line graphic data for this grid
    */
   public Set<LineGraphicInput> getLineGraphics() {
@@ -101,7 +111,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
   /**
    * A builder pattern based approach to create copies of {@link GraphicElements} containers with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * GraphicElements}
+   * GraphicElements}*
    *
    * @version 3.1
    * @since 14.02.23

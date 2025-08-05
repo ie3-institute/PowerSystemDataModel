@@ -15,10 +15,21 @@ import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import java.util.Map;
 import java.util.Objects;
 
+/** The type Chp input entity data. */
 public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpTypeInput> {
   private final ThermalBusInput thermalBusInput;
   private final ThermalStorageInput thermalStorageInput;
 
+  /**
+   * Instantiates a new Chp input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param node the node
+   * @param em the em
+   * @param typeInput the type input
+   * @param thermalBusInput the thermal bus input
+   * @param thermalStorageInput the thermal storage input
+   */
   public ChpInputEntityData(
       Map<String, String> fieldsToAttributes,
       NodeInput node,
@@ -31,6 +42,17 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
     this.thermalStorageInput = thermalStorageInput;
   }
 
+  /**
+   * Instantiates a new Chp input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param operator the operator
+   * @param node the node
+   * @param em the em
+   * @param typeInput the type input
+   * @param thermalBusInput the thermal bus input
+   * @param thermalStorageInput the thermal storage input
+   */
   public ChpInputEntityData(
       Map<String, String> fieldsToAttributes,
       OperatorInput operator,
@@ -46,7 +68,7 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
 
   /**
    * Creates a new ChpInputEntityData object based on a given {@link
-   * SystemParticipantTypedEntityData} object and a thermal bus and storage input
+   * SystemParticipantTypedEntityData}* object and a thermal bus and storage input
    *
    * @param entityData The SystemParticipantTypedEntityData object to enhance
    * @param thermalBusInput The thermal bus input
@@ -61,10 +83,20 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
     this.thermalStorageInput = thermalStorageInput;
   }
 
+  /**
+   * Gets thermal bus input.
+   *
+   * @return the thermal bus input
+   */
   public ThermalBusInput getThermalBusInput() {
     return thermalBusInput;
   }
 
+  /**
+   * Gets thermal storage input.
+   *
+   * @return the thermal storage input
+   */
   public ThermalStorageInput getThermalStorageInput() {
     return thermalStorageInput;
   }

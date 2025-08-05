@@ -34,6 +34,8 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
   private final ComparableQuantity<Power> pThermalMax;
 
   /**
+   * Instantiates a new Abstract storage input.
+   *
    * @param uuid Unique identifier of a cylindrical storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
@@ -65,6 +67,8 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
   }
 
   /**
+   * Instantiates a new Abstract storage input.
+   *
    * @param uuid Unique identifier of a cylindrical storage
    * @param id Identifier of the thermal unit
    * @param bus Thermal bus, a thermal unit is connected to
@@ -91,22 +95,47 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
     this.pThermalMax = pThermalMax.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
+  /**
+   * Gets storage volume lvl.
+   *
+   * @return the storage volume lvl
+   */
   public ComparableQuantity<Volume> getStorageVolumeLvl() {
     return storageVolumeLvl;
   }
 
+  /**
+   * Gets inlet temp.
+   *
+   * @return the inlet temp
+   */
   public ComparableQuantity<Temperature> getInletTemp() {
     return inletTemp;
   }
 
+  /**
+   * Gets return temp.
+   *
+   * @return the return temp
+   */
   public ComparableQuantity<Temperature> getReturnTemp() {
     return returnTemp;
   }
 
+  /**
+   * Gets c.
+   *
+   * @return the c
+   */
   public ComparableQuantity<SpecificHeatCapacity> getC() {
     return c;
   }
 
+  /**
+   * Gets thermal max.
+   *
+   * @return the thermal max
+   */
   public ComparableQuantity<Power> getpThermalMax() {
     return pThermalMax;
   }
@@ -157,7 +186,9 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
   /**
    * A builder pattern based approach to create copies of {@link AbstractStorageInput} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * AbstractStorageInput}
+   * AbstractStorageInput}*
+   *
+   * @param <B> the type parameter
    */
   protected abstract static class AbstractStorageInputCopyBuilder<
           B extends AbstractStorageInputCopyBuilder<B>>
@@ -169,6 +200,11 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
     private ComparableQuantity<SpecificHeatCapacity> c;
     private ComparableQuantity<Power> pThermalMax;
 
+    /**
+     * Instantiates a new Abstract storage input copy builder.
+     *
+     * @param entity the entity
+     */
     protected AbstractStorageInputCopyBuilder(AbstractStorageInput entity) {
       super(entity);
 
@@ -179,26 +215,56 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
       this.pThermalMax = entity.getpThermalMax();
     }
 
+    /**
+     * Storage volume lvl b.
+     *
+     * @param storageVolumeLvl the storage volume lvl
+     * @return the b
+     */
     public B storageVolumeLvl(ComparableQuantity<Volume> storageVolumeLvl) {
       this.storageVolumeLvl = storageVolumeLvl;
       return thisInstance();
     }
 
+    /**
+     * Inlet temp b.
+     *
+     * @param inletTemp the inlet temp
+     * @return the b
+     */
     public B inletTemp(ComparableQuantity<Temperature> inletTemp) {
       this.inletTemp = inletTemp;
       return thisInstance();
     }
 
+    /**
+     * Return temp b.
+     *
+     * @param returnTemp the return temp
+     * @return the b
+     */
     public B returnTemp(ComparableQuantity<Temperature> returnTemp) {
       this.returnTemp = returnTemp;
       return thisInstance();
     }
 
+    /**
+     * C b.
+     *
+     * @param c the c
+     * @return the b
+     */
     public B c(ComparableQuantity<SpecificHeatCapacity> c) {
       this.c = c;
       return thisInstance();
     }
 
+    /**
+     * P thermal max b.
+     *
+     * @param pThermalMax the p thermal max
+     * @return the b
+     */
     public B pThermalMax(ComparableQuantity<Power> pThermalMax) {
       this.pThermalMax = pThermalMax;
       return thisInstance();
@@ -211,22 +277,47 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
       return thisInstance();
     }
 
+    /**
+     * Gets storage volume lvl.
+     *
+     * @return the storage volume lvl
+     */
     public ComparableQuantity<Volume> getStorageVolumeLvl() {
       return storageVolumeLvl;
     }
 
+    /**
+     * Gets inlet temp.
+     *
+     * @return the inlet temp
+     */
     public ComparableQuantity<Temperature> getInletTemp() {
       return inletTemp;
     }
 
+    /**
+     * Gets return temp.
+     *
+     * @return the return temp
+     */
     public ComparableQuantity<Temperature> getReturnTemp() {
       return returnTemp;
     }
 
+    /**
+     * Gets c.
+     *
+     * @return the c
+     */
     public ComparableQuantity<SpecificHeatCapacity> getC() {
       return c;
     }
 
+    /**
+     * Gets thermal max.
+     *
+     * @return the thermal max
+     */
     public ComparableQuantity<Power> getpThermalMax() {
       return pThermalMax;
     }

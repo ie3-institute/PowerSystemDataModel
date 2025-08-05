@@ -14,12 +14,18 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
  * to create generic reader for {@link AssetTypeInput}s only and furthermore removes code
  * duplicates.
  *
+ * @param <T> the type parameter
  * @version 0.1
  * @since 11.02.20
  */
 abstract class AssetTypeInputEntityFactory<T extends AssetTypeInput>
     extends UniqueEntityFactory<T, EntityData> {
 
+  /**
+   * Instantiates a new Asset type input entity factory.
+   *
+   * @param allowedClasses the allowed classes
+   */
   protected AssetTypeInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }

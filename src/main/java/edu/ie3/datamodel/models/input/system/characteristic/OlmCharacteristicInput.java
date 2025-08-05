@@ -19,14 +19,26 @@ import tech.units.indriya.quantity.Quantities;
 
 /** Characteristic for overhead line monitoring */
 public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimensionless> {
+  /** The constant CONSTANT_CHARACTERISTIC. */
   public static final OlmCharacteristicInput CONSTANT_CHARACTERISTIC =
       buildConstantCharacteristic();
 
+  /**
+   * Instantiates a new Olm characteristic input.
+   *
+   * @param characteristicPoints the characteristic points
+   */
   public OlmCharacteristicInput(
       SortedSet<CharacteristicPoint<Speed, Dimensionless>> characteristicPoints) {
     super(characteristicPoints, "olm");
   }
 
+  /**
+   * Instantiates a new Olm characteristic input.
+   *
+   * @param input the input
+   * @throws ParsingException the parsing exception
+   */
   public OlmCharacteristicInput(String input) throws ParsingException {
     super(input, StandardUnits.WIND_VELOCITY, StandardUnits.OLM_CHARACTERISTIC, "olm");
   }

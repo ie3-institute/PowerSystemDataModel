@@ -23,17 +23,28 @@ import java.util.stream.Collectors;
 /** Validation utils for checking the uniqueness of a given collection of entities. */
 public class UniquenessValidationUtils extends ValidationUtils {
 
+  /** The constant uuidFieldSupplier. */
   // default field set supplier
   protected static final FieldSetSupplier<? extends UniqueEntity> uuidFieldSupplier =
       entity -> Set.of(entity.getUuid());
+
+  /** The constant idFieldSupplier. */
   protected static final FieldSetSupplier<? extends AssetInput> idFieldSupplier =
       e -> Set.of(e.getId());
+
+  /** The constant resultFieldSupplier. */
   protected static final FieldSetSupplier<? extends ResultEntity> resultFieldSupplier =
       entity -> Set.of(entity.getTime(), entity.getInputModel());
+
+  /** The constant mappingFieldSupplier. */
   protected static final FieldSetSupplier<MappingEntry> mappingFieldSupplier =
       entity -> Set.of(entity.getAsset());
+
+  /** The constant idCoordinateSupplier. */
   protected static final FieldSetSupplier<IdCoordinateInput> idCoordinateSupplier =
       entity -> Set.of(entity.id(), entity.point());
+
+  /** The constant weatherValueFieldSupplier. */
   protected static final FieldSetSupplier<TimeBasedValue<WeatherValue>> weatherValueFieldSupplier =
       entity -> Set.of(entity.getTime(), entity.getValue().getCoordinate());
 
@@ -42,6 +53,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
    *
    * <p>Caution: Only the field {@code uuid} is checked for uniqueness here
    *
+   * @param <E> the type parameter
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated
    */
@@ -54,6 +66,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
   /**
    * Checks the uniqueness of a collection of {@link AssetInput}.
    *
+   * @param <E> the type parameter
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated
    */
@@ -74,6 +87,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
   /**
    * Checks the uniqueness of a collection of {@link ResultEntity}.
    *
+   * @param <E> the type parameter
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated
    */
@@ -202,6 +216,12 @@ public class UniquenessValidationUtils extends ValidationUtils {
    */
   @FunctionalInterface
   protected interface FieldSetSupplier<E extends Entity> {
+    /**
+     * Gets field sets.
+     *
+     * @param entity the entity
+     * @return the field sets
+     */
     Set<Object> getFieldSets(E entity);
   }
 }

@@ -16,9 +16,17 @@ import java.util.Optional;
  * @since 25.07.20
  */
 public enum ElectricCurrentType {
+  /** Ac electric current type. */
   AC,
+  /** Dc electric current type. */
   DC;
 
+  /**
+   * Parse optional.
+   *
+   * @param electricCurrentId the electric current id
+   * @return the optional
+   */
   public static Optional<ElectricCurrentType> parse(String electricCurrentId) {
     String cleanedElectricCurrentId =
         StringUtils.cleanString(electricCurrentId).replace("_", "").trim().toUpperCase();

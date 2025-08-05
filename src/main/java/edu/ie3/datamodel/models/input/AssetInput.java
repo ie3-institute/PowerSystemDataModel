@@ -56,10 +56,20 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
     return operator;
   }
 
+  /**
+   * Gets id.
+   *
+   * @return the id
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * Copy asset input copy builder.
+   *
+   * @return the asset input copy builder
+   */
   public abstract AssetInputCopyBuilder<?> copy();
 
   @Override
@@ -94,6 +104,7 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
   /**
    * Abstract class for all builder that build child entities of abstract class {@link AssetInput}
    *
+   * @param <B> the type parameter
    * @version 0.1
    * @since 05.06.20
    */
@@ -104,6 +115,11 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
     private OperatorInput operator;
     private OperationTime operationTime;
 
+    /**
+     * Instantiates a new Asset input copy builder.
+     *
+     * @param entity the entity
+     */
     protected AssetInputCopyBuilder(AssetInput entity) {
       super(entity);
       this.id = entity.getId();
@@ -111,29 +127,62 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
       this.operationTime = entity.getOperationTime();
     }
 
+    /**
+     * Id b.
+     *
+     * @param id the id
+     * @return the b
+     */
     public B id(String id) {
       this.id = id;
       return thisInstance();
     }
 
+    /**
+     * Operator b.
+     *
+     * @param operator the operator
+     * @return the b
+     */
     public B operator(OperatorInput operator) {
       this.operator = operator;
       return thisInstance();
     }
 
+    /**
+     * Operation time b.
+     *
+     * @param operationTime the operation time
+     * @return the b
+     */
     public B operationTime(OperationTime operationTime) {
       this.operationTime = operationTime;
       return thisInstance();
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     protected String getId() {
       return id;
     }
 
+    /**
+     * Gets operator.
+     *
+     * @return the operator
+     */
     protected OperatorInput getOperator() {
       return operator;
     }
 
+    /**
+     * Gets operation time.
+     *
+     * @return the operation time
+     */
     protected OperationTime getOperationTime() {
       return operationTime;
     }

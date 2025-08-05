@@ -57,7 +57,7 @@ public class ContainerUtils {
 
   /**
    * Returns the topology of the provided {@link RawGridElements} as a {@link
-   * DistanceWeightedGraph}, if they allow the creation of a valid topology graph or an empty
+   * DistanceWeightedGraph}*, if they allow the creation of a valid topology graph or an empty
    * optional otherwise.
    *
    * @param rawGridElements raw grids elements as base of the distance weighted topology graph
@@ -155,7 +155,7 @@ public class ContainerUtils {
 
   /**
    * Returns the topology of the provided {@link RawGridElements} as a {@link
-   * ImpedanceWeightedGraph}, if they allow the creation of a valid topology graph or an empty
+   * ImpedanceWeightedGraph}*, if they allow the creation of a valid topology graph or an empty
    * optional otherwise.
    *
    * @param rawGridElements raw grids elements as base of the distance weighted topology graph
@@ -466,6 +466,7 @@ public class ContainerUtils {
    * @param systemParticipants Container model of system participants
    * @param graphics Container element of graphic elements
    * @return An immutable, directed graph of sub grid topologies.
+   * @throws InvalidGridException the invalid grid exception
    */
   public static SubGridTopologyGraph buildSubGridTopologyGraph(
       String gridName,
@@ -602,12 +603,25 @@ public class ContainerUtils {
     private final SubGridContainer containerB;
     private final Optional<SubGridContainer> maybeContainerC;
 
+    /**
+     * Instantiates a new Transformer sub grid containers.
+     *
+     * @param containerA the container a
+     * @param containerB the container b
+     */
     public TransformerSubGridContainers(SubGridContainer containerA, SubGridContainer containerB) {
       this.containerA = containerA;
       this.containerB = containerB;
       this.maybeContainerC = Optional.empty();
     }
 
+    /**
+     * Instantiates a new Transformer sub grid containers.
+     *
+     * @param containerA the container a
+     * @param containerB the container b
+     * @param containerC the container c
+     */
     public TransformerSubGridContainers(
         SubGridContainer containerA, SubGridContainer containerB, SubGridContainer containerC) {
       this.containerA = containerA;
@@ -666,6 +680,7 @@ public class ContainerUtils {
    *
    * @param subGridContainers Collections of already existing sub grid models
    * @return A joint model
+   * @throws InvalidGridException the invalid grid exception
    */
   public static JointGridContainer combineToJointGrid(
       Collection<SubGridContainer> subGridContainers) throws InvalidGridException {
@@ -736,12 +751,13 @@ public class ContainerUtils {
    *         <li>if node a got unmarked as slack, the {@link RawGridElements#getNodes()} gets
    *             adapted accordingly
    *         <li>in any case the internal node of the transformer is added to the {@link
-   *             RawGridElements#getNodes()} set
+   *             RawGridElements#getNodes()}* set
    *       </ul>
    * </ul>
    *
    * @param subGridContainer the subgrid container to be altered
    * @return a copy of the given {@link SubGridContainer} with transformer nodes marked as slack
+   * @throws InvalidGridException the invalid grid exception
    */
   public static SubGridContainer withTrafoNodeAsSlack(final SubGridContainer subGridContainer)
       throws InvalidGridException {

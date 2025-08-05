@@ -13,11 +13,22 @@ import java.util.UUID;
 public class IndividualTimeSeriesMetaInformation extends TimeSeriesMetaInformation {
   private final ColumnScheme columnScheme;
 
+  /**
+   * Instantiates a new Individual time series meta information.
+   *
+   * @param uuid the uuid
+   * @param columnScheme the column scheme
+   */
   public IndividualTimeSeriesMetaInformation(UUID uuid, ColumnScheme columnScheme) {
     super(uuid);
     this.columnScheme = columnScheme;
   }
 
+  /**
+   * Gets column scheme.
+   *
+   * @return the column scheme
+   */
   public ColumnScheme getColumnScheme() {
     return columnScheme;
   }

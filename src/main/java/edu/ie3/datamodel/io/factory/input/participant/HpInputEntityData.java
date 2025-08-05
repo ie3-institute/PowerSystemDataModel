@@ -14,9 +14,19 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Map;
 import java.util.Objects;
 
+/** The type Hp input entity data. */
 public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeInput> {
   private final ThermalBusInput thermalBusInput;
 
+  /**
+   * Instantiates a new Hp input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param node the node
+   * @param em the em
+   * @param typeInput the type input
+   * @param thermalBusInput the thermal bus input
+   */
   public HpInputEntityData(
       Map<String, String> fieldsToAttributes,
       NodeInput node,
@@ -27,6 +37,16 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
     this.thermalBusInput = thermalBusInput;
   }
 
+  /**
+   * Instantiates a new Hp input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param operator the operator
+   * @param node the node
+   * @param em the em
+   * @param typeInput the type input
+   * @param thermalBusInput the thermal bus input
+   */
   public HpInputEntityData(
       Map<String, String> fieldsToAttributes,
       OperatorInput operator,
@@ -40,7 +60,7 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
 
   /**
    * Creates a new HpInputEntityData object based on a given {@link
-   * SystemParticipantTypedEntityData} object and given thermal bus input
+   * SystemParticipantTypedEntityData}* object and given thermal bus input
    *
    * @param entityData The SystemParticipantTypedEntityData object to enhance
    * @param thermalBusInput The thermal bus input
@@ -51,6 +71,11 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
     this.thermalBusInput = thermalBusInput;
   }
 
+  /**
+   * Gets thermal bus input.
+   *
+   * @return the thermal bus input
+   */
   public ThermalBusInput getThermalBusInput() {
     return thermalBusInput;
   }

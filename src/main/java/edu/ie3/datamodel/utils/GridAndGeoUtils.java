@@ -33,7 +33,7 @@ public class GridAndGeoUtils extends GeoUtils {
 
   /**
    * Calculates the distance between two {@link NodeInput} entities using {@link
-   * #calcHaversine(double, double, double, double)}
+   * #calcHaversine(double, double, double, double)}*
    *
    * @param nodeA start node
    * @param nodeB end node

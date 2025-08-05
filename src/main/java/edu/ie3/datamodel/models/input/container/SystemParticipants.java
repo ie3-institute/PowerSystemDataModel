@@ -25,6 +25,20 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   private final Set<StorageInput> storages;
   private final Set<WecInput> wecPlants;
 
+  /**
+   * Instantiates a new System participants.
+   *
+   * @param bmPlants the bm plants
+   * @param chpPlants the chp plants
+   * @param evcs the evcs
+   * @param evs the evs
+   * @param fixedFeedIns the fixed feed ins
+   * @param heatPumps the heat pumps
+   * @param loads the loads
+   * @param pvPlants the pv plants
+   * @param storages the storages
+   * @param wecPlants the wec plants
+   */
   public SystemParticipants(
       Set<BmInput> bmPlants,
       Set<ChpInput> chpPlants,
@@ -178,6 +192,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /**
+   * Gets bm plants.
+   *
    * @return unmodifiable Set of all biomass plants in this grid
    */
   public Set<BmInput> getBmPlants() {
@@ -185,6 +201,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /**
+   * Gets chp plants.
+   *
    * @return unmodifiable Set of all CHP plants in this grid
    */
   public Set<ChpInput> getChpPlants() {
@@ -192,6 +210,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /**
+   * Gets evcs.
+   *
    * @return unmodifiable Set of all ev charging stations in this grid
    */
   public Set<EvcsInput> getEvcs() {
@@ -199,6 +219,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /**
+   * Gets evs.
+   *
    * @return unmodifiable Set of all electric vehicles in this grid
    */
   public Set<EvInput> getEvs() {
@@ -206,6 +228,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /**
+   * Gets fixed feed ins.
+   *
    * @return unmodifiable Set of all fixed feed in this grid
    */
   public Set<FixedFeedInInput> getFixedFeedIns() {
@@ -213,6 +237,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /**
+   * Gets heat pumps.
+   *
    * @return unmodifiable Set of all heat pumps in this grid
    */
   public Set<HpInput> getHeatPumps() {
@@ -220,6 +246,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /**
+   * Gets loads.
+   *
    * @return unmodifiable Set of all loads in this grid
    */
   public Set<LoadInput> getLoads() {
@@ -227,6 +255,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /**
+   * Gets pv plants.
+   *
    * @return unmodifiable Set of all PV plants in this grid
    */
   public Set<PvInput> getPvPlants() {
@@ -234,6 +264,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /**
+   * Gets storages.
+   *
    * @return unmodifiable Set of all storages in this grid
    */
   public Set<StorageInput> getStorages() {
@@ -241,6 +273,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   /**
+   * Gets wec plants.
+   *
    * @return unmodifiable Set of all WECs in this grid
    */
   public Set<WecInput> getWecPlants() {
@@ -281,7 +315,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   /**
    * A builder pattern based approach to create copies of {@link SystemParticipants} containers with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * SystemParticipants}
+   * SystemParticipants}*
    *
    * @version 3.1
    * @since 14.02.23

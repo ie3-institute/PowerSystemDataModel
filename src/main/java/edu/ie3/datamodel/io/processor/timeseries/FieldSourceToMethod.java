@@ -19,11 +19,17 @@ public record FieldSourceToMethod(FieldSource source, GetterMethod method) {
 
   /** Enum to denote, where information can be received from */
   public enum FieldSource {
+    /** Timeseries field source. */
     TIMESERIES,
+    /** Entry field source. */
     ENTRY,
+    /** Value field source. */
     VALUE,
+    /** Weather irradiance field source. */
     WEATHER_IRRADIANCE,
+    /** Weather temperature field source. */
     WEATHER_TEMPERATURE,
+    /** Weather wind field source. */
     WEATHER_WIND,
   }
 }

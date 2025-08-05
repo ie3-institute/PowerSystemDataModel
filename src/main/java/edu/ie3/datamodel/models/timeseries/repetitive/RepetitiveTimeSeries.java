@@ -11,11 +11,23 @@ import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-/** Describes a TimeSeries with repetitive values that can be calculated from a pattern */
+/**
+ * Describes a TimeSeries with repetitive values that can be calculated from a pattern @param <E>
+ * the type parameter
+ *
+ * @param <V> the type parameter
+ * @param <R> the type parameter
+ */
 public abstract class RepetitiveTimeSeries<
         E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
     extends TimeSeries<E, V, R> {
 
+  /**
+   * Instantiates a new Repetitive time series.
+   *
+   * @param uuid the uuid
+   * @param entries the entries
+   */
   protected RepetitiveTimeSeries(UUID uuid, Set<E> entries) {
     super(uuid, entries);
   }

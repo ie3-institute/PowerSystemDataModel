@@ -19,6 +19,7 @@ public interface TemperatureDependantLoadProfile extends LoadProfile {
    *
    * @param key to look for
    * @return the matching temperature dependant load profile
+   * @throws ParsingException the parsing exception
    */
   static TemperatureDependantLoadProfile parse(String key) throws ParsingException {
     return LoadProfile.getProfile(NbwTemperatureDependantLoadProfile.values(), key);

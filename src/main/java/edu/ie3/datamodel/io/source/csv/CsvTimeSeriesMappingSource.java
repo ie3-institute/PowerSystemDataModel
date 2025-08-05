@@ -14,10 +14,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/** The type Csv time series mapping source. */
 public class CsvTimeSeriesMappingSource extends TimeSeriesMappingSource {
 
   private final CsvDataSource dataSource;
 
+  /**
+   * Instantiates a new Csv time series mapping source.
+   *
+   * @param csvSep the csv sep
+   * @param gridFolderPath the grid folder path
+   * @param fileNamingStrategy the file naming strategy
+   */
   public CsvTimeSeriesMappingSource(
       String csvSep, Path gridFolderPath, FileNamingStrategy fileNamingStrategy) {
     this.dataSource = new CsvDataSource(csvSep, gridFolderPath, fileNamingStrategy);

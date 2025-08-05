@@ -20,6 +20,8 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
   private final Point point;
 
   /**
+   * Instantiates a new Node graphic input.
+   *
    * @param uuid of the input entity
    * @param graphicLayer Description of the graphic layer, this graphic is located on
    * @param path A graphic representation as path
@@ -33,10 +35,20 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
     this.point = point;
   }
 
+  /**
+   * Gets node.
+   *
+   * @return the node
+   */
   public NodeInput getNode() {
     return node;
   }
 
+  /**
+   * Gets point.
+   *
+   * @return the point
+   */
   public Point getPoint() {
     return point;
   }
@@ -78,7 +90,7 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
   /**
    * A builder pattern based approach to create copies of {@link NodeGraphicInput} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * NodeGraphicInput}
+   * NodeGraphicInput}*
    *
    * @version 0.1
    * @since 05.06.20
@@ -95,11 +107,23 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
       this.point = entity.getPoint();
     }
 
+    /**
+     * Point node graphic input copy builder.
+     *
+     * @param point the point
+     * @return the node graphic input copy builder
+     */
     public NodeGraphicInputCopyBuilder point(Point point) {
       this.point = point;
       return thisInstance();
     }
 
+    /**
+     * Node node graphic input copy builder.
+     *
+     * @param node the node
+     * @return the node graphic input copy builder
+     */
     public NodeGraphicInputCopyBuilder node(NodeInput node) {
       this.node = node;
       return thisInstance();

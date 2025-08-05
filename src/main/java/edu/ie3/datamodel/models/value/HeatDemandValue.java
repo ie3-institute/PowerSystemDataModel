@@ -15,10 +15,20 @@ import tech.units.indriya.ComparableQuantity;
 public class HeatDemandValue implements Value {
   private final ComparableQuantity<Power> heatDemand;
 
+  /**
+   * Instantiates a new Heat demand value.
+   *
+   * @param heatDemand the heat demand
+   */
   public HeatDemandValue(ComparableQuantity<Power> heatDemand) {
     this.heatDemand = heatDemand == null ? null : heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
+  /**
+   * Gets heat demand.
+   *
+   * @return the heat demand
+   */
   public Optional<ComparableQuantity<Power>> getHeatDemand() {
     return Optional.ofNullable(heatDemand);
   }

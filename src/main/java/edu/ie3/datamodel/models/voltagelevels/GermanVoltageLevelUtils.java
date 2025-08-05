@@ -18,11 +18,14 @@ import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
+/** The type German voltage level utils. */
 public class GermanVoltageLevelUtils {
+  /** The constant logger. */
   protected static final Logger logger = LoggerFactory.getLogger(GermanVoltageLevelUtils.class);
 
   private static final String MS = "Mittelspannung";
 
+  /** The constant LV. */
   public static final CommonVoltageLevel LV =
       new CommonVoltageLevel(
           "Niederspannung",
@@ -30,6 +33,8 @@ public class GermanVoltageLevelUtils {
           new HashSet<>(Arrays.asList("lv", "ns")),
           new RightOpenInterval<>(
               Quantities.getQuantity(0d, KILOVOLT), Quantities.getQuantity(10d, KILOVOLT)));
+
+  /** The constant MV_10KV. */
   public static final CommonVoltageLevel MV_10KV =
       new CommonVoltageLevel(
           MS,
@@ -37,6 +42,8 @@ public class GermanVoltageLevelUtils {
           new HashSet<>(Arrays.asList("ms", "mv", "ms_10kv", "mv_10kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(10d, KILOVOLT), Quantities.getQuantity(20d, KILOVOLT)));
+
+  /** The constant MV_20KV. */
   public static final CommonVoltageLevel MV_20KV =
       new CommonVoltageLevel(
           MS,
@@ -44,6 +51,8 @@ public class GermanVoltageLevelUtils {
           new HashSet<>(Arrays.asList("ms", "mv", "ms_20kv", "mv_20kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(20d, KILOVOLT), Quantities.getQuantity(30d, KILOVOLT)));
+
+  /** The constant MV_30KV. */
   public static final CommonVoltageLevel MV_30KV =
       new CommonVoltageLevel(
           MS,
@@ -51,6 +60,8 @@ public class GermanVoltageLevelUtils {
           new HashSet<>(Arrays.asList("ms", "mv", "ms_30kv", "mv_30kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(30d, KILOVOLT), Quantities.getQuantity(110d, KILOVOLT)));
+
+  /** The constant HV. */
   public static final CommonVoltageLevel HV =
       new CommonVoltageLevel(
           "Hochspannung",
@@ -58,6 +69,8 @@ public class GermanVoltageLevelUtils {
           new HashSet<>(Arrays.asList("hs", "hv")),
           new RightOpenInterval<>(
               Quantities.getQuantity(110d, KILOVOLT), Quantities.getQuantity(220d, KILOVOLT)));
+
+  /** The constant EHV_220KV. */
   public static final CommonVoltageLevel EHV_220KV =
       new CommonVoltageLevel(
           "Höchstspannung",
@@ -65,6 +78,8 @@ public class GermanVoltageLevelUtils {
           new HashSet<>(Arrays.asList("hoes", "ehv", "hoes_220kv", "ehv_220kv")),
           new RightOpenInterval<>(
               Quantities.getQuantity(220d, KILOVOLT), Quantities.getQuantity(380d, KILOVOLT)));
+
+  /** The constant EHV_380KV. */
   public static final CommonVoltageLevel EHV_380KV =
       new CommonVoltageLevel(
           "Höchstspannung",
@@ -80,6 +95,11 @@ public class GermanVoltageLevelUtils {
     throw new IllegalStateException("This is a factory class. Don't try to instantiate it.");
   }
 
+  /**
+   * Gets german voltage levels.
+   *
+   * @return the german voltage levels
+   */
   public static Set<CommonVoltageLevel> getGermanVoltageLevels() {
     return germanVoltageLevels;
   }

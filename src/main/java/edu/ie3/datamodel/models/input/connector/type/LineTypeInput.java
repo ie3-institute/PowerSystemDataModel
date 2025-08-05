@@ -36,6 +36,8 @@ public class LineTypeInput extends AssetTypeInput {
   private final ComparableQuantity<ElectricPotential> vRated;
 
   /**
+   * Instantiates a new Line type input.
+   *
    * @param uuid of the input entity
    * @param id of this type
    * @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)
@@ -63,26 +65,56 @@ public class LineTypeInput extends AssetTypeInput {
     this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
+  /**
+   * Gets b.
+   *
+   * @return the b
+   */
   public ComparableQuantity<SpecificConductance> getB() {
     return b;
   }
 
+  /**
+   * Gets g.
+   *
+   * @return the g
+   */
   public ComparableQuantity<SpecificConductance> getG() {
     return g;
   }
 
+  /**
+   * Gets r.
+   *
+   * @return the r
+   */
   public ComparableQuantity<SpecificResistance> getR() {
     return r;
   }
 
+  /**
+   * Gets x.
+   *
+   * @return the x
+   */
   public ComparableQuantity<SpecificResistance> getX() {
     return x;
   }
 
+  /**
+   * Gets max.
+   *
+   * @return the max
+   */
   public ComparableQuantity<ElectricCurrent> getiMax() {
     return iMax;
   }
 
+  /**
+   * Gets rated.
+   *
+   * @return the rated
+   */
   public ComparableQuantity<ElectricPotential> getvRated() {
     return vRated;
   }
@@ -134,7 +166,7 @@ public class LineTypeInput extends AssetTypeInput {
 
   /**
    * Abstract class for all builder that build child entities of abstract class {@link
-   * LineTypeInput}
+   * LineTypeInput}*
    */
   public static final class LineTypeInputCopyBuilder
       extends AssetTypeInput.AssetTypeInputCopyBuilder<LineTypeInputCopyBuilder> {
@@ -146,6 +178,11 @@ public class LineTypeInput extends AssetTypeInput {
     private ComparableQuantity<ElectricCurrent> iMax;
     private ComparableQuantity<ElectricPotential> vRated;
 
+    /**
+     * Instantiates a new Line type input copy builder.
+     *
+     * @param entity the entity
+     */
     protected LineTypeInputCopyBuilder(LineTypeInput entity) {
       super(entity);
       this.b = entity.b;
@@ -156,32 +193,66 @@ public class LineTypeInput extends AssetTypeInput {
       this.vRated = entity.vRated;
     }
 
-    /** Setter */
+    /**
+     * Setter @param b the b
+     *
+     * @return the line type input copy builder
+     */
     public LineTypeInputCopyBuilder b(ComparableQuantity<SpecificConductance> b) {
       this.b = b;
       return thisInstance();
     }
 
+    /**
+     * G line type input copy builder.
+     *
+     * @param g the g
+     * @return the line type input copy builder
+     */
     public LineTypeInputCopyBuilder g(ComparableQuantity<SpecificConductance> g) {
       this.g = g;
       return thisInstance();
     }
 
+    /**
+     * R line type input copy builder.
+     *
+     * @param r the r
+     * @return the line type input copy builder
+     */
     public LineTypeInputCopyBuilder r(ComparableQuantity<SpecificResistance> r) {
       this.r = r;
       return thisInstance();
     }
 
+    /**
+     * X line type input copy builder.
+     *
+     * @param x the x
+     * @return the line type input copy builder
+     */
     public LineTypeInputCopyBuilder x(ComparableQuantity<SpecificResistance> x) {
       this.x = x;
       return thisInstance();
     }
 
+    /**
+     * Max line type input copy builder.
+     *
+     * @param iMax the max
+     * @return the line type input copy builder
+     */
     public LineTypeInputCopyBuilder iMax(ComparableQuantity<ElectricCurrent> iMax) {
       this.iMax = iMax;
       return thisInstance();
     }
 
+    /**
+     * V rated line type input copy builder.
+     *
+     * @param vRated the v rated
+     * @return the line type input copy builder
+     */
     public LineTypeInputCopyBuilder vRated(ComparableQuantity<ElectricPotential> vRated) {
       this.vRated = vRated;
       return thisInstance();

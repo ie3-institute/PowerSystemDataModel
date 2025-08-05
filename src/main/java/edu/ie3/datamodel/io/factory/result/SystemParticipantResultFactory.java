@@ -21,7 +21,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Factory class for creating {@link SystemParticipantResult} entities from provided {@link
- * EntityData} data objects.
+ * EntityData}* data objects.
  */
 public class SystemParticipantResultFactory extends ResultEntityFactory<SystemParticipantResult> {
 
@@ -30,6 +30,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   private static final String SOC = "soc";
   private static final String Q_DOT = "qDot";
 
+  /** Instantiates a new System participant result factory. */
   public SystemParticipantResultFactory() {
     super(
         LoadResult.class,

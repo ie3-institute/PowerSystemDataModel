@@ -15,10 +15,12 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Node result factory. */
 public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   private static final String VMAG = "vMag";
   private static final String VANG = "vAng";
 
+  /** Instantiates a new Node result factory. */
   public NodeResultFactory() {
     super(NodeResult.class);
   }

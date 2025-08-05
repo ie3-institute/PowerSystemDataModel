@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
  */
 public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
 
+  /** The Data source. */
   protected final CsvDataSource dataSource;
 
   private final Map<UUID, CsvIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;

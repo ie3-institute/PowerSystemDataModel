@@ -11,6 +11,7 @@ import java.util.UUID;
 /** Describes an operator, that operates assets */
 public class OperatorInput extends UniqueInputEntity {
 
+  /** The constant NO_OPERATOR_ASSIGNED. */
   public static final OperatorInput NO_OPERATOR_ASSIGNED =
       new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED");
 
@@ -28,10 +29,20 @@ public class OperatorInput extends UniqueInputEntity {
     this.id = id;
   }
 
+  /**
+   * Gets id.
+   *
+   * @return the id
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * Copy operator input copy builder.
+   *
+   * @return the operator input copy builder
+   */
   public OperatorInputCopyBuilder copy() {
     return new OperatorInputCopyBuilder(this);
   }
@@ -57,7 +68,7 @@ public class OperatorInput extends UniqueInputEntity {
   /**
    * A builder pattern based approach to create copies of {@link OperatorInput} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * OperatorInput}
+   * OperatorInput}*
    *
    * @version 0.1
    * @since 05.06.20
@@ -77,6 +88,12 @@ public class OperatorInput extends UniqueInputEntity {
       return new OperatorInput(getUuid(), id);
     }
 
+    /**
+     * Id operator input copy builder.
+     *
+     * @param id the id
+     * @return the operator input copy builder
+     */
     public OperatorInputCopyBuilder id(String id) {
       this.id = id;
       return thisInstance();

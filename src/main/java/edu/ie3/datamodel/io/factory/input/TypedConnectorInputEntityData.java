@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * Data used for those classes of {@link edu.ie3.datamodel.models.input.connector.ConnectorInput}
  * that need an instance of some type T of {@link
- * edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput} as well.
+ * edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput}* as well.
  *
  * @param <T> Subclass of {@link AssetTypeInput} that is required for the construction of the
  *     ConnectorInput
@@ -69,7 +69,7 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
 
   /**
    * Creates a new TypedConnectorInputEntityData object based on a given {@link
-   * ConnectorInputEntityData} object and given type
+   * ConnectorInputEntityData}* object and given type
    *
    * @param entityData The ConnectorInputEntityData object to enhance
    * @param type type input
@@ -79,6 +79,11 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
     this.type = type;
   }
 
+  /**
+   * Gets type.
+   *
+   * @return the type
+   */
   public T getType() {
     return type;
   }

@@ -15,21 +15,28 @@ import edu.ie3.datamodel.models.input.IdCoordinateInput;
  */
 public abstract class IdCoordinateFactory
     extends Factory<IdCoordinateInput, SimpleFactoryData, IdCoordinateInput> {
+  /** Instantiates a new Id coordinate factory. */
   protected IdCoordinateFactory() {
     super(IdCoordinateInput.class);
   }
 
   /**
+   * Gets id field.
+   *
    * @return the field id for the coordinate id
    */
   public abstract String getIdField();
 
   /**
+   * Gets lat field.
+   *
    * @return the field id for the coordinate latitude
    */
   public abstract String getLatField();
 
   /**
+   * Gets lon field.
+   *
    * @return the field id for the coordinate longitude
    */
   public abstract String getLonField();

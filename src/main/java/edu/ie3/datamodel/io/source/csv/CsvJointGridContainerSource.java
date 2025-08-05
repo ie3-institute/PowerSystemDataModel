@@ -26,6 +26,18 @@ import java.util.*;
 public class CsvJointGridContainerSource {
   private CsvJointGridContainerSource() {}
 
+  /**
+   * Read joint grid container.
+   *
+   * @param gridName the grid name
+   * @param csvSep the csv sep
+   * @param directoryPath the directory path
+   * @param isHierarchic the is hierarchic
+   * @return the joint grid container
+   * @throws SourceException the source exception
+   * @throws FileException the file exception
+   * @throws InvalidGridException the invalid grid exception
+   */
   public static JointGridContainer read(
       String gridName, String csvSep, Path directoryPath, boolean isHierarchic)
       throws SourceException, FileException, InvalidGridException {

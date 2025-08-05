@@ -9,19 +9,37 @@ import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import java.nio.file.Path;
 import java.util.Objects;
 
+/** The type Csv load profile meta information. */
 public class CsvLoadProfileMetaInformation extends LoadProfileMetaInformation {
   private final Path fullFilePath;
 
+  /**
+   * Instantiates a new Csv load profile meta information.
+   *
+   * @param profile the profile
+   * @param fullFilePath the full file path
+   */
   public CsvLoadProfileMetaInformation(String profile, Path fullFilePath) {
     super(profile);
     this.fullFilePath = fullFilePath;
   }
 
+  /**
+   * Instantiates a new Csv load profile meta information.
+   *
+   * @param metaInformation the meta information
+   * @param fullFilePath the full file path
+   */
   public CsvLoadProfileMetaInformation(
       LoadProfileMetaInformation metaInformation, Path fullFilePath) {
     this(metaInformation.getProfile(), fullFilePath);
   }
 
+  /**
+   * Gets full file path.
+   *
+   * @return the full file path
+   */
   public Path getFullFilePath() {
     return fullFilePath;
   }

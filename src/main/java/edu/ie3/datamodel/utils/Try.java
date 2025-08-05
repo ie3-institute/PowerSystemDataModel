@@ -16,17 +16,23 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 
+/**
+ * The type Try.
+ *
+ * @param <T> the type parameter
+ * @param <E> the type parameter
+ */
 public abstract class Try<T, E extends Exception> {
   // static utility methods
 
   /**
    * Method to create a {@link Try} object easily.
    *
+   * @param <T> type of data
+   * @param <E> type of exception that could be thrown
    * @param supplier that either returns data or throws an exception
    * @param clazz class of the exception
    * @return a try object
-   * @param <T> type of data
-   * @param <E> type of exception that could be thrown
    */
   @SuppressWarnings("unchecked")
   public static <T, E extends Exception> Try<T, E> of(TrySupplier<T, E> supplier, Class<E> clazz) {
@@ -45,10 +51,10 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to create a {@link Try} object easily.
    *
+   * @param <E> type of exception that could be thrown
    * @param supplier that either returns no data or throws an exception
    * @param clazz class of the exception
    * @return a try object
-   * @param <E> type of exception that could be thrown
    */
   @SuppressWarnings("unchecked")
   public static <E extends Exception> Try<Void, E> ofVoid(
@@ -69,10 +75,10 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to create multiple {@link Try} object easily.
    *
-   * @param suppliers that either return no data or throw an exception
-   * @param clazz class of the exception
-   * @return a collection of try objects
    * @param <E> type of exception that could be thrown
+   * @param clazz class of the exception
+   * @param suppliers that either return no data or throw an exception
+   * @return a collection of try objects
    */
   @SafeVarargs
   public static <E extends Exception> Collection<Try<Void, E>> ofVoids(
@@ -83,10 +89,10 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to create a {@link Try} object easily.
    *
+   * @param <E> type of exception
    * @param failure a {@link Failure} is returned.
    * @param exception exception that should be wrapped by a {@link Failure}
    * @return a {@link Try}
-   * @param <E> type of exception
    */
   public static <E extends Exception> Try<Void, E> ofVoid(
       boolean failure, ExceptionSupplier<E> exception) {
@@ -100,10 +106,10 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Utility method to check a list of {@link VoidSupplier}'s.
    *
-   * @param supplier list of {@link VoidSupplier}
-   * @param clazz class of the exception
-   * @return a list of {@link Try}
    * @param <E> type of the exception
+   * @param clazz class of the exception
+   * @param supplier list of {@link VoidSupplier}
+   * @return a list of {@link Try}
    */
   @SafeVarargs
   public static <E extends Exception> List<Try<Void, E>> ofVoid(
@@ -114,11 +120,11 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to create a {@link Try} object from Optional.
    *
+   * @param <T> type of data
+   * @param <E> type of exception
    * @param opt The optional
    * @param exception Supplier function that supplies an exception if Optional is empty
    * @return a try object
-   * @param <T> type of data
-   * @param <E> type of exception
    */
   public static <T, E extends Exception> Try<T, E> from(
       Optional<T> opt, ExceptionSupplier<E> exception) {
@@ -129,6 +135,8 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to retrieve the exceptions from all {@link Failure} objects.
    *
+   * @param <D> the type parameter
+   * @param <E> the type parameter
    * @param tries collection of {@link Try} objects
    * @return a list of {@link Exception}'s
    */
@@ -139,6 +147,8 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to retrieve the exceptions from all {@link Failure} objects.
    *
+   * @param <D> the type parameter
+   * @param <E> the type parameter
    * @param tries stream of {@link Try} objects
    * @return a list of {@link Exception}'s
    */
@@ -149,6 +159,8 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to retrieve the exceptions from all {@link Failure} objects.
    *
+   * @param <D> the type parameter
+   * @param <E> the type parameter
    * @param tries array of {@link Try} objects
    * @return a list of {@link Exception}'s
    */
@@ -160,12 +172,14 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to scan a collection of {@link Try} objects for {@link Failure}'s.
    *
+   * @param <U> type of data
+   * @param <E> the type parameter
+   * @param <R> the type parameter
    * @param c collection of {@link Try} objects
    * @param typeOfData information added to exception to help identify the place, that needs to be
    *     fixed
    * @param exceptionBuilder function to build the failure message
    * @return a {@link Success} if no {@link Failure}'s are found in the collection
-   * @param <U> type of data
    */
   public static <U, E extends Exception, R extends Exception> Try<Set<U>, R> scanCollection(
       Collection<Try<U, E>> c, Class<U> typeOfData, Function<String, R> exceptionBuilder) {
@@ -176,12 +190,14 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to scan a stream of {@link Try} objects for {@link Failure}'s.
    *
+   * @param <U> type of data
+   * @param <E> the type parameter
+   * @param <R> the type parameter
    * @param stream of {@link Try} objects
    * @param typeOfData information added to exception to help identify the place, that needs to be
    *     fixed
    * @param exceptionBuilder function to build the failure message
    * @return a {@link Success} if no {@link Failure}'s are found in the stream
-   * @param <U> type of data
    */
   public static <U, E extends Exception, R extends Exception> Try<Stream<U>, R> scanStream(
       Stream<Try<U, E>> stream, String typeOfData, Function<String, R> exceptionBuilder) {
@@ -212,11 +228,15 @@ public abstract class Try<T, E extends Exception> {
 
   /**
    * Returns true if this object is a {@link Success} or false if this object is a {@link Failure}.
+   *
+   * @return the boolean
    */
   public abstract boolean isSuccess();
 
   /**
    * Returns true if this object is a {@link Failure} or false if this object is a {@link Success}.
+   *
+   * @return the boolean
    */
   public abstract boolean isFailure();
 
@@ -228,10 +248,18 @@ public abstract class Try<T, E extends Exception> {
    */
   public abstract T getOrThrow() throws E;
 
-  /** Returns an option for data. */
+  /**
+   * Returns an option for data.
+   *
+   * @return the data
+   */
   public abstract Optional<T> getData();
 
-  /** Returns an option for an exception. */
+  /**
+   * Returns an option for an exception.
+   *
+   * @return the exception
+   */
   public abstract Optional<E> getException();
 
   // functional methods
@@ -239,9 +267,9 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to transform the data if this object is a {@link Success}.
    *
+   * @param <U> type of the data
    * @param mapper that is used to map the data
    * @return a new {@link Try} object
-   * @param <U> type of the data
    */
   public <U> Try<U, E> map(Function<? super T, ? extends U> mapper) {
     return transformS(mapper);
@@ -250,9 +278,9 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method to transform and flat the data.
    *
+   * @param <U> type of the data
    * @param mapper that is used to map the data
    * @return a new {@link Try} object
-   * @param <U> type of the data
    */
   public abstract <U> Try<U, E> flatMap(Function<? super T, ? extends Try<U, E>> mapper);
 
@@ -260,9 +288,9 @@ public abstract class Try<T, E extends Exception> {
    * Method to transform a {@link Try} object. This method should be used, if processing the
    * exception is not necessary.
    *
+   * @param <U> type of data
    * @param successFunc that will be used to transform the data
    * @return a new {@link Try} object
-   * @param <U> type of data
    */
   public abstract <U> Try<U, E> transformS(Function<? super T, ? extends U> successFunc);
 
@@ -270,9 +298,9 @@ public abstract class Try<T, E extends Exception> {
    * Method to transform a {@link Try} object. This method should be used, if only exception should
    * be processed.
    *
+   * @param <R> type of new exception
    * @param failureFunc that will be used to transform the exception
    * @return a new {@link Try} object
-   * @param <R> type of new exception
    */
   public abstract <R extends Exception> Try<T, R> transformF(
       Function<? super E, ? extends R> failureFunc);
@@ -281,10 +309,11 @@ public abstract class Try<T, E extends Exception> {
    * Method to transform a {@link Try} object. This method should be used, if processing the
    * exception is necessary.
    *
+   * @param <U> type of data
+   * @param <R> the type parameter
    * @param successFunc that will be used to transform the data
    * @param failureFunc that will be used to transform the exception
    * @return a new {@link Try} object
-   * @param <U> type of data
    */
   public abstract <U, R extends Exception> Try<U, R> transform(
       Function<? super T, ? extends U> successFunc, Function<E, R> failureFunc);
@@ -292,9 +321,9 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method for zipping two tries.
    *
+   * @param <R> type of others data
    * @param that other try
    * @return a try of a pair.
-   * @param <R> type of others data
    */
   public <R> Try<Pair<T, R>, E> zip(Try<R, E> that) {
     return zip(that, Pair::of);
@@ -303,9 +332,9 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method for zipping two tries, where one is created using the data of this try.
    *
+   * @param <R> type of others data
    * @param extractor function to create the second try
    * @return a try of a pair.
-   * @param <R> type of others data
    */
   public <R> Try<Pair<T, R>, E> zip(Function<Try<T, E>, Try<R, E>> extractor) {
     return zip(extractor.apply(this));
@@ -314,21 +343,21 @@ public abstract class Try<T, E extends Exception> {
   /**
    * Method for zipping two tries.
    *
+   * @param <R> type of others data
+   * @param <P> type of zipped data
    * @param that other try
    * @param zipper function for zipping the two data types
    * @return a try of type {@link P}.
-   * @param <R> type of others data
-   * @param <P> type of zipped data
    */
   public abstract <R, P> Try<P, E> zip(Try<R, E> that, BiFunction<T, R, P> zipper);
 
   /**
    * Method to convert a {@link Try} object to a common type.
    *
+   * @param <U> new type
    * @param successFunc that will be used to transform the data to the new type
    * @param failureFunc that will be used to transform the exception to the new type
    * @return the new type
-   * @param <U> new type
    */
   public abstract <U> U convert(
       Function<? super T, ? extends U> successFunc, Function<E, U> failureFunc);
@@ -357,12 +386,22 @@ public abstract class Try<T, E extends Exception> {
    */
   public abstract Optional<T> toOptional();
 
-  /** Implementation of {@link Try} class. This class is used to present a successful try. */
+  /**
+   * Implementation of {@link Try} class. This class is used to present a successful try.
+   *
+   * @param <T> the type parameter
+   * @param <E> the type parameter
+   */
   public static final class Success<T, E extends Exception> extends Try<T, E> {
     private final T data;
 
     private static final Success<Void, ?> emptySuccess = new Success<>(null);
 
+    /**
+     * Instantiates a new Success.
+     *
+     * @param data the data
+     */
     public Success(T data) {
       this.data = data;
     }
@@ -377,7 +416,11 @@ public abstract class Try<T, E extends Exception> {
       return false;
     }
 
-    /** Returns true if this object is an empty {@link Success}. */
+    /**
+     * Returns true if this object is an empty {@link Success}.
+     *
+     * @return the boolean
+     */
     public boolean isEmpty() {
       return data == null;
     }
@@ -446,7 +489,11 @@ public abstract class Try<T, E extends Exception> {
       return Optional.of(data);
     }
 
-    /** Returns the stored data. */
+    /**
+     * Returns the stored data.
+     *
+     * @return the t
+     */
     public T get() {
       return data;
     }
@@ -454,10 +501,10 @@ public abstract class Try<T, E extends Exception> {
     /**
      * Method to create a {@link Success} by applying data.
      *
-     * @param data that should be wrapped by the {@link Success}
-     * @return a new {@link Success}
      * @param <D> type of data
      * @param <E> type of exception
+     * @param data that should be wrapped by the {@link Success}
+     * @return a new {@link Success}
      */
     public static <D, E extends Exception> Success<D, E> of(D data) {
       return new Success<>(data);
@@ -467,6 +514,7 @@ public abstract class Try<T, E extends Exception> {
      * Returns an empty {@link Success}.
      *
      * @param <E> type of exception
+     * @return the success
      */
     @SuppressWarnings("unchecked")
     public static <E extends Exception> Success<Void, E> empty() {
@@ -505,10 +553,20 @@ public abstract class Try<T, E extends Exception> {
     }
   }
 
-  /** Implementation of {@link Try} class. This class is used to present a failed try. */
+  /**
+   * Implementation of {@link Try} class. This class is used to present a failed try.
+   *
+   * @param <T> the type parameter
+   * @param <E> the type parameter
+   */
   public static final class Failure<T, E extends Exception> extends Try<T, E> {
     private final E exception;
 
+    /**
+     * Instantiates a new Failure.
+     *
+     * @param e the e
+     */
     public Failure(E e) {
       this.exception = e;
     }
@@ -586,7 +644,11 @@ public abstract class Try<T, E extends Exception> {
       return Optional.empty();
     }
 
-    /** Returns the thrown exception. */
+    /**
+     * Returns the thrown exception.
+     *
+     * @return the e
+     */
     public E get() {
       return exception;
     }
@@ -594,10 +656,10 @@ public abstract class Try<T, E extends Exception> {
     /**
      * Method to create a {@link Failure} object, when a non-empty {@link Success} can be returned.
      *
-     * @param exception that should be saved
-     * @return a {@link Failure}
      * @param <T> type of data
      * @param <E> type of exception
+     * @param exception that should be saved
+     * @return a {@link Failure}
      */
     public static <T, E extends Exception> Failure<T, E> of(E exception) {
       return new Failure<>(exception);
@@ -606,9 +668,9 @@ public abstract class Try<T, E extends Exception> {
     /**
      * Method to create a {@link Failure} object, when an empty {@link Success} can be returned.
      *
+     * @param <E> type of exception
      * @param exception that should be saved
      * @return a {@link Failure}
-     * @param <E> type of exception
      */
     public static <E extends Exception> Failure<Void, E> ofVoid(E exception) {
       return new Failure<>(exception);
@@ -654,6 +716,12 @@ public abstract class Try<T, E extends Exception> {
    */
   @FunctionalInterface
   public interface TrySupplier<T, E extends Exception> {
+    /**
+     * Get t.
+     *
+     * @return the t
+     * @throws E the e
+     */
     T get() throws E;
   }
 
@@ -664,6 +732,11 @@ public abstract class Try<T, E extends Exception> {
    */
   @FunctionalInterface
   public interface VoidSupplier<E extends Exception> {
+    /**
+     * Get.
+     *
+     * @throws E the e
+     */
     void get() throws E;
   }
 
@@ -674,6 +747,11 @@ public abstract class Try<T, E extends Exception> {
    */
   @FunctionalInterface
   public interface ExceptionSupplier<E extends Exception> {
+    /**
+     * Get e.
+     *
+     * @return the e
+     */
     E get();
   }
 }

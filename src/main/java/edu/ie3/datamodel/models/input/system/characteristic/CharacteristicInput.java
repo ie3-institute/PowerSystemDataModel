@@ -20,6 +20,7 @@ import javax.measure.Unit;
  */
 public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>>
     implements Serializable {
+  /** The Characteristic prefix. */
   protected final String characteristicPrefix;
 
   private final SortedSet<CharacteristicPoint<A, O>> points;
@@ -36,6 +37,15 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
     this.characteristicPrefix = characteristicPrefix;
   }
 
+  /**
+   * Instantiates a new Characteristic input.
+   *
+   * @param input the input
+   * @param abscissaUnit the abscissa unit
+   * @param ordinateUnit the ordinate unit
+   * @param characteristicPrefix the characteristic prefix
+   * @throws ParsingException the parsing exception
+   */
   protected CharacteristicInput(
       String input, Unit<A> abscissaUnit, Unit<O> ordinateUnit, String characteristicPrefix)
       throws ParsingException {
@@ -101,6 +111,11 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
     return Collections.unmodifiableSortedSet(parsedCoordinates);
   }
 
+  /**
+   * Gets points.
+   *
+   * @return the points
+   */
   public SortedSet<CharacteristicPoint<A, O>> getPoints() {
     return points;
   }

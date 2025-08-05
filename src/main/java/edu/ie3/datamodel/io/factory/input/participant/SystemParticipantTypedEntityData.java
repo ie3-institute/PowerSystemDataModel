@@ -15,7 +15,7 @@ import java.util.Objects;
 
 /**
  * Data used for those classes of {@link
- * edu.ie3.datamodel.models.input.system.SystemParticipantInput} that need an instance of some type
+ * edu.ie3.datamodel.models.input.system.SystemParticipantInput}* that need an instance of some type
  * T of {@link SystemParticipantTypeInput} as well.
  *
  * @param <T> Subclass of {@link SystemParticipantTypeInput} that is required for the construction
@@ -72,7 +72,7 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
 
   /**
    * Creates a new SystemParticipantTypedEntityData object based on a given {@link
-   * SystemParticipantEntityData} object and given type input
+   * SystemParticipantEntityData}* object and given type input
    *
    * @param systemParticipantEntityData The system participant entity data object to use attributes
    *     of
@@ -84,6 +84,11 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
     this.typeInput = typeInput;
   }
 
+  /**
+   * Gets type input.
+   *
+   * @return the type input
+   */
   public T getTypeInput() {
     return typeInput;
   }

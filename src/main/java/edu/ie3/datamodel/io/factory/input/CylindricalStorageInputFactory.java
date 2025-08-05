@@ -11,9 +11,11 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.UUID;
 
+/** The type Cylindrical storage input factory. */
 public class CylindricalStorageInputFactory
     extends AbstractThermalStorageInputFactory<CylindricalStorageInput> {
 
+  /** Instantiates a new Cylindrical storage input factory. */
   public CylindricalStorageInputFactory() {
     super(CylindricalStorageInput.class);
   }

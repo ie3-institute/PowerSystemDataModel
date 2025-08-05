@@ -20,6 +20,15 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadValues> {
 
+  /**
+   * Instantiates a new Bdew load profile time series.
+   *
+   * @param uuid the uuid
+   * @param loadProfile the load profile
+   * @param values the values
+   * @param maxPower the max power
+   * @param profileEnergyScaling the profile energy scaling
+   */
   public BdewLoadProfileTimeSeries(
       UUID uuid,
       BdewStandardLoadProfile loadProfile,

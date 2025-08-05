@@ -57,6 +57,11 @@ public class AssetInputEntityData extends EntityData {
     this.operator = operator;
   }
 
+  /**
+   * Gets operator input.
+   *
+   * @return the operator input
+   */
   public OperatorInput getOperatorInput() {
     return operator;
   }

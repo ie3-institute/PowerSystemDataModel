@@ -22,10 +22,21 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, 
     extends UniqueEntity {
   private final Set<E> entries;
 
+  /**
+   * Instantiates a new Time series.
+   *
+   * @param entries the entries
+   */
   protected TimeSeries(Set<E> entries) {
     this.entries = Collections.unmodifiableSet(entries);
   }
 
+  /**
+   * Instantiates a new Time series.
+   *
+   * @param uuid the uuid
+   * @param entries the entries
+   */
   protected TimeSeries(UUID uuid, Set<E> entries) {
     super(uuid);
     this.entries = Collections.unmodifiableSet(entries);

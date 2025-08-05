@@ -24,6 +24,11 @@ public class TimeSeriesProcessorKey {
   // for load profile time series
   private final Optional<LoadValues.Scheme> scheme;
 
+  /**
+   * Instantiates a new Time series processor key.
+   *
+   * @param timeSeries the time series
+   */
   public TimeSeriesProcessorKey(TimeSeries<? extends TimeSeriesEntry<?>, ?, ?> timeSeries) {
     this.timeSeriesClass = timeSeries.getClass();
     this.entryClass =
@@ -49,6 +54,13 @@ public class TimeSeriesProcessorKey {
     }
   }
 
+  /**
+   * Instantiates a new Time series processor key.
+   *
+   * @param timeSeriesClass the time series class
+   * @param entryClass the entry class
+   * @param valueClass the value class
+   */
   public TimeSeriesProcessorKey(
       Class<? extends TimeSeries> timeSeriesClass,
       Class<? extends TimeSeriesEntry> entryClass,
@@ -59,6 +71,14 @@ public class TimeSeriesProcessorKey {
     this.scheme = Optional.empty();
   }
 
+  /**
+   * Instantiates a new Time series processor key.
+   *
+   * @param timeSeriesClass the time series class
+   * @param entryClass the entry class
+   * @param valueClass the value class
+   * @param scheme the scheme
+   */
   public TimeSeriesProcessorKey(
       Class<? extends TimeSeries> timeSeriesClass,
       Class<? extends TimeSeriesEntry> entryClass,
@@ -70,6 +90,14 @@ public class TimeSeriesProcessorKey {
     this.scheme = Optional.ofNullable(scheme);
   }
 
+  /**
+   * Instantiates a new Time series processor key.
+   *
+   * @param timeSeriesClass the time series class
+   * @param entryClass the entry class
+   * @param valueClass the value class
+   * @param scheme the scheme
+   */
   public TimeSeriesProcessorKey(
       Class<? extends TimeSeries> timeSeriesClass,
       Class<? extends TimeSeriesEntry> entryClass,
@@ -81,18 +109,38 @@ public class TimeSeriesProcessorKey {
     this.scheme = scheme;
   }
 
+  /**
+   * Gets time series class.
+   *
+   * @return the time series class
+   */
   public Class<? extends TimeSeries> getTimeSeriesClass() {
     return timeSeriesClass;
   }
 
+  /**
+   * Gets entry class.
+   *
+   * @return the entry class
+   */
   public Class<? extends TimeSeriesEntry> getEntryClass() {
     return entryClass;
   }
 
+  /**
+   * Gets value class.
+   *
+   * @return the value class
+   */
   public Class<? extends Value> getValueClass() {
     return valueClass;
   }
 
+  /**
+   * Gets scheme.
+   *
+   * @return the scheme
+   */
   public Optional<LoadValues.Scheme> getScheme() {
     return scheme;
   }

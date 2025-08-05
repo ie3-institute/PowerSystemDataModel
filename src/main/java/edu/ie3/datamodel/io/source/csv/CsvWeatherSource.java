@@ -55,6 +55,7 @@ public class CsvWeatherSource extends WeatherSource {
    * @param idCoordinateSource a coordinate source to map ids to points
    * @param weatherFactory factory to transfer field to value mapping into actual java object
    *     instances
+   * @throws SourceException the source exception
    */
   public CsvWeatherSource(
       String csvSep,
@@ -141,6 +142,7 @@ public class CsvWeatherSource extends WeatherSource {
   /**
    * Merge two individual time series into a new time series with the UUID of the first parameter
    *
+   * @param <V> the type parameter
    * @param a the first time series to merge
    * @param b the second time series to merge
    * @return merged time series with a's UUID

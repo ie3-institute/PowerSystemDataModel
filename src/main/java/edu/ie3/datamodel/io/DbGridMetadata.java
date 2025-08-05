@@ -13,8 +13,13 @@ import java.util.stream.Stream;
 /** Class for identification of entities and results from grids in SQL databases. */
 public record DbGridMetadata(String gridName, UUID uuid) {
 
+  /** The constant GRID_TABLE_COLUMN. */
   public static final String GRID_TABLE_COLUMN = "grids";
+
+  /** The constant GRID_NAME_COLUMN. */
   public static final String GRID_NAME_COLUMN = "grid_name";
+
+  /** The constant GRID_UUID_COLUMN. */
   public static final String GRID_UUID_COLUMN = "grid_uuid";
 
   public String toString() {
@@ -22,6 +27,8 @@ public record DbGridMetadata(String gridName, UUID uuid) {
   }
 
   /**
+   * Gets stream for query.
+   *
    * @return Stream with grid uuid
    */
   public Stream<String> getStreamForQuery() {

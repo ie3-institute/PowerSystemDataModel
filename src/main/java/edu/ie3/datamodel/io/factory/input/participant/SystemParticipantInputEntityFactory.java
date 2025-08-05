@@ -18,7 +18,7 @@ import java.util.*;
 
 /**
  * Abstract factory class for creating {@link SystemParticipantInput} entities with {@link
- * NodeAssetInputEntityData} data objects.
+ * NodeAssetInputEntityData}* data objects.
  *
  * @param <T> Type of entity that this factory can create. Must be a subclass of {@link
  *     SystemParticipantInput}
@@ -34,8 +34,14 @@ public abstract class SystemParticipantInputEntityFactory<
 
   private static final String Q_CHARACTERISTICS = "qCharacteristics";
 
+  /** The constant CONTROLLING_EM. */
   public static final String CONTROLLING_EM = "controllingEm";
 
+  /**
+   * Instantiates a new System participant input entity factory.
+   *
+   * @param allowedClasses the allowed classes
+   */
   @SafeVarargs
   protected SystemParticipantInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);

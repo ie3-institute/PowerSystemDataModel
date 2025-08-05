@@ -16,14 +16,25 @@ public abstract class UniqueEntity implements Entity, Serializable {
 
   private final UUID uuid;
 
+  /** Instantiates a new Unique entity. */
   protected UniqueEntity() {
     uuid = UUID.randomUUID();
   }
 
+  /**
+   * Instantiates a new Unique entity.
+   *
+   * @param uuid the uuid
+   */
   protected UniqueEntity(UUID uuid) {
     this.uuid = uuid == null ? UUID.randomUUID() : uuid;
   }
 
+  /**
+   * Gets uuid.
+   *
+   * @return the uuid
+   */
   public UUID getUuid() {
     return uuid;
   }
@@ -49,6 +60,7 @@ public abstract class UniqueEntity implements Entity, Serializable {
   /**
    * Abstract class for all builder that build child entities of abstract class {@link UniqueEntity}
    *
+   * @param <B> the type parameter
    * @version 0.1
    * @since 05.06.20
    */
@@ -57,24 +69,51 @@ public abstract class UniqueEntity implements Entity, Serializable {
 
     private UUID uuid;
 
+    /**
+     * Instantiates a new Unique entity copy builder.
+     *
+     * @param entity the entity
+     */
     protected UniqueEntityCopyBuilder(UniqueEntity entity) {
       this.uuid = entity.getUuid();
     }
 
+    /**
+     * Uuid b.
+     *
+     * @param uuid the uuid
+     * @return the b
+     */
     public B uuid(UUID uuid) {
       this.uuid = uuid;
       return thisInstance();
     }
 
+    /**
+     * Gets uuid.
+     *
+     * @return the uuid
+     */
     protected UUID getUuid() {
       return uuid;
     }
 
+    /**
+     * This instance b.
+     *
+     * @return the b
+     */
     protected abstract B thisInstance();
   }
 
+  /** The interface Unique entity builder. */
   protected interface UniqueEntityBuilder {
 
+    /**
+     * Build unique entity.
+     *
+     * @return the unique entity
+     */
     UniqueEntity build();
   }
 }

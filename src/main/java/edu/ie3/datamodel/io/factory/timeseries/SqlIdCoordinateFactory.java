@@ -17,6 +17,7 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKBReader;
 
+/** The type Sql id coordinate factory. */
 public class SqlIdCoordinateFactory extends IdCoordinateFactory {
   private static final String COORDINATE_ID = "id";
   private static final String COORDINATE = "coordinate";
@@ -60,6 +61,11 @@ public class SqlIdCoordinateFactory extends IdCoordinateFactory {
         "this is not supported by " + SqlIdCoordinateFactory.class + "!");
   }
 
+  /**
+   * Gets coordinate field.
+   *
+   * @return the coordinate field
+   */
   public String getCoordinateField() {
     return COORDINATE;
   }

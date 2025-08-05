@@ -26,13 +26,18 @@ import org.slf4j.LoggerFactory;
  * fieldName to value representation to allow for an easy processing into a database or file sink
  * e.g. .csv
  *
+ * @param <T> the type parameter
  * @version 0.1
  * @since 31.01.20
  */
 public abstract class EntityProcessor<T extends Entity> extends Processor<T> {
 
+  /** The constant log. */
   public static final Logger log = LoggerFactory.getLogger(EntityProcessor.class);
+
+  /** The Header elements. */
   protected final String[] headerElements;
+
   private final SortedMap<String, GetterMethod> fieldNameToMethod;
 
   private static final String NODE_INTERNAL = "nodeInternal";
@@ -41,6 +46,7 @@ public abstract class EntityProcessor<T extends Entity> extends Processor<T> {
    * Create a new EntityProcessor
    *
    * @param registeredClass the class the entity processor should be able to handle
+   * @throws EntityProcessorException the entity processor exception
    */
   protected EntityProcessor(Class<? extends T> registeredClass) throws EntityProcessorException {
     super(registeredClass);
@@ -55,6 +61,7 @@ public abstract class EntityProcessor<T extends Entity> extends Processor<T> {
    * @param entity the entity that should be 'serialized' into a map of fieldName to fieldValue
    * @return an optional Map with fieldName to fieldValue or an empty optional if an error occurred
    *     during processing
+   * @throws EntityProcessorException the entity processor exception
    */
   public LinkedHashMap<String, String> handleEntity(T entity) throws EntityProcessorException {
     if (!registeredClass.isAssignableFrom(entity.getClass()))

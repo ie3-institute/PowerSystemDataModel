@@ -47,6 +47,11 @@ public class ResultEntitySource extends EntitySource {
 
   private final DataSource dataSource;
 
+  /**
+   * Instantiates a new Result entity source.
+   *
+   * @param dataSource the data source
+   */
   public ResultEntitySource(DataSource dataSource) {
     this.dataSource = dataSource;
 
@@ -60,6 +65,12 @@ public class ResultEntitySource extends EntitySource {
     this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
+  /**
+   * Instantiates a new Result entity source.
+   *
+   * @param dataSource the data source
+   * @param dateTimeFormatter the date time formatter
+   */
   public ResultEntitySource(DataSource dataSource, DateTimeFormatter dateTimeFormatter) {
     this.dataSource = dataSource;
 
@@ -112,10 +123,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link NodeResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link NodeResult} which has to be checked manually,
-   * as {@link NodeResult#equals(Object)} is NOT restricted by the uuid of {@link NodeResult}.
+   * java.util.UUID}* uniqueness of the provided {@link NodeResult} which has to be checked
+   * manually, as {@link NodeResult#equals(Object)} is NOT restricted by the uuid of {@link
+   * NodeResult}.
    *
    * @return a set of object and uuid unique {@link NodeResult} entities
+   * @throws SourceException the source exception
    */
   public Set<NodeResult> getNodeResults() throws SourceException {
     return getResultEntities(NodeResult.class, nodeResultFactory);
@@ -125,11 +138,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link SwitchResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link SwitchResult} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link SwitchResult} which has to be checked
    * manually, as {@link SwitchResult#equals(Object)} is NOT restricted by the uuid of {@link
-   * SwitchResult}.
+   * SwitchResult}*.
    *
    * @return a set of object and uuid unique {@link SwitchResult} entities
+   * @throws SourceException the source exception
    */
   public Set<SwitchResult> getSwitchResults() throws SourceException {
     return getResultEntities(SwitchResult.class, switchResultFactory);
@@ -139,10 +153,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link LineResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link LineResult} which has to be checked manually,
-   * as {@link LineResult#equals(Object)} is NOT restricted by the uuid of {@link LineResult}.
+   * java.util.UUID}* uniqueness of the provided {@link LineResult} which has to be checked
+   * manually, as {@link LineResult#equals(Object)} is NOT restricted by the uuid of {@link
+   * LineResult}.
    *
    * @return a set of object and uuid unique {@link LineResult} entities
+   * @throws SourceException the source exception
    */
   public Set<LineResult> getLineResults() throws SourceException {
     return getResultEntities(LineResult.class, connectorResultFactory);
@@ -152,11 +168,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link Transformer2WResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link Transformer2WResult} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link Transformer2WResult} which has to be checked
    * manually, as {@link Transformer2WResult#equals(Object)} is NOT restricted by the uuid of {@link
-   * Transformer2WResult}.
+   * Transformer2WResult}*.
    *
    * @return a set of object and uuid unique {@link Transformer2WResult} entities
+   * @throws SourceException the source exception
    */
   public Set<Transformer2WResult> getTransformer2WResultResults() throws SourceException {
     return getResultEntities(Transformer2WResult.class, connectorResultFactory);
@@ -166,11 +183,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link Transformer3WResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link Transformer3WResult} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link Transformer3WResult} which has to be checked
    * manually, as {@link Transformer3WResult#equals(Object)} is NOT restricted by the uuid of {@link
-   * Transformer3WResult}.
+   * Transformer3WResult}*.
    *
    * @return a set of object and uuid unique {@link Transformer3WResult} entities
+   * @throws SourceException the source exception
    */
   public Set<Transformer3WResult> getTransformer3WResultResults() throws SourceException {
     return getResultEntities(Transformer3WResult.class, connectorResultFactory);
@@ -180,11 +198,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link FlexOptionsResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link FlexOptionsResult} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link FlexOptionsResult} which has to be checked
    * manually, as {@link FlexOptionsResult#equals(Object)} is NOT restricted by the uuid of {@link
-   * FlexOptionsResult}.
+   * FlexOptionsResult}*.
    *
    * @return a set of object and uuid unique {@link FlexOptionsResult} entities
+   * @throws SourceException the source exception
    */
   public Set<FlexOptionsResult> getFlexOptionsResults() throws SourceException {
     return getResultEntities(FlexOptionsResult.class, flexOptionsResultFactory);
@@ -194,10 +213,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link LoadResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link LoadResult} which has to be checked manually,
-   * as {@link LoadResult#equals(Object)} is NOT restricted by the uuid of {@link LoadResult}.
+   * java.util.UUID}* uniqueness of the provided {@link LoadResult} which has to be checked
+   * manually, as {@link LoadResult#equals(Object)} is NOT restricted by the uuid of {@link
+   * LoadResult}.
    *
    * @return a set of object and uuid unique {@link LoadResult} entities
+   * @throws SourceException the source exception
    */
   public Set<LoadResult> getLoadResults() throws SourceException {
     return getResultEntities(LoadResult.class, systemParticipantResultFactory);
@@ -207,10 +228,11 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link PvResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link PvResult} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link PvResult} which has to be checked manually,
    * as {@link PvResult#equals(Object)} is NOT restricted by the uuid of {@link PvResult}.
    *
    * @return a set of object and uuid unique {@link PvResult} entities
+   * @throws SourceException the source exception
    */
   public Set<PvResult> getPvResults() throws SourceException {
     return getResultEntities(PvResult.class, systemParticipantResultFactory);
@@ -220,11 +242,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link FixedFeedInResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link FixedFeedInResult} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link FixedFeedInResult} which has to be checked
    * manually, as {@link FixedFeedInResult#equals(Object)} is NOT restricted by the uuid of {@link
-   * FixedFeedInResult}.
+   * FixedFeedInResult}*.
    *
    * @return a set of object and uuid unique {@link FixedFeedInResult} entities
+   * @throws SourceException the source exception
    */
   public Set<FixedFeedInResult> getFixedFeedInResults() throws SourceException {
     return getResultEntities(FixedFeedInResult.class, systemParticipantResultFactory);
@@ -234,10 +257,11 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link BmResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link BmResult} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link BmResult} which has to be checked manually,
    * as {@link BmResult#equals(Object)} is NOT restricted by the uuid of {@link BmResult}.
    *
    * @return a set of object and uuid unique {@link BmResult} entities
+   * @throws SourceException the source exception
    */
   public Set<BmResult> getBmResults() throws SourceException {
     return getResultEntities(BmResult.class, systemParticipantResultFactory);
@@ -247,10 +271,11 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link ChpResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link ChpResult} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link ChpResult} which has to be checked manually,
    * as {@link ChpResult#equals(Object)} is NOT restricted by the uuid of {@link ChpResult}.
    *
    * @return a set of object and uuid unique {@link ChpResult} entities
+   * @throws SourceException the source exception
    */
   public Set<ChpResult> getChpResults() throws SourceException {
     return getResultEntities(ChpResult.class, systemParticipantResultFactory);
@@ -260,10 +285,11 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link WecResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link WecResult} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link WecResult} which has to be checked manually,
    * as {@link WecResult#equals(Object)} is NOT restricted by the uuid of {@link WecResult}.
    *
    * @return a set of object and uuid unique {@link WecResult} entities
+   * @throws SourceException the source exception
    */
   public Set<WecResult> getWecResults() throws SourceException {
     return getResultEntities(WecResult.class, systemParticipantResultFactory);
@@ -273,11 +299,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link StorageResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link StorageResult} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link StorageResult} which has to be checked
    * manually, as {@link StorageResult#equals(Object)} is NOT restricted by the uuid of {@link
-   * StorageResult}.
+   * StorageResult}*.
    *
    * @return a set of object and uuid unique {@link StorageResult} entities
+   * @throws SourceException the source exception
    */
   public Set<StorageResult> getStorageResults() throws SourceException {
     return getResultEntities(StorageResult.class, systemParticipantResultFactory);
@@ -287,10 +314,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link EvcsResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EvcsResult} which has to be checked manually,
-   * as {@link EvcsResult#equals(Object)} is NOT restricted by the uuid of {@link EvcsResult}.
+   * java.util.UUID}* uniqueness of the provided {@link EvcsResult} which has to be checked
+   * manually, as {@link EvcsResult#equals(Object)} is NOT restricted by the uuid of {@link
+   * EvcsResult}.
    *
    * @return a set of object and uuid unique {@link EvcsResult} entities
+   * @throws SourceException the source exception
    */
   public Set<EvcsResult> getEvcsResults() throws SourceException {
     return getResultEntities(EvcsResult.class, systemParticipantResultFactory);
@@ -300,10 +329,11 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link EvResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EvResult} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link EvResult} which has to be checked manually,
    * as {@link EvResult#equals(Object)} is NOT restricted by the uuid of {@link EvResult}.
    *
    * @return a set of object and uuid unique {@link EvResult} entities
+   * @throws SourceException the source exception
    */
   public Set<EvResult> getEvResults() throws SourceException {
     return getResultEntities(EvResult.class, systemParticipantResultFactory);
@@ -313,10 +343,11 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link HpResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link HpResult} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link HpResult} which has to be checked manually,
    * as {@link HpResult#equals(Object)} is NOT restricted by the uuid of {@link HpResult}.
    *
    * @return a set of object and uuid unique {@link HpResult} entities
+   * @throws SourceException the source exception
    */
   public Set<HpResult> getHpResults() throws SourceException {
     return getResultEntities(HpResult.class, systemParticipantResultFactory);
@@ -326,11 +357,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link CylindricalStorageResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link CylindricalStorageResult} which has to be
+   * java.util.UUID}* uniqueness of the provided {@link CylindricalStorageResult} which has to be
    * checked manually, as {@link CylindricalStorageResult#equals(Object)} is NOT restricted by the
    * uuid of {@link CylindricalStorageResult}.
    *
    * @return a set of object and uuid unique {@link CylindricalStorageResult} entities
+   * @throws SourceException the source exception
    */
   public Set<CylindricalStorageResult> getCylindricalStorageResult() throws SourceException {
     return getResultEntities(CylindricalStorageResult.class, thermalResultFactory);
@@ -340,11 +372,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link DomesticHotWaterStorageResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link DomesticHotWaterStorageResult} which has to
+   * java.util.UUID}* uniqueness of the provided {@link DomesticHotWaterStorageResult} which has to
    * be checked manually, as {@link DomesticHotWaterStorageResult#equals(Object)} is NOT restricted
    * by the uuid of {@link DomesticHotWaterStorageResult}.
    *
    * @return a set of object and uuid unique {@link DomesticHotWaterStorageResult} entities
+   * @throws SourceException the source exception
    */
   public Set<DomesticHotWaterStorageResult> getDomesticHotWaterStorageResult()
       throws SourceException {
@@ -355,11 +388,12 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link ThermalHouseResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link ThermalHouseResult} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link ThermalHouseResult} which has to be checked
    * manually, as {@link ThermalHouseResult#equals(Object)} is NOT restricted by the uuid of {@link
-   * ThermalHouseResult}.
+   * ThermalHouseResult}*.
    *
    * @return a set of object and uuid unique {@link ThermalHouseResult} entities
+   * @throws SourceException the source exception
    */
   public Set<ThermalHouseResult> getThermalHouseResults() throws SourceException {
     return getResultEntities(ThermalHouseResult.class, thermalResultFactory);
@@ -369,10 +403,11 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link EmResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EmResult} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link EmResult} which has to be checked manually,
    * as {@link EmResult#equals(Object)} is NOT restricted by the uuid of {@link EmResult}.
    *
    * @return a set of object and uuid unique {@link EmResult} entities
+   * @throws SourceException the source exception
    */
   public Set<EmResult> getEmResults() throws SourceException {
     return getResultEntities(EmResult.class, systemParticipantResultFactory);
@@ -382,6 +417,7 @@ public class ResultEntitySource extends EntitySource {
    * Returns a unique set of {@link CongestionResult} instances.
    *
    * @return a set of object and subgrid unique {@link CongestionResult} entities
+   * @throws SourceException the source exception
    */
   public Set<CongestionResult> getCongestionResults() throws SourceException {
     return getResultEntities(CongestionResult.class, congestionResultFactory);

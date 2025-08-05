@@ -24,8 +24,14 @@ import tech.units.indriya.quantity.Quantities;
 public class ImpedanceWeightedEdge extends DefaultWeightedEdge {
   private static final long serialVersionUID = -3331046813188425729L;
 
+  /** The constant DEFAULT_IMPEDANCE_UNIT. */
   protected static final Unit<ElectricResistance> DEFAULT_IMPEDANCE_UNIT = OHM;
 
+  /**
+   * Gets impedance.
+   *
+   * @return the impedance
+   */
   public Quantity<ElectricResistance> getImpedance() {
     return Quantities.getQuantity(getWeight(), DEFAULT_IMPEDANCE_UNIT);
   }

@@ -16,6 +16,7 @@ import java.util.List;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
+/** The type Node validation utils. */
 public class NodeValidationUtils extends ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */

@@ -17,6 +17,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/** The type Time series utils. */
 public class TimeSeriesUtils {
   private static final Set<ColumnScheme> ACCEPTED_COLUMN_SCHEMES =
       EnumSet.of(
@@ -36,9 +37,9 @@ public class TimeSeriesUtils {
   /**
    * Trims a time series to the given time interval
    *
+   * @param <V> Type of value carried wit the time series
    * @param timeSeries the time series to trim
    * @param timeInterval the interval to trim the data to
-   * @param <V> Type of value carried wit the time series
    * @return Trimmed time series
    */
   public static <V extends Value> IndividualTimeSeries<V> trimTimeSeriesToInterval(

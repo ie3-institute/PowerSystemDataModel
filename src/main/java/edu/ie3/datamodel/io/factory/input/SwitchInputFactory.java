@@ -11,10 +11,12 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import java.util.UUID;
 
+/** The type Switch input factory. */
 public class SwitchInputFactory
     extends ConnectorInputEntityFactory<SwitchInput, ConnectorInputEntityData> {
   private static final String CLOSED = "closed";
 
+  /** Instantiates a new Switch input factory. */
   public SwitchInputFactory() {
     super(SwitchInput.class);
   }

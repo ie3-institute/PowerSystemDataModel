@@ -21,6 +21,8 @@ public class WindValue implements Value {
   private final ComparableQuantity<Speed> velocity;
 
   /**
+   * Instantiates a new Wind value.
+   *
    * @param direction Direction, the wind comes from as an angle from north increasing clockwise
    *     (typically in rad)
    * @param velocity Wind velocity (typically in m/s)
@@ -30,10 +32,20 @@ public class WindValue implements Value {
     this.velocity = velocity == null ? null : velocity.to(StandardUnits.WIND_VELOCITY);
   }
 
+  /**
+   * Gets direction.
+   *
+   * @return the direction
+   */
   public Optional<ComparableQuantity<Angle>> getDirection() {
     return Optional.ofNullable(direction);
   }
 
+  /**
+   * Gets velocity.
+   *
+   * @return the velocity
+   */
   public Optional<ComparableQuantity<Speed>> getVelocity() {
     return Optional.ofNullable(velocity);
   }

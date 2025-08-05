@@ -17,10 +17,17 @@ public class DistanceWeightedGraph extends SimpleWeightedGraph<NodeInput, Distan
 
   private static final long serialVersionUID = -2797654003980753341L;
 
+  /** Instantiates a new Distance weighted graph. */
   public DistanceWeightedGraph() {
     super(DistanceWeightedEdge.class);
   }
 
+  /**
+   * Instantiates a new Distance weighted graph.
+   *
+   * @param vertexSupplier the vertex supplier
+   * @param edgeSupplier the edge supplier
+   */
   public DistanceWeightedGraph(
       Supplier<NodeInput> vertexSupplier, Supplier<DistanceWeightedEdge> edgeSupplier) {
     super(vertexSupplier, edgeSupplier);
@@ -28,7 +35,7 @@ public class DistanceWeightedGraph extends SimpleWeightedGraph<NodeInput, Distan
 
   /**
    * Assigns a {@link Quantity} of type {@link Length} to an instance of edge {@link
-   * DistanceWeightedEdge}
+   * DistanceWeightedEdge}*
    *
    * @param edge edge whose weight should be altered
    * @param weight the weight of the {@link DistanceWeightedEdge}

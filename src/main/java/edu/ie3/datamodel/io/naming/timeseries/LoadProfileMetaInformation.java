@@ -13,16 +13,32 @@ import java.util.UUID;
 public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
   private final String profile;
 
+  /**
+   * Instantiates a new Load profile meta information.
+   *
+   * @param profile the profile
+   */
   public LoadProfileMetaInformation(String profile) {
     super(UUID.randomUUID());
     this.profile = profile;
   }
 
+  /**
+   * Instantiates a new Load profile meta information.
+   *
+   * @param uuid the uuid
+   * @param profile the profile
+   */
   public LoadProfileMetaInformation(UUID uuid, String profile) {
     super(uuid);
     this.profile = profile;
   }
 
+  /**
+   * Gets profile.
+   *
+   * @return the profile
+   */
   public String getProfile() {
     return profile;
   }

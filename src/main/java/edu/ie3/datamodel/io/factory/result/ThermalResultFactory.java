@@ -22,12 +22,14 @@ import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Thermal result factory. */
 public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
   private static final String Q_DOT = "qDot";
   private static final String INDOOR_TEMPERATURE = "indoorTemperature";
   private static final String ENERGY = "energy";
   private static final String FILL_LEVEL = "fillLevel";
 
+  /** Instantiates a new Thermal result factory. */
   public ThermalResultFactory() {
     super(
         ThermalHouseResult.class,

@@ -16,6 +16,7 @@ import java.util.UUID;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Thermal house input factory. */
 public class ThermalHouseInputFactory
     extends AssetInputEntityFactory<ThermalHouseInput, ThermalUnitInputEntityData> {
   private static final String ETH_LOSSES = "ethLosses";
@@ -26,6 +27,7 @@ public class ThermalHouseInputFactory
   private static final String HOUSING_TYPE = "housingType";
   private static final String NUMBER_INHABITANTS = "numberInhabitants";
 
+  /** Instantiates a new Thermal house input factory. */
   public ThermalHouseInputFactory() {
     super(ThermalHouseInput.class);
   }

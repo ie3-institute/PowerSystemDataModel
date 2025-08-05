@@ -24,7 +24,11 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-/** Source that is capable of providing information around time series from csv files. */
+/**
+ * Source that is capable of providing information around time series from csv files.
+ *
+ * @param <V> the type parameter
+ */
 public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final IndividualTimeSeries<V> timeSeries;
   private final CsvDataSource dataSource;
@@ -37,8 +41,8 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
    * @param metaInformation The given meta information
-   * @throws SourceException If the given meta information are not supported
    * @return The source
+   * @throws SourceException If the given meta information are not supported
    */
   public static CsvTimeSeriesSource<? extends Value> getSource(
       String csvSep,
@@ -133,6 +137,12 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     return timeSeries.getPreviousTimeBasedValue(time);
   }
 
+  /**
+   * Gets next time based value.
+   *
+   * @param time the time
+   * @return the next time based value
+   */
   public Optional<TimeBasedValue<V>> getNextTimeBasedValue(ZonedDateTime time) {
     return timeSeries.getNextTimeBasedValue(time);
   }
@@ -158,8 +168,8 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @param filePath path to the file to read
    * @param fieldToValueFunction function, that is able to transfer a mapping (from field to value)
    *     onto a specific instance of the targeted entry class
-   * @throws SourceException If the file cannot be read properly
    * @return an individual time series
+   * @throws SourceException If the file cannot be read properly
    */
   protected IndividualTimeSeries<V> buildIndividualTimeSeries(
       UUID timeSeriesUuid,

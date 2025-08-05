@@ -15,13 +15,27 @@ import javax.measure.quantity.Dimensionless;
  * connecting node
  */
 public class QV extends ReactivePowerCharacteristic {
+  /** The constant PREFIX. */
   public static final String PREFIX = "qV";
+
+  /** The constant STARTING_REGEX. */
   public static final String STARTING_REGEX = buildStartingRegex(PREFIX);
 
+  /**
+   * Instantiates a new Qv.
+   *
+   * @param characteristicPoints the characteristic points
+   */
   public QV(SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints) {
     super(characteristicPoints, PREFIX);
   }
 
+  /**
+   * Instantiates a new Qv.
+   *
+   * @param input the input
+   * @throws ParsingException the parsing exception
+   */
   public QV(String input) throws ParsingException {
     super(input, StandardUnits.VOLTAGE_MAGNITUDE, StandardUnits.Q_CHARACTERISTIC, PREFIX);
   }

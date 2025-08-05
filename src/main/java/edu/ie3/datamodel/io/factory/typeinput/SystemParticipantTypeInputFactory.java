@@ -22,6 +22,7 @@ import java.util.UUID;
 import javax.measure.quantity.*;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type System participant type input factory. */
 public class SystemParticipantTypeInputFactory
     extends AssetTypeInputEntityFactory<SystemParticipantTypeInput> {
   // SystemParticipantTypeInput parameters
@@ -57,6 +58,7 @@ public class SystemParticipantTypeInputFactory
   // WecTypeInput
   private static final String CP_CHARACTERISTIC = "cpCharacteristic";
 
+  /** Instantiates a new System participant type input factory. */
   public SystemParticipantTypeInputFactory() {
     super(
         EvTypeInput.class,

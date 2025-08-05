@@ -16,5 +16,10 @@ import java.util.List;
  * @since 31.03.20
  */
 public interface HasNodes extends NestedEntity {
+  /**
+   * All nodes list.
+   *
+   * @return the list
+   */
   List<NodeInput> allNodes();
 }

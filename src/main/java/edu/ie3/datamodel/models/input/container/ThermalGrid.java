@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Container object to denote a fully connected thermal "grid". As there are currently no branch
  * elements, a grid always only consists of one {@link ThermalBusInput} and all its connected {@link
- * edu.ie3.datamodel.models.input.thermal.ThermalUnitInput}s
+ * edu.ie3.datamodel.models.input.thermal.ThermalUnitInput}*s
  */
 public record ThermalGrid(
     ThermalBusInput bus,
@@ -23,6 +23,14 @@ public record ThermalGrid(
     Set<ThermalStorageInput> heatStorages,
     Set<ThermalStorageInput> domesticHotWaterStorages)
     implements InputContainer<ThermalInput> {
+  /**
+   * Instantiates a new Thermal grid.
+   *
+   * @param bus the bus
+   * @param houses the houses
+   * @param heatStorages the heat storages
+   * @param domesticHotWaterStorages the domestic hot water storages
+   */
   public ThermalGrid(
       ThermalBusInput bus,
       Collection<ThermalHouseInput> houses,
@@ -135,6 +143,12 @@ public record ThermalGrid(
       return thisInstance();
     }
 
+    /**
+     * Scale thermal grid copy builder.
+     *
+     * @param factor the factor
+     * @return the thermal grid copy builder
+     */
     public ThermalGridCopyBuilder scale(Double factor) {
       houses(
           houses.stream()

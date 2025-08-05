@@ -16,7 +16,10 @@ import tech.units.indriya.ComparableQuantity;
  * levels.
  */
 public class VoltageLevel implements Serializable {
+  /** The Id. */
   protected final String id;
+
+  /** The Nominal voltage. */
   protected final ComparableQuantity<ElectricPotential> nominalVoltage;
 
   /**

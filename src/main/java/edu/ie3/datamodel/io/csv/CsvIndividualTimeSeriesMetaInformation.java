@@ -15,17 +15,35 @@ import java.util.UUID;
 public class CsvIndividualTimeSeriesMetaInformation extends IndividualTimeSeriesMetaInformation {
   private final Path fullFilePath;
 
+  /**
+   * Instantiates a new Csv individual time series meta information.
+   *
+   * @param uuid the uuid
+   * @param columnScheme the column scheme
+   * @param fullFilePath the full file path
+   */
   public CsvIndividualTimeSeriesMetaInformation(
       UUID uuid, ColumnScheme columnScheme, Path fullFilePath) {
     super(uuid, columnScheme);
     this.fullFilePath = fullFilePath;
   }
 
+  /**
+   * Instantiates a new Csv individual time series meta information.
+   *
+   * @param metaInformation the meta information
+   * @param fullFilePath the full file path
+   */
   public CsvIndividualTimeSeriesMetaInformation(
       IndividualTimeSeriesMetaInformation metaInformation, Path fullFilePath) {
     this(metaInformation.getUuid(), metaInformation.getColumnScheme(), fullFilePath);
   }
 
+  /**
+   * Gets full file path.
+   *
+   * @return the full file path
+   */
   public Path getFullFilePath() {
     return fullFilePath;
   }

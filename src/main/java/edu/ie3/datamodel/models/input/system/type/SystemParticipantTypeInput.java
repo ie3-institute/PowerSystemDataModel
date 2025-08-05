@@ -28,6 +28,8 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   private final double cosPhiRated;
 
   /**
+   * Instantiates a new System participant type input.
+   *
    * @param uuid of the input entity
    * @param id of this type of system participant
    * @param capex Captial expense for this type of system participant (typically in €)
@@ -49,18 +51,38 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     this.cosPhiRated = cosPhiRated;
   }
 
+  /**
+   * Gets capex.
+   *
+   * @return the capex
+   */
   public ComparableQuantity<Currency> getCapex() {
     return capex;
   }
 
+  /**
+   * Gets opex.
+   *
+   * @return the opex
+   */
   public ComparableQuantity<EnergyPrice> getOpex() {
     return opex;
   }
 
+  /**
+   * Gets rated.
+   *
+   * @return the rated
+   */
   public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
+  /**
+   * Gets cos phi rated.
+   *
+   * @return the cos phi rated
+   */
   public double getCosPhiRated() {
     return cosPhiRated;
   }
@@ -103,7 +125,9 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
 
   /**
    * Abstract class for all builder that build child entities of abstract class {@link
-   * SystemParticipantTypeInput}
+   * SystemParticipantTypeInput}*
+   *
+   * @param <B> the type parameter
    */
   public abstract static class SystemParticipantTypeInputCopyBuilder<
           B extends SystemParticipantTypeInput.SystemParticipantTypeInputCopyBuilder<B>>
@@ -114,6 +138,11 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     private ComparableQuantity<Power> sRated;
     private double cosPhiRated;
 
+    /**
+     * Instantiates a new System participant type input copy builder.
+     *
+     * @param entity the entity
+     */
     protected SystemParticipantTypeInputCopyBuilder(SystemParticipantTypeInput entity) {
       super(entity);
       this.capex = entity.getCapex();
@@ -122,38 +151,82 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
       this.cosPhiRated = entity.getCosPhiRated();
     }
 
+    /**
+     * Capex b.
+     *
+     * @param capex the capex
+     * @return the b
+     */
     public B capex(ComparableQuantity<Currency> capex) {
       this.capex = capex;
       return thisInstance();
     }
 
+    /**
+     * Opex b.
+     *
+     * @param opex the opex
+     * @return the b
+     */
     public B opex(ComparableQuantity<EnergyPrice> opex) {
       this.opex = opex;
       return thisInstance();
     }
 
+    /**
+     * S rated b.
+     *
+     * @param sRated the s rated
+     * @return the b
+     */
     public B sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
       return thisInstance();
     }
 
+    /**
+     * Cos phi rated b.
+     *
+     * @param cosPhiRated the cos phi rated
+     * @return the b
+     */
     public B cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
       return thisInstance();
     }
 
+    /**
+     * Gets capex.
+     *
+     * @return the capex
+     */
     public ComparableQuantity<Currency> getCapex() {
       return capex;
     }
 
+    /**
+     * Gets opex.
+     *
+     * @return the opex
+     */
     public ComparableQuantity<EnergyPrice> getOpex() {
       return opex;
     }
 
+    /**
+     * Gets rated.
+     *
+     * @return the rated
+     */
     public ComparableQuantity<Power> getsRated() {
       return sRated;
     }
 
+    /**
+     * Gets cos phi rated.
+     *
+     * @return the cos phi rated
+     */
     public double getCosPhiRated() {
       return cosPhiRated;
     }

@@ -7,12 +7,15 @@ package edu.ie3.datamodel.models.input.connector;
 
 /**
  * Denotes possible external ports of a connector. For two {@link Transformer2WInput}, {@link
- * ConnectorPort#A} is the high voltage and {@link ConnectorPort#B} the low voltage port. For {@link
- * Transformer3WInput}, {@link ConnectorPort#A} is the high voltage, {@link ConnectorPort#B} medium
- * voltage and {@link ConnectorPort#C} low voltage port
+ * ConnectorPort#A}* is the high voltage and {@link ConnectorPort#B} the low voltage port. For
+ * {@link Transformer3WInput}*, {@link ConnectorPort#A} is the high voltage, {@link ConnectorPort#B}
+ * medium voltage and {@link ConnectorPort#C} low voltage port
  */
 public enum ConnectorPort {
+  /** A connector port. */
   A,
+  /** B connector port. */
   B,
+  /** C connector port. */
   C
 }

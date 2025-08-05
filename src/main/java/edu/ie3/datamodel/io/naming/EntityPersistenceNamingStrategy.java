@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class EntityPersistenceNamingStrategy {
 
+  /** The constant logger. */
   protected static final Logger logger =
       LoggerFactory.getLogger(EntityPersistenceNamingStrategy.class);
 
@@ -117,10 +118,20 @@ public class EntityPersistenceNamingStrategy {
                 + suffix);
   }
 
+  /**
+   * Gets load profile time series pattern.
+   *
+   * @return the load profile time series pattern
+   */
   public Pattern getLoadProfileTimeSeriesPattern() {
     return loadProfileTimeSeriesPattern;
   }
 
+  /**
+   * Gets individual time series pattern.
+   *
+   * @return the individual time series pattern
+   */
   public Pattern getIndividualTimeSeriesPattern() {
     return individualTimeSeriesPattern;
   }
@@ -340,6 +351,7 @@ public class EntityPersistenceNamingStrategy {
    * @param <T> Type of the time series
    * @param <E> Type of the entry in the time series
    * @param <V> Type of the value, that is carried by the time series entry
+   * @param <R> the type parameter
    * @param timeSeries Time series to derive naming information from
    * @return A file name for this particular time series
    */

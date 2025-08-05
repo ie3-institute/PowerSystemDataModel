@@ -12,7 +12,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link
- * edu.ie3.datamodel.models.input.system.FixedFeedInInput}
+ * edu.ie3.datamodel.models.input.system.FixedFeedInInput}*
  */
 public class FixedFeedInResult extends SystemParticipantResult {
 

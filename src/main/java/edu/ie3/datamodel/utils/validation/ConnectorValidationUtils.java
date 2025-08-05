@@ -28,6 +28,7 @@ import org.jgrapht.graph.SimpleGraph;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
+/** The type Connector validation utils. */
 public class ConnectorValidationUtils extends ValidationUtils {
 
   // allowed deviation of coordinates in degree for line position check
@@ -49,8 +50,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *   <li>it is not null
    * </ul>
    *
-   * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object.
+   * <p>A "distribution" method, that forwards the check request to specific implementations to
+   * fulfill the checking task, based on the class of the given object.
    *
    * @param connector Connector to validate
    * @return a list of try objects either containing a {@link InvalidEntityException} or an empty

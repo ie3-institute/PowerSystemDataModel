@@ -16,5 +16,10 @@ import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
  */
 public interface HasThermalStorage {
 
+  /**
+   * Gets thermal storage.
+   *
+   * @return the thermal storage
+   */
   ThermalStorageInput getThermalStorage();
 }

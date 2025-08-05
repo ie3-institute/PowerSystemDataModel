@@ -53,6 +53,11 @@ public class SwitchInput extends ConnectorInput {
     this.closed = closed;
   }
 
+  /**
+   * Is closed boolean.
+   *
+   * @return the boolean
+   */
   public boolean isClosed() {
     return closed;
   }
@@ -121,6 +126,12 @@ public class SwitchInput extends ConnectorInput {
           getUuid(), getId(), getOperator(), getOperationTime(), getNodeA(), getNodeB(), closed);
     }
 
+    /**
+     * Closed switch input copy builder.
+     *
+     * @param closed the closed
+     * @return the switch input copy builder
+     */
     public SwitchInputCopyBuilder closed(boolean closed) {
       this.closed = closed;
       return thisInstance();

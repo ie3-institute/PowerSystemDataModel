@@ -28,6 +28,7 @@ public class TimeSeriesMetaInformationFactory
   private static final String COLUMN_SCHEME = "columnScheme";
   private static final String LOAD_PROFILE = "loadProfile";
 
+  /** Instantiates a new Time series meta information factory. */
   public TimeSeriesMetaInformationFactory() {
     super(IndividualTimeSeriesMetaInformation.class, LoadProfileMetaInformation.class);
   }

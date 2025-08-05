@@ -64,6 +64,12 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
           FlexOptionsResult.class,
           CongestionResult.class);
 
+  /**
+   * Instantiates a new Result entity processor.
+   *
+   * @param registeredClass the registered class
+   * @throws EntityProcessorException the entity processor exception
+   */
   public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass)
       throws EntityProcessorException {
     super(registeredClass);
