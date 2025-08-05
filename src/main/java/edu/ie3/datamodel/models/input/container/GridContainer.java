@@ -112,9 +112,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
    * Abstract class for all builder that build child containers of abstract class {@link
    * GridContainer}*
    *
-   * @param <B> the type parameter
-   * @version 3.1
-   * @since 14.02.23
+   * @param <B> The builder type extending from {@link GridContainerCopyBuilder}
    */
   protected abstract static class GridContainerCopyBuilder<B extends GridContainerCopyBuilder<B>>
       extends InputContainerCopyBuilder<UniqueInputEntity> {

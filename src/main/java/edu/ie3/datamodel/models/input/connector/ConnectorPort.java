@@ -12,10 +12,12 @@ package edu.ie3.datamodel.models.input.connector;
  * medium voltage and {@link ConnectorPort#C} low voltage port
  */
 public enum ConnectorPort {
-  /** A connector port. */
+  /** Represents the high voltage port. */
   A,
-  /** B connector port. */
+
+  /** Represents the intermediate voltage node. */
   B,
-  /** C connector port. */
+
+  /** Represents the lowest voltage port. */
   C
 }

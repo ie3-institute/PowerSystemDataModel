@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
  * fieldName to value representation to allow for an easy processing into a database or file sink
  * e.g. .csv
  *
- * @param <T> the type parameter
- * @version 0.1
- * @since 31.01.20
+ * @param <T> The type of entity that this processor handles, which must extend {@link Entity}.
  */
 public abstract class EntityProcessor<T extends Entity> extends Processor<T> {
 

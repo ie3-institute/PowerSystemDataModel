@@ -34,7 +34,7 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
   private final ComparableQuantity<Power> pThermalMax;
 
   /**
-   * Instantiates a new Abstract storage input.
+   * Abstract constructor for a cylindrical storage input with specified parameters.
    *
    * @param uuid Unique identifier of a cylindrical storage
    * @param id Identifier of the thermal unit
@@ -67,7 +67,7 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
   }
 
   /**
-   * Instantiates a new Abstract storage input.
+   * Constructor for a cylindrical storage input without an operator or operation time.
    *
    * @param uuid Unique identifier of a cylindrical storage
    * @param id Identifier of the thermal unit
@@ -96,45 +96,47 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
   }
 
   /**
-   * Gets storage volume lvl.
+   * Returns available storage volume.
    *
-   * @return the storage volume lvl
+   * @return The available volume as a {@link ComparableQuantity} in cubic meters.
    */
   public ComparableQuantity<Volume> getStorageVolumeLvl() {
     return storageVolumeLvl;
   }
 
   /**
-   * Gets inlet temp.
+   * Returns temperature at which fluid enters.
    *
-   * @return the inlet temp
+   * @return The temperature at which fluid enters as a {@link ComparableQuantity} in Celsius.
    */
   public ComparableQuantity<Temperature> getInletTemp() {
     return inletTemp;
   }
 
   /**
-   * Gets return temp.
+   * Returns temperature at which fluid exits.
    *
-   * @return the return temp
+   * @return The temperature at which fluid exits as a {@link ComparableQuantity} in Celsius.
    */
   public ComparableQuantity<Temperature> getReturnTemp() {
     return returnTemp;
   }
 
   /**
-   * Gets c.
+   * Returns specific heat capacity.
    *
-   * @return the c
+   * @return The specific heat capacity as a {@link ComparableQuantity} typically measured in
+   *     kWh/K*m³.
    */
   public ComparableQuantity<SpecificHeatCapacity> getC() {
     return c;
   }
 
   /**
-   * Gets thermal max.
+   * Returns maximum permissible thermal power.
    *
-   * @return the thermal max
+   * @return The maximum permissible thermal power as a {@link ComparableQuantity} typically
+   *     measured in kW.
    */
   public ComparableQuantity<Power> getpThermalMax() {
     return pThermalMax;
@@ -188,22 +190,32 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
    * altered field values. For detailed field descriptions refer to java docs of {@link
    * AbstractStorageInput}*
    *
-   * @param <B> the type parameter
+   * @param <B> The type of the builder extending from {@link AbstractStorageInputCopyBuilder}.
    */
   protected abstract static class AbstractStorageInputCopyBuilder<
           B extends AbstractStorageInputCopyBuilder<B>>
       extends ThermalStorageInputCopyBuilder<B> {
 
     private ComparableQuantity<Volume> storageVolumeLvl;
+
+    /** Temperature of the inlet (typically in °C) */
     private ComparableQuantity<Temperature> inletTemp;
+
+    /** Temperature of the outlet (typically in °C) */
     private ComparableQuantity<Temperature> returnTemp;
+
+    /** Specific heat capacity of the storage medium (typically in kWh/K*m³) */
     private ComparableQuantity<SpecificHeatCapacity> c;
+
+    /** Maximum permissible thermal power (typically in kW) */
     private ComparableQuantity<Power> pThermalMax;
 
     /**
-     * Instantiates a new Abstract storage input copy builder.
+     * A builder pattern based approach to create copies of {@link AbstractStorageInput} entities
+     * with altered field values. For detailed field descriptions refer to java docs for {@link
+     * AbstractStorageInput}*
      *
-     * @param entity the entity
+     * @param entity the entity that will be copied.
      */
     protected AbstractStorageInputCopyBuilder(AbstractStorageInput entity) {
       super(entity);
@@ -216,10 +228,11 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
     }
 
     /**
-     * Storage volume lvl b.
+     * Sets the available storage volume level for this storage input.
      *
-     * @param storageVolumeLvl the storage volume lvl
-     * @return the b
+     * @param storageVolumeLvl The available storage volume as a {@link ComparableQuantity} of type
+     *     {@link Volume}.
+     * @return This builder instance for method chaining.
      */
     public B storageVolumeLvl(ComparableQuantity<Volume> storageVolumeLvl) {
       this.storageVolumeLvl = storageVolumeLvl;
@@ -227,10 +240,11 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
     }
 
     /**
-     * Inlet temp b.
+     * Sets the temperature at which fluid enters for this storage input.
      *
-     * @param inletTemp the inlet temp
-     * @return the b
+     * @param inletTemp The inlet temperature as a {@link ComparableQuantity} of type {@link
+     *     Temperature}.
+     * @return This builder instance for method chaining.
      */
     public B inletTemp(ComparableQuantity<Temperature> inletTemp) {
       this.inletTemp = inletTemp;
@@ -238,10 +252,11 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
     }
 
     /**
-     * Return temp b.
+     * Sets the temperature at which fluid exits for this storage input.
      *
-     * @param returnTemp the return temp
-     * @return the b
+     * @param returnTemp The return temperature as a {@link ComparableQuantity} of type {@link
+     *     Temperature}.
+     * @return This builder instance for method chaining.
      */
     public B returnTemp(ComparableQuantity<Temperature> returnTemp) {
       this.returnTemp = returnTemp;
@@ -249,10 +264,11 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
     }
 
     /**
-     * C b.
+     * Sets the specific heat capacity of the fluid for this storage input.
      *
-     * @param c the c
-     * @return the b
+     * @param c The specific heat capacity as a {@link ComparableQuantity} of type
+     *     SpecificHeatCapacity.
+     * @return This builder instance for method chaining.
      */
     public B c(ComparableQuantity<SpecificHeatCapacity> c) {
       this.c = c;
@@ -260,10 +276,11 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
     }
 
     /**
-     * P thermal max b.
+     * Sets the thermal power that this this storage input is capable.
      *
-     * @param pThermalMax the p thermal max
-     * @return the b
+     * @param pThermalMax The maximum thermal power as a {@link ComparableQuantity} of type {@link
+     *     Power}.
+     * @return This builder instance for method chaining.
      */
     public B pThermalMax(ComparableQuantity<Power> pThermalMax) {
       this.pThermalMax = pThermalMax;
@@ -278,45 +295,47 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
     }
 
     /**
-     * Gets storage volume lvl.
+     * Returns available storage volume.
      *
-     * @return the storage volume lvl
+     * @return The available volume as a {@link ComparableQuantity} in cubic meters.
      */
     public ComparableQuantity<Volume> getStorageVolumeLvl() {
       return storageVolumeLvl;
     }
 
     /**
-     * Gets inlet temp.
+     * Returns temperature at which fluid enters.
      *
-     * @return the inlet temp
+     * @return The temperature at which fluid enters as a {@link ComparableQuantity} in Celsius.
      */
     public ComparableQuantity<Temperature> getInletTemp() {
       return inletTemp;
     }
 
     /**
-     * Gets return temp.
+     * Returns temperature at which fluid exits.
      *
-     * @return the return temp
+     * @return The temperature at which fluid exits as a {@link ComparableQuantity} in Celsius.
      */
     public ComparableQuantity<Temperature> getReturnTemp() {
       return returnTemp;
     }
 
     /**
-     * Gets c.
+     * Returns specific heat capacity.
      *
-     * @return the c
+     * @return The specific heat capacity as a {@link ComparableQuantity} typically measured in
+     *     kWh/K*m³.
      */
     public ComparableQuantity<SpecificHeatCapacity> getC() {
       return c;
     }
 
     /**
-     * Gets thermal max.
+     * Returns maximum permissible thermal power.
      *
-     * @return the thermal max
+     * @return The maximum permissible thermal power as a {@link ComparableQuantity} typically
+     *     measured in kW.
      */
     public ComparableQuantity<Power> getpThermalMax() {
       return pThermalMax;

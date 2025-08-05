@@ -141,9 +141,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * Abstract class for all builder that build child entities of abstract class {@link
    * ConnectorInput}*
    *
-   * @param <B> the type parameter
-   * @version 0.1
-   * @since 05.06.20
+   * @param <B> The builder type extending from {@link ConnectorInputCopyBuilder}.
    */
   public abstract static class ConnectorInputCopyBuilder<B extends ConnectorInputCopyBuilder<B>>
       extends AssetInputCopyBuilder<B> {

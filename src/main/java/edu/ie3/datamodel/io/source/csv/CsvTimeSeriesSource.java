@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 /**
  * Source that is capable of providing information around time series from csv files.
  *
- * @param <V> the type parameter
+ * @param <V> The type of {@link IndividualTimeSeries}
  */
 public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final IndividualTimeSeries<V> timeSeries;

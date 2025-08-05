@@ -100,6 +100,11 @@ public class BmInput extends SystemParticipantInput implements HasType {
     this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
   }
 
+  /**
+   * Returns the type associated with this biomass input.
+   *
+   * @return The {@link BmTypeInput} representing the type of biomass input.
+   */
   @Override
   public BmTypeInput getType() {
     return type;

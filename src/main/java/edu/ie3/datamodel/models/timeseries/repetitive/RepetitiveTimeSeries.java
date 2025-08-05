@@ -12,11 +12,12 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
- * Describes a TimeSeries with repetitive values that can be calculated from a pattern
+ * Describes a TimeSeries with repetitive values that can be calculated from a pattern.
  *
- * @param <E> the type parameter
- * @param <V> the type parameter
- * @param <R> the type parameter
+ * @param <E> The type of time series entry that extends {@link TimeSeriesEntry}.
+ * @param <V> The type of value associated with the time series entries, which must extend {@link
+ *     Value}.
+ * @param <R> The type of result value produced by calculations based on the repetitive pattern.
  */
 public abstract class RepetitiveTimeSeries<
         E extends TimeSeriesEntry<V>, V extends Value, R extends Value>

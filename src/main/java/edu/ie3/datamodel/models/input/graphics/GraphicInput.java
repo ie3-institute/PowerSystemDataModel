@@ -88,9 +88,7 @@ public abstract class GraphicInput extends UniqueInputEntity {
   /**
    * Abstract class for all builder that build child entities of abstract class {@link GraphicInput}
    *
-   * @param <B> the type parameter
-   * @version 0.1
-   * @since 05.06.20
+   * @param <B> The builder type extending from {@link GraphicInputCopyBuilder}
    */
   public abstract static class GraphicInputCopyBuilder<B extends GraphicInputCopyBuilder<B>>
       extends UniqueEntityCopyBuilder<B> {

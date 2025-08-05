@@ -135,9 +135,7 @@ public abstract class TransformerInput extends ConnectorInput {
    * Abstract class for all builder that build child entities of abstract class {@link
    * TransformerInput}*
    *
-   * @param <B> the type parameter
-   * @version 0.1
-   * @since 05.06.20
+   * @param <B> The builder type extending from {@link TransformerInputCopyBuilder}.
    */
   public abstract static class TransformerInputCopyBuilder<B extends TransformerInputCopyBuilder<B>>
       extends ConnectorInputCopyBuilder<B> {

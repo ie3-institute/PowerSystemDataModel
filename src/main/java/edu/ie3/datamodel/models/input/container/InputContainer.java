@@ -36,16 +36,17 @@ public interface InputContainer<T extends UniqueInputEntity> extends Serializabl
    * Abstract class for all builder that build child containers of interface {@link
    * edu.ie3.datamodel.models.input.container.InputContainer}*
    *
-   * @param <T> the type parameter
+   * @param <T> The type of entities contained in this container, which must extend {@link
+   *     UniqueInputEntity}.
    */
   abstract class InputContainerCopyBuilder<T extends UniqueInputEntity> {
     /** Default constructor for InputContainerCopyBuilder. */
     public InputContainerCopyBuilder() {}
 
     /**
-     * Returns the altered {@link InputContainer}
+     * Returns an unmodifiable list of all entities contained within this input container.
      *
-     * @return the input container
+     * @return An unmodifiable List of all entities.
      * @throws ValidationException the validation exception
      */
     public abstract InputContainer<T> build() throws ValidationException;

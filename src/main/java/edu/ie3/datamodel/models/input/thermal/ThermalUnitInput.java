@@ -88,7 +88,8 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
    * Abstract class for all builders that build child entities of abstract class {@link
    * ThermalUnitInput}*
    *
-   * @param <B> the type parameter
+   * @param <B> Type parameter representing the builder type extending from
+   *     ThermalUnitInputCopyBuilder.
    */
   public abstract static class ThermalUnitInputCopyBuilder<B extends ThermalUnitInputCopyBuilder<B>>
       extends AssetInputCopyBuilder<B> {
@@ -126,10 +127,10 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
     }
 
     /**
-     * Scale b.
+     * Scales properties by given factor.
      *
-     * @param factor the factor
-     * @return the b
+     * @param factor Scaling factor
+     * @return A copy builder with scaled relevant properties
      */
     public abstract B scale(Double factor);
 

@@ -47,7 +47,7 @@ public abstract class ThermalStorageInput extends ThermalUnitInput {
    * Abstract class for all builders that build child entities of abstract class {@link
    * ThermalStorageInput}*
    *
-   * @param <B> the type parameter
+   * @param <B> The builder type extending from {@link ThermalStorageInputCopyBuilder}
    */
   public abstract static class ThermalStorageInputCopyBuilder<
           B extends ThermalStorageInputCopyBuilder<B>>

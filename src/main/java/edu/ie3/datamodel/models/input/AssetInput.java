@@ -187,9 +187,11 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
       return operationTime;
     }
 
+    /** Builds an Asset Input using current values in Builder. * */
     @Override
     public abstract AssetInput build();
 
+    /** Returns current Builder Instance * */
     @Override
     protected abstract B thisInstance();
   }

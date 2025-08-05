@@ -19,7 +19,8 @@ import tech.units.indriya.ComparableQuantity;
 /**
  * Describes a load profile time series with repetitive values that can be calculated from a pattern
  *
- * @param <V> the type parameter
+ * @param <V> The type of load values associated with this time series, which must extend {@link
+ *     LoadValues}.
  */
 public class LoadProfileTimeSeries<V extends LoadValues>
     extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
@@ -72,7 +73,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
    * Returns the maximum average power consumption per quarter-hour calculated over all seasons and
    * weekday types of given load profile in Watt.
    *
-   * @return the optional
+   * @return the max power value in kW.
    */
   public Optional<ComparableQuantity<Power>> maxPower() {
     return Optional.ofNullable(maxPower);
@@ -81,7 +82,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   /**
    * Returns the profile energy scaling in kWh.
    *
-   * @return the optional
+   * @return the scaled energy of the profile in kWh .
    */
   public Optional<ComparableQuantity<Energy>> loadProfileScaling() {
     return Optional.ofNullable(profileEnergyScaling);
@@ -90,7 +91,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   /**
    * Returns the {@link LoadProfile}.
    *
-   * @return the load profile
+   * @return the load profile name.
    */
   public LoadProfile getLoadProfile() {
     return loadProfile;
@@ -123,7 +124,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   /**
    * Returns the value mapping.
    *
-   * @return the value mapping
+   * @return the value mapping.
    */
   protected Map<Integer, V> getValueMapping() {
     return valueMapping;

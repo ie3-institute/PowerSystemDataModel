@@ -11,14 +11,12 @@ import java.util.Optional;
 /**
  * Generic electric current type implementation. Main purpose is to indicate the current type that
  * is provided by a specific asset e.g. {@link edu.ie3.datamodel.models.input.system.EvcsInput}
- *
- * @version 0.1
- * @since 25.07.20
  */
 public enum ElectricCurrentType {
-  /** Ac electric current type. */
+  /** Alternating Current (AC). */
   AC,
-  /** Dc electric current type. */
+
+  /** Direct Current (DC). */
   DC;
 
   /**

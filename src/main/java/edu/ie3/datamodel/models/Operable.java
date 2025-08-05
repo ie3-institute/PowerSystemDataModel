@@ -11,28 +11,27 @@ import java.time.ZonedDateTime;
 
 /** Describes an operable Entity, with operation period interval */
 public interface Operable extends NestedEntity {
-
   /**
-   * Gets operation time.
+   * Retrieves the operation time associated with this entity.
    *
-   * @return the operation time
+   * @return an {@link OperationTime} object representing the operation time.
    */
   OperationTime getOperationTime();
 
   /**
-   * In operation on boolean.
+   * Checks if this entity is in operation on a specified date.
    *
-   * @param date the date
-   * @return the boolean
+   * @param date the date to check for operation status
+   * @return true if the entity is in operation on the given date; false otherwise
    */
   default boolean inOperationOn(ZonedDateTime date) {
     return getOperationTime().includes(date);
   }
 
   /**
-   * Gets operator.
+   * Retrieves the operator associated with this entity.
    *
-   * @return the operator
+   * @return an {@link OperatorInput} object representing the operator.
    */
   OperatorInput getOperator();
 }

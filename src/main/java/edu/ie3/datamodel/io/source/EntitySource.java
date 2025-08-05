@@ -87,7 +87,7 @@ public abstract class EntitySource {
    * @param entityClass class to be validated
    * @param dataSource source for the fields
    * @param validator used to validate
-   * @return the try
+   * @return Try object encapsulating success or failure of validation
    */
   protected static <C extends Entity> Try<Void, ValidationException> validate(
       Class<? extends C> entityClass, DataSource dataSource, SourceValidator<C> validator) {
@@ -101,7 +101,7 @@ public abstract class EntitySource {
    * @param entityClass class to be validated
    * @param sourceFields supplier for source fields
    * @param validator used to validate
-   * @return the try
+   * @return Try object encapsulating success or failure of validation
    */
   protected static <C> Try<Void, ValidationException> validate(
       Class<? extends C> entityClass,
@@ -124,12 +124,12 @@ public abstract class EntitySource {
   }
 
   /**
-   * Method to get a source for the build in entities.
+   * Method to get a source for the built-in entities.
    *
-   * @param clazz the clazz
+   * @param clazz class from which resources will be loaded
    * @param subdirectory from the resource folder
    * @return a new {@link CsvDataSource}
-   * @throws SourceException the source exception
+   * @throws SourceException if there is an issue finding or loading resources
    */
   protected static CsvDataSource getBuildInSource(Class<?> clazz, String subdirectory)
       throws SourceException {
@@ -217,10 +217,10 @@ public abstract class EntitySource {
    * Returns a stream of {@link EntityData} that can be used to build instances of several subtypes
    * of {@link Entity} by a corresponding {@link EntityFactory} that consumes this data.
    *
-   * @param entityClass the entity class that should be build
+   * @param entityClass the entity class that should be built
    * @param dataSource source for the data
-   * @return a stream of the entity data wrapped in a {@link Try}
-   * @throws SourceException the source exception
+   * @return a stream of entities wrapped in {@link Try}
+   * @throws SourceException if there is an issue reading data
    */
   protected static Stream<Try<EntityData, SourceException>> buildEntityData(
       Class<? extends Entity> entityClass, DataSource dataSource) throws SourceException {
@@ -235,12 +235,12 @@ public abstract class EntitySource {
    * Returns a stream of {@link EntityData} that can be used to build instances of several subtypes
    * of {@link Entity} by a corresponding {@link EntityFactory} that consumes this data.
    *
-   * @param <E> type of entity data
+   * @param <E> type of entity data that extends {@link EntityData}
    * @param entityClass class of the entity
    * @param dataSource source for the data
-   * @param converter to convert {@link EntityData} to {@link E}
-   * @return an entity data
-   * @throws SourceException the source exception
+   * @param converter function to convert {@link EntityData} to {@link E}
+   * @return an entity data wrapped in {@link Try}
+   * @throws SourceException if there is an issue reading data
    */
   protected static <E extends EntityData> Stream<Try<E, SourceException>> buildEntityData(
       Class<? extends Entity> entityClass,

@@ -124,10 +124,10 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   }
 
   /**
-   * Abstract class for all builder that build child entities of abstract class {@link
-   * SystemParticipantTypeInput}*
+   * Abstract class for all builders that build child entities of abstract class {@link
+   * SystemParticipantTypeInput}*.
    *
-   * @param <B> the type parameter
+   * @param <B> The builder type extending from {@link SystemParticipantTypeInputCopyBuilder}.
    */
   public abstract static class SystemParticipantTypeInputCopyBuilder<
           B extends SystemParticipantTypeInput.SystemParticipantTypeInputCopyBuilder<B>>

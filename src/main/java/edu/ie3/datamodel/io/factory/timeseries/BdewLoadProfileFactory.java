@@ -32,12 +32,10 @@ import tech.units.indriya.quantity.Quantities;
 public class BdewLoadProfileFactory
     extends LoadProfileFactory<BdewStandardLoadProfile, BdewLoadValues> {
   /** The constant BDEW1999_FIELDS. */
-  // 1999 profile scheme
   public static final BdewLoadValues.BdewMap<String> BDEW1999_FIELDS =
       BdewKey.toMap(BdewScheme.BDEW1999);
 
   /** The constant BDEW2025_FIELDS. */
-  // 2025 profile scheme
   public static final BdewLoadValues.BdewMap<String> BDEW2025_FIELDS =
       BdewKey.toMap(BdewScheme.BDEW2025);
 
