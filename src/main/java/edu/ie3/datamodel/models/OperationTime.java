@@ -152,6 +152,9 @@ public class OperationTime implements Serializable {
   /** Builder class for {@link edu.ie3.datamodel.models.OperationTime} */
   public static class OperationTimeBuilder {
 
+    /** Default constructor for OperationTimeBuilder. */
+    public OperationTimeBuilder() {}
+
     private ZonedDateTime startDate;
     private ZonedDateTime endDate;
 

@@ -10,7 +10,12 @@ import static edu.ie3.datamodel.io.SqlUtils.quote;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-/** Class for identification of entities and results from grids in SQL databases. */
+/**
+ * Class for identification of entities and results from grids in SQL databases.
+ *
+ * @param gridName The name of the grid.
+ * @param uuid The unique identifier for the grid
+ */
 public record DbGridMetadata(String gridName, UUID uuid) {
 
   /** The constant GRID_TABLE_COLUMN. */

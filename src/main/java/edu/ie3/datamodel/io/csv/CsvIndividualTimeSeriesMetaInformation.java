@@ -13,6 +13,7 @@ import java.util.UUID;
 
 /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
 public class CsvIndividualTimeSeriesMetaInformation extends IndividualTimeSeriesMetaInformation {
+  /** Represents the full file path to a specific resource or data file. */
   private final Path fullFilePath;
 
   /**

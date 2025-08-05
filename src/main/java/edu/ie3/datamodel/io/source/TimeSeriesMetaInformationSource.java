@@ -20,6 +20,9 @@ public abstract class TimeSeriesMetaInformationSource {
   /** The Load profile meta information. */
   protected Map<String, LoadProfileMetaInformation> loadProfileMetaInformation;
 
+  /** Default constructor for TimeSeriesMetaInformationSource. */
+  protected TimeSeriesMetaInformationSource() {}
+
   /**
    * Get a mapping from time series {@link UUID} to its meta information {@link
    * IndividualTimeSeriesMetaInformation}*

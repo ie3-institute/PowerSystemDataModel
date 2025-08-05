@@ -11,6 +11,7 @@ import java.util.UUID;
 
 /** Specific meta information, that can be derived from a load profile time series file */
 public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
+  /** The name or identifier of the load profile. */
   private final String profile;
 
   /**

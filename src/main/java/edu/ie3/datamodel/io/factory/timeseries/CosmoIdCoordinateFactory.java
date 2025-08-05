@@ -12,10 +12,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Factory, that is able to build coordinate id to coordinate mapping from German Federal Weather
- * Service's COSMO model
+ * Factory that is able to build coordinate ID to coordinate mapping from the German Federal Weather
+ * Service's COSMO model.
  */
 public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
+  /** Default constructor for CosmoIdCoordinateFactory. */
+  public CosmoIdCoordinateFactory() {}
+
   private static final String TID = "tid";
   private static final String COORDINATE_ID = "id";
   private static final String LONG_GEO = "longGeo";

@@ -48,7 +48,11 @@ public class DatabaseNamingStrategy {
     return TIME_SERIES_PREFIX;
   }
 
-  /** Returns the String of the load profile table @return the load profile table name */
+  /**
+   * Returns the String of the load profile table
+   *
+   * @return the load profile table name
+   */
   public String getLoadProfileTableName() {
     return LOAD_PROFILE;
   }

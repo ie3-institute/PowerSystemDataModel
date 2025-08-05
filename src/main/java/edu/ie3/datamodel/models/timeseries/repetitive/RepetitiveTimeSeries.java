@@ -12,9 +12,9 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
- * Describes a TimeSeries with repetitive values that can be calculated from a pattern @param <E>
- * the type parameter
+ * Describes a TimeSeries with repetitive values that can be calculated from a pattern
  *
+ * @param <E> the type parameter
  * @param <V> the type parameter
  * @param <R> the type parameter
  */

@@ -13,6 +13,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes as heat demand value */
 public class HeatDemandValue implements Value {
+  /** The amount of heat demand represented as a quantity of power. */
   private final ComparableQuantity<Power> heatDemand;
 
   /**

@@ -25,10 +25,16 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class ChargingPointType implements Serializable {
 
+  /** Unique identifier for the electrical component. */
   private final String id;
+
+  /** Rated apparent power of the electrical component. */
   private final ComparableQuantity<Power> sRated;
+
+  /** Type of electric current used by this component (AC or DC). */
   private final ElectricCurrentType electricCurrentType;
 
+  /** Synonymous identifiers used for this component. */
   private final Set<String> synonymousIds;
 
   /**

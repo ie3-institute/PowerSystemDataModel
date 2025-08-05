@@ -20,6 +20,7 @@ import java.util.*;
  */
 public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
     extends UniqueEntity {
+  /** A set of entries representing the individual data points in the time series. */
   private final Set<E> entries;
 
   /**

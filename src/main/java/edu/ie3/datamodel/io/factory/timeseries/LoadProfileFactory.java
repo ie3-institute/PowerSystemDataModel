@@ -87,9 +87,9 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
   }
 
   /**
-   * Returns the load profile energy scaling. The default value is 1000 kWh @param loadProfile the
-   * load profile
+   * Returns the load profile energy scaling. The default value is 1000 kWh
    *
+   * @param loadProfile the load profile
    * @return the load profile energy scaling
    */
   public ComparableQuantity<Energy> getLoadProfileEnergyScaling(P loadProfile) {

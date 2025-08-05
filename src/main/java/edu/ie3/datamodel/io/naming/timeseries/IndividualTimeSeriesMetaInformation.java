@@ -11,6 +11,7 @@ import java.util.UUID;
 
 /** Specific meta information, that can be derived from an individual time series file */
 public class IndividualTimeSeriesMetaInformation extends TimeSeriesMetaInformation {
+  /** The scheme that defines the columns of the time series data. */
   private final ColumnScheme columnScheme;
 
   /**

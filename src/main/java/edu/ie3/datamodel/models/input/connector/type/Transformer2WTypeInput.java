@@ -340,8 +340,9 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     }
 
     /**
-     * Setter @param rSc the r sc
+     * Setter
      *
+     * @param rSc the r sc
      * @return the transformer 2 w type input copy builder
      */
     public Transformer2WTypeInputCopyBuilder rSc(ComparableQuantity<ElectricResistance> rSc) {

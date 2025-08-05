@@ -173,13 +173,28 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
   }
 
   // custom serialization (needed for the values)
-
+  /**
+   * Serializes the current state of this object to the specified output stream.
+   *
+   * @param out the output stream to write the object's state to
+   * @throws IOException if an I/O error occurs during writing
+   */
   @Serial
   private void writeObject(ObjectOutputStream out) throws IOException {
     out.defaultWriteObject();
     out.writeObject(values);
   }
 
+  /**
+   * Deserializes the state of this object from the specified input stream.
+   *
+   * <p>This method reads the object's serialized state from the provided {@link ObjectInputStream}
+   * and restores its internal fields.
+   *
+   * @param in the input stream from which to read the object's state
+   * @throws IOException if an I/O error occurs during reading
+   * @throws ClassNotFoundException if the class of a serialized object cannot be found
+   */
   @Serial
   @SuppressWarnings("unchecked")
   private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {

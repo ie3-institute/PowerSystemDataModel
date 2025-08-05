@@ -19,6 +19,9 @@ import org.locationtech.jts.io.WKBReader;
 
 /** The type Sql id coordinate factory. */
 public class SqlIdCoordinateFactory extends IdCoordinateFactory {
+  /** Default constructor for SqlIdCoordinateFactory. */
+  public SqlIdCoordinateFactory() {}
+
   private static final String COORDINATE_ID = "id";
   private static final String COORDINATE = "coordinate";
 

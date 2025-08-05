@@ -47,8 +47,9 @@ public class ProcessorProvider {
       timeSeriesProcessors;
 
   /**
-   * Get an instance of this class with all existing entity processors @throws
-   * EntityProcessorException the entity processor exception
+   * Get an instance of this class with all existing entity processors
+   *
+   * @throws EntityProcessorException the entity processor exception
    */
   public ProcessorProvider() throws EntityProcessorException {
     this.entityProcessors = init(allEntityProcessors());

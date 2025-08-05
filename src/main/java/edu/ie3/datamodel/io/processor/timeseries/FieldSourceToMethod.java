@@ -10,6 +10,11 @@ import edu.ie3.datamodel.io.processor.GetterMethod;
 /**
  * Represent a tuple of {@link FieldSource} to {@link GetterMethod} to highlight, where information
  * of a time series can be obtained from
+ *
+ * @param source The source from which data can be retrieved, represented by the {@link FieldSource}
+ *     enum.
+ * @param method The method used to retrieve values from the specified source, represented by {@link
+ *     GetterMethod}.
  */
 public record FieldSourceToMethod(FieldSource source, GetterMethod method) {
   @Override

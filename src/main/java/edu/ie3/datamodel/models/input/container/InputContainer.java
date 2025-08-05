@@ -10,7 +10,12 @@ import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.io.Serializable;
 import java.util.List;
 
-/** Represents an aggregation of different entities @param <T> the type parameter */
+/**
+ * Represents an aggregation of different entities
+ *
+ * @param <T> The type of entities contained in this container, which must extend {@link
+ *     UniqueInputEntity}.
+ */
 public interface InputContainer<T extends UniqueInputEntity> extends Serializable {
 
   /**
@@ -20,7 +25,11 @@ public interface InputContainer<T extends UniqueInputEntity> extends Serializabl
    */
   List<T> allEntitiesAsList();
 
-  /** Returns an input container copy builder @return the input container copy builder */
+  /**
+   * Returns an input container copy builder
+   *
+   * @return the input container copy builder
+   */
   InputContainerCopyBuilder<T> copy();
 
   /**
@@ -28,14 +37,15 @@ public interface InputContainer<T extends UniqueInputEntity> extends Serializabl
    * edu.ie3.datamodel.models.input.container.InputContainer}*
    *
    * @param <T> the type parameter
-   * @version 3.1
-   * @since 14.02.23
    */
   abstract class InputContainerCopyBuilder<T extends UniqueInputEntity> {
+    /** Default constructor for InputContainerCopyBuilder. */
+    public InputContainerCopyBuilder() {}
 
     /**
-     * Returns the altered {@link InputContainer} @return the input container
+     * Returns the altered {@link InputContainer}
      *
+     * @return the input container
      * @throws ValidationException the validation exception
      */
     public abstract InputContainer<T> build() throws ValidationException;

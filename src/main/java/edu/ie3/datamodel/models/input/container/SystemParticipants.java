@@ -14,15 +14,34 @@ import java.util.stream.Collectors;
  * feed ins, heat pumps, loads, PV plants, storages, WECs)
  */
 public class SystemParticipants implements InputContainer<SystemParticipantInput> {
+  /** Set of biomass plants in the system. */
   private final Set<BmInput> bmPlants;
+
+  /** Set of combined heat and power plants (CHP) in the system. */
   private final Set<ChpInput> chpPlants;
+
+  /** Set of electric vehicle charging stations (EVCS) in the system. */
   private final Set<EvcsInput> evcs;
+
+  /** Set of electric vehicles (EVs) in the system. */
   private final Set<EvInput> evs;
+
+  /** Set of fixed feed-in inputs for renewable energy sources. */
   private final Set<FixedFeedInInput> fixedFeedIns;
+
+  /** Set of heat pumps in the system. */
   private final Set<HpInput> heatPumps;
+
+  /** Set of load inputs representing various consumption loads in the system. */
   private final Set<LoadInput> loads;
+
+  /** Set of photovoltaic plants (PV) in the system. */
   private final Set<PvInput> pvPlants;
+
+  /** Set of storage inputs for energy storage systems in the grid. */
   private final Set<StorageInput> storages;
+
+  /** Set of wind energy converters (WEC) plants in the system. */
   private final Set<WecInput> wecPlants;
 
   /**

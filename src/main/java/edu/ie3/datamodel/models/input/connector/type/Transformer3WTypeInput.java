@@ -466,8 +466,9 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     }
 
     /**
-     * Setter @param sRatedA the s rated a
+     * Setter
      *
+     * @param sRatedA the s rated a
      * @return the transformer 3 w type input copy builder
      */
     public Transformer3WTypeInputCopyBuilder sRatedA(ComparableQuantity<Power> sRatedA) {

@@ -194,8 +194,9 @@ public class LineTypeInput extends AssetTypeInput {
     }
 
     /**
-     * Setter @param b the b
+     * Setter
      *
+     * @param b the b
      * @return the line type input copy builder
      */
     public LineTypeInputCopyBuilder b(ComparableQuantity<SpecificConductance> b) {

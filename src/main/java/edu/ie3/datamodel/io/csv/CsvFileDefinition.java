@@ -70,6 +70,10 @@ public record CsvFileDefinition(Path filePath, String[] headLineElements, String
   /**
    * Builds a new file definition consisting of file name and headline elements
    *
+   * @param <T> The type of the time series
+   * @param <E> The type of the time series entries
+   * @param <V> The type of values in the time series
+   * @param <R> The type of result values
    * @param timeSeries Time series to derive naming information from
    * @param headLineElements Array of headline elements
    * @param csvSep Separator for csv columns

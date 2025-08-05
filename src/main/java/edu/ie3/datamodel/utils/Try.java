@@ -19,11 +19,16 @@ import org.apache.commons.lang3.tuple.Pair;
 /**
  * The type Try.
  *
- * @param <T> the type parameter
- * @param <E> the type parameter
+ * @param <T> the type parameter for the success value
+ * @param <E> the type parameter for the exception type
  */
 public abstract class Try<T, E extends Exception> {
-  // static utility methods
+
+  /**
+   * Default constructor for Try. This constructor is protected to prevent instantiation of this
+   * abstract class.
+   */
+  protected Try() {}
 
   /**
    * Method to create a {@link Try} object easily.
@@ -387,10 +392,11 @@ public abstract class Try<T, E extends Exception> {
   public abstract Optional<T> toOptional();
 
   /**
-   * Implementation of {@link Try} class. This class is used to present a successful try.
+   * Implementation of {@link Try} class. This class is used to represent a success attempt to
+   * execute an operation that can result in either success or failure.
    *
-   * @param <T> the type parameter
-   * @param <E> the type parameter
+   * @param <T> the type of data that may have been produced if the operation was successful
+   * @param <E> the type of exception that can be thrown during the operation
    */
   public static final class Success<T, E extends Exception> extends Try<T, E> {
     private final T data;
@@ -554,10 +560,11 @@ public abstract class Try<T, E extends Exception> {
   }
 
   /**
-   * Implementation of {@link Try} class. This class is used to present a failed try.
+   * Implementation of {@link Try} class. This class is used to represent a failed attempt to
+   * execute an operation that can result in either success or failure.
    *
-   * @param <T> the type parameter
-   * @param <E> the type parameter
+   * @param <T> the type of data that may have been produced if the operation was successful
+   * @param <E> the type of exception that can be thrown during the operation
    */
   public static final class Failure<T, E extends Exception> extends Try<T, E> {
     private final E exception;

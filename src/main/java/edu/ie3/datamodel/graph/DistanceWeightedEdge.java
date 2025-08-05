@@ -19,6 +19,10 @@ import tech.units.indriya.quantity.Quantities;
  * methods.
  */
 public class DistanceWeightedEdge extends DefaultWeightedEdge {
+
+  /** Default constructor for DistanceWeightedEdge. */
+  public DistanceWeightedEdge() {}
+
   private static final long serialVersionUID = -3331046813188425728L;
 
   /** The constant DEFAULT_DISTANCE_UNIT. */

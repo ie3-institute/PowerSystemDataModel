@@ -135,7 +135,11 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
       this.graphics = gridContainer.getGraphics();
     }
 
-    /** Returns grid name @return the grid name */
+    /**
+     * Returns grid name
+     *
+     * @return the grid name
+     */
     protected String getGridName() {
       return gridName;
     }
@@ -149,12 +153,20 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
       return rawGrid;
     }
 
-    /** Returns {@link SystemParticipants} @return the system participants */
+    /**
+     * Returns {@link SystemParticipants}
+     *
+     * @return the system participants
+     */
     protected SystemParticipants getSystemParticipants() {
       return systemParticipants;
     }
 
-    /** Returns {@link GraphicElements} @return the graphics */
+    /**
+     * Returns {@link GraphicElements}
+     *
+     * @return the graphics
+     */
     protected GraphicElements getGraphics() {
       return graphics;
     }

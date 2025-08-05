@@ -8,7 +8,12 @@ package edu.ie3.datamodel.models.input;
 import edu.ie3.util.geo.GeoUtils;
 import org.locationtech.jts.geom.Point;
 
-/** The type Id coordinate input. */
+/**
+ * The type Id coordinate input.
+ *
+ * @param id of the pair
+ * @param point of the pair
+ */
 public record IdCoordinateInput(Integer id, Point point) implements InputEntity {
   /**
    * Constructor for an {@link IdCoordinateInput}.

@@ -106,7 +106,11 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    */
   public abstract P getLoadProfile();
 
-  /** Returns the maximal power value of the time series @return the max power */
+  /**
+   * Returns the maximal power value of the time series
+   *
+   * @return the max power
+   */
   public abstract Optional<ComparableQuantity<Power>> getMaxPower();
 
   /**

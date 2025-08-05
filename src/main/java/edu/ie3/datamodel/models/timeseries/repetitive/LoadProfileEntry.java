@@ -9,7 +9,12 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import java.util.Objects;
 
-/** Unique entry to a {@link LoadProfileTimeSeries} @param <L> the type parameter */
+/**
+ * Unique entry to a {@link LoadProfileTimeSeries}.
+ *
+ * @param <L> The type of load values associated with this entry, which must extend {@link
+ *     LoadValues}.
+ */
 public class LoadProfileEntry<L extends LoadValues> extends TimeSeriesEntry<L> {
   private final int quarterHour;
 

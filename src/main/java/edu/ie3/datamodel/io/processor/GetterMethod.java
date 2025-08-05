@@ -8,7 +8,13 @@ package edu.ie3.datamodel.io.processor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/** The type Getter method. */
+/**
+ * The type Getter method.
+ *
+ * @param name the name
+ * @param getter the getter
+ * @param returnType the returnType
+ */
 public record GetterMethod(String name, Getter getter, String returnType) {
 
   /**

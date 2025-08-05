@@ -23,7 +23,14 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class LoadProfileTimeSeries<V extends LoadValues>
     extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
+
+  /** The load profile associated with this instance. */
   private final LoadProfile loadProfile;
+
+  /**
+   * A mapping of integer keys to values of type V, representing some form of value mapping related
+   * to the load profile.
+   */
   private final Map<Integer, V> valueMapping;
 
   /**

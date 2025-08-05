@@ -72,9 +72,9 @@ public class GraphicSource extends AssetEntitySource {
   }
 
   /**
-   * Returns the graphic elements of the grid or throws a {@link SourceException} @return the
-   * graphic elements
+   * Returns the graphic elements of the grid or throws a {@link SourceException}
    *
+   * @return the graphic elements
    * @throws SourceException the source exception
    */
   public GraphicElements getGraphicElements() throws SourceException {

@@ -23,6 +23,12 @@ import java.util.stream.Collectors;
 /** Validation utils for checking the uniqueness of a given collection of entities. */
 public class UniquenessValidationUtils extends ValidationUtils {
 
+  /**
+   * Default constructor for UniquenessValidationUtils. This constructor is private to prevent
+   * instantiation of this utility class.
+   */
+  private UniquenessValidationUtils() {}
+
   /** The constant uuidFieldSupplier. */
   // default field set supplier
   protected static final FieldSetSupplier<? extends UniqueEntity> uuidFieldSupplier =

@@ -11,6 +11,7 @@ import java.util.Objects;
 
 /** The type Csv load profile meta information. */
 public class CsvLoadProfileMetaInformation extends LoadProfileMetaInformation {
+  /** Represents the full file path for the load profile. */
   private final Path fullFilePath;
 
   /**

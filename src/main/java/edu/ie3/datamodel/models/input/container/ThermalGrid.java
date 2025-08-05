@@ -16,6 +16,12 @@ import java.util.stream.Collectors;
  * Container object to denote a fully connected thermal "grid". As there are currently no branch
  * elements, a grid always only consists of one {@link ThermalBusInput} and all its connected {@link
  * edu.ie3.datamodel.models.input.thermal.ThermalUnitInput}*s
+ *
+ * @param bus The thermal bus of this thermal grid. Working like a thermal node.
+ * @param houses A collection of houses connected to the thermal grid.
+ * @param heatStorages A collection of heat storage units within the thermal grid.
+ * @param domesticHotWaterStorages A collection of domestic hot water storage units within the
+ *     thermal grid.
  */
 public record ThermalGrid(
     ThermalBusInput bus,

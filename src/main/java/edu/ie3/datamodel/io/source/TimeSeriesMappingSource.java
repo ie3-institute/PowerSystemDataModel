@@ -70,8 +70,9 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
   public abstract Stream<Map<String, String>> getMappingSourceData() throws SourceException;
 
   /**
-   * Returns the option for fields found in the source @return the source fields
+   * Returns the option for fields found in the source
    *
+   * @return the source fields
    * @throws SourceException the source exception
    */
   public abstract Optional<Set<String>> getSourceFields() throws SourceException;

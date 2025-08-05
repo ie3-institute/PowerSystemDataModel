@@ -14,26 +14,27 @@ public abstract class UniqueEntity implements Entity, Serializable {
   /** Field name of {@link UniqueEntity} uuid */
   public static final String UUID_FIELD_NAME = "uuid";
 
+  /** Unique identifier for this entity. */
   private final UUID uuid;
 
-  /** Instantiates a new Unique entity. */
+  /** Default constructor that generates a new random UUID. */
   protected UniqueEntity() {
     uuid = UUID.randomUUID();
   }
 
   /**
-   * Instantiates a new Unique entity.
+   * Constructor that allows setting a specific UUID.
    *
-   * @param uuid the uuid
+   * @param uuid the UUID to set; if null, a new random UUID will be generated
    */
   protected UniqueEntity(UUID uuid) {
     this.uuid = uuid == null ? UUID.randomUUID() : uuid;
   }
 
   /**
-   * Gets uuid.
+   * Gets the unique identifier (UUID) for this entity.
    *
-   * @return the uuid
+   * @return the unique identifier of this entity
    */
   public UUID getUuid() {
     return uuid;
@@ -60,9 +61,7 @@ public abstract class UniqueEntity implements Entity, Serializable {
   /**
    * Abstract class for all builder that build child entities of abstract class {@link UniqueEntity}
    *
-   * @param <B> the type parameter
-   * @version 0.1
-   * @since 05.06.20
+   * @param <B> The builder type extending from {@link UniqueEntityBuilder}
    */
   public abstract static class UniqueEntityCopyBuilder<B extends UniqueEntityBuilder>
       implements UniqueEntityBuilder {
@@ -70,19 +69,19 @@ public abstract class UniqueEntity implements Entity, Serializable {
     private UUID uuid;
 
     /**
-     * Instantiates a new Unique entity copy builder.
+     * Constructor that initializes the builder with an existing entity's UUID.
      *
-     * @param entity the entity
+     * @param entity the existing entity to copy the UUID from
      */
     protected UniqueEntityCopyBuilder(UniqueEntity entity) {
       this.uuid = entity.getUuid();
     }
 
     /**
-     * Uuid b.
+     * Sets the UUID for this builder.
      *
-     * @param uuid the uuid
-     * @return the b
+     * @param uuid the new UUID to set
+     * @return this concrete builder instance
      */
     public B uuid(UUID uuid) {
       this.uuid = uuid;
@@ -90,29 +89,29 @@ public abstract class UniqueEntity implements Entity, Serializable {
     }
 
     /**
-     * Gets uuid.
+     * Returns the UUID associated with this builder.
      *
-     * @return the uuid
+     * @return the unique identifier (UUID) for this builder
      */
     protected UUID getUuid() {
       return uuid;
     }
 
     /**
-     * This instance b.
+     * Returns an instance of the concrete builder implementation.
      *
-     * @return the b
+     * @return This concrete builder instance.
      */
     protected abstract B thisInstance();
   }
 
-  /** The interface Unique entity builder. */
+  /** Builds and returns a unique entity. */
   protected interface UniqueEntityBuilder {
 
     /**
-     * Build unique entity.
+     * Build method.
      *
-     * @return the unique entity
+     * @return an instance of UniqueEntity
      */
     UniqueEntity build();
   }
