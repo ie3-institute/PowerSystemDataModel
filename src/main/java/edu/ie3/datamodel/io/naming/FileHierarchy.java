@@ -23,13 +23,4 @@ public interface FileHierarchy {
    * @return An Option to the regarding sub directory as a string
    */
   Optional<Path> getSubDirectory(Class<? extends Entity> cls);
-
-  /**
-   * Determines the base directory.
-   *
-   * @return An option to the base directory
-   * @deprecated Use {@link edu.ie3.datamodel.io.connectors.CsvFileConnector} instead
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  Optional<Path> getBaseDirectory();
 }
