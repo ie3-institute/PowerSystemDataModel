@@ -19,12 +19,18 @@ public abstract class IdCoordinateFactory
     super(IdCoordinateInput.class);
   }
 
-  /** @return the field id for the coordinate id */
+  /**
+   * @return the field id for the coordinate id
+   */
   public abstract String getIdField();
 
-  /** @return the field id for the coordinate latitude */
+  /**
+   * @return the field id for the coordinate latitude
+   */
   public abstract String getLatField();
 
-  /** @return the field id for the coordinate longitude */
+  /**
+   * @return the field id for the coordinate longitude
+   */
   public abstract String getLonField();
 }

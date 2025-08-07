@@ -20,12 +20,16 @@ import tech.units.indriya.ComparableQuantity;
 public abstract class AbstractStorageInput extends ThermalStorageInput {
   /** Available storage volume (typically in m³) */
   private final ComparableQuantity<Volume> storageVolumeLvl;
+
   /** Temperature of the inlet (typically in C) */
   private final ComparableQuantity<Temperature> inletTemp;
+
   /** Temperature of the outlet (typically in C) */
   private final ComparableQuantity<Temperature> returnTemp;
+
   /** Specific heat capacity of the storage medium (typically in kWh/K*m³) */
   private final ComparableQuantity<SpecificHeatCapacity> c;
+
   /** Maximum permissible thermal power (typically in kW) */
   private final ComparableQuantity<Power> pThermalMax;
 

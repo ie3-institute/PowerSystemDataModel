@@ -21,10 +21,13 @@ import tech.units.indriya.ComparableQuantity;
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
   private final ComparableQuantity<Energy> eStorage;
+
   /** Maximum permissible active power (typically in kW) */
   private final ComparableQuantity<Power> pMax;
+
   /** Maximum permissible gradient of active power change (typically % / h) */
   private final ComparableQuantity<DimensionlessRate> activePowerGradient;
+
   /** Efficiency of the charging and discharging process (typically in %) */
   private final ComparableQuantity<Dimensionless> eta;
 

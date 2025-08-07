@@ -20,6 +20,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
 
   /** Type of this WEC, containing default values for WEC assets of this kind */
   private final WecTypeInput type;
+
   /** Is this asset market oriented? */
   private final boolean marketReaction;
 

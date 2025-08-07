@@ -23,20 +23,28 @@ public class PvInput extends SystemParticipantInput {
 
   /** Albedo value (typically a value between 0 and 1) */
   private final double albedo;
+
   /** Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦) */
   private final ComparableQuantity<Angle> azimuth;
+
   /** Efficiency of converter (typically in %) */
   private final ComparableQuantity<Dimensionless> etaConv;
+
   /** Tilted inclination from horizontal (typically in °) */
   private final ComparableQuantity<Angle> elevationAngle;
+
   /** Generator correction factor merging different technical influences */
   private final double kG;
+
   /** Temperature correction factor */
   private final double kT;
+
   /** Is this asset market oriented? */
   private final boolean marketReaction;
+
   /** Rated apparent power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
+
   /** Rated power factor */
   private final double cosPhiRated;
 

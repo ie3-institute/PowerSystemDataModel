@@ -18,10 +18,13 @@ import tech.units.indriya.ComparableQuantity;
 public class ChpTypeInput extends SystemParticipantTypeInput {
   /** Electrical efficiency (typically in %) */
   private final ComparableQuantity<Dimensionless> etaEl;
+
   /** Thermal efficiency (typically in %) */
   private final ComparableQuantity<Dimensionless> etaThermal;
+
   /** Rated thermal power (typically in kW) */
   private final ComparableQuantity<Power> pThermal;
+
   /** Internal consumption (typically in kW) */
   private final ComparableQuantity<Power> pOwn;
 
