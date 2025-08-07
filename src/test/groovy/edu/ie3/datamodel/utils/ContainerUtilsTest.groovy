@@ -278,8 +278,8 @@ class ContainerUtilsTest extends Specification {
     InvalidGridException ex = thrown()
     ex.message == "There are 2 voltage levels apparent, although only one is expected. Following voltage levels" +
         " are present: CommonVoltageLevel{id='Mittelspannung', nominalVoltage=10 kV, synonymousIds=" +
-        "[Mittelspannung, ms, ms_10kv, mv, mv_10kV], voltageRange=Interval [10 kV, 20 kV)}, CommonVoltageLevel" +
-        "{id='Mittelspannung', nominalVoltage=20 kV, synonymousIds=[Mittelspannung, ms, ms_20kv, mv, mv_20kV], " +
+        "[10.0kV, 10kV, Mittelspannung, ms, ms_10kv, mv, mv_10kV], voltageRange=Interval [10 kV, 20 kV)}, CommonVoltageLevel" +
+        "{id='Mittelspannung', nominalVoltage=20 kV, synonymousIds=[20.0kV, 20kV, Mittelspannung, ms, ms_20kv, mv, mv_20kV], " +
         "voltageRange=Interval [20 kV, 30 kV)}"
   }
 
