@@ -178,9 +178,67 @@ All impedances and admittances are given with respect to the higher voltage side
 
 ```
 
+## Standard Three Winding Transformer Types
+
+
+Following there are some standard three winding transformer types with their source.
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+   
+   * - uuid
+     - bM
+     - dPhi
+     - dV
+     - gM
+     - id
+     - rScA
+     - rScB
+     - rScC
+     - sRatedA
+     - sRatedB
+     - sRatedC
+     - tapMax
+     - tapMin
+     - tapNeutr
+     - vRatedA
+     - vRatedB
+     - vRatedC
+     - xScA
+     - xScB
+     - xScC
+     - source
+     
+   * - 5a890aae-b9c9-4ebf-8a49-8850ae9df402
+     - -519.48
+     - 0.0
+     - 1.5
+     - 12.98
+     - HöS_HS_MS
+     - 0.15
+     - 0.58
+     - 1.15
+     - 120000.0
+     - 60000.0
+     - 40000.0
+     - 10
+     - -10
+     - 0
+     - 380.0
+     - 110.0
+     - 20.0
+     - 24.02
+     - 60.15
+     - 200.75
+     - Dissertation C. Kittl TU Dortmund[^cite_kittl2022]     
+```
+
 ## Caveats
 
 Nothing - at least not known.
 If you found something, please contact us!
 
 [^cite_gremmel1999]: Gremmel, H., Ed., Schaltanlagen. Cornelsen Verlag, 1999, Vol. 10, isbn: 3-464-48235-9.
+[^cite_kittl2022]: Kittl, C., Entwurf und Validierung eines individualitätszentrierten, interdisziplinären Energiesystemsimulators basierend auf ereignisdiskreter Simulation und Agententheorie, Dortmunder Beiträge zu Energiesystemen, Energieeffizienz und Energiewirtschaft, Shaker Verlag, 2022, Vol. 25, isbn: 9-783-84408463-4.
