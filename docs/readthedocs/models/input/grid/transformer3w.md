@@ -180,8 +180,8 @@ All impedances and admittances are given with respect to the higher voltage side
 
 ## Standard Three Winding Transformer Types
 
-
-Following there are some standard three winding transformer types with their source.
+Following there are some standard three winding transformer types with their source. The types are listed below in a ``csv file`` [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes). This
+file can be used directly for any simulation with [SIMONA](https://github.com/ie3-institute/simona).
 
 ```{list-table}
    :widths: auto
@@ -211,12 +211,12 @@ Following there are some standard three winding transformer types with their sou
      - xScC
      - source
      
-   * - 5a890aae-b9c9-4ebf-8a49-8850ae9df402
+   * - 62aef8ec-7e68-43e5-9678-8cde101f0116
      - -519.4864
      - 0.0
      - 1.5
      - 12.985
-     - HöS_HS_MS
+     - HoeS_HS_MS
      - 0.1444
      - 0.5776
      - 1.1552
