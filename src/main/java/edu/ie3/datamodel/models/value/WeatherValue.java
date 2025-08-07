@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
@@ -81,6 +82,34 @@ public class WeatherValue implements Value {
 
   public WindValue getWind() {
     return wind;
+  }
+
+  public Optional<ComparableQuantity<Irradiance>> getDirectIrradiance() {
+    return solarIrradiance.getDirectIrradiance();
+  }
+
+  public Optional<ComparableQuantity<Irradiance>> getDiffuseIrradiance() {
+    return solarIrradiance.getDiffuseIrradiance();
+  }
+
+  public ComparableQuantity<Temperature> getTemperature() {
+    return temperature.getTemperature();
+  }
+
+  public ComparableQuantity<Angle> getWindDirection() {
+    return wind.getDirection();
+  }
+  public ComparableQuantity<Speed> getWindVelocity() {
+    return wind.getVelocity();
+  }
+  
+  /**
+   * Checks if all mandatory values are present.
+   *
+   * @return true if all values are present, false otherwise
+   */
+  public boolean isComplete() {
+    return solarIrradiance != null && temperature != null && wind != null;
   }
 
   @Override

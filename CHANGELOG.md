@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed SonarQube junit path issue in GitHub Actions [#1284](https://github.com/ie3-institute/PowerSystemDataModel/issues/1284)
 - Fixed no errors thrown in `getMapping()` in `TimeSeriesMappingSource` [#1287](https://github.com/ie3-institute/PowerSystemDataModel/issues/1287)
+- Consider None-equivalent value for missing data points in weather [#1304](https://github.com/ie3-institute/PowerSystemDataModel/issues/1304)
 
 ### Changed
 - Replaced `return this` with `return thisInstance` in CopyBuilders [#1250](https://github.com/ie3-institute/PowerSystemDataModel/issues/1250)
