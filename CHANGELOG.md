@@ -7,13 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
--Added weathersource documentation [#1390](https://github.com/ie3-institute/PowerSystemDataModel/issues/1390)
+- Added weathersource documentation [#1390](https://github.com/ie3-institute/PowerSystemDataModel/issues/1390)
+- Added standard asset parameter for `3wTransformer` in `ReadTheDocs` [#1417](https://github.com/ie3-institute/PowerSystemDataModel/issues/1417)
 - Create data model for air condition [#1396](https://github.com/ie3-institute/PowerSystemDataModel/issues/1396)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
+- Fix transformer susceptance in readTheDocs to negative values [#1078](https://github.com/ie3-institute/PowerSystemDataModel/issues/1078)
+
 
 ### Changed
+- Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
+- Extend `GermanVoltageLevelUtils` with more synonymousIds [#143](https://github.com/ie3-institute/PowerSystemDataModel/issues/143)
 
 ## [8.1.0] - 2025-07-25
 
