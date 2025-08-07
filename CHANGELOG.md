@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Extend Validation to EnergyManagement Systems. [#1356](https://github.com/ie3-institute/PowerSystemDataModel/issues/1356)
+- Add ground temperature (1m) as  option to weather data. [#1343](https://github.com/ie3-institute/PowerSystemDataModel/issues/1343)
 
 ### Fixed
 - Fixed handling of `CongestionResult.InputModelType` in `EntityProcessor` [#1325](https://github.com/ie3-institute/PowerSystemDataModel/issues/1325)
