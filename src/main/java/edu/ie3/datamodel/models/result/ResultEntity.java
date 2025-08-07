@@ -15,6 +15,7 @@ public abstract class ResultEntity implements Entity {
 
   /** date and time of the produced result */
   private ZonedDateTime time;
+
   /** uuid of the input model that produces the result */
   private UUID inputModel;
 

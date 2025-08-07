@@ -26,8 +26,10 @@ import org.slf4j.LoggerFactory;
 /** InfluxDB Sink for result and time series data */
 public class InfluxDbSink implements OutputDataSink {
   public static final Logger log = LoggerFactory.getLogger(InfluxDbSink.class);
+
   /** Field name for time */
   private static final String FIELD_NAME_TIME = "time";
+
   /** Field name for input model uuid field in result entities */
   private static final String FIELD_NAME_INPUT = "inputModel";
 

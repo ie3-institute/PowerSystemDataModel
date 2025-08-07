@@ -298,6 +298,7 @@ public class ThermalValidationUtils extends ValidationUtils {
 
     return exceptions;
   }
+
   /**
    * Validates a domcesticHotWaterStorageInput if:
    *

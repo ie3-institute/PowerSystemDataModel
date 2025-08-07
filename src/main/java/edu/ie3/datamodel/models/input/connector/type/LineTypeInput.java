@@ -19,14 +19,19 @@ import tech.units.indriya.ComparableQuantity;
 public class LineTypeInput extends AssetTypeInput {
   /** Specific phase-to-ground susceptance for this type of line (typically in µS/km) */
   private final ComparableQuantity<SpecificConductance> b;
+
   /** Specific phase-to-ground conductance for this type of line (typically in µS/km) */
   private final ComparableQuantity<SpecificConductance> g;
+
   /** Specific resistance for this type of line (typically in Ohm/km) */
   private final ComparableQuantity<SpecificResistance> r;
+
   /** Specific reactance for this type of line (typically in Ohm/km) */
   private final ComparableQuantity<SpecificResistance> x;
+
   /** Maximum thermal current for this type of line (typically in A) */
   private final ComparableQuantity<ElectricCurrent> iMax;
+
   /** Rated voltage for this type of line (typically in V) */
   private final ComparableQuantity<ElectricPotential> vRated;
 

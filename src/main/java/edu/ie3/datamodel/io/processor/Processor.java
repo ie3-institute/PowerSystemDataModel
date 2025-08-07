@@ -221,7 +221,7 @@ public abstract class Processor<T> {
     StringBuilder resultStringBuilder = new StringBuilder();
 
     switch (method.returnType()) {
-        // primitives (Boolean, Character, Byte, Short, Integer, Long, Float, Double, String,
+      // primitives (Boolean, Character, Byte, Short, Integer, Long, Float, Double, String,
       case "UUID",
           "boolean",
           "int",
@@ -230,43 +230,46 @@ public abstract class Processor<T> {
           "DayOfWeek",
           "Season",
           "ChargingPointType",
-          "EvcsLocationType" -> resultStringBuilder.append(methodReturnObject.toString());
-      case "Quantity", "ComparableQuantity" -> resultStringBuilder.append(
-          handleQuantity((Quantity<?>) methodReturnObject, fieldName));
+          "EvcsLocationType" ->
+          resultStringBuilder.append(methodReturnObject.toString());
+      case "Quantity", "ComparableQuantity" ->
+          resultStringBuilder.append(handleQuantity((Quantity<?>) methodReturnObject, fieldName));
       case "Optional" ->
-      // only quantity optionals are expected here!
-      // if optional and present, unpack value and call this method again, if not present return
-      // an empty string as by convention null == missing value == "" when persisting data
-      resultStringBuilder.append(
-          ((Optional<?>) methodReturnObject)
-              .map(
-                  o -> {
-                    if (o instanceof Quantity<?> quantity) {
-                      return Try.of(
-                          () -> handleQuantity(quantity, fieldName),
-                          EntityProcessorException.class);
-                    } else if (o instanceof UniqueEntity entity) {
-                      return Try.of(entity::getUuid, EntityProcessorException.class);
-                    } else {
-                      return Failure.of(
-                          new EntityProcessorException(
-                              "Handling of "
-                                  + o.getClass().getSimpleName()
-                                  + ".class instance wrapped into Optional is currently not supported by entity processors!"));
-                    }
-                  })
-              .orElse(Success.of("")) // (in case of empty optional)
-              .getOrThrow());
-      case "ZonedDateTime" -> resultStringBuilder.append(
-          processZonedDateTime((ZonedDateTime) methodReturnObject));
-      case "OperationTime" -> resultStringBuilder.append(
-          processOperationTime((OperationTime) methodReturnObject, fieldName));
-      case "VoltageLevel" -> resultStringBuilder.append(
-          processVoltageLevel((VoltageLevel) methodReturnObject, fieldName));
-      case "Point", "LineString" -> resultStringBuilder.append(
-          geoJsonWriter.write((Geometry) methodReturnObject));
-      case "LoadProfile", "BdewStandardLoadProfile", "RandomLoadProfile" -> resultStringBuilder
-          .append(((LoadProfile) methodReturnObject).getKey());
+          // only quantity optionals are expected here!
+          // if optional and present, unpack value and call this method again, if not present return
+          // an empty string as by convention null == missing value == "" when persisting data
+          resultStringBuilder.append(
+              ((Optional<?>) methodReturnObject)
+                  .map(
+                      o -> {
+                        if (o instanceof Quantity<?> quantity) {
+                          return Try.of(
+                              () -> handleQuantity(quantity, fieldName),
+                              EntityProcessorException.class);
+                        } else if (o instanceof UniqueEntity entity) {
+                          return Try.of(entity::getUuid, EntityProcessorException.class);
+                        } else {
+                          return Failure.of(
+                              new EntityProcessorException(
+                                  "Handling of "
+                                      + o.getClass().getSimpleName()
+                                      + ".class instance wrapped into Optional is currently not supported by entity processors!"));
+                        }
+                      })
+                  .orElse(Success.of("")) // (in case of empty optional)
+                  .getOrThrow());
+      case "ZonedDateTime" ->
+          resultStringBuilder.append(processZonedDateTime((ZonedDateTime) methodReturnObject));
+      case "OperationTime" ->
+          resultStringBuilder.append(
+              processOperationTime((OperationTime) methodReturnObject, fieldName));
+      case "VoltageLevel" ->
+          resultStringBuilder.append(
+              processVoltageLevel((VoltageLevel) methodReturnObject, fieldName));
+      case "Point", "LineString" ->
+          resultStringBuilder.append(geoJsonWriter.write((Geometry) methodReturnObject));
+      case "LoadProfile", "BdewStandardLoadProfile", "RandomLoadProfile" ->
+          resultStringBuilder.append(((LoadProfile) methodReturnObject).getKey());
       case "AssetTypeInput",
           "BmTypeInput",
           "ChpTypeInput",
@@ -283,11 +286,13 @@ public abstract class Processor<T> {
           "Transformer2WTypeInput",
           "Transformer3WTypeInput",
           "WecTypeInput",
-          "EmInput" -> resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
-      case "OperatorInput" -> resultStringBuilder.append(
-          ((OperatorInput) methodReturnObject).getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
-              ? ""
-              : ((OperatorInput) methodReturnObject).getUuid());
+          "EmInput" ->
+          resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
+      case "OperatorInput" ->
+          resultStringBuilder.append(
+              ((OperatorInput) methodReturnObject).getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
+                  ? ""
+                  : ((OperatorInput) methodReturnObject).getUuid());
       case "EvCharacteristicInput",
           "OlmCharacteristicInput",
           "WecCharacteristicInput",
@@ -295,20 +300,21 @@ public abstract class Processor<T> {
           "CosPhiP",
           "QV",
           "ReactivePowerCharacteristic",
-          "CharacteristicInput" -> resultStringBuilder.append(
-          ((CharacteristicInput<?, ?>) methodReturnObject).serialize());
-      case "InputModelType" -> resultStringBuilder.append(
-          ((CongestionResult.InputModelType) methodReturnObject).type);
-      default -> throw new EntityProcessorException(
-          "Unable to process value for attribute/field '"
-              + fieldName
-              + "' and method return type '"
-              + method.returnType()
-              + "' for method with name '"
-              + method.name()
-              + "' in in entity model "
-              + getRegisteredClass().getSimpleName()
-              + ".class.");
+          "CharacteristicInput" ->
+          resultStringBuilder.append(((CharacteristicInput<?, ?>) methodReturnObject).serialize());
+      case "InputModelType" ->
+          resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
+      default ->
+          throw new EntityProcessorException(
+              "Unable to process value for attribute/field '"
+                  + fieldName
+                  + "' and method return type '"
+                  + method.returnType()
+                  + "' for method with name '"
+                  + method.name()
+                  + "' in in entity model "
+                  + getRegisteredClass().getSimpleName()
+                  + ".class.");
     }
 
     return resultStringBuilder.toString();

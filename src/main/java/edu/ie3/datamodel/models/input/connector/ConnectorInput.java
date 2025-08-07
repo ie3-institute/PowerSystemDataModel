@@ -16,8 +16,10 @@ import java.util.*;
 public abstract class ConnectorInput extends AssetInput implements HasNodes {
   /** Grid node at one side of the connector */
   private final NodeInput nodeA;
+
   /** Grid node at the other side of the connector */
   private final NodeInput nodeB;
+
   /** Amount of parallelDevices */
   private final int parallelDevices;
 

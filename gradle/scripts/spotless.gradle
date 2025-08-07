@@ -10,7 +10,7 @@ spotless {
   //sets a license header, removes unused imports and formats conforming to the google java format
   java {
     removeUnusedImports() // removes any unused imports
-    googleJavaFormat('1.13.0')
+    googleJavaFormat('1.28.0')
     licenseHeader ie3LicHead
   }
 

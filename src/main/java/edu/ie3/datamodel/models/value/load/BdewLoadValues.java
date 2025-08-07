@@ -83,14 +83,16 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
     if (lastDayOfYear) {
       Stream<BdewKey> keys =
           switch (scheme) {
-            case BDEW1999 -> Stream.of(
-                new Bdew1999Key(WINTER, DayType.SATURDAY),
-                new Bdew1999Key(WINTER, DayType.SUNDAY),
-                new Bdew1999Key(WINTER, DayType.WEEKDAY));
-            case BDEW2025 -> Stream.of(
-                new Bdew2025Key(DECEMBER, DayType.SATURDAY),
-                new Bdew2025Key(DECEMBER, DayType.SUNDAY),
-                new Bdew2025Key(DECEMBER, DayType.WEEKDAY));
+            case BDEW1999 ->
+                Stream.of(
+                    new Bdew1999Key(WINTER, DayType.SATURDAY),
+                    new Bdew1999Key(WINTER, DayType.SUNDAY),
+                    new Bdew1999Key(WINTER, DayType.WEEKDAY));
+            case BDEW2025 ->
+                Stream.of(
+                    new Bdew2025Key(DECEMBER, DayType.SATURDAY),
+                    new Bdew2025Key(DECEMBER, DayType.SUNDAY),
+                    new Bdew2025Key(DECEMBER, DayType.WEEKDAY));
           };
 
       stream = keys.map(values::get);
@@ -106,8 +108,8 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
     double power =
         switch (loadProfile) {
           case H0, H25, P25, S25 ->
-          /* For the residential average profile, a dynamization has to be taken into account */
-          dynamization(getPower(time), time.getDayOfYear()); // leap years are ignored
+              /* For the residential average profile, a dynamization has to be taken into account */
+              dynamization(getPower(time), time.getDayOfYear()); // leap years are ignored
           default -> getPower(time);
         };
 
@@ -263,10 +265,11 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
         case "Wi", "Winter" -> WINTER;
         case "Su", "Summer" -> SUMMER;
         case "Tr", "Intermediate" -> TRANSITION;
-        default -> throw new ParsingException(
-            "There is no season for key:"
-                + key
-                + ". Permissible keys: 'Wi', 'Winter', 'Su', 'Summer', 'Tr', 'Intermediate'");
+        default ->
+            throw new ParsingException(
+                "There is no season for key:"
+                    + key
+                    + ". Permissible keys: 'Wi', 'Winter', 'Su', 'Summer', 'Tr', 'Intermediate'");
       };
     }
 
