@@ -95,9 +95,9 @@ public class BdewLoadProfileFactory
     Function<BdewLoadValues, Double> valueExtractor =
         switch (loadProfile) {
           case H0, H25, P25, S25 ->
-          // maximum dynamization factor is on day 366 (leap year) or day 365 (regular year).
-          // The difference between day 365 and day 366 is negligible, thus pick 366
-          v -> BdewLoadValues.dynamization(v.getMaxValue(true), 366);
+              // maximum dynamization factor is on day 366 (leap year) or day 365 (regular year).
+              // The difference between day 365 and day 366 is negligible, thus pick 366
+              v -> BdewLoadValues.dynamization(v.getMaxValue(true), 366);
           default -> v -> v.getMaxValue(false);
         };
 

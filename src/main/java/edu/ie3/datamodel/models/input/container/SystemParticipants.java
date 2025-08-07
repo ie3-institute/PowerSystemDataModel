@@ -190,32 +190,44 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return new SystemParticipantsCopyBuilder(this);
   }
 
-  /** @return unmodifiable Set of all biomass plants in this grid */
+  /**
+   * @return unmodifiable Set of all biomass plants in this grid
+   */
   public Set<BmInput> getBmPlants() {
     return Collections.unmodifiableSet(bmPlants);
   }
 
-  /** @return unmodifiable Set of all CHP plants in this grid */
+  /**
+   * @return unmodifiable Set of all CHP plants in this grid
+   */
   public Set<ChpInput> getChpPlants() {
     return Collections.unmodifiableSet(chpPlants);
   }
 
-  /** @return unmodifiable Set of all ev charging stations in this grid */
+  /**
+   * @return unmodifiable Set of all ev charging stations in this grid
+   */
   public Set<EvcsInput> getEvcs() {
     return Collections.unmodifiableSet(evcs);
   }
 
-  /** @return unmodifiable Set of all electric vehicles in this grid */
+  /**
+   * @return unmodifiable Set of all electric vehicles in this grid
+   */
   public Set<EvInput> getEvs() {
     return evs;
   }
 
-  /** @return unmodifiable Set of all fixed feed in this grid */
+  /**
+   * @return unmodifiable Set of all fixed feed in this grid
+   */
   public Set<FixedFeedInInput> getFixedFeedIns() {
     return Collections.unmodifiableSet(fixedFeedIns);
   }
 
-  /** @return unmodifiable Set of all heat pumps in this grid */
+  /**
+   * @return unmodifiable Set of all heat pumps in this grid
+   */
   public Set<HpInput> getHeatPumps() {
     return Collections.unmodifiableSet(heatPumps);
   }
@@ -224,22 +236,30 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return Collections.unmodifiableSet(airConditions);
   }
 
-  /** @return unmodifiable Set of all loads in this grid */
+  /**
+   * @return unmodifiable Set of all loads in this grid
+   */
   public Set<LoadInput> getLoads() {
     return Collections.unmodifiableSet(loads);
   }
 
-  /** @return unmodifiable Set of all PV plants in this grid */
+  /**
+   * @return unmodifiable Set of all PV plants in this grid
+   */
   public Set<PvInput> getPvPlants() {
     return Collections.unmodifiableSet(pvPlants);
   }
 
-  /** @return unmodifiable Set of all storages in this grid */
+  /**
+   * @return unmodifiable Set of all storages in this grid
+   */
   public Set<StorageInput> getStorages() {
     return Collections.unmodifiableSet(storages);
   }
 
-  /** @return unmodifiable Set of all WECs in this grid */
+  /**
+   * @return unmodifiable Set of all WECs in this grid
+   */
   public Set<WecInput> getWecPlants() {
     return Collections.unmodifiableSet(wecPlants);
   }

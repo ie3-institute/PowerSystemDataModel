@@ -106,6 +106,7 @@ public class EvcsInput extends SystemParticipantInput {
         locationType,
         v2gSupport);
   }
+
   /**
    * @param uuid Unique identifier
    * @param id Human readable identifier

@@ -22,6 +22,7 @@ public class VoltageValue implements Value {
 
   /** Magnitude of the voltage in p.u. */
   private final ComparableQuantity<Dimensionless> magnitude;
+
   /** Angle of the voltage in degree */
   private final ComparableQuantity<Angle> angle;
 
