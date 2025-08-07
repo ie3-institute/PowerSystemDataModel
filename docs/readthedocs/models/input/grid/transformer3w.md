@@ -212,26 +212,26 @@ Following there are some standard three winding transformer types with their sou
      - source
      
    * - 5a890aae-b9c9-4ebf-8a49-8850ae9df402
-     - -519.48
+     - -519.4864
      - 0.0
      - 1.5
-     - 12.98
+     - 12.985
      - HöS_HS_MS
-     - 0.15
-     - 0.58
-     - 1.15
-     - 120000.0
-     - 60000.0
-     - 40000.0
+     - 0.1444
+     - 0.5776
+     - 1.1552
+     - 300000.0
+     - 300000.0
+     - 100000.0
      - 10
      - -10
      - 0
      - 380.0
      - 110.0
-     - 20.0
-     - 24.02
-     - 60.15
-     - 200.75
+     - 30.0
+     - 24.066121
+     - 60.164118
+     - 199.750106
      - Dissertation C. Kittl TU Dortmund[^cite_kittl2022]     
 ```
 
