@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
  * other databases.
  */
 public class SqlConnector implements DataConnector {
+  /** The constant log. */
   public static final Logger log = LoggerFactory.getLogger(SqlConnector.class);
 
   private final String jdbcUrl;
@@ -45,7 +46,7 @@ public class SqlConnector implements DataConnector {
 
   /**
    * Executes the given query. For update queries please use {@link
-   * SqlConnector#executeUpdate(String)}.
+   * SqlConnector#executeUpdate(String)}*.
    *
    * @param stmt the created statement
    * @param query the query to execute
@@ -68,6 +69,7 @@ public class SqlConnector implements DataConnector {
    *
    * @param query the query to execute
    * @return The number of updates or a negative number if the execution failed
+   * @throws SQLException the sql exception
    */
   public int executeUpdate(String query) throws SQLException {
     try (Statement statement = getConnection().createStatement()) {
@@ -208,6 +210,7 @@ public class SqlConnector implements DataConnector {
    *
    * @param rs the ResultSet to use
    * @return the field map for the current row
+   * @throws SQLException the sql exception
    */
   public Map<String, String> extractFieldMap(ResultSet rs) throws SQLException {
     TreeMap<String, String> insensitiveFieldsToAttributes =

@@ -67,10 +67,20 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     this.parallelDevices = parallelDevices;
   }
 
+  /**
+   * Gets node a.
+   *
+   * @return the node a
+   */
   public NodeInput getNodeA() {
     return nodeA;
   }
 
+  /**
+   * Gets node b.
+   *
+   * @return the node b
+   */
   public NodeInput getNodeB() {
     return nodeB;
   }
@@ -83,6 +93,11 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     return List.of(getNodeA(), getNodeB());
   }
 
+  /**
+   * Gets parallel devices.
+   *
+   * @return the parallel devices
+   */
   public int getParallelDevices() {
     return parallelDevices;
   }
@@ -124,10 +139,9 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
 
   /**
    * Abstract class for all builder that build child entities of abstract class {@link
-   * ConnectorInput}
+   * ConnectorInput}*
    *
-   * @version 0.1
-   * @since 05.06.20
+   * @param <B> The builder type extending from {@link ConnectorInputCopyBuilder}.
    */
   public abstract static class ConnectorInputCopyBuilder<B extends ConnectorInputCopyBuilder<B>>
       extends AssetInputCopyBuilder<B> {
@@ -136,6 +150,11 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     private NodeInput nodeB;
     private int parallelDevices;
 
+    /**
+     * Instantiates a new Connector input copy builder.
+     *
+     * @param entity the entity
+     */
     protected ConnectorInputCopyBuilder(ConnectorInput entity) {
       super(entity);
       this.nodeA = entity.getNodeA();
@@ -143,29 +162,62 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
       this.parallelDevices = entity.getParallelDevices();
     }
 
+    /**
+     * Node a b.
+     *
+     * @param nodeA the node a
+     * @return the b
+     */
     public B nodeA(NodeInput nodeA) {
       this.nodeA = nodeA;
       return thisInstance();
     }
 
+    /**
+     * Node b b.
+     *
+     * @param nodeB the node b
+     * @return the b
+     */
     public B nodeB(NodeInput nodeB) {
       this.nodeB = nodeB;
       return thisInstance();
     }
 
+    /**
+     * Parallel devices b.
+     *
+     * @param parallelDevices the parallel devices
+     * @return the b
+     */
     public B parallelDevices(int parallelDevices) {
       this.parallelDevices = parallelDevices;
       return thisInstance();
     }
 
+    /**
+     * Gets node a.
+     *
+     * @return the node a
+     */
     protected NodeInput getNodeA() {
       return nodeA;
     }
 
+    /**
+     * Gets node b.
+     *
+     * @return the node b
+     */
     protected NodeInput getNodeB() {
       return nodeB;
     }
 
+    /**
+     * Gets parallel devices.
+     *
+     * @return the parallel devices
+     */
     protected int getParallelDevices() {
       return parallelDevices;
     }

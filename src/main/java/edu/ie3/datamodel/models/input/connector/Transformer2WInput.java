@@ -17,7 +17,7 @@ import java.util.UUID;
 
 /**
  * Describes a two winding transformer, that is connected to two {@link
- * edu.ie3.datamodel.models.input.NodeInput}s
+ * edu.ie3.datamodel.models.input.NodeInput}*s
  */
 public class Transformer2WInput extends TransformerInput implements HasType {
   /** Type of this 2W transformer, containing default values for transformers of this kind */
@@ -129,7 +129,7 @@ public class Transformer2WInput extends TransformerInput implements HasType {
   /**
    * A builder pattern based approach to create copies of {@link Transformer2WInput} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * Transformer2WInput}
+   * Transformer2WInput}*
    *
    * @version 0.1
    * @since 05.06.20
@@ -159,6 +159,12 @@ public class Transformer2WInput extends TransformerInput implements HasType {
           isAutoTap());
     }
 
+    /**
+     * Type transformer 2 w input copy builder.
+     *
+     * @param type the type
+     * @return the transformer 2 w input copy builder
+     */
     public Transformer2WInputCopyBuilder type(Transformer2WTypeInput type) {
       this.type = type;
       return thisInstance();

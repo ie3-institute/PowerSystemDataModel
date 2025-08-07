@@ -20,6 +20,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Connector result factory. */
 public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
 
   private static final String IAMAG = "iAMag";
@@ -30,6 +31,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   private static final String ICANG = "iCAng";
   private static final String TAPPOS = "tapPos";
 
+  /** Instantiates a new Connector result factory. */
   public ConnectorResultFactory() {
     super(LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
   }

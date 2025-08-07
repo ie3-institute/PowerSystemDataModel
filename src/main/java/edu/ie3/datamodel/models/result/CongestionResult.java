@@ -12,6 +12,7 @@ import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Congestion result. */
 public class CongestionResult extends ResultEntity {
   /** Values */
   private final Integer subgrid;
@@ -48,22 +49,47 @@ public class CongestionResult extends ResultEntity {
     this.max = max;
   }
 
+  /**
+   * Gets type.
+   *
+   * @return the type
+   */
   public InputModelType getType() {
     return type;
   }
 
+  /**
+   * Gets subgrid.
+   *
+   * @return the subgrid
+   */
   public int getSubgrid() {
     return subgrid;
   }
 
+  /**
+   * Gets value.
+   *
+   * @return the value
+   */
   public ComparableQuantity<Dimensionless> getValue() {
     return value;
   }
 
+  /**
+   * Gets min.
+   *
+   * @return the min
+   */
   public ComparableQuantity<Dimensionless> getMin() {
     return min;
   }
 
+  /**
+   * Gets max.
+   *
+   * @return the max
+   */
   public ComparableQuantity<Dimensionless> getMax() {
     return max;
   }
@@ -106,18 +132,31 @@ public class CongestionResult extends ResultEntity {
         + '}';
   }
 
+  /** The enum Input model type. */
   public enum InputModelType {
+    /** Node input model type. */
     NODE("node"),
+    /** Line input model type. */
     LINE("line"),
+    /** Transformer 2 w input model type. */
     TRANSFORMER_2W("transformer_2w"),
+    /** Transformer 3 w input model type. */
     TRANSFORMER_3W("transforerm_3w");
 
+    /** The Type. */
     public final String type;
 
     InputModelType(String type) {
       this.type = type;
     }
 
+    /**
+     * Parse input model type.
+     *
+     * @param inputModelType the input model type
+     * @return the input model type
+     * @throws ParsingException the parsing exception
+     */
     public static InputModelType parse(String inputModelType) throws ParsingException {
       return switch (inputModelType) {
         case "node" -> NODE;

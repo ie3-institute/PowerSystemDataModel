@@ -13,7 +13,7 @@ import java.util.Objects;
 
 /**
  * Data used by {@link ConnectorInputEntityFactory} to create an instance of {@link
- * edu.ie3.datamodel.models.input.connector.ConnectorInput}, thus needing additional information
+ * edu.ie3.datamodel.models.input.connector.ConnectorInput}*, thus needing additional information
  * about the {@link edu.ie3.datamodel.models.input.NodeInput}, which cannot be provided through the
  * attribute map.
  */
@@ -21,6 +21,14 @@ public class ConnectorInputEntityData extends AssetInputEntityData {
   private final NodeInput nodeA;
   private final NodeInput nodeB;
 
+  /**
+   * Instantiates a new Connector input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param entityClass the entity class
+   * @param nodeA the node a
+   * @param nodeB the node b
+   */
   public ConnectorInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
@@ -31,6 +39,15 @@ public class ConnectorInputEntityData extends AssetInputEntityData {
     this.nodeB = nodeB;
   }
 
+  /**
+   * Instantiates a new Connector input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param entityClass the entity class
+   * @param operator the operator
+   * @param nodeA the node a
+   * @param nodeB the node b
+   */
   public ConnectorInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
@@ -57,10 +74,20 @@ public class ConnectorInputEntityData extends AssetInputEntityData {
     this.nodeB = nodeB;
   }
 
+  /**
+   * Gets node a.
+   *
+   * @return the node a
+   */
   public NodeInput getNodeA() {
     return nodeA;
   }
 
+  /**
+   * Gets node b.
+   *
+   * @return the node b
+   */
   public NodeInput getNodeB() {
     return nodeB;
   }

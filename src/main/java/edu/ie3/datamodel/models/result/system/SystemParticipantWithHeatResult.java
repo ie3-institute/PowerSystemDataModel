@@ -17,6 +17,8 @@ public abstract class SystemParticipantWithHeatResult extends SystemParticipantR
   private final ComparableQuantity<Power> qDot;
 
   /**
+   * Instantiates a new System participant with heat result.
+   *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW

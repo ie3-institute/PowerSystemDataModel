@@ -21,6 +21,7 @@ import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Congestion result factory. */
 public class CongestionResultFactory extends ResultEntityFactory<CongestionResult> {
   private static final String TYPE = "type";
   private static final String SUBGRID = "subgrid";
@@ -28,10 +29,16 @@ public class CongestionResultFactory extends ResultEntityFactory<CongestionResul
   private static final String MIN = "min";
   private static final String MAX = "max";
 
+  /** Instantiates a new Congestion result factory. */
   public CongestionResultFactory() {
     super(CongestionResult.class);
   }
 
+  /**
+   * Instantiates a new Congestion result factory.
+   *
+   * @param dateTimeFormatter the date time formatter
+   */
   public CongestionResultFactory(DateTimeFormatter dateTimeFormatter) {
     super(dateTimeFormatter, CongestionResult.class);
   }

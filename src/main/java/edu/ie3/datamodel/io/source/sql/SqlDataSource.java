@@ -22,12 +22,25 @@ import org.slf4j.LoggerFactory;
 /** Contains all functions that are needed to read a SQL data source. */
 public class SqlDataSource implements DataSource {
 
+  /** The constant log. */
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
+  /** The Connector. */
   protected final SqlConnector connector;
+
+  /** The Database naming strategy. */
   protected final DatabaseNamingStrategy databaseNamingStrategy;
+
+  /** The Schema name. */
   protected String schemaName;
 
+  /**
+   * Instantiates a new Sql data source.
+   *
+   * @param connector the connector
+   * @param schemaName the schema name
+   * @param databaseNamingStrategy the database naming strategy
+   */
   public SqlDataSource(
       SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy) {
     this.connector = connector;
@@ -166,6 +179,9 @@ public class SqlDataSource implements DataSource {
   /**
    * Creates a stream with maps representing a data point in the SQL data source using an explicit
    * table name.
+   *
+   * @param tableName the table name
+   * @return the stream
    */
   protected Stream<Map<String, String>> buildStreamByTableName(String tableName) {
     String query = createBaseQueryString(schemaName, tableName);
@@ -175,6 +191,10 @@ public class SqlDataSource implements DataSource {
   /**
    * Creates a stream with maps representing a data point in the SQL data source using an explicit
    * table name.
+   *
+   * @param query the query
+   * @param addParams the add params
+   * @return the stream
    */
   protected Stream<Map<String, String>> executeQuery(String query, AddParams addParams) {
     try {
@@ -192,6 +212,12 @@ public class SqlDataSource implements DataSource {
     return Stream.empty();
   }
 
+  /**
+   * Execute query stream.
+   *
+   * @param query the query
+   * @return the stream
+   */
   protected Stream<Map<String, String>> executeQuery(String query) {
     return executeQuery(query, x -> {});
   }

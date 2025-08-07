@@ -18,6 +18,12 @@ import java.util.*;
  */
 public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInput> storages)
     implements InputContainer<ThermalUnitInput> {
+  /**
+   * Instantiates a new Thermal units.
+   *
+   * @param houses the houses
+   * @param storages the storages
+   */
   public ThermalUnits(
       Collection<ThermalHouseInput> houses, Collection<ThermalStorageInput> storages) {
     this(new HashSet<>(houses), new HashSet<>(storages));
@@ -44,7 +50,7 @@ public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInpu
   /**
    * A builder pattern based approach to create copies of {@link ThermalUnits} containers with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * ThermalUnits}
+   * ThermalUnits}*
    *
    * @version 3.1
    * @since 14.02.23

@@ -38,6 +38,7 @@ import tech.units.indriya.unit.Units;
  */
 public class CsvIdCoordinateSource extends IdCoordinateSource {
 
+  /** The constant log. */
   protected static final Logger log = LoggerFactory.getLogger(CsvIdCoordinateSource.class);
 
   /** Mapping in both ways (id -> coordinate) and (coordinate -> id) have to be unique */
@@ -48,6 +49,13 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
   private final CsvDataSource dataSource;
   private final IdCoordinateFactory factory;
 
+  /**
+   * Instantiates a new Csv id coordinate source.
+   *
+   * @param factory the factory
+   * @param dataSource the data source
+   * @throws SourceException the source exception
+   */
   public CsvIdCoordinateSource(IdCoordinateFactory factory, CsvDataSource dataSource)
       throws SourceException {
     this.factory = factory;
@@ -177,6 +185,11 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
         coordinate, GeoUtils.calcOrderedCoordinateDistances(coordinate, points));
   }
 
+  /**
+   * Gets coordinate count.
+   *
+   * @return the coordinate count
+   */
   public int getCoordinateCount() {
     return idToCoordinate.size();
   }

@@ -18,12 +18,19 @@ public class PValue implements Value {
   private final ComparableQuantity<Power> p;
 
   /**
+   * Instantiates a new P value.
+   *
    * @param p Active power
    */
   public PValue(ComparableQuantity<Power> p) {
     this.p = p == null ? null : p.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
+  /**
+   * Gets p.
+   *
+   * @return the p
+   */
   public Optional<ComparableQuantity<Power>> getP() {
     return Optional.ofNullable(p);
   }

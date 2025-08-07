@@ -27,9 +27,17 @@ import tech.units.indriya.quantity.Quantities;
 
 /** Load values for a {@link BdewStandardLoadProfile} */
 public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile> {
+  /** The Scheme. */
   public final BdewScheme scheme;
+
   private transient Map<BdewKey, Double> values;
 
+  /**
+   * Instantiates a new Bdew load values.
+   *
+   * @param scheme the scheme
+   * @param values the values
+   */
   public BdewLoadValues(BdewScheme scheme, Map<BdewKey, Double> values) {
     this.scheme = scheme;
     this.values = Collections.unmodifiableMap(values);
@@ -165,13 +173,28 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
   }
 
   // custom serialization (needed for the values)
-
+  /**
+   * Serializes the current state of this object to the specified output stream.
+   *
+   * @param out the output stream to write the object's state to
+   * @throws IOException if an I/O error occurs during writing
+   */
   @Serial
   private void writeObject(ObjectOutputStream out) throws IOException {
     out.defaultWriteObject();
     out.writeObject(values);
   }
 
+  /**
+   * Deserializes the state of this object from the specified input stream.
+   *
+   * <p>This method reads the object's serialized state from the provided {@link ObjectInputStream}
+   * and restores its internal fields.
+   *
+   * @param in the input stream from which to read the object's state
+   * @throws IOException if an I/O error occurs during reading
+   * @throws ClassNotFoundException if the class of a serialized object cannot be found
+   */
   @Serial
   @SuppressWarnings("unchecked")
   private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -179,23 +202,38 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
     this.values = Collections.unmodifiableMap((Map<BdewKey, Double>) in.readObject());
   }
 
+  /** The interface Bdew key. */
   public sealed interface BdewKey extends Serializable {
 
     /**
      * Returns the abbreviation of either a {@link BdewSeason} for {@link BdewScheme#BDEW1999} or
      * the {@link Month} for {@link BdewScheme#BDEW2025}.
+     *
+     * @return the season name
      */
     String getSeasonName();
 
-    /** Returns the name of the {@link DayType}. */
+    /**
+     * Returns the name of the {@link DayType}.
+     *
+     * @return the day type name
+     */
     String getDayTypeName();
 
-    /** Returns the name of the key. */
+    /**
+     * Returns the name of the key.
+     *
+     * @return the name
+     */
     default String getName() {
       return getSeasonName() + getDayTypeName();
     }
 
-    /** Returns the name of the field. */
+    /**
+     * Returns the name of the field.
+     *
+     * @return the field name
+     */
     default String getFieldName() {
       return getSeasonName().toLowerCase() + getDayTypeName();
     }
@@ -250,8 +288,11 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
 
   /** Season defined for {@link BdewScheme#BDEW1999}. */
   public enum BdewSeason {
+    /** Summer bdew season. */
     SUMMER("Summer"),
+    /** Transition bdew season. */
     TRANSITION("Transition"),
+    /** Winter bdew season. */
     WINTER("Winter");
 
     private final String key;
@@ -260,6 +301,13 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
       this.key = key;
     }
 
+    /**
+     * Parse bdew season.
+     *
+     * @param key the key
+     * @return the bdew season
+     * @throws ParsingException the parsing exception
+     */
     public static BdewSeason parse(String key) throws ParsingException {
       return switch (key) {
         case "Wi", "Winter" -> WINTER;
@@ -316,6 +364,11 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
       };
     }
 
+    /**
+     * Gets key.
+     *
+     * @return the key
+     */
     public String getKey() {
       return key;
     }
@@ -328,10 +381,14 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
 
   /** Day type used for {@link BdewLoadValues}. */
   public enum DayType {
+    /** Weekday day type. */
     WEEKDAY("Wd"),
+    /** Saturday day type. */
     SATURDAY("Sa"),
+    /** Sunday day type. */
     SUNDAY("Su");
 
+    /** The Abbreviation. */
     public final String abbreviation;
 
     DayType(String abbreviation) {
@@ -341,7 +398,9 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
 
   /** Scheme for underlying values of a {@link BdewLoadValues}. */
   public enum BdewScheme implements Scheme, Serializable {
+    /** Bdew 1999 bdew scheme. */
     BDEW1999(BdewKey.getKeys(BdewSeason.values(), Bdew1999Key::new)),
+    /** Bdew 2025 bdew scheme. */
     BDEW2025(BdewKey.getKeys(Month.values(), Bdew2025Key::new));
 
     private final Collection<BdewKey> keys;
@@ -350,10 +409,21 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
       this.keys = keys;
     }
 
+    /**
+     * Gets keys.
+     *
+     * @return the keys
+     */
     public Collection<BdewKey> getKeys() {
       return keys;
     }
 
+    /**
+     * Is accepted boolean.
+     *
+     * @param key the key
+     * @return the boolean
+     */
     public boolean isAccepted(BdewKey key) {
       return keys.contains(key);
     }
@@ -367,13 +437,18 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
   public static final class BdewMap<V> {
     private final Map<BdewKey, V> values;
 
+    /**
+     * Instantiates a new Bdew map.
+     *
+     * @param values the values
+     */
     public BdewMap(Map<BdewKey, V> values) {
       this.values = values;
     }
 
     /**
      * Returns the number of key-value mappings in this map. If the map contains more than {@code
-     * Integer.MAX_VALUE} elements, returns {@code Integer.MAX_VALUE}.
+     * Integer.MAX_VALUE}* elements, returns {@code Integer.MAX_VALUE}.
      *
      * @return the number of key-value mappings in this map
      */
@@ -435,7 +510,7 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
      * an iteration over the set is in progress (except through the iterator's own {@code remove}
      * operation), the results of the iteration are undefined. The set supports element removal,
      * which removes the corresponding mapping from the map, via the {@code Iterator.remove}, {@code
-     * Set.remove}, {@code removeAll}, {@code retainAll}, and {@code clear} operations. It does not
+     * Set.remove}*, {@code removeAll}, {@code retainAll}, and {@code clear} operations. It does not
      * support the {@code add} or {@code addAll} operations.
      *
      * @return a set view of the keys contained in this map
@@ -451,8 +526,8 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
      * iterator's own {@code remove} operation), the results of the iteration are undefined. The
      * collection supports element removal, which removes the corresponding mapping from the map,
      * via the {@code Iterator.remove}, {@code Collection.remove}, {@code removeAll}, {@code
-     * retainAll} and {@code clear} operations. It does not support the {@code add} or {@code
-     * addAll} operations.
+     * retainAll}* and {@code clear} operations. It does not support the {@code add} or {@code
+     * addAll}* operations.
      *
      * @return a collection view of the values contained in this map
      */
@@ -463,9 +538,9 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
     /**
      * Maps the {@link BdewKey} to a new value.
      *
+     * @param <R> type of new values
      * @param mapper function
      * @return the new {@link BdewMap}
-     * @param <R> type of new values
      */
     public <R> Map<BdewKey, R> map(Function<V, R> mapper) {
       HashMap<BdewKey, R> map = new HashMap<>();

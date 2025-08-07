@@ -11,9 +11,17 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Map;
 import java.util.Objects;
 
+/** The type Thermal unit input entity data. */
 public class ThermalUnitInputEntityData extends AssetInputEntityData {
   private final ThermalBusInput busInput;
 
+  /**
+   * Instantiates a new Thermal unit input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param entityClass the entity class
+   * @param busInput the bus input
+   */
   public ThermalUnitInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
@@ -22,6 +30,14 @@ public class ThermalUnitInputEntityData extends AssetInputEntityData {
     this.busInput = busInput;
   }
 
+  /**
+   * Instantiates a new Thermal unit input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param entityClass the entity class
+   * @param operator the operator
+   * @param busInput the bus input
+   */
   public ThermalUnitInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
@@ -43,6 +59,11 @@ public class ThermalUnitInputEntityData extends AssetInputEntityData {
     this.busInput = busInput;
   }
 
+  /**
+   * Gets bus input.
+   *
+   * @return the bus input
+   */
   public ThermalBusInput getBusInput() {
     return busInput;
   }

@@ -12,12 +12,14 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.UUID;
 
+/** The type Transformer 3 w input factory. */
 public class Transformer3WInputFactory
     extends ConnectorInputEntityFactory<Transformer3WInput, Transformer3WInputEntityData> {
 
   private static final String TAP_POS = "tapPos";
   private static final String AUTO_TAP = "autoTap";
 
+  /** Instantiates a new Transformer 3 w input factory. */
   public Transformer3WInputFactory() {
     super(Transformer3WInput.class);
   }

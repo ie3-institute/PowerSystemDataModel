@@ -12,6 +12,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Transformer 3 w result. */
 public class Transformer3WResult extends TransformerResult {
 
   /** Electric current magnitude @ port C, normally provided in Ampere */
@@ -21,6 +22,8 @@ public class Transformer3WResult extends TransformerResult {
   private ComparableQuantity<Angle> iCAng;
 
   /**
+   * Instantiates a new Transformer 3 w result.
+   *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
@@ -46,18 +49,38 @@ public class Transformer3WResult extends TransformerResult {
     this.iCAng = iCAng;
   }
 
+  /**
+   * Gets c mag.
+   *
+   * @return the c mag
+   */
   public ComparableQuantity<ElectricCurrent> getiCMag() {
     return iCMag;
   }
 
+  /**
+   * Sets c mag.
+   *
+   * @param iCMag the c mag
+   */
   public void setiCMag(ComparableQuantity<ElectricCurrent> iCMag) {
     this.iCMag = iCMag;
   }
 
+  /**
+   * Gets c ang.
+   *
+   * @return the c ang
+   */
   public ComparableQuantity<Angle> getiCAng() {
     return iCAng;
   }
 
+  /**
+   * Sets c ang.
+   *
+   * @param iCAng the c ang
+   */
   public void setiCAng(ComparableQuantity<Angle> iCAng) {
     this.iCAng = iCAng;
   }

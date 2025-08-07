@@ -15,6 +15,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * The type Time based simple value factory.
+ *
+ * @param <V> the type parameter
+ */
 public class TimeBasedSimpleValueFactory<V extends Value>
     extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {
   private static final String TIME = "time";
@@ -29,10 +34,21 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private static final String VMAG = "vMag";
   private static final String VANG = "VAng";
 
+  /**
+   * Instantiates a new Time based simple value factory.
+   *
+   * @param valueClasses the value classes
+   */
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
     super(valueClasses);
   }
 
+  /**
+   * Instantiates a new Time based simple value factory.
+   *
+   * @param valueClasses the value classes
+   * @param dateTimeFormatter the date time formatter
+   */
   public TimeBasedSimpleValueFactory(
       Class<? extends V> valueClasses, DateTimeFormatter dateTimeFormatter) {
     super(valueClasses, dateTimeFormatter);

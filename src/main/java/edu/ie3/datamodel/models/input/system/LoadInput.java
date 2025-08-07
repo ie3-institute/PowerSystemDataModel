@@ -90,6 +90,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
+   * @throws ParsingException the parsing exception
    */
   public LoadInput(
       UUID uuid,
@@ -163,6 +164,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
+   * @throws ParsingException the parsing exception
    */
   public LoadInput(
       UUID uuid,
@@ -187,18 +189,38 @@ public class LoadInput extends SystemParticipantInput {
         cosPhiRated);
   }
 
+  /**
+   * Gets load profile.
+   *
+   * @return the load profile
+   */
   public LoadProfile getLoadProfile() {
     return loadProfile;
   }
 
+  /**
+   * Gets cons annual.
+   *
+   * @return the cons annual
+   */
   public ComparableQuantity<Energy> geteConsAnnual() {
     return eConsAnnual;
   }
 
+  /**
+   * Gets rated.
+   *
+   * @return the rated
+   */
   public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
+  /**
+   * Gets cos phi rated.
+   *
+   * @return the cos phi rated
+   */
   public double getCosPhiRated() {
     return cosPhiRated;
   }
@@ -272,21 +294,45 @@ public class LoadInput extends SystemParticipantInput {
       this.cosPhiRated = entity.getCosPhiRated();
     }
 
+    /**
+     * Loadprofile load input copy builder.
+     *
+     * @param standardLoadProfile the standard load profile
+     * @return the load input copy builder
+     */
     public LoadInputCopyBuilder loadprofile(StandardLoadProfile standardLoadProfile) {
       this.loadProfile = standardLoadProfile;
       return thisInstance();
     }
 
+    /**
+     * E cons annual load input copy builder.
+     *
+     * @param eConsAnnual the e cons annual
+     * @return the load input copy builder
+     */
     public LoadInputCopyBuilder eConsAnnual(ComparableQuantity<Energy> eConsAnnual) {
       this.eConsAnnual = eConsAnnual;
       return thisInstance();
     }
 
+    /**
+     * S rated load input copy builder.
+     *
+     * @param sRated the s rated
+     * @return the load input copy builder
+     */
     public LoadInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
       return thisInstance();
     }
 
+    /**
+     * Cos phi rated load input copy builder.
+     *
+     * @param cosPhiRated the cos phi rated
+     * @return the load input copy builder
+     */
     public LoadInputCopyBuilder cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
       return thisInstance();

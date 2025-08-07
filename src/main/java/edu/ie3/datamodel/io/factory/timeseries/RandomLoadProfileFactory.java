@@ -21,18 +21,37 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
+/** The type Random load profile factory. */
 public class RandomLoadProfileFactory
     extends LoadProfileFactory<RandomLoadProfile, RandomLoadValues> {
+  /** The constant K_WEEKDAY. */
   public static final String K_WEEKDAY = "kWd";
+
+  /** The constant K_SATURDAY. */
   public static final String K_SATURDAY = "kSa";
+
+  /** The constant K_SUNDAY. */
   public static final String K_SUNDAY = "kSu";
+
+  /** The constant MY_WEEKDAY. */
   public static final String MY_WEEKDAY = "myWd";
+
+  /** The constant MY_SATURDAY. */
   public static final String MY_SATURDAY = "mySa";
+
+  /** The constant MY_SUNDAY. */
   public static final String MY_SUNDAY = "mySu";
+
+  /** The constant SIGMA_WEEKDAY. */
   public static final String SIGMA_WEEKDAY = "sigmaWd";
+
+  /** The constant SIGMA_SATURDAY. */
   public static final String SIGMA_SATURDAY = "sigmaSa";
+
+  /** The constant SIGMA_SUNDAY. */
   public static final String SIGMA_SUNDAY = "sigmaSu";
 
+  /** Instantiates a new Random load profile factory. */
   public RandomLoadProfileFactory() {
     super(RandomLoadValues.class);
   }

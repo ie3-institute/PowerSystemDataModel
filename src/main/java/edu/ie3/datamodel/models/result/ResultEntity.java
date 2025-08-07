@@ -30,18 +30,38 @@ public abstract class ResultEntity implements Entity {
     this.inputModel = inputModel;
   }
 
+  /**
+   * Gets input model.
+   *
+   * @return the input model
+   */
   public UUID getInputModel() {
     return inputModel;
   }
 
+  /**
+   * Sets input model.
+   *
+   * @param inputID the input id
+   */
   public void setInputModel(UUID inputID) {
     inputModel = inputID;
   }
 
+  /**
+   * Gets time.
+   *
+   * @return the time
+   */
   public ZonedDateTime getTime() {
     return time;
   }
 
+  /**
+   * Sets time.
+   *
+   * @param time the time
+   */
   public void setTime(ZonedDateTime time) {
     this.time = time;
   }

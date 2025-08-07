@@ -27,15 +27,26 @@ import org.slf4j.LoggerFactory;
  *     edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueFactory})).
  */
 public abstract class Factory<C, D extends FactoryData, R> implements SourceValidator<C> {
+  /** The constant log. */
   public static final Logger log = LoggerFactory.getLogger(Factory.class);
 
   private final List<Class<? extends C>> supportedClasses;
 
+  /**
+   * Instantiates a new Factory.
+   *
+   * @param supportedClasses the supported classes
+   */
   @SafeVarargs
   protected Factory(Class<? extends C>... supportedClasses) {
     this.supportedClasses = Arrays.asList(supportedClasses);
   }
 
+  /**
+   * Gets supported classes.
+   *
+   * @return the supported classes
+   */
   public List<Class<? extends C>> getSupportedClasses() {
     return supportedClasses;
   }
@@ -188,6 +199,12 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
     }
   }
 
+  /**
+   * Gets fields string.
+   *
+   * @param fieldSets the field sets
+   * @return the fields string
+   */
   protected static StringBuilder getFieldsString(List<Set<String>> fieldSets) {
     StringBuilder possibleOptions = new StringBuilder();
     for (int i = 0; i < fieldSets.size(); i++) {
@@ -233,18 +250,36 @@ public abstract class Factory<C, D extends FactoryData, R> implements SourceVali
     return newSet;
   }
 
+  /**
+   * To snake case set.
+   *
+   * @param set the set
+   * @return the set
+   */
   protected static Set<String> toSnakeCase(Set<String> set) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     newSet.addAll(set.stream().map(StringUtils::camelCaseToSnakeCase).toList());
     return newSet;
   }
 
+  /**
+   * To camel case set.
+   *
+   * @param set the set
+   * @return the set
+   */
   protected static Set<String> toCamelCase(Set<String> set) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     newSet.addAll(set.stream().map(StringUtils::snakeCaseToCamelCase).toList());
     return newSet;
   }
 
+  /**
+   * To lower case set.
+   *
+   * @param set the set
+   * @return the set
+   */
   protected static Set<String> toLowerCase(Set<String> set) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     newSet.addAll(set.stream().map(String::toLowerCase).toList());

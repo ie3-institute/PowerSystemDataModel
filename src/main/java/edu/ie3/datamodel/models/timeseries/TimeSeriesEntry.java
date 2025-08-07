@@ -15,12 +15,23 @@ import java.util.Objects;
  * @param <V> Type of the contained value
  */
 public abstract class TimeSeriesEntry<V extends Value> implements Entity {
+  /** The Value. */
   protected final V value;
 
+  /**
+   * Instantiates a new Time series entry.
+   *
+   * @param value the value
+   */
   protected TimeSeriesEntry(V value) {
     this.value = value;
   }
 
+  /**
+   * Gets value.
+   *
+   * @return the value
+   */
   public V getValue() {
     return value;
   }

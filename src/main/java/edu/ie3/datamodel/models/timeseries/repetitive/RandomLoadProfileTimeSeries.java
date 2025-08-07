@@ -16,10 +16,19 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Describes a random load profile time series based on a {@link
- * GeneralizedExtremeValueDistribution}. Each value of this# timeseries is given in kW.
+ * GeneralizedExtremeValueDistribution}*. Each value of this# timeseries is given in kW.
  */
 public class RandomLoadProfileTimeSeries extends LoadProfileTimeSeries<RandomLoadValues> {
 
+  /**
+   * Instantiates a new Random load profile time series.
+   *
+   * @param uuid the uuid
+   * @param loadProfile the load profile
+   * @param entries the entries
+   * @param maxPower the max power
+   * @param profileEnergyScaling the profile energy scaling
+   */
   public RandomLoadProfileTimeSeries(
       UUID uuid,
       LoadProfile loadProfile,

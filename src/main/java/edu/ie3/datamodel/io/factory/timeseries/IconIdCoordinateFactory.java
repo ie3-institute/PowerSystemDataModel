@@ -16,6 +16,9 @@ import java.util.Set;
  * Service's ICON model
  */
 public class IconIdCoordinateFactory extends IdCoordinateFactory {
+  /** Default constructor for IconIdCoordinateFactory. */
+  public IconIdCoordinateFactory() {}
+
   private static final String COORDINATE_ID = "id";
   private static final String LONG = "longitude";
   private static final String LAT = "latitude";

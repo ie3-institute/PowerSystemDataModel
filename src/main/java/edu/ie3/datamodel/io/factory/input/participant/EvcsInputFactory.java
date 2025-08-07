@@ -36,6 +36,7 @@ public class EvcsInputFactory
   private static final String LOCATION_TYPE = "locationType";
   private static final String V2G_SUPPORT = "v2gSupport";
 
+  /** Instantiates a new Evcs input factory. */
   public EvcsInputFactory() {
     super(EvcsInput.class);
   }

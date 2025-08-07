@@ -10,6 +10,12 @@ import edu.ie3.datamodel.models.UniqueEntity;
 /** Is thrown, when a checked entity may be unsafe to use, but is not necessarily unsafe */
 public class UnsafeEntityException extends ValidationException {
 
+  /**
+   * Instantiates a new Unsafe entity exception.
+   *
+   * @param faultDescription the fault description
+   * @param unsafeEntity the unsafe entity
+   */
   public UnsafeEntityException(String faultDescription, UniqueEntity unsafeEntity) {
     super("Entity may be unsafe because of: " + faultDescription + " [" + unsafeEntity + "]");
   }

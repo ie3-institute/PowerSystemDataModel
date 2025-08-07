@@ -25,13 +25,15 @@ public class BmTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<Dimensionless> etaConv;
 
   /**
+   * Instantiates a new Bm type input.
+   *
    * @param uuid of the input entity
    * @param id of this type of BM
    * @param capex Capital expense for this type of BM (typically in €)
    * @param opex Operating expense for this type of BM (typically in €)
-   * @param cosphiRated Power factor for this type of BM
    * @param activePowerGradient Maximum permissible gradient of active power change
    * @param sRated Rated apparent power for this type of BM (typically in kVA)
+   * @param cosphiRated Power factor for this type of BM
    * @param etaConv Efficiency of converter for this type of BM (typically in %)
    */
   public BmTypeInput(
@@ -48,10 +50,20 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
   }
 
+  /**
+   * Gets active power gradient.
+   *
+   * @return the active power gradient
+   */
   public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
     return activePowerGradient;
   }
 
+  /**
+   * Gets eta conv.
+   *
+   * @return the eta conv
+   */
   public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
   }
@@ -112,21 +124,43 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       this.etaConv = entity.getEtaConv();
     }
 
+    /**
+     * Sets active power gradient.
+     *
+     * @param activePowerGradient the active power gradient
+     * @return the active power gradient
+     */
     public BmTypeInputCopyBuilder setActivePowerGradient(
         ComparableQuantity<DimensionlessRate> activePowerGradient) {
       this.activePowerGradient = activePowerGradient;
       return thisInstance();
     }
 
+    /**
+     * Sets eta conv.
+     *
+     * @param etaConv the eta conv
+     * @return the eta conv
+     */
     public BmTypeInputCopyBuilder setEtaConv(ComparableQuantity<Dimensionless> etaConv) {
       this.etaConv = etaConv;
       return thisInstance();
     }
 
+    /**
+     * Gets active power gradient.
+     *
+     * @return the active power gradient
+     */
     public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
       return activePowerGradient;
     }
 
+    /**
+     * Gets eta conv.
+     *
+     * @return the eta conv
+     */
     public ComparableQuantity<Dimensionless> getEtaConv() {
       return etaConv;
     }

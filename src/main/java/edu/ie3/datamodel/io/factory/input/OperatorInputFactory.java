@@ -12,8 +12,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+/** The type Operator input factory. */
 public class OperatorInputFactory extends UniqueEntityFactory<OperatorInput, EntityData> {
 
+  /** Instantiates a new Operator input factory. */
   public OperatorInputFactory() {
     super(OperatorInput.class);
   }

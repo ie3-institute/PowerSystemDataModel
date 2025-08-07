@@ -32,6 +32,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<Dimensionless> eta;
 
   /**
+   * Instantiates a new Storage type input.
+   *
    * @param uuid of the input entity
    * @param id of this type of Storage
    * @param capex capital expense for this type of Storage (typically in €)
@@ -61,18 +63,38 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     this.eta = eta.to(StandardUnits.EFFICIENCY);
   }
 
+  /**
+   * Gets eta.
+   *
+   * @return the eta
+   */
   public ComparableQuantity<Dimensionless> getEta() {
     return eta;
   }
 
+  /**
+   * Gets storage.
+   *
+   * @return the storage
+   */
   public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
   }
 
+  /**
+   * Gets max.
+   *
+   * @return the max
+   */
   public ComparableQuantity<Power> getpMax() {
     return pMax;
   }
 
+  /**
+   * Gets active power gradient.
+   *
+   * @return the active power gradient
+   */
   public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
     return activePowerGradient;
   }
@@ -127,7 +149,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   /**
    * A builder pattern based approach to create copies of {@link StorageTypeInput} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * StorageTypeInput}
+   * StorageTypeInput}*
    */
   public static class StorageTypeInputCopyBuilder
       extends SystemParticipantTypeInputCopyBuilder<StorageTypeInput.StorageTypeInputCopyBuilder> {
@@ -148,66 +170,143 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       this.eta = entity.getEta();
     }
 
+    /**
+     * Sets storage.
+     *
+     * @param eStorage the e storage
+     * @return the storage
+     */
     public StorageTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
       this.eStorage = eStorage;
       return thisInstance();
     }
 
+    /**
+     * Sets max.
+     *
+     * @param pMax the p max
+     * @return the max
+     */
     public StorageTypeInputCopyBuilder setpMax(ComparableQuantity<Power> pMax) {
       this.pMax = pMax;
       return thisInstance();
     }
 
+    /**
+     * Sets active power gradient.
+     *
+     * @param activePowerGradient the active power gradient
+     * @return the active power gradient
+     */
     public StorageTypeInputCopyBuilder setActivePowerGradient(
         ComparableQuantity<DimensionlessRate> activePowerGradient) {
       this.activePowerGradient = activePowerGradient;
       return thisInstance();
     }
 
+    /**
+     * Sets eta.
+     *
+     * @param eta the eta
+     * @return the eta
+     */
     public StorageTypeInputCopyBuilder setEta(ComparableQuantity<Dimensionless> eta) {
       this.eta = eta;
       return thisInstance();
     }
 
+    /**
+     * Sets dod.
+     *
+     * @param dod the dod
+     * @return the dod
+     */
     public StorageTypeInputCopyBuilder setDod(ComparableQuantity<Dimensionless> dod) {
       this.dod = dod;
       return thisInstance();
     }
 
+    /**
+     * Sets life time.
+     *
+     * @param lifeTime the life time
+     * @return the life time
+     */
     public StorageTypeInputCopyBuilder setLifeTime(ComparableQuantity<Time> lifeTime) {
       this.lifeTime = lifeTime;
       return thisInstance();
     }
 
+    /**
+     * Sets life cycle.
+     *
+     * @param lifeCycle the life cycle
+     * @return the life cycle
+     */
     public StorageTypeInputCopyBuilder setLifeCycle(int lifeCycle) {
       this.lifeCycle = lifeCycle;
       return thisInstance();
     }
 
+    /**
+     * Gets storage.
+     *
+     * @return the storage
+     */
     public ComparableQuantity<Energy> geteStorage() {
       return eStorage;
     }
 
+    /**
+     * Gets max.
+     *
+     * @return the max
+     */
     public ComparableQuantity<Power> getpMax() {
       return pMax;
     }
 
+    /**
+     * Gets active power gradient.
+     *
+     * @return the active power gradient
+     */
     public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
       return activePowerGradient;
     }
 
+    /**
+     * Gets eta.
+     *
+     * @return the eta
+     */
     public ComparableQuantity<Dimensionless> getEta() {
       return eta;
     }
 
+    /**
+     * Gets dod.
+     *
+     * @return the dod
+     */
     public ComparableQuantity<Dimensionless> getDod() {
       return dod;
     }
 
+    /**
+     * Gets life time.
+     *
+     * @return the life time
+     */
     public ComparableQuantity<Time> getLifeTime() {
       return lifeTime;
     }
 
+    /**
+     * Gets life cycle.
+     *
+     * @return the life cycle
+     */
     public int getLifeCycle() {
       return lifeCycle;
     }

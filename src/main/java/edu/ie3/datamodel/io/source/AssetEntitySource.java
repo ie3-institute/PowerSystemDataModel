@@ -24,18 +24,29 @@ import org.slf4j.LoggerFactory;
 /** Class that provides all functionalities to build asset entities */
 public abstract class AssetEntitySource extends EntitySource {
 
+  /** Logger for logging information and errors. */
   protected static final Logger log = LoggerFactory.getLogger(AssetEntitySource.class);
 
+  /** Data source for retrieving asset entity data. */
   protected final DataSource dataSource;
 
-  // field names
+  /** Name of the operator field. */
   protected static final String OPERATOR = "operator";
+
+  /** Node field. */
   protected static final String NODE = "node";
+
+  /** Name of the node A field. */
   protected static final String NODE_A = "nodeA";
+
+  /** Name of the node B field. */
   protected static final String NODE_B = "nodeB";
+
+  /** Type field. */
   protected static final String TYPE = "type";
 
   // enriching functions
+  /** Function to enrich asset input entity data with operator information. */
   protected static final EnrichFunction<EntityData, OperatorInput, AssetInputEntityData>
       assetEnricher =
           (data, operators) ->
@@ -43,6 +54,7 @@ public abstract class AssetEntitySource extends EntitySource {
                       OPERATOR, operators, NO_OPERATOR_ASSIGNED, AssetInputEntityData::new)
                   .apply(data);
 
+  /** Function to enrich node asset input entity data with operator and node information. */
   protected static final BiEnrichFunction<
           EntityData, OperatorInput, NodeInput, NodeAssetInputEntityData>
       nodeAssetEnricher =
@@ -51,6 +63,7 @@ public abstract class AssetEntitySource extends EntitySource {
                   .andThen(enrich(NODE, nodes, NodeAssetInputEntityData::new))
                   .apply(data, operators);
 
+  /** Function to enrich connector input entity data with operator and node information. */
   protected static final BiEnrichFunction<
           EntityData, OperatorInput, NodeInput, ConnectorInputEntityData>
       connectorEnricher =
@@ -59,6 +72,11 @@ public abstract class AssetEntitySource extends EntitySource {
                   .andThen(biEnrich(NODE_A, nodes, NODE_B, nodes, ConnectorInputEntityData::new))
                   .apply(data, operators);
 
+  /**
+   * Constructor for AssetEntitySource.
+   *
+   * @param dataSource The data source used to retrieve asset entity data.
+   */
   protected AssetEntitySource(DataSource dataSource) {
     this.dataSource = dataSource;
   }
@@ -68,6 +86,8 @@ public abstract class AssetEntitySource extends EntitySource {
   /**
    * Method to build typed connector entities.
    *
+   * @param <E> type of connector input
+   * @param <T> type of asset types
    * @param entityClass class of the entity
    * @param dataSource source for the data
    * @param factory to build the entity
@@ -75,8 +95,6 @@ public abstract class AssetEntitySource extends EntitySource {
    * @param nodes map: uuid to {@link NodeInput}
    * @param types map: uuid to {@link AssetTypeInput}
    * @return a stream of {@link ConnectorInput}s
-   * @param <E> type of connector input
-   * @param <T> type of asset types
    * @throws SourceException if an error happens during reading
    */
   protected static <E extends ConnectorInput, T extends AssetTypeInput>

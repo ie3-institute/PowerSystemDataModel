@@ -13,7 +13,7 @@ import java.util.Objects;
 
 /**
  * Data used by {@link NodeGraphicInputFactory} used to create instances of {@link
- * edu.ie3.datamodel.models.input.graphics.NodeGraphicInput}s holding one {@link NodeInput} entity.
+ * edu.ie3.datamodel.models.input.graphics.NodeGraphicInput}*s holding one {@link NodeInput} entity.
  */
 public class NodeGraphicInputEntityData extends EntityData {
 
@@ -43,6 +43,11 @@ public class NodeGraphicInputEntityData extends EntityData {
     this.node = node;
   }
 
+  /**
+   * Gets node.
+   *
+   * @return the node
+   */
   public NodeInput getNode() {
     return node;
   }

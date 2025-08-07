@@ -22,6 +22,8 @@ public abstract class SystemParticipantResult extends ResultEntity {
   private ComparableQuantity<Power> q;
 
   /**
+   * Instantiates a new System participant result.
+   *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
@@ -47,6 +49,11 @@ public abstract class SystemParticipantResult extends ResultEntity {
     return p;
   }
 
+  /**
+   * Sets p.
+   *
+   * @param p the p
+   */
   public void setP(ComparableQuantity<Power> p) {
     this.p = p;
   }
@@ -61,6 +68,11 @@ public abstract class SystemParticipantResult extends ResultEntity {
     return q;
   }
 
+  /**
+   * Sets q.
+   *
+   * @param q the q
+   */
   public void setQ(ComparableQuantity<Power> q) {
     this.q = q;
   }

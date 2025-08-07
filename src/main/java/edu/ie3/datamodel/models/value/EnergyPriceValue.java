@@ -17,12 +17,19 @@ public class EnergyPriceValue implements Value {
   private final ComparableQuantity<EnergyPrice> price;
 
   /**
+   * Instantiates a new Energy price value.
+   *
    * @param price per MWh
    */
   public EnergyPriceValue(ComparableQuantity<EnergyPrice> price) {
     this.price = price == null ? null : price.to(StandardUnits.ENERGY_PRICE);
   }
 
+  /**
+   * Gets price.
+   *
+   * @return the price
+   */
   public Optional<ComparableQuantity<EnergyPrice>> getPrice() {
     return Optional.ofNullable(price);
   }

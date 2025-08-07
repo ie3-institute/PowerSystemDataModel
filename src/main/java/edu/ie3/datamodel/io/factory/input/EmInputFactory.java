@@ -10,12 +10,15 @@ import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.*;
 
+/** The type Em input factory. */
 public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInputEntityData> {
 
   private static final String CONTROL_STRATEGY = "controlStrategy";
 
+  /** The constant CONTROLLING_EM. */
   public static final String CONTROLLING_EM = "controllingEm";
 
+  /** Instantiates a new Em input factory. */
   public EmInputFactory() {
     super(EmInput.class);
   }

@@ -28,6 +28,8 @@ public class WeatherValue implements Value {
   private final WindValue wind;
 
   /**
+   * Instantiates a new Weather value.
+   *
    * @param coordinate of this weather value set
    * @param solarIrradiance values for this coordinate
    * @param temperature values for this coordinate
@@ -45,6 +47,8 @@ public class WeatherValue implements Value {
   }
 
   /**
+   * Instantiates a new Weather value.
+   *
    * @param coordinate of this weather value set
    * @param directSolarIrradiance Direct sun irradiance for this coordinate (typically in W/m²)
    * @param diffuseSolarIrradiance Diffuse sun irradiance for this coordinate (typically in W/m²)
@@ -67,18 +71,38 @@ public class WeatherValue implements Value {
         new WindValue(direction, velocity));
   }
 
+  /**
+   * Gets coordinate.
+   *
+   * @return the coordinate
+   */
   public Point getCoordinate() {
     return coordinate;
   }
 
+  /**
+   * Gets solar irradiance.
+   *
+   * @return the solar irradiance
+   */
   public SolarIrradianceValue getSolarIrradiance() {
     return solarIrradiance;
   }
 
+  /**
+   * Gets temperature.
+   *
+   * @return the temperature
+   */
   public TemperatureValue getTemperature() {
     return temperature;
   }
 
+  /**
+   * Gets wind.
+   *
+   * @return the wind
+   */
   public WindValue getWind() {
     return wind;
   }

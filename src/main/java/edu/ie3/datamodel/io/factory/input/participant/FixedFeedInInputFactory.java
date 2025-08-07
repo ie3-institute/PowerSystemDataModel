@@ -16,12 +16,14 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Fixed feed in input factory. */
 public class FixedFeedInInputFactory
     extends SystemParticipantInputEntityFactory<FixedFeedInInput, SystemParticipantEntityData> {
 
   private static final String S_RATED = "sRated";
   private static final String COSPHI_RATED = "cosPhiRated";
 
+  /** Instantiates a new Fixed feed in input factory. */
   public FixedFeedInInputFactory() {
     super(FixedFeedInInput.class);
   }

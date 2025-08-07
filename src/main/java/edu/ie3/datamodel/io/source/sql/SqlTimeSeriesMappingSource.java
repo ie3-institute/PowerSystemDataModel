@@ -17,12 +17,20 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/** The type Sql time series mapping source. */
 public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final String queryFull;
   private final String tableName;
   private final SqlDataSource dataSource;
 
+  /**
+   * Instantiates a new Sql time series mapping source.
+   *
+   * @param connector the connector
+   * @param schemaName the schema name
+   * @param entityPersistenceNamingStrategy the entity persistence naming strategy
+   */
   public SqlTimeSeriesMappingSource(
       SqlConnector connector,
       String schemaName,

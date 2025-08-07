@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
 
+/** The type Container node update util. */
 public class ContainerNodeUpdateUtil {
 
   private ContainerNodeUpdateUtil() {
@@ -25,20 +26,21 @@ public class ContainerNodeUpdateUtil {
 
   /**
    * Updates the provided {@link GridContainer} with the provided mapping of old to new {@link
-   * NodeInput} entities. When used, one carefully has to check that the mapping is valid. No
+   * NodeInput}* entities. When used, one carefully has to check that the mapping is valid. No
    * further sanity checks are provided and if an invalid mapping is passed in, unexpected behavior
    * might occur. All entities holding reference to the old nodes are updates with this method.
    *
    * <p>If the geoPosition of one transformer node is altered, all other transformer nodes
    * geoPositions are updated as well based on the update definition defined in {@link
-   * #updateTransformers(Set, Set, Map)} as by convention transformer nodes always needs to have the
-   * same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
+   * #updateTransformers(Set, Set, Map)}* as by convention transformer nodes always needs to have
+   * the same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
    * trafoDtoG - nodeG all affected transformer nodes geoPosition is set to the same location as
    * defined by the update rule defined in {@link #updateTransformers(Set, Set, Map)}
    *
    * @param grid the grid that should be updated
    * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
    * @return a copy of the provided grid with updated nodes as provided
+   * @throws InvalidGridException the invalid grid exception
    */
   public static GridContainer updateGridWithNodes(
       GridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {
@@ -51,20 +53,21 @@ public class ContainerNodeUpdateUtil {
 
   /**
    * Updates the provided {@link JointGridContainer} with the provided mapping of old to new {@link
-   * NodeInput} entities. When used, one carefully has to check that the mapping is valid. No
+   * NodeInput}* entities. When used, one carefully has to check that the mapping is valid. No
    * further sanity checks are provided and if an invalid mapping is passed in, unexpected behavior
    * might occur. All entities holding reference to the old nodes are updates with this method.
    *
    * <p>If the geoPosition of one transformer node is altered, all other transformer nodes
    * geoPositions are updated as well based on the update definition defined in {@link
-   * #updateTransformers(Set, Set, Map)} as by convention transformer nodes always needs to have the
-   * same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
+   * #updateTransformers(Set, Set, Map)}* as by convention transformer nodes always needs to have
+   * the same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
    * trafoDtoG - nodeG all affected transformer nodes geoPosition is set to the same location as
    * defined by the update rule defined in {@link #updateTransformers(Set, Set, Map)}
    *
    * @param grid the grid that should be updated
    * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
    * @return a copy of the provided grid with updated nodes as provided
+   * @throws InvalidGridException the invalid grid exception
    */
   public static JointGridContainer updateGridWithNodes(
       JointGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes)
@@ -82,7 +85,7 @@ public class ContainerNodeUpdateUtil {
 
   /**
    * Updates the provided {@link SubGridContainer} with the provided mapping of old to new {@link
-   * NodeInput} entities. When used, one carefully has to check that the mapping is valid. No
+   * NodeInput}* entities. When used, one carefully has to check that the mapping is valid. No
    * further sanity checks are provided and if an invalid mapping is passed in, unexpected behavior
    * might occur. Furthermore, if the subgrid to be updated is part of a {@link JointGridContainer}
    * it is highly advised NOT to update a single subgrid, but the whole joint grid, because in case
@@ -91,14 +94,15 @@ public class ContainerNodeUpdateUtil {
    *
    * <p>If the geoPosition of one transformer node is altered, all other transformer nodes
    * geoPositions are updated as well based on the update definition defined in {@link
-   * #updateTransformers(Set, Set, Map)} as by convention transformer nodes always needs to have the
-   * same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
+   * #updateTransformers(Set, Set, Map)}* as by convention transformer nodes always needs to have
+   * the same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
    * trafoDtoG - nodeG all affected transformer nodes geoPosition is set to the same location as
    * defined by the update rule defined in {@link #updateTransformers(Set, Set, Map)}
    *
    * @param grid the grid that should be updated
    * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
    * @return a copy of the provided grid with updated nodes as provided
+   * @throws InvalidGridException the invalid grid exception
    */
   public static SubGridContainer updateGridWithNodes(
       SubGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {

@@ -19,12 +19,14 @@ public class HpTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<Power> pThermal;
 
   /**
+   * Instantiates a new Hp type input.
+   *
    * @param uuid of the input entity
    * @param id of this type of HP
    * @param capex Captial expense for this type of HP (typically in €)
    * @param opex Operating expense for this type of HP (typically in €)
-   * @param cosphiRated Power factor for this type of HP
    * @param sRated Rated apparent power
+   * @param cosphiRated Power factor for this type of HP
    * @param pThermal Thermal output of the heat pump, when sRated * cosphi_rated is consumed
    *     electrically
    */
@@ -40,6 +42,11 @@ public class HpTypeInput extends SystemParticipantTypeInput {
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
+  /**
+   * Gets thermal.
+   *
+   * @return the thermal
+   */
   public ComparableQuantity<Power> getpThermal() {
     return pThermal;
   }
@@ -96,11 +103,22 @@ public class HpTypeInput extends SystemParticipantTypeInput {
       this.pThermal = entity.getpThermal();
     }
 
+    /**
+     * P thermal hp type input copy builder.
+     *
+     * @param pThermal the p thermal
+     * @return the hp type input copy builder
+     */
     public HpTypeInputCopyBuilder pThermal(ComparableQuantity<Power> pThermal) {
       this.pThermal = pThermal;
       return thisInstance();
     }
 
+    /**
+     * Gets thermal.
+     *
+     * @return the thermal
+     */
     public ComparableQuantity<Power> getpThermal() {
       return pThermal;
     }

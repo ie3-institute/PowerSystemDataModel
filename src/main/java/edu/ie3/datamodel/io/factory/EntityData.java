@@ -99,7 +99,7 @@ public class EntityData extends FactoryData {
 
   /**
    * Parses and returns a geometrical LineString from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
+   * FactoryException}* if field does not exist or parsing fails.
    *
    * @param field field name
    * @return LineString if field value is not empty, empty Optional otherwise
@@ -118,7 +118,7 @@ public class EntityData extends FactoryData {
 
   /**
    * Parses and returns a geometrical Point from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
+   * FactoryException}* if field does not exist or parsing fails.
    *
    * @param field field name
    * @return Point if field value is not empty, empty Optional otherwise
@@ -137,7 +137,7 @@ public class EntityData extends FactoryData {
 
   /**
    * Parses and returns a voltage level from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
+   * FactoryException}* if field does not exist or parsing fails.
    *
    * @param voltLvlField name of the field containing the voltage level
    * @param ratedVoltField name of the field containing the rated voltage

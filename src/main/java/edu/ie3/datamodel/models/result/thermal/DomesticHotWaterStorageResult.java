@@ -15,6 +15,15 @@ import tech.units.indriya.ComparableQuantity;
 /** Represents the results of Domestic Hot Water Storage */
 public class DomesticHotWaterStorageResult extends AbstractThermalStorageResult {
 
+  /**
+   * Instantiates a new Domestic hot water storage result.
+   *
+   * @param time the time
+   * @param inputModel the input model
+   * @param energy the energy
+   * @param qDot the q dot
+   * @param fillLevel the fill level
+   */
   public DomesticHotWaterStorageResult(
       ZonedDateTime time,
       UUID inputModel,

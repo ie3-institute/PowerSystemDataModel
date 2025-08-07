@@ -26,20 +26,44 @@ import tech.units.indriya.quantity.Quantities;
  */
 public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadValues>
     extends Factory<V, LoadProfileData<V>, LoadProfileEntry<V>> {
+  /** The constant QUARTER_HOUR. */
   protected static final String QUARTER_HOUR = "quarterHour";
 
+  /**
+   * Instantiates a new Load profile factory.
+   *
+   * @param valueClass the value class
+   */
   public LoadProfileFactory(Class<? extends V> valueClass) {
     super(valueClass);
   }
 
+  /**
+   * Instantiates a new Load profile factory.
+   *
+   * @param valueClass the value class
+   */
   @SafeVarargs
   protected LoadProfileFactory(Class<? extends V>... valueClass) {
     super(valueClass);
   }
 
+  /**
+   * Build load profile time series.
+   *
+   * @param metaInformation the meta information
+   * @param entries the entries
+   * @return the load profile time series
+   */
   public abstract LoadProfileTimeSeries<V> build(
       LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<V>> entries);
 
+  /**
+   * Parse profile p.
+   *
+   * @param profile the profile
+   * @return the p
+   */
   public abstract P parseProfile(String profile);
 
   /**
@@ -53,12 +77,21 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
   public abstract ComparableQuantity<Power> calculateMaxPower(
       P loadProfile, Set<LoadProfileEntry<V>> entries);
 
-  /** Returns the quarter-hour field. */
+  /**
+   * Returns the quarter-hour field.
+   *
+   * @return the time field string
+   */
   public String getTimeFieldString() {
     return QUARTER_HOUR;
   }
 
-  /** Returns the load profile energy scaling. The default value is 1000 kWh */
+  /**
+   * Returns the load profile energy scaling. The default value is 1000 kWh
+   *
+   * @param loadProfile the load profile
+   * @return the load profile energy scaling
+   */
   public ComparableQuantity<Energy> getLoadProfileEnergyScaling(P loadProfile) {
     return Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR);
   }

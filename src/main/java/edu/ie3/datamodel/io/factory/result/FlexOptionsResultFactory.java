@@ -14,12 +14,14 @@ import java.util.*;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Flex options result factory. */
 public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsResult> {
 
   private static final String P_REF = "pRef";
   private static final String P_MIN = "pMin";
   private static final String P_MAX = "pMax";
 
+  /** Instantiates a new Flex options result factory. */
   public FlexOptionsResultFactory() {
     super(FlexOptionsResult.class);
   }

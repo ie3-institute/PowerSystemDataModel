@@ -29,6 +29,8 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<Power> pOwn;
 
   /**
+   * Instantiates a new Chp type input.
+   *
    * @param uuid of the input entity
    * @param id of this type of CHP
    * @param capex Capital expense for this type of CHP (typically in €)
@@ -58,18 +60,38 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
+  /**
+   * Gets eta el.
+   *
+   * @return the eta el
+   */
   public ComparableQuantity<Dimensionless> getEtaEl() {
     return etaEl;
   }
 
+  /**
+   * Gets eta thermal.
+   *
+   * @return the eta thermal
+   */
   public ComparableQuantity<Dimensionless> getEtaThermal() {
     return etaThermal;
   }
 
+  /**
+   * Gets thermal.
+   *
+   * @return the thermal
+   */
   public ComparableQuantity<Power> getpThermal() {
     return pThermal;
   }
 
+  /**
+   * Gets own.
+   *
+   * @return the own
+   */
   public ComparableQuantity<Power> getpOwn() {
     return pOwn;
   }
@@ -141,38 +163,82 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       this.pOwn = entity.getpOwn();
     }
 
+    /**
+     * Eta el chp type input copy builder.
+     *
+     * @param etaEl the eta el
+     * @return the chp type input copy builder
+     */
     public ChpTypeInputCopyBuilder etaEl(ComparableQuantity<Dimensionless> etaEl) {
       this.etaEl = etaEl;
       return thisInstance();
     }
 
+    /**
+     * Eta thermal chp type input copy builder.
+     *
+     * @param etaThermal the eta thermal
+     * @return the chp type input copy builder
+     */
     public ChpTypeInputCopyBuilder etaThermal(ComparableQuantity<Dimensionless> etaThermal) {
       this.etaThermal = etaThermal;
       return thisInstance();
     }
 
+    /**
+     * P thermal chp type input copy builder.
+     *
+     * @param pThermal the p thermal
+     * @return the chp type input copy builder
+     */
     public ChpTypeInputCopyBuilder pThermal(ComparableQuantity<Power> pThermal) {
       this.pThermal = pThermal;
       return thisInstance();
     }
 
+    /**
+     * P own chp type input copy builder.
+     *
+     * @param pOwn the p own
+     * @return the chp type input copy builder
+     */
     public ChpTypeInputCopyBuilder pOwn(ComparableQuantity<Power> pOwn) {
       this.pOwn = pOwn;
       return thisInstance();
     }
 
+    /**
+     * Gets eta el.
+     *
+     * @return the eta el
+     */
     public ComparableQuantity<Dimensionless> getEtaEl() {
       return etaEl;
     }
 
+    /**
+     * Gets eta thermal.
+     *
+     * @return the eta thermal
+     */
     public ComparableQuantity<Dimensionless> getEtaThermal() {
       return etaThermal;
     }
 
+    /**
+     * Gets thermal.
+     *
+     * @return the thermal
+     */
     public ComparableQuantity<Power> getpThermal() {
       return pThermal;
     }
 
+    /**
+     * Gets own.
+     *
+     * @return the own
+     */
     public ComparableQuantity<Power> getpOwn() {
       return pOwn;
     }

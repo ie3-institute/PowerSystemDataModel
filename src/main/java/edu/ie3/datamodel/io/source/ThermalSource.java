@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build thermal {@link
- * edu.ie3.datamodel.models.input.AssetInput} entities from persistent data e.g. .csv files or
+ * edu.ie3.datamodel.models.input.AssetInput}* entities from persistent data e.g. .csv files or
  * databases
  *
  * @version 0.1
@@ -35,6 +35,7 @@ public class ThermalSource extends AssetEntitySource {
   private final DomesticHotWaterStorageInputFactory domesticHotWaterStorageInputFactory;
   private final ThermalHouseInputFactory thermalHouseInputFactory;
 
+  /** The Thermal unit enricher. */
   // enriching function
   protected static BiEnrichFunction<
           EntityData, OperatorInput, ThermalBusInput, ThermalUnitInputEntityData>
@@ -44,6 +45,12 @@ public class ThermalSource extends AssetEntitySource {
                   .andThen(enrich("thermalbus", buses, ThermalUnitInputEntityData::new))
                   .apply(data, operators);
 
+  /**
+   * Instantiates a new Thermal source.
+   *
+   * @param typeSource the type source
+   * @param dataSource the data source
+   */
   public ThermalSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
@@ -74,11 +81,12 @@ public class ThermalSource extends AssetEntitySource {
    * Returns a unique set of {@link ThermalBusInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link ThermalBusInput} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link ThermalBusInput} which has to be checked
    * manually, as {@link ThermalBusInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * ThermalBusInput}.
+   * ThermalBusInput}*.
    *
    * @return a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, ThermalBusInput> getThermalBuses() throws SourceException {
     return getThermalBuses(typeSource.getOperators());
@@ -88,9 +96,9 @@ public class ThermalSource extends AssetEntitySource {
    * Returns a unique set of {@link ThermalBusInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link ThermalBusInput} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link ThermalBusInput} which has to be checked
    * manually, as {@link ThermalBusInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * ThermalBusInput}.
+   * ThermalBusInput}*.
    *
    * <p>In contrast to {@link #getThermalBuses()} this interface provides the ability to pass in an
    * already existing set of {@link OperatorInput} entities, the {@link ThermalBusInput} instances
@@ -102,6 +110,7 @@ public class ThermalSource extends AssetEntitySource {
    *
    * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
    * @return a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, ThermalBusInput> getThermalBuses(Map<UUID, OperatorInput> operators)
       throws SourceException {
@@ -118,11 +127,12 @@ public class ThermalSource extends AssetEntitySource {
    * abstract class within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link ThermalStorageInput} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link ThermalStorageInput} which has to be checked
    * manually, as {@link ThermalStorageInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * ThermalStorageInput}.
+   * ThermalStorageInput}*.
    *
    * @return a map of UUID to object- and uuid-unique {@link ThermalStorageInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, ThermalStorageInput> getThermalStorages() throws SourceException {
     return Stream.of(getCylindricalStorages(), getDomesticHotWaterStorages())
@@ -148,6 +158,7 @@ public class ThermalSource extends AssetEntitySource {
    * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
    * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
    * @return a map of UUID to object- and uuid-unique {@link ThermalStorageInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, ThermalStorageInput> getThermalStorages(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
@@ -163,11 +174,12 @@ public class ThermalSource extends AssetEntitySource {
    * Returns a unique set of {@link ThermalHouseInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link ThermalHouseInput} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link ThermalHouseInput} which has to be checked
    * manually, as {@link ThermalHouseInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * ThermalHouseInput}.
+   * ThermalHouseInput}*.
    *
    * @return a map of UUID to object- and uuid-unique {@link ThermalHouseInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, ThermalHouseInput> getThermalHouses() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -180,9 +192,9 @@ public class ThermalSource extends AssetEntitySource {
    * Returns a set of {@link ThermalHouseInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link ThermalHouseInput} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link ThermalHouseInput} which has to be checked
    * manually, as {@link ThermalHouseInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * ThermalHouseInput}.
+   * ThermalHouseInput}*.
    *
    * <p>In contrast to {@link #getThermalHouses()} this interface provides the ability to pass in an
    * already existing set of {@link OperatorInput} entities, the {@link ThermalHouseInput} instances
@@ -195,6 +207,7 @@ public class ThermalSource extends AssetEntitySource {
    * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
    * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
    * @return a map of UUID to object- and uuid-unique {@link ThermalHouseInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, ThermalHouseInput> getThermalHouses(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
@@ -211,11 +224,12 @@ public class ThermalSource extends AssetEntitySource {
    * Returns a unique set of {@link CylindricalStorageInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link CylindricalStorageInput} which has to be
+   * java.util.UUID}* uniqueness of the provided {@link CylindricalStorageInput} which has to be
    * checked manually, as {@link CylindricalStorageInput#equals(Object)} is NOT restricted on the
    * uuid of {@link CylindricalStorageInput}.
    *
    * @return a set of object- and uuid-unique {@link CylindricalStorageInput} entities
+   * @throws SourceException the source exception
    */
   public Set<CylindricalStorageInput> getCylindricalStorages() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -228,11 +242,12 @@ public class ThermalSource extends AssetEntitySource {
    * Returns a unique set of {@link DomesticHotWaterStorageInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link DomesticHotWaterStorageInput} which has to be
-   * checked manually, as {@link DomesticHotWaterStorageInput#equals(Object)} is NOT restricted on
-   * the uuid of {@link DomesticHotWaterStorageInput}.
+   * java.util.UUID}* uniqueness of the provided {@link DomesticHotWaterStorageInput} which has to
+   * be checked manually, as {@link DomesticHotWaterStorageInput#equals(Object)} is NOT restricted
+   * on the uuid of {@link DomesticHotWaterStorageInput}.
    *
    * @return a set of object- and uuid-unique {@link DomesticHotWaterStorageInput} entities
+   * @throws SourceException the source exception
    */
   public Set<DomesticHotWaterStorageInput> getDomesticHotWaterStorages() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -245,14 +260,14 @@ public class ThermalSource extends AssetEntitySource {
    * Returns a set of {@link CylindricalStorageInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link CylindricalStorageInput} which has to be
+   * java.util.UUID}* uniqueness of the provided {@link CylindricalStorageInput} which has to be
    * checked manually, as {@link CylindricalStorageInput#equals(Object)} is NOT restricted on the
    * uuid of {@link CylindricalStorageInput}.
    *
    * <p>In contrast to {@link #getCylindricalStorages()} this interface provides the ability to pass
    * in an already existing set of {@link OperatorInput} entities, the {@link
-   * CylindricalStorageInput} instances depend on. Doing so, already loaded nodes can be recycled to
-   * improve performance and prevent unnecessary loading operations.
+   * CylindricalStorageInput}* instances depend on. Doing so, already loaded nodes can be recycled
+   * to improve performance and prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
@@ -260,6 +275,7 @@ public class ThermalSource extends AssetEntitySource {
    * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
    * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
    * @return a set of object- and uuid-unique {@link CylindricalStorageInput} entities
+   * @throws SourceException the source exception
    */
   public Set<CylindricalStorageInput> getCylindricalStorages(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
@@ -276,13 +292,13 @@ public class ThermalSource extends AssetEntitySource {
    * Returns a set of {@link DomesticHotWaterStorageInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link DomesticHotWaterStorageInput} which has to be
-   * checked manually, as {@link DomesticHotWaterStorageInput#equals(Object)} is NOT restricted on
-   * the uuid of {@link DomesticHotWaterStorageInput}.
+   * java.util.UUID}* uniqueness of the provided {@link DomesticHotWaterStorageInput} which has to
+   * be checked manually, as {@link DomesticHotWaterStorageInput#equals(Object)} is NOT restricted
+   * on the uuid of {@link DomesticHotWaterStorageInput}.
    *
    * <p>In contrast to {@link #getDomesticHotWaterStorages()} this interface provides the ability to
    * pass in an already existing set of {@link OperatorInput} entities, the {@link
-   * DomesticHotWaterStorageInput} instances depend on. Doing so, already loaded nodes can be
+   * DomesticHotWaterStorageInput}* instances depend on. Doing so, already loaded nodes can be
    * recycled to improve performance and prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
@@ -291,6 +307,7 @@ public class ThermalSource extends AssetEntitySource {
    * @param operators a set of object- and uuid-unique {@link OperatorInput} entities
    * @param thermalBuses a set of object- and uuid-unique {@link ThermalBusInput} entities
    * @return a set of object- and uuid-unique {@link DomesticHotWaterStorageInput} entities
+   * @throws SourceException the source exception
    */
   public Set<DomesticHotWaterStorageInput> getDomesticHotWaterStorages(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)

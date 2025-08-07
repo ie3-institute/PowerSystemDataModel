@@ -22,21 +22,40 @@ import java.util.Map;
 public abstract class TimeBasedValueFactory<D extends TimeBasedValueData<V>, V extends Value>
     extends Factory<V, D, TimeBasedValue<V>> {
 
+  /** The constant TIME. */
   protected static final String TIME = "time";
 
+  /** The Time util. */
   protected final TimeUtil timeUtil;
 
+  /**
+   * Instantiates a new Time based value factory.
+   *
+   * @param valueClasses the value classes
+   */
   protected TimeBasedValueFactory(Class<? extends V>... valueClasses) {
     super(valueClasses);
     this.timeUtil = TimeUtil.withDefaults;
   }
 
+  /**
+   * Instantiates a new Time based value factory.
+   *
+   * @param valueClasses the value classes
+   * @param dateTimeFormatter the date time formatter
+   */
   protected TimeBasedValueFactory(
       Class<? extends V> valueClasses, DateTimeFormatter dateTimeFormatter) {
     super(valueClasses);
     this.timeUtil = new TimeUtil(dateTimeFormatter);
   }
 
+  /**
+   * Instantiates a new Time based value factory.
+   *
+   * @param valueClasses the value classes
+   * @param timeUtil the time util
+   */
   protected TimeBasedValueFactory(Class<? extends V> valueClasses, TimeUtil timeUtil) {
     super(valueClasses);
     this.timeUtil = timeUtil;

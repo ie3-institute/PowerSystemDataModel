@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import javax.measure.Quantity;
 
+/** The type Thermal validation utils. */
 public class ThermalValidationUtils extends ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */
@@ -30,8 +31,8 @@ public class ThermalValidationUtils extends ValidationUtils {
    *   <li>it is not null
    * </ul>
    *
-   * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object.
+   * <p>A "distribution" method, that forwards the check request to specific implementations to
+   * fulfill the checking task, based on the class of the given object.
    *
    * @param thermalUnitInput ThermalUnitInput to validate
    * @return a list of try objects either containing an {@link ValidationException} or an empty
@@ -66,8 +67,8 @@ public class ThermalValidationUtils extends ValidationUtils {
    *   <li>it is not null
    * </ul>
    *
-   * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object.
+   * <p>A "distribution" method, that forwards the check request to specific implementations to
+   * fulfill the checking task, based on the class of the given object.
    *
    * @param thermalGrid ThermalGrid to validate
    * @return a list of try objects either containing an {@link ValidationException} or an empty

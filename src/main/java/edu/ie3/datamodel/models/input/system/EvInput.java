@@ -127,6 +127,12 @@ public class EvInput extends SystemParticipantInput implements HasType {
       this.type = entity.getType();
     }
 
+    /**
+     * Type ev input copy builder.
+     *
+     * @param type the type
+     * @return the ev input copy builder
+     */
     public EvInputCopyBuilder type(EvTypeInput type) {
       this.type = type;
       return thisInstance();

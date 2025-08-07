@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 /** Basic Sanity validation tools for entities */
 public class ValidationUtils {
+  /** The constant logger. */
   protected static final Logger logger = LoggerFactory.getLogger(ValidationUtils.class);
 
   /** Private Constructor as this class is not meant to be instantiated */
@@ -55,6 +56,7 @@ public class ValidationUtils {
    * fulfill the checking task, based on the class of the given object.
    *
    * @param obj Object to check
+   * @throws ValidationException the validation exception
    */
   public static void check(Object obj) throws ValidationException {
     checkNonNull(obj, "an object").getOrThrow();
@@ -243,6 +245,7 @@ public class ValidationUtils {
    *
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
+   * @throws InvalidEntityException the invalid entity exception
    */
   protected static void detectNegativeQuantities(Quantity<?>[] quantities, UniqueEntity entity)
       throws InvalidEntityException {
@@ -257,6 +260,7 @@ public class ValidationUtils {
    *
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
+   * @throws InvalidEntityException the invalid entity exception
    */
   protected static void detectZeroOrNegativeQuantities(
       Quantity<?>[] quantities, UniqueEntity entity) throws InvalidEntityException {
@@ -270,6 +274,7 @@ public class ValidationUtils {
    *
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
+   * @throws InvalidEntityException the invalid entity exception
    */
   protected static void detectPositiveQuantities(Quantity<?>[] quantities, UniqueEntity entity)
       throws InvalidEntityException {
@@ -286,6 +291,7 @@ public class ValidationUtils {
    * @param entity Unique entity holding the malformed quantities
    * @param predicate Predicate to detect the malformed quantities
    * @param msg Message prefix to use for the exception message: [msg]: [malformedQuantities]
+   * @throws InvalidEntityException the invalid entity exception
    */
   protected static void detectMalformedQuantities(
       Quantity<?>[] quantities, UniqueEntity entity, Predicate<Quantity<?>> predicate, String msg)

@@ -12,14 +12,30 @@ package edu.ie3.datamodel.exceptions;
  * @since 10.12.20
  */
 public class InvalidColumnNameException extends RuntimeException {
+  /**
+   * Instantiates a new Invalid column name exception.
+   *
+   * @param message the message
+   * @param cause the cause
+   */
   public InvalidColumnNameException(final String message, final Throwable cause) {
     super(message, cause);
   }
 
+  /**
+   * Instantiates a new Invalid column name exception.
+   *
+   * @param cause the cause
+   */
   public InvalidColumnNameException(final Throwable cause) {
     super(cause);
   }
 
+  /**
+   * Instantiates a new Invalid column name exception.
+   *
+   * @param message the message
+   */
   public InvalidColumnNameException(final String message) {
     super(message);
   }

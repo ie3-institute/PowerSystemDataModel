@@ -13,7 +13,7 @@ import java.util.Objects;
 
 /**
  * Data used by {@link LineGraphicInputFactory} used to create instances of {@link
- * edu.ie3.datamodel.models.input.graphics.LineGraphicInput}s holding one {@link LineInput} entity.
+ * edu.ie3.datamodel.models.input.graphics.LineGraphicInput}*s holding one {@link LineInput} entity.
  */
 public class LineGraphicInputEntityData extends EntityData {
 
@@ -43,6 +43,11 @@ public class LineGraphicInputEntityData extends EntityData {
     this.line = line;
   }
 
+  /**
+   * Gets line.
+   *
+   * @return the line
+   */
   public LineInput getLine() {
     return line;
   }

@@ -5,4 +5,5 @@
 */
 package edu.ie3.datamodel.io.sink;
 
+/** The interface Output data sink. */
 public interface OutputDataSink extends DataSink {}

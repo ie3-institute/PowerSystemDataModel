@@ -37,11 +37,26 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
+/**
+ * The type Load profile source.
+ *
+ * @param <P> the type parameter
+ * @param <V> the type parameter
+ */
 public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
     extends EntitySource {
+  /** The Entry class. */
   protected final Class<V> entryClass;
+
+  /** The Entry factory. */
   protected final LoadProfileFactory<P, V> entryFactory;
 
+  /**
+   * Instantiates a new Load profile source.
+   *
+   * @param entryClass the entry class
+   * @param entryFactory the entry factory
+   */
   protected LoadProfileSource(Class<V> entryClass, LoadProfileFactory<P, V> entryFactory) {
     this.entryClass = entryClass;
     this.entryFactory = entryFactory;
@@ -60,6 +75,11 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
     return entryFactory.get(factoryData);
   }
 
+  /**
+   * Gets time series.
+   *
+   * @return the time series
+   */
   public abstract LoadProfileTimeSeries<V> getTimeSeries();
 
   /**
@@ -79,13 +99,25 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    */
   public abstract Optional<PValue> getValue(ZonedDateTime time) throws SourceException;
 
-  /** Returns the load profile of this source. */
+  /**
+   * Returns the load profile of this source.
+   *
+   * @return the load profile
+   */
   public abstract P getLoadProfile();
 
-  /** Returns the maximal power value of the time series */
+  /**
+   * Returns the maximal power value of the time series
+   *
+   * @return the max power
+   */
   public abstract Optional<ComparableQuantity<Power>> getMaxPower();
 
-  /** Returns the load profile energy scaling for this load profile time series. */
+  /**
+   * Returns the load profile energy scaling for this load profile time series.
+   *
+   * @return the load profile energy scaling
+   */
   public abstract Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling();
 
   /**
@@ -109,6 +141,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    * Method to read in the build-in {@link BdewStandardLoadProfile}s.
    *
    * @return a map: load profile to load profile source
+   * @throws SourceException the source exception
    */
   public static Map<
           BdewStandardLoadProfile, CsvLoadProfileSource<BdewStandardLoadProfile, BdewLoadValues>>
@@ -132,6 +165,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
    * Method to read in the build-in {@link RandomLoadProfileTimeSeries}.
    *
    * @return the random load profile source
+   * @throws SourceException the source exception
    */
   public static CsvLoadProfileSource<LoadProfile.RandomLoadProfile, RandomLoadValues>
       getRandomLoadProfile() throws SourceException {

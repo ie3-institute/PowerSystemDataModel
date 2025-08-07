@@ -8,6 +8,7 @@ package edu.ie3.datamodel.utils;
 import java.util.List;
 import java.util.function.Function;
 
+/** The type Exception utils. */
 public class ExceptionUtils {
   private ExceptionUtils() {
     throw new IllegalStateException("Utility classes cannot be instantiated");

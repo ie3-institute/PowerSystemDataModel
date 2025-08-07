@@ -18,6 +18,7 @@ import org.locationtech.jts.geom.LineString;
 public final class LineGraphicInputFactory
     extends GraphicInputFactory<LineGraphicInput, LineGraphicInputEntityData> {
 
+  /** Instantiates a new Line graphic input factory. */
   public LineGraphicInputFactory() {
     super(LineGraphicInput.class);
   }

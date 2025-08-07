@@ -28,6 +28,9 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Source that is capable of providing information around load profile time series from csv files.
+ *
+ * @param <P> the type parameter
+ * @param <V> the type parameter
  */
 public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
     extends LoadProfileSource<P, V> {
@@ -35,6 +38,14 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   private final CsvDataSource dataSource;
   private final Path filePath;
 
+  /**
+   * Instantiates a new Csv load profile source.
+   *
+   * @param source the source
+   * @param metaInformation the meta information
+   * @param entryClass the entry class
+   * @param entryFactory the entry factory
+   */
   public CsvLoadProfileSource(
       CsvDataSource source,
       CsvLoadProfileMetaInformation metaInformation,
@@ -103,8 +114,8 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
    *     to read as well as the profile
    * @param fieldToValueFunction function, that is able to transfer a mapping (from field to value)
    *     onto a specific instance of the targeted entry class
-   * @throws SourceException If the file cannot be read properly
    * @return an individual time series
+   * @throws SourceException If the file cannot be read properly
    */
   protected LoadProfileTimeSeries<V> buildLoadProfileTimeSeries(
       CsvLoadProfileMetaInformation metaInformation,

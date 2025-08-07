@@ -34,9 +34,10 @@ public interface DataSink {
    * that neglects the nested objects persistence and only persists the uuid of the nested objects
    * (if any), instead of the object itself use {@link InputDataSink#persistIgnoreNested}
    *
-   * @param entity the entity that should be persisted
    * @param <C> bounded to be all unique entities. Handling of specific entities is normally then
    *     executed by a specific {@link EntityProcessor}
+   * @param entity the entity that should be persisted
+   * @throws ProcessorProviderException the processor provider exception
    */
   <C extends Entity> void persist(C entity) throws ProcessorProviderException;
 
@@ -46,11 +47,12 @@ public interface DataSink {
    * any) of input entities and use {@link edu.ie3.datamodel.io.extractor.Extractor} accordingly.
    * For a faster method that neglects the nested objects persistence and only persists the uuid of
    * the nested * objects (if any), instead of the object itself use {@link
-   * InputDataSink#persistAllIgnoreNested}
+   * InputDataSink#persistAllIgnoreNested}*
    *
-   * @param entities a collection of entities that should be persisted
    * @param <C> bounded to be all unique entities. Handling of specific entities is normally then
    *     executed by a specific {@link EntityProcessor}
+   * @param entities a collection of entities that should be persisted
+   * @throws ProcessorProviderException the processor provider exception
    */
   <C extends Entity> void persistAll(Collection<C> entities) throws ProcessorProviderException;
 
@@ -58,10 +60,11 @@ public interface DataSink {
    * Should implement the handling of a whole time series. Therefore the single entries have to be
    * extracted and persisted accordingly.
    *
-   * @param timeSeries Time series to persist
    * @param <E> Type of entry in the time series
    * @param <V> Type of actual value, that is inside the entry
    * @param <R> Type of the value, the time series will return
+   * @param timeSeries Time series to persist
+   * @throws ProcessorProviderException the processor provider exception
    */
   <E extends TimeSeriesEntry<V>, V extends Value, R extends Value> void persistTimeSeries(
       TimeSeries<E, V, R> timeSeries) throws ProcessorProviderException;

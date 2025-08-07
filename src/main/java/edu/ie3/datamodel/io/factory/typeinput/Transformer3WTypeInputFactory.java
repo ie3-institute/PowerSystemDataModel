@@ -15,6 +15,7 @@ import java.util.UUID;
 import javax.measure.quantity.*;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Transformer 3 w type input factory. */
 public class Transformer3WTypeInputFactory
     extends AssetTypeInputEntityFactory<Transformer3WTypeInput> {
   private static final String S_RATED_A = "sRatedA";
@@ -37,6 +38,7 @@ public class Transformer3WTypeInputFactory
   private static final String TAP_MIN = "tapMin";
   private static final String TAP_MAX = "tapMax";
 
+  /** Instantiates a new Transformer 3 w type input factory. */
   public Transformer3WTypeInputFactory() {
     super(Transformer3WTypeInput.class);
   }

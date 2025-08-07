@@ -115,6 +115,11 @@ public class ChpInput extends SystemParticipantInput
     return thermalStorage;
   }
 
+  /**
+   * Is market reaction boolean.
+   *
+   * @return the boolean
+   */
   public boolean isMarketReaction() {
     return marketReaction;
   }
@@ -205,21 +210,45 @@ public class ChpInput extends SystemParticipantInput
           marketReaction);
     }
 
+    /**
+     * Type chp input copy builder.
+     *
+     * @param type the type
+     * @return the chp input copy builder
+     */
     public ChpInputCopyBuilder type(ChpTypeInput type) {
       this.type = type;
       return thisInstance();
     }
 
+    /**
+     * Thermal bus chp input copy builder.
+     *
+     * @param thermalBus the thermal bus
+     * @return the chp input copy builder
+     */
     public ChpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
       this.thermalBus = thermalBus;
       return thisInstance();
     }
 
+    /**
+     * Thermal storage chp input copy builder.
+     *
+     * @param thermalStorage the thermal storage
+     * @return the chp input copy builder
+     */
     public ChpInputCopyBuilder thermalStorage(ThermalStorageInput thermalStorage) {
       this.thermalStorage = thermalStorage;
       return thisInstance();
     }
 
+    /**
+     * Market reaction chp input copy builder.
+     *
+     * @param marketReaction the market reaction
+     * @return the chp input copy builder
+     */
     public ChpInputCopyBuilder marketReaction(boolean marketReaction) {
       this.marketReaction = marketReaction;
       return thisInstance();

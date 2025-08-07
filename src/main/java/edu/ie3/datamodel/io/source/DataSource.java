@@ -20,10 +20,17 @@ public interface DataSource {
    *
    * @param entityClass class of the source
    * @return an option for the found fields
+   * @throws SourceException the source exception
    */
   Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass) throws SourceException;
 
-  /** Creates a stream of maps that represent the rows in the database */
+  /**
+   * Creates a stream of maps that represent the rows in the database
+   *
+   * @param entityClass the entity class
+   * @return the source data
+   * @throws SourceException the source exception
+   */
   Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
       throws SourceException;
 }
