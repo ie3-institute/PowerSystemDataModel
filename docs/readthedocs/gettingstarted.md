@@ -5,7 +5,7 @@ If you feel, something is missing, please contact us!
 
 ## Requirements
 
-Java > v 17
+Java > v 21
 
 ## Where to get
 
