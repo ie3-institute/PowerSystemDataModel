@@ -447,7 +447,9 @@ public class SqlSink {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  /** @return insertion order for unique entities */
+  /**
+   * @return insertion order for unique entities
+   */
   private static List<Class<?>> hierarchicInsert() {
     List<Class<?>> sortedInsert = new ArrayList<>();
     sortedInsert.add(AssetTypeInput.class); // 1. Types

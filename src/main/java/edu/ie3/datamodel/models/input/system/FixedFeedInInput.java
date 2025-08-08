@@ -20,6 +20,7 @@ import tech.units.indriya.ComparableQuantity;
 public class FixedFeedInInput extends SystemParticipantInput {
   /** Rated apparent power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
+
   /** Rated power factor */
   private final double cosPhiRated;
 

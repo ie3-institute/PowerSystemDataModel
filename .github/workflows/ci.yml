@@ -34,7 +34,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -84,13 +84,17 @@ jobs:
 
       #Deployment
       - name: Deploy
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/main'
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
-          ORG_GRADLE_PROJECT_user: ${{ secrets.MAVENCENTRAL_USER }}
-          ORG_GRADLE_PROJECT_password: ${{ secrets.MAVENCENTRAL_PASS }}
+          ORG_GRADLE_PROJECT_mavenCentralUser: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_USER ||
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_USER }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_PASS ||
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_PASS }}
+
         run: |
+          echo "Using MavenCentral Token of GitHub Actor: ${{ github.actor }}"
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
             currentVersion=$(./gradlew -q currentVersion)
           else
@@ -100,3 +104,18 @@ jobs:
           echo "currentVersion=$currentVersion"
 
           ./gradlew publish -PdeployVersion=$currentVersion
+
+
+      #MavenCentral Staging
+      - name: MavenCentral Staging
+        if: github.ref == 'refs/heads/main'
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
+          ORG_GRADLE_PROJECT_mavenCentralUser: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_USER ||
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_USER }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_PASS ||
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_PASS }}
+
+        run: |
+          ./gradlew stagingAtMavenCentralPortal

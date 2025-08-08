@@ -137,7 +137,9 @@ public class CouchbaseConnector implements DataConnector {
     cluster.disconnect();
   }
 
-  /** @return the bucket name */
+  /**
+   * @return the bucket name
+   */
   public String getBucketName() {
     return bucketName;
   }

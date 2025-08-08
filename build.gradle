@@ -5,7 +5,7 @@ plugins {
   id 'signing'
   id 'pmd' // code check, working on source code
   id 'com.diffplug.spotless' version '7.2.1' //code format
-  id 'com.github.spotbugs' version '6.2.2' // code check, working on byte code
+  id 'com.github.spotbugs' version '6.2.3' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
@@ -16,9 +16,9 @@ plugins {
 
 ext {
   //version (changing these should be considered thoroughly!)
-  javaVersion = JavaVersion.VERSION_17
+  javaVersion = JavaVersion.VERSION_21
   groovyVersion = "4.0"
-  groovyBinaryVersion = "4.0.27"
+  groovyBinaryVersion = "4.0.28"
 
   junitVersion = '1.12.0'
   testcontainersVersion = '1.21.3'
@@ -41,7 +41,8 @@ apply from: scriptsLocation + 'spotless.gradle'
 apply from: scriptsLocation + 'checkJavaVersion.gradle'
 apply from: scriptsLocation + 'documentation.gradle'
 apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
-apply from: scriptsLocation + 'mavenCentralPublish.gradle'
+apply from: scriptsLocation + 'uploadToMavenCentralPortal.gradle' // upload for deploy
+apply from: scriptsLocation + 'stagingAtMavenCentralPortal.gradle' // stage for deploy
 apply from: scriptsLocation + 'sonarqube.gradle'
 apply from: scriptsLocation + 'vcs.gradle'
 apply from: scriptsLocation + 'semVer.gradle'
@@ -98,12 +99,12 @@ dependencies {
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.25'
-  implementation 'com.couchbase.client:java-client:3.8.3'
+  implementation 'com.couchbase.client:java-client:3.9.0'
   runtimeOnly 'org.postgresql:postgresql:42.7.7' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.20.0' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.19.0' // needed by commons-compress
-  implementation 'org.apache.commons:commons-compress:1.27.1' // I/O functionalities
+  implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
 }
 
 tasks.withType(JavaCompile) {

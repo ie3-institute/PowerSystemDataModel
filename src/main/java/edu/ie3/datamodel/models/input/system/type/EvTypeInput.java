@@ -19,8 +19,10 @@ import tech.units.indriya.ComparableQuantity;
 public class EvTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity of the storage (typically in kWh) */
   private final ComparableQuantity<Energy> eStorage;
+
   /** Consumed electric energy per driven distance (typically in kWh/km) */
   private final ComparableQuantity<SpecificEnergy> eCons;
+
   /** power for DC (typically in kW) */
   private final ComparableQuantity<Power> sRatedDC;
 
