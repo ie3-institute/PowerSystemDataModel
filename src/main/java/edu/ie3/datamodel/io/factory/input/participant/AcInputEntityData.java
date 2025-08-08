@@ -12,10 +12,8 @@ import edu.ie3.datamodel.models.input.system.AcInput;
 import edu.ie3.datamodel.models.input.system.type.AcTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Map;
-import java.util.Objects;
 
-public class AcInputEntityData extends SystemParticipantTypedEntityData<AcTypeInput> {
-  private final ThermalBusInput thermalBusInput;
+public class AcInputEntityData extends ThermalSystemParticipantEntityData<AcTypeInput> {
 
   public AcInputEntityData(
       Map<String, String> fieldsToAttributes,
@@ -23,8 +21,7 @@ public class AcInputEntityData extends SystemParticipantTypedEntityData<AcTypeIn
       EmInput em,
       AcTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(fieldsToAttributes, AcInput.class, node, em, typeInput);
-    this.thermalBusInput = thermalBusInput;
+    super(fieldsToAttributes, AcInput.class, node, em, typeInput, thermalBusInput);
   }
 
   public AcInputEntityData(
@@ -34,8 +31,7 @@ public class AcInputEntityData extends SystemParticipantTypedEntityData<AcTypeIn
       EmInput em,
       AcTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(fieldsToAttributes, AcInput.class, operator, node, em, typeInput);
-    this.thermalBusInput = thermalBusInput;
+    super(fieldsToAttributes, AcInput.class, operator, node, em, typeInput, thermalBusInput);
   }
 
   /**
@@ -47,42 +43,11 @@ public class AcInputEntityData extends SystemParticipantTypedEntityData<AcTypeIn
    */
   public AcInputEntityData(
       SystemParticipantTypedEntityData<AcTypeInput> entityData, ThermalBusInput thermalBusInput) {
-    super(entityData, entityData.getTypeInput());
-    this.thermalBusInput = thermalBusInput;
-  }
-
-  public ThermalBusInput getThermalBusInput() {
-    return thermalBusInput;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof AcInputEntityData that)) return false;
-    if (!super.equals(o)) return false;
-    return thermalBusInput.equals(that.thermalBusInput);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), thermalBusInput);
+    super(entityData, thermalBusInput);
   }
 
   @Override
   public String toString() {
-    return "AcInputEntityData{"
-        + "thermalBusInput="
-        + thermalBusInput.getUuid()
-        + ", typeInput="
-        + getTypeInput().getUuid()
-        + ", node="
-        + getNode().getUuid()
-        + ", operatorInput="
-        + getOperatorInput().getUuid()
-        + ", fieldsToValues="
-        + getFieldsToValues()
-        + ", targetClass="
-        + getTargetClass()
-        + '}';
+    return buildToStringContent("AcInputEntityData");
   }
 }

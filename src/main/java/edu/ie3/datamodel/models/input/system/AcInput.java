@@ -21,6 +21,7 @@ import java.util.UUID;
 public class AcInput extends SystemParticipantInput implements HasType, HasThermalBus {
   /** Type of this air condition, containing default values for air condition of this kind */
   private final AcTypeInput type;
+
   /** The thermal bus, this model is connected to */
   private final ThermalBusInput thermalBus;
 

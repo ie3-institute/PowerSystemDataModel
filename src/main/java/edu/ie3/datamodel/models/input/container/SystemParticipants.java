@@ -231,7 +231,10 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   public Set<HpInput> getHeatPumps() {
     return Collections.unmodifiableSet(heatPumps);
   }
-  /** @return unmodifiable Set of all air conditions in this grid */
+
+  /**
+   * @return unmodifiable Set of all air conditions in this grid
+   */
   public Set<AcInput> getAirConditions() {
     return Collections.unmodifiableSet(airConditions);
   }

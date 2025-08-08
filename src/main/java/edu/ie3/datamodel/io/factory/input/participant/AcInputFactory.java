@@ -11,30 +11,28 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.AcInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import edu.ie3.datamodel.models.input.system.type.AcTypeInput;
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.UUID;
 
 public class AcInputFactory
-    extends SystemParticipantInputEntityFactory<AcInput, AcInputEntityData> {
+    extends ThermalSystemParticipantInputFactory<AcInput, AcInputEntityData> {
 
   public AcInputFactory() {
     super(AcInput.class);
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[0];
-  }
-
-  @Override
-  protected AcInput buildModel(
-      AcInputEntityData data,
+  protected AcInput createThermalSystemModel(
       UUID uuid,
       String id,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
-      OperationTime operationTime) {
-    final EmInput em = data.getControllingEm().orElse(null);
+      OperationTime operationTime,
+      NodeInput node,
+      ThermalBusInput thermalBusInput,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      Object typeInput) {
 
     return new AcInput(
         uuid,
@@ -42,9 +40,9 @@ public class AcInputFactory
         operator,
         operationTime,
         node,
-        data.getThermalBusInput(),
+        thermalBusInput,
         qCharacteristics,
         em,
-        data.getTypeInput());
+        (AcTypeInput) typeInput);
   }
 }
