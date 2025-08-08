@@ -49,8 +49,8 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    optTimeBasedValue != null
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -79,7 +79,6 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
-
 
   def "A CsvWeatherSource can read all weather data in a given time interval"() {
     given:
