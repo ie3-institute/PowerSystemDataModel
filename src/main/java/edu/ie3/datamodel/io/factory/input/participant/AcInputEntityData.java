@@ -8,46 +8,46 @@ package edu.ie3.datamodel.io.factory.input.participant;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.HpInput;
-import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
+import edu.ie3.datamodel.models.input.system.AcInput;
+import edu.ie3.datamodel.models.input.system.type.AcTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Map;
 
-public class HpInputEntityData extends ThermalSystemParticipantEntityData<HpTypeInput> {
+public class AcInputEntityData extends ThermalSystemParticipantEntityData<AcTypeInput> {
 
-  public HpInputEntityData(
+  public AcInputEntityData(
       Map<String, String> fieldsToAttributes,
       NodeInput node,
       EmInput em,
-      HpTypeInput typeInput,
+      AcTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(fieldsToAttributes, HpInput.class, node, em, typeInput, thermalBusInput);
+    super(fieldsToAttributes, AcInput.class, node, em, typeInput, thermalBusInput);
   }
 
-  public HpInputEntityData(
+  public AcInputEntityData(
       Map<String, String> fieldsToAttributes,
       OperatorInput operator,
       NodeInput node,
       EmInput em,
-      HpTypeInput typeInput,
+      AcTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(fieldsToAttributes, HpInput.class, operator, node, em, typeInput, thermalBusInput);
+    super(fieldsToAttributes, AcInput.class, operator, node, em, typeInput, thermalBusInput);
   }
 
   /**
-   * Creates a new HpInputEntityData object based on a given {@link
+   * Creates a new AcInputEntityData object based on a given {@link
    * SystemParticipantTypedEntityData} object and given thermal bus input
    *
    * @param entityData The SystemParticipantTypedEntityData object to enhance
    * @param thermalBusInput The thermal bus input
    */
-  public HpInputEntityData(
-      SystemParticipantTypedEntityData<HpTypeInput> entityData, ThermalBusInput thermalBusInput) {
+  public AcInputEntityData(
+      SystemParticipantTypedEntityData<AcTypeInput> entityData, ThermalBusInput thermalBusInput) {
     super(entityData, thermalBusInput);
   }
 
   @Override
   public String toString() {
-    return buildToStringContent("HpInputEntityData");
+    return buildToStringContent("AcInputEntityData");
   }
 }

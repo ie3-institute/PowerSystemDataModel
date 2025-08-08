@@ -19,6 +19,7 @@ class SystemParticipantsTest extends Specification {
         Collections.singleton(SystemParticipantTestData.evInput),
         Collections.singleton(SystemParticipantTestData.fixedFeedInInput),
         Collections.singleton(SystemParticipantTestData.hpInput),
+        Collections.singleton(SystemParticipantTestData.acInput),
         Collections.singleton(SystemParticipantTestData.loadInput),
         Collections.singleton(SystemParticipantTestData.pvInput),
         Collections.singleton(SystemParticipantTestData.storageInput),
@@ -41,6 +42,7 @@ class SystemParticipantsTest extends Specification {
         Collections.singleton(SystemParticipantTestData.evInput),
         Collections.singleton(SystemParticipantTestData.fixedFeedInInput),
         Collections.singleton(SystemParticipantTestData.hpInput),
+        Collections.singleton(SystemParticipantTestData.acInput),
         Collections.singleton(SystemParticipantTestData.loadInput),
         Collections.singleton(SystemParticipantTestData.pvInput),
         Collections.singleton(SystemParticipantTestData.storageInput),
@@ -53,6 +55,7 @@ class SystemParticipantsTest extends Specification {
     def modifiedEvInput = SystemParticipantTestData.evInput.copy().id("modified").build()
     def modifiedFixedFeedInInput = SystemParticipantTestData.fixedFeedInInput.copy().id("modified").build()
     def modifiedHpInput = SystemParticipantTestData.hpInput.copy().id("modified").build()
+    def modifiedAcInput = SystemParticipantTestData.acInput.copy().id("modified").build()
     def modifiedLoadInput = SystemParticipantTestData.loadInput.copy().id("modified").build()
     def modifiedPvInput = SystemParticipantTestData.pvInput.copy().id("modified").build()
     def modifiedStorageInput = SystemParticipantTestData.storageInput.copy().id("modified").build()
@@ -66,6 +69,7 @@ class SystemParticipantsTest extends Specification {
         .evs(Set.of(modifiedEvInput))
         .fixedFeedIn(Set.of(modifiedFixedFeedInInput))
         .heatPumps(Set.of(modifiedHpInput))
+        .airConditions(Set.of(modifiedAcInput))
         .loads(Set.of(modifiedLoadInput))
         .pvPlants(Set.of(modifiedPvInput))
         .storages(Set.of(modifiedStorageInput))
@@ -79,6 +83,7 @@ class SystemParticipantsTest extends Specification {
     modifiedSystemParticipants.evs.first() == modifiedEvInput
     modifiedSystemParticipants.fixedFeedIns.first() == modifiedFixedFeedInInput
     modifiedSystemParticipants.heatPumps.first() == modifiedHpInput
+    modifiedSystemParticipants.airConditions.first() == modifiedAcInput
     modifiedSystemParticipants.loads.first() == modifiedLoadInput
     modifiedSystemParticipants.pvPlants.first() == modifiedPvInput
     modifiedSystemParticipants.storages.first() == modifiedStorageInput

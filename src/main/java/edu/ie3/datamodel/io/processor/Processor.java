@@ -271,6 +271,7 @@ public abstract class Processor<T> {
       case "LoadProfile", "BdewStandardLoadProfile", "RandomLoadProfile" ->
           resultStringBuilder.append(((LoadProfile) methodReturnObject).getKey());
       case "AssetTypeInput",
+          "AcTypeInput",
           "BmTypeInput",
           "ChpTypeInput",
           "EvTypeInput",
