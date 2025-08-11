@@ -129,6 +129,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         Collections.emptySet(),
         Collections.emptySet(),
         Collections.emptySet(),
+        Collections.emptySet(),
         Set.of(loadInput, loadInput1),
         Collections.singleton(pvInput),
         Collections.singleton(storageInput),

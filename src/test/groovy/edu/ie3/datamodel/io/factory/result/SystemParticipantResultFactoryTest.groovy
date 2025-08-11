@@ -22,6 +22,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     def expectedClasses = [
       LoadResult,
       FixedFeedInResult,
+      AcResult,
       BmResult,
       PvResult,
       ChpResult,
@@ -51,7 +52,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       parameter["soc"] = "10"
     }
 
-    if (modelClass == HpResult || modelClass == ChpResult) {
+    if (modelClass == HpResult || modelClass == ChpResult || modelClass == AcResult) {
       parameter["qDot"] = "1"
     }
 
@@ -80,6 +81,10 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       assert(((HpResult) result.data.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
     }
 
+    if (modelClass == AcResult) {
+      assert(((AcResult) result.data.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+    }
+
     if (modelClass == ChpResult) {
       assert(((ChpResult) result.data.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
     }
@@ -95,6 +100,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     ChpResult         || ChpResult
     WecResult         || WecResult
     HpResult          || HpResult
+    AcResult          || AcResult
     StorageResult     || StorageResult
     EmResult          || EmResult
   }

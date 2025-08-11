@@ -76,8 +76,9 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       MeasurementUnitInput,
       ThermalBusInput,
       /* -- SystemParticipantInput */
-      ChpInput,
+      AcInput,
       BmInput,
+      ChpInput,
       EvInput,
       EvcsInput,
       FixedFeedInInput,
@@ -98,6 +99,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       BmTypeInput,
       ChpTypeInput,
       EvTypeInput,
+      AcTypeInput,
       HpTypeInput,
       LineTypeInput,
       Transformer2WTypeInput,
@@ -107,6 +109,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       /* ResultEntity */
       FixedFeedInResult,
       HpResult,
+      AcResult,
       BmResult,
       PvResult,
       ChpResult,
