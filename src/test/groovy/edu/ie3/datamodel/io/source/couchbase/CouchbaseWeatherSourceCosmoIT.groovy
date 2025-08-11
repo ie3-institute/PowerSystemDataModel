@@ -90,8 +90,8 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    optTimeBasedValue != null
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A CouchbaseWeatherSource can read multiple time series values for multiple coordinates"() {
