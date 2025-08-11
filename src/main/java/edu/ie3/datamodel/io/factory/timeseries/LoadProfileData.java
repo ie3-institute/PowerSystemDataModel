@@ -11,11 +11,17 @@ import java.util.Map;
 
 /**
  * Data, that is used to build a {@link
- * edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry} within a factory
+ * edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry}* within a factory
  *
  * @param <V> Type of load values class
  */
 public class LoadProfileData<V extends LoadValues> extends FactoryData {
+  /**
+   * Instantiates a new Load profile data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param targetClass the target class
+   */
   public LoadProfileData(Map<String, String> fieldsToAttributes, Class<V> targetClass) {
     super(fieldsToAttributes, targetClass);
   }

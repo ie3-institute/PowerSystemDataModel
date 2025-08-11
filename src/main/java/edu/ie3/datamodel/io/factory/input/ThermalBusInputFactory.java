@@ -10,8 +10,10 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.UUID;
 
+/** The type Thermal bus input factory. */
 public class ThermalBusInputFactory
     extends AssetInputEntityFactory<ThermalBusInput, AssetInputEntityData> {
+  /** Instantiates a new Thermal bus input factory. */
   public ThermalBusInputFactory() {
     super(ThermalBusInput.class);
   }

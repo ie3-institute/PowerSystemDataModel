@@ -37,6 +37,7 @@ public class ChargingPointTypeUtils {
 
   /* common charging point socket type implementations */
 
+  /** The constant HouseholdSocket. */
   public static final ChargingPointType HouseholdSocket =
       new ChargingPointType(
           "HouseholdSocket",
@@ -44,6 +45,7 @@ public class ChargingPointTypeUtils {
           AC,
           new HashSet<>(Arrays.asList("household", "hhs", "schuko-simple")));
 
+  /** The constant BlueHouseholdSocket. */
   public static final ChargingPointType BlueHouseholdSocket =
       new ChargingPointType(
           "BlueHouseholdSocket",
@@ -51,6 +53,7 @@ public class ChargingPointTypeUtils {
           AC,
           new HashSet<>(Arrays.asList("bluehousehold", "bhs", "schuko-camping")));
 
+  /** The constant Cee16ASocket. */
   public static final ChargingPointType Cee16ASocket =
       new ChargingPointType(
           "Cee16ASocket",
@@ -58,6 +61,7 @@ public class ChargingPointTypeUtils {
           AC,
           Collections.singleton("cee16"));
 
+  /** The constant Cee32ASocket. */
   public static final ChargingPointType Cee32ASocket =
       new ChargingPointType(
           "Cee32ASocket",
@@ -65,6 +69,7 @@ public class ChargingPointTypeUtils {
           AC,
           Collections.singleton("cee32"));
 
+  /** The constant Cee63ASocket. */
   public static final ChargingPointType Cee63ASocket =
       new ChargingPointType(
           "Cee63ASocket",
@@ -72,6 +77,7 @@ public class ChargingPointTypeUtils {
           AC,
           Collections.singleton("cee63"));
 
+  /** The constant ChargingStationType1. */
   public static final ChargingPointType ChargingStationType1 =
       new ChargingPointType(
           "ChargingStationType1",
@@ -79,6 +85,7 @@ public class ChargingPointTypeUtils {
           AC,
           new HashSet<>(Arrays.asList("cst1", "stationtype1", "cstype1")));
 
+  /** The constant ChargingStationType2. */
   public static final ChargingPointType ChargingStationType2 =
       new ChargingPointType(
           "ChargingStationType2",
@@ -86,6 +93,7 @@ public class ChargingPointTypeUtils {
           AC,
           new HashSet<>(Arrays.asList("cst2", "stationtype2", "cstype2")));
 
+  /** The constant ChargingStationCcsComboType1. */
   public static final ChargingPointType ChargingStationCcsComboType1 =
       new ChargingPointType(
           "ChargingStationCcsComboType1",
@@ -93,6 +101,7 @@ public class ChargingPointTypeUtils {
           DC,
           new HashSet<>(Arrays.asList("csccs1", "csccscombo1")));
 
+  /** The constant ChargingStationCcsComboType2. */
   public static final ChargingPointType ChargingStationCcsComboType2 =
       new ChargingPointType(
           "ChargingStationCcsComboType2",
@@ -100,6 +109,7 @@ public class ChargingPointTypeUtils {
           DC,
           new HashSet<>(Arrays.asList("csccs2", "csccscombo2")));
 
+  /** The constant TeslaSuperChargerV1. */
   public static final ChargingPointType TeslaSuperChargerV1 =
       new ChargingPointType(
           "TeslaSuperChargerV1",
@@ -107,6 +117,7 @@ public class ChargingPointTypeUtils {
           DC,
           new HashSet<>(Arrays.asList("tesla1", "teslav1", "supercharger1", "supercharger")));
 
+  /** The constant TeslaSuperChargerV2. */
   public static final ChargingPointType TeslaSuperChargerV2 =
       new ChargingPointType(
           "TeslaSuperChargerV2",
@@ -114,6 +125,7 @@ public class ChargingPointTypeUtils {
           DC,
           new HashSet<>(Arrays.asList("tesla2", "teslav2", "supercharger2")));
 
+  /** The constant TeslaSuperChargerV3. */
   public static final ChargingPointType TeslaSuperChargerV3 =
       new ChargingPointType(
           "TeslaSuperChargerV3",
@@ -149,13 +161,13 @@ public class ChargingPointTypeUtils {
 
   /**
    * Parse a given string into either a custom {@link ChargingPointType} or a standard {@link
-   * ChargingPointType}. A custom charging point type can be created if the prsable string matches
+   * ChargingPointType}*. A custom charging point type can be created if the prsable string matches
    * the following regex {@code (\w+\d*)\s*\(\s*(\d+\.?\d+)\s*\|\s*(AC|DC)\s*\)} e.g. {@code
-   * FastCharger(50|DC)} is a valid custom charging point definition. The apparent power value is
+   * FastCharger(50|DC)}* is a valid custom charging point definition. The apparent power value is
    * expected to be in kVA.
    *
    * <p>For all available common standard charging point types see {@link
-   * #commonChargingPointTypes}.
+   * #commonChargingPointTypes}*.
    *
    * @param parsableString the string to be parsed. Either a valid custom string or the id of a
    *     common standard charging point
@@ -236,7 +248,7 @@ public class ChargingPointTypeUtils {
    * Retrieve a common standard charging point type based on its id or one of its synonymous ids
    *
    * <p>For all available common standard charging point types see {@link
-   * #commonChargingPointTypes}.
+   * #commonChargingPointTypes}*.
    *
    * @param id the id of the common standard charging point type
    * @return optional containing id matching {@link ChargingPointType} or an empty optional if no

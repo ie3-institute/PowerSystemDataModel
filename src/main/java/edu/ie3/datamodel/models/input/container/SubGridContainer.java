@@ -20,6 +20,16 @@ public class SubGridContainer extends GridContainer {
   /** Predominantly apparent voltage level in this single grid */
   private final VoltageLevel predominantVoltageLevel;
 
+  /**
+   * Instantiates a new Sub grid container.
+   *
+   * @param gridName the grid name
+   * @param subnet the subnet
+   * @param rawGrid the raw grid
+   * @param systemParticipants the system participants
+   * @param graphics the graphics
+   * @throws InvalidGridException the invalid grid exception
+   */
   public SubGridContainer(
       String gridName,
       int subnet,
@@ -32,10 +42,20 @@ public class SubGridContainer extends GridContainer {
     this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet);
   }
 
+  /**
+   * Gets subnet.
+   *
+   * @return the subnet
+   */
   public int getSubnet() {
     return subnet;
   }
 
+  /**
+   * Gets predominant voltage level.
+   *
+   * @return the predominant voltage level
+   */
   public VoltageLevel getPredominantVoltageLevel() {
     return predominantVoltageLevel;
   }
@@ -75,7 +95,7 @@ public class SubGridContainer extends GridContainer {
   /**
    * A builder pattern based approach to create copies of {@link SubGridContainer} containers with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * SubGridContainer}
+   * SubGridContainer}*
    *
    * @version 3.1
    * @since 14.02.23

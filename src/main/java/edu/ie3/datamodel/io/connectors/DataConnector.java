@@ -11,5 +11,6 @@ package edu.ie3.datamodel.io.connectors;
  */
 public interface DataConnector {
 
+  /** Shutdown. */
   void shutdown();
 }

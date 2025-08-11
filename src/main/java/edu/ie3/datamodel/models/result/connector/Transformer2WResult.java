@@ -13,7 +13,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link
- * edu.ie3.datamodel.models.input.connector.Transformer2WInput}
+ * edu.ie3.datamodel.models.input.connector.Transformer2WInput}*
  */
 public class Transformer2WResult extends TransformerResult {
 

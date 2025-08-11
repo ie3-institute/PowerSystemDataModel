@@ -12,6 +12,7 @@ import edu.ie3.datamodel.utils.Try;
 import java.util.ArrayList;
 import java.util.List;
 
+/** The type Energy management validation utils. */
 public class EnergyManagementValidationUtils extends ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */
@@ -26,8 +27,8 @@ public class EnergyManagementValidationUtils extends ValidationUtils {
    *   <li>its control strategy is not null
    * </ul>
    *
-   * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object.
+   * <p>A "distribution" method, that forwards the check request to specific implementations to
+   * fulfill the checking task, based on the class of the given object.
    *
    * @param energyManagement EmInput to validate
    * @return a list of try objects either containing an {@link ValidationException} or an empty

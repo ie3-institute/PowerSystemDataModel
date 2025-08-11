@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/** The type Time series mapping factory. */
 public class TimeSeriesMappingFactory
     extends EntityFactory<TimeSeriesMappingSource.MappingEntry, EntityData> {
   private static final String ASSET = "asset";
   private static final String TIME_SERIES = "timeSeries";
 
+  /** Instantiates a new Time series mapping factory. */
   public TimeSeriesMappingFactory() {
     super(TimeSeriesMappingSource.MappingEntry.class);
   }

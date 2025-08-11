@@ -5,7 +5,13 @@
 */
 package edu.ie3.datamodel.exceptions;
 
+/** The type Not implemented exception. */
 public class NotImplementedException extends UnsupportedOperationException {
+  /**
+   * Instantiates a new Not implemented exception.
+   *
+   * @param msg the msg
+   */
   public NotImplementedException(String msg) {
     super(msg);
   }

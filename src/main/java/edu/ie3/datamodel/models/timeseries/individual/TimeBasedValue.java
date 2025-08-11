@@ -19,11 +19,22 @@ public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
     implements Comparable<TimeBasedValue<? extends Value>> {
   private final ZonedDateTime time;
 
+  /**
+   * Instantiates a new Time based value.
+   *
+   * @param time the time
+   * @param value the value
+   */
   public TimeBasedValue(ZonedDateTime time, T value) {
     super(value);
     this.time = time;
   }
 
+  /**
+   * Gets time.
+   *
+   * @return the time
+   */
   public ZonedDateTime getTime() {
     return time;
   }

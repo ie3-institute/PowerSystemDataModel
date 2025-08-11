@@ -14,10 +14,12 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput;
 import java.util.UUID;
 
+/** The type Storage input factory. */
 public class StorageInputFactory
     extends SystemParticipantInputEntityFactory<
         StorageInput, SystemParticipantTypedEntityData<StorageTypeInput>> {
 
+  /** Instantiates a new Storage input factory. */
   public StorageInputFactory() {
     super(StorageInput.class);
   }

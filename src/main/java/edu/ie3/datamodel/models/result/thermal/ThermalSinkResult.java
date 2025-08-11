@@ -12,7 +12,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link
- * edu.ie3.datamodel.models.input.thermal.ThermalSinkInput}
+ * edu.ie3.datamodel.models.input.thermal.ThermalSinkInput}*
  */
 public abstract class ThermalSinkResult extends ThermalUnitResult {
 

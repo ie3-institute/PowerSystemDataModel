@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 /**
  * Implementation that provides the capability to build entities of type {@link
- * SystemParticipantInput} as well as {@link SystemParticipants} container.
+ * SystemParticipantInput}* as well as {@link SystemParticipants} container.
  */
 public class SystemParticipantSource extends AssetEntitySource {
 
@@ -55,6 +55,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   private final WecInputFactory wecInputFactory;
   private final EvcsInputFactory evcsInputFactory;
 
+  /** The constant participantEnricher. */
   // enriching function
   protected static final TriEnrichFunction<
           EntityData, OperatorInput, NodeInput, EmInput, SystemParticipantEntityData>
@@ -70,6 +71,15 @@ public class SystemParticipantSource extends AssetEntitySource {
                           SystemParticipantEntityData::new))
                   .apply(data, operators);
 
+  /**
+   * Instantiates a new System participant source.
+   *
+   * @param typeSource the type source
+   * @param thermalSource the thermal source
+   * @param rawGridSource the raw grid source
+   * @param energyManagementSource the energy management source
+   * @param dataSource the data source
+   */
   public SystemParticipantSource(
       TypeSource typeSource,
       ThermalSource thermalSource,
@@ -117,9 +127,9 @@ public class SystemParticipantSource extends AssetEntitySource {
 
   /**
    * Should return either a consistent instance of {@link SystemParticipants} or throw a {@link
-   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
+   * SourceException}*. The decision to throw a {@link SourceException} instead of returning the
    * incomplete {@link SystemParticipants} instance is motivated by the fact, that a {@link
-   * SystemParticipants} is a container instance that depends on several other entities. Without
+   * SystemParticipants}* is a container instance that depends on several other entities. Without
    * being complete, it is useless for further processing.
    *
    * <p>Hence, whenever at least one entity {@link SystemParticipants} depends on cannot be
@@ -144,9 +154,9 @@ public class SystemParticipantSource extends AssetEntitySource {
 
   /**
    * Should return either a consistent instance of {@link SystemParticipants} or throw a {@link
-   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
+   * SourceException}*. The decision to throw a {@link SourceException} instead of returning the
    * incomplete {@link SystemParticipants} instance is motivated by the fact, that a {@link
-   * SystemParticipants} is a container instance that depends on several other entities. Without
+   * SystemParticipants}* is a container instance that depends on several other entities. Without
    * being complete, it is useless for further processing.
    *
    * <p>Hence, whenever at least one entity {@link SystemParticipants} depends on cannot be
@@ -251,11 +261,12 @@ public class SystemParticipantSource extends AssetEntitySource {
    * Returns a unique set of {@link FixedFeedInInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link FixedFeedInInput} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link FixedFeedInInput} which has to be checked
    * manually, as {@link FixedFeedInInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * FixedFeedInInput}.
+   * FixedFeedInInput}*.
    *
    * @return a set of object- and uuid-unique {@link FixedFeedInInput} entities
+   * @throws SourceException the source exception
    */
   public Set<FixedFeedInInput> getFixedFeedIns() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -267,11 +278,11 @@ public class SystemParticipantSource extends AssetEntitySource {
    * Returns a set of {@link FixedFeedInInput} instances. This set has to be unique in the sense of
    * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
    * {@link FixedFeedInInput} which has to be checked manually, as {@link
-   * FixedFeedInInput#equals(Object)} is NOT restricted on the uuid of {@link FixedFeedInInput}.
+   * FixedFeedInInput#equals(Object)}* is NOT restricted on the uuid of {@link FixedFeedInInput}.
    *
    * <p>In contrast to {@link #getFixedFeedIns()} this method provides the ability to pass in an
    * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
-   * FixedFeedInInput} instances depend on. Doing so, already loaded nodes can be recycled to
+   * FixedFeedInInput}* instances depend on. Doing so, already loaded nodes can be recycled to
    * improve performance and prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
@@ -281,6 +292,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @return a set of object- and uuid-unique {@link FixedFeedInInput} entities
+   * @throws SourceException the source exception
    */
   public Set<FixedFeedInInput> getFixedFeedIns(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -297,10 +309,11 @@ public class SystemParticipantSource extends AssetEntitySource {
    * Returns a unique set of {@link PvInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link PvInput} which has to be checked manually, as
-   * {@link PvInput#equals(Object)} is NOT restricted on the uuid of {@link PvInput}.
+   * java.util.UUID}* uniqueness of the provided {@link PvInput} which has to be checked manually,
+   * as {@link PvInput#equals(Object)} is NOT restricted on the uuid of {@link PvInput}.
    *
    * @return a set of object- and uuid-unique {@link PvInput} entities
+   * @throws SourceException the source exception
    */
   public Set<PvInput> getPvPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -311,7 +324,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a set of {@link PvInput} instances. This set has to be unique in the sense of object
    * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * PvInput} which has to be checked manually, as {@link PvInput#equals(Object)} is NOT restricted
+   * PvInput}* which has to be checked manually, as {@link PvInput#equals(Object)} is NOT restricted
    * on the uuid of {@link PvInput}.
    *
    * <p>In contrast to {@link #getPvPlants()} this method provides the ability to pass in an already
@@ -326,6 +339,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @return a set of object- and uuid-unique {@link PvInput} entities
+   * @throws SourceException the source exception
    */
   public Set<PvInput> getPvPlants(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -342,10 +356,11 @@ public class SystemParticipantSource extends AssetEntitySource {
    * Returns a unique set of {@link LoadInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link LoadInput} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link LoadInput} which has to be checked manually,
    * as {@link LoadInput#equals(Object)} is NOT restricted on the uuid of {@link LoadInput}.
    *
    * @return a set of object- and uuid-unique {@link LoadInput} entities
+   * @throws SourceException the source exception
    */
   public Set<LoadInput> getLoads() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -356,7 +371,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a set of {@link LoadInput} instances. This set has to be unique in the sense of object
    * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * LoadInput} which has to be checked manually, as {@link LoadInput#equals(Object)} is NOT
+   * LoadInput}* which has to be checked manually, as {@link LoadInput#equals(Object)} is NOT
    * restricted on the uuid of {@link LoadInput}.
    *
    * <p>In contrast to {@link #getLoads()} this method provides the ability to pass in an already
@@ -371,6 +386,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @return a set of object- and uuid-unique {@link LoadInput} entities
+   * @throws SourceException the source exception
    */
   public Set<LoadInput> getLoads(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -387,10 +403,11 @@ public class SystemParticipantSource extends AssetEntitySource {
    * Returns a unique set of {@link EvcsInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EvcsInput} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link EvcsInput} which has to be checked manually,
    * as {@link EvcsInput#equals(Object)} is NOT restricted on the uuid of {@link EvcsInput}.
    *
    * @return a set of object- and uuid-unique {@link EvcsInput} entities
+   * @throws SourceException the source exception
    */
   public Set<EvcsInput> getEvcs() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -401,7 +418,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a set of {@link EvcsInput} instances. This set has to be unique in the sense of object
    * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * EvcsInput} which has to be checked manually, as {@link EvcsInput#equals(Object)} is NOT
+   * EvcsInput}* which has to be checked manually, as {@link EvcsInput#equals(Object)} is NOT
    * restricted on the uuid of {@link EvcsInput}.
    *
    * <p>In contrast to {@link #getEvcs()} this method provides the ability to pass in an already
@@ -416,6 +433,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @return a set of object- and uuid-unique {@link EvcsInput} entities
+   * @throws SourceException the source exception
    */
   public Set<EvcsInput> getEvcs(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -432,10 +450,11 @@ public class SystemParticipantSource extends AssetEntitySource {
    * Returns a unique set of {@link BmInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link BmInput} which has to be checked manually, as
-   * {@link BmInput#equals(Object)} is NOT restricted on the uuid of {@link BmInput}.
+   * java.util.UUID}* uniqueness of the provided {@link BmInput} which has to be checked manually,
+   * as {@link BmInput#equals(Object)} is NOT restricted on the uuid of {@link BmInput}.
    *
    * @return a set of object- and uuid-unique {@link BmInput} entities
+   * @throws SourceException the source exception
    */
   public Set<BmInput> getBmPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -447,7 +466,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a set of {@link BmInput} instances. This set has to be unique in the sense of object
    * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * BmInput} which has to be checked manually, as {@link BmInput#equals(Object)} is NOT restricted
+   * BmInput}* which has to be checked manually, as {@link BmInput#equals(Object)} is NOT restricted
    * on the uuid of {@link BmInput}.
    *
    * <p>In contrast to {@link #getBmPlants()} this method provides the ability to pass in an already
@@ -463,6 +482,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @param types a map of UUID to object- and uuid-unique {@link BmTypeInput} entities
    * @return a set of object- and uuid-unique {@link BmInput} entities
+   * @throws SourceException the source exception
    */
   public Set<BmInput> getBmPlants(
       Map<UUID, OperatorInput> operators,
@@ -485,11 +505,12 @@ public class SystemParticipantSource extends AssetEntitySource {
    * Returns a unique set of {@link StorageInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link StorageInput} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link StorageInput} which has to be checked
    * manually, as {@link StorageInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * StorageInput}.
+   * StorageInput}*.
    *
    * @return a set of object- and uuid-unique {@link StorageInput} entities
+   * @throws SourceException the source exception
    */
   public Set<StorageInput> getStorages() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -518,6 +539,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @param types a map of UUID to object- and uuid-unique {@link StorageTypeInput} entities
    * @return a set of object- and uuid-unique {@link StorageInput} entities
+   * @throws SourceException the source exception
    */
   public Set<StorageInput> getStorages(
       Map<UUID, OperatorInput> operators,
@@ -540,10 +562,11 @@ public class SystemParticipantSource extends AssetEntitySource {
    * Returns a unique set of {@link WecInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link WecInput} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link WecInput} which has to be checked manually,
    * as {@link WecInput#equals(Object)} is NOT restricted on the uuid of {@link WecInput}.
    *
    * @return a set of object- and uuid-unique {@link WecInput} entities
+   * @throws SourceException the source exception
    */
   public Set<WecInput> getWecPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -555,7 +578,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a set of {@link WecInput} instances. This set has to be unique in the sense of object
    * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * WecInput} which has to be checked manually, as {@link WecInput#equals(Object)} is NOT
+   * WecInput}* which has to be checked manually, as {@link WecInput#equals(Object)} is NOT
    * restricted on the uuid of {@link WecInput}.
    *
    * <p>In contrast to {@link #getWecPlants()} this method provides the ability to pass in an
@@ -571,6 +594,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @param types a map of UUID to object- and uuid-unique {@link WecTypeInput} entities
    * @return a set of object- and uuid-unique {@link WecInput} entities
+   * @throws SourceException the source exception
    */
   public Set<WecInput> getWecPlants(
       Map<UUID, OperatorInput> operators,
@@ -593,10 +617,11 @@ public class SystemParticipantSource extends AssetEntitySource {
    * Returns a unique set of {@link EvInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EvInput} which has to be checked manually, as
-   * {@link EvInput#equals(Object)} is NOT restricted on the uuid of {@link EvInput}.
+   * java.util.UUID}* uniqueness of the provided {@link EvInput} which has to be checked manually,
+   * as {@link EvInput#equals(Object)} is NOT restricted on the uuid of {@link EvInput}.
    *
    * @return a set of object- and uuid-unique {@link EvInput} entities
+   * @throws SourceException the source exception
    */
   public Set<EvInput> getEvs() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -607,7 +632,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a set of {@link EvInput} instances. This set has to be unique in the sense of object
    * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * EvInput} which has to be checked manually, as {@link EvInput#equals(Object)} is NOT restricted
+   * EvInput}* which has to be checked manually, as {@link EvInput#equals(Object)} is NOT restricted
    * on the uuid of {@link EvInput}.
    *
    * <p>In contrast to {@link #getEvs()} this method provides the ability to pass in an already
@@ -623,6 +648,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @param types a map of UUID to object- and uuid-unique {@link EvTypeInput} entities
    * @return a set of object- and uuid-unique {@link EvInput} entities
+   * @throws SourceException the source exception
    */
   public Set<EvInput> getEvs(
       Map<UUID, OperatorInput> operators,
@@ -641,6 +667,12 @@ public class SystemParticipantSource extends AssetEntitySource {
         .collect(toSet());
   }
 
+  /**
+   * Gets chp plants.
+   *
+   * @return the chp plants
+   * @throws SourceException the source exception
+   */
   public Set<ChpInput> getChpPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits(operators);
@@ -672,6 +704,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param thermalStorages a map of UUID to object- and uuid-unique {@link ThermalStorageInput}
    *     entities
    * @return a set of object- and uuid-unique {@link ChpInput} entities
+   * @throws SourceException the source exception
    */
   public Set<ChpInput> getChpPlants(
       Map<UUID, OperatorInput> operators,
@@ -698,6 +731,12 @@ public class SystemParticipantSource extends AssetEntitySource {
     return getEntities(ChpInput.class, dataSource, chpInputFactory, builder).collect(toSet());
   }
 
+  /**
+   * Gets heat pumps.
+   *
+   * @return the heat pumps
+   * @throws SourceException the source exception
+   */
   public Set<HpInput> getHeatPumps() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits(operators);
@@ -725,6 +764,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    * @param types a map of UUID to object- and uuid-unique {@link HpTypeInput} entities
    * @param thermalBuses a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
    * @return a set of object- and uuid-unique {@link HpInput} entities
+   * @throws SourceException the source exception
    */
   public Set<HpInput> getHeatPumps(
       Map<UUID, OperatorInput> operators,

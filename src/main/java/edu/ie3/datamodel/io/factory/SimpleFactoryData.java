@@ -9,6 +9,12 @@ import java.util.Map;
 
 /** Simple class, that holds a mapping from key to value. */
 public class SimpleFactoryData extends FactoryData {
+  /**
+   * Instantiates a new Simple factory data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param targetClass the target class
+   */
   public SimpleFactoryData(Map<String, String> fieldsToAttributes, Class<?> targetClass) {
     super(fieldsToAttributes, targetClass);
   }

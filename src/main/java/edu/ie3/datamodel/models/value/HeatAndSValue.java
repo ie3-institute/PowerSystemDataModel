@@ -17,6 +17,8 @@ public class HeatAndSValue extends SValue {
   private final ComparableQuantity<Power> heatDemand;
 
   /**
+   * Instantiates a new Heat and s value.
+   *
    * @param p Active power
    * @param q Reactive power
    * @param heatDemand Heat demand
@@ -29,6 +31,11 @@ public class HeatAndSValue extends SValue {
     this.heatDemand = heatDemand == null ? null : heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
+  /**
+   * Gets heat demand.
+   *
+   * @return the heat demand
+   */
   public Optional<ComparableQuantity<Power>> getHeatDemand() {
     return Optional.ofNullable(heatDemand);
   }

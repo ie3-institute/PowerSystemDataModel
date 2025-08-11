@@ -32,6 +32,13 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
   private final DatabaseNamingStrategy namingStrategy;
   private final SqlDataSource dataSource;
 
+  /**
+   * Instantiates a new Sql time series meta information source.
+   *
+   * @param connector the connector
+   * @param schemaName the schema name
+   * @param databaseNamingStrategy the database naming strategy
+   */
   public SqlTimeSeriesMetaInformationSource(
       SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy) {
     this.dataSource = new SqlDataSource(connector, schemaName, databaseNamingStrategy);

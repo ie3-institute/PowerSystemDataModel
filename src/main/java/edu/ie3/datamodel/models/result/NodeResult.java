@@ -39,18 +39,38 @@ public class NodeResult extends ResultEntity {
     this.vAng = vAng;
   }
 
+  /**
+   * Gets mag.
+   *
+   * @return the mag
+   */
   public ComparableQuantity<Dimensionless> getvMag() {
     return vMag;
   }
 
+  /**
+   * Sets mag.
+   *
+   * @param vMag the v mag
+   */
   public void setvMag(ComparableQuantity<Dimensionless> vMag) {
     this.vMag = vMag;
   }
 
+  /**
+   * Gets ang.
+   *
+   * @return the ang
+   */
   public ComparableQuantity<Angle> getvAng() {
     return vAng;
   }
 
+  /**
+   * Sets ang.
+   *
+   * @param vAng the v ang
+   */
   public void setvAng(ComparableQuantity<Angle> vAng) {
     this.vAng = vAng;
   }

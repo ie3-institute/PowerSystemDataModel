@@ -32,6 +32,16 @@ public class RawGridElements implements InputContainer<AssetInput> {
   /** Measurement units in this grid */
   private final Set<MeasurementUnitInput> measurementUnits;
 
+  /**
+   * Instantiates a new Raw grid elements.
+   *
+   * @param nodes the nodes
+   * @param lines the lines
+   * @param transformer2Ws the transformer 2 ws
+   * @param transformer3Ws the transformer 3 ws
+   * @param switches the switches
+   * @param measurementUnits the measurement units
+   */
   public RawGridElements(
       Set<NodeInput> nodes,
       Set<LineInput> lines,
@@ -81,7 +91,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
 
   /**
    * Create an instance based on a list of {@link AssetInput} entities that are included in {@link
-   * RawGridElements}
+   * RawGridElements}*
    *
    * @param rawGridElements list of grid elements this container instance should created from
    */
@@ -138,6 +148,8 @@ public class RawGridElements implements InputContainer<AssetInput> {
   }
 
   /**
+   * Gets nodes.
+   *
    * @return unmodifiable ; of all three winding transformers in this grid
    */
   public Set<NodeInput> getNodes() {
@@ -145,6 +157,8 @@ public class RawGridElements implements InputContainer<AssetInput> {
   }
 
   /**
+   * Gets lines.
+   *
    * @return unmodifiable Set of all lines in this grid
    */
   public Set<LineInput> getLines() {
@@ -152,6 +166,8 @@ public class RawGridElements implements InputContainer<AssetInput> {
   }
 
   /**
+   * Gets transformer 2 ws.
+   *
    * @return unmodifiable Set of all two winding transformers in this grid
    */
   public Set<Transformer2WInput> getTransformer2Ws() {
@@ -159,6 +175,8 @@ public class RawGridElements implements InputContainer<AssetInput> {
   }
 
   /**
+   * Gets transformer 3 ws.
+   *
    * @return unmodifiable Set of all three winding transformers in this grid
    */
   public Set<Transformer3WInput> getTransformer3Ws() {
@@ -166,6 +184,8 @@ public class RawGridElements implements InputContainer<AssetInput> {
   }
 
   /**
+   * Gets switches.
+   *
    * @return unmodifiable Set of all switches in this grid
    */
   public Set<SwitchInput> getSwitches() {
@@ -173,6 +193,8 @@ public class RawGridElements implements InputContainer<AssetInput> {
   }
 
   /**
+   * Gets measurement units.
+   *
    * @return unmodifiable Set of all measurement units in this grid
    */
   public Set<MeasurementUnitInput> getMeasurementUnits() {
@@ -199,7 +221,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
   /**
    * A builder pattern based approach to create copies of {@link RawGridElements} containers with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * RawGridElements}
+   * RawGridElements}*
    *
    * @version 3.1
    * @since 14.02.23

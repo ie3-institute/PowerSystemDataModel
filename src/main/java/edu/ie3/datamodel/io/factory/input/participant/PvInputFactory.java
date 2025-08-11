@@ -18,6 +18,7 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Pv input factory. */
 public class PvInputFactory
     extends SystemParticipantInputEntityFactory<PvInput, SystemParticipantEntityData> {
   private static final String ALBEDO = "albedo";
@@ -30,6 +31,7 @@ public class PvInputFactory
   private static final String S_RATED = "sRated";
   private static final String COS_PHI_RATED = "cosPhiRated";
 
+  /** Instantiates a new Pv input factory. */
   public PvInputFactory() {
     super(PvInput.class);
   }

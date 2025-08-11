@@ -34,10 +34,20 @@ public abstract class ThermalUnitResult extends ResultEntity {
     this.qDot = qDot;
   }
 
+  /**
+   * Gets dot.
+   *
+   * @return the dot
+   */
   public ComparableQuantity<Power> getqDot() {
     return qDot;
   }
 
+  /**
+   * Sets dot.
+   *
+   * @param qDot the q dot
+   */
   public void setqDot(ComparableQuantity<Power> qDot) {
     this.qDot = qDot.to(StandardUnits.HEAT_DEMAND);
   }

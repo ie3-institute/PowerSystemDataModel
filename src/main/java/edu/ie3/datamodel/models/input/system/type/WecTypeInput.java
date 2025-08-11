@@ -32,14 +32,16 @@ public class WecTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<Length> hubHeight;
 
   /**
+   * Instantiates a new Wec type input.
+   *
    * @param uuid of the input entity
    * @param id of this type of WEC
    * @param capex Captial expense for this type of WEC (typically in €)
    * @param opex Operating expense for this type of WEC (typically in €)
+   * @param sRated Rated apparent power for this type of WEC (typically in kVA)
    * @param cosphiRated Power factor for this type of WEC
    * @param cpCharacteristic Betz curve of this type
    * @param etaConv Efficiency of converter for this type of WEC (typically in %)
-   * @param sRated Rated apparent power for this type of WEC (typically in kVA)
    * @param rotorArea Swept Area of blades for this type of WEC (typically in m²)
    * @param hubHeight Height from ground to center of rotor for this type of WEC (typically in m)
    */
@@ -61,18 +63,38 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     this.hubHeight = hubHeight.to(StandardUnits.HUB_HEIGHT);
   }
 
+  /**
+   * Gets cp characteristic.
+   *
+   * @return the cp characteristic
+   */
   public WecCharacteristicInput getCpCharacteristic() {
     return cpCharacteristic;
   }
 
+  /**
+   * Gets eta conv.
+   *
+   * @return the eta conv
+   */
   public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
   }
 
+  /**
+   * Gets rotor area.
+   *
+   * @return the rotor area
+   */
   public ComparableQuantity<Area> getRotorArea() {
     return rotorArea;
   }
 
+  /**
+   * Gets hub height.
+   *
+   * @return the hub height
+   */
   public ComparableQuantity<Length> getHubHeight() {
     return hubHeight;
   }
@@ -144,38 +166,82 @@ public class WecTypeInput extends SystemParticipantTypeInput {
       this.hubHeight = entity.getHubHeight();
     }
 
+    /**
+     * Sets cp characteristic.
+     *
+     * @param cpCharacteristic the cp characteristic
+     * @return the cp characteristic
+     */
     public WecTypeInputCopyBuilder setCpCharacteristic(WecCharacteristicInput cpCharacteristic) {
       this.cpCharacteristic = cpCharacteristic;
       return thisInstance();
     }
 
+    /**
+     * Sets eta conv.
+     *
+     * @param etaConv the eta conv
+     * @return the eta conv
+     */
     public WecTypeInputCopyBuilder setEtaConv(ComparableQuantity<Dimensionless> etaConv) {
       this.etaConv = etaConv;
       return thisInstance();
     }
 
+    /**
+     * Sets rotor area.
+     *
+     * @param rotorArea the rotor area
+     * @return the rotor area
+     */
     public WecTypeInputCopyBuilder setRotorArea(ComparableQuantity<Area> rotorArea) {
       this.rotorArea = rotorArea;
       return thisInstance();
     }
 
+    /**
+     * Sets hub height.
+     *
+     * @param hubHeight the hub height
+     * @return the hub height
+     */
     public WecTypeInputCopyBuilder setHubHeight(ComparableQuantity<Length> hubHeight) {
       this.hubHeight = hubHeight;
       return thisInstance();
     }
 
+    /**
+     * Gets cp characteristic.
+     *
+     * @return the cp characteristic
+     */
     public WecCharacteristicInput getCpCharacteristic() {
       return cpCharacteristic;
     }
 
+    /**
+     * Gets eta conv.
+     *
+     * @return the eta conv
+     */
     public ComparableQuantity<Dimensionless> getEtaConv() {
       return etaConv;
     }
 
+    /**
+     * Gets rotor area.
+     *
+     * @return the rotor area
+     */
     public ComparableQuantity<Area> getRotorArea() {
       return rotorArea;
     }
 
+    /**
+     * Gets hub height.
+     *
+     * @return the hub height
+     */
     public ComparableQuantity<Length> getHubHeight() {
       return hubHeight;
     }

@@ -17,10 +17,17 @@ public class ImpedanceWeightedGraph extends SimpleWeightedGraph<NodeInput, Imped
 
   private static final long serialVersionUID = -2797654003980753342L;
 
+  /** Instantiates a new Impedance weighted graph. */
   public ImpedanceWeightedGraph() {
     super(ImpedanceWeightedEdge.class);
   }
 
+  /**
+   * Instantiates a new Impedance weighted graph.
+   *
+   * @param vertexSupplier the vertex supplier
+   * @param edgeSupplier the edge supplier
+   */
   public ImpedanceWeightedGraph(
       Supplier<NodeInput> vertexSupplier, Supplier<ImpedanceWeightedEdge> edgeSupplier) {
     super(vertexSupplier, edgeSupplier);
@@ -28,7 +35,7 @@ public class ImpedanceWeightedGraph extends SimpleWeightedGraph<NodeInput, Imped
 
   /**
    * Assigns a {@link Quantity} of type {@link ElectricResistance} to an instance of edge {@link
-   * ImpedanceWeightedEdge}
+   * ImpedanceWeightedEdge}*
    *
    * @param edge edge whose weight should be altered
    * @param weight the weight of the {@link ImpedanceWeightedEdge}

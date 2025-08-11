@@ -15,14 +15,28 @@ import javax.measure.quantity.Dimensionless;
  * infeed
  */
 public class CosPhiP extends ReactivePowerCharacteristic {
+  /** The constant PREFIX. */
   public static final String PREFIX = "cosPhiP";
+
+  /** The constant STARTING_REGEX. */
   public static final String STARTING_REGEX = buildStartingRegex(PREFIX);
 
+  /**
+   * Instantiates a new Cos phi p.
+   *
+   * @param characteristicPoints the characteristic points
+   */
   public CosPhiP(
       SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints) {
     super(characteristicPoints, PREFIX);
   }
 
+  /**
+   * Instantiates a new Cos phi p.
+   *
+   * @param input the input
+   * @throws ParsingException the parsing exception
+   */
   public CosPhiP(String input) throws ParsingException {
     super(input, StandardUnits.Q_CHARACTERISTIC, StandardUnits.Q_CHARACTERISTIC, PREFIX);
   }

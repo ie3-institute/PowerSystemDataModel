@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Provides the connector (here: buffered writer) for specific files to be used by a {@link
- * edu.ie3.datamodel.io.sink.CsvFileSink} or {@link edu.ie3.datamodel.io.source.csv.CsvDataSource}
+ * edu.ie3.datamodel.io.sink.CsvFileSink}* or {@link edu.ie3.datamodel.io.source.csv.CsvDataSource}
  *
  * @version 0.1
  * @since 19.03.20
@@ -38,21 +38,44 @@ public class CsvFileConnector implements DataConnector {
   private final Optional<Function<String, InputStream>> customInputStream;
   private static final String FILE_ENDING = ".csv";
 
+  /**
+   * Instantiates a new Csv file connector.
+   *
+   * @param baseDirectory the base directory
+   */
   public CsvFileConnector(Path baseDirectory) {
     this.baseDirectory = baseDirectory;
     this.customInputStream = Optional.empty();
   }
 
+  /**
+   * Instantiates a new Csv file connector.
+   *
+   * @param baseDirectory the base directory
+   * @param inputStreamSupplier the input stream supplier
+   */
   public CsvFileConnector(Path baseDirectory, Function<String, InputStream> inputStreamSupplier) {
     this.baseDirectory = baseDirectory;
     this.customInputStream = Optional.ofNullable(inputStreamSupplier);
   }
 
-  /** Returns the base directory of this connector. */
+  /**
+   * Returns the base directory of this connector.
+   *
+   * @return the base directory
+   */
   public Path getBaseDirectory() {
     return baseDirectory;
   }
 
+  /**
+   * Gets or init writer.
+   *
+   * @param clz the clz
+   * @param fileDefinition the file definition
+   * @return the or init writer
+   * @throws ConnectorException the connector exception
+   */
   public synchronized BufferedCsvWriter getOrInitWriter(
       Class<? extends Entity> clz, CsvFileDefinition fileDefinition) throws ConnectorException {
     /* Try to the right writer */
@@ -71,6 +94,18 @@ public class CsvFileConnector implements DataConnector {
     }
   }
 
+  /**
+   * Gets or init writer.
+   *
+   * @param <T> the type parameter
+   * @param <E> the type parameter
+   * @param <V> the type parameter
+   * @param <R> the type parameter
+   * @param timeSeries the time series
+   * @param fileDefinition the file definition
+   * @return the or init writer
+   * @throws ConnectorException the connector exception
+   */
   public synchronized <
           T extends TimeSeries<E, V, R>,
           E extends TimeSeriesEntry<V>,
@@ -144,8 +179,8 @@ public class CsvFileConnector implements DataConnector {
   /**
    * Close an entity writer for the given class
    *
-   * @param clz Class, that the writer is able to persist
    * @param <C> Type of class
+   * @param clz Class, that the writer is able to persist
    * @throws IOException If closing of writer fails.
    */
   public synchronized <C extends Entity> void closeEntityWriter(Class<C> clz) throws IOException {

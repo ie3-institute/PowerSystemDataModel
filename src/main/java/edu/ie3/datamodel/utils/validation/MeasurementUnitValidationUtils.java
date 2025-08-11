@@ -11,6 +11,7 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.utils.Try;
 
+/** The type Measurement unit validation utils. */
 public class MeasurementUnitValidationUtils extends ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */

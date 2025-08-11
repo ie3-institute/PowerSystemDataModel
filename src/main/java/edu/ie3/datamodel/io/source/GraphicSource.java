@@ -44,6 +44,13 @@ public class GraphicSource extends AssetEntitySource {
   private final LineGraphicInputFactory lineGraphicInputFactory;
   private final NodeGraphicInputFactory nodeGraphicInputFactory;
 
+  /**
+   * Instantiates a new Graphic source.
+   *
+   * @param typeSource the type source
+   * @param rawGridSource the raw grid source
+   * @param dataSource the data source
+   */
   public GraphicSource(TypeSource typeSource, RawGridSource rawGridSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
@@ -64,7 +71,12 @@ public class GraphicSource extends AssetEntitySource {
         .getOrThrow();
   }
 
-  /** Returns the graphic elements of the grid or throws a {@link SourceException} */
+  /**
+   * Returns the graphic elements of the grid or throws a {@link SourceException}
+   *
+   * @return the graphic elements
+   * @throws SourceException the source exception
+   */
   public GraphicElements getGraphicElements() throws SourceException {
 
     // read all needed entities
@@ -87,6 +99,8 @@ public class GraphicSource extends AssetEntitySource {
    *
    * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @param lines a map of UUID to object- and uuid-unique {@link LineInput} entities
+   * @return the graphic elements
+   * @throws SourceException the source exception
    */
   public GraphicElements getGraphicElements(Map<UUID, NodeInput> nodes, Map<UUID, LineInput> lines)
       throws SourceException {
@@ -113,13 +127,23 @@ public class GraphicSource extends AssetEntitySource {
 
   /**
    * If the set of {@link NodeInput} entities is not exhaustive for all available {@link
-   * NodeGraphicInput} entities or if an error during the building process occurs a {@link
-   * SourceException} is thrown, else all entities that have been able to be built, are returned.
+   * NodeGraphicInput}* entities or if an error during the building process occurs a {@link
+   * SourceException}* is thrown, else all entities that have been able to be built, are returned.
+   *
+   * @return the node graphic input
+   * @throws SourceException the source exception
    */
   public Set<NodeGraphicInput> getNodeGraphicInput() throws SourceException {
     return getNodeGraphicInput(rawGridSource.getNodes(typeSource.getOperators()));
   }
 
+  /**
+   * Gets node graphic input.
+   *
+   * @param nodes the nodes
+   * @return the node graphic input
+   * @throws SourceException the source exception
+   */
   public Set<NodeGraphicInput> getNodeGraphicInput(Map<UUID, NodeInput> nodes)
       throws SourceException {
     return getEntities(
@@ -132,8 +156,11 @@ public class GraphicSource extends AssetEntitySource {
 
   /**
    * If the set of {@link LineInput} entities is not exhaustive for all available {@link
-   * LineGraphicInput} entities or if an error during the building process occurs a {@link
-   * SourceException} is thrown, else all entities that have been able to be built are returned.
+   * LineGraphicInput}* entities or if an error during the building process occurs a {@link
+   * SourceException}* is thrown, else all entities that have been able to be built are returned.
+   *
+   * @return the line graphic input
+   * @throws SourceException the source exception
    */
   public Set<LineGraphicInput> getLineGraphicInput() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -142,6 +169,13 @@ public class GraphicSource extends AssetEntitySource {
             operators, rawGridSource.getNodes(operators), typeSource.getLineTypes()));
   }
 
+  /**
+   * Gets line graphic input.
+   *
+   * @param lines the lines
+   * @return the line graphic input
+   * @throws SourceException the source exception
+   */
   public Set<LineGraphicInput> getLineGraphicInput(Map<UUID, LineInput> lines)
       throws SourceException {
     return getEntities(

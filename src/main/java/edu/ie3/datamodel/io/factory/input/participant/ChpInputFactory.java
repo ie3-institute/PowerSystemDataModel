@@ -13,10 +13,12 @@ import edu.ie3.datamodel.models.input.system.ChpInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.UUID;
 
+/** The type Chp input factory. */
 public class ChpInputFactory
     extends SystemParticipantInputEntityFactory<ChpInput, ChpInputEntityData> {
   private static final String MARKET_REACTION = "marketReaction";
 
+  /** Instantiates a new Chp input factory. */
   public ChpInputFactory() {
     super(ChpInput.class);
   }

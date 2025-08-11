@@ -12,6 +12,8 @@ import java.util.UUID;
 /** Common properties to all thermal storage devices */
 public abstract class ThermalStorageInput extends ThermalUnitInput {
   /**
+   * Instantiates a new Thermal storage input.
+   *
    * @param uuid Unique identifier of a certain thermal storage input model
    * @param id Identifier of the thermal unit
    * @param bus Thermal bus, a thermal unit is connected to
@@ -21,6 +23,8 @@ public abstract class ThermalStorageInput extends ThermalUnitInput {
   }
 
   /**
+   * Instantiates a new Thermal storage input.
+   *
    * @param uuid Unique identifier of a certain thermal storage input model
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
@@ -41,12 +45,19 @@ public abstract class ThermalStorageInput extends ThermalUnitInput {
 
   /**
    * Abstract class for all builders that build child entities of abstract class {@link
-   * ThermalStorageInput}
+   * ThermalStorageInput}*
+   *
+   * @param <B> The builder type extending from {@link ThermalStorageInputCopyBuilder}
    */
   public abstract static class ThermalStorageInputCopyBuilder<
           B extends ThermalStorageInputCopyBuilder<B>>
       extends ThermalUnitInputCopyBuilder<B> {
 
+    /**
+     * Instantiates a new Thermal storage input copy builder.
+     *
+     * @param entity the entity
+     */
     protected ThermalStorageInputCopyBuilder(ThermalStorageInput entity) {
       super(entity);
     }

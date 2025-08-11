@@ -13,12 +13,27 @@ import javax.measure.quantity.Dimensionless;
 /** Abstract class (only for grouping all reactive power characteristics together */
 public abstract class ReactivePowerCharacteristic
     extends CharacteristicInput<Dimensionless, Dimensionless> {
+  /**
+   * Instantiates a new Reactive power characteristic.
+   *
+   * @param characteristicPoints the characteristic points
+   * @param prefix the prefix
+   */
   protected ReactivePowerCharacteristic(
       SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints,
       String prefix) {
     super(characteristicPoints, prefix);
   }
 
+  /**
+   * Instantiates a new Reactive power characteristic.
+   *
+   * @param input the input
+   * @param abscissaUnit the abscissa unit
+   * @param ordinateUnit the ordinate unit
+   * @param prefix the prefix
+   * @throws ParsingException the parsing exception
+   */
   protected ReactivePowerCharacteristic(
       String input,
       Unit<Dimensionless> abscissaUnit,

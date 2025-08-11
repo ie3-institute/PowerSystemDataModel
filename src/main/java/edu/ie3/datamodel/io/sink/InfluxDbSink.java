@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /** InfluxDB Sink for result and time series data */
 public class InfluxDbSink implements OutputDataSink {
+  /** The constant log. */
   public static final Logger log = LoggerFactory.getLogger(InfluxDbSink.class);
 
   /** Field name for time */
@@ -42,6 +43,7 @@ public class InfluxDbSink implements OutputDataSink {
    *
    * @param connector needed for database connection
    * @param entityPersistenceNamingStrategy needed to create measurement names for entities
+   * @throws EntityProcessorException the entity processor exception
    */
   public InfluxDbSink(
       InfluxDbConnector connector, EntityPersistenceNamingStrategy entityPersistenceNamingStrategy)
@@ -58,6 +60,7 @@ public class InfluxDbSink implements OutputDataSink {
    * Initializes a new InfluxDbWeatherSource with a default EntityPersistenceNamingStrategy
    *
    * @param connector needed for database connection
+   * @throws EntityProcessorException the entity processor exception
    */
   public InfluxDbSink(InfluxDbConnector connector) throws EntityProcessorException {
     this(connector, new EntityPersistenceNamingStrategy());

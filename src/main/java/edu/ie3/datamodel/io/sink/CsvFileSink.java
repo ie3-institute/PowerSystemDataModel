@@ -57,6 +57,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   private final FileNamingStrategy fileNamingStrategy;
   private final String csvSep;
 
+  /**
+   * Instantiates a new Csv file sink.
+   *
+   * @param baseFolderPath the base folder path
+   * @throws EntityProcessorException the entity processor exception
+   */
   public CsvFileSink(Path baseFolderPath) throws EntityProcessorException {
     this(baseFolderPath, new FileNamingStrategy(), ",");
   }
@@ -69,6 +75,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * @param baseFolderPath the base folder path where the files should be put into
    * @param fileNamingStrategy the data sink file naming strategy that should be used
    * @param csvSep the csv file separator that should be use
+   * @throws EntityProcessorException the entity processor exception
    */
   public CsvFileSink(Path baseFolderPath, FileNamingStrategy fileNamingStrategy, String csvSep)
       throws EntityProcessorException {
@@ -82,7 +89,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * {@link ProcessorProvider} because if you're not 100% sure that it knows about all entities
    * you're going to process exceptions might occur. Therefore it is strongly advised to either use
    * a constructor without providing the {@link ProcessorProvider} or provide a general {@link
-   * ProcessorProvider} by calling {@link ProcessorProvider#ProcessorProvider()}
+   * ProcessorProvider}* by calling {@link ProcessorProvider#ProcessorProvider()}
    *
    * @param baseFolderPath the base folder path where the files should be put into
    * @param processorProvider the processor provided that should be used for entity serialization

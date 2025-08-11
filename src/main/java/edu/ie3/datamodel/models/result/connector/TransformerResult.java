@@ -44,10 +44,20 @@ public abstract class TransformerResult extends ConnectorResult {
     this.tapPos = tapPos;
   }
 
+  /**
+   * Gets tap pos.
+   *
+   * @return the tap pos
+   */
   public int getTapPos() {
     return tapPos;
   }
 
+  /**
+   * Sets tap pos.
+   *
+   * @param tapPos the tap pos
+   */
   public void setTapPos(int tapPos) {
     this.tapPos = tapPos;
   }

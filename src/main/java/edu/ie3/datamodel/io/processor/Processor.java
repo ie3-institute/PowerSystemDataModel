@@ -40,8 +40,10 @@ import org.slf4j.LoggerFactory;
  * @param <T> Type parameter of the class to handle
  */
 public abstract class Processor<T> {
+  /** The constant logger. */
   protected static final Logger logger = LoggerFactory.getLogger(Processor.class);
 
+  /** The Registered class. */
   protected final Class<? extends T> registeredClass;
 
   /* Quantities associated to those fields must be treated differently (e.g. input and result), all other quantity /
@@ -75,6 +77,7 @@ public abstract class Processor<T> {
    * Instantiates a Processor for a foreseen class
    *
    * @param foreSeenClass Class and its children that are foreseen to be handled with this processor
+   * @throws EntityProcessorException the entity processor exception
    */
   protected Processor(Class<? extends T> foreSeenClass) throws EntityProcessorException {
     if (!getEligibleEntityClasses().contains(foreSeenClass))
@@ -109,6 +112,7 @@ public abstract class Processor<T> {
    *
    * @param cls class to use for mapping
    * @return a map of all field values of the class
+   * @throws EntityProcessorException the entity processor exception
    */
   protected SortedMap<String, GetterMethod> mapFieldNameToGetter(Class<?> cls)
       throws EntityProcessorException {
@@ -121,6 +125,7 @@ public abstract class Processor<T> {
    * @param cls class to use for mapping
    * @param ignoreFields A collection of all field names to ignore during process
    * @return a map of all field values of the class
+   * @throws EntityProcessorException the entity processor exception
    */
   protected SortedMap<String, GetterMethod> mapFieldNameToGetter(
       Class<?> cls, Collection<String> ignoreFields) throws EntityProcessorException {
@@ -167,8 +172,8 @@ public abstract class Processor<T> {
    * Ensure, that the uuid field is put first. All other fields are sorted alphabetically.
    * Additionally, the map is immutable
    *
-   * @param unsorted The unsorted map
    * @param <V> Type of the values in the map
+   * @param unsorted The unsorted map
    * @return The sorted map - what a surprise!
    */
   public static <V> SortedMap<String, V> putUuidFirst(Map<String, V> unsorted) {
@@ -183,6 +188,7 @@ public abstract class Processor<T> {
    * @param object The object to process
    * @param fieldNameToGetter Mapping from field name to getter
    * @return Mapping from field name to value as String representation
+   * @throws EntityProcessorException the entity processor exception
    */
   protected LinkedHashMap<String, String> processObject(
       Object object, Map<String, GetterMethod> fieldNameToGetter) throws EntityProcessorException {
@@ -213,6 +219,7 @@ public abstract class Processor<T> {
    * @param method The method, that is invoked
    * @param fieldName Name of the foreseen field
    * @return A String representation of the result
+   * @throws EntityProcessorException the entity processor exception
    */
   protected String processMethodResult(
       Object methodReturnObject, GetterMethod method, String fieldName)
@@ -327,6 +334,7 @@ public abstract class Processor<T> {
    * @param fieldName the field name that should be generated (either v_rated or volt_lvl)
    * @return the resulting string of a VoltageLevel attribute value for the provided field or an
    *     empty string when an invalid field name is provided
+   * @throws EntityProcessorException the entity processor exception
    */
   protected String processVoltageLevel(VoltageLevel voltageLevel, String fieldName)
       throws EntityProcessorException {
@@ -346,6 +354,7 @@ public abstract class Processor<T> {
    * @param fieldName the field name the quantity is set to
    * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
    *     or empty if an error occurred during processing
+   * @throws EntityProcessorException the entity processor exception
    */
   protected String handleQuantity(Quantity<?> quantity, String fieldName)
       throws EntityProcessorException {

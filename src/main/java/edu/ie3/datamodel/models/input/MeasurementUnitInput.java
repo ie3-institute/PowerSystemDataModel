@@ -78,22 +78,47 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
     this.q = q;
   }
 
+  /**
+   * Gets node.
+   *
+   * @return the node
+   */
   public NodeInput getNode() {
     return node;
   }
 
+  /**
+   * Gets v mag.
+   *
+   * @return the v mag
+   */
   public boolean getVMag() {
     return vMag;
   }
 
+  /**
+   * Gets v ang.
+   *
+   * @return the v ang
+   */
   public boolean getVAng() {
     return vAng;
   }
 
+  /**
+   * Gets p.
+   *
+   * @return the p
+   */
   public boolean getP() {
     return p;
   }
 
+  /**
+   * Gets q.
+   *
+   * @return the q
+   */
   public boolean getQ() {
     return q;
   }
@@ -152,7 +177,7 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
   /**
    * A builder pattern based approach to create copies of {@link MeasurementUnitInput} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * MeasurementUnitInput}
+   * MeasurementUnitInput}*
    *
    * @version 0.1
    * @since 05.06.20
@@ -181,26 +206,56 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
           getUuid(), getId(), getOperator(), getOperationTime(), node, vMag, vAng, p, q);
     }
 
+    /**
+     * Node measurement unit input copy builder.
+     *
+     * @param node the node
+     * @return the measurement unit input copy builder
+     */
     public MeasurementUnitInputCopyBuilder node(NodeInput node) {
       this.node = node;
       return thisInstance();
     }
 
+    /**
+     * V mag measurement unit input copy builder.
+     *
+     * @param vMag the v mag
+     * @return the measurement unit input copy builder
+     */
     public MeasurementUnitInputCopyBuilder vMag(boolean vMag) {
       this.vMag = vMag;
       return thisInstance();
     }
 
+    /**
+     * V ang measurement unit input copy builder.
+     *
+     * @param vAng the v ang
+     * @return the measurement unit input copy builder
+     */
     public MeasurementUnitInputCopyBuilder vAng(boolean vAng) {
       this.vAng = vAng;
       return thisInstance();
     }
 
+    /**
+     * P measurement unit input copy builder.
+     *
+     * @param p the p
+     * @return the measurement unit input copy builder
+     */
     public MeasurementUnitInputCopyBuilder p(boolean p) {
       this.p = p;
       return thisInstance();
     }
 
+    /**
+     * Q measurement unit input copy builder.
+     *
+     * @param q the q
+     * @return the measurement unit input copy builder
+     */
     public MeasurementUnitInputCopyBuilder q(boolean q) {
       this.q = q;
       return thisInstance();

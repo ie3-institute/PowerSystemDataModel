@@ -14,6 +14,8 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
   private final String id;
 
   /**
+   * Instantiates a new Asset type input.
+   *
    * @param uuid of the input entity
    * @param id of the asset
    */
@@ -22,10 +24,20 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
     this.id = id;
   }
 
+  /**
+   * Gets id.
+   *
+   * @return the id
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * Copy asset type input copy builder.
+   *
+   * @return the asset type input copy builder
+   */
   public abstract AssetTypeInputCopyBuilder<?> copy();
 
   @Override
@@ -48,7 +60,9 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
 
   /**
    * Abstract class for all builder that build child entities of abstract class {@link
-   * AssetTypeInput}
+   * AssetTypeInput}*
+   *
+   * @param <B> the type parameter
    */
   public abstract static class AssetTypeInputCopyBuilder<
           B extends AssetTypeInput.AssetTypeInputCopyBuilder<B>>
@@ -56,16 +70,32 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
 
     private String id;
 
+    /**
+     * Instantiates a new Asset type input copy builder.
+     *
+     * @param entity the entity
+     */
     protected AssetTypeInputCopyBuilder(AssetTypeInput entity) {
       super(entity);
       this.id = entity.getId();
     }
 
+    /**
+     * Id b.
+     *
+     * @param id the id
+     * @return the b
+     */
     public B id(String id) {
       this.id = id;
       return thisInstance();
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     protected String getId() {
       return id;
     }

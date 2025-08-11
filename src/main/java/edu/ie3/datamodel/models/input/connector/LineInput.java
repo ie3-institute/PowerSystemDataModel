@@ -21,7 +21,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Describes an electrical grid line that connects two {@link
- * edu.ie3.datamodel.models.input.NodeInput}s
+ * edu.ie3.datamodel.models.input.NodeInput}*s
  */
 public class LineInput extends ConnectorInput implements HasType {
 
@@ -108,14 +108,29 @@ public class LineInput extends ConnectorInput implements HasType {
     return type;
   }
 
+  /**
+   * Gets length.
+   *
+   * @return the length
+   */
   public ComparableQuantity<Length> getLength() {
     return length;
   }
 
+  /**
+   * Gets geo position.
+   *
+   * @return the geo position
+   */
   public LineString getGeoPosition() {
     return geoPosition;
   }
 
+  /**
+   * Gets olm characteristic.
+   *
+   * @return the olm characteristic
+   */
   public OlmCharacteristicInput getOlmCharacteristic() {
     return olmCharacteristic;
   }
@@ -206,21 +221,45 @@ public class LineInput extends ConnectorInput implements HasType {
           olmCharacteristic);
     }
 
+    /**
+     * Geo position line input copy builder.
+     *
+     * @param geoPosition the geo position
+     * @return the line input copy builder
+     */
     public LineInputCopyBuilder geoPosition(LineString geoPosition) {
       this.geoPosition = geoPosition;
       return thisInstance();
     }
 
+    /**
+     * Type line input copy builder.
+     *
+     * @param type the type
+     * @return the line input copy builder
+     */
     public LineInputCopyBuilder type(LineTypeInput type) {
       this.type = type;
       return thisInstance();
     }
 
+    /**
+     * Length line input copy builder.
+     *
+     * @param length the length
+     * @return the line input copy builder
+     */
     public LineInputCopyBuilder length(ComparableQuantity<Length> length) {
       this.length = length;
       return thisInstance();
     }
 
+    /**
+     * Olm characteristic line input copy builder.
+     *
+     * @param olmCharacteristic the olm characteristic
+     * @return the line input copy builder
+     */
     public LineInputCopyBuilder olmCharacteristic(OlmCharacteristicInput olmCharacteristic) {
       this.olmCharacteristic = olmCharacteristic;
       return thisInstance();

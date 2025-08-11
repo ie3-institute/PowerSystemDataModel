@@ -16,5 +16,10 @@ import edu.ie3.datamodel.models.input.connector.LineInput;
  */
 public interface HasLine extends NestedEntity {
 
+  /**
+   * Gets line.
+   *
+   * @return the line
+   */
   LineInput getLine();
 }

@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Load input factory. */
 public class LoadInputFactory
     extends SystemParticipantInputEntityFactory<LoadInput, SystemParticipantEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(LoadInputFactory.class);
@@ -30,6 +31,7 @@ public class LoadInputFactory
   private static final String S_RATED = "sRated";
   private static final String COS_PHI = "cosPhiRated";
 
+  /** Instantiates a new Load input factory. */
   public LoadInputFactory() {
     super(LoadInput.class);
   }

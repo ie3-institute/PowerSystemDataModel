@@ -26,14 +26,24 @@ import org.slf4j.LoggerFactory;
 /** Abstract class for WeatherSource by Csv and Sql Data */
 public abstract class WeatherSource extends EntitySource {
 
+  /** The constant log. */
   protected static final Logger log = LoggerFactory.getLogger(WeatherSource.class);
 
+  /** The Weather factory. */
   protected TimeBasedWeatherValueFactory weatherFactory;
 
+  /** The Id coordinate source. */
   protected IdCoordinateSource idCoordinateSource;
 
+  /** The constant COORDINATE_ID. */
   protected static final String COORDINATE_ID = "coordinateid";
 
+  /**
+   * Instantiates a new Weather source.
+   *
+   * @param idCoordinateSource the id coordinate source
+   * @param weatherFactory the weather factory
+   */
   protected WeatherSource(
       IdCoordinateSource idCoordinateSource, TimeBasedWeatherValueFactory weatherFactory) {
     this.idCoordinateSource = idCoordinateSource;
@@ -44,6 +54,7 @@ public abstract class WeatherSource extends EntitySource {
    * Method to retrieve the fields found in the source.
    *
    * @return an option for fields found in the source
+   * @throws SourceException the source exception
    */
   public abstract Optional<Set<String>> getSourceFields() throws SourceException;
 
@@ -54,19 +65,57 @@ public abstract class WeatherSource extends EntitySource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+  /**
+   * Gets weather.
+   *
+   * @param timeInterval the time interval
+   * @return the weather
+   * @throws SourceException the source exception
+   */
   public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) throws SourceException;
 
+  /**
+   * Gets weather.
+   *
+   * @param timeInterval the time interval
+   * @param coordinates the coordinates
+   * @return the weather
+   * @throws SourceException the source exception
+   */
   public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
       throws SourceException;
 
+  /**
+   * Gets weather.
+   *
+   * @param date the date
+   * @param coordinate the coordinate
+   * @return the weather
+   * @throws SourceException the source exception
+   */
   public abstract Optional<TimeBasedValue<WeatherValue>> getWeather(
       ZonedDateTime date, Point coordinate) throws SourceException;
 
+  /**
+   * Gets time keys after.
+   *
+   * @param time the time
+   * @return the time keys after
+   * @throws SourceException the source exception
+   */
   public abstract Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
       throws SourceException;
 
+  /**
+   * Gets time keys after.
+   *
+   * @param time the time
+   * @param coordinate the coordinate
+   * @return the time keys after
+   * @throws SourceException the source exception
+   */
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
       throws SourceException {
     return getTimeKeysAfter(time).getOrDefault(coordinate, Collections.emptyList());
@@ -118,6 +167,13 @@ public abstract class WeatherSource extends EntitySource {
     return coordinateToTimeSeriesMap;
   }
 
+  /**
+   * To time keys map.
+   *
+   * @param fieldMaps the field maps
+   * @param factory the factory
+   * @return the map
+   */
   protected Map<Point, List<ZonedDateTime>> toTimeKeys(
       Stream<Map<String, String>> fieldMaps, TimeBasedWeatherValueFactory factory) {
     return groupTime(
@@ -135,6 +191,12 @@ public abstract class WeatherSource extends EntitySource {
             }));
   }
 
+  /**
+   * Group time map.
+   *
+   * @param values the values
+   * @return the map
+   */
   protected Map<Point, List<ZonedDateTime>> groupTime(
       Stream<Pair<Optional<Point>, ZonedDateTime>> values) {
     return values
@@ -157,6 +219,7 @@ public abstract class WeatherSource extends EntitySource {
    * @param factory TimeBasedWeatherValueFactory
    * @param inputStream stream of fields to convert into TimeBasedValues
    * @return a list of that TimeBasedValues
+   * @throws SourceException the source exception
    */
   protected List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
       TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream)

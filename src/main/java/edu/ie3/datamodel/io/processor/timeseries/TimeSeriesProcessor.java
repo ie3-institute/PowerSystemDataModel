@@ -26,6 +26,14 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * The type Time series processor.
+ *
+ * @param <T> the type parameter
+ * @param <E> the type parameter
+ * @param <V> the type parameter
+ * @param <R> the type parameter
+ */
 public class TimeSeriesProcessor<
         T extends TimeSeries<E, V, R>,
         E extends TimeSeriesEntry<V>,
@@ -85,17 +93,43 @@ public class TimeSeriesProcessor<
 
   private final String[] flattenedHeaderElements;
 
+  /**
+   * Instantiates a new Time series processor.
+   *
+   * @param timeSeriesClass the time series class
+   * @param entryClass the entry class
+   * @param valueClass the value class
+   * @throws EntityProcessorException the entity processor exception
+   */
   public TimeSeriesProcessor(Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass)
       throws EntityProcessorException {
     this(timeSeriesClass, entryClass, valueClass, Optional.empty());
   }
 
+  /**
+   * Instantiates a new Time series processor.
+   *
+   * @param timeSeriesClass the time series class
+   * @param entryClass the entry class
+   * @param valueClass the value class
+   * @param scheme the scheme
+   * @throws EntityProcessorException the entity processor exception
+   */
   public TimeSeriesProcessor(
       Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass, LoadValues.Scheme scheme)
       throws EntityProcessorException {
     this(timeSeriesClass, entryClass, valueClass, Optional.ofNullable(scheme));
   }
 
+  /**
+   * Instantiates a new Time series processor.
+   *
+   * @param timeSeriesClass the time series class
+   * @param entryClass the entry class
+   * @param valueClass the value class
+   * @param scheme the scheme
+   * @throws EntityProcessorException the entity processor exception
+   */
   public TimeSeriesProcessor(
       Class<T> timeSeriesClass,
       Class<E> entryClass,
@@ -126,6 +160,11 @@ public class TimeSeriesProcessor<
     this.flattenedHeaderElements = fieldToSource.keySet().toArray(new String[0]);
   }
 
+  /**
+   * Gets registered key.
+   *
+   * @return the registered key
+   */
   public TimeSeriesProcessorKey getRegisteredKey() {
     return registeredKey;
   }
@@ -213,6 +252,7 @@ public class TimeSeriesProcessor<
    *
    * @param timeSeries Time series to handle
    * @return A set of mappings from field name to value
+   * @throws EntityProcessorException the entity processor exception
    */
   public Set<LinkedHashMap<String, String>> handleTimeSeries(T timeSeries)
       throws EntityProcessorException {

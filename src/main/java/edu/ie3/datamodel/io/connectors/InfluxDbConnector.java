@@ -25,9 +25,11 @@ import org.influxdb.dto.QueryResult;
  */
 public class InfluxDbConnector implements DataConnector {
 
+  /** The constant NO_SCENARIO. */
   /* default scenario parameter when no scenario is provided */
   public static final String NO_SCENARIO = "no_scenario";
 
+  /** The constant WEATHER_SCENARIO. */
   /* default scenario parameter for weather data */
   public static final String WEATHER_SCENARIO = "weather_scenario";
 
@@ -46,9 +48,9 @@ public class InfluxDbConnector implements DataConnector {
    * Initializes a new InfluxDbConnector with the given url, databaseName and scenario name.
    *
    * @param url the connection url for the influxDB database
+   * @param databaseName the name of the database the session should be set to
    * @param scenarioName the name of the simulation scenario which will be used in influxDB
    *     measurement names
-   * @param databaseName the name of the database the session should be set to
    * @param createDb true if the connector should create the database if it doesn't exist yet, false
    *     otherwise
    * @param logLevel log level of the {@link org.influxdb.InfluxDB.LogLevel} logger
@@ -109,7 +111,11 @@ public class InfluxDbConnector implements DataConnector {
     this(url, databaseName, NO_SCENARIO, true, InfluxDB.LogLevel.NONE, BatchOptions.DEFAULTS);
   }
 
-  /** Returns the option for fields found in the source. */
+  /**
+   * Returns the option for fields found in the source.
+   *
+   * @return the source fields
+   */
   public Optional<Set<String>> getSourceFields() {
     QueryResult tagKeys = session.query(new Query("SHOW TAG KEYS ON " + databaseName));
     Map<String, Set<Map<String, String>>> tagResults = parseQueryResult(tagKeys);
@@ -160,6 +166,11 @@ public class InfluxDbConnector implements DataConnector {
     return session;
   }
 
+  /**
+   * Gets scenario name.
+   *
+   * @return the scenario name
+   */
   public String getScenarioName() {
     return scenarioName;
   }

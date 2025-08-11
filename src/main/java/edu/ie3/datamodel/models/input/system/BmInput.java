@@ -100,19 +100,39 @@ public class BmInput extends SystemParticipantInput implements HasType {
     this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
   }
 
+  /**
+   * Returns the type associated with this biomass input.
+   *
+   * @return The {@link BmTypeInput} representing the type of biomass input.
+   */
   @Override
   public BmTypeInput getType() {
     return type;
   }
 
+  /**
+   * Is market reaction boolean.
+   *
+   * @return the boolean
+   */
   public boolean isMarketReaction() {
     return marketReaction;
   }
 
+  /**
+   * Is cost controlled boolean.
+   *
+   * @return the boolean
+   */
   public boolean isCostControlled() {
     return costControlled;
   }
 
+  /**
+   * Gets feed in tariff.
+   *
+   * @return the feed in tariff
+   */
   public ComparableQuantity<EnergyPrice> getFeedInTariff() {
     return feedInTariff;
   }
@@ -188,21 +208,45 @@ public class BmInput extends SystemParticipantInput implements HasType {
       this.feedInTariff = entity.getFeedInTariff();
     }
 
+    /**
+     * Type bm input copy builder.
+     *
+     * @param type the type
+     * @return the bm input copy builder
+     */
     public BmInputCopyBuilder type(BmTypeInput type) {
       this.type = type;
       return thisInstance();
     }
 
+    /**
+     * Market reaction bm input copy builder.
+     *
+     * @param marketReaction the market reaction
+     * @return the bm input copy builder
+     */
     public BmInputCopyBuilder marketReaction(boolean marketReaction) {
       this.marketReaction = marketReaction;
       return thisInstance();
     }
 
+    /**
+     * Cost controlled bm input copy builder.
+     *
+     * @param costControlled the cost controlled
+     * @return the bm input copy builder
+     */
     public BmInputCopyBuilder costControlled(boolean costControlled) {
       this.costControlled = costControlled;
       return thisInstance();
     }
 
+    /**
+     * Feed in tariff bm input copy builder.
+     *
+     * @param feedInTariff the feed in tariff
+     * @return the bm input copy builder
+     */
     public BmInputCopyBuilder feedInTariff(ComparableQuantity<EnergyPrice> feedInTariff) {
       this.feedInTariff = feedInTariff;
       return thisInstance();

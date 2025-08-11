@@ -17,6 +17,7 @@ import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.UUID;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Bm input factory. */
 public class BmInputFactory
     extends SystemParticipantInputEntityFactory<
         BmInput, SystemParticipantTypedEntityData<BmTypeInput>> {
@@ -24,6 +25,7 @@ public class BmInputFactory
   private static final String COST_CONTROLLED = "costControlled";
   private static final String FEED_IN_TARIFF = "feedInTariff";
 
+  /** Instantiates a new Bm input factory. */
   public BmInputFactory() {
     super(BmInput.class);
   }

@@ -83,6 +83,7 @@ public class FileNamingStrategy {
    * @param <T> Type of the time series
    * @param <E> Type of the entry in the time series
    * @param <V> Type of the value, that is carried by the time series entry
+   * @param <R> the type parameter
    * @param timeSeries Time series to derive naming information from
    * @return An optional sub path to the actual file
    */
@@ -138,6 +139,7 @@ public class FileNamingStrategy {
    * @param <T> Type of the time series
    * @param <E> Type of the entry in the time series
    * @param <V> Type of the value, that is carried by the time series entry
+   * @param <R> the type parameter
    * @param timeSeries Time series to derive naming information from
    * @return An optional sub directory path
    */
@@ -241,20 +243,44 @@ public class FileNamingStrategy {
           "Unknown format of '" + fileName + "'. Cannot extract meta information.");
   }
 
+  /**
+   * Individual time series meta information individual time series meta information.
+   *
+   * @param fileName the file name
+   * @return the individual time series meta information
+   */
   public IndividualTimeSeriesMetaInformation individualTimeSeriesMetaInformation(String fileName) {
     return entityPersistenceNamingStrategy.individualTimesSeriesMetaInformation(
         removeFileNameEnding(fileName));
   }
 
+  /**
+   * Load profile time series meta information load profile meta information.
+   *
+   * @param fileName the file name
+   * @return the load profile meta information
+   */
   public LoadProfileMetaInformation loadProfileTimeSeriesMetaInformation(String fileName) {
     return entityPersistenceNamingStrategy.loadProfileTimesSeriesMetaInformation(
         removeFileNameEnding(fileName));
   }
 
+  /**
+   * Remove file name ending string.
+   *
+   * @param fileName the file name
+   * @return the string
+   */
   public static String removeFileNameEnding(String fileName) {
     return fileName.replaceAll("(?:\\.[^.\\\\/\\s]{1,255}){1,2}$", "");
   }
 
+  /**
+   * Remove file name ending path.
+   *
+   * @param filename the filename
+   * @return the path
+   */
   public static Path removeFileNameEnding(Path filename) {
     return Path.of(removeFileNameEnding(filename.toString()));
   }
@@ -285,6 +311,7 @@ public class FileNamingStrategy {
    * @param <T> Type of the time series
    * @param <E> Type of the entry in the time series
    * @param <V> Type of the value, that is carried by the time series entry
+   * @param <R> the type parameter
    * @param timeSeries Time series to derive naming information from
    * @return A file name for this particular time series
    */

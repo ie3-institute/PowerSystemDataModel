@@ -60,7 +60,11 @@ public class CouchbaseConnector implements DataConnector {
     cluster = Cluster.connect(url, clusterOptions);
   }
 
-  /** Returns the option for a set of found fields. */
+  /**
+   * Returns the option for a set of found fields.
+   *
+   * @return the source fields
+   */
   @SuppressWarnings("unchecked")
   public Optional<Set<String>> getSourceFields() {
     String query =
@@ -138,6 +142,8 @@ public class CouchbaseConnector implements DataConnector {
   }
 
   /**
+   * Gets bucket name.
+   *
    * @return the bucket name
    */
   public String getBucketName() {

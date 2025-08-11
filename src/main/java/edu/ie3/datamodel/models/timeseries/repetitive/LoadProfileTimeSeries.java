@@ -18,10 +18,20 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Describes a load profile time series with repetitive values that can be calculated from a pattern
+ *
+ * @param <V> The type of load values associated with this time series, which must extend {@link
+ *     LoadValues}.
  */
 public class LoadProfileTimeSeries<V extends LoadValues>
     extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
+
+  /** The load profile associated with this instance. */
   private final LoadProfile loadProfile;
+
+  /**
+   * A mapping of integer keys to values of type V, representing some form of value mapping related
+   * to the load profile.
+   */
   private final Map<Integer, V> valueMapping;
 
   /**
@@ -33,6 +43,15 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   /** The profile energy scaling in kWh. */
   private final ComparableQuantity<Energy> profileEnergyScaling;
 
+  /**
+   * Instantiates a new Load profile time series.
+   *
+   * @param uuid the uuid
+   * @param loadProfile the load profile
+   * @param entries the entries
+   * @param maxPower the max power
+   * @param profileEnergyScaling the profile energy scaling
+   */
   public LoadProfileTimeSeries(
       UUID uuid,
       LoadProfile loadProfile,
@@ -53,17 +72,27 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   /**
    * Returns the maximum average power consumption per quarter-hour calculated over all seasons and
    * weekday types of given load profile in Watt.
+   *
+   * @return the max power value in kW.
    */
   public Optional<ComparableQuantity<Power>> maxPower() {
     return Optional.ofNullable(maxPower);
   }
 
-  /** Returns the profile energy scaling in kWh. */
+  /**
+   * Returns the profile energy scaling in kWh.
+   *
+   * @return the scaled energy of the profile in kWh .
+   */
   public Optional<ComparableQuantity<Energy>> loadProfileScaling() {
     return Optional.ofNullable(profileEnergyScaling);
   }
 
-  /** Returns the {@link LoadProfile}. */
+  /**
+   * Returns the {@link LoadProfile}.
+   *
+   * @return the load profile name.
+   */
   public LoadProfile getLoadProfile() {
     return loadProfile;
   }
@@ -92,7 +121,11 @@ public class LoadProfileTimeSeries<V extends LoadValues>
     return List.of(time.plusMinutes(15)); // dummy value that will return next quarter-hour value
   }
 
-  /** Returns the value mapping. */
+  /**
+   * Returns the value mapping.
+   *
+   * @return the value mapping.
+   */
   protected Map<Integer, V> getValueMapping() {
     return valueMapping;
   }

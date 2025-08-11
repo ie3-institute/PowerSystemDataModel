@@ -28,9 +28,16 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The type Sql time series source.
+ *
+ * @param <V> the type parameter
+ */
 public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
+  /** The constant log. */
   protected static final Logger log = LoggerFactory.getLogger(SqlTimeSeriesSource.class);
+
   private final SqlDataSource dataSource;
   private final String tableName;
 
@@ -51,6 +58,14 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   private final String queryForValueBefore;
   private final String queryTime;
 
+  /**
+   * Instantiates a new Sql time series source.
+   *
+   * @param sqlDataSource the sql data source
+   * @param timeSeriesUuid the time series uuid
+   * @param valueClass the value class
+   * @param factory the factory
+   */
   public SqlTimeSeriesSource(
       SqlDataSource sqlDataSource,
       UUID timeSeriesUuid,

@@ -15,6 +15,10 @@ import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
  * @since 31.03.20
  */
 public interface HasThermalStorage {
-
+  /**
+   * Retrieves the thermal storage input associated with this entity.
+   *
+   * @return The {@link ThermalStorageInput} associated with this entity.
+   */
   ThermalStorageInput getThermalStorage();
 }

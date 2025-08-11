@@ -16,8 +16,8 @@ import java.util.Optional;
 
 /**
  * Data used for those classes of {@link
- * edu.ie3.datamodel.models.input.system.SystemParticipantInput}, including an (optional) link to an
- * {@link EmInput} entity.
+ * edu.ie3.datamodel.models.input.system.SystemParticipantInput}*, including an (optional) link to
+ * an {@link EmInput} entity.
  */
 public class SystemParticipantEntityData extends NodeAssetInputEntityData {
 
@@ -43,6 +43,11 @@ public class SystemParticipantEntityData extends NodeAssetInputEntityData {
     this.controllingEm = controllingEm;
   }
 
+  /**
+   * Gets controlling em.
+   *
+   * @return the controlling em
+   */
   public Optional<EmInput> getControllingEm() {
     return Optional.ofNullable(controllingEm);
   }
@@ -69,7 +74,7 @@ public class SystemParticipantEntityData extends NodeAssetInputEntityData {
 
   /**
    * Creates a new SystemParticipantEntityData object based on a given {@link
-   * NodeAssetInputEntityData} object and given energy management unit
+   * NodeAssetInputEntityData}* object and given energy management unit
    *
    * @param nodeAssetInputEntityData The node asset entity data object to use attributes of
    * @param controllingEm The energy management unit that is managing the system participant. Null,

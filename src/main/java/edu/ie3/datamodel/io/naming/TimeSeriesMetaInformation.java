@@ -11,6 +11,11 @@ import java.util.UUID;
 /** Meta information, that describe a certain data source */
 public abstract class TimeSeriesMetaInformation extends UniqueInputEntity {
 
+  /**
+   * Instantiates a new Time series meta information.
+   *
+   * @param uuid the uuid
+   */
   protected TimeSeriesMetaInformation(UUID uuid) {
     super(uuid);
   }

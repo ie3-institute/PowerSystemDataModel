@@ -15,6 +15,15 @@ import tech.units.indriya.ComparableQuantity;
 /** Represents the results of Cylindrical Storage */
 public class CylindricalStorageResult extends AbstractThermalStorageResult {
 
+  /**
+   * Instantiates a new Cylindrical storage result.
+   *
+   * @param time the time
+   * @param inputModel the input model
+   * @param energy the energy
+   * @param qDot the q dot
+   * @param fillLevel the fill level
+   */
   public CylindricalStorageResult(
       ZonedDateTime time,
       UUID inputModel,

@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link
- * SystemParticipantTypeInput} and {@link OperatorInput} from different data sources e.g. .csv files
- * or databases
+ * SystemParticipantTypeInput}* and {@link OperatorInput} from different data sources e.g. .csv
+ * files or databases
  *
  * @version 0.1
  * @since 08.04.20
@@ -43,6 +43,11 @@ public class TypeSource extends EntitySource {
 
   private final DataSource dataSource;
 
+  /**
+   * Instantiates a new Type source.
+   *
+   * @param dataSource the data source
+   */
   public TypeSource(DataSource dataSource) {
     this.dataSource = dataSource;
 
@@ -81,11 +86,12 @@ public class TypeSource extends EntitySource {
    * Returns a set of {@link Transformer2WTypeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * UUID} uniqueness of the provided {@link Transformer2WTypeInput} which has to be checked
+   * UUID}* uniqueness of the provided {@link Transformer2WTypeInput} which has to be checked
    * manually, as {@link Transformer2WTypeInput#equals(Object)} is NOT restricted on the uuid of
    * {@link Transformer2WTypeInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link Transformer2WTypeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, Transformer2WTypeInput> getTransformer2WTypes() throws SourceException {
     return getEntities(Transformer2WTypeInput.class, dataSource, transformer2WTypeInputFactory);
@@ -95,10 +101,11 @@ public class TypeSource extends EntitySource {
    * Returns a set of {@link OperatorInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * UUID} uniqueness of the provided {@link OperatorInput} which has to be checked manually, as
+   * UUID}* uniqueness of the provided {@link OperatorInput} which has to be checked manually, as
    * {@link OperatorInput#equals(Object)} is NOT restricted on the uuid of {@link OperatorInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, OperatorInput> getOperators() throws SourceException {
     return getEntities(OperatorInput.class, dataSource, operatorInputFactory);
@@ -108,10 +115,11 @@ public class TypeSource extends EntitySource {
    * Returns a set of {@link LineTypeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * UUID} uniqueness of the provided {@link LineTypeInput} which has to be checked manually, as
+   * UUID}* uniqueness of the provided {@link LineTypeInput} which has to be checked manually, as
    * {@link LineTypeInput#equals(Object)} is NOT restricted on the uuid of {@link LineTypeInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, LineTypeInput> getLineTypes() throws SourceException {
     return getEntities(LineTypeInput.class, dataSource, lineTypeInputFactory);
@@ -121,11 +129,12 @@ public class TypeSource extends EntitySource {
    * Returns a set of {@link Transformer3WTypeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * UUID} uniqueness of the provided {@link Transformer3WTypeInput} which has to be checked
+   * UUID}* uniqueness of the provided {@link Transformer3WTypeInput} which has to be checked
    * manually, as {@link Transformer3WTypeInput#equals(Object)} is NOT restricted on the uuid of
    * {@link Transformer3WTypeInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link Transformer3WTypeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, Transformer3WTypeInput> getTransformer3WTypes() throws SourceException {
     return getEntities(Transformer3WTypeInput.class, dataSource, transformer3WTypeInputFactory);
@@ -135,10 +144,11 @@ public class TypeSource extends EntitySource {
    * Returns a set of {@link BmTypeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * UUID} uniqueness of the provided {@link BmTypeInput} which has to be checked manually, as
+   * UUID}* uniqueness of the provided {@link BmTypeInput} which has to be checked manually, as
    * {@link BmTypeInput#equals(Object)} is NOT restricted on the uuid of {@link BmTypeInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link BmTypeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, BmTypeInput> getBmTypes() throws SourceException {
     return getEntities(BmTypeInput.class, dataSource, systemParticipantTypeInputFactory);
@@ -148,10 +158,11 @@ public class TypeSource extends EntitySource {
    * Returns a set of {@link ChpTypeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * UUID} uniqueness of the provided {@link ChpTypeInput} which has to be checked manually, as
+   * UUID}* uniqueness of the provided {@link ChpTypeInput} which has to be checked manually, as
    * {@link ChpTypeInput#equals(Object)} is NOT restricted on the uuid of {@link ChpTypeInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link ChpTypeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, ChpTypeInput> getChpTypes() throws SourceException {
     return getEntities(ChpTypeInput.class, dataSource, systemParticipantTypeInputFactory);
@@ -161,10 +172,11 @@ public class TypeSource extends EntitySource {
    * Returns a set of {@link HpTypeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * UUID} uniqueness of the provided {@link HpTypeInput} which has to be checked manually, as
+   * UUID}* uniqueness of the provided {@link HpTypeInput} which has to be checked manually, as
    * {@link HpTypeInput#equals(Object)} is NOT restricted on the uuid of {@link HpTypeInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link HpTypeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, HpTypeInput> getHpTypes() throws SourceException {
     return getEntities(HpTypeInput.class, dataSource, systemParticipantTypeInputFactory);
@@ -174,11 +186,12 @@ public class TypeSource extends EntitySource {
    * Returns a set of {@link StorageTypeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * UUID} uniqueness of the provided {@link StorageTypeInput} which has to be checked manually, as
+   * UUID}* uniqueness of the provided {@link StorageTypeInput} which has to be checked manually, as
    * {@link StorageTypeInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * StorageTypeInput}.
+   * StorageTypeInput}*.
    *
    * @return a map of UUID to object- and uuid-unique {@link StorageTypeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, StorageTypeInput> getStorageTypes() throws SourceException {
     return getEntities(StorageTypeInput.class, dataSource, systemParticipantTypeInputFactory);
@@ -188,10 +201,11 @@ public class TypeSource extends EntitySource {
    * Returns a set of {@link WecTypeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * UUID} uniqueness of the provided {@link WecTypeInput} which has to be checked manually, as
+   * UUID}* uniqueness of the provided {@link WecTypeInput} which has to be checked manually, as
    * {@link WecTypeInput#equals(Object)} is NOT restricted on the uuid of {@link WecTypeInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link WecTypeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, WecTypeInput> getWecTypes() throws SourceException {
     return getEntities(WecTypeInput.class, dataSource, systemParticipantTypeInputFactory);
@@ -201,10 +215,11 @@ public class TypeSource extends EntitySource {
    * Returns a set of {@link EvTypeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * UUID} uniqueness of the provided {@link EvTypeInput} which has to be checked manually, as
+   * UUID}* uniqueness of the provided {@link EvTypeInput} which has to be checked manually, as
    * {@link EvTypeInput#equals(Object)} is NOT restricted on the uuid of {@link EvTypeInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link EvTypeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, EvTypeInput> getEvTypes() throws SourceException {
     return getEntities(EvTypeInput.class, dataSource, systemParticipantTypeInputFactory);

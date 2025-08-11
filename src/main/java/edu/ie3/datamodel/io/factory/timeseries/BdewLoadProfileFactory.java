@@ -28,16 +28,18 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
+/** The type Bdew load profile factory. */
 public class BdewLoadProfileFactory
     extends LoadProfileFactory<BdewStandardLoadProfile, BdewLoadValues> {
-  // 1999 profile scheme
+  /** The constant BDEW1999_FIELDS. */
   public static final BdewLoadValues.BdewMap<String> BDEW1999_FIELDS =
       BdewKey.toMap(BdewScheme.BDEW1999);
 
-  // 2025 profile scheme
+  /** The constant BDEW2025_FIELDS. */
   public static final BdewLoadValues.BdewMap<String> BDEW2025_FIELDS =
       BdewKey.toMap(BdewScheme.BDEW2025);
 
+  /** Instantiates a new Bdew load profile factory. */
   public BdewLoadProfileFactory() {
     super(BdewLoadValues.class);
   }

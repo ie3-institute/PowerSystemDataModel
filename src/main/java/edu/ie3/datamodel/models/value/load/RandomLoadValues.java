@@ -56,6 +56,8 @@ public class RandomLoadValues implements LoadValues<RandomLoadProfile> {
   private final transient GeneralizedExtremeValueDistribution gevSu;
 
   /**
+   * Instantiates a new Random load values.
+   *
    * @param kSa Shape parameter for a Saturday
    * @param kSu Shape parameter for a Sunday
    * @param kWd Shape parameter for a working day
@@ -119,38 +121,83 @@ public class RandomLoadValues implements LoadValues<RandomLoadProfile> {
     return randomValue;
   }
 
+  /**
+   * Gets my wd.
+   *
+   * @return the my wd
+   */
   public double getMyWd() {
     return myWd;
   }
 
+  /**
+   * Gets my sa.
+   *
+   * @return the my sa
+   */
   public double getMySa() {
     return mySa;
   }
 
+  /**
+   * Gets my su.
+   *
+   * @return the my su
+   */
   public double getMySu() {
     return mySu;
   }
 
+  /**
+   * Gets sigma wd.
+   *
+   * @return the sigma wd
+   */
   public double getSigmaWd() {
     return sigmaWd;
   }
 
+  /**
+   * Gets sigma sa.
+   *
+   * @return the sigma sa
+   */
   public double getSigmaSa() {
     return sigmaSa;
   }
 
+  /**
+   * Gets sigma su.
+   *
+   * @return the sigma su
+   */
   public double getSigmaSu() {
     return sigmaSu;
   }
 
+  /**
+   * Gets wd.
+   *
+   * @return the wd
+   */
   public double getkWd() {
     return kWd;
   }
 
+  /**
+   * Gets sa.
+   *
+   * @return the sa
+   */
   public double getkSa() {
     return kSa;
   }
 
+  /**
+   * Gets su.
+   *
+   * @return the su
+   */
   public double getkSu() {
     return kSu;
   }

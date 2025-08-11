@@ -17,6 +17,8 @@ import tech.units.indriya.ComparableQuantity;
 /** Thermal storage with cylindrical shape */
 public class CylindricalStorageInput extends AbstractStorageInput {
   /**
+   * Instantiates a new Cylindrical storage input.
+   *
    * @param uuid Unique identifier of a cylindrical storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
@@ -53,6 +55,8 @@ public class CylindricalStorageInput extends AbstractStorageInput {
   }
 
   /**
+   * Instantiates a new Cylindrical storage input.
+   *
    * @param uuid Unique identifier of a cylindrical storage
    * @param id Identifier of the thermal unit
    * @param bus Thermal bus, a thermal unit is connected to
@@ -108,11 +112,16 @@ public class CylindricalStorageInput extends AbstractStorageInput {
   /**
    * A builder pattern based approach to create copies of {@link CylindricalStorageInput} entities
    * with altered field values. For detailed field descriptions refer to java docs of {@link
-   * CylindricalStorageInput}
+   * CylindricalStorageInput}*
    */
   public static class CylindricalStorageInputCopyBuilder
       extends AbstractStorageInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
 
+    /**
+     * Instantiates a new Cylindrical storage input copy builder.
+     *
+     * @param entity the entity
+     */
     protected CylindricalStorageInputCopyBuilder(CylindricalStorageInput entity) {
       super(entity);
     }

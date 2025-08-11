@@ -13,13 +13,15 @@ import org.locationtech.jts.geom.LineString;
 
 /**
  * Describes the graphic data belonging to a {@link
- * edu.ie3.datamodel.models.input.connector.LineInput}
+ * edu.ie3.datamodel.models.input.connector.LineInput}*
  */
 public class LineGraphicInput extends GraphicInput implements HasLine {
   /** The LineInput to this graphic data */
   private final LineInput line;
 
   /**
+   * Instantiates a new Line graphic input.
+   *
    * @param uuid of the input entity
    * @param graphicLayer Description of the graphic layer, this graphic is located on
    * @param path A graphic representation as path
@@ -60,7 +62,7 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
   /**
    * A builder pattern based approach to create copies of {@link LineGraphicInput} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * LineGraphicInput}
+   * LineGraphicInput}*
    *
    * @version 0.1
    * @since 05.06.20
@@ -85,6 +87,12 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
       return new LineGraphicInput(getUuid(), getGraphicLayer(), getPath(), line);
     }
 
+    /**
+     * Line line graphic input copy builder.
+     *
+     * @param line the line
+     * @return the line graphic input copy builder
+     */
     public LineGraphicInputCopyBuilder line(LineInput line) {
       this.line = line;
       return thisInstance();

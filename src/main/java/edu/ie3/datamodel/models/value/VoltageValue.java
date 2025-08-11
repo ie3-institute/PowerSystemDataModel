@@ -27,6 +27,8 @@ public class VoltageValue implements Value {
   private final ComparableQuantity<Angle> angle;
 
   /**
+   * Instantiates a new Voltage value.
+   *
    * @param magnitude of the voltage in p.u.
    * @param angleOption option for the angle of this voltage in degree
    */
@@ -38,6 +40,8 @@ public class VoltageValue implements Value {
   }
 
   /**
+   * Instantiates a new Voltage value.
+   *
    * @param magnitude of the voltage in p.u.
    * @param angle of the voltage in degree
    */
@@ -47,14 +51,29 @@ public class VoltageValue implements Value {
     this.angle = angle;
   }
 
+  /**
+   * Gets magnitude.
+   *
+   * @return the magnitude
+   */
   public Optional<ComparableQuantity<Dimensionless>> getMagnitude() {
     return Optional.ofNullable(magnitude);
   }
 
+  /**
+   * Gets angle.
+   *
+   * @return the angle
+   */
   public Optional<ComparableQuantity<Angle>> getAngle() {
     return Optional.ofNullable(angle);
   }
 
+  /**
+   * Gets real part.
+   *
+   * @return the real part
+   */
   public Optional<ComparableQuantity<Dimensionless>> getRealPart() {
     double mag = magnitude.to(PU).getValue().doubleValue();
     double ang = angle.to(DEGREE_GEOM).getValue().doubleValue();
@@ -63,6 +82,11 @@ public class VoltageValue implements Value {
     return Optional.of(Quantities.getQuantity(eInPu, PU));
   }
 
+  /**
+   * Gets imag part.
+   *
+   * @return the imag part
+   */
   public Optional<ComparableQuantity<Dimensionless>> getImagPart() {
     double mag = magnitude.to(PU).getValue().doubleValue();
     double ang = angle.to(DEGREE_GEOM).getValue().doubleValue();

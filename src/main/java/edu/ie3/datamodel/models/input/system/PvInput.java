@@ -142,38 +142,83 @@ public class PvInput extends SystemParticipantInput {
     this.cosPhiRated = cosPhiRated;
   }
 
+  /**
+   * Gets albedo.
+   *
+   * @return the albedo
+   */
   public double getAlbedo() {
     return albedo;
   }
 
+  /**
+   * Gets azimuth.
+   *
+   * @return the azimuth
+   */
   public ComparableQuantity<Angle> getAzimuth() {
     return azimuth;
   }
 
+  /**
+   * Gets eta conv.
+   *
+   * @return the eta conv
+   */
   public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
   }
 
+  /**
+   * Gets elevation angle.
+   *
+   * @return the elevation angle
+   */
   public ComparableQuantity<Angle> getElevationAngle() {
     return elevationAngle;
   }
 
+  /**
+   * Is market reaction boolean.
+   *
+   * @return the boolean
+   */
   public boolean isMarketReaction() {
     return marketReaction;
   }
 
+  /**
+   * Gets cos phi rated.
+   *
+   * @return the cos phi rated
+   */
   public double getCosPhiRated() {
     return cosPhiRated;
   }
 
+  /**
+   * Gets g.
+   *
+   * @return the g
+   */
   public double getkG() {
     return kG;
   }
 
+  /**
+   * Gets t.
+   *
+   * @return the t
+   */
   public double getkT() {
     return kT;
   }
 
+  /**
+   * Gets rated.
+   *
+   * @return the rated
+   */
   public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
@@ -271,6 +316,11 @@ public class PvInput extends SystemParticipantInput {
     private ComparableQuantity<Power> sRated;
     private double cosPhiRated;
 
+    /**
+     * Instantiates a new Pv input copy builder.
+     *
+     * @param entity the entity
+     */
     public PvInputCopyBuilder(PvInput entity) {
       super(entity);
       this.albedo = entity.getAlbedo();
@@ -284,46 +334,100 @@ public class PvInput extends SystemParticipantInput {
       this.cosPhiRated = entity.getCosPhiRated();
     }
 
+    /**
+     * Albedo pv input copy builder.
+     *
+     * @param albedo the albedo
+     * @return the pv input copy builder
+     */
     public PvInputCopyBuilder albedo(double albedo) {
       this.albedo = albedo;
       return thisInstance();
     }
 
+    /**
+     * Azimuth pv input copy builder.
+     *
+     * @param azimuth the azimuth
+     * @return the pv input copy builder
+     */
     public PvInputCopyBuilder azimuth(ComparableQuantity<Angle> azimuth) {
       this.azimuth = azimuth;
       return thisInstance();
     }
 
+    /**
+     * Eta conv pv input copy builder.
+     *
+     * @param etaConv the eta conv
+     * @return the pv input copy builder
+     */
     public PvInputCopyBuilder etaConv(ComparableQuantity<Dimensionless> etaConv) {
       this.etaConv = etaConv;
       return thisInstance();
     }
 
+    /**
+     * Elevation angle pv input copy builder.
+     *
+     * @param elevationAngle the elevation angle
+     * @return the pv input copy builder
+     */
     public PvInputCopyBuilder elevationAngle(ComparableQuantity<Angle> elevationAngle) {
       this.elevationAngle = elevationAngle;
       return thisInstance();
     }
 
+    /**
+     * K g pv input copy builder.
+     *
+     * @param kG the k g
+     * @return the pv input copy builder
+     */
     public PvInputCopyBuilder kG(double kG) {
       this.kG = kG;
       return thisInstance();
     }
 
+    /**
+     * K t pv input copy builder.
+     *
+     * @param kT the k t
+     * @return the pv input copy builder
+     */
     public PvInputCopyBuilder kT(double kT) {
       this.kT = kT;
       return thisInstance();
     }
 
+    /**
+     * Market reaction pv input copy builder.
+     *
+     * @param marketReaction the market reaction
+     * @return the pv input copy builder
+     */
     public PvInputCopyBuilder marketReaction(boolean marketReaction) {
       this.marketReaction = marketReaction;
       return thisInstance();
     }
 
+    /**
+     * S rated pv input copy builder.
+     *
+     * @param sRated the s rated
+     * @return the pv input copy builder
+     */
     public PvInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
       return thisInstance();
     }
 
+    /**
+     * Cos phi rated pv input copy builder.
+     *
+     * @param cosPhiRated the cos phi rated
+     * @return the pv input copy builder
+     */
     public PvInputCopyBuilder cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
       return thisInstance();
