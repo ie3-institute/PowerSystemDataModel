@@ -12,13 +12,11 @@ import edu.ie3.util.quantities.QuantityUtil
 
 trait WeatherSourceTestHelper {
 
-  static boolean equalsIgnoreUUID(IndividualTimeSeries<WeatherValue> ts1,
-      IndividualTimeSeries<WeatherValue> ts2) {
+  static boolean equalsIgnoreUUID(IndividualTimeSeries<WeatherValue> ts1, IndividualTimeSeries<WeatherValue> ts2) {
     return equalsIgnoreUUID(ts1.entries, ts2.entries)
   }
 
-  static boolean equalsIgnoreUUID(Collection<TimeBasedValue<WeatherValue>> c1,
-      Collection<TimeBasedValue<WeatherValue>> c2) {
+  static boolean equalsIgnoreUUID(Collection<TimeBasedValue<WeatherValue>> c1, Collection<TimeBasedValue<WeatherValue>> c2) {
     if (c1 == null || c2 == null) return (c1 == null && c2 == null)
     if (c1.size() != c2.size()) return false
     for (TimeBasedValue<WeatherValue> value1 : c1) {

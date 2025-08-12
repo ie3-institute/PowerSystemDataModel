@@ -17,6 +17,8 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
@@ -27,10 +29,15 @@ import tech.units.indriya.unit.Units;
  * Weather Service's ICON-EU model
  */
 public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
+
+  private static final Logger logger =
+      LoggerFactory.getLogger(IconTimeBasedWeatherValueFactory.class);
+
   /* Redefine the column names to meet the icon specifications */
   private static final String DIFFUSE_IRRADIANCE = "aswdifdS";
   private static final String DIRECT_IRRADIANCE = "aswdirS";
   private static final String TEMPERATURE = "t2m";
+  private static final String GROUND_TEMPERATURE = "tG";
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
 
@@ -47,6 +54,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     Set<String> minParameters =
         newSet(
             DIFFUSE_IRRADIANCE, DIRECT_IRRADIANCE, TEMPERATURE, WIND_VELOCITY_U, WIND_VELOCITY_V);
+
     Set<String> allParameters =
         expandSet(
             minParameters,
@@ -88,6 +96,14 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
         data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
+
+    ComparableQuantity<Temperature> groundTemperature = null;
+    try {
+      groundTemperature =
+          data.getQuantity(GROUND_TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
+    } catch (IllegalArgumentException ignored) {
+    }
+
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
@@ -95,23 +111,11 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             diffuseIrradiance,
             temperature,
             windDirection,
-            windVelocity);
+            windVelocity,
+            groundTemperature);
     return new TimeBasedValue<>(time, weatherValue);
   }
 
-  /**
-   * Determines the wind direction. In ICON the wind velocity is given in three dimensional
-   * Cartesian coordinates. Here, the upward component is neglected. 0° or 0 rad are defined to
-   * point northwards. The angle increases clockwise. Please note, that the wind direction is the
-   * direction, the wind <b>comes</b> from and not goes to. We choose to use the wind velocity
-   * calculations at 131 m above ground, as this is a height that pretty good matches the common hub
-   * height of today's onshore wind generators, that are commonly connected to the voltage levels of
-   * interest.
-   *
-   * @param data Collective information to convert
-   * @return A {@link ComparableQuantity} of type {@link Speed}, that is converted to {@link
-   *     StandardUnits#WIND_VELOCITY}
-   */
   private static ComparableQuantity<Angle> getWindDirection(TimeBasedWeatherValueData data) {
     /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
     double u =
