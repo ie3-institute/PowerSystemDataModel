@@ -30,7 +30,8 @@ import tech.units.indriya.unit.Units;
  */
 public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
 
-  private static final Logger logger = LoggerFactory.getLogger(IconTimeBasedWeatherValueFactory.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(IconTimeBasedWeatherValueFactory.class);
 
   /* Redefine the column names to meet the icon specifications */
   private static final String DIFFUSE_IRRADIANCE = "aswdifdS";
@@ -101,7 +102,6 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
       groundTemperature =
           data.getQuantity(GROUND_TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     } catch (IllegalArgumentException ignored) {
-
     }
 
     WeatherValue weatherValue =
