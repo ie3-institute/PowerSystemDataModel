@@ -199,6 +199,15 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         .toList();
   }
 
+  @Override
+  public Optional<ZonedDateTime> getLastTimeKeyBefore(ZonedDateTime time) {
+    return dataSource
+        .executeQuery(
+            queryForValueBefore, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
+        .map(valueFactory::extractTime)
+        .max(ZonedDateTime::compareTo);
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /** Creates a set of TimeBasedValues from database */
@@ -309,6 +318,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         + " < ?"
         + "ORDER BY time DESC LIMIT 1;";
   }
+
   /**
    * Creates a base query to retrieve all time keys before a given time for given time series with
    * the following pattern: <br>

@@ -16,7 +16,9 @@ public class TemperatureValue implements Value {
   /** Temperature (typically in K) */
   private final ComparableQuantity<Temperature> temperature;
 
-  /** @param temperature (typically in K) */
+  /**
+   * @param temperature (typically in K)
+   */
   public TemperatureValue(ComparableQuantity<Temperature> temperature) {
     this.temperature = temperature == null ? null : temperature.to(StandardUnits.TEMPERATURE);
   }

@@ -27,28 +27,28 @@ public class GermanVoltageLevelUtils {
       new CommonVoltageLevel(
           "Niederspannung",
           Quantities.getQuantity(0.4, KILOVOLT),
-          new HashSet<>(Arrays.asList("lv", "ns")),
+          new HashSet<>(Arrays.asList("lv", "ns", "0.4kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(0d, KILOVOLT), Quantities.getQuantity(10d, KILOVOLT)));
   public static final CommonVoltageLevel MV_10KV =
       new CommonVoltageLevel(
           MS,
           Quantities.getQuantity(10d, KILOVOLT),
-          new HashSet<>(Arrays.asList("ms", "mv", "ms_10kv", "mv_10kV")),
+          new HashSet<>(Arrays.asList("ms", "mv", "ms_10kv", "mv_10kV", "10.0kV", "10kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(10d, KILOVOLT), Quantities.getQuantity(20d, KILOVOLT)));
   public static final CommonVoltageLevel MV_20KV =
       new CommonVoltageLevel(
           MS,
           Quantities.getQuantity(20d, KILOVOLT),
-          new HashSet<>(Arrays.asList("ms", "mv", "ms_20kv", "mv_20kV")),
+          new HashSet<>(Arrays.asList("ms", "mv", "ms_20kv", "mv_20kV", "20.0kV", "20kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(20d, KILOVOLT), Quantities.getQuantity(30d, KILOVOLT)));
   public static final CommonVoltageLevel MV_30KV =
       new CommonVoltageLevel(
           MS,
           Quantities.getQuantity(30d, KILOVOLT),
-          new HashSet<>(Arrays.asList("ms", "mv", "ms_30kv", "mv_30kV")),
+          new HashSet<>(Arrays.asList("ms", "mv", "ms_30kv", "mv_30kV", "30.0kV", "30kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(30d, KILOVOLT), Quantities.getQuantity(110d, KILOVOLT)));
   public static final CommonVoltageLevel HV =

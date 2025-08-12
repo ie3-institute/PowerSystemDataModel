@@ -21,11 +21,13 @@ import tech.units.indriya.ComparableQuantity;
 public class WeatherValue implements Value {
   /** The coordinate of this weather value set */
   private final Point coordinate;
+
   /** solar irradiance values for this coordinate */
   private final SolarIrradianceValue solarIrradiance;
 
   /** Temperature value for this coordinate */
   private final TemperatureValue temperature;
+
   /** Wind values for this coordinate */
   private final WindValue wind;
   /** GroundTemeperature value */

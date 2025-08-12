@@ -43,13 +43,14 @@ public record SubGridGate(TransformerInput link, NodeInput superiorNode, NodeInp
     return switch (inferiorPort) {
       case B -> new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeB());
       case C -> new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeC());
-      default -> throw new IllegalArgumentException(
-          "Only port "
-              + ConnectorPort.B
-              + " or "
-              + ConnectorPort.C
-              + " can be "
-              + "chosen as inferior port.");
+      default ->
+          throw new IllegalArgumentException(
+              "Only port "
+                  + ConnectorPort.B
+                  + " or "
+                  + ConnectorPort.C
+                  + " can be "
+                  + "chosen as inferior port.");
     };
   }
 

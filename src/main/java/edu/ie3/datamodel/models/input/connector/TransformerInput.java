@@ -15,6 +15,7 @@ import java.util.UUID;
 public abstract class TransformerInput extends ConnectorInput {
   /** Tap position of this transformer */
   private final int tapPos;
+
   /** True, if the tap position of the transformer is adapted automatically */
   private final boolean autoTap;
 

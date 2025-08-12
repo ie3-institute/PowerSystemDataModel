@@ -178,9 +178,67 @@ All impedances and admittances are given with respect to the higher voltage side
 
 ```
 
+## Standard Three Winding Transformer Types
+
+Following there are some standard three winding transformer types with their source. The types are listed below in a ``csv file`` [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes). This
+file can be used directly for any simulation with [SIMONA](https://github.com/ie3-institute/simona).
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+   
+   * - uuid
+     - bM
+     - dPhi
+     - dV
+     - gM
+     - id
+     - rScA
+     - rScB
+     - rScC
+     - sRatedA
+     - sRatedB
+     - sRatedC
+     - tapMax
+     - tapMin
+     - tapNeutr
+     - vRatedA
+     - vRatedB
+     - vRatedC
+     - xScA
+     - xScB
+     - xScC
+     - source
+     
+   * - 62aef8ec-7e68-43e5-9678-8cde101f0116
+     - -519.4864
+     - 0.0
+     - 1.5
+     - 12.985
+     - HoeS_HS_MS
+     - 0.1444
+     - 0.5776
+     - 1.1552
+     - 300000.0
+     - 300000.0
+     - 100000.0
+     - 10
+     - -10
+     - 0
+     - 380.0
+     - 110.0
+     - 30.0
+     - 24.066121
+     - 60.164118
+     - 199.750106
+     - Dissertation C. Kittl TU Dortmund[^cite_kittl2022]     
+```
+
 ## Caveats
 
 Nothing - at least not known.
 If you found something, please contact us!
 
 [^cite_gremmel1999]: Gremmel, H., Ed., Schaltanlagen. Cornelsen Verlag, 1999, Vol. 10, isbn: 3-464-48235-9.
+[^cite_kittl2022]: Kittl, C., Entwurf und Validierung eines individualitätszentrierten, interdisziplinären Energiesystemsimulators basierend auf ereignisdiskreter Simulation und Agententheorie, Dortmunder Beiträge zu Energiesystemen, Energieeffizienz und Energiewirtschaft, Shaker Verlag, 2022, Vol. 25, isbn: 9-783-84408463-4.
