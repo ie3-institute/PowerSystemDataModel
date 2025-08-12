@@ -17,7 +17,9 @@ public class GroundTemperatureValue implements Value {
   /** Ground temperature (typically in K) */
   private final ComparableQuantity<Temperature> temperature;
 
-  /** @param temperature Ground temperature (typically in K) */
+  /**
+   * @param temperature Ground temperature (typically in K)
+   */
   public GroundTemperatureValue(ComparableQuantity<Temperature> temperature) {
     this.temperature = temperature == null ? null : temperature.to(StandardUnits.TEMPERATURE);
   }

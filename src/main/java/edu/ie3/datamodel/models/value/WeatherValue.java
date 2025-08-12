@@ -30,6 +30,7 @@ public class WeatherValue implements Value {
 
   /** Wind values for this coordinate */
   private final WindValue wind;
+
   /** GroundTemeperature value */
   private final GroundTemperatureValue groundTemperature;
 
