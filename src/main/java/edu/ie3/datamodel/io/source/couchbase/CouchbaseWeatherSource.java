@@ -175,7 +175,14 @@ public class CouchbaseWeatherSource extends WeatherSource {
     } catch (CompletionException ex) {
       if (ex.getCause() instanceof DocumentNotFoundException) {
         throw new NoDataException("Weather document not found in the completion stage.");
-      } else throw ex;
+      } else {
+        logger.error(
+            "Unexpected completion exception while retrieving weather data for coordinate {} and date {}",
+            coordinate,
+            date,
+            ex);
+        throw ex;
+      }
     }
   }
 
