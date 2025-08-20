@@ -17,16 +17,9 @@ import java.util.UUID;
 
 public class HpInputFactory
     extends ThermalSystemParticipantInputFactory<HpInput, HpInputEntityData> {
-  private static final String TYPE = "type";
-  private static final String THERMAL_BUS = "thermalBus";
 
   public HpInputFactory() {
     super(HpInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE, THERMAL_BUS};
   }
 
   @Override
