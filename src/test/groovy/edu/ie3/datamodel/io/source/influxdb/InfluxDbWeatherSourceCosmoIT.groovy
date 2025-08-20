@@ -147,7 +147,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     ex1.message.contains("No coordinate ID found for the given point")
     ex1.message.contains(invalidCoordinate.toString())
 
-    when: "requesting weather for an invalid coordinate in a time interval"  
+    when: "requesting weather for an invalid coordinate in a time interval"
     source.getWeather(timeInterval, invalidCoordinate)
 
     then: "NoDataException is thrown"
