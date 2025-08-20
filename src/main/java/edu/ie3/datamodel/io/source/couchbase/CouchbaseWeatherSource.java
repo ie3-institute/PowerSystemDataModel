@@ -168,37 +168,27 @@ public class CouchbaseWeatherSource extends WeatherSource {
                   new NoDataException(
                       "No valid weather data found for the given date and coordinate."));
     } catch (DecodingFailureException ex) {
-      logger.error(
-          "Decoding to TimeBasedWeatherValue failed for coordinate {} and date {}",
-          coordinate,
-          date,
-          ex);
       throw new NoDataException(
-          "Failed to decode weather data for coordinate "
-              + coordinate
-              + " and date "
-              + date
-              + ": "
-              + ex.getMessage(),
-          ex);
+          "Failed to decode weather data for coordinate " + coordinate + " and date " + date, ex);
     } catch (DocumentNotFoundException ex) {
-      logger.warn("Weather document not found for coordinate {} and date {}", coordinate, date);
       throw new NoDataException(
-          "Weather document not found for coordinate " + coordinate + " and date " + date);
+          "Weather document not found for coordinate " + coordinate + " and date " + date, ex);
     } catch (CompletionException ex) {
-      if (ex.getCause() instanceof DocumentNotFoundException) {
+      Throwable cause = ex.getCause();
+      if (cause instanceof DocumentNotFoundException) {
         throw new NoDataException(
-            "Weather document not found in the completion stage for coordinate "
+            "Weather document not found in completion stage for coordinate "
                 + coordinate
                 + " and date "
-                + date);
+                + date,
+            cause);
       } else {
-        logger.error(
-            "Unexpected completion exception while retrieving weather data for coordinate {} and date {}",
-            coordinate,
-            date,
+        throw new NoDataException(
+            "Unexpected completion exception while retrieving weather data for coordinate "
+                + coordinate
+                + " and date "
+                + date,
             ex);
-        throw ex;
       }
     }
   }
