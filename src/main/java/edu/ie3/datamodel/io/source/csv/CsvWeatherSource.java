@@ -132,7 +132,10 @@ public class CsvWeatherSource extends WeatherSource {
 
     return timeSeries
         .getTimeBasedValue(date)
-        .orElseThrow(() -> new NoDataException("No weather data found for the given coordinate: " + coordinate));
+        .orElseThrow(
+            () ->
+                new NoDataException(
+                    "No weather data found for the given coordinate: " + coordinate));
   }
 
   @Override

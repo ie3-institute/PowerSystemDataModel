@@ -140,7 +140,10 @@ public class InfluxDbWeatherSource extends WeatherSource {
           .orElseThrow(
               () ->
                   new NoDataException(
-                      "No weather data available for the given date " + date + " and coordinate " + coordinate));
+                      "No weather data available for the given date "
+                          + date
+                          + " and coordinate "
+                          + coordinate));
     }
   }
 

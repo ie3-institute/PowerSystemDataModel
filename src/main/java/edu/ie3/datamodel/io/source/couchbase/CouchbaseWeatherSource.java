@@ -142,7 +142,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
         }
       } else {
         logger.error("Unable to match coordinate {} to a coordinate ID", coordinate);
-        throw new NoDataException("Unable to match coordinate " + coordinate + " to a coordinate ID");
+        throw new NoDataException(
+            "Unable to match coordinate " + coordinate + " to a coordinate ID");
       }
     }
     return coordinateToTimeSeries;
