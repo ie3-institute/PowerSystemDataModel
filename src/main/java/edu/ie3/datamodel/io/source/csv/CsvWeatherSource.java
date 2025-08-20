@@ -97,7 +97,7 @@ public class CsvWeatherSource extends WeatherSource {
         trimMapToInterval(coordinateToTimeSeries, timeInterval);
 
     if (result == null || result.isEmpty()) {
-      throw new NoDataException("No weather data found.");
+      throw new NoDataException("No weather data found for the given time interval: " + timeInterval);
     }
 
     return result;
@@ -116,7 +116,7 @@ public class CsvWeatherSource extends WeatherSource {
         trimMapToInterval(filteredMap, timeInterval);
 
     if (result == null || result.isEmpty()) {
-      throw new NoDataException("No weather data found.");
+      throw new NoDataException("No weather data found for the given time interval: " + timeInterval);
     }
     return result;
   }

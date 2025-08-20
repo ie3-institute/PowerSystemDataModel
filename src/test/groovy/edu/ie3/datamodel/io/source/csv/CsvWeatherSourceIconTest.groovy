@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -294,5 +295,31 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
       IconWeatherTestData.TIME_17H
     ]
     actual.get(IconWeatherTestData.COORDINATE_67776) == [IconWeatherTestData.TIME_16H]
+  }
+
+  def "A CsvWeatherSource throws NoDataException when no weather data is found for coordinate"() {
+    given:
+    def unknownCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 0.0))
+
+    when:
+    source.getWeather(IconWeatherTestData.TIME_15H, unknownCoordinate)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for the given coordinate")
+    ex.message.contains(unknownCoordinate.toString())
+  }
+
+  def "A CsvWeatherSource throws NoDataException when no weather data is found for coordinate at specific time"() {
+    given:
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(10)
+
+    when:
+    source.getWeather(futureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for the given coordinate")
+    ex.message.contains(IconWeatherTestData.COORDINATE_67775.toString())
   }
 }

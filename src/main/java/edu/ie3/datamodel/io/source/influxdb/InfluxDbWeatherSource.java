@@ -69,7 +69,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
       Set<TimeBasedValue<WeatherValue>> timeBasedValues =
           filterEmptyOptionals(optValues).collect(Collectors.toSet());
       if (timeBasedValues.isEmpty()) {
-        throw new NoDataException("No weather data found");
+        throw new NoDataException("No weather data found for the given time interval: " + timeInterval);
       }
       Map<Point, Set<TimeBasedValue<WeatherValue>>> coordinateToValues =
           timeBasedValues.stream()
@@ -105,7 +105,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
           Set<TimeBasedValue<WeatherValue>> timeBasedValues =
               filterEmptyOptionals(optValues).collect(Collectors.toSet());
           if (timeBasedValues.isEmpty()) {
-            throw new NoDataException("No weather data found");
+            throw new NoDataException("No weather data found for the given time interval and coordinate: " + entry.getKey());
           }
           IndividualTimeSeries<WeatherValue> timeSeries =
               new IndividualTimeSeries<>(timeBasedValues);
@@ -129,7 +129,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
       }
     } catch (NoDataException e) {
       log.error("No data available for coordinate {} and date {}", coordinate, date, e);
-      return null;
+      throw e;
     }
 
     try (InfluxDB session = connector.getSession()) {
