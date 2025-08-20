@@ -72,8 +72,8 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
     /// all result models have the same constructor except StorageResult
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, POWER, REACTIVE_POWER);
 
-    if (entityClass.equals(StorageResult.class) || entityClass.equals(EvResult.class)) {
-      minConstructorParams = newSet(TIME, INPUT_MODEL, POWER, REACTIVE_POWER, SOC);
+    if (ElectricalEnergyStorageResult.class.isAssignableFrom(entityClass)) {
+      minConstructorParams = expandSet(minConstructorParams, SOC);
     }
 
     if (SystemParticipantWithHeatResult.class.isAssignableFrom(entityClass)) {
