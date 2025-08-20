@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -60,12 +61,17 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue )
   }
 
-  def "A SqlWeatherSource returns nothing for an invalid coordinate"() {
+  def "A SqlWeatherSource throws NoDataException for an invalid coordinate"() {
+    given:
+    def invalidCoordinate = GeoUtils.buildPoint(89d, 88d)
+
     when:
-    def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, GeoUtils.buildPoint(89d, 88d))
+    source.getWeather(CosmoWeatherTestData.TIME_15H, invalidCoordinate)
 
     then:
-    assert optTimeBasedValue == null
+    def ex = thrown(NoDataException)
+    ex.message.contains("No coordinate ID found for the given point")
+    ex.message.contains(invalidCoordinate.toString())
   }
 
   def "A SqlWeatherSource can read multiple time series values for multiple coordinates"() {

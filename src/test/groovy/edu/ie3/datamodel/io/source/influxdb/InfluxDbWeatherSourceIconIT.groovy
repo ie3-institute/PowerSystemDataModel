@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.influxdb
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -118,13 +119,12 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeseries67776.entries)
   }
 
-  def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to its ID"() {
+  def "An InfluxDbWeatherSource will throw NoDataException when being unable to map a coordinate to its ID"() {
     given:
     def validCoordinate = IconWeatherTestData.COORDINATE_67775
     def invalidCoordinate = GeoUtils.buildPoint(7d, 48d)
     def time = IconWeatherTestData.TIME_15H
     def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H , IconWeatherTestData.TIME_17H)
-    def emptyTimeSeries = new IndividualTimeSeries(UUID.randomUUID(), Collections.emptySet())
     def timeseries67775 = new IndividualTimeSeries(null,
         [
           new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H),
@@ -132,17 +132,29 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
           new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
         ] as Set<TimeBasedValue>)
 
-    when:
-    def coordinateAtDate = source.getWeather(time, invalidCoordinate)
-    def coordinateInInterval = source.getWeather(timeInterval, invalidCoordinate)
+    when: "requesting weather for an invalid coordinate at a specific date"
+    source.getWeather(time, invalidCoordinate)
+
+    then: "NoDataException is thrown"
+    def ex1 = thrown(NoDataException)
+    ex1.message.contains("No coordinate ID found for the given point")
+    ex1.message.contains(invalidCoordinate.toString())
+
+    when: "requesting weather for an invalid coordinate in a time interval"  
+    source.getWeather(timeInterval, invalidCoordinate)
+
+    then: "NoDataException is thrown"
+    def ex2 = thrown(NoDataException)
+    ex2.message.contains("No data for given coordinates")
+    ex2.message.contains(invalidCoordinate.toString())
+
+    when: "requesting weather for mixed valid and invalid coordinates"
     def coordinatesToTimeSeries = source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
-    then:
-    assert coordinateAtDate == null
-    equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
+    then: "only valid coordinate data is returned"
     coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
     equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries67775)
   }
