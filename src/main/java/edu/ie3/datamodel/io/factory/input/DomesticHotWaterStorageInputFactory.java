@@ -11,9 +11,11 @@ import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.UUID;
 
+/** The type Domestic hot water storage input factory. */
 public class DomesticHotWaterStorageInputFactory
     extends AbstractThermalStorageInputFactory<DomesticHotWaterStorageInput> {
 
+  /** Instantiates a new Domestic hot water storage input factory. */
   public DomesticHotWaterStorageInputFactory() {
     super(DomesticHotWaterStorageInput.class);
   }

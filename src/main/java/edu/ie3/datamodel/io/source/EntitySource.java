@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
  * sources.
  */
 public abstract class EntitySource {
+  /** The constant log. */
   protected static final Logger log = LoggerFactory.getLogger(EntitySource.class);
 
   // file system for build-in entities
@@ -49,14 +50,27 @@ public abstract class EntitySource {
 
   // convenience collectors
 
+  /**
+   * To map collector.
+   *
+   * @param <T> the type parameter
+   * @return the collector
+   */
   protected static <T extends UniqueEntity> Collector<T, ?, Map<UUID, T>> toMap() {
     return Collectors.toMap(UniqueEntity::getUuid, Function.identity());
   }
 
+  /**
+   * To set collector.
+   *
+   * @param <T> the type parameter
+   * @return the collector
+   */
   protected static <T extends Entity> Collector<T, ?, Set<T>> toSet() {
     return Collectors.toSet();
   }
 
+  /** Instantiates a new Entity source. */
   protected EntitySource() {}
 
   /**
@@ -69,10 +83,11 @@ public abstract class EntitySource {
   /**
    * Method for validating a single source.
    *
+   * @param <C> type of the class
    * @param entityClass class to be validated
    * @param dataSource source for the fields
    * @param validator used to validate
-   * @param <C> type of the class
+   * @return Try object encapsulating success or failure of validation
    */
   protected static <C extends Entity> Try<Void, ValidationException> validate(
       Class<? extends C> entityClass, DataSource dataSource, SourceValidator<C> validator) {
@@ -82,10 +97,11 @@ public abstract class EntitySource {
   /**
    * Method for validating a single source.
    *
+   * @param <C> type of the class
    * @param entityClass class to be validated
    * @param sourceFields supplier for source fields
    * @param validator used to validate
-   * @param <C> type of the class
+   * @return Try object encapsulating success or failure of validation
    */
   protected static <C> Try<Void, ValidationException> validate(
       Class<? extends C> entityClass,
@@ -108,10 +124,12 @@ public abstract class EntitySource {
   }
 
   /**
-   * Method to get a source for the build in entities.
+   * Method to get a source for the built-in entities.
    *
+   * @param clazz class from which resources will be loaded
    * @param subdirectory from the resource folder
    * @return a new {@link CsvDataSource}
+   * @throws SourceException if there is an issue finding or loading resources
    */
   protected static CsvDataSource getBuildInSource(Class<?> clazz, String subdirectory)
       throws SourceException {
@@ -151,11 +169,11 @@ public abstract class EntitySource {
   /**
    * Universal method to get a map: uuid to {@link UniqueEntity}.
    *
+   * @param <E> type of entity
    * @param entityClass subclass of {@link UniqueEntity}
    * @param dataSource source for the data
    * @param factory to build the entity
    * @return a map: uuid to {@link UniqueEntity}
-   * @param <E> type of entity
    * @throws SourceException - if an error happen during reading
    */
   @SuppressWarnings("unchecked")
@@ -174,13 +192,13 @@ public abstract class EntitySource {
   /**
    * Universal method to get a {@link Entity} stream.
    *
+   * @param <E> type of entity
+   * @param <D> type of entity data
    * @param entityClass class of the entity
    * @param dataSource source for the entity
    * @param factory to build the entity
    * @param enrichFunction function to enrich the given entity data
    * @return a set of {@link Entity}s
-   * @param <E> type of entity
-   * @param <D> type of entity data
    * @throws SourceException - if an error happen during reading
    */
   protected static <E extends Entity, D extends EntityData> Stream<E> getEntities(
@@ -199,9 +217,10 @@ public abstract class EntitySource {
    * Returns a stream of {@link EntityData} that can be used to build instances of several subtypes
    * of {@link Entity} by a corresponding {@link EntityFactory} that consumes this data.
    *
-   * @param entityClass the entity class that should be build
+   * @param entityClass the entity class that should be built
    * @param dataSource source for the data
-   * @return a stream of the entity data wrapped in a {@link Try}
+   * @return a stream of entities wrapped in {@link Try}
+   * @throws SourceException if there is an issue reading data
    */
   protected static Stream<Try<EntityData, SourceException>> buildEntityData(
       Class<? extends Entity> entityClass, DataSource dataSource) throws SourceException {
@@ -216,11 +235,12 @@ public abstract class EntitySource {
    * Returns a stream of {@link EntityData} that can be used to build instances of several subtypes
    * of {@link Entity} by a corresponding {@link EntityFactory} that consumes this data.
    *
+   * @param <E> type of entity data that extends {@link EntityData}
    * @param entityClass class of the entity
    * @param dataSource source for the data
-   * @param converter to convert {@link EntityData} to {@link E}
-   * @return an entity data
-   * @param <E> type of entity data
+   * @param converter function to convert {@link EntityData} to {@link E}
+   * @return an entity data wrapped in {@link Try}
+   * @throws SourceException if there is an issue reading data
    */
   protected static <E extends EntityData> Stream<Try<E, SourceException>> buildEntityData(
       Class<? extends Entity> entityClass,
@@ -235,14 +255,14 @@ public abstract class EntitySource {
   /**
    * Method to build an enrich function.
    *
+   * @param <E> type of entity data
+   * @param <T> type of entity
+   * @param <R> type of returned entity data
    * @param fieldName name of the field
    * @param entities map: uuid to {@link Entity}
    * @param defaultEntity entity that should be used if no other entity was extracted
    * @param buildingFcn to build the returned {@link EntityData}
    * @return an enrich function
-   * @param <E> type of entity data
-   * @param <T> type of entity
-   * @param <R> type of returned entity data
    */
   protected static <E extends EntityData, T, R extends EntityData>
       WrappedFunction<E, R> enrichWithDefault(
@@ -261,13 +281,13 @@ public abstract class EntitySource {
   /**
    * Method to build an enrich function.
    *
+   * @param <E> type of entity data
+   * @param <T> type of entity
+   * @param <R> type of returned entity data
    * @param fieldName name of the field
    * @param entities map: uuid to {@link Entity}
    * @param buildingFcn to build the returned {@link EntityData}
    * @return an enrich function
-   * @param <E> type of entity data
-   * @param <T> type of entity
-   * @param <R> type of returned entity data
    */
   protected static <E extends EntityData, T, R extends EntityData> WrappedFunction<E, R> enrich(
       String fieldName, Map<UUID, T> entities, BiFunction<E, T, R> buildingFcn) {
@@ -280,16 +300,16 @@ public abstract class EntitySource {
   /**
    * Method to build an enrich function.
    *
+   * @param <E> type of entity data
+   * @param <T1> type of the first entity
+   * @param <T2> type of the second entity
+   * @param <R> type of returned entity data
    * @param fieldName1 name of the first field
    * @param entities1 map: uuid to {@link Entity}
    * @param fieldName2 name of the second field
    * @param entities2 map: uuid to {@link Entity}
    * @param buildingFcn to build the returned {@link EntityData}
    * @return an enrich function
-   * @param <E> type of entity data
-   * @param <T1> type of the first entity
-   * @param <T2> type of the second entity
-   * @param <R> type of returned entity data
    */
   protected static <
           E extends EntityData, T1 extends Entity, T2 extends Entity, R extends EntityData>
@@ -318,12 +338,12 @@ public abstract class EntitySource {
   /**
    * Method to build a function to create an {@link EntityData}.
    *
-   * @param fieldNames list with field names
-   * @param buildingFcn to build the returned {@link EntityData}
-   * @return an entity data
    * @param <E> type of given entity data
    * @param <T> type of entities
    * @param <R> type of returned entity data
+   * @param fieldNames list with field names
+   * @param buildingFcn to build the returned {@link EntityData}
+   * @return an entity data
    */
   protected static <E extends EntityData, T, R extends EntityData>
       Function<Pair<E, T>, R> enrichFunction(
@@ -346,11 +366,11 @@ public abstract class EntitySource {
   /**
    * Method to unpack a stream of tries.
    *
+   * @param <S> type of entity
+   * @param <E> type of exception
    * @param inputStream given stream
    * @param clazz class of the entity
    * @return a stream of entities
-   * @param <S> type of entity
-   * @param <E> type of exception
    * @throws SourceException - if an error occurred during reading
    */
   protected static <S, E extends Exception> Stream<S> unpack(
@@ -361,12 +381,12 @@ public abstract class EntitySource {
   /**
    * Method to extract an entity.
    *
+   * @param <E> type of entity data
+   * @param <R> type of entity
    * @param entityData data containing complex entities
    * @param fieldName name of the field
    * @param entities map: uuid to {@link Entity}
    * @return an enrichment
-   * @param <E> type of entity data
-   * @param <R> type of entity
    */
   protected static <E extends EntityData, R> Try<R, SourceException> extractFunction(
       Try<E, SourceException> entityData, String fieldName, Map<UUID, R> entities) {
@@ -386,10 +406,10 @@ public abstract class EntitySource {
   /**
    * Method to extract an {@link Entity} from a given map.
    *
+   * @param <T> type of entity
    * @param uuid of the entity
    * @param entityMap map: uuid to entity
    * @return a try of the {@link Entity}
-   * @param <T> type of entity
    */
   protected static <T> Try<T, FactoryException> extractFunction(UUID uuid, Map<UUID, T> entityMap) {
     return Optional.ofNullable(entityMap.get(uuid))

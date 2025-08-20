@@ -44,20 +44,38 @@ import org.slf4j.LoggerFactory;
  */
 public class CsvDataSource implements DataSource {
 
+  /** The constant log. */
   protected static final Logger log = LoggerFactory.getLogger(CsvDataSource.class);
 
+  /** The Csv sep. */
   // general fields
   protected final String csvSep;
+
+  /** The Connector. */
   protected final CsvFileConnector connector;
 
   private final FileNamingStrategy fileNamingStrategy;
 
+  /**
+   * Instantiates a new Csv data source.
+   *
+   * @param csvSep the csv sep
+   * @param directoryPath the directory path
+   * @param fileNamingStrategy the file naming strategy
+   */
   public CsvDataSource(String csvSep, Path directoryPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(directoryPath);
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
+  /**
+   * Instantiates a new Csv data source.
+   *
+   * @param csvSep the csv sep
+   * @param connector the connector
+   * @param fileNamingStrategy the file naming strategy
+   */
   public CsvDataSource(
       String csvSep, CsvFileConnector connector, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
@@ -72,6 +90,8 @@ public class CsvDataSource implements DataSource {
   }
 
   /**
+   * Gets source fields.
+   *
    * @param filePath path of file starting from base folder, including file name but not file
    *     extension
    * @return The source field names as a set, if file exists
@@ -108,6 +128,8 @@ public class CsvDataSource implements DataSource {
   }
 
   /**
+   * Gets source data.
+   *
    * @param filePath to the csv file
    * @return a stream of maps that represent the rows in the csv file
    * @throws SourceException on error while reading the source file
@@ -118,7 +140,11 @@ public class CsvDataSource implements DataSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  /** Returns the set {@link FileNamingStrategy}. */
+  /**
+   * Returns the set {@link FileNamingStrategy}.
+   *
+   * @return the naming strategy
+   */
   public FileNamingStrategy getNamingStrategy() {
     return fileNamingStrategy;
   }
@@ -156,6 +182,7 @@ public class CsvDataSource implements DataSource {
    * Receive the information for specific load profile time series. They are given back mapped to
    * their uuid.
    *
+   * @param profiles the profiles
    * @return A mapping from profile to the load profile time series meta information
    */
   public Map<String, CsvLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
@@ -216,6 +243,7 @@ public class CsvDataSource implements DataSource {
    * @param headline the headline fields of the csv file
    * @return a map containing the mapping of (fieldName to fieldValue) or an empty map if an error
    *     occurred
+   * @throws SourceException the source exception
    */
   protected Map<String, String> buildFieldsToAttributes(
       final String csvRow, final String[] headline) throws SourceException {
@@ -286,6 +314,7 @@ public class CsvDataSource implements DataSource {
    *
    * @param entityClass the entity class that should be build and that is used to get the
    *     corresponding reader
+   * @param allowFileNotExisting the allow file not existing
    * @return a parallel stream of maps, where each map represents one row of the csv file with the
    *     mapping (fieldName to fieldValue)
    */
@@ -301,6 +330,7 @@ public class CsvDataSource implements DataSource {
    * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
    * @param filePath the path of the file to read
+   * @param allowFileNotExisting the allow file not existing
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */

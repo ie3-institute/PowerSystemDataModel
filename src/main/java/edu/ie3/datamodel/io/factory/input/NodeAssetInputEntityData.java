@@ -41,8 +41,8 @@ public class NodeAssetInputEntityData extends AssetInputEntityData {
    *
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
-   * @param node input node
    * @param operator operator input
+   * @param node input node
    */
   public NodeAssetInputEntityData(
       Map<String, String> fieldsToAttributes,
@@ -65,6 +65,11 @@ public class NodeAssetInputEntityData extends AssetInputEntityData {
     this.node = node;
   }
 
+  /**
+   * Gets node.
+   *
+   * @return the node
+   */
   public NodeInput getNode() {
     return node;
   }

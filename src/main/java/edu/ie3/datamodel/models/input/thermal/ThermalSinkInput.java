@@ -12,6 +12,8 @@ import java.util.UUID;
 /** Common properties to all thermal sinks */
 public abstract class ThermalSinkInput extends ThermalUnitInput {
   /**
+   * Instantiates a new Thermal sink input.
+   *
    * @param uuid Unique identifier of a thermal sink input model
    * @param id Identifier of the thermal unit
    * @param bus Thermal bus, a thermal unit is connected to
@@ -21,6 +23,8 @@ public abstract class ThermalSinkInput extends ThermalUnitInput {
   }
 
   /**
+   * Instantiates a new Thermal sink input.
+   *
    * @param uuid Unique identifier of a thermal sink input model
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
@@ -41,11 +45,18 @@ public abstract class ThermalSinkInput extends ThermalUnitInput {
 
   /**
    * Abstract class for all builders that build child entities of abstract class {@link
-   * ThermalSinkInput}
+   * ThermalSinkInput}*
+   *
+   * @param <B> The builder type extending from {@link ThermalSinkInputCopyBuilder}
    */
   public abstract static class ThermalSinkInputCopyBuilder<B extends ThermalSinkInputCopyBuilder<B>>
       extends ThermalUnitInputCopyBuilder<B> {
 
+    /**
+     * Instantiates a new Thermal sink input copy builder.
+     *
+     * @param entity the entity
+     */
     protected ThermalSinkInputCopyBuilder(ThermalSinkInput entity) {
       super(entity);
     }

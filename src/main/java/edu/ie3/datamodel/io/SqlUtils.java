@@ -9,9 +9,12 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** The type Sql utils. */
 public class SqlUtils {
 
+  /** The constant log. */
   protected static final Logger log = LoggerFactory.getLogger(SqlUtils.class);
+
   private static final String END_QUERY_CREATE_TABLE =
       ")\n \t WITHOUT OIDS\n \t TABLESPACE pg_default;";
 
@@ -24,6 +27,9 @@ public class SqlUtils {
   }
 
   /**
+   * Query create grid table string.
+   *
+   * @param schemaName the schema name
    * @return query to create a SQL table for a grid
    */
   public static String queryCreateGridTable(String schemaName) {
@@ -35,6 +41,8 @@ public class SqlUtils {
   /**
    * To avoid data type conflicts while insertion into a SQL table all columns should be quoted.
    *
+   * @param input the input
+   * @param quoteSymbol the quote symbol
    * @return input with quoteSymbol
    */
   public static String quote(String input, String quoteSymbol) {

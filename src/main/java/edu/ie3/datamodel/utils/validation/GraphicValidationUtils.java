@@ -13,6 +13,7 @@ import edu.ie3.datamodel.utils.Try;
 import java.util.ArrayList;
 import java.util.List;
 
+/** The type Graphic validation utils. */
 public class GraphicValidationUtils extends ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */

@@ -14,6 +14,7 @@ import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Domestic hot water storage input. */
 public class DomesticHotWaterStorageInput extends AbstractStorageInput {
 
   /**
@@ -109,9 +110,15 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
         + '}';
   }
 
+  /** The type Domestic hot water storage input copy builder. */
   public static class DomesticHotWaterStorageInputCopyBuilder
       extends AbstractStorageInputCopyBuilder<DomesticHotWaterStorageInputCopyBuilder> {
 
+    /**
+     * Instantiates a new Domestic hot water storage input copy builder.
+     *
+     * @param entity the entity
+     */
     protected DomesticHotWaterStorageInputCopyBuilder(DomesticHotWaterStorageInput entity) {
       super(entity);
     }

@@ -14,12 +14,21 @@ import javax.measure.Unit;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
-/** Class to describe one point of a given {@link CharacteristicInput} */
+/**
+ * Class to describe one point of a given {@link CharacteristicInput}.
+ *
+ * @param <A> The type of quantity for the abscissa (x-axis).
+ * @param <O> The type of quantity for the ordinate (y-axis).
+ */
 public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     implements Comparable<CharacteristicPoint<A, O>>, Serializable {
+  /** The constant REQUIRED_FORMAT. */
   public static final String REQUIRED_FORMAT = "(%d,%d)";
 
+  /** The x-coordinate of the characteristic point. */
   private final ComparableQuantity<A> x;
+
+  /** The y-coordinate of the characteristic point. */
   private final ComparableQuantity<O> y;
 
   /**
@@ -86,6 +95,8 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
   }
 
   /**
+   * Returns the position on the abscissa
+   *
    * @return the position on the abscissa
    */
   public ComparableQuantity<A> getX() {
@@ -93,6 +104,8 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
   }
 
   /**
+   * Returns the position on the ordinate
+   *
    * @return the position on the ordinate
    */
   public ComparableQuantity<O> getY() {

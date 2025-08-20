@@ -11,14 +11,20 @@ import java.util.Optional;
 /**
  * Generic electric current type implementation. Main purpose is to indicate the current type that
  * is provided by a specific asset e.g. {@link edu.ie3.datamodel.models.input.system.EvcsInput}
- *
- * @version 0.1
- * @since 25.07.20
  */
 public enum ElectricCurrentType {
+  /** Alternating Current (AC). */
   AC,
+
+  /** Direct Current (DC). */
   DC;
 
+  /**
+   * Parse optional.
+   *
+   * @param electricCurrentId the electric current id
+   * @return the optional
+   */
   public static Optional<ElectricCurrentType> parse(String electricCurrentId) {
     String cleanedElectricCurrentId =
         StringUtils.cleanString(electricCurrentId).replace("_", "").trim().toUpperCase();

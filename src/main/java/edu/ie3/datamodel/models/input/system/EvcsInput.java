@@ -15,6 +15,7 @@ import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import java.util.Objects;
 import java.util.UUID;
 
+/** The type Evcs input. */
 public class EvcsInput extends SystemParticipantInput {
 
   /** type of all installed charging points */
@@ -33,6 +34,8 @@ public class EvcsInput extends SystemParticipantInput {
   private final boolean v2gSupport;
 
   /**
+   * Instantiates a new Evcs input.
+   *
    * @param uuid Unique identifier
    * @param id Human readable identifier
    * @param operator of the asset
@@ -68,6 +71,8 @@ public class EvcsInput extends SystemParticipantInput {
   }
 
   /**
+   * Instantiates a new Evcs input.
+   *
    * @param uuid Unique identifier
    * @param id Human readable identifier
    * @param operator of the asset
@@ -108,6 +113,8 @@ public class EvcsInput extends SystemParticipantInput {
   }
 
   /**
+   * Instantiates a new Evcs input.
+   *
    * @param uuid Unique identifier
    * @param id Human readable identifier
    * @param node that the asset is connected to
@@ -139,6 +146,8 @@ public class EvcsInput extends SystemParticipantInput {
   }
 
   /**
+   * Instantiates a new Evcs input.
+   *
    * @param uuid Unique identifier
    * @param id Human readable identifier
    * @param node that the asset is connected to
@@ -162,22 +171,47 @@ public class EvcsInput extends SystemParticipantInput {
     this(uuid, id, node, qCharacteristics, em, type, 1, cosPhiRated, locationType, v2gSupport);
   }
 
+  /**
+   * Gets type.
+   *
+   * @return the type
+   */
   public ChargingPointType getType() {
     return type;
   }
 
+  /**
+   * Gets charging points.
+   *
+   * @return the charging points
+   */
   public int getChargingPoints() {
     return chargingPoints;
   }
 
+  /**
+   * Gets cos phi rated.
+   *
+   * @return the cos phi rated
+   */
   public double getCosPhiRated() {
     return cosPhiRated;
   }
 
+  /**
+   * Gets location type.
+   *
+   * @return the location type
+   */
   public EvcsLocationType getLocationType() {
     return locationType;
   }
 
+  /**
+   * Gets v 2 g support.
+   *
+   * @return the v 2 g support
+   */
   public boolean getV2gSupport() {
     return v2gSupport;
   }
@@ -250,6 +284,11 @@ public class EvcsInput extends SystemParticipantInput {
     private EvcsLocationType locationType;
     private boolean v2gSupport;
 
+    /**
+     * Instantiates a new Evcs input copy builder.
+     *
+     * @param entity the entity
+     */
     public EvcsInputCopyBuilder(EvcsInput entity) {
       super(entity);
       this.type = entity.type;
@@ -259,26 +298,56 @@ public class EvcsInput extends SystemParticipantInput {
       this.v2gSupport = entity.v2gSupport;
     }
 
+    /**
+     * Type evcs input copy builder.
+     *
+     * @param type the type
+     * @return the evcs input copy builder
+     */
     public EvcsInputCopyBuilder type(ChargingPointType type) {
       this.type = type;
       return thisInstance();
     }
 
+    /**
+     * Charging points evcs input copy builder.
+     *
+     * @param noChargingPoints the no charging points
+     * @return the evcs input copy builder
+     */
     public EvcsInputCopyBuilder chargingPoints(int noChargingPoints) {
       this.chargingPoints = noChargingPoints;
       return thisInstance();
     }
 
+    /**
+     * Cos phi rated evcs input copy builder.
+     *
+     * @param cosPhiRated the cos phi rated
+     * @return the evcs input copy builder
+     */
     public EvcsInputCopyBuilder cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
       return thisInstance();
     }
 
+    /**
+     * Location type evcs input copy builder.
+     *
+     * @param locationType the location type
+     * @return the evcs input copy builder
+     */
     public EvcsInputCopyBuilder locationType(EvcsLocationType locationType) {
       this.locationType = locationType;
       return thisInstance();
     }
 
+    /**
+     * V 2 g support evcs input copy builder.
+     *
+     * @param v2gSupport the v 2 g support
+     * @return the evcs input copy builder
+     */
     public EvcsInputCopyBuilder v2gSupport(boolean v2gSupport) {
       this.v2gSupport = v2gSupport;
       return thisInstance();

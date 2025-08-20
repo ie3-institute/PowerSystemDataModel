@@ -18,7 +18,7 @@ import tech.units.indriya.quantity.Quantities;
 
 /**
  * Describes a three winding transformer, that is connected to three {@link
- * edu.ie3.datamodel.models.input.NodeInput}s
+ * edu.ie3.datamodel.models.input.NodeInput}*s
  */
 public class Transformer3WInput extends TransformerInput implements HasType {
   /** Type of this 3W transformer, containing default values for transformers of this kind */
@@ -234,6 +234,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
   }
 
   /**
+   * Gets node c.
+   *
    * @return the node with the lowest voltage level
    */
   public NodeInput getNodeC() {
@@ -241,6 +243,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
   }
 
   /**
+   * Gets node internal.
+   *
    * @return The internal node of the T equivalent circuit
    */
   public NodeInput getNodeInternal() {
@@ -297,7 +301,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
   /**
    * A builder pattern based approach to create copies of {@link Transformer3WInput} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * Transformer3WInput}
+   * Transformer3WInput}*
    *
    * @version 0.1
    * @since 05.06.20
@@ -336,16 +340,34 @@ public class Transformer3WInput extends TransformerInput implements HasType {
           internalNode.copy().slack(internSlack).build());
     }
 
+    /**
+     * Type transformer 3 w input copy builder.
+     *
+     * @param type the type
+     * @return the transformer 3 w input copy builder
+     */
     public Transformer3WInputCopyBuilder type(Transformer3WTypeInput type) {
       this.type = type;
       return thisInstance();
     }
 
+    /**
+     * Node c transformer 3 w input copy builder.
+     *
+     * @param nodeC the node c
+     * @return the transformer 3 w input copy builder
+     */
     public Transformer3WInputCopyBuilder nodeC(NodeInput nodeC) {
       this.nodeC = nodeC;
       return thisInstance();
     }
 
+    /**
+     * Internal slack transformer 3 w input copy builder.
+     *
+     * @param internalNodeIsSlack the internal node is slack
+     * @return the transformer 3 w input copy builder
+     */
     public Transformer3WInputCopyBuilder internalSlack(boolean internalNodeIsSlack) {
       this.internSlack = internalNodeIsSlack;
       return thisInstance();

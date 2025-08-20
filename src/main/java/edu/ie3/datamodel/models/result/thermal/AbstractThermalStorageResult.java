@@ -38,10 +38,20 @@ public abstract class AbstractThermalStorageResult extends ThermalStorageResult 
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
 
+  /**
+   * Gets fill level.
+   *
+   * @return the fill level
+   */
   public ComparableQuantity<Dimensionless> getFillLevel() {
     return fillLevel;
   }
 
+  /**
+   * Sets fill level.
+   *
+   * @param fillLevel the fill level
+   */
   public void setFillLevel(ComparableQuantity<Dimensionless> fillLevel) {
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }

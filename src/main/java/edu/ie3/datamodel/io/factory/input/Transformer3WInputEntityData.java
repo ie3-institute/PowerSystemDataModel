@@ -12,10 +12,21 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.Map;
 import java.util.Objects;
 
+/** The type Transformer 3 w input entity data. */
 public class Transformer3WInputEntityData
     extends TypedConnectorInputEntityData<Transformer3WTypeInput> {
   private final NodeInput nodeC;
 
+  /**
+   * Instantiates a new Transformer 3 w input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param entityClass the entity class
+   * @param nodeA the node a
+   * @param nodeB the node b
+   * @param nodeC the node c
+   * @param type the type
+   */
   public Transformer3WInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
@@ -27,6 +38,17 @@ public class Transformer3WInputEntityData
     this.nodeC = nodeC;
   }
 
+  /**
+   * Instantiates a new Transformer 3 w input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param entityClass the entity class
+   * @param operator the operator
+   * @param nodeA the node a
+   * @param nodeB the node b
+   * @param nodeC the node c
+   * @param type the type
+   */
   public Transformer3WInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
@@ -41,8 +63,8 @@ public class Transformer3WInputEntityData
 
   /**
    * Creates a new Transformer3WInputEntityData object based on a given {@link
-   * ConnectorInputEntityData} object, a given third node as well as a given {@link
-   * Transformer3WTypeInput}.
+   * ConnectorInputEntityData}* object, a given third node as well as a given {@link
+   * Transformer3WTypeInput}*.
    *
    * @param entityData The TypedConnectorInputEntityData object to enhance
    * @param nodeC The third node
@@ -56,7 +78,7 @@ public class Transformer3WInputEntityData
 
   /**
    * Creates a new Transformer3WInputEntityData object based on a given {@link
-   * TypedConnectorInputEntityData} object and given third node
+   * TypedConnectorInputEntityData}* object and given third node
    *
    * @param entityData The TypedConnectorInputEntityData object to enhance
    * @param nodeC The third node
@@ -67,6 +89,11 @@ public class Transformer3WInputEntityData
     this.nodeC = nodeC;
   }
 
+  /**
+   * Gets node c.
+   *
+   * @return the node c
+   */
   public NodeInput getNodeC() {
     return nodeC;
   }

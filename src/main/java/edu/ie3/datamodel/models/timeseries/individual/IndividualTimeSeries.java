@@ -12,11 +12,20 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/** Describes a TimeSeries with individual values per time step */
+/**
+ * Describes a TimeSeries with individual values per time step
+ *
+ * @param <V> the type parameter
+ */
 public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedValue<V>, V, V> {
   /** Maps a time to its respective value to retrieve faster */
   private final Map<ZonedDateTime, TimeBasedValue<V>> timeToValue;
 
+  /**
+   * Instantiates a new Individual time series.
+   *
+   * @param values the values
+   */
   public IndividualTimeSeries(Set<TimeBasedValue<V>> values) {
     super(values);
 
@@ -24,6 +33,12 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
         values.stream().collect(Collectors.toMap(TimeBasedValue::getTime, Function.identity()));
   }
 
+  /**
+   * Instantiates a new Individual time series.
+   *
+   * @param uuid the uuid
+   * @param values the values
+   */
   public IndividualTimeSeries(UUID uuid, Set<TimeBasedValue<V>> values) {
     super(uuid, values);
 

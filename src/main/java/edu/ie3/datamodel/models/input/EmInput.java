@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+/** The type Em input. */
 public class EmInput extends AssetInput implements HasEm {
 
   /** Reference to the control strategy to be used for this model */
@@ -59,6 +60,11 @@ public class EmInput extends AssetInput implements HasEm {
     this.controllingEm = controllingEm;
   }
 
+  /**
+   * Gets control strategy.
+   *
+   * @return the control strategy
+   */
   public String getControlStrategy() {
     return controlStrategy;
   }
@@ -105,23 +111,41 @@ public class EmInput extends AssetInput implements HasEm {
     return Optional.ofNullable(controllingEm);
   }
 
+  /** The type Em input copy builder. */
   public static class EmInputCopyBuilder extends AssetInputCopyBuilder<EmInputCopyBuilder> {
 
     private String controlStrategy;
 
     private EmInput parentEm;
 
+    /**
+     * Instantiates a new Em input copy builder.
+     *
+     * @param entity the entity
+     */
     protected EmInputCopyBuilder(EmInput entity) {
       super(entity);
       this.controlStrategy = entity.getControlStrategy();
       this.parentEm = entity.controllingEm;
     }
 
+    /**
+     * Control strategy em input copy builder.
+     *
+     * @param controlStrategy the control strategy
+     * @return the em input copy builder
+     */
     public EmInputCopyBuilder controlStrategy(String controlStrategy) {
       this.controlStrategy = controlStrategy;
       return thisInstance();
     }
 
+    /**
+     * Parent em em input copy builder.
+     *
+     * @param parentEm the parent em
+     * @return the em input copy builder
+     */
     public EmInputCopyBuilder parentEm(EmInput parentEm) {
       this.parentEm = parentEm;
       return thisInstance();

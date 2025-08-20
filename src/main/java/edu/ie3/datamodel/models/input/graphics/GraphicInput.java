@@ -20,6 +20,8 @@ public abstract class GraphicInput extends UniqueInputEntity {
   private final LineString path;
 
   /**
+   * Instantiates a new Graphic input.
+   *
    * @param uuid of the input entity
    * @param graphicLayer Description of the graphic layer, this graphic is located on
    * @param path A graphic representation as path
@@ -33,10 +35,20 @@ public abstract class GraphicInput extends UniqueInputEntity {
             : GeoUtils.buildSafeLineString(path);
   }
 
+  /**
+   * Gets graphic layer.
+   *
+   * @return the graphic layer
+   */
   public String getGraphicLayer() {
     return graphicLayer;
   }
 
+  /**
+   * Gets path.
+   *
+   * @return the path
+   */
   public LineString getPath() {
     return path;
   }
@@ -66,13 +78,17 @@ public abstract class GraphicInput extends UniqueInputEntity {
         + '}';
   }
 
+  /**
+   * Copy graphic input copy builder.
+   *
+   * @return the graphic input copy builder
+   */
   public abstract GraphicInputCopyBuilder<? extends GraphicInputCopyBuilder<?>> copy();
 
   /**
    * Abstract class for all builder that build child entities of abstract class {@link GraphicInput}
    *
-   * @version 0.1
-   * @since 05.06.20
+   * @param <B> The builder type extending from {@link GraphicInputCopyBuilder}
    */
   public abstract static class GraphicInputCopyBuilder<B extends GraphicInputCopyBuilder<B>>
       extends UniqueEntityCopyBuilder<B> {
@@ -80,26 +96,53 @@ public abstract class GraphicInput extends UniqueInputEntity {
     private String graphicLayer;
     private LineString path;
 
+    /**
+     * Instantiates a new Graphic input copy builder.
+     *
+     * @param entity the entity
+     */
     protected GraphicInputCopyBuilder(GraphicInput entity) {
       super(entity);
       this.graphicLayer = entity.getGraphicLayer();
       this.path = entity.getPath();
     }
 
+    /**
+     * Graphic layer b.
+     *
+     * @param graphicLayer the graphic layer
+     * @return the b
+     */
     public B graphicLayer(String graphicLayer) {
       this.graphicLayer = graphicLayer;
       return thisInstance();
     }
 
+    /**
+     * Path b.
+     *
+     * @param path the path
+     * @return the b
+     */
     public B path(LineString path) {
       this.path = path;
       return thisInstance();
     }
 
+    /**
+     * Gets graphic layer.
+     *
+     * @return the graphic layer
+     */
     protected String getGraphicLayer() {
       return graphicLayer;
     }
 
+    /**
+     * Gets path.
+     *
+     * @return the path
+     */
     protected LineString getPath() {
       return path;
     }

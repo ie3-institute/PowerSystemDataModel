@@ -14,11 +14,13 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput;
 import java.util.UUID;
 
+/** The type Wec input factory. */
 public class WecInputFactory
     extends SystemParticipantInputEntityFactory<
         WecInput, SystemParticipantTypedEntityData<WecTypeInput>> {
   private static final String MARKET_REACTION = "marketReaction";
 
+  /** Instantiates a new Wec input factory. */
   public WecInputFactory() {
     super(WecInput.class);
   }

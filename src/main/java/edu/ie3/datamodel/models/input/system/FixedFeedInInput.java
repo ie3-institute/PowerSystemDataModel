@@ -76,10 +76,20 @@ public class FixedFeedInInput extends SystemParticipantInput {
     this.cosPhiRated = cosPhiRated;
   }
 
+  /**
+   * Gets rated.
+   *
+   * @return the rated
+   */
   public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
+  /**
+   * Gets cos phi rated.
+   *
+   * @return the cos phi rated
+   */
   public double getCosPhiRated() {
     return cosPhiRated;
   }
@@ -128,7 +138,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
   /**
    * A builder pattern based approach to create copies of {@link FixedFeedInInput} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * FixedFeedInInput}
+   * FixedFeedInInput}*
    *
    * @version 0.1
    * @since 05.06.20
@@ -145,11 +155,23 @@ public class FixedFeedInInput extends SystemParticipantInput {
       this.cosPhiRated = entity.getCosPhiRated();
     }
 
+    /**
+     * S rated fixed feed in input copy builder.
+     *
+     * @param sRated the s rated
+     * @return the fixed feed in input copy builder
+     */
     public FixedFeedInInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
       return thisInstance();
     }
 
+    /**
+     * Cos phi rated fixed feed in input copy builder.
+     *
+     * @param cosPhiRated the cos phi rated
+     * @return the fixed feed in input copy builder
+     */
     public FixedFeedInInputCopyBuilder cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
       return thisInstance();

@@ -21,12 +21,19 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/** The type Energy management source. */
 public class EnergyManagementSource extends AssetEntitySource {
 
   private final TypeSource typeSource;
 
   private static final EmInputFactory emInputFactory = new EmInputFactory();
 
+  /**
+   * Instantiates a new Energy management source.
+   *
+   * @param typeSource the type source
+   * @param dataSource the data source
+   */
   public EnergyManagementSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
@@ -41,10 +48,11 @@ public class EnergyManagementSource extends AssetEntitySource {
    * Returns a unique set of {@link EmInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EmInput} which has to be checked manually, as
-   * {@link EmInput#equals(Object)} is NOT restricted on the UUID of {@link EmInput}.
+   * java.util.UUID}* uniqueness of the provided {@link EmInput} which has to be checked manually,
+   * as {@link EmInput#equals(Object)} is NOT restricted on the UUID of {@link EmInput}.
    *
    * @return a map of UUID to {@link EmInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, EmInput> getEmUnits() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -53,8 +61,8 @@ public class EnergyManagementSource extends AssetEntitySource {
 
   /**
    * This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EmInput} which has to be checked manually, as
-   * {@link EmInput#equals(Object)} is NOT restricted on the UUID of {@link EmInput}.
+   * java.util.UUID}* uniqueness of the provided {@link EmInput} which has to be checked manually,
+   * as {@link EmInput#equals(Object)} is NOT restricted on the UUID of {@link EmInput}.
    *
    * <p>In contrast to {@link #getEmUnits()} this method provides the ability to pass in an already
    * existing set of {@link OperatorInput} entities, the {@link EmInput} instances depend on. Doing
@@ -66,6 +74,7 @@ public class EnergyManagementSource extends AssetEntitySource {
    *
    * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
    * @return a map of UUID to {@link EmInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
     return createEmInputs(

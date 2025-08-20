@@ -52,34 +52,74 @@ public abstract class ConnectorResult extends ResultEntity {
     this.iBAng = iBAng;
   }
 
+  /**
+   * Gets a mag.
+   *
+   * @return the a mag
+   */
   public ComparableQuantity<ElectricCurrent> getiAMag() {
     return iAMag;
   }
 
+  /**
+   * Sets a mag.
+   *
+   * @param iAMag the a mag
+   */
   public void setiAMag(ComparableQuantity<ElectricCurrent> iAMag) {
     this.iAMag = iAMag;
   }
 
+  /**
+   * Gets a ang.
+   *
+   * @return the a ang
+   */
   public ComparableQuantity<Angle> getiAAng() {
     return iAAng;
   }
 
+  /**
+   * Sets a ang.
+   *
+   * @param iAAng the a ang
+   */
   public void setiAAng(ComparableQuantity<Angle> iAAng) {
     this.iAAng = iAAng;
   }
 
+  /**
+   * Gets b mag.
+   *
+   * @return the b mag
+   */
   public ComparableQuantity<ElectricCurrent> getiBMag() {
     return iBMag;
   }
 
+  /**
+   * Sets b mag.
+   *
+   * @param iBMag the b mag
+   */
   public void setiBMag(ComparableQuantity<ElectricCurrent> iBMag) {
     this.iBMag = iBMag;
   }
 
+  /**
+   * Gets b ang.
+   *
+   * @return the b ang
+   */
   public ComparableQuantity<Angle> getiBAng() {
     return iBAng;
   }
 
+  /**
+   * Sets b ang.
+   *
+   * @param iBAng the b ang
+   */
   public void setiBAng(ComparableQuantity<Angle> iBAng) {
     this.iBAng = iBAng;
   }

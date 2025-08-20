@@ -47,6 +47,12 @@ public class RawGridSource extends AssetEntitySource {
   private final SwitchInputFactory switchInputFactory;
   private final MeasurementUnitInputFactory measurementUnitInputFactory;
 
+  /**
+   * Instantiates a new Raw grid source.
+   *
+   * @param typeSource the type source
+   * @param dataSource the data source
+   */
   public RawGridSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
@@ -77,9 +83,9 @@ public class RawGridSource extends AssetEntitySource {
 
   /**
    * Should return either a consistent instance of {@link RawGridElements} or throw a {@link
-   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
+   * SourceException}*. The decision to throw a {@link SourceException} instead of returning the
    * incomplete {@link RawGridElements} instance is motivated by the fact, that a {@link
-   * RawGridElements} is a container instance that depends on several other entities. Without being
+   * RawGridElements}* is a container instance that depends on several other entities. Without being
    * complete, it is useless for further processing.
    *
    * <p>Hence, whenever at least one entity {@link RawGridElements} depends on cannot be provided,
@@ -108,9 +114,9 @@ public class RawGridSource extends AssetEntitySource {
 
   /**
    * Should return either a consistent instance of {@link RawGridElements} or throw a {@link
-   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
+   * SourceException}*. The decision to throw a {@link SourceException} instead of returning the
    * incomplete {@link RawGridElements} instance is motivated by the fact, that a {@link
-   * RawGridElements} is a container instance that depends on several other entities. Without being
+   * RawGridElements}* is a container instance that depends on several other entities. Without being
    * complete, it is useless for further processing.
    *
    * <p>Hence, whenever at least one entity {@link RawGridElements} depends on cannot be provided,
@@ -180,10 +186,11 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a unique set of {@link NodeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link NodeInput} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link NodeInput} which has to be checked manually,
    * as {@link NodeInput#equals(Object)} is NOT restricted on the uuid of {@link NodeInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, NodeInput> getNodes() throws SourceException {
     return getNodes(typeSource.getOperators());
@@ -193,7 +200,7 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a unique set of {@link NodeInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link NodeInput} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link NodeInput} which has to be checked manually,
    * as {@link NodeInput#equals(Object)} is NOT restricted on the uuid of {@link NodeInput}.
    *
    * <p>In contrast to {@link #getNodes} this method provides the ability to pass in an already
@@ -206,6 +213,7 @@ public class RawGridSource extends AssetEntitySource {
    *
    * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
    * @return a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) throws SourceException {
     return getEntities(
@@ -220,10 +228,11 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a unique set of {@link LineInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link LineInput} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link LineInput} which has to be checked manually,
    * as {@link LineInput#equals(Object)} is NOT restricted on the uuid of {@link LineInput}.
    *
    * @return a map of UUID to object- and uuid-unique {@link LineInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, LineInput> getLines() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -234,7 +243,7 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a unique set of {@link LineInput} instances within a map by UUID.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link LineInput} which has to be checked manually,
+   * java.util.UUID}* uniqueness of the provided {@link LineInput} which has to be checked manually,
    * as {@link LineInput#equals(Object)} is NOT restricted on the uuid of {@link LineInput}.
    *
    * <p>In contrast to {@link #getNodes} this method provides the ability to pass in an already
@@ -249,6 +258,7 @@ public class RawGridSource extends AssetEntitySource {
    * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @param lineTypeInputs a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
    * @return a map of UUID to object- and uuid-unique {@link LineInput} entities
+   * @throws SourceException the source exception
    */
   public Map<UUID, LineInput> getLines(
       Map<UUID, OperatorInput> operators,
@@ -264,11 +274,12 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a unique set of {@link Transformer2WInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link Transformer2WInput} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link Transformer2WInput} which has to be checked
    * manually, as {@link Transformer2WInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * Transformer2WInput}.
+   * Transformer2WInput}*.
    *
    * @return a set of object- and uuid-unique {@link Transformer2WInput} entities
+   * @throws SourceException the source exception
    */
   public Set<Transformer2WInput> get2WTransformers() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -279,7 +290,8 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a set of {@link Transformer2WInput} instances. This set has to be unique in the sense
    * of object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
    * {@link Transformer2WInput} which has to be checked manually, as {@link
-   * Transformer2WInput#equals(Object)} is NOT restricted on the uuid of {@link Transformer2WInput}.
+   * Transformer2WInput#equals(Object)}* is NOT restricted on the uuid of {@link
+   * Transformer2WInput}.
    *
    * <p>In contrast to {@link #getNodes()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput}, {@link Transformer2WTypeInput} and {@link OperatorInput}
@@ -295,6 +307,7 @@ public class RawGridSource extends AssetEntitySource {
    * @param transformer2WTypes a map of UUID to object- and uuid-unique {@link
    *     Transformer2WTypeInput} entities
    * @return a set of object- and uuid-unique {@link Transformer2WInput} entities
+   * @throws SourceException the source exception
    */
   public Set<Transformer2WInput> get2WTransformers(
       Map<UUID, OperatorInput> operators,
@@ -315,11 +328,12 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a unique set of {@link Transformer3WInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link Transformer3WInput} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link Transformer3WInput} which has to be checked
    * manually, as {@link Transformer3WInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * Transformer3WInput}.
+   * Transformer3WInput}*.
    *
    * @return a set of object- and uuid-unique {@link Transformer3WInput} entities
+   * @throws SourceException the source exception
    */
   public Set<Transformer3WInput> get3WTransformers() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -330,7 +344,8 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a set of {@link Transformer3WInput} instances. This set has to be unique in the sense
    * of object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
    * {@link Transformer3WInput} which has to be checked manually, as {@link
-   * Transformer3WInput#equals(Object)} is NOT restricted on the uuid of {@link Transformer3WInput}.
+   * Transformer3WInput#equals(Object)}* is NOT restricted on the uuid of {@link
+   * Transformer3WInput}.
    *
    * <p>In contrast to {@link #getNodes()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput}, {@link Transformer3WTypeInput} and {@link OperatorInput}
@@ -346,6 +361,7 @@ public class RawGridSource extends AssetEntitySource {
    * @param transformer3WTypes a map of UUID to object- and uuid-unique {@link
    *     Transformer3WTypeInput} entities
    * @return a set of object- and uuid-unique {@link Transformer3WInput} entities
+   * @throws SourceException the source exception
    */
   public Set<Transformer3WInput> get3WTransformers(
       Map<UUID, OperatorInput> operators,
@@ -372,11 +388,12 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a unique set of {@link SwitchInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link SwitchInput} which has to be checked
+   * java.util.UUID}* uniqueness of the provided {@link SwitchInput} which has to be checked
    * manually, as {@link SwitchInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * SwitchInput}.
+   * SwitchInput}*.
    *
    * @return a set of object- and uuid-unique {@link SwitchInput} entities
+   * @throws SourceException the source exception
    */
   public Set<SwitchInput> getSwitches() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -400,6 +417,7 @@ public class RawGridSource extends AssetEntitySource {
    * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
    * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @return a set of object- and uuid-unique {@link SwitchInput} entities
+   * @throws SourceException the source exception
    */
   public Set<SwitchInput> getSwitches(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
@@ -415,11 +433,12 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a unique set of {@link MeasurementUnitInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link MeasurementUnitInput} which has to be checked
-   * manually, as {@link MeasurementUnitInput#equals(Object)} is NOT restricted on the uuid of
-   * {@link MeasurementUnitInput}.
+   * java.util.UUID}* uniqueness of the provided {@link MeasurementUnitInput} which has to be
+   * checked manually, as {@link MeasurementUnitInput#equals(Object)} is NOT restricted on the uuid
+   * of {@link MeasurementUnitInput}.
    *
    * @return a set of object- and uuid-unique {@link MeasurementUnitInput} entities
+   * @throws SourceException the source exception
    */
   public Set<MeasurementUnitInput> getMeasurementUnits() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -430,12 +449,12 @@ public class RawGridSource extends AssetEntitySource {
    * Returns a set of {@link MeasurementUnitInput} instances. This set has to be unique in the sense
    * of object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
    * {@link MeasurementUnitInput} which has to be checked manually, as {@link
-   * MeasurementUnitInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * MeasurementUnitInput}.
+   * MeasurementUnitInput#equals(Object)}* is NOT restricted on the uuid of {@link
+   * MeasurementUnitInput}*.
    *
    * <p>In contrast to {@link #getNodes()} this method provides the ability to pass in an already
    * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
-   * MeasurementUnitInput} instances depend on. Doing so, already loaded nodes, line types and
+   * MeasurementUnitInput}* instances depend on. Doing so, already loaded nodes, line types and
    * operators can be recycled to improve performance and prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
@@ -444,6 +463,7 @@ public class RawGridSource extends AssetEntitySource {
    * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
    * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
    * @return a set of object- and uuid-unique {@link MeasurementUnitInput} entities
+   * @throws SourceException the source exception
    */
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {

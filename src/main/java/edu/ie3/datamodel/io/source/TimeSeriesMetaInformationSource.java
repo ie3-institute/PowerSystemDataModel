@@ -17,11 +17,15 @@ import java.util.UUID;
 /** Source for all available time series with their {@link UUID} and {@link ColumnScheme} */
 public abstract class TimeSeriesMetaInformationSource {
 
+  /** The Load profile meta information. */
   protected Map<String, LoadProfileMetaInformation> loadProfileMetaInformation;
+
+  /** Default constructor for TimeSeriesMetaInformationSource. */
+  protected TimeSeriesMetaInformationSource() {}
 
   /**
    * Get a mapping from time series {@link UUID} to its meta information {@link
-   * IndividualTimeSeriesMetaInformation}
+   * IndividualTimeSeriesMetaInformation}*
    *
    * @return that mapping
    */

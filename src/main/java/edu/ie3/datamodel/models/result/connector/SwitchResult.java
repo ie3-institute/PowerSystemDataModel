@@ -30,10 +30,20 @@ public class SwitchResult extends ResultEntity {
     this.closed = closed;
   }
 
+  /**
+   * Gets closed.
+   *
+   * @return the closed
+   */
   public boolean getClosed() {
     return closed;
   }
 
+  /**
+   * Sets closed.
+   *
+   * @param closed the closed
+   */
   public void setClosed(boolean closed) {
     this.closed = closed;
   }

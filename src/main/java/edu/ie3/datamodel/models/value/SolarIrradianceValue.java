@@ -20,6 +20,8 @@ public class SolarIrradianceValue implements Value {
   private final ComparableQuantity<Irradiance> diffuseIrradiance;
 
   /**
+   * Instantiates a new Solar irradiance value.
+   *
    * @param directIrradiance Direct sun radiation (typically in W/m²)
    * @param diffuseIrradiance Diffuse sun radiation (typically in W/m²)
    */
@@ -32,10 +34,20 @@ public class SolarIrradianceValue implements Value {
         diffuseIrradiance == null ? null : diffuseIrradiance.to(StandardUnits.SOLAR_IRRADIANCE);
   }
 
+  /**
+   * Gets diffuse irradiance.
+   *
+   * @return the diffuse irradiance
+   */
   public Optional<ComparableQuantity<Irradiance>> getDiffuseIrradiance() {
     return Optional.ofNullable(diffuseIrradiance);
   }
 
+  /**
+   * Gets direct irradiance.
+   *
+   * @return the direct irradiance
+   */
   public Optional<ComparableQuantity<Irradiance>> getDirectIrradiance() {
     return Optional.ofNullable(directIrradiance);
   }

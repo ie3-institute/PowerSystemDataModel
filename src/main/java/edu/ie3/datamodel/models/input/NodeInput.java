@@ -98,22 +98,47 @@ public class NodeInput extends AssetInput {
     this.subnet = subnet;
   }
 
+  /**
+   * Gets target.
+   *
+   * @return the target
+   */
   public ComparableQuantity<Dimensionless> getvTarget() {
     return vTarget;
   }
 
+  /**
+   * Is slack boolean.
+   *
+   * @return the boolean
+   */
   public boolean isSlack() {
     return slack;
   }
 
+  /**
+   * Gets geo position.
+   *
+   * @return the geo position
+   */
   public Point getGeoPosition() {
     return geoPosition;
   }
 
+  /**
+   * Gets volt lvl.
+   *
+   * @return the volt lvl
+   */
   public VoltageLevel getVoltLvl() {
     return voltLvl;
   }
 
+  /**
+   * Gets subnet.
+   *
+   * @return the subnet
+   */
   public int getSubnet() {
     return subnet;
   }
@@ -204,26 +229,56 @@ public class NodeInput extends AssetInput {
           subnet);
     }
 
+    /**
+     * V target node input copy builder.
+     *
+     * @param vTarget the v target
+     * @return the node input copy builder
+     */
     public NodeInputCopyBuilder vTarget(ComparableQuantity<Dimensionless> vTarget) {
       this.vTarget = vTarget;
       return thisInstance();
     }
 
+    /**
+     * Slack node input copy builder.
+     *
+     * @param isSlack the is slack
+     * @return the node input copy builder
+     */
     public NodeInputCopyBuilder slack(boolean isSlack) {
       this.slack = isSlack;
       return thisInstance();
     }
 
+    /**
+     * Geo position node input copy builder.
+     *
+     * @param geoPosition the geo position
+     * @return the node input copy builder
+     */
     public NodeInputCopyBuilder geoPosition(Point geoPosition) {
       this.geoPosition = geoPosition;
       return thisInstance();
     }
 
+    /**
+     * Volt lvl node input copy builder.
+     *
+     * @param voltLvl the volt lvl
+     * @return the node input copy builder
+     */
     public NodeInputCopyBuilder voltLvl(VoltageLevel voltLvl) {
       this.voltLvl = voltLvl;
       return thisInstance();
     }
 
+    /**
+     * Subnet node input copy builder.
+     *
+     * @param subnet the subnet
+     * @return the node input copy builder
+     */
     public NodeInputCopyBuilder subnet(int subnet) {
       this.subnet = subnet;
       return thisInstance();

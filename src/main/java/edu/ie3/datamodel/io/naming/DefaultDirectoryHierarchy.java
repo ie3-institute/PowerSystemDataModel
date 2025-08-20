@@ -59,6 +59,12 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
 
   private final Path resultTree;
 
+  /**
+   * Instantiates a new Default directory hierarchy.
+   *
+   * @param baseDirectory the base directory
+   * @param gridName the grid name
+   */
   public DefaultDirectoryHierarchy(Path baseDirectory, String gridName) {
     /* Prepare the base path */
     Path baseDirectoryNormalized =
@@ -202,6 +208,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
   }
 
   private enum SubDirectories {
+    /** Grid input sub directories. */
     GRID_INPUT(
         Constants.INPUT_SUB_TREE.resolve("grid"),
         true,
@@ -213,6 +220,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 MeasurementUnitInput.class,
                 NodeInput.class)
             .collect(Collectors.toSet())),
+    /** Grid result sub directories. */
     GRID_RESULT(
         Constants.RESULT_SUB_TREE.resolve("grid"),
         false,
@@ -223,6 +231,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 Transformer3WResult.class,
                 NodeResult.class)
             .collect(Collectors.toSet())),
+    /** Global sub directories. */
     GLOBAL(
         Constants.INPUT_SUB_TREE.resolve("global"),
         true,
@@ -239,6 +248,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 OperatorInput.class,
                 WecCharacteristicInput.class)
             .collect(Collectors.toSet())),
+    /** Participants input sub directories. */
     PARTICIPANTS_INPUT(
         Constants.INPUT_SUB_TREE.resolve("participants"),
         true,
@@ -254,6 +264,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 StorageInput.class,
                 WecInput.class)
             .collect(Collectors.toSet())),
+    /** Participants results sub directories. */
     PARTICIPANTS_RESULTS(
         Constants.RESULT_SUB_TREE.resolve("participants"),
         false,
@@ -271,19 +282,23 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 EmResult.class,
                 FlexOptionsResult.class)
             .collect(Collectors.toSet())),
+    /** Time series sub directories. */
     TIME_SERIES(
         PARTICIPANTS_INPUT.relPath.resolve("time_series"),
         false,
         Stream.of(TimeSeries.class, TimeSeriesMappingSource.MappingEntry.class)
             .collect(Collectors.toSet())),
+    /** Thermal input sub directories. */
     THERMAL_INPUT(
         Constants.INPUT_SUB_TREE.resolve("thermal"),
         false,
         Stream.of(ThermalUnitInput.class, ThermalBusInput.class).collect(Collectors.toSet())),
+    /** Thermal results sub directories. */
     THERMAL_RESULTS(
         Constants.RESULT_SUB_TREE.resolve("thermal"),
         false,
         Stream.of(ThermalUnitResult.class).collect(Collectors.toSet())),
+    /** Graphics sub directories. */
     GRAPHICS(
         Constants.INPUT_SUB_TREE.resolve("graphics"),
         false,
@@ -292,14 +307,29 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
     private final boolean mandatory;
     private final Set<Class<?>> relevantClasses;
 
+    /**
+     * Gets rel path.
+     *
+     * @return the rel path
+     */
     public Path getRelPath() {
       return relPath;
     }
 
+    /**
+     * Is mandatory boolean.
+     *
+     * @return the boolean
+     */
     public boolean isMandatory() {
       return mandatory;
     }
 
+    /**
+     * Gets relevant classes.
+     *
+     * @return the relevant classes
+     */
     public Set<Class<?>> getRelevantClasses() {
       return relevantClasses;
     }

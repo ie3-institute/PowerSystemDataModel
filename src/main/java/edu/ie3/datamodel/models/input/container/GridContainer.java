@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.container;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.util.*;
 
+/** The type Grid container. */
 public abstract class GridContainer implements InputContainer<UniqueInputEntity> {
   /** Name of this grid */
   protected final String gridName;
@@ -21,6 +22,14 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
   /** Accumulated graphic data entities (node graphics, line graphics) */
   protected final GraphicElements graphics;
 
+  /**
+   * Instantiates a new Grid container.
+   *
+   * @param gridName the grid name
+   * @param rawGrid the raw grid
+   * @param systemParticipants the system participants
+   * @param graphics the graphics
+   */
   protected GridContainer(
       String gridName,
       RawGridElements rawGrid,
@@ -43,6 +52,8 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
   }
 
   /**
+   * Gets grid name.
+   *
    * @return true, as we are positive people and believe in what we do. Just kidding. Checks are
    *     made during initialisation.
    */
@@ -50,14 +61,29 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     return gridName;
   }
 
+  /**
+   * Gets raw grid.
+   *
+   * @return the raw grid
+   */
   public RawGridElements getRawGrid() {
     return rawGrid;
   }
 
+  /**
+   * Gets system participants.
+   *
+   * @return the system participants
+   */
   public SystemParticipants getSystemParticipants() {
     return systemParticipants;
   }
 
+  /**
+   * Gets graphics.
+   *
+   * @return the graphics
+   */
   public GraphicElements getGraphics() {
     return graphics;
   }
@@ -84,10 +110,9 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
 
   /**
    * Abstract class for all builder that build child containers of abstract class {@link
-   * GridContainer}
+   * GridContainer}*
    *
-   * @version 3.1
-   * @since 14.02.23
+   * @param <B> The builder type extending from {@link GridContainerCopyBuilder}
    */
   protected abstract static class GridContainerCopyBuilder<B extends GridContainerCopyBuilder<B>>
       extends InputContainerCopyBuilder<UniqueInputEntity> {
@@ -108,22 +133,38 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
       this.graphics = gridContainer.getGraphics();
     }
 
-    /** Returns grid name */
+    /**
+     * Returns grid name
+     *
+     * @return the grid name
+     */
     protected String getGridName() {
       return gridName;
     }
 
-    /** Returns {@link RawGridElements}. */
+    /**
+     * Returns {@link RawGridElements}.
+     *
+     * @return the raw grid
+     */
     protected RawGridElements getRawGrid() {
       return rawGrid;
     }
 
-    /** Returns {@link SystemParticipants} */
+    /**
+     * Returns {@link SystemParticipants}
+     *
+     * @return the system participants
+     */
     protected SystemParticipants getSystemParticipants() {
       return systemParticipants;
     }
 
-    /** Returns {@link GraphicElements} */
+    /**
+     * Returns {@link GraphicElements}
+     *
+     * @return the graphics
+     */
     protected GraphicElements getGraphics() {
       return graphics;
     }

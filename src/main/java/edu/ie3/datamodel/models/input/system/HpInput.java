@@ -147,11 +147,23 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       this.thermalBus = entity.getThermalBus();
     }
 
+    /**
+     * Type hp input copy builder.
+     *
+     * @param type the type
+     * @return the hp input copy builder
+     */
     public HpInputCopyBuilder type(HpTypeInput type) {
       this.type = type;
       return thisInstance();
     }
 
+    /**
+     * Thermal bus hp input copy builder.
+     *
+     * @param thermalBus the thermal bus
+     * @return the hp input copy builder
+     */
     public HpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
       this.thermalBus = thermalBus;
       return thisInstance();

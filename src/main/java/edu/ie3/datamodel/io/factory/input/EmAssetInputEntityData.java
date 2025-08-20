@@ -21,6 +21,13 @@ public class EmAssetInputEntityData extends AssetInputEntityData {
 
   private final EmInput controllingEm;
 
+  /**
+   * Instantiates a new Em asset input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param entityClass the entity class
+   * @param controllingEm the controlling em
+   */
   public EmAssetInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
@@ -29,6 +36,14 @@ public class EmAssetInputEntityData extends AssetInputEntityData {
     this.controllingEm = controllingEm;
   }
 
+  /**
+   * Instantiates a new Em asset input entity data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param entityClass the entity class
+   * @param operator the operator
+   * @param controllingEm the controlling em
+   */
   public EmAssetInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
@@ -50,6 +65,11 @@ public class EmAssetInputEntityData extends AssetInputEntityData {
     this.controllingEm = controllingEm;
   }
 
+  /**
+   * Gets controlling em.
+   *
+   * @return the controlling em
+   */
   public EmInput getControllingEm() {
     return controllingEm;
   }

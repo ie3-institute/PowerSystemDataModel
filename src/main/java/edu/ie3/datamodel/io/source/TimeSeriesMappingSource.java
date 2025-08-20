@@ -21,8 +21,10 @@ import java.util.stream.Stream;
  */
 public abstract class TimeSeriesMappingSource extends EntitySource {
 
+  /** The Mapping factory. */
   protected final TimeSeriesMappingFactory mappingFactory;
 
+  /** Instantiates a new Time series mapping source. */
   protected TimeSeriesMappingSource() {
     this.mappingFactory = new TimeSeriesMappingFactory();
   }
@@ -36,6 +38,7 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
    * Get a mapping from model {@link UUID} to the time series {@link UUID}
    *
    * @return That mapping
+   * @throws SourceException the source exception
    */
   public Map<UUID, UUID> getMapping() throws SourceException {
     return Try.scanStream(
@@ -52,6 +55,7 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
    *
    * @param modelIdentifier Identifier of the model
    * @return An {@link Optional} to the time series identifier
+   * @throws SourceException the source exception
    */
   public Optional<UUID> getTimeSeriesUuid(UUID modelIdentifier) throws SourceException {
     return Optional.ofNullable(getMapping().get(modelIdentifier));
@@ -61,10 +65,16 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
    * Extract a stream of maps from the database for the mapping
    *
    * @return Stream of maps
+   * @throws SourceException the source exception
    */
   public abstract Stream<Map<String, String>> getMappingSourceData() throws SourceException;
 
-  /** Returns the option for fields found in the source */
+  /**
+   * Returns the option for fields found in the source
+   *
+   * @return the source fields
+   * @throws SourceException the source exception
+   */
   public abstract Optional<Set<String>> getSourceFields() throws SourceException;
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -82,17 +92,31 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
     private final UUID asset;
     private final UUID timeSeries;
 
+    /**
+     * Instantiates a new Mapping entry.
+     *
+     * @param asset the asset
+     * @param timeSeries the time series
+     */
     public MappingEntry(UUID asset, UUID timeSeries) {
       this.asset = asset;
       this.timeSeries = timeSeries;
     }
 
-    /** Returns the {@link UUID} of the {@link edu.ie3.datamodel.models.input.AssetInput}. */
+    /**
+     * Returns the {@link UUID} of the {@link edu.ie3.datamodel.models.input.AssetInput}.
+     *
+     * @return the asset
+     */
     public UUID getAsset() {
       return asset;
     }
 
-    /** Returns the {@link UUID} of the {@link TimeSeries}. */
+    /**
+     * Returns the {@link UUID} of the {@link TimeSeries}.
+     *
+     * @return the time series
+     */
     public UUID getTimeSeries() {
       return timeSeries;
     }

@@ -19,6 +19,15 @@ public abstract class ElectricalEnergyStorageResult extends SystemParticipantRes
   /** State of Charge (SoC) in % */
   private final ComparableQuantity<Dimensionless> soc;
 
+  /**
+   * Instantiates a new Electrical energy storage result.
+   *
+   * @param time the time
+   * @param inputModel the input model
+   * @param p the p
+   * @param q the q
+   * @param soc the soc
+   */
   protected ElectricalEnergyStorageResult(
       ZonedDateTime time,
       UUID inputModel,
@@ -29,6 +38,11 @@ public abstract class ElectricalEnergyStorageResult extends SystemParticipantRes
     this.soc = soc.to(StandardUnits.SOC);
   }
 
+  /**
+   * Gets soc.
+   *
+   * @return the soc
+   */
   public ComparableQuantity<Dimensionless> getSoc() {
     return soc;
   }

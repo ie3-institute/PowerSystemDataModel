@@ -15,7 +15,11 @@ import java.io.Serializable;
 
 /**
  * Defines gates between {@link SubGridContainer}s and serves as edge definition for {@link
- * SubGridTopologyGraph}
+ * SubGridTopologyGraph}*
+ *
+ * @param link The transformer input that connects the subgrids.
+ * @param superiorNode The node that represents the higher voltage side of the connection.
+ * @param inferiorNode The node that represents the lower voltage side of the connection
  */
 public record SubGridGate(TransformerInput link, NodeInput superiorNode, NodeInput inferiorNode)
     implements Serializable {
@@ -54,10 +58,20 @@ public record SubGridGate(TransformerInput link, NodeInput superiorNode, NodeInp
     };
   }
 
+  /**
+   * Gets superior sub grid.
+   *
+   * @return the superior sub grid
+   */
   public int getSuperiorSubGrid() {
     return superiorNode.getSubnet();
   }
 
+  /**
+   * Gets inferior sub grid.
+   *
+   * @return the inferior sub grid
+   */
   public int getInferiorSubGrid() {
     return inferiorNode.getSubnet();
   }

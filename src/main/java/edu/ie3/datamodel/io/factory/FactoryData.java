@@ -12,10 +12,17 @@ import javax.measure.Unit;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
+/** The type Factory data. */
 public abstract class FactoryData {
   private final Map<String, String> fieldsToAttributes;
   private final Class<?> targetClass;
 
+  /**
+   * Instantiates a new Factory data.
+   *
+   * @param fieldsToAttributes the fields to attributes
+   * @param targetClass the target class
+   */
   protected FactoryData(Map<String, String> fieldsToAttributes, Class<?> targetClass) {
     // this does the magic: case-insensitive get/set calls on keys
     this.fieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -23,10 +30,20 @@ public abstract class FactoryData {
     this.targetClass = targetClass;
   }
 
+  /**
+   * Gets fields to values.
+   *
+   * @return the fields to values
+   */
   public Map<String, String> getFieldsToValues() {
     return fieldsToAttributes;
   }
 
+  /**
+   * Gets target class.
+   *
+   * @return the target class
+   */
   public Class<?> getTargetClass() {
     return targetClass;
   }
@@ -67,11 +84,11 @@ public abstract class FactoryData {
 
   /**
    * Parses and returns a Quantity from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
+   * FactoryException}* if field does not exist or parsing fails.
    *
+   * @param <Q> unit type parameter
    * @param field field name
    * @param unit unit of Quantity
-   * @param <Q> unit type parameter
    * @return Quantity of given field with given unit
    */
   public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
@@ -81,9 +98,9 @@ public abstract class FactoryData {
   /**
    * Returns field value for given field name, or empty Optional if field does not exist.
    *
+   * @param <Q> unit type parameter
    * @param field field name
    * @param unit unit of Quantity
-   * @param <Q> unit type parameter
    * @return field value
    */
   public <Q extends Quantity<Q>> Optional<ComparableQuantity<Q>> getQuantityOptional(
@@ -137,7 +154,7 @@ public abstract class FactoryData {
    * if field does not exist or parsing fails.
    *
    * @param field field name
-   * @return UUID
+   * @return UUID uuid
    */
   public UUID getUUID(String field) {
     try {

@@ -10,9 +10,14 @@ import java.util.Optional;
 
 /**
  * Interface that should be implemented by all elements that can be controlled by {@link
- * edu.ie3.datamodel.models.input.EmInput} elements and should be processable by the {@link
- * Extractor}.
+ * edu.ie3.datamodel.models.input.EmInput}* elements and should be processable by the {@link
+ * Extractor}*.
  */
 public interface HasEm extends NestedEntity {
+  /**
+   * Gets controlling em.
+   *
+   * @return the controlling em
+   */
   Optional<EmInput> getControllingEm();
 }

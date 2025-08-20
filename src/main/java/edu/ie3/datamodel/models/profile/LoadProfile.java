@@ -11,8 +11,11 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/** The interface Load profile. */
 public interface LoadProfile extends Serializable {
   /**
+   * Gets key.
+   *
    * @return The identifying String
    */
   String getKey();
@@ -30,6 +33,11 @@ public interface LoadProfile extends Serializable {
     return LoadProfile.getProfile(getAllProfiles(), key);
   }
 
+  /**
+   * Get all profiles load profile [ ].
+   *
+   * @return the load profile [ ]
+   */
   static LoadProfile[] getAllProfiles() {
     return Stream.of(
             BdewStandardLoadProfile.values(),
@@ -42,9 +50,11 @@ public interface LoadProfile extends Serializable {
   /**
    * Looks for load profile with given key and returns it.
    *
+   * @param <T> the type parameter
    * @param profiles we search within
    * @param key to look for
    * @return the matching load profile
+   * @throws ParsingException the parsing exception
    */
   static <T extends LoadProfile> T getProfile(T[] profiles, String key) throws ParsingException {
     return Arrays.stream(profiles)
@@ -65,7 +75,9 @@ public interface LoadProfile extends Serializable {
     return key.toLowerCase().replaceAll("[-_]*", "");
   }
 
+  /** The enum Default load profiles. */
   enum DefaultLoadProfiles implements LoadProfile {
+    /** No load profile default load profiles. */
     NO_LOAD_PROFILE;
 
     @Override
@@ -74,7 +86,9 @@ public interface LoadProfile extends Serializable {
     }
   }
 
+  /** The enum Random load profile. */
   enum RandomLoadProfile implements LoadProfile {
+    /** Random load profile random load profile. */
     RANDOM_LOAD_PROFILE;
 
     @Override

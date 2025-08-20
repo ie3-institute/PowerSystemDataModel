@@ -14,10 +14,12 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
 import java.util.UUID;
 
+/** The type Ev input factory. */
 public class EvInputFactory
     extends SystemParticipantInputEntityFactory<
         EvInput, SystemParticipantTypedEntityData<EvTypeInput>> {
 
+  /** Instantiates a new Ev input factory. */
   public EvInputFactory() {
     super(EvInput.class);
   }

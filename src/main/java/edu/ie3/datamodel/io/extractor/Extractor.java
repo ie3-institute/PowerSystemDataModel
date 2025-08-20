@@ -30,6 +30,13 @@ public final class Extractor {
     throw new IllegalStateException("Utility classes cannot be instantiated");
   }
 
+  /**
+   * Extract elements set.
+   *
+   * @param nestedEntity the nested entity
+   * @return the set
+   * @throws ExtractorException the extractor exception
+   */
   public static Set<UniqueInputEntity> extractElements(NestedEntity nestedEntity)
       throws ExtractorException {
     CopyOnWriteArrayList<UniqueInputEntity> resultingList = new CopyOnWriteArrayList<>();
@@ -90,10 +97,22 @@ public final class Extractor {
     return Set.copyOf(resultingList);
   }
 
+  /**
+   * Extract type asset type input.
+   *
+   * @param entityWithType the entity with type
+   * @return the asset type input
+   */
   public static AssetTypeInput extractType(HasType entityWithType) {
     return entityWithType.getType();
   }
 
+  /**
+   * Extract operator optional.
+   *
+   * @param entityWithOperator the entity with operator
+   * @return the optional
+   */
   public static Optional<OperatorInput> extractOperator(Operable entityWithOperator) {
     return entityWithOperator.getOperator().getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
         ? Optional.empty()

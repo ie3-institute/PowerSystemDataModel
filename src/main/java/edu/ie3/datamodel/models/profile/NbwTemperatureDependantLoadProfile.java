@@ -9,9 +9,11 @@ import edu.ie3.datamodel.exceptions.ParsingException;
 
 /** Temperature dependant determined by NBW (accessed 05/2022) */
 public enum NbwTemperatureDependantLoadProfile implements TemperatureDependantLoadProfile {
+  /** The Ep 1. */
   // heat pumps
   EP1("ep1"),
 
+  /** The Ez 2. */
   // night storage heating
   EZ2("ez2");
 
@@ -27,6 +29,7 @@ public enum NbwTemperatureDependantLoadProfile implements TemperatureDependantLo
    * @param key key to check for
    * @return The corresponding nbw load profile or throw {@link IllegalArgumentException}, if no
    *     matching load profile can be found
+   * @throws ParsingException the parsing exception
    */
   public static NbwTemperatureDependantLoadProfile get(String key) throws ParsingException {
     return LoadProfile.getProfile(NbwTemperatureDependantLoadProfile.values(), key);

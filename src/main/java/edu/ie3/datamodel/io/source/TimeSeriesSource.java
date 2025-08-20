@@ -20,12 +20,23 @@ import java.util.*;
 /**
  * The interface definition of a source, that is able to provide one specific time series for one
  * model
+ *
+ * @param <V> the type parameter
  */
 public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
 
+  /** The Value class. */
   protected Class<V> valueClass;
+
+  /** The Value factory. */
   protected final TimeBasedSimpleValueFactory<V> valueFactory;
 
+  /**
+   * Instantiates a new Time series source.
+   *
+   * @param valueClass the value class
+   * @param factory the factory
+   */
   protected TimeSeriesSource(Class<V> valueClass, TimeBasedSimpleValueFactory<V> factory) {
     this.valueFactory = factory;
     this.valueClass = valueClass;
@@ -45,11 +56,29 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
     return valueFactory.get(factoryData);
   }
 
+  /**
+   * Gets time series.
+   *
+   * @return the time series
+   */
   public abstract IndividualTimeSeries<V> getTimeSeries();
 
+  /**
+   * Gets time series.
+   *
+   * @param timeInterval the time interval
+   * @return the time series
+   * @throws SourceException the source exception
+   */
   public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
       throws SourceException;
 
+  /**
+   * Gets value.
+   *
+   * @param time the time
+   * @return the value
+   */
   public abstract Optional<V> getValue(ZonedDateTime time);
 
   /**
@@ -68,6 +97,12 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
     return value;
   }
 
+  /**
+   * Gets previous time based value.
+   *
+   * @param time the time
+   * @return the previous time based value
+   */
   public abstract Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time);
 
   /**

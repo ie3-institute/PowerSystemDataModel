@@ -22,6 +22,7 @@ public final class NodeGraphicInputFactory
 
   private static final String POINT = "point";
 
+  /** Instantiates a new Node graphic input factory. */
   public NodeGraphicInputFactory() {
     super(NodeGraphicInput.class);
   }

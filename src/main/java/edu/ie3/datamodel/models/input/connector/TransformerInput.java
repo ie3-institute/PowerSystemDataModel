@@ -73,10 +73,20 @@ public abstract class TransformerInput extends ConnectorInput {
     this.autoTap = autoTap;
   }
 
+  /**
+   * Is auto tap boolean.
+   *
+   * @return the boolean
+   */
   public boolean isAutoTap() {
     return autoTap;
   }
 
+  /**
+   * Gets tap pos.
+   *
+   * @return the tap pos
+   */
   public int getTapPos() {
     return tapPos;
   }
@@ -123,10 +133,9 @@ public abstract class TransformerInput extends ConnectorInput {
 
   /**
    * Abstract class for all builder that build child entities of abstract class {@link
-   * TransformerInput}
+   * TransformerInput}*
    *
-   * @version 0.1
-   * @since 05.06.20
+   * @param <B> The builder type extending from {@link TransformerInputCopyBuilder}.
    */
   public abstract static class TransformerInputCopyBuilder<B extends TransformerInputCopyBuilder<B>>
       extends ConnectorInputCopyBuilder<B> {
@@ -134,26 +143,53 @@ public abstract class TransformerInput extends ConnectorInput {
     private int tapPos;
     private boolean autoTap;
 
+    /**
+     * Instantiates a new Transformer input copy builder.
+     *
+     * @param entity the entity
+     */
     protected TransformerInputCopyBuilder(TransformerInput entity) {
       super(entity);
       this.tapPos = entity.getTapPos();
       this.autoTap = entity.isAutoTap();
     }
 
+    /**
+     * Tap pos b.
+     *
+     * @param tapPos the tap pos
+     * @return the b
+     */
     public B tapPos(int tapPos) {
       this.tapPos = tapPos;
       return thisInstance();
     }
 
+    /**
+     * Auto tap b.
+     *
+     * @param autoTap the auto tap
+     * @return the b
+     */
     public B autoTap(boolean autoTap) {
       this.autoTap = autoTap;
       return thisInstance();
     }
 
+    /**
+     * Gets tap pos.
+     *
+     * @return the tap pos
+     */
     protected int getTapPos() {
       return tapPos;
     }
 
+    /**
+     * Is auto tap boolean.
+     *
+     * @return the boolean
+     */
     protected boolean isAutoTap() {
       return autoTap;
     }

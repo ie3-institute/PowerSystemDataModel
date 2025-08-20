@@ -15,14 +15,22 @@ import javax.measure.quantity.Dimensionless;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Node input factory. */
 public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetInputEntityData> {
   private static final String V_TARGET = "vTarget";
+
+  /** The constant V_RATED. */
   public static final String V_RATED = "vRated";
+
   private static final String SLACK = "slack";
   private static final String GEO_POSITION = "geoPosition";
+
+  /** The constant VOLT_LVL. */
   public static final String VOLT_LVL = "voltLvl";
+
   private static final String SUBNET = "subnet";
 
+  /** Instantiates a new Node input factory. */
   public NodeInputFactory() {
     super(NodeInput.class);
   }

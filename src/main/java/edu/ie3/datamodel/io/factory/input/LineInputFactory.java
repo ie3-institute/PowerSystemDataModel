@@ -20,12 +20,14 @@ import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Line input factory. */
 public class LineInputFactory
     extends ConnectorInputEntityFactory<LineInput, TypedConnectorInputEntityData<LineTypeInput>> {
   private static final String LENGTH = "length";
   private static final String GEO_POSITION = "geoPosition";
   private static final String OLM_CHARACTERISTIC = "olmCharacteristic";
 
+  /** Instantiates a new Line input factory. */
   public LineInputFactory() {
     super(LineInput.class);
   }

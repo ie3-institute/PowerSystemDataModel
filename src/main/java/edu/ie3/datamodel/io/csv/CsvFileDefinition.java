@@ -24,6 +24,14 @@ import java.util.Objects;
  * @param csvSep the separator that is used in this csv file
  */
 public record CsvFileDefinition(Path filePath, String[] headLineElements, String csvSep) {
+  /**
+   * Instantiates a new Csv file definition.
+   *
+   * @param fileName the file name
+   * @param directoryPath the directory path
+   * @param headLineElements the head line elements
+   * @param csvSep the csv sep
+   */
   public CsvFileDefinition(
       String fileName, Path directoryPath, String[] headLineElements, String csvSep) {
     this(FileUtils.ofCsv(fileName, directoryPath), headLineElements, csvSep);
@@ -62,6 +70,10 @@ public record CsvFileDefinition(Path filePath, String[] headLineElements, String
   /**
    * Builds a new file definition consisting of file name and headline elements
    *
+   * @param <T> The type of the time series
+   * @param <E> The type of the time series entries
+   * @param <V> The type of values in the time series
+   * @param <R> The type of result values
    * @param timeSeries Time series to derive naming information from
    * @param headLineElements Array of headline elements
    * @param csvSep Separator for csv columns
@@ -95,6 +107,8 @@ public record CsvFileDefinition(Path filePath, String[] headLineElements, String
   }
 
   /**
+   * Gets file path.
+   *
    * @return The path to the file relative to a not explicitly defined base directory, including the
    *     file extension
    */
@@ -102,7 +116,11 @@ public record CsvFileDefinition(Path filePath, String[] headLineElements, String
     return filePath;
   }
 
-  /** Returns the directory path of this file. */
+  /**
+   * Returns the directory path of this file.
+   *
+   * @return the directory path
+   */
   public Path getDirectoryPath() {
     Path parent = filePath.getParent();
     return parent != null ? parent : Path.of("");

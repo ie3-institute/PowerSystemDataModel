@@ -10,29 +10,52 @@ import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.io.Serializable;
 import java.util.List;
 
-/** Represents an aggregation of different entities */
+/**
+ * Represents an aggregation of different entities
+ *
+ * @param <T> The type of entities contained in this container, which must extend {@link
+ *     UniqueInputEntity}.
+ */
 public interface InputContainer<T extends UniqueInputEntity> extends Serializable {
 
   /**
+   * All entities as list list.
+   *
    * @return unmodifiable List of all entities
    */
   List<T> allEntitiesAsList();
 
-  /** Returns an input container copy builder */
+  /**
+   * Returns an input container copy builder
+   *
+   * @return the input container copy builder
+   */
   InputContainerCopyBuilder<T> copy();
 
   /**
    * Abstract class for all builder that build child containers of interface {@link
-   * edu.ie3.datamodel.models.input.container.InputContainer}
+   * edu.ie3.datamodel.models.input.container.InputContainer}*
    *
-   * @version 3.1
-   * @since 14.02.23
+   * @param <T> The type of entities contained in this container, which must extend {@link
+   *     UniqueInputEntity}.
    */
   abstract class InputContainerCopyBuilder<T extends UniqueInputEntity> {
+    /** Default constructor for InputContainerCopyBuilder. */
+    public InputContainerCopyBuilder() {}
 
-    /** Returns the altered {@link InputContainer} */
+    /**
+     * Returns an unmodifiable list of all entities contained within this input container.
+     *
+     * @return An unmodifiable List of all entities.
+     * @throws ValidationException the validation exception
+     */
     public abstract InputContainer<T> build() throws ValidationException;
 
+    /**
+     * This instance input container copy builder.
+     *
+     * @return the input container copy builder
+     */
     protected abstract InputContainerCopyBuilder<T> thisInstance();
   }
 }

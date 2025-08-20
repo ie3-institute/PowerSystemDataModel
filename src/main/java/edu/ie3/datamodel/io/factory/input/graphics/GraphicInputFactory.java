@@ -16,6 +16,8 @@ import org.locationtech.jts.geom.LineString;
 /**
  * Abstract factory implementation for all {@link GraphicInput} elements
  *
+ * @param <T> the type parameter
+ * @param <D> the type parameter
  * @version 0.1
  * @since 08.04.20
  */
@@ -26,6 +28,11 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
   private static final String GRAPHIC_LAYER = "graphicLayer";
   private static final String PATH_LINE_STRING = "path";
 
+  /**
+   * Instantiates a new Graphic input factory.
+   *
+   * @param allowedClasses the allowed classes
+   */
   protected GraphicInputFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }

@@ -28,6 +28,11 @@ public class SValue extends PValue {
     this.q = q == null ? null : q.to(StandardUnits.REACTIVE_POWER_IN);
   }
 
+  /**
+   * Gets q.
+   *
+   * @return the q
+   */
   public Optional<ComparableQuantity<Power>> getQ() {
     return Optional.ofNullable(q);
   }

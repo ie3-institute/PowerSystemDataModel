@@ -18,6 +18,7 @@ import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Line type input factory. */
 public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeInput> {
   private static final String B = "b";
   private static final String G = "g";
@@ -26,6 +27,7 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
   private static final String I_MAX = "iMax";
   private static final String V_RATED = "vRated";
 
+  /** Instantiates a new Line type input factory. */
   public LineTypeInputFactory() {
     super(LineTypeInput.class);
   }

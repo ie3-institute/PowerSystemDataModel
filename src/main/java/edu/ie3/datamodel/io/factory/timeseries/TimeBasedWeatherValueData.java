@@ -12,6 +12,7 @@ import javax.measure.Unit;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
+/** The type Time based weather value data. */
 public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> {
 
   private final Point coordinate;
@@ -27,6 +28,11 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
     this.coordinate = coordinate;
   }
 
+  /**
+   * Gets coordinate.
+   *
+   * @return the coordinate
+   */
   public Point getCoordinate() {
     return coordinate;
   }

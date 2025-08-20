@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * Wrapper providing the class specific processor to convert an instance of a {@link Entity} into a
  * mapping from attribute to value which can be used to write data e.g. into .csv files. This
  * wrapper can always be used if it's not clear which specific instance of a subclass of {@link
- * Entity} is received in the implementation. It can either be used for specific entity processors
+ * Entity}* is received in the implementation. It can either be used for specific entity processors
  * only or as a general provider for all known entity processors.
  *
  * @version 0.1
@@ -46,7 +46,11 @@ public class ProcessorProvider {
               Value>>
       timeSeriesProcessors;
 
-  /** Get an instance of this class with all existing entity processors */
+  /**
+   * Get an instance of this class with all existing entity processors
+   *
+   * @throws EntityProcessorException the entity processor exception
+   */
   public ProcessorProvider() throws EntityProcessorException {
     this.entityProcessors = init(allEntityProcessors());
     this.timeSeriesProcessors = allTimeSeriesProcessors();
@@ -73,6 +77,13 @@ public class ProcessorProvider {
     this.timeSeriesProcessors = timeSeriesProcessors;
   }
 
+  /**
+   * Handle entity try.
+   *
+   * @param <T> the type parameter
+   * @param entity the entity
+   * @return the try
+   */
   public <T extends Entity>
       Try<LinkedHashMap<String, String>, ProcessorProviderException> handleEntity(T entity) {
     return Try.of(() -> getEntityProcessor(entity.getClass()), ProcessorProviderException.class)
@@ -83,6 +94,14 @@ public class ProcessorProvider {
                     .transformF(ProcessorProviderException::new));
   }
 
+  /**
+   * Handle entities set.
+   *
+   * @param <T> the type parameter
+   * @param entities the entities
+   * @return the set
+   * @throws ProcessorProviderException the processor provider exception
+   */
   public <T extends Entity> Set<LinkedHashMap<String, String>> handleEntities(List<T> entities)
       throws ProcessorProviderException {
     Set<T> setOfEntities = new HashSet<>(entities);
@@ -121,12 +140,13 @@ public class ProcessorProvider {
   /**
    * Searches for the right processor and returns its result
    *
-   * @param timeSeries Time series to process
    * @param <T> Type of the time series
    * @param <E> Type of the time series entries
    * @param <V> Type of the value inside the time series entries
    * @param <R> Type of the value, the time series will return
+   * @param timeSeries Time series to process
    * @return A set of mappings from field name to value
+   * @throws ProcessorProviderException the processor provider exception
    */
   public <
           T extends TimeSeries<E, V, R>,
@@ -185,6 +205,11 @@ public class ProcessorProvider {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Gets registered time series combinations.
+   *
+   * @return the registered time series combinations
+   */
   public Set<TimeSeriesProcessorKey> getRegisteredTimeSeriesCombinations() {
     return timeSeriesProcessors.keySet();
   }
@@ -261,6 +286,7 @@ public class ProcessorProvider {
    * Build a collection of all existing processors
    *
    * @return a collection of all existing processors
+   * @throws EntityProcessorException the entity processor exception
    */
   public static Collection<EntityProcessor<? extends Entity>> allEntityProcessors()
       throws EntityProcessorException {
@@ -274,6 +300,7 @@ public class ProcessorProvider {
    * Build a collection of all input processors
    *
    * @return a collection of all input processors
+   * @throws EntityProcessorException the entity processor exception
    */
   public static Collection<EntityProcessor<? extends Entity>> allInputEntityProcessors()
       throws EntityProcessorException {
@@ -288,6 +315,7 @@ public class ProcessorProvider {
    * Build a collection of all result processors
    *
    * @return a collection of all result processors
+   * @throws EntityProcessorException the entity processor exception
    */
   public static Collection<EntityProcessor<? extends Entity>> allResultEntityProcessors()
       throws EntityProcessorException {
@@ -302,6 +330,7 @@ public class ProcessorProvider {
    * Create processors for all known eligible combinations and map them
    *
    * @return A mapping from eligible combinations to processors
+   * @throws EntityProcessorException the entity processor exception
    */
   @SuppressWarnings("unchecked")
   public static Map<

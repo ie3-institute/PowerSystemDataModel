@@ -41,7 +41,9 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
     extends LoadProfileSource<P, V> {
+  /** The constant log. */
   protected static final Logger log = LoggerFactory.getLogger(SqlTimeSeriesSource.class);
+
   private final SqlDataSource dataSource;
   private final String tableName;
 
@@ -60,6 +62,14 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
 
   private final String queryTime;
 
+  /**
+   * Instantiates a new Sql load profile source.
+   *
+   * @param dataSource the data source
+   * @param metaInformation the meta information
+   * @param entryClass the entry class
+   * @param entryFactory the entry factory
+   */
   public SqlLoadProfileSource(
       SqlDataSource dataSource,
       LoadProfileMetaInformation metaInformation,
@@ -79,6 +89,16 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
     this.queryTime = createQueryForTime(dataSource.schemaName, tableName, dbTimeColumnName);
   }
 
+  /**
+   * Instantiates a new Sql load profile source.
+   *
+   * @param connector the connector
+   * @param schemaName the schema name
+   * @param namingStrategy the naming strategy
+   * @param metaInformation the meta information
+   * @param entryClass the entry class
+   * @param entryFactory the entry factory
+   */
   public SqlLoadProfileSource(
       SqlConnector connector,
       String schemaName,

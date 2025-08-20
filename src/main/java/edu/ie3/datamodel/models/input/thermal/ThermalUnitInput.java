@@ -17,6 +17,8 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
   private final ThermalBusInput thermalBus;
 
   /**
+   * Instantiates a new Thermal unit input.
+   *
    * @param uuid Unique identifier of a certain thermal input
    * @param id Identifier of the thermal unit
    * @param thermalBus thermal bus, a thermal unit is connected to
@@ -27,6 +29,8 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
   }
 
   /**
+   * Instantiates a new Thermal unit input.
+   *
    * @param uuid Unique identifier of a certain thermal input
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
@@ -82,27 +86,52 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
 
   /**
    * Abstract class for all builders that build child entities of abstract class {@link
-   * ThermalUnitInput}
+   * ThermalUnitInput}*
+   *
+   * @param <B> Type parameter representing the builder type extending from
+   *     ThermalUnitInputCopyBuilder.
    */
   public abstract static class ThermalUnitInputCopyBuilder<B extends ThermalUnitInputCopyBuilder<B>>
       extends AssetInputCopyBuilder<B> {
 
     private ThermalBusInput thermalBus;
 
+    /**
+     * Instantiates a new Thermal unit input copy builder.
+     *
+     * @param entity the entity
+     */
     protected ThermalUnitInputCopyBuilder(ThermalUnitInput entity) {
       super(entity);
       this.thermalBus = entity.getThermalBus();
     }
 
+    /**
+     * Thermal bus b.
+     *
+     * @param thermalBus the thermal bus
+     * @return the b
+     */
     public B thermalBus(ThermalBusInput thermalBus) {
       this.thermalBus = thermalBus;
       return thisInstance();
     }
 
+    /**
+     * Gets thermal bus.
+     *
+     * @return the thermal bus
+     */
     protected ThermalBusInput getThermalBus() {
       return thermalBus;
     }
 
+    /**
+     * Scales properties by given factor.
+     *
+     * @param factor Scaling factor
+     * @return A copy builder with scaled relevant properties
+     */
     public abstract B scale(Double factor);
 
     @Override

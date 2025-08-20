@@ -46,6 +46,13 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
 
   private final SqlIdCoordinateFactory factory;
 
+  /**
+   * Instantiates a new Sql id coordinate source.
+   *
+   * @param factory the factory
+   * @param coordinateTableName the coordinate table name
+   * @param dataSource the data source
+   */
   public SqlIdCoordinateSource(
       SqlIdCoordinateFactory factory, String coordinateTableName, SqlDataSource dataSource) {
     this.factory = factory;

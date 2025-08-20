@@ -9,8 +9,10 @@ import edu.ie3.datamodel.models.Entity;
 import java.nio.file.Path;
 import java.util.Optional;
 
-/** Default directory hierarchy for input models */
+/** Implementation of the FileHierarchy interface that represents a flat directory structure. */
 public class FlatDirectoryHierarchy implements FileHierarchy {
+  /** Default constructor for FlatDirectoryHierarchy. */
+  public FlatDirectoryHierarchy() {}
 
   /**
    * Gives empty sub directory.

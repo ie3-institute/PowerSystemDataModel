@@ -77,6 +77,12 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           StorageTypeInput.class,
           WecTypeInput.class);
 
+  /**
+   * Instantiates a new Input entity processor.
+   *
+   * @param registeredClass the registered class
+   * @throws EntityProcessorException the entity processor exception
+   */
   public InputEntityProcessor(Class<? extends InputEntity> registeredClass)
       throws EntityProcessorException {
     super(registeredClass);

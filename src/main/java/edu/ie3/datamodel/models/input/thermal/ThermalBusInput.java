@@ -42,7 +42,7 @@ public class ThermalBusInput extends ThermalInput {
   /**
    * A builder pattern based approach to create copies of {@link ThermalBusInput} entities with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * ThermalBusInput}
+   * ThermalBusInput}*
    */
   public static class ThermalBusInputCopyBuilder
       extends AssetInput.AssetInputCopyBuilder<ThermalBusInputCopyBuilder> {

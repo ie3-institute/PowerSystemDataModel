@@ -19,6 +19,15 @@ public class JointGridContainer extends GridContainer {
 
   private static final Logger logger = LoggerFactory.getLogger(JointGridContainer.class);
 
+  /**
+   * Instantiates a new Joint grid container.
+   *
+   * @param gridName the grid name
+   * @param rawGrid the raw grid
+   * @param systemParticipants the system participants
+   * @param graphics the graphics
+   * @throws InvalidGridException the invalid grid exception
+   */
   public JointGridContainer(
       String gridName,
       RawGridElements rawGrid,
@@ -34,6 +43,15 @@ public class JointGridContainer extends GridContainer {
     checkSubGridTopologyGraph(subGridTopologyGraph);
   }
 
+  /**
+   * Instantiates a new Joint grid container.
+   *
+   * @param gridName the grid name
+   * @param rawGrid the raw grid
+   * @param systemParticipants the system participants
+   * @param graphics the graphics
+   * @param subGridTopologyGraph the sub grid topology graph
+   */
   public JointGridContainer(
       String gridName,
       RawGridElements rawGrid,
@@ -57,6 +75,11 @@ public class JointGridContainer extends GridContainer {
     }
   }
 
+  /**
+   * Gets sub grid topology graph.
+   *
+   * @return the sub grid topology graph
+   */
   public SubGridTopologyGraph getSubGridTopologyGraph() {
     return subGridTopologyGraph;
   }
@@ -87,7 +110,7 @@ public class JointGridContainer extends GridContainer {
   /**
    * A builder pattern based approach to create copies of {@link JointGridContainer} containers with
    * altered field values. For detailed field descriptions refer to java docs of {@link
-   * JointGridContainer}
+   * JointGridContainer}*
    *
    * @version 3.1
    * @since 14.02.23

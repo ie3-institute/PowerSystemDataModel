@@ -17,6 +17,8 @@ public class HeatAndPValue extends PValue {
   private final ComparableQuantity<Power> heatDemand;
 
   /**
+   * Instantiates a new Heat and p value.
+   *
    * @param p Active power
    * @param heatDemand Heat demand
    */
@@ -25,6 +27,11 @@ public class HeatAndPValue extends PValue {
     this.heatDemand = heatDemand == null ? null : heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
+  /**
+   * Gets heat demand.
+   *
+   * @return the heat demand
+   */
   public Optional<ComparableQuantity<Power>> getHeatDemand() {
     return Optional.ofNullable(heatDemand);
   }

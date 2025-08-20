@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.extractor;
 
 /**
  * This interface should be implemented only by other interfaces that should be used by the {@link
- * Extractor} It provides the entry point for the extraction method in the {@link Extractor}. If
+ * Extractor}* It provides the entry point for the extraction method in the {@link Extractor}. If
  * this interface is implemented by other interfaces one has to take care about, that the
  * corresponding extractElements()-method in {@link Extractor} is extended accordingly.
  *

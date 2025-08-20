@@ -77,10 +77,20 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     this.controllingEm = em;
   }
 
+  /**
+   * Gets node.
+   *
+   * @return the node
+   */
   public NodeInput getNode() {
     return node;
   }
 
+  /**
+   * Gets characteristics.
+   *
+   * @return the characteristics
+   */
   public ReactivePowerCharacteristic getqCharacteristics() {
     return qCharacteristics;
   }
@@ -135,8 +145,9 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
 
   /**
    * Abstract class for all builder that build child entities of abstract class {@link
-   * SystemParticipantInput}
+   * SystemParticipantInput}*
    *
+   * @param <B> the type parameter
    * @version 0.1
    * @since 05.06.20
    */
@@ -148,6 +159,11 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     private ReactivePowerCharacteristic qCharacteristics;
     private EmInput em;
 
+    /**
+     * Instantiates a new System participant input copy builder.
+     *
+     * @param entity the entity
+     */
     protected SystemParticipantInputCopyBuilder(SystemParticipantInput entity) {
       super(entity);
       this.node = entity.getNode();
@@ -155,30 +171,60 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       this.em = entity.getControllingEm().orElse(null);
     }
 
+    /**
+     * Node b.
+     *
+     * @param node the node
+     * @return the b
+     */
     public B node(NodeInput node) {
       this.node = node;
       return thisInstance();
     }
 
+    /**
+     * Q characteristics b.
+     *
+     * @param qCharacteristics the q characteristics
+     * @return the b
+     */
     public B qCharacteristics(ReactivePowerCharacteristic qCharacteristics) {
       this.qCharacteristics = qCharacteristics;
       return thisInstance();
     }
 
+    /**
+     * Em b.
+     *
+     * @param em the em
+     * @return the b
+     */
     public B em(EmInput em) {
       this.em = em;
       return thisInstance();
     }
 
+    /**
+     * Gets node.
+     *
+     * @return the node
+     */
     protected NodeInput getNode() {
       return node;
     }
 
+    /**
+     * Gets characteristics.
+     *
+     * @return the characteristics
+     */
     protected ReactivePowerCharacteristic getqCharacteristics() {
       return qCharacteristics;
     }
 
     /**
+     * Gets em.
+     *
      * @return The {@link EmInput} controlling this system participant. CAN BE NULL.
      */
     public EmInput getEm() {

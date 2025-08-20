@@ -76,6 +76,11 @@ public class WecInput extends SystemParticipantInput implements HasType {
     this.marketReaction = marketReaction;
   }
 
+  /**
+   * Is market reaction boolean.
+   *
+   * @return the boolean
+   */
   public boolean isMarketReaction() {
     return marketReaction;
   }
@@ -166,11 +171,23 @@ public class WecInput extends SystemParticipantInput implements HasType {
           marketReaction);
     }
 
+    /**
+     * Type wec input copy builder.
+     *
+     * @param type the type
+     * @return the wec input copy builder
+     */
     public WecInputCopyBuilder type(WecTypeInput type) {
       this.type = type;
       return thisInstance();
     }
 
+    /**
+     * Market reaction wec input copy builder.
+     *
+     * @param marketReaction the market reaction
+     * @return the wec input copy builder
+     */
     public WecInputCopyBuilder marketReaction(boolean marketReaction) {
       this.marketReaction = marketReaction;
       return thisInstance();

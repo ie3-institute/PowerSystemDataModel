@@ -45,6 +45,8 @@ public class OperationTime implements Serializable {
   private OperationTime() {}
 
   /**
+   * Not limited operation time.
+   *
    * @return an OperationTime without time limitations (= always on)
    */
   public static OperationTime notLimited() {
@@ -52,6 +54,8 @@ public class OperationTime implements Serializable {
   }
 
   /**
+   * Gets start date.
+   *
    * @return date of operation start, if present
    */
   public Optional<ZonedDateTime> getStartDate() {
@@ -59,17 +63,26 @@ public class OperationTime implements Serializable {
   }
 
   /**
+   * Gets end date.
+   *
    * @return date of operation end, if present
    */
   public Optional<ZonedDateTime> getEndDate() {
     return Optional.ofNullable(endDate);
   }
 
+  /**
+   * Is limited boolean.
+   *
+   * @return the boolean
+   */
   public boolean isLimited() {
     return isLimited;
   }
 
   /**
+   * Gets operation limit.
+   *
    * @return Optional.empty(), if the time frame is unlimited <br>
    *     <br>
    *     Optional.of(ClosedInterval(startDate, endDate)), if the upper and lower bound is set <br>
@@ -128,6 +141,8 @@ public class OperationTime implements Serializable {
   }
 
   /**
+   * Builder operation time builder.
+   *
    * @return OperationTimeBuilder instance
    */
   public static OperationTimeBuilder builder() {
@@ -136,6 +151,9 @@ public class OperationTime implements Serializable {
 
   /** Builder class for {@link edu.ie3.datamodel.models.OperationTime} */
   public static class OperationTimeBuilder {
+
+    /** Default constructor for OperationTimeBuilder. */
+    public OperationTimeBuilder() {}
 
     private ZonedDateTime startDate;
     private ZonedDateTime endDate;

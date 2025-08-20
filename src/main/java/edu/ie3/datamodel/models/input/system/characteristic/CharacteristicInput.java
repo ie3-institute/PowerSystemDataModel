@@ -20,8 +20,11 @@ import javax.measure.Unit;
  */
 public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>>
     implements Serializable {
+
+  /** Prefix used to identify this characteristic input. */
   protected final String characteristicPrefix;
 
+  /** A sorted set of points defining the characteristic curve. */
   private final SortedSet<CharacteristicPoint<A, O>> points;
 
   /**
@@ -33,9 +36,19 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   protected CharacteristicInput(
       SortedSet<CharacteristicPoint<A, O>> points, String characteristicPrefix) {
     this.points = Collections.unmodifiableSortedSet(points);
+    /** Prefix used to identify this characteristic input. */
     this.characteristicPrefix = characteristicPrefix;
   }
 
+  /**
+   * Instantiates a new Characteristic input.
+   *
+   * @param input the input
+   * @param abscissaUnit the abscissa unit
+   * @param ordinateUnit the ordinate unit
+   * @param characteristicPrefix the characteristic prefix
+   * @throws ParsingException the parsing exception
+   */
   protected CharacteristicInput(
       String input, Unit<A> abscissaUnit, Unit<O> ordinateUnit, String characteristicPrefix)
       throws ParsingException {
@@ -101,6 +114,12 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
     return Collections.unmodifiableSortedSet(parsedCoordinates);
   }
 
+  /**
+   * Returns all points that define this characteristic.
+   *
+   * @return An unmodifiable sorted set containing all {@link CharacteristicPoint}s associated with
+   *     this characterisitc input.
+   */
   public SortedSet<CharacteristicPoint<A, O>> getPoints() {
     return points;
   }

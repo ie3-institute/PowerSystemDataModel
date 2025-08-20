@@ -35,10 +35,20 @@ public class ThermalHouseResult extends ThermalSinkResult {
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }
 
+  /**
+   * Gets indoor temperature.
+   *
+   * @return the indoor temperature
+   */
   public ComparableQuantity<Temperature> getIndoorTemperature() {
     return indoorTemperature;
   }
 
+  /**
+   * Sets indoor temperature.
+   *
+   * @param indoorTemperature the indoor temperature
+   */
   public void setIndoorTemperature(ComparableQuantity<Temperature> indoorTemperature) {
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }

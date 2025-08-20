@@ -10,6 +10,11 @@ import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.Set;
 
+/**
+ * The interface Source validator.
+ *
+ * @param <C> the type parameter
+ */
 public interface SourceValidator<C> {
 
   /**

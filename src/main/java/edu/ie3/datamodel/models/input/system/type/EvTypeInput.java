@@ -27,6 +27,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<Power> sRatedDC;
 
   /**
+   * Instantiates a new Ev type input.
+   *
    * @param uuid of the input entity
    * @param id of this type of EV
    * @param capex Capital expense for this type of EV (typically in €)
@@ -53,14 +55,29 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
+  /**
+   * Gets storage.
+   *
+   * @return the storage
+   */
   public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
   }
 
+  /**
+   * Gets cons.
+   *
+   * @return the cons
+   */
   public ComparableQuantity<SpecificEnergy> geteCons() {
     return eCons;
   }
 
+  /**
+   * Gets rated dc.
+   *
+   * @return the rated dc
+   */
   public ComparableQuantity<Power> getsRatedDC() {
     return sRatedDC;
   }
@@ -127,29 +144,62 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       this.sRatedDC = entity.getsRatedDC();
     }
 
+    /**
+     * Sets storage.
+     *
+     * @param eStorage the e storage
+     * @return the storage
+     */
     public EvTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
       this.eStorage = eStorage;
       return thisInstance();
     }
 
+    /**
+     * Sets cons.
+     *
+     * @param eCons the e cons
+     * @return the cons
+     */
     public EvTypeInputCopyBuilder seteCons(ComparableQuantity<SpecificEnergy> eCons) {
       this.eCons = eCons;
       return thisInstance();
     }
 
+    /**
+     * Sets rated dc.
+     *
+     * @param sRatedDC the s rated dc
+     * @return the rated dc
+     */
     public EvTypeInputCopyBuilder setsRatedDC(ComparableQuantity<Power> sRatedDC) {
       this.sRatedDC = sRatedDC;
       return thisInstance();
     }
 
+    /**
+     * Gets storage.
+     *
+     * @return the storage
+     */
     public ComparableQuantity<Energy> geteStorage() {
       return eStorage;
     }
 
+    /**
+     * Gets cons.
+     *
+     * @return the cons
+     */
     public ComparableQuantity<SpecificEnergy> geteCons() {
       return eCons;
     }
 
+    /**
+     * Gets rated dc.
+     *
+     * @return the rated dc
+     */
     public ComparableQuantity<Power> getsRatedDC() {
       return sRatedDC;
     }

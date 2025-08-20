@@ -26,11 +26,16 @@ public abstract class ConnectorInputEntityFactory<
 
   /**
    * Attribute that _can_, but does not _have to_ be present for the creation of {@link
-   * ConnectorInput}s. Thus, this attribute name declaration can be used in subclasses of {@link
-   * ConnectorInputEntityFactory}
+   * ConnectorInput}*s. Thus, this attribute name declaration can be used in subclasses of {@link
+   * ConnectorInputEntityFactory}*
    */
   protected static final String PARALLEL_DEVICES = "parallelDevices";
 
+  /**
+   * Instantiates a new Connector input entity factory.
+   *
+   * @param allowedClasses the allowed classes
+   */
   @SafeVarargs
   protected ConnectorInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
@@ -45,6 +50,18 @@ public abstract class ConnectorInputEntityFactory<
     return buildModel(data, uuid, id, nodeA, nodeB, operator, operationTime);
   }
 
+  /**
+   * Build model t.
+   *
+   * @param data the data
+   * @param uuid the uuid
+   * @param id the id
+   * @param nodeA the node a
+   * @param nodeB the node b
+   * @param operator the operator
+   * @param operationTime the operation time
+   * @return the t
+   */
   protected abstract T buildModel(
       D data,
       UUID uuid,

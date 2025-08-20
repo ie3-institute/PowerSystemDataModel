@@ -13,9 +13,11 @@ import edu.ie3.datamodel.models.input.system.HpInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.UUID;
 
+/** The type Hp input factory. */
 public class HpInputFactory
     extends SystemParticipantInputEntityFactory<HpInput, HpInputEntityData> {
 
+  /** Instantiates a new Hp input factory. */
   public HpInputFactory() {
     super(HpInput.class);
   }

@@ -54,6 +54,8 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   private final int tapMax;
 
   /**
+   * Instantiates a new Transformer 2 w type input.
+   *
    * @param uuid of the input entity
    * @param id of the type
    * @param rSc Short circuit resistance
@@ -102,54 +104,119 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     this.tapMax = tapMax;
   }
 
+  /**
+   * Gets sc.
+   *
+   * @return the sc
+   */
   public ComparableQuantity<ElectricResistance> getrSc() {
     return rSc;
   }
 
+  /**
+   * Gets sc.
+   *
+   * @return the sc
+   */
   public ComparableQuantity<ElectricResistance> getxSc() {
     return xSc;
   }
 
+  /**
+   * Gets rated.
+   *
+   * @return the rated
+   */
   public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
+  /**
+   * Gets rated a.
+   *
+   * @return the rated a
+   */
   public ComparableQuantity<ElectricPotential> getvRatedA() {
     return vRatedA;
   }
 
+  /**
+   * Gets rated b.
+   *
+   * @return the rated b
+   */
   public ComparableQuantity<ElectricPotential> getvRatedB() {
     return vRatedB;
   }
 
+  /**
+   * Gets m.
+   *
+   * @return the m
+   */
   public ComparableQuantity<ElectricConductance> getgM() {
     return gM;
   }
 
+  /**
+   * Gets m.
+   *
+   * @return the m
+   */
   public ComparableQuantity<ElectricConductance> getbM() {
     return bM;
   }
 
+  /**
+   * Gets v.
+   *
+   * @return the v
+   */
   public ComparableQuantity<Dimensionless> getdV() {
     return dV;
   }
 
+  /**
+   * Gets phi.
+   *
+   * @return the phi
+   */
   public ComparableQuantity<Angle> getdPhi() {
     return dPhi;
   }
 
+  /**
+   * Is tap side boolean.
+   *
+   * @return the boolean
+   */
   public boolean isTapSide() {
     return tapSide;
   }
 
+  /**
+   * Gets tap neutr.
+   *
+   * @return the tap neutr
+   */
   public int getTapNeutr() {
     return tapNeutr;
   }
 
+  /**
+   * Gets tap min.
+   *
+   * @return the tap min
+   */
   public int getTapMin() {
     return tapMin;
   }
 
+  /**
+   * Gets tap max.
+   *
+   * @return the tap max
+   */
   public int getTapMax() {
     return tapMax;
   }
@@ -236,7 +303,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
 
   /**
    * Abstract class for all builder that build child entities of abstract class {@link
-   * Transformer2WTypeInput}
+   * Transformer2WTypeInput}*
    */
   public static final class Transformer2WTypeInputCopyBuilder
       extends AssetTypeInput.AssetTypeInputCopyBuilder<Transformer2WTypeInputCopyBuilder> {
@@ -272,69 +339,146 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       this.tapMax = entity.tapMax;
     }
 
-    /** Setter */
+    /**
+     * Setter
+     *
+     * @param rSc the r sc
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder rSc(ComparableQuantity<ElectricResistance> rSc) {
       this.rSc = rSc;
       return thisInstance();
     }
 
+    /**
+     * X sc transformer 2 w type input copy builder.
+     *
+     * @param xSc the x sc
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder xSc(ComparableQuantity<ElectricResistance> xSc) {
       this.xSc = xSc;
       return thisInstance();
     }
 
+    /**
+     * S rated transformer 2 w type input copy builder.
+     *
+     * @param sRated the s rated
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
       return thisInstance();
     }
 
+    /**
+     * V rated a transformer 2 w type input copy builder.
+     *
+     * @param vRatedA the v rated a
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder vRatedA(
         ComparableQuantity<ElectricPotential> vRatedA) {
       this.vRatedA = vRatedA;
       return thisInstance();
     }
 
+    /**
+     * V rated b transformer 2 w type input copy builder.
+     *
+     * @param vRatedB the v rated b
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder vRatedB(
         ComparableQuantity<ElectricPotential> vRatedB) {
       this.vRatedB = vRatedB;
       return thisInstance();
     }
 
+    /**
+     * G m transformer 2 w type input copy builder.
+     *
+     * @param gM the g m
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder gM(ComparableQuantity<ElectricConductance> gM) {
       this.gM = gM;
       return thisInstance();
     }
 
+    /**
+     * B m transformer 2 w type input copy builder.
+     *
+     * @param bM the b m
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder bM(ComparableQuantity<ElectricConductance> bM) {
       this.bM = bM;
       return thisInstance();
     }
 
+    /**
+     * D v transformer 2 w type input copy builder.
+     *
+     * @param dV the d v
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder dV(ComparableQuantity<Dimensionless> dV) {
       this.dV = dV;
       return thisInstance();
     }
 
+    /**
+     * D phi transformer 2 w type input copy builder.
+     *
+     * @param dPhi the d phi
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder dPhi(ComparableQuantity<Angle> dPhi) {
       this.dPhi = dPhi;
       return thisInstance();
     }
 
+    /**
+     * Tap side transformer 2 w type input copy builder.
+     *
+     * @param tapSide the tap side
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder tapSide(boolean tapSide) {
       this.tapSide = tapSide;
       return thisInstance();
     }
 
+    /**
+     * Tap neutr transformer 2 w type input copy builder.
+     *
+     * @param tapNeutr the tap neutr
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder tapNeutr(int tapNeutr) {
       this.tapNeutr = tapNeutr;
       return thisInstance();
     }
 
+    /**
+     * Tap min transformer 2 w type input copy builder.
+     *
+     * @param tapMin the tap min
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder tapMin(int tapMin) {
       this.tapMin = tapMin;
       return thisInstance();
     }
 
+    /**
+     * Tap max transformer 2 w type input copy builder.
+     *
+     * @param tapMax the tap max
+     * @return the transformer 2 w type input copy builder
+     */
     public Transformer2WTypeInputCopyBuilder tapMax(int tapMax) {
       this.tapMax = tapMax;
       return thisInstance();

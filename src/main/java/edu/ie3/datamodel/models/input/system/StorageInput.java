@@ -127,6 +127,12 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       this.type = entity.getType();
     }
 
+    /**
+     * Type storage input copy builder.
+     *
+     * @param type the type
+     * @return the storage input copy builder
+     */
     public StorageInputCopyBuilder type(StorageTypeInput type) {
       this.type = type;
       return thisInstance();

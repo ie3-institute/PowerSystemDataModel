@@ -16,5 +16,10 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
  */
 public interface HasType extends NestedEntity {
 
+  /**
+   * Gets type.
+   *
+   * @return the type
+   */
   AssetTypeInput getType();
 }

@@ -25,10 +25,16 @@ public class DatabaseNamingStrategy {
 
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
 
+  /**
+   * Instantiates a new Database naming strategy.
+   *
+   * @param entityPersistenceNamingStrategy the entity persistence naming strategy
+   */
   public DatabaseNamingStrategy(EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
     this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
   }
 
+  /** Instantiates a new Database naming strategy. */
   public DatabaseNamingStrategy() {
     this(new EntityPersistenceNamingStrategy());
   }
@@ -42,7 +48,11 @@ public class DatabaseNamingStrategy {
     return TIME_SERIES_PREFIX;
   }
 
-  /** Returns the String of the load profile table */
+  /**
+   * Returns the String of the load profile table
+   *
+   * @return the load profile table name
+   */
   public String getLoadProfileTableName() {
     return LOAD_PROFILE;
   }
@@ -79,6 +89,10 @@ public class DatabaseNamingStrategy {
   /**
    * Provides the name of a time series. Used to determine the table name in SQL database.
    *
+   * @param <T> the type parameter
+   * @param <E> the type parameter
+   * @param <V> the type parameter
+   * @param <R> the type parameter
    * @param timeSeries to be named TimeSeries
    * @return the table name
    */

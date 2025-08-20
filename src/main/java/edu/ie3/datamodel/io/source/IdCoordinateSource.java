@@ -19,11 +19,14 @@ import tech.units.indriya.ComparableQuantity;
  * combined primary or foreign keys.
  */
 public abstract class IdCoordinateSource extends EntitySource {
+  /** Default constructor for IdCoordinateSource. */
+  public IdCoordinateSource() {}
 
   /**
    * Method to retrieve the fields found in the source.
    *
    * @return an option for the found fields
+   * @throws SourceException the source exception
    */
   public abstract Optional<Set<String>> getSourceFields() throws SourceException;
 
