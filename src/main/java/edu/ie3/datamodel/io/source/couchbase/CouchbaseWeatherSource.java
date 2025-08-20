@@ -168,9 +168,14 @@ public class CouchbaseWeatherSource extends WeatherSource {
                   new NoDataException(
                       "No valid weather data found for the given date and coordinate."));
     } catch (DecodingFailureException ex) {
-      logger.error("Decoding to TimeBasedWeatherValue failed!", ex);
+      logger.error(
+          "Decoding to TimeBasedWeatherValue failed for coordinate {} and date {}",
+          coordinate,
+          date,
+          ex);
       throw new NoDataException("Failed to decode weather data: " + ex.getMessage());
     } catch (DocumentNotFoundException ex) {
+      logger.warn("Weather document not found for coordinate {} and date {}", coordinate, date);
       throw new NoDataException("Weather document not found.");
     } catch (CompletionException ex) {
       if (ex.getCause() instanceof DocumentNotFoundException) {
