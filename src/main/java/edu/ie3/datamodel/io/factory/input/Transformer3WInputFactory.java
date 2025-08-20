@@ -17,6 +17,7 @@ public class Transformer3WInputFactory
 
   private static final String TAP_POS = "tapPos";
   private static final String AUTO_TAP = "autoTap";
+  private static final String NODE_C = "nodeC";
 
   public Transformer3WInputFactory() {
     super(Transformer3WInput.class);
@@ -24,7 +25,7 @@ public class Transformer3WInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {PARALLEL_DEVICES, TAP_POS, AUTO_TAP};
+    return new String[] {NODE_A, NODE_B, NODE_C, PARALLEL_DEVICES, TAP_POS, AUTO_TAP};
   }
 
   @Override

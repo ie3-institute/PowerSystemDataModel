@@ -37,7 +37,7 @@ public class SystemParticipantTypeInputFactory
 
   // EvTypeInput
   private static final String E_CONS = "eCons";
-  private static final String S_RATEDDC = "sRatedDC";
+  private static final String S_RATED_DC = "sRatedDC";
   // BmTypeInput
   private static final String ACTIVE_POWER_GRADIENT = "activePowerGradient";
 
@@ -73,7 +73,7 @@ public class SystemParticipantTypeInputFactory
 
     Set<String> constructorParameters = null;
     if (entityClass.equals(EvTypeInput.class)) {
-      constructorParameters = expandSet(standardConstructorParams, E_STORAGE, E_CONS);
+      constructorParameters = expandSet(standardConstructorParams, E_STORAGE, E_CONS, S_RATED_DC);
     } else if (entityClass.equals(HpTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, P_THERMAL);
     } else if (entityClass.equals(BmTypeInput.class)) {
@@ -132,7 +132,8 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<SpecificEnergy> eCons =
         data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
 
-    ComparableQuantity<Power> sRatedDC = data.getQuantity(S_RATEDDC, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<Power> sRatedDC =
+        data.getQuantity(S_RATED_DC, StandardUnits.ACTIVE_POWER_IN);
 
     return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC);
   }

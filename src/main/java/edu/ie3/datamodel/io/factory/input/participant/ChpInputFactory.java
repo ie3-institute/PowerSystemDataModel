@@ -15,6 +15,9 @@ import java.util.UUID;
 
 public class ChpInputFactory
     extends SystemParticipantInputEntityFactory<ChpInput, ChpInputEntityData> {
+  private static final String THERMAL_BUS = "thermalBus";
+  private static final String TYPE = "type";
+  private static final String THERMAL_STORAGE = "thermalStorage";
   private static final String MARKET_REACTION = "marketReaction";
 
   public ChpInputFactory() {
@@ -23,7 +26,7 @@ public class ChpInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {MARKET_REACTION};
+    return new String[] {THERMAL_BUS, TYPE, THERMAL_STORAGE, MARKET_REACTION};
   }
 
   @Override
