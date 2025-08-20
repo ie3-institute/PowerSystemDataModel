@@ -142,7 +142,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
         }
       } else {
         logger.error("Unable to match coordinate {} to a coordinate ID", coordinate);
-        throw new NoDataException("No data found");
+        throw new NoDataException("Unable to match coordinate " + coordinate + " to a coordinate ID");
       }
     }
     return coordinateToTimeSeries;
@@ -154,7 +154,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       logger.error("Unable to match coordinate {} to a coordinate ID", coordinate);
-      throw new NoDataException("No coordinate ID found for the given point.");
+      throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
     }
     try {
       CompletableFuture<GetResult> futureResult =
@@ -168,7 +168,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
                       "No valid weather data found for the given date and coordinate."));
     } catch (DecodingFailureException ex) {
       logger.error("Decoding to TimeBasedWeatherValue failed!", ex);
-      throw new NoDataException("Failed to decode weather data.");
+      throw new NoDataException("Failed to decode weather data: " + ex.getMessage());
     } catch (DocumentNotFoundException ex) {
       throw new NoDataException("Weather document not found.");
     } catch (CompletionException ex) {

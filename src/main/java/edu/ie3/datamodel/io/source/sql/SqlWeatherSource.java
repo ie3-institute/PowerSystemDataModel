@@ -152,7 +152,7 @@ public class SqlWeatherSource extends WeatherSource {
       coordinateId = idCoordinateSource.getId(coordinate);
       if (coordinateId.isEmpty()) {
         log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
-        throw new NoDataException("No coordinate ID found for the given point.");
+        throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
       }
     } catch (NoDataException e) {
       log.error("No data available for coordinate {} and date {}", coordinate, date, e);

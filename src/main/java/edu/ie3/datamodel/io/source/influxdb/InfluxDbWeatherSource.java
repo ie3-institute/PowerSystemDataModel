@@ -125,7 +125,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
     try {
       coordinateId = idCoordinateSource.getId(coordinate);
       if (coordinateId.isEmpty()) {
-        throw new NoDataException("No coordinate ID found for the given point.");
+        throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
       }
     } catch (NoDataException e) {
       log.error("No data available for coordinate {} and date {}", coordinate, date, e);
@@ -140,7 +140,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
           .orElseThrow(
               () ->
                   new NoDataException(
-                      "No weather data available for the given date and coordinate."));
+                      "No weather data available for the given date " + date + " and coordinate " + coordinate));
     }
   }
 
@@ -197,7 +197,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
     try {
       coordinateId = idCoordinateSource.getId(coordinate);
       if (coordinateId.isEmpty()) {
-        throw new NoDataException("No data for given coordinates");
+        throw new NoDataException("No data for given coordinates: " + coordinate);
       }
     } catch (NoDataException e) {
       return new IndividualTimeSeries<>(UUID.randomUUID(), Collections.emptySet());
