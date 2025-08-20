@@ -179,7 +179,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
               + " and date "
               + date
               + ": "
-              + ex.getMessage());
+              + ex.getMessage(),
+          ex);
     } catch (DocumentNotFoundException ex) {
       logger.warn("Weather document not found for coordinate {} and date {}", coordinate, date);
       throw new NoDataException(

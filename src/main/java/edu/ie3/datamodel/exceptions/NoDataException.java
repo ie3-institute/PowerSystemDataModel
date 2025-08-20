@@ -17,4 +17,8 @@ public class NoDataException extends Exception {
   public NoDataException(final String message) {
     super(message);
   }
+
+  public NoDataException(final String message, final Throwable cause) {
+    super(message, cause);
+  }
 }
