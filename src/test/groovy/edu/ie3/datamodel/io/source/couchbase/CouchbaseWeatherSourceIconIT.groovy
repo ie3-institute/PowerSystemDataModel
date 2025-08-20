@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.couchbase
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -13,6 +14,7 @@ import edu.ie3.test.common.IconWeatherTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
+import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.testcontainers.couchbase.BucketDefinition
 import org.testcontainers.couchbase.CouchbaseContainer
@@ -160,5 +162,30 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
       IconWeatherTestData.TIME_17H
     ]
     actual.get(IconWeatherTestData.COORDINATE_67776) == [IconWeatherTestData.TIME_16H]
+  }
+
+  def "A CouchbaseWeatherSource throws NoDataException for invalid coordinate"() {
+    given:
+    def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
+
+    when:
+    source.getWeather(IconWeatherTestData.TIME_15H, invalidCoordinate)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No coordinate ID found for the given point")
+    ex.message.contains(invalidCoordinate.toString())
+  }
+
+  def "A CouchbaseWeatherSource throws NoDataException for future date"() {
+    given:
+    def futureDate = IconWeatherTestData.TIME_17H.plusDays(30)
+
+    when:
+    source.getWeather(futureDate, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("Weather document not found")
   }
 }
