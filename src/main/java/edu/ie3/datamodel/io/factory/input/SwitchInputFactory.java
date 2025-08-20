@@ -21,7 +21,7 @@ public class SwitchInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {CLOSED};
+    return new String[] {NODE_A, NODE_B, CLOSED};
   }
 
   @Override

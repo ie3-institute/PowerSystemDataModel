@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
 - Fix transformer susceptance in readTheDocs to negative values [#1078](https://github.com/ie3-institute/PowerSystemDataModel/issues/1078)
-
+- Added mising fields to field validation [#1422](https://github.com/ie3-institute/PowerSystemDataModel/issues/1422)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
