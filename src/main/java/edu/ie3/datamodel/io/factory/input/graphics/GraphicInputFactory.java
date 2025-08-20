@@ -26,6 +26,7 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
   private static final String GRAPHIC_LAYER = "graphicLayer";
   private static final String PATH_LINE_STRING = "path";
 
+  @SafeVarargs
   protected GraphicInputFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
