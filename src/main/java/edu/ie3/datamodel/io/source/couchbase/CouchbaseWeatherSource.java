@@ -173,13 +173,24 @@ public class CouchbaseWeatherSource extends WeatherSource {
           coordinate,
           date,
           ex);
-      throw new NoDataException("Failed to decode weather data: " + ex.getMessage());
+      throw new NoDataException(
+          "Failed to decode weather data for coordinate "
+              + coordinate
+              + " and date "
+              + date
+              + ": "
+              + ex.getMessage());
     } catch (DocumentNotFoundException ex) {
       logger.warn("Weather document not found for coordinate {} and date {}", coordinate, date);
-      throw new NoDataException("Weather document not found.");
+      throw new NoDataException(
+          "Weather document not found for coordinate " + coordinate + " and date " + date);
     } catch (CompletionException ex) {
       if (ex.getCause() instanceof DocumentNotFoundException) {
-        throw new NoDataException("Weather document not found in the completion stage.");
+        throw new NoDataException(
+            "Weather document not found in the completion stage for coordinate "
+                + coordinate
+                + " and date "
+                + date);
       } else {
         logger.error(
             "Unexpected completion exception while retrieving weather data for coordinate {} and date {}",
