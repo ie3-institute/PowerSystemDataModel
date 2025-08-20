@@ -80,6 +80,7 @@ public class ResultEntitySource extends EntitySource {
             Stream.of(
                     LoadResult.class,
                     FixedFeedInResult.class,
+                    AcResult.class,
                     BmResult.class,
                     PvResult.class,
                     ChpResult.class,
@@ -307,6 +308,19 @@ public class ResultEntitySource extends EntitySource {
    */
   public Set<EvResult> getEvResults() throws SourceException {
     return getResultEntities(EvResult.class, systemParticipantResultFactory);
+  }
+
+  /**
+   * Returns a unique set of {@link AcResult} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link AcResult} which has to be checked manually,
+   * as {@link AcResult#equals(Object)} is NOT restricted by the uuid of {@link AcResult}.
+   *
+   * @return a set of object and uuid unique {@link AcResult} entities
+   */
+  public Set<AcResult> getAcResults() throws SourceException {
+    return getResultEntities(AcResult.class, systemParticipantResultFactory);
   }
 
   /**

@@ -362,6 +362,7 @@ public class ContainerUtils {
     Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
     Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
     Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
+    Set<AcInput> airConditions = filterParticipants(input.getAirConditions(), subnet);
     Set<LoadInput> loads = filterParticipants(input.getLoads(), subnet);
     Set<PvInput> pvs = filterParticipants(input.getPvPlants(), subnet);
     Set<StorageInput> storages = filterParticipants(input.getStorages(), subnet);
@@ -374,6 +375,7 @@ public class ContainerUtils {
         evs,
         fixedFeedIns,
         heatpumps,
+        airConditions,
         loads,
         pvs,
         storages,

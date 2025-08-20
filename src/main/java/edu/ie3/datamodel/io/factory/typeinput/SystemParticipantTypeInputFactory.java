@@ -59,6 +59,7 @@ public class SystemParticipantTypeInputFactory
 
   public SystemParticipantTypeInputFactory() {
     super(
+        AcTypeInput.class,
         EvTypeInput.class,
         HpTypeInput.class,
         BmTypeInput.class,
@@ -75,6 +76,8 @@ public class SystemParticipantTypeInputFactory
     if (entityClass.equals(EvTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, E_STORAGE, E_CONS, S_RATED_DC);
     } else if (entityClass.equals(HpTypeInput.class)) {
+      constructorParameters = expandSet(standardConstructorParams, P_THERMAL);
+    } else if (entityClass.equals(AcTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, P_THERMAL);
     } else if (entityClass.equals(BmTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, ACTIVE_POWER_GRADIENT, ETA_CONV);
@@ -105,6 +108,8 @@ public class SystemParticipantTypeInputFactory
       return buildEvTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
     else if (data.getTargetClass().equals(HpTypeInput.class))
       return buildHpTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
+    else if (data.getTargetClass().equals(AcTypeInput.class))
+      return buildAcTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
     else if (data.getTargetClass().equals(BmTypeInput.class))
       return buildBmTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
     else if (data.getTargetClass().equals(WecTypeInput.class))
@@ -149,6 +154,19 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
     return new HpTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal);
+  }
+
+  private SystemParticipantTypeInput buildAcTypeInput(
+      EntityData data,
+      UUID uuid,
+      String id,
+      ComparableQuantity<Currency> capEx,
+      ComparableQuantity<EnergyPrice> opEx,
+      ComparableQuantity<Power> sRated,
+      double cosPhi) {
+    ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
+
+    return new AcTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal);
   }
 
   private SystemParticipantTypeInput buildBmTypeInput(

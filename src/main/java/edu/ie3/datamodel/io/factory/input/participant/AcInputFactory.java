@@ -9,21 +9,21 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.HpInput;
+import edu.ie3.datamodel.models.input.system.AcInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
-import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
+import edu.ie3.datamodel.models.input.system.type.AcTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.UUID;
 
-public class HpInputFactory
-    extends ThermalSystemParticipantInputFactory<HpInput, HpInputEntityData> {
+public class AcInputFactory
+    extends ThermalSystemParticipantInputFactory<AcInput, AcInputEntityData> {
 
-  public HpInputFactory() {
-    super(HpInput.class);
+  public AcInputFactory() {
+    super(AcInput.class);
   }
 
   @Override
-  protected HpInput createThermalSystemModel(
+  protected AcInput createThermalSystemModel(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -34,7 +34,7 @@ public class HpInputFactory
       EmInput em,
       Object typeInput) {
 
-    return new HpInput(
+    return new AcInput(
         uuid,
         id,
         operator,
@@ -43,6 +43,6 @@ public class HpInputFactory
         thermalBusInput,
         qCharacteristics,
         em,
-        (HpTypeInput) typeInput);
+        (AcTypeInput) typeInput);
   }
 }

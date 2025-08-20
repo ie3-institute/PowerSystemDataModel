@@ -243,6 +243,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
         Constants.INPUT_SUB_TREE.resolve("participants"),
         true,
         Stream.of(
+                AcInput.class,
                 BmInput.class,
                 ChpInput.class,
                 EvInput.class,
@@ -258,6 +259,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
         Constants.RESULT_SUB_TREE.resolve("participants"),
         false,
         Stream.of(
+                AcResult.class,
                 BmResult.class,
                 ChpResult.class,
                 EvResult.class,

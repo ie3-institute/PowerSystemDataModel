@@ -89,6 +89,7 @@ class ResultEntityProcessorTest extends Specification {
     WecResult         | new WecResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q)          || expectedStandardResults
     StorageResult     | new StorageResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q, soc) || expectedSocResults
     HpResult          | new HpResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q, qDot)     || expectedQDotResults
+    AcResult          | new AcResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q, qDot)     || expectedQDotResults
     EmResult          | new EmResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, p, q)           || expectedStandardResults
   }
 
@@ -327,7 +328,7 @@ class ResultEntityProcessorTest extends Specification {
 
   def "The list of eligible entity classes for a ResultEntityProcessor should be valid"() {
     given:
-    int noOfElements = 21 // number of all currently implemented entity results
+    int noOfElements = 22 // number of all currently implemented entity results
 
     expect:
     ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements

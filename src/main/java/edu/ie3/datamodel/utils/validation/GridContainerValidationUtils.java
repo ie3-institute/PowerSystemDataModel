@@ -277,6 +277,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
     /* sanity check to ensure uniqueness */
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getAirConditions(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getEvcs(), nodes));

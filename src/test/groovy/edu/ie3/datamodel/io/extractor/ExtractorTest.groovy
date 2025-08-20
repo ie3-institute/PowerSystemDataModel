@@ -114,6 +114,16 @@ class ExtractorTest extends Specification {
       sptd.hpInput.controllingEm.get(),
       sptd.hpInput.controllingEm.get().controllingEm.get()
     ]
+    sptd.acInput               || [
+      sptd.acInput.node,
+      sptd.acInput.type,
+      sptd.acInput.operator,
+      sptd.acInput.thermalBus,
+      sptd.acInput.thermalBus.operator,
+      sptd.acInput.node.operator,
+      sptd.acInput.controllingEm.get(),
+      sptd.acInput.controllingEm.get().controllingEm.get()
+    ]
 
     gtd.lineGraphicCtoD        || [
       gtd.lineGraphicCtoD.line,

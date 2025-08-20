@@ -60,6 +60,7 @@ public class TypeSource extends EntitySource {
             Stream.of(
                     EvTypeInput.class,
                     HpTypeInput.class,
+                    AcTypeInput.class,
                     BmTypeInput.class,
                     WecTypeInput.class,
                     ChpTypeInput.class,
@@ -168,6 +169,19 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, HpTypeInput> getHpTypes() throws SourceException {
     return getEntities(HpTypeInput.class, dataSource, systemParticipantTypeInputFactory);
+  }
+
+  /**
+   * Returns a set of {@link AcTypeInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link AcTypeInput} which has to be checked manually, as
+   * {@link AcTypeInput#equals(Object)} is NOT restricted on the uuid of {@link AcTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link AcTypeInput} entities
+   */
+  public Map<UUID, AcTypeInput> getAcTypes() throws SourceException {
+    return getEntities(AcTypeInput.class, dataSource, systemParticipantTypeInputFactory);
   }
 
   /**
