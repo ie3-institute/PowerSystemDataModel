@@ -104,7 +104,8 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
     if (timeBasedValues.isEmpty()) {
-      throw new NoDataException("No weather data found for the given time interval: " + timeInterval);
+      throw new NoDataException(
+          "No weather data found for the given time interval: " + timeInterval);
     }
     return mapWeatherValuesToPoints(timeBasedValues);
   }
@@ -169,7 +170,9 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(2, Timestamp.from(date.toInstant()));
                 }));
 
-    if (timeBasedValues.isEmpty()) throw new NoDataException("No weather data found for the given date " + date + " and coordinate " + coordinate);
+    if (timeBasedValues.isEmpty())
+      throw new NoDataException(
+          "No weather data found for the given date " + date + " and coordinate " + coordinate);
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
     return timeBasedValues.get(0);
