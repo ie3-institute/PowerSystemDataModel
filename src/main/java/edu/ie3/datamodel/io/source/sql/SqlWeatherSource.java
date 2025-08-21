@@ -125,8 +125,6 @@ public class SqlWeatherSource extends WeatherSource {
         log.warn("Unable to match coordinates to coordinate ID");
         throw new NoDataException("No coordinates found");
       }
-    } catch (NoDataException e) {
-      return Collections.emptyMap();
     }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
