@@ -101,7 +101,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
 
-  def "A SqlWeatherSource returns nothing for invalid coordinates"() {
+  def "A SqlWeatherSource throws NoDataException for invalid coordinates"() {
     given:
     def coordinates = [
       GeoUtils.buildPoint(89d, 88d),
@@ -110,10 +110,12 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.TIME_17H)
 
     when:
-    Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
+    source.getWeather(timeInterval, coordinates)
 
     then:
-    coordinateToTimeSeries == Collections.emptyMap()
+    def ex = thrown(NoDataException)
+    ex.message.contains("Unable to match any of the provided coordinates to coordinate IDs")
+    ex.message.contains(coordinates.toString())
   }
 
   def "A SqlWeatherSource can read all weather data in a given time interval"() {
