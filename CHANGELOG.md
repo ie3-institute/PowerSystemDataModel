@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhancing the `LoadProfileSource` to return the resolution [1288](https://github.com/ie3-institute/PowerSystemDataModel/issues/1288)
 - Enhancing Validation for sRated of `HpTypeInput` [1394](https://github.com/ie3-institute/PowerSystemDataModel/issues/1394)
 - Added updated `BdewStandardLoadProfiles` [#1292](https://github.com/ie3-institute/PowerSystemDataModel/issues/1292)
+- Added support for custom load profiles [#1362](https://github.com/ie3-institute/PowerSystemDataModel/issues/1362)
 
 ### Changed
 - Fixed CFF-Version [#1392](https://github.com/ie3-institute/PowerSystemDataModel/issues/1392)

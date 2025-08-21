@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
-import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -17,13 +16,10 @@ import edu.ie3.datamodel.models.profile.LoadProfile;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
 public class LoadInputFactory
     extends SystemParticipantInputEntityFactory<LoadInput, SystemParticipantEntityData> {
-  private static final Logger logger = LoggerFactory.getLogger(LoadInputFactory.class);
 
   private static final String LOAD_PROFILE = "loadProfile";
   private static final String E_CONS_ANNUAL = "eConsAnnual";
@@ -48,16 +44,8 @@ public class LoadInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    LoadProfile loadProfile;
-    try {
-      loadProfile = LoadProfile.parse(data.getField(LOAD_PROFILE));
-    } catch (ParsingException e) {
-      logger.warn(
-          "Cannot parse the standard load profile \"{}\" of load \"{}\". Assign no load profile instead.",
-          data.getField(LOAD_PROFILE),
-          id);
-      loadProfile = LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
-    }
+    LoadProfile loadProfile = LoadProfile.parse(data.getField(LOAD_PROFILE));
+
     final EmInput em = data.getControllingEm().orElse(null);
 
     final ComparableQuantity<Energy> eConsAnnual =

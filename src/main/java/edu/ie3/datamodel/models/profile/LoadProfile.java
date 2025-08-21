@@ -5,10 +5,8 @@
 */
 package edu.ie3.datamodel.models.profile;
 
-import edu.ie3.datamodel.exceptions.ParsingException;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public interface LoadProfile extends Serializable {
@@ -22,9 +20,8 @@ public interface LoadProfile extends Serializable {
    *
    * @param key Key to parse
    * @return Matching {@link StandardLoadProfile}
-   * @throws ParsingException If key cannot be parsed
    */
-  static LoadProfile parse(String key) throws ParsingException {
+  static LoadProfile parse(String key) {
     if (key == null || key.isEmpty()) return LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
 
     return LoadProfile.getProfile(getAllProfiles(), key);
@@ -40,25 +37,21 @@ public interface LoadProfile extends Serializable {
   }
 
   /**
-   * Looks for load profile with given key and returns it.
+   * Looks for load profile with given key and returns it. If no suitable profile is found, a {@link
+   * CustomLoadProfile} with the given key is returned.
    *
    * @param profiles we search within
    * @param key to look for
    * @return the matching load profile
    */
-  static <T extends LoadProfile> T getProfile(T[] profiles, String key) throws ParsingException {
+  @SuppressWarnings("unchecked")
+  static <T extends LoadProfile> T getProfile(T[] profiles, String key) {
+    String uniformKey = getUniformKey(key);
+
     return Arrays.stream(profiles)
-        .filter(loadProfile -> loadProfile.getKey().equalsIgnoreCase(getUniformKey(key)))
+        .filter(loadProfile -> loadProfile.getKey().equalsIgnoreCase(uniformKey))
         .findFirst()
-        .orElseThrow(
-            () ->
-                new ParsingException(
-                    "No predefined load profile with key '"
-                        + key
-                        + "' found. Please provide one of the following keys: "
-                        + Arrays.stream(profiles)
-                            .map(LoadProfile::getKey)
-                            .collect(Collectors.joining(", "))));
+        .orElseGet(() -> (T) new CustomLoadProfile(uniformKey));
   }
 
   private static String getUniformKey(String key) {
@@ -71,6 +64,13 @@ public interface LoadProfile extends Serializable {
     @Override
     public String getKey() {
       return "No load profile assigned";
+    }
+  }
+
+  record CustomLoadProfile(String key) implements LoadProfile {
+    @Override
+    public String getKey() {
+      return key;
     }
   }
 
