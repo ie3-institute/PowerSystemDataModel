@@ -60,7 +60,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForTimeInterval(timeInterval);
       QueryResult queryResult = session.query(new Query(query));
