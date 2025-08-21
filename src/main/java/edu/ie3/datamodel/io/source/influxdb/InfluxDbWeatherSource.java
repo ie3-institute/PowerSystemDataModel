@@ -86,7 +86,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) throws NoDataException {
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+      throws NoDataException {
     if (coordinates == null) return getWeather(timeInterval);
     Map<Point, Optional<Integer>> coordinatesToId =
         coordinates.stream().collect(Collectors.toMap(point -> point, idCoordinateSource::getId));
