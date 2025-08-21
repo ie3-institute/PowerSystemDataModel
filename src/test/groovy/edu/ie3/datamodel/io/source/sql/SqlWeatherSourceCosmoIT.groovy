@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -56,16 +57,21 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
+    optTimeBasedValue != null
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue )
   }
 
-  def "A SqlWeatherSource returns nothing for an invalid coordinate"() {
+  def "A SqlWeatherSource throws NoDataException for an invalid coordinate"() {
+    given:
+    def invalidCoordinate = GeoUtils.buildPoint(89d, 88d)
+
     when:
-    def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, GeoUtils.buildPoint(89d, 88d))
+    source.getWeather(CosmoWeatherTestData.TIME_15H, invalidCoordinate)
 
     then:
-    optTimeBasedValue.empty
+    def ex = thrown(NoDataException)
+    ex.message.contains("No coordinate ID found for the given point")
+    ex.message.contains(invalidCoordinate.toString())
   }
 
   def "A SqlWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -95,7 +101,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
 
-  def "A SqlWeatherSource returns nothing for invalid coordinates"() {
+  def "A SqlWeatherSource throws NoDataException for invalid coordinates"() {
     given:
     def coordinates = [
       GeoUtils.buildPoint(89d, 88d),
@@ -104,10 +110,12 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.TIME_17H)
 
     when:
-    Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
+    source.getWeather(timeInterval, coordinates)
 
     then:
-    coordinateToTimeSeries.keySet().empty
+    def ex = thrown(NoDataException)
+    ex.message.contains("Unable to match any of the provided coordinates to coordinate IDs")
+    ex.message.contains(coordinates.toString())
   }
 
   def "A SqlWeatherSource can read all weather data in a given time interval"() {

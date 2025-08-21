@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkWeatherUniqueness;
 
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
+import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
@@ -90,25 +91,53 @@ public class CsvWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
-    return trimMapToInterval(coordinateToTimeSeries, timeInterval);
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException {
+
+    Map<Point, IndividualTimeSeries<WeatherValue>> result =
+        trimMapToInterval(coordinateToTimeSeries, timeInterval);
+
+    if (result == null || result.isEmpty()) {
+      throw new NoDataException(
+          "No weather data found for the given time interval: " + timeInterval);
+    }
+
+    return result;
   }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+      throws NoDataException {
     Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
         coordinateToTimeSeries.entrySet().stream()
             .filter(entry -> coordinates.contains(entry.getKey()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    return trimMapToInterval(filteredMap, timeInterval);
+
+    Map<Point, IndividualTimeSeries<WeatherValue>> result =
+        trimMapToInterval(filteredMap, timeInterval);
+
+    if (result == null || result.isEmpty()) {
+      throw new NoDataException(
+          "No weather data found for the given time interval: " + timeInterval);
+    }
+    return result;
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
+      throws NoDataException {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
-    if (timeSeries == null) return Optional.empty();
-    return timeSeries.getTimeBasedValue(date);
+
+    if (timeSeries == null) {
+      throw new NoDataException("No weather data found for the given coordinate: " + coordinate);
+    }
+
+    return timeSeries
+        .getTimeBasedValue(date)
+        .orElseThrow(
+            () ->
+                new NoDataException(
+                    "No weather data found for the given coordinate: " + coordinate));
   }
 
   @Override

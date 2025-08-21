@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.couchbase
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -13,6 +14,7 @@ import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
+import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.couchbase.BucketDefinition
@@ -90,8 +92,8 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    optTimeBasedValue != null
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A CouchbaseWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -163,5 +165,30 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
       CosmoWeatherTestData.TIME_17H
     ]
     actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
+  }
+
+  def "A CouchbaseWeatherSource throws NoDataException for invalid coordinate"() {
+    given:
+    def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
+
+    when:
+    source.getWeather(CosmoWeatherTestData.TIME_15H, invalidCoordinate)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No coordinate ID found for the given point")
+    ex.message.contains(invalidCoordinate.toString())
+  }
+
+  def "A CouchbaseWeatherSource throws NoDataException for future date"() {
+    given:
+    def futureDate = CosmoWeatherTestData.TIME_17H.plusDays(30)
+
+    when:
+    source.getWeather(futureDate, CosmoWeatherTestData.COORDINATE_193186)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("Weather document not found")
   }
 }

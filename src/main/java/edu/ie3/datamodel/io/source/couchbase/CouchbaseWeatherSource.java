@@ -10,6 +10,7 @@ import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
+import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -105,7 +106,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException {
     logger.warn(
         "By not providing coordinates you are forcing couchbase to check all possible coordinates one by one."
             + " This is not very performant. Please consider providing specific coordinates instead.");
@@ -114,7 +115,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+      throws NoDataException {
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     for (Point coordinate : coordinates) {
       Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
@@ -126,7 +128,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
         try {
           jsonWeatherInputs = queryResult.rowsAsObject();
         } catch (DecodingFailureException ex) {
-          logger.error("Querying weather inputs failed!", ex);
+          throw new NoDataException(
+              "Failed to decode weather data for coordinate " + coordinate, ex);
         }
         if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
           Set<TimeBasedValue<WeatherValue>> weatherInputs =
@@ -138,32 +141,56 @@ public class CouchbaseWeatherSource extends WeatherSource {
               new IndividualTimeSeries<>(weatherInputs);
           coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
         }
-      } else logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+      } else {
+        logger.error("Unable to match coordinate {} to a coordinate ID", coordinate);
+        throw new NoDataException(
+            "Unable to match coordinate " + coordinate + " to a coordinate ID");
+      }
     }
     return coordinateToTimeSeries;
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
+      throws NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
-      logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
-      return Optional.empty();
+      logger.error("Unable to match coordinate {} to a coordinate ID", coordinate);
+      throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
     }
     try {
       CompletableFuture<GetResult> futureResult =
           connector.get(generateWeatherKey(date, coordinateId.get()));
       GetResult getResult = futureResult.join();
       JsonObject jsonWeatherInput = getResult.contentAsObject();
-      return toTimeBasedWeatherValue(jsonWeatherInput);
+      return toTimeBasedWeatherValue(jsonWeatherInput)
+          .orElseThrow(
+              () ->
+                  new NoDataException(
+                      "No valid weather data found for the given date and coordinate."));
     } catch (DecodingFailureException ex) {
-      logger.error("Decoding to TimeBasedWeatherValue failed!", ex);
-      return Optional.empty();
+      throw new NoDataException(
+          "Failed to decode weather data for coordinate " + coordinate + " and date " + date, ex);
     } catch (DocumentNotFoundException ex) {
-      return Optional.empty();
+      throw new NoDataException(
+          "Weather document not found for coordinate " + coordinate + " and date " + date, ex);
     } catch (CompletionException ex) {
-      if (ex.getCause() instanceof DocumentNotFoundException) return Optional.empty();
-      else throw ex;
+      Throwable cause = ex.getCause();
+      if (cause instanceof DocumentNotFoundException) {
+        throw new NoDataException(
+            "Weather document not found in completion stage for coordinate "
+                + coordinate
+                + " and date "
+                + date,
+            cause);
+      } else {
+        throw new NoDataException(
+            "Unexpected completion exception while retrieving weather data for coordinate "
+                + coordinate
+                + " and date "
+                + date,
+            ex);
+      }
     }
   }
 
