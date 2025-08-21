@@ -60,7 +60,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForTimeInterval(timeInterval);
       QueryResult queryResult = session.query(new Query(query));
@@ -81,15 +81,13 @@ public class InfluxDbWeatherSource extends WeatherSource {
       return coordinateToValues.entrySet().stream()
           .collect(
               Collectors.toMap(Map.Entry::getKey, e -> new IndividualTimeSeries<>(e.getValue())));
-    } catch (NoDataException e) {
-      log.error("No data available for coordinate", e);
-      return Collections.emptyMap();
     }
   }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+      throws NoDataException {
     if (coordinates == null) return getWeather(timeInterval);
     Map<Point, Optional<Integer>> coordinatesToId =
         coordinates.stream().collect(Collectors.toMap(point -> point, idCoordinateSource::getId));
@@ -105,18 +103,13 @@ public class InfluxDbWeatherSource extends WeatherSource {
               optTimeBasedValueStream(queryResult);
           Set<TimeBasedValue<WeatherValue>> timeBasedValues =
               filterEmptyOptionals(optValues).collect(Collectors.toSet());
-          if (timeBasedValues.isEmpty()) {
-            throw new NoDataException(
-                "No weather data found for the given time interval and coordinate: "
-                    + entry.getKey());
+          if (!timeBasedValues.isEmpty()) {
+            IndividualTimeSeries<WeatherValue> timeSeries =
+                new IndividualTimeSeries<>(timeBasedValues);
+            coordinateToTimeSeries.put(entry.getKey(), timeSeries);
           }
-          IndividualTimeSeries<WeatherValue> timeSeries =
-              new IndividualTimeSeries<>(timeBasedValues);
-          coordinateToTimeSeries.put(entry.getKey(), timeSeries);
         }
       }
-    } catch (NoDataException e) {
-      return Collections.emptyMap();
     }
     return coordinateToTimeSeries;
   }
@@ -193,14 +186,9 @@ public class InfluxDbWeatherSource extends WeatherSource {
    */
   public IndividualTimeSeries<WeatherValue> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Point coordinate) throws NoDataException {
-    Optional<Integer> coordinateId;
-    try {
-      coordinateId = idCoordinateSource.getId(coordinate);
-      if (coordinateId.isEmpty()) {
-        throw new NoDataException("No data for given coordinates: " + coordinate);
-      }
-    } catch (NoDataException e) {
-      return new IndividualTimeSeries<>(UUID.randomUUID(), Collections.emptySet());
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
+    if (coordinateId.isEmpty()) {
+      throw new NoDataException("No data for given coordinates: " + coordinate);
     }
     try (InfluxDB session = connector.getSession()) {
       String query =
