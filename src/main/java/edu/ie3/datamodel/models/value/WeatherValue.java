@@ -7,13 +7,17 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes weather as a combination of solar irradiance, temperature and wind values */
+/**
+ * Describes weather as a combination of solar irradiance, temperature, wind, and ground temperature
+ * values.
+ */
 public class WeatherValue implements Value {
   /** The coordinate of this weather value set */
   private final Point coordinate;
@@ -27,21 +31,27 @@ public class WeatherValue implements Value {
   /** Wind values for this coordinate */
   private final WindValue wind;
 
+  /** GroundTemeperature value */
+  private final GroundTemperatureValue groundTemperature;
+
   /**
    * @param coordinate of this weather value set
    * @param solarIrradiance values for this coordinate
    * @param temperature values for this coordinate
    * @param wind values for this coordinate
+   * @param groundTemperature values for this coordinate (can be null)
    */
   public WeatherValue(
       Point coordinate,
       SolarIrradianceValue solarIrradiance,
       TemperatureValue temperature,
-      WindValue wind) {
+      WindValue wind,
+      GroundTemperatureValue groundTemperature) {
     this.coordinate = coordinate;
     this.solarIrradiance = solarIrradiance;
     this.temperature = temperature;
     this.wind = wind;
+    this.groundTemperature = groundTemperature;
   }
 
   /**
@@ -52,6 +62,7 @@ public class WeatherValue implements Value {
    * @param direction Direction, the wind comes from as an angle from north increasing clockwise
    *     (typically in rad)
    * @param velocity Wind velocity for this coordinate (typically in m/s)
+   * @param groundTemperature Ground temperature (typically in K)
    */
   public WeatherValue(
       Point coordinate,
@@ -59,12 +70,14 @@ public class WeatherValue implements Value {
       ComparableQuantity<Irradiance> diffuseSolarIrradiance,
       ComparableQuantity<Temperature> temperature,
       ComparableQuantity<Angle> direction,
-      ComparableQuantity<Speed> velocity) {
+      ComparableQuantity<Speed> velocity,
+      ComparableQuantity<Temperature> groundTemperature) {
     this(
         coordinate,
         new SolarIrradianceValue(directSolarIrradiance, diffuseSolarIrradiance),
         new TemperatureValue(temperature),
-        new WindValue(direction, velocity));
+        new WindValue(direction, velocity),
+        new GroundTemperatureValue(groundTemperature));
   }
 
   public Point getCoordinate() {
@@ -83,20 +96,25 @@ public class WeatherValue implements Value {
     return wind;
   }
 
+  public Optional<GroundTemperatureValue> getGroundTemperature() {
+    return Optional.ofNullable(groundTemperature);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     WeatherValue that = (WeatherValue) o;
-    return coordinate.equals(that.coordinate)
-        && solarIrradiance.equals(that.solarIrradiance)
-        && temperature.equals(that.temperature)
-        && wind.equals(that.wind);
+    return Objects.equals(coordinate, that.coordinate)
+        && Objects.equals(solarIrradiance, that.solarIrradiance)
+        && Objects.equals(temperature, that.temperature)
+        && Objects.equals(wind, that.wind)
+        && Objects.equals(groundTemperature, that.groundTemperature);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(coordinate, solarIrradiance, temperature, wind);
+    return Objects.hash(coordinate, solarIrradiance, temperature, wind, groundTemperature);
   }
 
   @Override
@@ -110,6 +128,8 @@ public class WeatherValue implements Value {
         + temperature
         + ", wind="
         + wind
+        + ", groundTemperature="
+        + groundTemperature
         + '}';
   }
 }
