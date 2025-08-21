@@ -120,8 +120,8 @@ public class SqlWeatherSource extends WeatherSource {
             .flatMap(Optional::stream)
             .collect(Collectors.toSet());
     if (coordinateIds.isEmpty()) {
-      log.warn("Unable to match coordinates to coordinate ID");
-      throw new NoDataException("No coordinates found");
+      log.warn("Unable to match coordinates {} to coordinate IDs", coordinates);
+      throw new NoDataException("Unable to match any of the provided coordinates to coordinate IDs: " + coordinates);
     }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
