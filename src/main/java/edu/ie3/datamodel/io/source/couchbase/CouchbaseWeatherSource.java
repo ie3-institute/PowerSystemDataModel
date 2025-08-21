@@ -128,9 +128,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
         try {
           jsonWeatherInputs = queryResult.rowsAsObject();
         } catch (DecodingFailureException ex) {
-          logger.error("Querying weather inputs failed for coordinate {}", coordinate, ex);
-          throw new NoDataException(
-              "Failed to decode weather data for coordinate " + coordinate, ex);
+          logger.error("Querying weather inputs failed!", ex);
         }
         if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
           Set<TimeBasedValue<WeatherValue>> weatherInputs =
