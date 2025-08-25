@@ -115,7 +115,19 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             groundTemperature);
     return new TimeBasedValue<>(time, weatherValue);
   }
-
+    /**
+     * Determines the wind direction. In ICON the wind velocity is given in three dimensional
+     * Cartesian coordinates. Here, the upward component is neglected. 0° or 0 rad are defined to
+     * point northwards. The angle increases clockwise. Please note, that the wind direction is the
+     * direction, the wind <b>comes</b> from and not goes to. We choose to use the wind velocity
+     * calculations at 131 m above ground, as this is a height that pretty good matches the common hub
+     * height of today's onshore wind generators, that are commonly connected to the voltage levels of
+     * interest.
+     *
+     * @param data Collective information to convert
+     * @return A {@link ComparableQuantity} of type {@link Speed}, that is converted to {@link
+     *     StandardUnits#WIND_VELOCITY}
+     */
   private static ComparableQuantity<Angle> getWindDirection(TimeBasedWeatherValueData data) {
     /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
     double u =
