@@ -322,4 +322,22 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     ex.message.contains("No weather data found for the given coordinate")
     ex.message.contains(IconWeatherTestData.COORDINATE_67775.toString())
   }
+
+  def "A CsvWeatherSource throws NoDataException for mixed valid and invalid coordinates"() {
+    given:
+    def validCoordinate = IconWeatherTestData.COORDINATE_67775
+    def invalidCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(999d, 999d))
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
+
+    when:
+    source.getWeather(timeInterval, [
+      validCoordinate,
+      invalidCoordinate
+    ])
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No data for given coordinates")
+    ex.message.contains(invalidCoordinate.toString())
+  }
 }

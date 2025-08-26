@@ -156,14 +156,15 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     ex2.message.contains(invalidCoordinate.toString())
 
     when: "requesting weather for mixed valid and invalid coordinates"
-    def coordinatesToTimeSeries = source.getWeather(timeInterval, [
+    source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
-    then: "only valid coordinate data is returned"
-    coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
-    equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries_193186)
+    then: "NoDataException is thrown"
+    def ex3 = thrown(NoDataException)
+    ex3.message.contains("No data for given coordinates")
+    ex3.message.contains(invalidCoordinate.toString())
   }
 
   def "A InfluxDbWeatherSource returns all time keys after a given time key correctly"() {

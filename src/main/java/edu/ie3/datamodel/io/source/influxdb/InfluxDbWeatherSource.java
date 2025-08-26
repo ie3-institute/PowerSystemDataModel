@@ -91,6 +91,17 @@ public class InfluxDbWeatherSource extends WeatherSource {
     if (coordinates == null) return getWeather(timeInterval);
     Map<Point, Optional<Integer>> coordinatesToId =
         coordinates.stream().collect(Collectors.toMap(point -> point, idCoordinateSource::getId));
+
+    List<Point> invalidCoordinates =
+        coordinatesToId.entrySet().stream()
+            .filter(entry -> entry.getValue().isEmpty())
+            .map(Map.Entry::getKey)
+            .toList();
+
+    if (!invalidCoordinates.isEmpty()) {
+      throw new NoDataException("No data for given coordinates: " + invalidCoordinates);
+    }
+
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     try (InfluxDB session = connector.getSession()) {
       for (Map.Entry<Point, Optional<Integer>> entry : coordinatesToId.entrySet()) {

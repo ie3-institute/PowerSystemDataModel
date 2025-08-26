@@ -177,6 +177,24 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
     ex.message.contains(invalidCoordinate.toString())
   }
 
+  def "A CouchbaseWeatherSource throws NoDataException for mixed valid and invalid coordinates"() {
+    given:
+    def validCoordinate = IconWeatherTestData.COORDINATE_67775
+    def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
+
+    when:
+    source.getWeather(timeInterval, [
+      validCoordinate,
+      invalidCoordinate
+    ])
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No data for given coordinates")
+    ex.message.contains(invalidCoordinate.toString())
+  }
+
   def "A CouchbaseWeatherSource throws NoDataException for future date"() {
     given:
     def futureDate = IconWeatherTestData.TIME_17H.plusDays(30)

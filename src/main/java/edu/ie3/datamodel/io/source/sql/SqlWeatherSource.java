@@ -114,16 +114,22 @@ public class SqlWeatherSource extends WeatherSource {
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
       throws SourceException, NoDataException {
+
+    List<Point> invalidCoordinates =
+        coordinates.stream()
+            .filter(coordinate -> idCoordinateSource.getId(coordinate).isEmpty())
+            .collect(Collectors.toList());
+
+    if (!invalidCoordinates.isEmpty()) {
+      log.warn("Unable to match coordinates {} to coordinate IDs", invalidCoordinates);
+      throw new NoDataException("No data for given coordinates: " + invalidCoordinates);
+    }
+
     Set<Integer> coordinateIds =
         coordinates.stream()
             .map(idCoordinateSource::getId)
             .flatMap(Optional::stream)
             .collect(Collectors.toSet());
-    if (coordinateIds.isEmpty()) {
-      log.warn("Unable to match coordinates {} to coordinate IDs", coordinates);
-      throw new NoDataException(
-          "Unable to match any of the provided coordinates to coordinate IDs: " + coordinates);
-    }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         buildTimeBasedValues(

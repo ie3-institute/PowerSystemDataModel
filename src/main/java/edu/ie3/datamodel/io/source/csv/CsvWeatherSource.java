@@ -108,6 +108,16 @@ public class CsvWeatherSource extends WeatherSource {
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
       throws NoDataException {
+
+    List<Point> invalidCoordinates =
+        coordinates.stream()
+            .filter(coordinate -> !coordinateToTimeSeries.containsKey(coordinate))
+            .toList();
+
+    if (!invalidCoordinates.isEmpty()) {
+      throw new NoDataException("No data for given coordinates: " + invalidCoordinates);
+    }
+
     Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
         coordinateToTimeSeries.entrySet().stream()
             .filter(entry -> coordinates.contains(entry.getKey()))

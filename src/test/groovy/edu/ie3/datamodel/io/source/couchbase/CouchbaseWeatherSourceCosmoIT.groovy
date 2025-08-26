@@ -180,6 +180,24 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     ex.message.contains(invalidCoordinate.toString())
   }
 
+  def "A CouchbaseWeatherSource throws NoDataException for mixed valid and invalid coordinates"() {
+    given:
+    def validCoordinate = CosmoWeatherTestData.COORDINATE_193186
+    def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
+
+    when:
+    source.getWeather(timeInterval, [
+      validCoordinate,
+      invalidCoordinate
+    ])
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No data for given coordinates")
+    ex.message.contains(invalidCoordinate.toString())
+  }
+
   def "A CouchbaseWeatherSource throws NoDataException for future date"() {
     given:
     def futureDate = CosmoWeatherTestData.TIME_17H.plusDays(30)
