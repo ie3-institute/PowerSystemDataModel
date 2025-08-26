@@ -114,7 +114,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     def ex = thrown(NoDataException)
-    ex.message.contains("Unable to match any of the provided coordinates to coordinate IDs")
+    ex.message.contains("No data for given coordinates")
     ex.message.contains(coordinates.toString())
   }
 
