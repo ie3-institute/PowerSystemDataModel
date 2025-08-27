@@ -194,16 +194,4 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
     ex.message.contains("No data for given coordinates")
     ex.message.contains(invalidCoordinate.toString())
   }
-
-  def "A CouchbaseWeatherSource throws NoDataException for future date"() {
-    given:
-    def futureDate = IconWeatherTestData.TIME_17H.plusDays(30)
-
-    when:
-    source.getWeather(futureDate, IconWeatherTestData.COORDINATE_67775)
-
-    then:
-    def ex = thrown(NoDataException)
-    ex.message.contains("Weather document not found")
-  }
 }

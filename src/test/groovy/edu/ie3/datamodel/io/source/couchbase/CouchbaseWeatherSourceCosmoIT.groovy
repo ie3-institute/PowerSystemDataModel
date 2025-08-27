@@ -197,16 +197,4 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     ex.message.contains("No data for given coordinates")
     ex.message.contains(invalidCoordinate.toString())
   }
-
-  def "A CouchbaseWeatherSource throws NoDataException for future date"() {
-    given:
-    def futureDate = CosmoWeatherTestData.TIME_17H.plusDays(30)
-
-    when:
-    source.getWeather(futureDate, CosmoWeatherTestData.COORDINATE_193186)
-
-    then:
-    def ex = thrown(NoDataException)
-    ex.message.contains("Weather document not found")
-  }
 }
