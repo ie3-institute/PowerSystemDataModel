@@ -144,17 +144,7 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
 
-    Map<Point, IndividualTimeSeries<WeatherValue>> result =
-        mapWeatherValuesToPoints(timeBasedValues);
-
-    if (result.size() < coordinates.size()) {
-      Set<Point> missingCoordinates = new HashSet<>(coordinates);
-      missingCoordinates.removeAll(result.keySet());
-      throw new NoDataException(
-          "No weather data for coordinates " + missingCoordinates + " in interval " + timeInterval);
-    }
-
-    return result;
+    return mapWeatherValuesToPoints(timeBasedValues);
   }
 
   @Override

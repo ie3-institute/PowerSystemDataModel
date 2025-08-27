@@ -130,14 +130,6 @@ public class CsvWeatherSource extends WeatherSource {
       throw new NoDataException(
           "No weather data found for the given time interval: " + timeInterval);
     }
-
-    if (result.size() < coordinates.size()) {
-      Set<Point> missingCoordinates = new HashSet<>(coordinates);
-      missingCoordinates.removeAll(result.keySet());
-      throw new NoDataException(
-          "No weather data for coordinates " + missingCoordinates + " in interval " + timeInterval);
-    }
-
     return result;
   }
 

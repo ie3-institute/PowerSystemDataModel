@@ -340,23 +340,4 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     ex.message.contains("No data for given coordinates")
     ex.message.contains(invalidCoordinate.toString())
   }
-
-  def "A CsvWeatherSource throws NoDataException when some valid coordinates have no data in time interval"() {
-    given:
-    def validCoordinateWithData = IconWeatherTestData.COORDINATE_67775
-    def validCoordinateWithoutData = IconWeatherTestData.COORDINATE_67776
-    def futureTimeInterval = new ClosedInterval(IconWeatherTestData.TIME_17H.plusHours(1), IconWeatherTestData.TIME_17H.plusHours(2))
-
-    when: "requesting weather for valid coordinates but in a future time interval where no data exists"
-    source.getWeather(futureTimeInterval, [
-      validCoordinateWithData,
-      validCoordinateWithoutData
-    ])
-
-    then: "NoDataException is thrown for missing data in interval"
-    def ex = thrown(NoDataException)
-    ex.message.contains("No weather data for coordinates")
-    ex.message.contains("in interval")
-    ex.message.contains(futureTimeInterval.toString())
-  }
 }

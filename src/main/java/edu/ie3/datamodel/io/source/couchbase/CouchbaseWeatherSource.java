@@ -153,14 +153,6 @@ public class CouchbaseWeatherSource extends WeatherSource {
         }
       }
     }
-
-    if (coordinateToTimeSeries.size() < coordinates.size()) {
-      Set<Point> missingCoordinates = new HashSet<>(coordinates);
-      missingCoordinates.removeAll(coordinateToTimeSeries.keySet());
-      throw new NoDataException(
-          "No weather data for coordinates " + missingCoordinates + " in interval " + timeInterval);
-    }
-
     return coordinateToTimeSeries;
   }
 
