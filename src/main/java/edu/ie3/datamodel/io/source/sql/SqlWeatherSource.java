@@ -118,7 +118,7 @@ public class SqlWeatherSource extends WeatherSource {
     List<Point> invalidCoordinates =
         coordinates.stream()
             .filter(coordinate -> idCoordinateSource.getId(coordinate).isEmpty())
-            .collect(Collectors.toList());
+            .toList();
 
     if (!invalidCoordinates.isEmpty()) {
       log.warn("Unable to match coordinates {} to coordinate IDs", invalidCoordinates);
