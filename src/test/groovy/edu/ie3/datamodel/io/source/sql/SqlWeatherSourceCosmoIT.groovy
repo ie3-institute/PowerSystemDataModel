@@ -181,4 +181,23 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     ex.message.contains("No data for given coordinates")
     ex.message.contains(invalidCoordinate.toString())
   }
+
+  def "A SqlWeatherSource throws NoDataException when some valid coordinates have no data in time interval"() {
+    given:
+    def validCoordinateWithData = CosmoWeatherTestData.COORDINATE_193186
+    def validCoordinateWithoutData = CosmoWeatherTestData.COORDINATE_193187
+    def futureTimeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_17H.plusHours(1), CosmoWeatherTestData.TIME_17H.plusHours(2))
+
+    when: "requesting weather for valid coordinates but in a future time interval where no data exists"
+    source.getWeather(futureTimeInterval, [
+      validCoordinateWithData,
+      validCoordinateWithoutData
+    ])
+
+    then: "NoDataException is thrown for missing data in interval"
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data for coordinates")
+    ex.message.contains("in interval")
+    ex.message.contains(futureTimeInterval.toString())
+  }
 }

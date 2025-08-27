@@ -160,6 +160,25 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     ex3.message.contains(invalidCoordinate.toString())
   }
 
+  def "An InfluxDbWeatherSource throws NoDataException when some valid coordinates have no data in time interval"() {
+    given:
+    def validCoordinateWithData = IconWeatherTestData.COORDINATE_67775
+    def validCoordinateWithoutData = IconWeatherTestData.COORDINATE_67776
+    def futureTimeInterval = new ClosedInterval(IconWeatherTestData.TIME_17H.plusHours(1), IconWeatherTestData.TIME_17H.plusHours(2))
+
+    when: "requesting weather for valid coordinates but in a future time interval where no data exists"
+    source.getWeather(futureTimeInterval, [
+      validCoordinateWithData,
+      validCoordinateWithoutData
+    ])
+
+    then: "NoDataException is thrown for missing data in interval"
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data for coordinates")
+    ex.message.contains("in interval")
+    ex.message.contains(futureTimeInterval.toString())
+  }
+
   def "The InfluxDbWeatherSource returns all time keys after a given time key correctly"() {
     given:
     def time = IconWeatherTestData.TIME_15H
