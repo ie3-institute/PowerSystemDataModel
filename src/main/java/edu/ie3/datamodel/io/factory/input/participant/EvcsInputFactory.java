@@ -54,7 +54,7 @@ public class EvcsInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getEm().orElse(null);
+    final EmInput em = data.getControllingEm().orElse(null);
     final ChargingPointType type;
     try {
       type = ChargingPointTypeUtils.parse(data.getField(TYPE));

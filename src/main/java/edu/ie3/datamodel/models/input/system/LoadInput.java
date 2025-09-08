@@ -30,10 +30,13 @@ public class LoadInput extends SystemParticipantInput {
    * model
    */
   private final LoadProfile loadProfile;
+
   /** Annually consumed energy (typically in kWh) */
   private final ComparableQuantity<Energy> eConsAnnual;
+
   /** Active Power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
+
   /** Rated power factor */
   private final double cosPhiRated;
 

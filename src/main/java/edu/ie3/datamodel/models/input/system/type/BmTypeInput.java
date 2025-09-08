@@ -20,6 +20,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
   /** Permissible load gradient (typically in %/h) */
   private final ComparableQuantity<DimensionlessRate> activePowerGradient;
+
   /** Efficiency of converter for this type of BM (typically in %) */
   private final ComparableQuantity<Dimensionless> etaConv;
 

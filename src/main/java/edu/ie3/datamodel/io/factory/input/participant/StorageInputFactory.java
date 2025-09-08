@@ -17,6 +17,7 @@ import java.util.UUID;
 public class StorageInputFactory
     extends SystemParticipantInputEntityFactory<
         StorageInput, SystemParticipantTypedEntityData<StorageTypeInput>> {
+  private static final String TYPE = "type";
 
   public StorageInputFactory() {
     super(StorageInput.class);
@@ -24,7 +25,7 @@ public class StorageInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[0];
+    return new String[] {TYPE};
   }
 
   @Override
@@ -36,7 +37,7 @@ public class StorageInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getEm().orElse(null);
+    final EmInput em = data.getControllingEm().orElse(null);
     final StorageTypeInput typeInput = data.getTypeInput();
     return new StorageInput(
         uuid, id, operator, operationTime, node, qCharacteristics, em, typeInput);

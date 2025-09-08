@@ -15,6 +15,7 @@ import org.locationtech.jts.geom.LineString;
 public abstract class GraphicInput extends UniqueInputEntity {
   /** Description of the graphic layer, this graphic is located on */
   private final String graphicLayer;
+
   /** A graphic representation as path */
   private final LineString path;
 

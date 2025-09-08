@@ -22,12 +22,15 @@ import tech.units.indriya.ComparableQuantity;
 public class BmInput extends SystemParticipantInput implements HasType {
   /** Type of this BM plant, containing default values for BM plants of this kind */
   private final BmTypeInput type;
+
   /** Is this asset market oriented? */
   private final boolean marketReaction;
+
   /**
    * Does this plant increase the output power if the revenues exceed the energy generation costs?
    */
   private final boolean costControlled;
+
   /** Granted feed in tariff (typically in €/MWh) */
   private final ComparableQuantity<EnergyPrice> feedInTariff;
 

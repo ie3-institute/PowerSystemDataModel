@@ -48,7 +48,8 @@ class EntitySourceTest extends Specification {
 
     then:
     SourceException ex = thrown()
-    ex.message == "edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"OperatorInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: An error occurred when creating instance of OperatorInput.class."
+    ex.message == "1 exception(s) occurred within \"OperatorInput\" data: \n" +
+    "        An error occurred when creating instance of OperatorInput.class. Caused by: Field \"id\" not found in EntityData"
   }
 
   def "An EntitySource can build EntityData correctly"() {
@@ -168,12 +169,12 @@ class EntitySourceTest extends Specification {
     then:
     actual.failure
     actual.exception.get().class == SourceException
-    actual.exception.get().message.contains(expectedMessage)
+    actual.exception.get().message == expectedMessage
 
     where:
     fieldsToAttributes                                      | entityMap                                 | expectedMessage
-    ["operator": "no uuid"]                                 | map([OperatorInput.NO_OPERATOR_ASSIGNED]) | "Extracting UUID field operator from entity data"
-    ["operator": GridTestData.profBroccoli.uuid.toString()] | map([OperatorInput.NO_OPERATOR_ASSIGNED]) | "Entity with uuid f15105c4-a2de-4ab8-a621-4bc98e372d92 was not provided."
+    ["operator": "no uuid"]                                 | map([OperatorInput.NO_OPERATOR_ASSIGNED]) | "Extracting UUID for field 'operator' failed. Caused by: Exception while trying to parse UUID of field \"operator\" with value \"no uuid\""
+    ["operator": GridTestData.profBroccoli.uuid.toString()] | map([OperatorInput.NO_OPERATOR_ASSIGNED]) | "Extracting UUID for field 'operator' failed. Caused by: Entity with uuid f15105c4-a2de-4ab8-a621-4bc98e372d92 was not provided."
   }
 
   def "An EntitySource returns a failure if a given map does not contain the given uuid"() {

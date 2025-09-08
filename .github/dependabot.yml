@@ -7,12 +7,6 @@ updates:
     time: "04:00"
   open-pull-requests-limit: 10
   target-branch: dev
-  reviewers:
-  - t-ober
-  - staudtMarius
-  - sebastian-peter
-  - danielfeismann
-  - jo-bao
 
 - package-ecosystem: pip
   directory: "/docs/readthedocs"

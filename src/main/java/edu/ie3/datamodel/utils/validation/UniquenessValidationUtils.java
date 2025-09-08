@@ -24,10 +24,11 @@ import java.util.stream.Collectors;
 public class UniquenessValidationUtils extends ValidationUtils {
 
   // default field set supplier
-  protected static final FieldSetSupplier<UniqueEntity> uuidFieldSupplier =
+  protected static final FieldSetSupplier<? extends UniqueEntity> uuidFieldSupplier =
       entity -> Set.of(entity.getUuid());
-  protected static final FieldSetSupplier<AssetInput> idFieldSupplier = e -> Set.of(e.getId());
-  protected static final FieldSetSupplier<ResultEntity> resultFieldSupplier =
+  protected static final FieldSetSupplier<? extends AssetInput> idFieldSupplier =
+      e -> Set.of(e.getId());
+  protected static final FieldSetSupplier<? extends ResultEntity> resultFieldSupplier =
       entity -> Set.of(entity.getTime(), entity.getInputModel());
   protected static final FieldSetSupplier<MappingEntry> mappingFieldSupplier =
       entity -> Set.of(entity.getAsset());
@@ -44,9 +45,10 @@ public class UniquenessValidationUtils extends ValidationUtils {
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated
    */
-  public static void checkUniqueEntities(Collection<? extends UniqueEntity> entities)
+  @SuppressWarnings("unchecked")
+  public static <E extends UniqueEntity> void checkUniqueEntities(Collection<E> entities)
       throws DuplicateEntitiesException {
-    checkUniqueness(entities, uuidFieldSupplier).getOrThrow();
+    checkUniqueness(entities, (FieldSetSupplier<? super E>) uuidFieldSupplier).getOrThrow();
   }
 
   /**
@@ -55,13 +57,14 @@ public class UniquenessValidationUtils extends ValidationUtils {
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated
    */
-  public static void checkAssetUniqueness(Collection<? extends AssetInput> entities)
+  @SuppressWarnings("unchecked")
+  public static <E extends AssetInput> void checkAssetUniqueness(Collection<E> entities)
       throws DuplicateEntitiesException {
 
     List<DuplicateEntitiesException> exceptions =
         Try.getExceptions(
             Try.ofVoid(() -> checkUniqueEntities(entities), DuplicateEntitiesException.class),
-            checkUniqueness(entities, idFieldSupplier));
+            checkUniqueness(entities, (FieldSetSupplier<? super E>) idFieldSupplier));
 
     if (!exceptions.isEmpty()) {
       throw new DuplicateEntitiesException("AssetInput", exceptions);
@@ -74,9 +77,10 @@ public class UniquenessValidationUtils extends ValidationUtils {
    * @param entities to be checked
    * @throws DuplicateEntitiesException if uniqueness is violated
    */
-  public static void checkResultUniqueness(Collection<? extends ResultEntity> entities)
+  @SuppressWarnings("unchecked")
+  public static <E extends ResultEntity> void checkResultUniqueness(Collection<E> entities)
       throws DuplicateEntitiesException {
-    checkUniqueness(entities, resultFieldSupplier).getOrThrow();
+    checkUniqueness(entities, (FieldSetSupplier<? super E>) resultFieldSupplier).getOrThrow();
   }
 
   /**
@@ -122,33 +126,46 @@ public class UniquenessValidationUtils extends ValidationUtils {
    */
   private static <E extends Entity> Try<Void, DuplicateEntitiesException> checkUniqueness(
       Collection<? extends E> entities, FieldSetSupplier<E> supplier) {
+    Optional<String> option = entities.stream().findAny().map(e -> e.getClass().getSimpleName());
+    if (option.isPresent()) {
+      return checkUniqueness(entities, supplier, option.get());
+    } else {
+      return Try.Success.empty();
+    }
+  }
+
+  /**
+   * Checking the uniqueness for a given {@link Entity}.
+   *
+   * @param entities to be checked
+   * @param supplier for the field set
+   * @param entityName name of the class of the entity
+   * @return a try object
+   * @param <E> type of entity
+   */
+  private static <E extends Entity> Try<Void, DuplicateEntitiesException> checkUniqueness(
+      Collection<? extends E> entities, FieldSetSupplier<E> supplier, String entityName) {
     if (entities.size() < 2) {
       return Success.empty();
     }
 
-    return entities.stream()
-        .findAny()
-        .map(
-            entity -> {
-              List<Set<Object>> elements = entities.stream().map(supplier::getFieldSets).toList();
-              Set<Set<Object>> uniqueElements = new HashSet<>(elements);
+    List<Set<Object>> elements = entities.stream().map(supplier::getFieldSets).toList();
+    Set<Set<Object>> uniqueElements = new HashSet<>(elements);
 
-              return Try.ofVoid(
-                  elements.size() != uniqueElements.size(),
-                  () -> buildDuplicationException(entity.getClass(), elements));
-            })
-        .orElse(Success.empty());
+    return Try.ofVoid(
+        elements.size() != uniqueElements.size(),
+        () -> buildDuplicationException(entityName, elements));
   }
 
   /**
    * Method for building a {@link DuplicateEntitiesException}.
    *
-   * @param entityClass class of the entity
+   * @param entityClass name of the class of the entity
    * @param notUniqueElements list of not unique elements
    * @return a {@link DuplicateEntitiesException}
    */
   protected static DuplicateEntitiesException buildDuplicationException(
-      Class<? extends Entity> entityClass, List<Set<Object>> notUniqueElements) {
+      String entityClass, List<Set<Object>> notUniqueElements) {
     String fieldName =
         notUniqueElements.get(0).stream()
             .map(f -> f.getClass().getSimpleName())
@@ -167,7 +184,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
 
     return new DuplicateEntitiesException(
         "'"
-            + entityClass.getSimpleName()
+            + entityClass
             + "' entities with duplicated "
             + fieldName
             + " key, but different field "

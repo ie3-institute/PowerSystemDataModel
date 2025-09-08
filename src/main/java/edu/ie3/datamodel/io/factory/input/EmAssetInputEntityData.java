@@ -19,23 +19,23 @@ import java.util.Objects;
  */
 public class EmAssetInputEntityData extends AssetInputEntityData {
 
-  private final EmInput emUnit;
+  private final EmInput controllingEm;
 
   public EmAssetInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
-      EmInput emUnit) {
+      EmInput controllingEm) {
     super(fieldsToAttributes, entityClass);
-    this.emUnit = emUnit;
+    this.controllingEm = controllingEm;
   }
 
   public EmAssetInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator,
-      EmInput emUnit) {
+      EmInput controllingEm) {
     super(fieldsToAttributes, entityClass, operator);
-    this.emUnit = emUnit;
+    this.controllingEm = controllingEm;
   }
 
   /**
@@ -43,15 +43,15 @@ public class EmAssetInputEntityData extends AssetInputEntityData {
    * object and given em unit
    *
    * @param entityData The entity data object to use attributes of
-   * @param emUnit The em input to use
+   * @param controllingEm The controlling em input to use
    */
-  public EmAssetInputEntityData(AssetInputEntityData entityData, EmInput emUnit) {
+  public EmAssetInputEntityData(AssetInputEntityData entityData, EmInput controllingEm) {
     super(entityData, entityData.getOperatorInput());
-    this.emUnit = emUnit;
+    this.controllingEm = controllingEm;
   }
 
-  public EmInput getEmUnit() {
-    return emUnit;
+  public EmInput getControllingEm() {
+    return controllingEm;
   }
 
   @Override
@@ -60,11 +60,11 @@ public class EmAssetInputEntityData extends AssetInputEntityData {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     EmAssetInputEntityData that = (EmAssetInputEntityData) o;
-    return Objects.equals(emUnit, that.emUnit);
+    return Objects.equals(controllingEm, that.controllingEm);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), emUnit);
+    return Objects.hash(super.hashCode(), controllingEm);
   }
 }

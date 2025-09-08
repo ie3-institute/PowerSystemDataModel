@@ -16,6 +16,7 @@ import java.util.Objects;
 public class SubGridContainer extends GridContainer {
   /** subnet number of this grid */
   private final int subnet;
+
   /** Predominantly apparent voltage level in this single grid */
   private final VoltageLevel predominantVoltageLevel;
 

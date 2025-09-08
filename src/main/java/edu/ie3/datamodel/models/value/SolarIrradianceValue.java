@@ -15,6 +15,7 @@ import tech.units.indriya.ComparableQuantity;
 public class SolarIrradianceValue implements Value {
   /** Direct sun irradiance (typically in W/m²) */
   private final ComparableQuantity<Irradiance> directIrradiance;
+
   /** Diffuse sun irradiance (typically in W/m²) */
   private final ComparableQuantity<Irradiance> diffuseIrradiance;
 

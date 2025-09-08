@@ -20,6 +20,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 abstract class AssetTypeInputEntityFactory<T extends AssetTypeInput>
     extends UniqueEntityFactory<T, EntityData> {
 
+  @SafeVarargs
   protected AssetTypeInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }

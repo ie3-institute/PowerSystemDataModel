@@ -85,12 +85,16 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     return "Cannot parse " + input + " to CharacteristicCoordinate. " + message;
   }
 
-  /** @return the position on the abscissa */
+  /**
+   * @return the position on the abscissa
+   */
   public ComparableQuantity<A> getX() {
     return x;
   }
 
-  /** @return the position on the ordinate */
+  /**
+   * @return the position on the ordinate
+   */
   public ComparableQuantity<O> getY() {
     return y;
   }

@@ -264,6 +264,7 @@ public class ValidationUtils {
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be positive");
   }
+
   /**
    * Goes through the provided quantities and reports those, that have positive value via
    *

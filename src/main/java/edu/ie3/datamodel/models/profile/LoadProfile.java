@@ -12,7 +12,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public interface LoadProfile extends Serializable {
-  /** @return The identifying String */
+  /**
+   * @return The identifying String
+   */
   String getKey();
 
   /**

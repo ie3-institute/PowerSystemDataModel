@@ -178,7 +178,9 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       return qCharacteristics;
     }
 
-    /** @return The {@link EmInput} controlling this system participant. CAN BE NULL. */
+    /**
+     * @return The {@link EmInput} controlling this system participant. CAN BE NULL.
+     */
     public EmInput getEm() {
       return em;
     }

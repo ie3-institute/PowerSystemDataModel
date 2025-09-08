@@ -20,7 +20,6 @@ import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
-import edu.ie3.datamodel.utils.ContainerUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
@@ -28,7 +27,6 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
@@ -99,10 +97,15 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     /* sanity check to ensure uniqueness */
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-    exceptions.add(
-        Try.ofVoid(
-            () -> checkAssetUniqueness(rawGridElements.allEntitiesAsList()),
-            DuplicateEntitiesException.class));
+    exceptions.addAll(
+        Try.ofVoids(
+            DuplicateEntitiesException.class,
+            () -> checkAssetUniqueness(rawGridElements.getNodes()),
+            () -> checkAssetUniqueness(rawGridElements.getLines()),
+            () -> checkAssetUniqueness(rawGridElements.getSwitches()),
+            () -> checkAssetUniqueness(rawGridElements.getTransformer2Ws()),
+            () -> checkAssetUniqueness(rawGridElements.getTransformer3Ws()),
+            () -> checkAssetUniqueness(rawGridElements.getMeasurementUnits())));
 
     /* Checking nodes */
     Set<NodeInput> nodes = rawGridElements.getNodes();
@@ -135,26 +138,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
               exceptions.addAll(ConnectorValidationUtils.check(transformer));
             });
 
-    /* Checking switches
-     * Because of the fact, that a transformer with switch gear in "upstream" direction has its corresponding node in
-     * upper grid connected to a switch, instead of to the transformer directly: Collect all nodes at the end of the
-     * upstream switch chain and add them to the set of allowed nodes */
-    HashSet<NodeInput> validSwitchNodes = new HashSet<>(nodes);
-    validSwitchNodes.addAll(
-        Stream.of(rawGridElements.getTransformer2Ws(), rawGridElements.getTransformer2Ws())
-            .flatMap(Set::stream)
-            .parallel()
-            .map(
-                transformer ->
-                    ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGridElements)
-                        .getLast())
-            .toList());
-
+    /* Checking switches */
     rawGridElements
         .getSwitches()
         .forEach(
             switcher -> {
-              exceptions.add(checkNodeAvailability(switcher, validSwitchNodes));
+              exceptions.add(checkNodeAvailability(switcher, nodes));
               exceptions.addAll(ConnectorValidationUtils.check(switcher));
             });
 
@@ -287,10 +276,6 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     /* sanity check to ensure uniqueness */
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-    exceptions.add(
-        Try.ofVoid(
-            () -> checkAssetUniqueness(systemParticipants.allEntitiesAsList()),
-            DuplicateEntitiesException.class));
 
     exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
@@ -306,8 +291,8 @@ public class GridContainerValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Checks the validity of specific system participant. Moreover, it checks, if the systems are
-   * connected to a node that is not in the provided set
+   * Checks the validity and uniqueness of specific system participant. Moreover, it checks, if the
+   * systems are connected to a node that is not in the provided set
    *
    * @param participants a set of specific system participants
    * @param nodes Set of already known nodes
@@ -316,18 +301,17 @@ public class GridContainerValidationUtils extends ValidationUtils {
    */
   protected static List<Try<Void, ? extends ValidationException>> checkSystemParticipants(
       Set<? extends SystemParticipantInput> participants, Set<NodeInput> nodes) {
-    return participants.stream()
-        .map(
-            entity -> {
-              List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    exceptions.add(
+        Try.ofVoid(() -> checkAssetUniqueness(participants), DuplicateEntitiesException.class));
 
-              exceptions.add(checkNodeAvailability(entity, nodes));
-              exceptions.addAll(SystemParticipantValidationUtils.check(entity));
+    participants.forEach(
+        participant -> {
+          exceptions.add(checkNodeAvailability(participant, nodes));
+          exceptions.addAll(SystemParticipantValidationUtils.check(participant));
+        });
 
-              return exceptions;
-            })
-        .flatMap(List::stream)
-        .toList();
+    return exceptions;
   }
 
   /**

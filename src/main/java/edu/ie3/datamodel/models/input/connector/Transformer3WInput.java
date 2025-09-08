@@ -23,8 +23,10 @@ import tech.units.indriya.quantity.Quantities;
 public class Transformer3WInput extends TransformerInput implements HasType {
   /** Type of this 3W transformer, containing default values for transformers of this kind */
   private final Transformer3WTypeInput type;
+
   /** The lower voltage node */
   private final NodeInput nodeC;
+
   /** Internal node of the transformers T equivalent circuit */
   private final NodeInput nodeInternal;
 
@@ -215,24 +217,32 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     return type;
   }
 
-  /** @return the node with the highest voltage level */
+  /**
+   * @return the node with the highest voltage level
+   */
   @Override
   public NodeInput getNodeA() {
     return super.getNodeA();
   }
 
-  /** @return the node with the "medium" voltage level */
+  /**
+   * @return the node with the "medium" voltage level
+   */
   @Override
   public NodeInput getNodeB() {
     return super.getNodeB();
   }
 
-  /** @return the node with the lowest voltage level */
+  /**
+   * @return the node with the lowest voltage level
+   */
   public NodeInput getNodeC() {
     return nodeC;
   }
 
-  /** @return The internal node of the T equivalent circuit */
+  /**
+   * @return The internal node of the T equivalent circuit
+   */
   public NodeInput getNodeInternal() {
     return nodeInternal;
   }

@@ -124,8 +124,8 @@ public class CongestionResult extends ResultEntity {
         case "line" -> LINE;
         case "transformer_2w" -> TRANSFORMER_2W;
         case "transformer_3w" -> TRANSFORMER_3W;
-        default -> throw new ParsingException(
-            "InputModelType '" + inputModelType + "' cannot be parsed!");
+        default ->
+            throw new ParsingException("InputModelType '" + inputModelType + "' cannot be parsed!");
       };
     }
   }

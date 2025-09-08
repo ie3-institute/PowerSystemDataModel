@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.exceptions.FileException
+import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
 import edu.ie3.util.io.FileIOUtils
 import org.apache.commons.io.FilenameUtils
@@ -39,13 +40,14 @@ class DefaultDirectoryHierarchyTest extends Specification {
     given:
     def gridName = "test_grid"
     def basePath = basePathString(gridName)
+    def connector = new CsvFileConnector(basePath)
 
     when:
     def dfh = new DefaultDirectoryHierarchy(tmpDirectory, gridName)
 
     then:
     try {
-      dfh.baseDirectory.get() == basePath
+      connector.baseDirectory == basePath
       dfh.subDirectories.size() == 9
       dfh.subDirectories.get(basePath.resolve(Path.of("input", "grid"))) == true
       dfh.subDirectories.get(basePath.resolve(Path.of("input", "participants"))) == true

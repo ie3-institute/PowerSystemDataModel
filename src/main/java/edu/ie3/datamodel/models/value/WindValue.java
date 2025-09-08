@@ -16,6 +16,7 @@ import tech.units.indriya.ComparableQuantity;
 public class WindValue implements Value {
   /** Wind direction as an angle from north (typically in rad) */
   private final ComparableQuantity<Angle> direction;
+
   /** Wind velocity (typically in m/s) */
   private final ComparableQuantity<Speed> velocity;
 

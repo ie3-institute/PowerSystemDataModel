@@ -38,10 +38,12 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
    * @return That mapping
    */
   public Map<UUID, UUID> getMapping() throws SourceException {
-    return Try.scanStream(getMappingSourceData().map(this::createMappingEntry), "MappingEntry")
-        .transform(
-            s -> s.collect(Collectors.toMap(MappingEntry::getAsset, MappingEntry::getTimeSeries)),
+    return Try.scanStream(
+            getMappingSourceData().map(this::createMappingEntry),
+            "MappingEntry",
             SourceException::new)
+        .transformS(
+            s -> s.collect(Collectors.toMap(MappingEntry::getAsset, MappingEntry::getTimeSeries)))
         .getOrThrow();
   }
 

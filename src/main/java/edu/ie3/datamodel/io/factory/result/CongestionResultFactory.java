@@ -38,7 +38,7 @@ public class CongestionResultFactory extends ResultEntityFactory<CongestionResul
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-    return List.of(newSet(TIME, INPUT_MODEL, TYPE, SUBGRID, MIN, MAX));
+    return List.of(newSet(TIME, INPUT_MODEL, TYPE, VALUE, SUBGRID, MIN, MAX));
   }
 
   @Override

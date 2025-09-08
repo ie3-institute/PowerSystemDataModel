@@ -6,14 +6,14 @@
 package edu.ie3.datamodel.io.factory.input;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.thermal.AbstractStorageInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
 
-public abstract class AbstractThermalStorageInputFactory<T extends AssetInput>
+public abstract class AbstractThermalStorageInputFactory<T extends AbstractStorageInput>
     extends AssetInputEntityFactory<T, ThermalUnitInputEntityData> {
 
   private static final String STORAGE_VOLUME_LVL = "storageVolumeLvl";

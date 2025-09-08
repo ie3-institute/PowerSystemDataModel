@@ -243,6 +243,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     BmResult                 || "prefix_bm_res_suffix"
     PvResult                 || "prefix_pv_res_suffix"
     ChpResult                || "prefix_chp_res_suffix"
+    HpResult                 || "prefix_hp_res_suffix"
     WecResult                || "prefix_wec_res_suffix"
     StorageResult            || "prefix_storage_res_suffix"
     EvcsResult               || "prefix_evcs_res_suffix"

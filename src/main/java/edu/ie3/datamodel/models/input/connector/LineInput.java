@@ -27,10 +27,13 @@ public class LineInput extends ConnectorInput implements HasType {
 
   /** Type of this line, containing default values for lines of this kind */
   private final LineTypeInput type;
+
   /** Length of this line */
   private final ComparableQuantity<Length> length;
+
   /** Coordinates of this line */
   private final LineString geoPosition;
+
   /** Description of an optional weather dependent operation curve */
   private final OlmCharacteristicInput olmCharacteristic;
 

@@ -17,10 +17,13 @@ import tech.units.indriya.ComparableQuantity;
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   /** Capital expense for this type of system participant (typically in €) */
   private final ComparableQuantity<Currency> capex;
+
   /** Operating expense for this type of system participant (typically in €/MWh) */
   private final ComparableQuantity<EnergyPrice> opex;
+
   /** Rated apparent power of the type (in kVA) */
   private final ComparableQuantity<Power> sRated;
+
   /** Power factor for this type of system participant */
   private final double cosPhiRated;
 

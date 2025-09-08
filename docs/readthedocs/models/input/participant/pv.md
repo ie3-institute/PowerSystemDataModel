@@ -44,8 +44,7 @@ Detailed model of a photovoltaic power plant.
 
    * - azimuth
      - °
-     - Inclination in a compass direction
-       South = 0°, West = 90°, East = -90°
+     - South = 0°, West = 90°, East = -90°, North = +/- 180°  
 
    * - etaConv
      - %
@@ -76,7 +75,7 @@ Detailed model of a photovoltaic power plant.
      -
      - Rated power factor
 
-   * - em
+   * - controllingEm
      -
      - UUID reference to an [Energy Management Unit](#em_model) that is controlling
        this system participant. Field can be empty or missing, if this participant

@@ -21,10 +21,13 @@ import tech.units.indriya.ComparableQuantity;
 public class WecTypeInput extends SystemParticipantTypeInput {
   /** Betz curve of this type */
   private final WecCharacteristicInput cpCharacteristic;
+
   /** Efficiency of converter for this type of WEC (typically in %) */
   private final ComparableQuantity<Dimensionless> etaConv;
+
   /** Swept Area of blades for this type of WEC (typically in m²) */
   private final ComparableQuantity<Area> rotorArea;
+
   /** Height from ground to center of rotor for this type of WEC (typically in m) */
   private final ComparableQuantity<Length> hubHeight;
 

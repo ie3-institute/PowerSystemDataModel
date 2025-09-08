@@ -20,13 +20,13 @@ import org.locationtech.jts.io.WKBReader;
 public class SqlIdCoordinateFactory extends IdCoordinateFactory {
   private static final String COORDINATE_ID = "id";
   private static final String COORDINATE = "coordinate";
-  private final WKBReader reader = new WKBReader();
 
   @Override
   protected IdCoordinateInput buildModel(SimpleFactoryData data) {
     try {
       int coordinateId = data.getInt(COORDINATE_ID);
       byte[] byteArr = WKBReader.hexToBytes(data.getField(COORDINATE));
+      WKBReader reader = new WKBReader();
 
       Coordinate coordinate = reader.read(byteArr).getCoordinate();
 

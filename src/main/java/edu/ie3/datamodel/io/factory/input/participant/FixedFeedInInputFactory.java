@@ -40,7 +40,7 @@ public class FixedFeedInInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getEm().orElse(null);
+    final EmInput em = data.getControllingEm().orElse(null);
     final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     final double cosPhiRated = data.getDouble(COSPHI_RATED);
 

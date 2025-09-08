@@ -16,14 +16,19 @@ import java.util.stream.Collectors;
 public class RawGridElements implements InputContainer<AssetInput> {
   /** Set of nodes in this grid */
   private final Set<NodeInput> nodes;
+
   /** Set of lines in this grid */
   private final Set<LineInput> lines;
+
   /** Set of two winding transformers in this grid */
   private final Set<Transformer2WInput> transformer2Ws;
+
   /** Set of three winding in this grid */
   private final Set<Transformer3WInput> transformer3Ws;
+
   /** Set of switches in this grid */
   private final Set<SwitchInput> switches;
+
   /** Measurement units in this grid */
   private final Set<MeasurementUnitInput> measurementUnits;
 
@@ -132,32 +137,44 @@ public class RawGridElements implements InputContainer<AssetInput> {
     return new RawGridElementsCopyBuilder(this);
   }
 
-  /** @return unmodifiable ; of all three winding transformers in this grid */
+  /**
+   * @return unmodifiable ; of all three winding transformers in this grid
+   */
   public Set<NodeInput> getNodes() {
     return Collections.unmodifiableSet(nodes);
   }
 
-  /** @return unmodifiable Set of all lines in this grid */
+  /**
+   * @return unmodifiable Set of all lines in this grid
+   */
   public Set<LineInput> getLines() {
     return Collections.unmodifiableSet(lines);
   }
 
-  /** @return unmodifiable Set of all two winding transformers in this grid */
+  /**
+   * @return unmodifiable Set of all two winding transformers in this grid
+   */
   public Set<Transformer2WInput> getTransformer2Ws() {
     return Collections.unmodifiableSet(transformer2Ws);
   }
 
-  /** @return unmodifiable Set of all three winding transformers in this grid */
+  /**
+   * @return unmodifiable Set of all three winding transformers in this grid
+   */
   public Set<Transformer3WInput> getTransformer3Ws() {
     return Collections.unmodifiableSet(transformer3Ws);
   }
 
-  /** @return unmodifiable Set of all switches in this grid */
+  /**
+   * @return unmodifiable Set of all switches in this grid
+   */
   public Set<SwitchInput> getSwitches() {
     return Collections.unmodifiableSet(switches);
   }
 
-  /** @return unmodifiable Set of all measurement units in this grid */
+  /**
+   * @return unmodifiable Set of all measurement units in this grid
+   */
   public Set<MeasurementUnitInput> getMeasurementUnits() {
     return Collections.unmodifiableSet(measurementUnits);
   }

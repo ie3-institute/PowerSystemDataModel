@@ -15,6 +15,8 @@ import java.util.UUID;
 
 public class HpInputFactory
     extends SystemParticipantInputEntityFactory<HpInput, HpInputEntityData> {
+  private static final String TYPE = "type";
+  private static final String THERMAL_BUS = "thermalBus";
 
   public HpInputFactory() {
     super(HpInput.class);
@@ -22,7 +24,7 @@ public class HpInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[0];
+    return new String[] {TYPE, THERMAL_BUS};
   }
 
   @Override
@@ -34,7 +36,7 @@ public class HpInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getEm().orElse(null);
+    final EmInput em = data.getControllingEm().orElse(null);
 
     return new HpInput(
         uuid,

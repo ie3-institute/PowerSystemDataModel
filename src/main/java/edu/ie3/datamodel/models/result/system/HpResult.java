@@ -20,7 +20,7 @@ public class HpResult extends SystemParticipantWithHeatResult {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
-   * @param qDot provided head energy
+   * @param qDot provided heat energy
    */
   public HpResult(
       ZonedDateTime time,

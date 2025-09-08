@@ -37,7 +37,7 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadValues>
+public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
     extends EntitySource {
   protected final Class<V> entryClass;
   protected final LoadProfileFactory<P, V> entryFactory;
@@ -87,6 +87,23 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
 
   /** Returns the load profile energy scaling for this load profile time series. */
   public abstract Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling();
+
+  /**
+   * Returns the resolution for the given {@link LoadProfile}.
+   *
+   * @param loadProfile given load profile
+   * @return the resolution in seconds.
+   */
+  public static long getResolution(LoadProfile loadProfile) {
+
+    if (loadProfile == LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE) {
+      // since no load profile was assigned, we return the maximal possible value
+      return Long.MAX_VALUE;
+    } else {
+      // currently all registered profiles and all sources use 15 minutes intervals
+      return 900L;
+    }
+  }
 
   /**
    * Method to read in the build-in {@link BdewStandardLoadProfile}s.

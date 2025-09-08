@@ -1,29 +1,24 @@
 /* Maven publish - start */
-task sourcesJar(type: Jar) {
+
+tasks.register("sourcesJar", Jar) {
   archiveClassifier.set("sources")
   from sourceSets.main.allJava
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
+tasks.register("javadocJar", Jar) {
+  dependsOn tasks.named("javadoc", Javadoc)
   archiveClassifier.set("javadoc")
-  from javadoc.destinationDir
+  from { tasks.named("javadoc", Javadoc).get().destinationDir }
 }
 
-
-if (project.hasProperty('user') && project.hasProperty('password') && project.hasProperty('deployVersion')) {
+if (project.hasProperty('mavenCentralUser') && project.hasProperty('mavenCentralPassword') && project.hasProperty('deployVersion')) {
 
   // snapshot version differs from normal version
   String versionString = project.getProperty('deployVersion')
 
-  signing {
-    required { !versionString.endsWith('SNAPSHOT') }
-    if (required)
-      sign(publishing.publications)
-  }
-
   publishing {
     publications {
-      mavenJava(MavenPublication) {
+      create("mavenJava", MavenPublication) {
 
         versionMapping {
           // resolves dynamic versioning to current version number
@@ -66,9 +61,9 @@ if (project.hasProperty('user') && project.hasProperty('password') && project.ha
         }
 
         removeTestDependenciesFromPom(pom)
-        groupId group
-        artifactId 'PowerSystemDataModel'
-        version versionString
+        groupId = group
+        artifactId = 'PowerSystemDataModel'
+        version = versionString
 
         from components.java
         artifact sourcesJar
@@ -77,27 +72,29 @@ if (project.hasProperty('user') && project.hasProperty('password') && project.ha
     }
     repositories {
       maven {
-        def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-        def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-        url = versionString.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        name = "MavenCentral"
+        url = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
         credentials {
-          username project.getProperty('user')
-          password project.getProperty('password')
+          username = project.findProperty('mavenCentralUser')
+          password = project.findProperty('mavenCentralPassword')
         }
       }
     }
+    signing {
+      useInMemoryPgpKeys(
+          findProperty('signingKey') as String,
+          findProperty('signingPassword') as String
+          )
+      sign publications.mavenJava
+    }
   }
 
-
-  model {
-    tasks.generatePomFileForMavenJavaPublication {
-      destination = file("$rootDir/generated-pom.xml")
-    }
+  tasks.named("generatePomFileForMavenJavaPublication") {
+    destination = layout.buildDirectory.file("generated-pom.xml").get().asFile
   }
 }
 
 def removeTestDependenciesFromPom(pom) {
-
   pom.withXml {
     def root = asNode()
     // eliminate test-scoped dependencies (no need in maven central POMs)

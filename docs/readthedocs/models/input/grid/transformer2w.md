@@ -137,10 +137,9 @@ A list with some standard transformer types can be found here: [Standard Two Win
 ## Standard Two Winding Transformer Types
 
 
-Following there are some standard two winding transformer types with their source. A ``csv file`` containing the types listed
-below can be found [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes). This
-file can be used directly for any simulation with ``simona``.
-The transformers which source is ``simBench`` are from [here](https://simbench.de/en/download/datasets/).
+Following there are some standard two winding transformer types with their source. The types are listed below in a ``csv file`` [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes). This
+file can be used directly for any simulation with [SIMONA](https://github.com/ie3-institute/simona).
+The source for transformers from ``simBench`` can be found [here](https://simbench.de/en/download/datasets/).
 
 ```{list-table}
    :widths: auto
@@ -165,7 +164,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - source
      
    * - 5a890aae-b9c9-4ebf-8a49-8850ae9df402
-     - 219.43184927638458
+     - -219.43184927638458
      - 0.0
      - 1.0
      - 1731.3019390581715
@@ -182,7 +181,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - simBench
      
    * - 03159c0d-126e-47cc-9871-066870df3a3f
-     - 1193.4686938790917
+     - -1193.4686938790917
      - 0.0
      - 1.0
      - 831.0249307479223
@@ -199,7 +198,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - simBench
      
    * - 7cb289cb-e6af-4470-9c68-e5a91978a5e7
-     - 2013.800484464662
+     - -2013.800484464662
      - 0.0
      - 1.0
      - 1446.280991735537
@@ -216,7 +215,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - simBench
      
    * - 73644bc6-78cf-4882-9837-e6508cab092d
-     - 867.7685950413226
+     - -867.7685950413226
      - 0.0
      - 1.5
      - 1157.0247933884295
@@ -233,7 +232,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - simBench
      
    * - 6935ae26-374a-4c24-aeee-6d5760d6ddf3
-     - 720.4791642215993
+     - -720.4791642215993
      - 0.0
      - 1.5
      - 1487.603305785124
@@ -250,7 +249,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - simBench
      
    * - b49db20f-b8b5-4265-8318-f669b9d121e9
-     - 1015.6886939330394
+     - -1015.6886939330394
      - 0.0
      - 1.5
      - 1818.181818181818
@@ -267,7 +266,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - simBench
      
    * - 0843b836-cee4-4a8c-81a4-098400fe91cf
-     - 24.495101551166183
+     - -24.495101551166183
      - 0.0
      - 2.5
      - 2999.9999999999995
@@ -284,7 +283,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - simBench
      
    * - a8f3aeea-ef4d-4f3c-bb07-09a0a86766c1
-     - 9.591746452043322
+     - -9.591746452043322
      - 0.0
      - 2.5
      - 1149.9999999999998
@@ -301,7 +300,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - simBench
      
    * - 0644c120-a247-425f-bbe4-31b153f7f440
-     - 16.583241729259253
+     - -16.583241729259253
      - 0.0
      - 2.5
      - 2199.9999999999995
@@ -318,7 +317,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - simBench
      
    * - bdf22ee4-deba-41f4-a187-ae00638a6880
-     - 36.47380569074435
+     - -36.47380569074435
      - 0.0
      - 2.5
      - 4125.0
@@ -335,7 +334,7 @@ The transformers which source is ``simBench`` are from [here](https://simbench.d
      - simBench
      
    * - a0cbd90a-4e9f-47db-8dca-041d3a288f77
-     - 145.8952227629774
+     - -145.8952227629774
      - 0.0
      - 2.5
      - 16500.0

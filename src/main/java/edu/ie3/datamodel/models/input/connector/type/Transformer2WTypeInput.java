@@ -16,28 +16,40 @@ import tech.units.indriya.ComparableQuantity;
 public class Transformer2WTypeInput extends AssetTypeInput {
   /** Short circuit resistance (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> rSc;
+
   /** Short circuit reactance (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> xSc;
+
   /** Rated apparent power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
+
   /** Rated voltage of the high voltage winding (typically in kV) */
   private final ComparableQuantity<ElectricPotential> vRatedA;
+
   /** Rated voltage of the low voltage winding (typically in kV) */
   private final ComparableQuantity<ElectricPotential> vRatedB;
+
   /** Phase-to-ground conductance (typically in nS) */
   private final ComparableQuantity<ElectricConductance> gM;
+
   /** Phase-to-ground susceptance (typically in nS) */
   private final ComparableQuantity<ElectricConductance> bM;
+
   /** Voltage magnitude deviation per tap position (typically in %) */
   private final ComparableQuantity<Dimensionless> dV;
+
   /** Voltage angle deviation per tap position (typically in °) */
   private final ComparableQuantity<Angle> dPhi;
+
   /** Selection of winding, where the tap changer is installed. Low voltage, if true */
   private final boolean tapSide;
+
   /** Neutral tap position */
   private final int tapNeutr;
+
   /** Minimum available tap position */
   private final int tapMin;
+
   /** Maximum available tap position */
   private final int tapMax;
 

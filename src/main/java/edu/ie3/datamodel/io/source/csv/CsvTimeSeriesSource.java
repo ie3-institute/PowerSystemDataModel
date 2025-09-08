@@ -142,6 +142,11 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     return timeSeries.getTimeKeysAfter(time);
   }
 
+  @Override
+  public Optional<ZonedDateTime> getLastTimeKeyBefore(ZonedDateTime time) {
+    return timeSeries.getPreviousDateTime(time);
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
@@ -166,8 +171,10 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
             .buildStreamWithFieldsToAttributesMap(filePath, false)
             .flatMap(
                 stream ->
-                    Try.scanStream(stream.map(fieldToValueFunction), "TimeBasedValue<V>")
-                        .transformF(SourceException::new));
+                    Try.scanStream(
+                        stream.map(fieldToValueFunction),
+                        "TimeBasedValue<V>",
+                        SourceException::new));
     return new IndividualTimeSeries<>(
         timeSeriesUuid, new HashSet<>(timeBasedValues.getOrThrow().toList()));
   }

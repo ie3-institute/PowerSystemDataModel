@@ -19,16 +19,22 @@ import tech.units.indriya.ComparableQuantity;
 public class ThermalHouseInput extends ThermalSinkInput {
   /** Thermal, transitional losses of the included thermal house model (typically in kW/K) */
   private final ComparableQuantity<ThermalConductance> ethLosses;
+
   /** Thermal capacity of the included thermal house model (typically in kWh/K) */
   private final ComparableQuantity<HeatCapacity> ethCapa;
+
   /** Desired target temperature of the thermal house model (typically in °C) */
   private final ComparableQuantity<Temperature> targetTemperature;
+
   /** Upper boundary temperature of the thermal house model (typically in °C) */
   private final ComparableQuantity<Temperature> upperTemperatureLimit;
+
   /** Lower boundary temperature of the thermal house model (typically in °C) */
   private final ComparableQuantity<Temperature> lowerTemperatureLimit;
+
   /** Type of the building, e.g. house or flat */
   private final String housingType;
+
   /** Number of people living in the building, double to allow proper scaling */
   private final double numberInhabitants;
 

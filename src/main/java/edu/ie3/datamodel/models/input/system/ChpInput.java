@@ -24,10 +24,13 @@ public class ChpInput extends SystemParticipantInput
     implements HasType, HasThermalBus, HasThermalStorage {
   /** The thermal bus, this model is connected to */
   private final ThermalBusInput thermalBus;
+
   /** Type of this CHP plant, containing default values for CHP plants of this kind */
   private final ChpTypeInput type;
+
   /** Thermal storage model */
   private final ThermalStorageInput thermalStorage;
+
   /** Is this asset market oriented? */
   private final boolean marketReaction;
 

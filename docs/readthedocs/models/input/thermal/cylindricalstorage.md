@@ -49,7 +49,7 @@ Model of a cylindrical thermal storage using a fluid to store thermal energy.
      - Temperature of the outlet
 
    * - c
-     - kWh / (K :math:`\cdot` m³)
+     - kWh / (K &middot; m³)
      - Specific heat capacity of the storage medium
      
    * - pThermalMax

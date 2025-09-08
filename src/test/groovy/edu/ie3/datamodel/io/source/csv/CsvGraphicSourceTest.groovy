@@ -70,7 +70,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
     Exception ex = graphicElements.exception.get()
     ex.class == GraphicSourceException
-    ex.message.startsWith("1 error(s) occurred while initializing graphic elements.  edu.ie3.datamodel.exceptions.FailureException: 1 exception(s) occurred within \"LineGraphicInput\" data, one is: edu.ie3.datamodel.exceptions.FactoryException: edu.ie3.datamodel.exceptions.SourceException: Entity with uuid 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7 was not provided.")
+    ex.message == "Exception(s) occurred in 1 input file(s) while initializing graphic elements. \n" +
+    "        1 exception(s) occurred within \"LineGraphicInput\" data: \n" +
+    "               Extracting UUID for field 'line' failed. Caused by: Entity with uuid 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7 was not provided."
   }
 
 
@@ -143,8 +145,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     def e = thrown(SourceException)
-    e.cause.class == FailureException
-    e.cause.message.startsWith(expectedFailures + " exception(s) occurred")
+    e.message.startsWith(expectedFailures + " exception(s) occurred")
 
     where:
     nodeCollection         || expectedFailures
@@ -167,8 +168,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     def e = thrown(SourceException)
-    e.cause.class == FailureException
-    e.cause.message.startsWith(expectedFailures + " exception(s) occurred")
+    e.message.startsWith(expectedFailures + " exception(s) occurred")
 
     where:
     lineCollection || expectedFailures

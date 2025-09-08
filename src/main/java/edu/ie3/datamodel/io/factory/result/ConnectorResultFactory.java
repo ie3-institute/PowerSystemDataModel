@@ -51,10 +51,10 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG);
 
     if (entityClass.equals(Transformer2WResult.class)) {
-      minConstructorParams = newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, TAPPOS);
+      minConstructorParams = expandSet(minConstructorParams, TAPPOS);
+
     } else if (entityClass.equals(Transformer3WResult.class)) {
-      minConstructorParams =
-          newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, ICMAG, ICANG, TAPPOS);
+      minConstructorParams = expandSet(minConstructorParams, ICMAG, ICANG, TAPPOS);
     }
 
     return List.of(minConstructorParams);

@@ -5,7 +5,7 @@ If you feel, something is missing, please contact us!
 
 ## Requirements
 
-Java > v 17
+PowerSystemDataModel requires Java to be at least Version 21.
 
 ## Where to get
 

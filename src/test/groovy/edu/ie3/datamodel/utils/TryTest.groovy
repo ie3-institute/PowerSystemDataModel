@@ -233,17 +233,18 @@ class TryTest extends Specification {
     given:
     Set<Try<String, Exception>> set = Set.of(
     new Try.Success<>("one"),
-    new Try.Failure<>(new Exception("exception")),
+    new Try.Failure<>(new Exception("exception", new SourceException("source exception"))),
     new Try.Success<>("two"),
     new Try.Success<>("three")
     )
 
     when:
-    Try<Set<String>, Exception> scan = Try.scanCollection(set, String)
+    Try<Set<String>, Exception> scan = Try.scanCollection(set, String, Exception::new)
 
     then:
     scan.failure
-    scan.exception.get().message == "1 exception(s) occurred within \"String\" data, one is: java.lang.Exception: exception"
+    scan.exception.get().message == "1 exception(s) occurred within \"String\" data: \n" +
+    "        exception Caused by: source exception"
   }
 
   def "A scan for exceptions should work as expected when no failures are included"() {
@@ -255,7 +256,7 @@ class TryTest extends Specification {
     )
 
     when:
-    Try<Set<String>, Exception> scan = Try.scanCollection(set, String)
+    Try<Set<String>, Exception> scan = Try.scanCollection(set, String, Exception::new)
 
     then:
     scan.success

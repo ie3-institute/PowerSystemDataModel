@@ -13,7 +13,9 @@ import java.util.List;
 /** Represents an aggregation of different entities */
 public interface InputContainer<T extends UniqueInputEntity> extends Serializable {
 
-  /** @return unmodifiable List of all entities */
+  /**
+   * @return unmodifiable List of all entities
+   */
   List<T> allEntitiesAsList();
 
   /** Returns an input container copy builder */
