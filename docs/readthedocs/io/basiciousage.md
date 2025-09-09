@@ -12,6 +12,7 @@ csvfiles
 sql
 influxdb
 ValidationUtils.md
+psdmconverters.md
 ```
 
 ## Data sink structure
@@ -38,7 +39,3 @@ The function to read the sources are implemented in the DataSource classes.
 ## Data deployment
 
 [![Diagram of input data deployment](../_static/figures/uml/InputDataDeployment.png)](../_static/figures/uml/InputDataDeployment.png)
-
-## PSDM Converters
-[PSDM Converters](psdmconverters.md)
-Converters used to convert the data to and from the Power System Data Model format.
