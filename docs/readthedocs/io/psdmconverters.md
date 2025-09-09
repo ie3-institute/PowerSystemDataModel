@@ -34,5 +34,4 @@ The tool [here](https://github.com/e2nIEE/simbench) enables the use of the SimBe
 
 Pandapower is an easy to use network calculation program aimed to automate the analysis and optimization of power systems.
 
-
 More information about pandapower can be found [here](https://www.pandapower.org/).
