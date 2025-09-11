@@ -71,6 +71,11 @@ public class StorageInput extends SystemParticipantInput implements HasType {
     return type;
   }
 
+  @Override
+  public ComparableQuantity<Power> getsRated() {
+    return this.type.getsRated();
+  }
+
   public StorageInputCopyBuilder copy() {
     return new StorageInputCopyBuilder(this);
   }
