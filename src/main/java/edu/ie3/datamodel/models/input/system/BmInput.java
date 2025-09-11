@@ -117,6 +117,11 @@ public class BmInput extends SystemParticipantInput implements HasType {
     return feedInTariff;
   }
 
+  @Override
+  public ComparableQuantity<Power> getsRated() {
+    return this.type.getsRated();
+  }
+
   public BmInputCopyBuilder copy() {
     return new BmInputCopyBuilder(this);
   }
