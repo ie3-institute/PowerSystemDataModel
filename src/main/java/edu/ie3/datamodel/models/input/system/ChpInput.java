@@ -119,6 +119,11 @@ public class ChpInput extends SystemParticipantInput
     return marketReaction;
   }
 
+  @Override
+  public ComparableQuantity<Power> getsRated() {
+    return this.type.getsRated();
+  }
+
   public ChpInputCopyBuilder copy() {
     return new ChpInputCopyBuilder(this);
   }
