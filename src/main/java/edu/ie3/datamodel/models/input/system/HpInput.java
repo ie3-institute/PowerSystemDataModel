@@ -87,6 +87,11 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
     return thermalBus;
   }
 
+  @Override
+  public ComparableQuantity<Power> getsRated() {
+    return this.type.getsRated();
+  }
+
   public HpInputCopyBuilder copy() {
     return new HpInputCopyBuilder(this);
   }
