@@ -183,6 +183,11 @@ public class EvcsInput extends SystemParticipantInput {
   }
 
   @Override
+  public ComparableQuantity<Power> getsRated() {
+    return this.type.getsRated();
+  }
+
+  @Override
   public EvcsInputCopyBuilder copy() {
     return new EvcsInputCopyBuilder(this);
   }
