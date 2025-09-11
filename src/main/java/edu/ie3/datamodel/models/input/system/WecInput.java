@@ -85,6 +85,11 @@ public class WecInput extends SystemParticipantInput implements HasType {
     return type;
   }
 
+  @Override
+  public ComparableQuantity<Power> getsRated() {
+      return this.type.getsRated();
+  }
+
   public WecInputCopyBuilder copy() {
     return new WecInputCopyBuilder(this);
   }
