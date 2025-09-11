@@ -77,6 +77,8 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     this.controllingEm = em;
   }
 
+  public abstract ComparableQuantity<Power> getsRated();
+
   public NodeInput getNode() {
     return node;
   }
