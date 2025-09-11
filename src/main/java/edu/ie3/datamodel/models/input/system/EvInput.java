@@ -71,6 +71,11 @@ public class EvInput extends SystemParticipantInput implements HasType {
     return type;
   }
 
+  @Override
+  public ComparableQuantity<Power> getsRated() {
+    return this.type.getsRated();
+  }
+
   public EvInputCopyBuilder copy() {
     return new EvInputCopyBuilder(this);
   }
