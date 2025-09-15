@@ -17,7 +17,6 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import javax.measure.quantity.Power;
 
 /** Describes a photovoltaic plant */
 public class PvInput extends SystemParticipantInput {
