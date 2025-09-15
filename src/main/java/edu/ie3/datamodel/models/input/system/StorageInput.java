@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput;
 import java.util.Objects;
+import javax.measure.quantity.Power;
 import java.util.UUID;
 
 /** Describes a battery storage */
