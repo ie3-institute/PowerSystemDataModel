@@ -15,6 +15,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Objects;
+import javax.measure.quantity.Power;
 import java.util.UUID;
 
 /** Describes a heat pump */
