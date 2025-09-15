@@ -21,3 +21,10 @@ Converter for grid models from pandapower into PowerSystemDataModel format.
 
 - [psdm2powerfactory](https://github.com/ie3-institute/psdm2powerfactory)
 
+## Other Available Converters
+
+- [simBench2PowerFactory](https://github.com/ie3-institute/simBench2PowerFactory)
+
+The tool [here](https://github.com/e2nIEE/simbench) enables the use of the SimBench data set in the simulation tool [pandapower](https://github.com/e2nIEE/pandapower).
+
+
