@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
 import java.util.Objects;
 import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 import java.util.UUID;
 
 /** Describes an electric vehicle */
