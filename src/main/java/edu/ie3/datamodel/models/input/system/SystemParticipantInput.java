@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import javax.measure.quantity.Power;
 import java.util.*;
 
 /** Describes a system asset that is connected to a node */
