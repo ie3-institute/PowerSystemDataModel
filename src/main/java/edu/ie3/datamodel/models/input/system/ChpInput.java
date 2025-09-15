@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.system.type.ChpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import java.util.Objects;
+import javax.measure.quantity.Power;
 import java.util.UUID;
 
 /** Describes a combined heat and power plant */
