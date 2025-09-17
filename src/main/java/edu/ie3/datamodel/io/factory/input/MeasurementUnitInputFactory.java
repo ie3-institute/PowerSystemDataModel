@@ -13,6 +13,7 @@ import java.util.UUID;
 
 public class MeasurementUnitInputFactory
     extends AssetInputEntityFactory<MeasurementUnitInput, NodeAssetInputEntityData> {
+  private static final String NODE = "node";
   private static final String V_MAG = "vMag";
   private static final String V_ANG = "vAng";
   private static final String P = "p";
@@ -24,7 +25,7 @@ public class MeasurementUnitInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {V_MAG, V_ANG, P, Q};
+    return new String[] {NODE, V_MAG, V_ANG, P, Q};
   }
 
   @Override

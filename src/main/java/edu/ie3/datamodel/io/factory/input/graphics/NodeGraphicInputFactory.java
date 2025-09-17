@@ -21,6 +21,7 @@ public final class NodeGraphicInputFactory
     extends GraphicInputFactory<NodeGraphicInput, NodeGraphicInputEntityData> {
 
   private static final String POINT = "point";
+  private static final String NODE = "node";
 
   public NodeGraphicInputFactory() {
     super(NodeGraphicInput.class);
@@ -28,7 +29,7 @@ public final class NodeGraphicInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {POINT};
+    return new String[] {POINT, NODE};
   }
 
   @Override
