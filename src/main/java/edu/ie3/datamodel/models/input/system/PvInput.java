@@ -174,8 +174,12 @@ public class PvInput extends SystemParticipantInput {
     return kT;
   }
 
-  @Override
   public ComparableQuantity<Power> getsRated() {
+    return sRated;
+  }
+
+  @Override
+  public ComparableQuantity<Power> sRated() {
     return sRated;
   }
 

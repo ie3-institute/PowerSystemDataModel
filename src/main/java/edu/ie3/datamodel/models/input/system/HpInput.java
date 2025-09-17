@@ -90,7 +90,7 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
   }
 
   @Override
-  public ComparableQuantity<Power> getsRated() {
+  public ComparableQuantity<Power> sRated() {
     return this.type.getsRated();
   }
 

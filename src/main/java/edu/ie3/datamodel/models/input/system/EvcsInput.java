@@ -185,7 +185,7 @@ public class EvcsInput extends SystemParticipantInput {
   }
 
   @Override
-  public ComparableQuantity<Power> getsRated() {
+  public ComparableQuantity<Power> sRated() {
     return this.type.getsRated();
   }
 

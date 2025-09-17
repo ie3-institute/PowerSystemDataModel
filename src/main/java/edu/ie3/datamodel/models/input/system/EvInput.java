@@ -74,7 +74,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
   }
 
   @Override
-  public ComparableQuantity<Power> getsRated() {
+  public ComparableQuantity<Power> sRated() {
     return this.type.getsRated();
   }
 

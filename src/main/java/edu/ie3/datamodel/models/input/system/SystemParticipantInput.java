@@ -79,7 +79,17 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     this.controllingEm = em;
   }
 
-  public abstract ComparableQuantity<Power> getsRated();
+  /**
+   * Returns the rated apparent power of the system participant, which is either stored within the
+   * {@link SystemParticipantInput} or linked {@link
+   * edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput}.
+   *
+   * <p>Note: This cannot be a getter, because the accompanying field might not be present in
+   * subclasses.
+   *
+   * @return The rated apparent power.
+   */
+  public abstract ComparableQuantity<Power> sRated();
 
   public NodeInput getNode() {
     return node;

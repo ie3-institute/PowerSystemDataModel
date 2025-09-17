@@ -122,7 +122,7 @@ public class ChpInput extends SystemParticipantInput
   }
 
   @Override
-  public ComparableQuantity<Power> getsRated() {
+  public ComparableQuantity<Power> sRated() {
     return this.type.getsRated();
   }
 

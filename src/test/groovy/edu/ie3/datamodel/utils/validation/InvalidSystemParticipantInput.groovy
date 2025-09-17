@@ -24,7 +24,7 @@ class InvalidSystemParticipantInput extends SystemParticipantInput {
   }
 
   @Override
-  ComparableQuantity<Power> getsRated() {
+  ComparableQuantity<Power> sRated() {
     throw new UnsupportedOperationException("This is a dummy class")
   }
 
