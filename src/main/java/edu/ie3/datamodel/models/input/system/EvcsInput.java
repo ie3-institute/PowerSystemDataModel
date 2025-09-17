@@ -13,9 +13,9 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import java.util.Objects;
+import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import java.util.UUID;
 
 public class EvcsInput extends SystemParticipantInput {
 

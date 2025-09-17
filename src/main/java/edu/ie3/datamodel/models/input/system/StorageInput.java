@@ -13,9 +13,9 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput;
 import java.util.Objects;
+import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import java.util.UUID;
 
 /** Describes a battery storage */
 public class StorageInput extends SystemParticipantInput implements HasType {

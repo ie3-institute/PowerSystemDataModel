@@ -13,9 +13,9 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
 import java.util.Objects;
+import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import java.util.UUID;
 
 /** Describes an electric vehicle */
 public class EvInput extends SystemParticipantInput implements HasType {

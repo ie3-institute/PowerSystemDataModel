@@ -15,9 +15,9 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Objects;
+import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import java.util.UUID;
 
 /** Describes a heat pump */
 public class HpInput extends SystemParticipantInput implements HasType, HasThermalBus {

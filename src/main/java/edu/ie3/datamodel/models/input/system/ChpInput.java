@@ -17,9 +17,9 @@ import edu.ie3.datamodel.models.input.system.type.ChpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import java.util.Objects;
+import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import java.util.UUID;
 
 /** Describes a combined heat and power plant */
 public class ChpInput extends SystemParticipantInput
