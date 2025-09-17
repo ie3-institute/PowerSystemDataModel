@@ -8,8 +8,10 @@ package edu.ie3.datamodel.utils.validation
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
+import tech.units.indriya.ComparableQuantity
 
 import java.time.ZonedDateTime
+import javax.measure.quantity.Power
 
 class InvalidSystemParticipantInput extends SystemParticipantInput {
   InvalidSystemParticipantInput(NodeInput node) {
@@ -18,6 +20,11 @@ class InvalidSystemParticipantInput extends SystemParticipantInput {
 
   @Override
   boolean inOperationOn(ZonedDateTime date) {
+    throw new UnsupportedOperationException("This is a dummy class")
+  }
+
+  @Override
+  ComparableQuantity<Power> getsRated() {
     throw new UnsupportedOperationException("This is a dummy class")
   }
 
