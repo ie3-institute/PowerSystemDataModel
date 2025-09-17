@@ -42,13 +42,9 @@ public class CsvLoadProfileMetaInformation extends LoadProfileMetaInformation {
   @Override
   public String toString() {
     return "CsvLoadProfileMetaInformation{"
-        + "uuid='"
-        + getUuid()
-        + '\''
-        + ", profile='"
+        + "profile='"
         + getProfile()
-        + '\''
-        + "fullFilePath="
+        + ", fullFilePath="
         + fullFilePath
         + '}';
   }

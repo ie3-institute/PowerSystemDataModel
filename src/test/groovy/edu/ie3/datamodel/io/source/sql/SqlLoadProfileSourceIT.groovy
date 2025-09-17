@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
-
 import static edu.ie3.test.common.TimeSeriesSourceTestData.G3_VALUE_00MIN
 import static edu.ie3.test.common.TimeSeriesSourceTestData.TIME_00MIN
 
@@ -13,6 +12,7 @@ import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
+import edu.ie3.datamodel.io.source.PowerValueSource
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.value.load.BdewLoadValues
 import edu.ie3.test.helper.TestContainerHelper
@@ -41,8 +41,6 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
 
   static String schemaName = "public"
 
-  static UUID timeSeriesUuid = UUID.fromString("9b880468-309c-43c1-a3f4-26dd26266216")
-
   def setupSpec() {
     // Copy sql import scripts into docker
     MountableFile sqlImportFile = getMountableFile("_timeseries/")
@@ -56,7 +54,7 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
     }
 
     connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-    def metaInformation = new LoadProfileMetaInformation(timeSeriesUuid, "g3")
+    def metaInformation = new LoadProfileMetaInformation("g3")
 
     namingStrategy = new DatabaseNamingStrategy()
 
@@ -65,7 +63,7 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
 
   def "A SqlTimeSeriesSource can read and correctly parse a single value for a specific date"() {
     when:
-    def value = loadSource.getValue(TIME_00MIN)
+    def value = loadSource.getPowerValue(new PowerValueSource.TimeSeriesInputValue(TIME_00MIN))
 
     then:
     value.present
@@ -74,11 +72,10 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
 
   def "A SqlTimeSeriesSource can read all value data"() {
     when:
-    def timeSeries = loadSource.timeSeries
+    def entries = loadSource.entries
 
     then:
-    timeSeries.uuid == timeSeriesUuid
-    timeSeries.entries.size() == 3
+    entries.size() == 3
   }
 
   def "The SqlTimeSeriesSource returns the time keys after a given key correctly"() {
@@ -86,11 +83,9 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
     def time = TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:00:00Z")
 
     when:
-    def actual = loadSource.getTimeKeysAfter(time)
+    def actual = loadSource.getNextTimeKey(time)
 
     then:
-    actual == [
-      TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:15:00Z")
-    ]
+    actual == Optional.of(TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:15:00Z"))
   }
 }

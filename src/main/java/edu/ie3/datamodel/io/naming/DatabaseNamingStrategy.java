@@ -97,7 +97,7 @@ public class DatabaseNamingStrategy {
         logger.error("Unable to determine content of time series {}", timeSeries);
         return Optional.empty();
       }
-    } else if (timeSeries instanceof LoadProfileTimeSeries<?>) {
+    } else if (timeSeries instanceof LoadProfileTimeSeries<?, ?>) {
       return Optional.of(getLoadProfileEntityName());
     } else {
       logger.error("There is no naming strategy defined for {}", timeSeries);

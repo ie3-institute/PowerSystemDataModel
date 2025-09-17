@@ -401,7 +401,6 @@ trait TimeSeriesTestData {
   ] as Set
 
   BdewLoadProfileTimeSeries loadProfileTimeSeries =  new BdewLoadProfileTimeSeries(
-  UUID.fromString("b0ad5ba2-0d5e-4c9b-b818-4079cebf59cc"),
   BdewStandardLoadProfile.G2,
   [
     new LoadProfileEntry<>(

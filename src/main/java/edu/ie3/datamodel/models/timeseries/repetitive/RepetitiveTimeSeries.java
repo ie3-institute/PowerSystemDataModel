@@ -32,10 +32,4 @@ public abstract class RepetitiveTimeSeries<
   public Optional<R> getValue(ZonedDateTime time) {
     return Optional.ofNullable(calc(time));
   }
-
-  @Override
-  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
-    // dummy value
-    return getNextDateTime(time).map(List::of).orElseGet(Collections::emptyList);
-  }
 }

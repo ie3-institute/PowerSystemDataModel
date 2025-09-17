@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
+
 import edu.ie3.datamodel.models.profile.LoadProfile
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
 import edu.ie3.datamodel.models.value.load.RandomLoadValues
@@ -130,13 +130,8 @@ class RandomLoadProfileFactoryTest extends Specification {
   }
 
   def "A RandomLoadProfileFactory builds time series from entries"() {
-    given:
-    UUID uuid = UUID.fromString("fa3894c1-25af-479c-8a40-1323bb9150a9")
-    LoadProfileMetaInformation metaInformation = new LoadProfileMetaInformation(uuid, "random")
-
-
     when:
-    def lpts = factory.build(metaInformation, allEntries)
+    def lpts = factory.build(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE, allEntries)
 
     then:
     lpts.loadProfile == LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE
