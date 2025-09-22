@@ -63,7 +63,7 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
 
   def "A SqlTimeSeriesSource can read and correctly parse a single value for a specific date"() {
     when:
-    def value = loadSource.getPowerValue(new PowerValueSource.TimeSeriesInputValue(TIME_00MIN))
+    def value = loadSource.getValue(new PowerValueSource.TimeSeriesInputValue(TIME_00MIN))
 
     then:
     value.present

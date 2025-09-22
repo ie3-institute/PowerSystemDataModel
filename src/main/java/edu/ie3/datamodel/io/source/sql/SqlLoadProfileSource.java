@@ -99,7 +99,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   }
 
   @Override
-  public Optional<PValue> getPowerValue(TimeSeriesInputValue data) {
+  public Optional<PValue> getValue(TimeSeriesInputValue data) {
     ZonedDateTime time = data.time();
 
     Set<LoadProfileEntry<V>> entries =

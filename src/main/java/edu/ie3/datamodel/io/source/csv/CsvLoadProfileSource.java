@@ -70,7 +70,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   }
 
   @Override
-  public Optional<PValue> getPowerValue(TimeSeriesInputValue data) {
+  public Optional<PValue> getValue(TimeSeriesInputValue data) {
     return loadProfileTimeSeries.getValue(data.time());
   }
 

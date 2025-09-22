@@ -28,7 +28,7 @@ public sealed interface PowerValueSource<
    * @param data input data that is used to calculate the next power value.
    * @return an option for the power value.
    */
-  Optional<PValue> getPowerValue(ID data);
+  Optional<PValue> getValue(ID data);
 
   /**
    * Method to determine the next timestamp for which data is present.
@@ -58,12 +58,12 @@ public sealed interface PowerValueSource<
   // input data
 
   /**
-   * Interface for the input data of {@link #getPowerValue(InputData)}. The data is used to
-   * determine the next power.
+   * Interface for the input data of {@link #getValue(InputData)}. The data is used to determine the
+   * next power.
    */
   sealed interface InputData permits PowerValueSource.TimeSeriesInputValue {
     /** Returns the timestamp for which a power value is needed. */
-    ZonedDateTime getTimes();
+    ZonedDateTime getTime();
   }
 
   /**
@@ -73,7 +73,7 @@ public sealed interface PowerValueSource<
    */
   record TimeSeriesInputValue(ZonedDateTime time) implements InputData {
     @Override
-    public ZonedDateTime getTimes() {
+    public ZonedDateTime getTime() {
       return time;
     }
   }
