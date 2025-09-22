@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Supplies every subclass with a generated UUID, making it unique */
-public abstract class UniqueEntity implements Entity, Serializable {
+public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
   /** Field name of {@link UniqueEntity} uuid */
   public static final String UUID_FIELD_NAME = "uuid";
 
@@ -24,6 +24,7 @@ public abstract class UniqueEntity implements Entity, Serializable {
     this.uuid = uuid == null ? UUID.randomUUID() : uuid;
   }
 
+  @Override
   public UUID getUuid() {
     return uuid;
   }

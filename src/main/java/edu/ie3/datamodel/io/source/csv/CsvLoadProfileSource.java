@@ -31,7 +31,7 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
     extends LoadProfileSource<P, V> {
-  private final LoadProfileTimeSeries<V> loadProfileTimeSeries;
+  private final LoadProfileTimeSeries<P, V> loadProfileTimeSeries;
   private final CsvDataSource dataSource;
   private final Path filePath;
 
@@ -62,7 +62,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   }
 
   @Override
-  public LoadProfileTimeSeries<V> getTimeSeries() {
+  public LoadProfileTimeSeries<P, V> getTimeSeries() {
     return loadProfileTimeSeries;
   }
 
@@ -77,9 +77,8 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public P getLoadProfile() {
-    return (P) getTimeSeries().getLoadProfile();
+    return getTimeSeries().getLoadProfile();
   }
 
   @Override
@@ -106,7 +105,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
    * @throws SourceException If the file cannot be read properly
    * @return an individual time series
    */
-  protected LoadProfileTimeSeries<V> buildLoadProfileTimeSeries(
+  protected LoadProfileTimeSeries<P, V> buildLoadProfileTimeSeries(
       CsvLoadProfileMetaInformation metaInformation,
       Function<Map<String, String>, Try<LoadProfileEntry<V>, FactoryException>>
           fieldToValueFunction)
