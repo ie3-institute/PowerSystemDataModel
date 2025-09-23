@@ -48,6 +48,7 @@ class HpInputTest extends Specification {
       assert qCharacteristics == hpInput.qCharacteristics
       assert thermalBus == hpInput.thermalBus
       assert type.sRated == hpInput.type.sRated * 2d
+      assert sRated == hpInput.type.sRated * 2d
       assert type.pThermal == hpInput.type.pThermal * 2d
       assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
