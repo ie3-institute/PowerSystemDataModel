@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
 - Extend `GermanVoltageLevelUtils` with more synonymousIds [#143](https://github.com/ie3-institute/PowerSystemDataModel/issues/143)
 - Change spotless to use googleJavaFormat('1.28.0') [#1409](https://github.com/ie3-institute/PowerSystemDataModel/issues/1409)
+- Change `TimeSeries` to no longer extend `UniqueEntity` [#1441](https://github.com/ie3-institute/PowerSystemDataModel/issues/1441)
 
 ## [8.1.0] - 2025-07-25
 

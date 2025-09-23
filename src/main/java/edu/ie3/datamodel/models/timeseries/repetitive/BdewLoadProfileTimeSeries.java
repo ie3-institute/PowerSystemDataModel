@@ -43,8 +43,6 @@ public class BdewLoadProfileTimeSeries
   @Override
   public String toString() {
     return "BDEWLoadProfileTimeSeries{"
-        + "uuid="
-        + getUuid()
         + "loadProfile="
         + getLoadProfile()
         + ", valueMapping="

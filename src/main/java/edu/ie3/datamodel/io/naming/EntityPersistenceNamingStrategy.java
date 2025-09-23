@@ -349,7 +349,7 @@ public class EntityPersistenceNamingStrategy {
           V extends Value,
           R extends Value>
       Optional<String> getEntityName(T timeSeries) {
-    if (timeSeries instanceof IndividualTimeSeries) {
+    if (timeSeries instanceof IndividualTimeSeries<?> its) {
       Optional<E> maybeFirstElement = timeSeries.getEntries().stream().findFirst();
       if (maybeFirstElement.isPresent()) {
         Class<? extends Value> valueClass = maybeFirstElement.get().getValue().getClass();
@@ -361,10 +361,10 @@ public class EntityPersistenceNamingStrategy {
                   .concat("_")
                   .concat(mayBeColumnScheme.get().getScheme())
                   .concat("_")
-                  .concat(timeSeries.getUuid().toString())
+                  .concat(its.getUuid().toString())
                   .concat(suffix));
         } else {
-          logger.error("Unsupported content of time series {}", timeSeries);
+          logger.error("Unsupported content of time series {}", its);
           return Optional.empty();
         }
       } else {

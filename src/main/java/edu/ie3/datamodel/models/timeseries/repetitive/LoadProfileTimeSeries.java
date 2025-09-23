@@ -38,7 +38,7 @@ public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P
       Set<LoadProfileEntry<V>> entries,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(UUID.randomUUID(), entries);
+    super(entries);
     this.loadProfile = loadProfile;
     this.valueMapping =
         entries.stream()
@@ -114,8 +114,6 @@ public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P
   @Override
   public String toString() {
     return "LoadProfileTimeSeries{"
-        + "uuid="
-        + getUuid()
         + "loadProfile="
         + getLoadProfile()
         + ", valueMapping="

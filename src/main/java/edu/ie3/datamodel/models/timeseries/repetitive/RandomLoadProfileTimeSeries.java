@@ -29,11 +29,6 @@ public class RandomLoadProfileTimeSeries
   }
 
   @Override
-  public LoadProfile.RandomLoadProfile getLoadProfile() {
-    return super.getLoadProfile();
-  }
-
-  @Override
   public String toString() {
     return "Random" + super.toString();
   }
