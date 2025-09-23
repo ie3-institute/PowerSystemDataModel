@@ -51,6 +51,7 @@ class ChpInputTest extends Specification {
       assert thermalStorage == chpInput.thermalStorage
       assert marketReaction == chpInput.marketReaction
       assert type.sRated == chpInput.type.sRated * 2d
+      assert sRated == chpInput.type.sRated * 2d
       assert type.pThermal == chpInput.type.pThermal * 2d
       assert type.pOwn == chpInput.type.pOwn * 2d
       assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
