@@ -101,7 +101,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   @Override
-  public LoadProfileTimeSeries<V> getTimeSeries() {
+  public LoadProfileTimeSeries<P, V> getTimeSeries() {
     Set<LoadProfileEntry<V>> entries = getEntries(queryFull, ps -> {});
     return entryFactory.build(metaInformation, entries);
   }
@@ -117,7 +117,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
         getEntries(queryTime, ps -> ps.setInt(1, TimeSeriesUtils.calculateQuarterHourOfDay(time)));
     if (entries.isEmpty()) return Optional.empty();
     if (entries.size() > 1) log.warn("Retrieved more than one result value, using the first");
-    return Optional.of(entries.stream().toList().get(0).getValue().getValue(time, loadProfile));
+    return entries.stream().findFirst().map(entry -> entry.getValue().getValue(time, loadProfile));
   }
 
   @Override

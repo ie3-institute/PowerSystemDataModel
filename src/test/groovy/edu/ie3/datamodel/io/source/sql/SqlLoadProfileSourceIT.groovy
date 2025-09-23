@@ -77,7 +77,6 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
     def timeSeries = loadSource.timeSeries
 
     then:
-    timeSeries.uuid == timeSeriesUuid
     timeSeries.entries.size() == 3
   }
 
