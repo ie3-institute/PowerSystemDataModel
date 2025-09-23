@@ -45,6 +45,7 @@ class EvInputTest extends Specification {
       assert id == ev.id
       assert qCharacteristics == ev.qCharacteristics
       assert type.sRated == ev.type.sRated * 2d
+      assert sRated == evcsInput.type.sRated * 2d
       assert type.sRatedDC == ev.type.sRatedDC * 2d
       assert type.eStorage == ev.type.eStorage * 2d
       assert type.eCons == ev.type.eCons * 2d
