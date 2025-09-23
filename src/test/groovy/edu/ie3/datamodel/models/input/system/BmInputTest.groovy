@@ -55,6 +55,7 @@ class BmInputTest extends Specification {
       assert qCharacteristics == bmInput.qCharacteristics
       assert feedInTariff == bmInput.feedInTariff
       assert type.sRated == bmInput.type.sRated * 2d
+      assert sRated == bmInput.type.sRated * 2d
       assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
