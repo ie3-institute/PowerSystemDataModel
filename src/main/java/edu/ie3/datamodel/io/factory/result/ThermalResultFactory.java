@@ -54,11 +54,11 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT);
 
     if (entityClass.equals(ThermalHouseResult.class)) {
-      minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, INDOOR_TEMPERATURE);
+      minConstructorParams = expandSet(minConstructorParams, INDOOR_TEMPERATURE);
     } else if (entityClass.equals(CylindricalStorageResult.class)) {
-      minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
+      minConstructorParams = expandSet(minConstructorParams, ENERGY, FILL_LEVEL);
     } else if (entityClass.equals(DomesticHotWaterStorageResult.class)) {
-      minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
+      minConstructorParams = expandSet(minConstructorParams, ENERGY, FILL_LEVEL);
     }
 
     return List.of(minConstructorParams);

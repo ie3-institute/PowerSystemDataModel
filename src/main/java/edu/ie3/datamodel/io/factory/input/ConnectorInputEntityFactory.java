@@ -24,6 +24,9 @@ public abstract class ConnectorInputEntityFactory<
         T extends ConnectorInput, D extends ConnectorInputEntityData>
     extends AssetInputEntityFactory<T, D> {
 
+  protected static final String NODE_A = "nodeA";
+  protected static final String NODE_B = "nodeB";
+
   /**
    * Attribute that _can_, but does not _have to_ be present for the creation of {@link
    * ConnectorInput}s. Thus, this attribute name declaration can be used in subclasses of {@link

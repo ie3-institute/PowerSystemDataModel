@@ -5,11 +5,11 @@ plugins {
   id 'signing'
   id 'pmd' // code check, working on source code
   id 'com.diffplug.spotless' version '7.2.1' //code format
-  id 'com.github.spotbugs' version '6.2.4' // code check, working on byte code
+  id 'com.github.spotbugs' version '6.4.2' // code check, working on byte code
   id 'de.undercouch.download' version '5.6.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "6.2.0.5505" // sonarqube
+  id "org.sonarqube" version "6.3.1.5724" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
   id "com.github.johnrengelman.shadow" version "8.1.1" // fat jar
 }
@@ -92,15 +92,15 @@ dependencies {
   testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
 
   // logging
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.1')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.2')
   implementation 'org.apache.logging.log4j:log4j-api' // log4j
   implementation 'org.apache.logging.log4j:log4j-core' // log4j
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.25'
-  implementation 'com.couchbase.client:java-client:3.9.0'
-  runtimeOnly 'org.postgresql:postgresql:42.7.7' // postgresql jdbc driver required during runtime
+  implementation 'com.couchbase.client:java-client:3.9.1'
+  runtimeOnly 'org.postgresql:postgresql:42.7.8' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.20.0' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.19.0' // needed by commons-compress
