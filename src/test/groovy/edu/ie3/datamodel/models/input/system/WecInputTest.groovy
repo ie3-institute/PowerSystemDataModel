@@ -46,7 +46,7 @@ class WecInputTest extends Specification {
       assert id == wec.id
       assert qCharacteristics == wec.qCharacteristics
       assert type.sRated == wec.type.sRated * 2d
-      assert sRated == wec.type.sRated * 2d
+      assert sRated() == wec.type.sRated * 2d
       assert type.rotorArea == wec.type.rotorArea * 2d
       assert type.hubHeight == wec.type.hubHeight
       assert marketReaction == wec.marketReaction
