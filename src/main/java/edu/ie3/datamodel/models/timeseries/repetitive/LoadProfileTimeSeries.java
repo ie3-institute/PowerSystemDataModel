@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -21,8 +22,8 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P>>
     extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
-  private final P loadProfile;
-  private final Map<Integer, V> valueMapping;
+  protected final P loadProfile;
+  protected final Map<Integer, V> valueMapping;
 
   /**
    * The maximum average power consumption per quarter-hour calculated over all seasons and weekday
@@ -74,6 +75,20 @@ public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P
         new TreeSet<>(Comparator.comparing(LoadProfileEntry::getQuarterHour));
     set.addAll(super.getEntries());
     return set;
+  }
+
+  /**
+   * Method to get a supplier for the next power value based on the provided input time. Depending
+   * on the implementation the supplier will either always return the same value or each time a
+   * random value. To return one constant value please use {@link #getValue(ZonedDateTime)}.
+   *
+   * @param time Queried time.
+   * @return A supplier for an option on the value at the given time step.
+   */
+  public Supplier<Optional<PValue>> supplyValue(ZonedDateTime time) {
+    int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
+    LoadValues<P> loadValue = valueMapping.get(quarterHour);
+    return () -> Optional.ofNullable(loadValue.getValue(time, loadProfile));
   }
 
   @Override

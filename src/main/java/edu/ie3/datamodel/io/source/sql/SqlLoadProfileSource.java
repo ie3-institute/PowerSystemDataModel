@@ -24,6 +24,7 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -101,12 +102,20 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   @Override
   public Optional<PValue> getValue(TimeSeriesInputValue data) {
     ZonedDateTime time = data.time();
+    return queryForValue(time).map(loadValue -> loadValue.getValue(time, profile));
+  }
 
-    Set<LoadProfileEntry<V>> entries =
-        getEntries(queryTime, ps -> ps.setInt(1, TimeSeriesUtils.calculateQuarterHourOfDay(time)));
-    if (entries.isEmpty()) return Optional.empty();
-    if (entries.size() > 1) log.warn("Retrieved more than one result value, using the first");
-    return entries.stream().findFirst().map(entry -> entry.getValue().getValue(time, profile));
+  @Override
+  public Supplier<Optional<PValue>> getValueSupplier(TimeSeriesInputValue data) {
+    ZonedDateTime time = data.time();
+    Optional<LoadValues<P>> loadValueOption = queryForValue(time);
+
+    if (loadValueOption.isPresent()) {
+      LoadValues<P> loadValue = loadValueOption.get();
+      return () -> Optional.of(loadValue.getValue(time, profile));
+    } else {
+      return Optional::empty;
+    }
   }
 
   @Override
@@ -136,6 +145,15 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
         .map(this::createEntity)
         .flatMap(Optional::stream)
         .collect(Collectors.toSet());
+  }
+
+  private Optional<LoadValues<P>> queryForValue(ZonedDateTime time) {
+    Set<LoadProfileEntry<V>> entries =
+        getEntries(queryTime, ps -> ps.setInt(1, TimeSeriesUtils.calculateQuarterHourOfDay(time)));
+    if (entries.isEmpty()) return Optional.empty();
+    if (entries.size() > 1) log.warn("Retrieved more than one result value, using the first");
+
+    return entries.stream().findFirst().map(LoadProfileEntry::getValue);
   }
 
   /**

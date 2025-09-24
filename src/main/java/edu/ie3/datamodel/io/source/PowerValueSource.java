@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.profile.PowerProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -29,6 +30,16 @@ public sealed interface PowerValueSource<
    * @return an option for the power value.
    */
   Optional<PValue> getValue(ID data);
+
+  /**
+   * Method to get a supplier for the next power value based on the provided input data. Depending
+   * on the implementation the supplier will either always return the same value or each time a
+   * random value. To return one constant value please use {@link #getValue(InputData)}.
+   *
+   * @param data input data that is used to calculate the next power value.
+   * @return A supplier for an option on the value at the given time step.
+   */
+  Supplier<Optional<PValue>> getValueSupplier(ID data);
 
   /**
    * Method to determine the next timestamp for which data is present.

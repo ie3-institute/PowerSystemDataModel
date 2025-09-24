@@ -20,6 +20,7 @@ import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -72,6 +73,11 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   @Override
   public Optional<PValue> getValue(TimeSeriesInputValue data) {
     return loadProfileTimeSeries.getValue(data.time());
+  }
+
+  @Override
+  public Supplier<Optional<PValue>> getValueSupplier(TimeSeriesInputValue data) {
+    return loadProfileTimeSeries.supplyValue(data.time());
   }
 
   @Override
