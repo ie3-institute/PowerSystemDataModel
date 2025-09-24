@@ -45,7 +45,7 @@ class StorageInputTest extends Specification {
       assert id == storageInput.id
       assert qCharacteristics == storageInput.qCharacteristics
       assert type.sRated == storageInput.type.sRated * 2d
-      assert sRated == storageInput.type.sRated * 2d
+      assert sRated() == storageInput.type.sRated * 2d
       assert type.eStorage == storageInput.type.eStorage * 2d
       assert type.pMax == storageInput.type.pMax * 2d
       assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
