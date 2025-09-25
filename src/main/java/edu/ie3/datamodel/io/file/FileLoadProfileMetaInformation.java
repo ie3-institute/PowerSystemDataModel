@@ -35,6 +35,10 @@ public class FileLoadProfileMetaInformation extends LoadProfileMetaInformation {
     return path;
   }
 
+  public FileType getFileType() {
+    return fileType;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

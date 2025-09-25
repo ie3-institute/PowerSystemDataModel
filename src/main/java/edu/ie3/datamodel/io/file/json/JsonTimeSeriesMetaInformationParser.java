@@ -67,7 +67,7 @@ public class JsonTimeSeriesMetaInformationParser implements TimeSeriesMetaInform
       LoadProfileMetaInformation namingMeta =
           fileNamingStrategy.loadProfileTimeSeriesMetaInformation(relativeFile.toString());
 
-      if (!metadata.seriesId().equals(namingMeta.getProfile())) {
+      if (metadata.seriesId() != null && !metadata.seriesId().equals(namingMeta.getProfile())) {
         throw new SourceException(
             "Series id '"
                 + metadata.seriesId()
@@ -144,6 +144,12 @@ public class JsonTimeSeriesMetaInformationParser implements TimeSeriesMetaInform
               + "'.");
     }
 
+    JsonNode generatedAt = root.get("generated_at");
+    if (generatedAt != null && !generatedAt.isTextual()) {
+      throw new SourceException(
+          "Field 'generated_at' in '" + relativeFile + "' must be textual if provided.");
+    }
+
     JsonNode generator = requireObject(root, "generator", relativeFile);
     requireText(generator, "name", relativeFile);
     requireText(generator, "version", relativeFile);
@@ -175,85 +181,19 @@ public class JsonTimeSeriesMetaInformationParser implements TimeSeriesMetaInform
               + relativeFile
               + "'.");
     }
-    thresholdsRight.forEach(
-        node -> {
-          if (!node.isNumber()) {
-            throw new IllegalStateException(
-                "Non-numeric entry in thresholds_right of '" + relativeFile + "'.");
-          }
-        });
+    for (JsonNode threshold : thresholdsRight) {
+      if (!threshold.isNumber()) {
+        throw new SourceException(
+            "Non-numeric entry in value_model.discretization.thresholds_right of '"
+                + relativeFile
+                + "'.");
+      }
+    }
 
     JsonNode parameters = requireObject(root, "parameters", relativeFile);
     JsonNode transitionsParam = requireObject(parameters, "transitions", relativeFile);
     requireText(transitionsParam, "empty_row_strategy", relativeFile);
     requireObject(parameters, "gmm", relativeFile);
-
-    JsonNode series = requireObject(root, "series", relativeFile);
-    String seriesId = requireText(series, "id", relativeFile);
-    requireText(series, "display_name", relativeFile);
-    String seriesUnit = requireText(series, "unit", relativeFile);
-    String seriesTimezone = requireText(series, "timezone", relativeFile);
-    int seriesSampling = requirePositiveInt(series, "sampling_interval_minutes", relativeFile);
-    int seriesStates = requirePositiveInt(series, "n_states", relativeFile);
-    JsonNode dataRef = requireObject(series, "data_ref", relativeFile);
-    requireText(dataRef, "type", relativeFile);
-    boolean transitionsInline = requireBoolean(dataRef, "transitions", relativeFile);
-    boolean gmmsInline = requireBoolean(dataRef, "gmms", relativeFile);
-
-    if (!seriesUnit.equals(valueUnit)) {
-      throw new SourceException(
-          "series.unit '"
-              + seriesUnit
-              + "' does not match value_model.value_unit '"
-              + valueUnit
-              + "' in '"
-              + relativeFile
-              + "'.");
-    }
-    if (!seriesTimezone.equals(timezone)) {
-      throw new SourceException(
-          "series.timezone '"
-              + seriesTimezone
-              + "' does not match time_model.timezone '"
-              + timezone
-              + "' in '"
-              + relativeFile
-              + "'.");
-    }
-    if (seriesSampling != samplingInterval) {
-      throw new SourceException(
-          "series.sampling_interval_minutes "
-              + seriesSampling
-              + " does not match time_model.sampling_interval_minutes "
-              + samplingInterval
-              + " in '"
-              + relativeFile
-              + "'.");
-    }
-    if (seriesStates != nStates) {
-      throw new SourceException(
-          "series.n_states "
-              + seriesStates
-              + " does not match generator.config.n_states "
-              + nStates
-              + " in '"
-              + relativeFile
-              + "'.");
-    }
-    if (discretizationStates != nStates) {
-      throw new SourceException(
-          "value_model.discretization.states "
-              + discretizationStates
-              + " does not match generator.config.n_states "
-              + nStates
-              + " in '"
-              + relativeFile
-              + "'.");
-    }
-    if (!transitionsInline || !gmmsInline) {
-      throw new SourceException(
-          "data_ref for '" + relativeFile + "' must declare transitions and gmms as inline.");
-    }
 
     JsonNode data = requireObject(root, "data", relativeFile);
     JsonNode transitions = requireObject(data, "transitions", relativeFile);
@@ -296,7 +236,7 @@ public class JsonTimeSeriesMetaInformationParser implements TimeSeriesMetaInform
     }
     validateGmms(buckets, nStates, relativeFile);
 
-    return new JsonMetadata(nStates, bucketCount, seriesId);
+    return new JsonMetadata(nStates, bucketCount, null);
   }
 
   private void validateTransitionValues(
