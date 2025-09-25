@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 public class JsonTimeSeriesMappingParser implements TimeSeriesMappingParser {
 
   private static final String SUPPORTED_SCHEMA = "simonaMarkovLoad:psdm:1.0";
+  private static final String ATTRIBUTE_KEY = "attribute";
 
   private final Path basePath;
   private final FileNamingStrategy fileNamingStrategy;
@@ -60,7 +61,7 @@ public class JsonTimeSeriesMappingParser implements TimeSeriesMappingParser {
       return Optional.empty();
     }
     if (result.entries().isEmpty()) {
-      return Optional.of(Set.of("asset", "timeSeries", "targetType", "attribute"));
+      return Optional.of(Set.of("asset", "timeSeries", "targetType", ATTRIBUTE_KEY));
     }
     Set<String> fields =
         result.entries().stream()
@@ -105,7 +106,7 @@ public class JsonTimeSeriesMappingParser implements TimeSeriesMappingParser {
       entry.put("asset", requireText(mappingNode, "target_id", relative));
       entry.put("timeSeries", requireText(mappingNode, "time_series_id", relative));
       entry.put("targetType", requireText(mappingNode, "target_type", relative));
-      entry.put("attribute", requireText(mappingNode, "attribute", relative));
+      entry.put(ATTRIBUTE_KEY, requireText(mappingNode, ATTRIBUTE_KEY, relative));
       entries.add(entry);
     }
 

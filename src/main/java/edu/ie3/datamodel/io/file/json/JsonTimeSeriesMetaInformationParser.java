@@ -28,12 +28,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class JsonTimeSeriesMetaInformationParser implements TimeSeriesMetaInformationParser {
 
   private static final String SUPPORTED_SCHEMA = "simonaMarkovLoad:psdm:1.0";
+  private static final String DATA_TRANSITIONS_SHAPE = "data.transitions.shape";
 
   private final Path basePath;
   private final FileNamingStrategy fileNamingStrategy;
@@ -116,7 +116,7 @@ public class JsonTimeSeriesMetaInformationParser implements TimeSeriesMetaInform
                   pattern
                       .matcher(FileNamingStrategy.removeFileNameEnding(relative.toString()))
                       .matches())
-          .collect(Collectors.toList());
+          .toList();
     } catch (IOException e) {
       throw new SourceException("Unable to inspect directory '" + basePath + "'.", e);
     }
@@ -165,15 +165,15 @@ public class JsonTimeSeriesMetaInformationParser implements TimeSeriesMetaInform
     int bucketCount = requirePositiveInt(timeModel, "bucket_count", relativeFile);
     JsonNode bucketEncoding = requireObject(timeModel, "bucket_encoding", relativeFile);
     requireText(bucketEncoding, "formula", relativeFile);
-    int samplingInterval = requirePositiveInt(timeModel, "sampling_interval_minutes", relativeFile);
-    String timezone = requireText(timeModel, "timezone", relativeFile);
+    requirePositiveInt(timeModel, "sampling_interval_minutes", relativeFile);
+    requireText(timeModel, "timezone", relativeFile);
 
     JsonNode valueModel = requireObject(root, "value_model", relativeFile);
-    String valueUnit = requireText(valueModel, "value_unit", relativeFile);
+    requireText(valueModel, "value_unit", relativeFile);
     JsonNode normalization = requireObject(valueModel, "normalization", relativeFile);
     requireText(normalization, "method", relativeFile);
     JsonNode discretization = requireObject(valueModel, "discretization", relativeFile);
-    int discretizationStates = requirePositiveInt(discretization, "states", relativeFile);
+    requirePositiveInt(discretization, "states", relativeFile);
     ArrayNode thresholdsRight = requireArray(discretization, "thresholds_right", relativeFile);
     if (thresholdsRight.isEmpty()) {
       throw new SourceException(
@@ -200,15 +200,19 @@ public class JsonTimeSeriesMetaInformationParser implements TimeSeriesMetaInform
     ArrayNode shape = requireArray(transitions, "shape", relativeFile);
     if (shape.size() != 3) {
       throw new SourceException(
-          "data.transitions.shape must contain exactly three elements in '" + relativeFile + "'.");
+          DATA_TRANSITIONS_SHAPE
+              + " must contain exactly three elements in '"
+              + relativeFile
+              + "'.");
     }
-    int shapeBuckets = requirePositiveInt(shape, 0, relativeFile, "data.transitions.shape");
-    int shapeStatesRows = requirePositiveInt(shape, 1, relativeFile, "data.transitions.shape");
-    int shapeStatesCols = requirePositiveInt(shape, 2, relativeFile, "data.transitions.shape");
+    int shapeBuckets = requirePositiveInt(shape, 0, relativeFile, DATA_TRANSITIONS_SHAPE);
+    int shapeStatesRows = requirePositiveInt(shape, 1, relativeFile, DATA_TRANSITIONS_SHAPE);
+    int shapeStatesCols = requirePositiveInt(shape, 2, relativeFile, DATA_TRANSITIONS_SHAPE);
 
     if (shapeBuckets != bucketCount || shapeStatesRows != nStates || shapeStatesCols != nStates) {
       throw new SourceException(
-          "data.transitions.shape "
+          DATA_TRANSITIONS_SHAPE
+              + " "
               + shape
               + " does not match bucket_count or n_states in '"
               + relativeFile
