@@ -76,8 +76,7 @@ public class BdewLoadProfileFactory
     ComparableQuantity<Power> maxPower = calculateMaxPower(profile, entries);
     ComparableQuantity<Energy> profileEnergyScaling = getLoadProfileEnergyScaling(profile);
 
-    return new BdewLoadProfileTimeSeries(
-        metaInformation.getUuid(), profile, entries, maxPower, profileEnergyScaling);
+    return new BdewLoadProfileTimeSeries(profile, entries, maxPower, profileEnergyScaling);
   }
 
   @Override

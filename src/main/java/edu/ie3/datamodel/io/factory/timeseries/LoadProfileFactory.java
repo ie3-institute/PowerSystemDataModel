@@ -24,7 +24,7 @@ import tech.units.indriya.quantity.Quantities;
  * @param <P> type of load profile
  * @param <V> type of load values
  */
-public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadValues>
+public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadValues<P>>
     extends Factory<V, LoadProfileData<V>, LoadProfileEntry<V>> {
   protected static final String QUARTER_HOUR = "quarterHour";
 
@@ -37,7 +37,7 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
     super(valueClass);
   }
 
-  public abstract LoadProfileTimeSeries<V> build(
+  public abstract LoadProfileTimeSeries<P, V> build(
       LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<V>> entries);
 
   public abstract P parseProfile(String profile);
