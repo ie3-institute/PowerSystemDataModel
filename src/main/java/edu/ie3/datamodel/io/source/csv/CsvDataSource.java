@@ -8,7 +8,8 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
+import edu.ie3.datamodel.io.file.FileLoadProfileMetaInformation;
+import edu.ie3.datamodel.io.file.FileType;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
@@ -158,17 +159,18 @@ public class CsvDataSource implements DataSource {
    *
    * @return A mapping from profile to the load profile time series meta information
    */
-  public Map<String, CsvLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
+  public Map<String, FileLoadProfileMetaInformation> getLoadProfileMetaInformation(
       LoadProfile... profiles) {
     return getTimeSeriesFilePaths(fileNamingStrategy.getLoadProfileTimeSeriesPattern())
         .parallelStream()
         .map(
             filePath -> {
-              /* Extract meta information from file path and enhance it with the file path itself */
               LoadProfileMetaInformation metaInformation =
                   fileNamingStrategy.loadProfileTimeSeriesMetaInformation(filePath.toString());
-              return new CsvLoadProfileMetaInformation(
-                  metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
+              Path fileNameWithoutEnding =
+                  FileNamingStrategy.removeFileNameEnding(filePath.getFileName());
+              return new FileLoadProfileMetaInformation(
+                  metaInformation, fileNameWithoutEnding, FileType.CSV);
             })
         .filter(
             metaInformation ->
@@ -177,6 +179,11 @@ public class CsvDataSource implements DataSource {
                     || Stream.of(profiles)
                         .anyMatch(profile -> profile.getKey().equals(metaInformation.getProfile())))
         .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
+  }
+
+  public Map<String, FileLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
+      LoadProfile... profiles) {
+    return getLoadProfileMetaInformation(profiles);
   }
 
   /**

@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.source.csv
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
-import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation
+import edu.ie3.datamodel.io.file.FileLoadProfileMetaInformation
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.models.input.system.LoadInput
@@ -418,21 +418,21 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The CsvDataSource is able to build correct load profile meta information"() {
     when:
-    def actual = dummyCsvSource.getCsvLoadProfileMetaInformation()
+    def actual = dummyCsvSource.getLoadProfileMetaInformation()
 
     then:
     actual.size() == 3
-    actual.get("r1").fullFilePath == Path.of("lpts_r1")
-    actual.get("r2").fullFilePath == Path.of("lpts_r2")
-    actual.get("g0").fullFilePath == Path.of("lpts_g0")
+    actual.get("r1").path == Path.of("lpts_r1")
+    actual.get("r2").path == Path.of("lpts_r2")
+    actual.get("g0").path == Path.of("lpts_g0")
   }
 
   def "The CsvDataSource is able to build correct load profile meta information when restricting load profile"() {
     when:
-    def actual = dummyCsvSource.getCsvLoadProfileMetaInformation(BdewStandardLoadProfile.G0)
+    def actual = dummyCsvSource.getLoadProfileMetaInformation(BdewStandardLoadProfile.G0)
 
     then:
     actual.size() == 1
-    actual.get("g0").fullFilePath == Path.of("lpts_g0")
+    actual.get("g0").path == Path.of("lpts_g0")
   }
 }

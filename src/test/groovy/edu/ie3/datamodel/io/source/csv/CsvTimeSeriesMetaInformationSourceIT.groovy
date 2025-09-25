@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.file.FileType
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import spock.lang.Shared
@@ -18,7 +19,7 @@ class CsvTimeSeriesMetaInformationSourceIT extends Specification implements CsvT
   CsvTimeSeriesMetaInformationSource source
 
   def setupSpec() {
-    source = new CsvTimeSeriesMetaInformationSource(";", timeSeriesFolderPath, new FileNamingStrategy())
+    source = new CsvTimeSeriesMetaInformationSource(timeSeriesFolderPath, FileType.CSV, new FileNamingStrategy(), ";")
   }
 
   def "A CSV time series meta information source returns correct mapping of time series"() {
