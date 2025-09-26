@@ -18,6 +18,8 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes a combined heat and power plant */
 public class ChpInput extends SystemParticipantInput
@@ -117,6 +119,11 @@ public class ChpInput extends SystemParticipantInput
 
   public boolean isMarketReaction() {
     return marketReaction;
+  }
+
+  @Override
+  public ComparableQuantity<Power> sRated() {
+    return this.type.getsRated();
   }
 
   public ChpInputCopyBuilder copy() {

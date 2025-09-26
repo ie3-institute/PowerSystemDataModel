@@ -178,6 +178,11 @@ public class PvInput extends SystemParticipantInput {
     return sRated;
   }
 
+  @Override
+  public ComparableQuantity<Power> sRated() {
+    return sRated;
+  }
+
   public PvInputCopyBuilder copy() {
     return new PvInputCopyBuilder(this);
   }

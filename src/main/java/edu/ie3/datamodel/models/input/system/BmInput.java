@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes a biomass plant */
@@ -115,6 +116,11 @@ public class BmInput extends SystemParticipantInput implements HasType {
 
   public ComparableQuantity<EnergyPrice> getFeedInTariff() {
     return feedInTariff;
+  }
+
+  @Override
+  public ComparableQuantity<Power> sRated() {
+    return this.type.getsRated();
   }
 
   public BmInputCopyBuilder copy() {
