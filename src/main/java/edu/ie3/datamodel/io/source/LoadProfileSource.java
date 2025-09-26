@@ -60,7 +60,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
     return entryFactory.get(factoryData);
   }
 
-  public abstract LoadProfileTimeSeries<V> getTimeSeries();
+  public abstract LoadProfileTimeSeries<P, V> getTimeSeries();
 
   /**
    * Method to return all time keys after a given timestamp.
