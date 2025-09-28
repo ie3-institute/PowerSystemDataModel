@@ -102,16 +102,17 @@ dependencies {
   implementation 'com.couchbase.client:java-client:3.9.1'
   runtimeOnly 'org.postgresql:postgresql:42.7.8' // postgresql jdbc driver required during runtime
 
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2' //needed for json parser
   implementation 'commons-io:commons-io:2.20.0' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.19.0' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
   options.encoding = 'UTF-8'
 }
 
-tasks.withType(Javadoc){
+tasks.withType(Javadoc).configureEach {
   options.encoding = 'UTF-8'
   failOnError = false // TODO: Temp until JavaDoc issues are resolved
 }
