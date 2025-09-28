@@ -14,6 +14,8 @@ import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTyp
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 public class EvcsInput extends SystemParticipantInput {
 
@@ -180,6 +182,11 @@ public class EvcsInput extends SystemParticipantInput {
 
   public boolean getV2gSupport() {
     return v2gSupport;
+  }
+
+  @Override
+  public ComparableQuantity<Power> sRated() {
+    return this.type.getsRated();
   }
 
   @Override
