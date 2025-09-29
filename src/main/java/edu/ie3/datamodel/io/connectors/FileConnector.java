@@ -9,14 +9,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.function.Function;
 
 /** Base connector for file-based sources and sinks. */
 public abstract class FileConnector implements DataConnector {
 
   private final Path baseDirectory;
-  private final Optional<Function<String, InputStream>> customInputStream;
+  private final Function<String, InputStream> customInputStream;
 
   protected FileConnector(Path baseDirectory) {
     this(baseDirectory, null);
@@ -24,7 +23,7 @@ public abstract class FileConnector implements DataConnector {
 
   protected FileConnector(Path baseDirectory, Function<String, InputStream> inputStreamSupplier) {
     this.baseDirectory = baseDirectory;
-    this.customInputStream = Optional.ofNullable(inputStreamSupplier);
+    this.customInputStream = inputStreamSupplier;
   }
 
   /** Returns the base directory backing this connector. */
@@ -38,8 +37,8 @@ public abstract class FileConnector implements DataConnector {
    */
   protected InputStream openInputStream(Path filePath) throws FileNotFoundException {
     Path fullPath = resolveFilePath(filePath);
-    if (customInputStream.isPresent()) {
-      return customInputStream.get().apply(fullPath.toString());
+    if (customInputStream != null) {
+      return customInputStream.apply(fullPath.toString());
     }
     return new FileInputStream(fullPath.toFile());
   }
