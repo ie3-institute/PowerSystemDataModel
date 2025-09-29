@@ -14,7 +14,7 @@ import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
-import edu.ie3.datamodel.io.source.DataSource;
+import edu.ie3.datamodel.io.source.FileDataSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.Try;
@@ -24,16 +24,17 @@ import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.UUID;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Parent class of all .csv file related sources containing methods and fields consumed by almost
@@ -42,41 +43,25 @@ import org.slf4j.LoggerFactory;
  * @version 0.1
  * @since 05.04.20
  */
-public class CsvDataSource implements DataSource {
+public class CsvDataSource extends FileDataSource {
 
-  protected static final Logger log = LoggerFactory.getLogger(CsvDataSource.class);
-
-  // general fields
   protected final String csvSep;
   protected final CsvFileConnector connector;
 
-  private final FileNamingStrategy fileNamingStrategy;
-
   public CsvDataSource(String csvSep, Path directoryPath, FileNamingStrategy fileNamingStrategy) {
+    super(directoryPath, fileNamingStrategy);
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(directoryPath);
-    this.fileNamingStrategy = fileNamingStrategy;
   }
 
   public CsvDataSource(
       String csvSep, CsvFileConnector connector, FileNamingStrategy fileNamingStrategy) {
+    super(connector.getBaseDirectory(), fileNamingStrategy);
     this.csvSep = csvSep;
     this.connector = connector;
-    this.fileNamingStrategy = fileNamingStrategy;
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass)
-      throws SourceException {
-    return getSourceFields(getFilePath(entityClass).getOrThrow());
-  }
-
-  /**
-   * @param filePath path of file starting from base folder, including file name but not file
-   *     extension
-   * @return The source field names as a set, if file exists
-   * @throws SourceException on error while reading the source file
-   */
   public Optional<Set<String>> getSourceFields(Path filePath) throws SourceException {
     try (BufferedReader reader = connector.initReader(filePath)) {
       String line = reader.readLine();
@@ -102,25 +87,8 @@ public class CsvDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
-      throws SourceException {
-    return buildStreamWithFieldsToAttributesMap(entityClass, true).getOrThrow();
-  }
-
-  /**
-   * @param filePath to the csv file
-   * @return a stream of maps that represent the rows in the csv file
-   * @throws SourceException on error while reading the source file
-   */
   public Stream<Map<String, String>> getSourceData(Path filePath) throws SourceException {
     return buildStreamWithFieldsToAttributesMap(filePath, true).getOrThrow();
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-  /** Returns the set {@link FileNamingStrategy}. */
-  public FileNamingStrategy getNamingStrategy() {
-    return fileNamingStrategy;
   }
 
   /**
@@ -133,13 +101,13 @@ public class CsvDataSource implements DataSource {
    */
   public Map<UUID, CsvIndividualTimeSeriesMetaInformation>
       getCsvIndividualTimeSeriesMetaInformation(final ColumnScheme... columnSchemes) {
-    return getTimeSeriesFilePaths(fileNamingStrategy.getIndividualTimeSeriesPattern())
-        .parallelStream()
+    FileNamingStrategy namingStrategy = getNamingStrategy();
+    return getTimeSeriesFilePaths(namingStrategy.getIndividualTimeSeriesPattern()).parallelStream()
         .map(
             filePath -> {
               /* Extract meta information from file path and enhance it with the file path itself */
               IndividualTimeSeriesMetaInformation metaInformation =
-                  fileNamingStrategy.individualTimeSeriesMetaInformation(filePath.toString());
+                  namingStrategy.individualTimeSeriesMetaInformation(filePath.toString());
               return new CsvIndividualTimeSeriesMetaInformation(
                   metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
             })
@@ -160,13 +128,13 @@ public class CsvDataSource implements DataSource {
    */
   public Map<String, CsvLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
       LoadProfile... profiles) {
-    return getTimeSeriesFilePaths(fileNamingStrategy.getLoadProfileTimeSeriesPattern())
-        .parallelStream()
+    FileNamingStrategy namingStrategy = getNamingStrategy();
+    return getTimeSeriesFilePaths(namingStrategy.getLoadProfileTimeSeriesPattern()).parallelStream()
         .map(
             filePath -> {
               /* Extract meta information from file path and enhance it with the file path itself */
               LoadProfileMetaInformation metaInformation =
-                  fileNamingStrategy.loadProfileTimeSeriesMetaInformation(filePath.toString());
+                  namingStrategy.loadProfileTimeSeriesMetaInformation(filePath.toString());
               return new CsvLoadProfileMetaInformation(
                   metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
             })
@@ -178,33 +146,6 @@ public class CsvDataSource implements DataSource {
                         .anyMatch(profile -> profile.getKey().equals(metaInformation.getProfile())))
         .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
   }
-
-  /**
-   * Returns a set of relative paths strings to time series files, with respect to the base folder
-   * path
-   *
-   * @param pattern for matching the time series
-   * @return A set of relative paths to time series files, with respect to the base folder path
-   */
-  protected Set<Path> getTimeSeriesFilePaths(Pattern pattern) {
-    Path baseDirectory = connector.getBaseDirectory();
-    try (Stream<Path> pathStream = Files.walk(baseDirectory)) {
-      return pathStream
-          .map(baseDirectory::relativize)
-          .filter(
-              path -> {
-                Path withoutEnding =
-                    Path.of(FileNamingStrategy.removeFileNameEnding(path.toString()));
-                return pattern.matcher(withoutEnding.toString()).matches();
-              })
-          .collect(Collectors.toSet());
-    } catch (IOException e) {
-      log.error("Unable to determine time series files readers for time series.", e);
-      return Collections.emptySet();
-    }
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
@@ -280,19 +221,10 @@ public class CsvDataSource implements DataSource {
         .toArray(String[]::new);
   }
 
-  /**
-   * Tries to open a file reader based on the provided entity class and hands it over for further
-   * processing.
-   *
-   * @param entityClass the entity class that should be build and that is used to get the
-   *     corresponding reader
-   * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName to fieldValue)
-   */
+  @Override
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       Class<? extends Entity> entityClass, boolean allowFileNotExisting) {
-    return getFilePath(entityClass)
-        .flatMap(path -> buildStreamWithFieldsToAttributesMap(path, allowFileNotExisting));
+    return super.buildStreamWithFieldsToAttributesMap(entityClass, allowFileNotExisting);
   }
 
   /**
@@ -304,6 +236,7 @@ public class CsvDataSource implements DataSource {
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
+  @Override
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       Path filePath, boolean allowFileNotExisting) {
     try (BufferedReader reader = connector.initReader(filePath)) {
@@ -324,14 +257,6 @@ public class CsvDataSource implements DataSource {
     } catch (IOException e) {
       return Failure.of(new SourceException("Cannot read file '" + filePath + "'.", e));
     }
-  }
-
-  private Try<Path, SourceException> getFilePath(Class<? extends Entity> entityClass) {
-    return Try.from(
-        fileNamingStrategy.getFilePath(entityClass),
-        () ->
-            new SourceException(
-                "Cannot find a naming strategy for class '" + entityClass.getSimpleName() + "'."));
   }
 
   /**
