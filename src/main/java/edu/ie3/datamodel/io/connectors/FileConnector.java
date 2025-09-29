@@ -1,5 +1,5 @@
 /*
- * © 2024. TU Dortmund University,
+ * © 2025. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -57,6 +57,5 @@ public abstract class FileConnector implements DataConnector {
   protected abstract String getFileEnding();
 
   @Override
-  public void shutdown() {
-  }
+  public void shutdown() {}
 }
