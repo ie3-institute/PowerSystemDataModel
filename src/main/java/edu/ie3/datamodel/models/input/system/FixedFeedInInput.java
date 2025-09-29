@@ -80,6 +80,11 @@ public class FixedFeedInInput extends SystemParticipantInput {
     return sRated;
   }
 
+  @Override
+  public ComparableQuantity<Power> sRated() {
+    return sRated;
+  }
+
   public double getCosPhiRated() {
     return cosPhiRated;
   }
