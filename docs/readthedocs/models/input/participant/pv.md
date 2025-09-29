@@ -78,7 +78,7 @@ Detailed model of a photovoltaic power plant.
    * - controllingEm
      -
      - UUID reference to an [Energy Management Unit](#em_model) that is controlling
-       this system participant. Field can be empty or missing, if this participant
+       this system participant. Field can be empty, if this participant
        is not controlled.
 
 ```
