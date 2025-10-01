@@ -1,60 +1,53 @@
 /*
- * © 2025. TU Dortmund University,
+ * © 2024. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.io.naming.timeseries;
 
+import edu.ie3.datamodel.io.file.FileType;
 import java.nio.file.Path;
 import java.util.Objects;
-import java.util.UUID;
 
-public abstract class FileLoadProfileMetaInformation extends LoadProfileMetaInformation {
+public class FileLoadProfileMetaInformation extends LoadProfileMetaInformation {
   private final Path fullFilePath;
+  private final FileType fileType;
 
-  protected FileLoadProfileMetaInformation(String profile, Path fullFilePath) {
+  public FileLoadProfileMetaInformation(String profile, Path fullFilePath, FileType fileType) {
     super(profile);
-    this.fullFilePath = Objects.requireNonNull(fullFilePath, "fullFilePath");
-  }
-
-  protected FileLoadProfileMetaInformation(UUID uuid, String profile, Path fullFilePath) {
-    super(uuid, profile);
-    this.fullFilePath = Objects.requireNonNull(fullFilePath, "fullFilePath");
-  }
-
-  protected FileLoadProfileMetaInformation(
-      LoadProfileMetaInformation metaInformation, Path fullFilePath) {
-    this(metaInformation.getUuid(), metaInformation.getProfile(), fullFilePath);
+    this.fullFilePath = fullFilePath;
+    this.fileType = fileType;
   }
 
   public Path getFullFilePath() {
     return fullFilePath;
   }
 
+  public FileType getFileType() {
+    return fileType;
+  }
+
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof FileLoadProfileMetaInformation that)) return false;
+    if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    return fullFilePath.equals(that.fullFilePath);
+    FileLoadProfileMetaInformation that = (FileLoadProfileMetaInformation) o;
+    return Objects.equals(fullFilePath, that.fullFilePath) && fileType == that.fileType;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), fullFilePath);
+    return Objects.hash(super.hashCode(), fullFilePath, fileType);
   }
 
   @Override
   public String toString() {
     return "FileLoadProfileMetaInformation{"
-        + "uuid='"
-        + getUuid()
-        + '\''
-        + ", profile='"
-        + getProfile()
-        + '\''
-        + "fullFilePath="
+        + ", fullFilePath='"
         + fullFilePath
+        + '\''
+        + ", fileType="
+        + fileType
         + '}';
   }
 }

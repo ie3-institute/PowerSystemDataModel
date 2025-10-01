@@ -5,16 +5,17 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import static edu.ie3.datamodel.io.file.FileType.CSV;
+
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
-import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
-import edu.ie3.datamodel.io.source.FileDataSource;
+import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.source.file.FileDataSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.Try;
@@ -57,6 +58,18 @@ public class CsvDataSource extends FileDataSource {
   }
 
   @Override
+  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass)
+      throws SourceException {
+    return getSourceFields(getFilePath(entityClass).getOrThrow());
+  }
+
+  /**
+   * @param filePath path of file starting from base folder, including file name but not file
+   *     extension
+   * @return The source field names as a set, if file exists
+   * @throws SourceException on error while reading the source file
+   */
+  @Override
   public Optional<Set<String>> getSourceFields(Path filePath) throws SourceException {
     try (BufferedReader reader = connector.initReader(filePath)) {
       String line = reader.readLine();
@@ -82,6 +95,12 @@ public class CsvDataSource extends FileDataSource {
   }
 
   @Override
+  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
+      throws SourceException {
+    return buildStreamWithFieldsToAttributesMap(entityClass, true).getOrThrow();
+  }
+
+  @Override
   public Stream<Map<String, String>> getSourceData(Path filePath) throws SourceException {
     return buildStreamWithFieldsToAttributesMap(filePath, true).getOrThrow();
   }
@@ -94,24 +113,10 @@ public class CsvDataSource extends FileDataSource {
    *     possible readers will be initialized.
    * @return A mapping from column scheme to the individual time series meta information
    */
-  public Map<UUID, CsvIndividualTimeSeriesMetaInformation>
+  public Map<UUID, FileIndividualTimeSeriesMetaInformation>
       getCsvIndividualTimeSeriesMetaInformation(final ColumnScheme... columnSchemes) {
-    FileNamingStrategy namingStrategy = getNamingStrategy();
-    return getTimeSeriesFilePaths(namingStrategy.getIndividualTimeSeriesPattern()).parallelStream()
-        .map(
-            filePath -> {
-              /* Extract meta information from file path and enhance it with the file path itself */
-              IndividualTimeSeriesMetaInformation metaInformation =
-                  namingStrategy.individualTimeSeriesMetaInformation(filePath.toString());
-              return new CsvIndividualTimeSeriesMetaInformation(
-                  metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
-            })
-        .filter(
-            metaInformation ->
-                columnSchemes == null
-                    || columnSchemes.length == 0
-                    || Stream.of(columnSchemes)
-                        .anyMatch(scheme -> scheme.equals(metaInformation.getColumnScheme())))
+    return getIndividualTimeSeriesMetaInformation(columnSchemes)
+        .filter(metaInformation -> metaInformation.getFileType() == CSV)
         .collect(Collectors.toMap(TimeSeriesMetaInformation::getUuid, Function.identity()));
   }
 
@@ -121,24 +126,10 @@ public class CsvDataSource extends FileDataSource {
    *
    * @return A mapping from profile to the load profile time series meta information
    */
-  public Map<String, CsvLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
+  public Map<String, FileLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
       LoadProfile... profiles) {
-    FileNamingStrategy namingStrategy = getNamingStrategy();
-    return getTimeSeriesFilePaths(namingStrategy.getLoadProfileTimeSeriesPattern()).parallelStream()
-        .map(
-            filePath -> {
-              /* Extract meta information from file path and enhance it with the file path itself */
-              LoadProfileMetaInformation metaInformation =
-                  namingStrategy.loadProfileTimeSeriesMetaInformation(filePath.toString());
-              return new CsvLoadProfileMetaInformation(
-                  metaInformation, FileNamingStrategy.removeFileNameEnding(filePath.getFileName()));
-            })
-        .filter(
-            metaInformation ->
-                profiles == null
-                    || profiles.length == 0
-                    || Stream.of(profiles)
-                        .anyMatch(profile -> profile.getKey().equals(metaInformation.getProfile())))
+    return getLoadProfileMetaInformation(profiles)
+        .filter(metaInformation -> metaInformation.getFileType() == CSV)
         .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
   }
 
@@ -216,10 +207,19 @@ public class CsvDataSource extends FileDataSource {
         .toArray(String[]::new);
   }
 
-  @Override
+  /**
+   * Tries to open a file reader based on the provided entity class and hands it over for further
+   * processing.
+   *
+   * @param entityClass the entity class that should be build and that is used to get the
+   *     corresponding reader
+   * @return a parallel stream of maps, where each map represents one row of the csv file with the
+   *     mapping (fieldName to fieldValue)
+   */
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       Class<? extends Entity> entityClass, boolean allowFileNotExisting) {
-    return super.buildStreamWithFieldsToAttributesMap(entityClass, allowFileNotExisting);
+    return getFilePath(entityClass)
+        .flatMap(path -> buildStreamWithFieldsToAttributesMap(path, allowFileNotExisting));
   }
 
   /**
@@ -231,7 +231,6 @@ public class CsvDataSource extends FileDataSource {
    * @return a try containing either a parallel stream of maps, where each map represents one row of
    *     the csv file with the mapping (fieldName to fieldValue) or an exception
    */
-  @Override
   protected Try<Stream<Map<String, String>>, SourceException> buildStreamWithFieldsToAttributesMap(
       Path filePath, boolean allowFileNotExisting) {
     try (BufferedReader reader = connector.initReader(filePath)) {

@@ -14,16 +14,16 @@ import java.util.function.Function;
 /** Base connector for file-based sources and sinks. */
 public abstract class FileConnector implements DataConnector {
 
-  private final Path baseDirectory;
-  private final Function<String, InputStream> customInputStream;
+  protected final Path baseDirectory;
+  private final Function<String, InputStream> inputStreamBuilder;
 
   protected FileConnector(Path baseDirectory) {
     this(baseDirectory, null);
   }
 
-  protected FileConnector(Path baseDirectory, Function<String, InputStream> inputStreamSupplier) {
+  protected FileConnector(Path baseDirectory, Function<String, InputStream> inputStreamBuilder) {
     this.baseDirectory = baseDirectory;
-    this.customInputStream = inputStreamSupplier;
+    this.inputStreamBuilder = inputStreamBuilder;
   }
 
   /** Returns the base directory backing this connector. */
@@ -37,8 +37,8 @@ public abstract class FileConnector implements DataConnector {
    */
   protected InputStream openInputStream(Path filePath) throws FileNotFoundException {
     Path fullPath = resolveFilePath(filePath);
-    if (customInputStream != null) {
-      return customInputStream.apply(fullPath.toString());
+    if (inputStreamBuilder != null) {
+      return inputStreamBuilder.apply(fullPath.toString());
     }
     return new FileInputStream(fullPath.toFile());
   }

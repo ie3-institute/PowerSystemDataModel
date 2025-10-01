@@ -3,14 +3,15 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.io.source.csv;
+package edu.ie3.datamodel.io.source.file;
 
-import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMetaInformationSource;
+import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -24,20 +25,19 @@ import java.util.stream.Collectors;
  * CSV implementation for retrieving {@link TimeSeriesMetaInformationSource} from input directory
  * structures
  */
-public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
+public class FileTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
 
-  protected final CsvDataSource dataSource;
 
-  private final Map<UUID, CsvIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
+  private final Map<UUID, FileIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
 
   /**
-   * Creates a time series type source
+   * Creates a time series type source from CSV
    *
    * @param csvSep the CSV separator
    * @param folderPath path that time series reside in
    * @param fileNamingStrategy the file naming strategy
    */
-  public CsvTimeSeriesMetaInformationSource(
+  public FileTimeSeriesMetaInformationSource(
       String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
     this(new CsvDataSource(csvSep, folderPath, fileNamingStrategy));
   }
@@ -45,17 +45,17 @@ public class CsvTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
   /**
    * Creates a time series type source
    *
-   * @param dataSource a csv data source
+   * @param dataSource a file data source
    */
-  public CsvTimeSeriesMetaInformationSource(CsvDataSource dataSource) {
-    this.dataSource = dataSource;
+  public FileTimeSeriesMetaInformationSource(FileDataSource dataSource) {
     // retrieve only the desired time series
     this.timeSeriesMetaInformation =
-        dataSource.getCsvIndividualTimeSeriesMetaInformation(
-            TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]));
+        dataSource.getIndividualTimeSeriesMetaInformation(
+            TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]))
+                .collect(Collectors.toMap(IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
 
     this.loadProfileMetaInformation =
-        dataSource.getCsvLoadProfileMetaInformation().values().stream()
+        dataSource.getLoadProfileMetaInformation()
             .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
   }
 

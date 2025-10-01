@@ -40,14 +40,8 @@ public class CsvFileConnector extends FileConnector {
     super(baseDirectory);
   }
 
-  public CsvFileConnector(Path baseDirectory, Function<String, InputStream> inputStreamSupplier) {
-    super(baseDirectory, inputStreamSupplier);
-  }
-
-  /** Returns the base directory of this connector. */
-  @Override
-  public Path getBaseDirectory() {
-    return super.getBaseDirectory();
+  public CsvFileConnector(Path baseDirectory, Function<String, InputStream> inputStreamBuilder) {
+    super(baseDirectory, inputStreamBuilder);
   }
 
   public synchronized BufferedCsvWriter getOrInitWriter(
@@ -58,7 +52,7 @@ public class CsvFileConnector extends FileConnector {
 
     /* If it is not available, build and register one */
     try {
-      BufferedCsvWriter newWriter = initWriter(getBaseDirectory(), fileDefinition);
+      BufferedCsvWriter newWriter = initWriter(baseDirectory, fileDefinition);
 
       entityWriters.put(clz, newWriter);
       return newWriter;
@@ -81,7 +75,7 @@ public class CsvFileConnector extends FileConnector {
 
     /* If it is not available, build and register one */
     try {
-      BufferedCsvWriter newWriter = initWriter(getBaseDirectory(), fileDefinition);
+      BufferedCsvWriter newWriter = initWriter(baseDirectory, fileDefinition);
 
       timeSeriesWriters.put(timeSeries.getUuid(), newWriter);
       return newWriter;

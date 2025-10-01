@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
+
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
