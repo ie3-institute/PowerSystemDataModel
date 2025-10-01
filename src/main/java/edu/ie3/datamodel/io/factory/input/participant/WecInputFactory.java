@@ -17,6 +17,7 @@ import java.util.UUID;
 public class WecInputFactory
     extends SystemParticipantInputEntityFactory<
         WecInput, SystemParticipantTypedEntityData<WecTypeInput>> {
+  private static final String TYPE = "type";
   private static final String MARKET_REACTION = "marketReaction";
 
   public WecInputFactory() {
@@ -25,7 +26,7 @@ public class WecInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {MARKET_REACTION};
+    return new String[] {TYPE, MARKET_REACTION};
   }
 
   @Override

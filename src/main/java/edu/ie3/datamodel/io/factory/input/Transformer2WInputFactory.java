@@ -25,7 +25,7 @@ public class Transformer2WInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {PARALLEL_DEVICES, TAP_POS, AUTO_TAP};
+    return new String[] {NODE_A, NODE_B, PARALLEL_DEVICES, TAP_POS, AUTO_TAP};
   }
 
   @Override

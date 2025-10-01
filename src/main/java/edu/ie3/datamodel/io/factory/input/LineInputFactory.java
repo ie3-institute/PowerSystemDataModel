@@ -25,6 +25,7 @@ public class LineInputFactory
   private static final String LENGTH = "length";
   private static final String GEO_POSITION = "geoPosition";
   private static final String OLM_CHARACTERISTIC = "olmCharacteristic";
+  private static final String TYPE = "type";
 
   public LineInputFactory() {
     super(LineInput.class);
@@ -32,7 +33,9 @@ public class LineInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {PARALLEL_DEVICES, LENGTH, GEO_POSITION, OLM_CHARACTERISTIC};
+    return new String[] {
+      NODE_A, NODE_B, PARALLEL_DEVICES, LENGTH, GEO_POSITION, OLM_CHARACTERISTIC, TYPE
+    };
   }
 
   @Override

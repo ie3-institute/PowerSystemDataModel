@@ -16,8 +16,8 @@ public abstract class RepetitiveTimeSeries<
         E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
     extends TimeSeries<E, V, R> {
 
-  protected RepetitiveTimeSeries(UUID uuid, Set<E> entries) {
-    super(uuid, entries);
+  protected RepetitiveTimeSeries(Set<E> entries) {
+    super(entries);
   }
 
   /**

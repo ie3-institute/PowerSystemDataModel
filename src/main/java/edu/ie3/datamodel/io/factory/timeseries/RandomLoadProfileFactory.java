@@ -79,8 +79,7 @@ public class RandomLoadProfileFactory
     ComparableQuantity<Power> maxPower = calculateMaxPower(profile, entries);
     ComparableQuantity<Energy> profileEnergyScaling = getLoadProfileEnergyScaling(profile);
 
-    return new RandomLoadProfileTimeSeries(
-        metaInformation.getUuid(), profile, entries, maxPower, profileEnergyScaling);
+    return new RandomLoadProfileTimeSeries(profile, entries, maxPower, profileEnergyScaling);
   }
 
   @Override
