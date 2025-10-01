@@ -55,6 +55,7 @@ class EvcsInputTest extends Specification {
       assert id == evcsInput.id
       assert qCharacteristics == evcsInput.qCharacteristics
       assert type.sRated == evcsInput.type.sRated * 2d
+      assert sRated() == evcsInput.type.sRated * 2d
       assert cosPhiRated == evcsInput.cosPhiRated
       assert chargingPoints == evcsInput.chargingPoints
       assert locationType == evcsInput.locationType

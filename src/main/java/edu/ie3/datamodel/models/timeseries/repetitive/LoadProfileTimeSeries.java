@@ -19,9 +19,9 @@ import tech.units.indriya.ComparableQuantity;
 /**
  * Describes a load profile time series with repetitive values that can be calculated from a pattern
  */
-public class LoadProfileTimeSeries<V extends LoadValues>
+public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P>>
     extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
-  private final LoadProfile loadProfile;
+  private final P loadProfile;
   private final Map<Integer, V> valueMapping;
 
   /**
@@ -34,12 +34,11 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   private final ComparableQuantity<Energy> profileEnergyScaling;
 
   public LoadProfileTimeSeries(
-      UUID uuid,
-      LoadProfile loadProfile,
+      P loadProfile,
       Set<LoadProfileEntry<V>> entries,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(uuid, entries);
+    super(entries);
     this.loadProfile = loadProfile;
     this.valueMapping =
         entries.stream()
@@ -64,7 +63,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   }
 
   /** Returns the {@link LoadProfile}. */
-  public LoadProfile getLoadProfile() {
+  public P getLoadProfile() {
     return loadProfile;
   }
 
@@ -108,7 +107,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    LoadProfileTimeSeries<?> that = (LoadProfileTimeSeries<?>) o;
+    LoadProfileTimeSeries<?, ?> that = (LoadProfileTimeSeries<?, ?>) o;
     return loadProfile.equals(that.loadProfile) && valueMapping.equals(that.valueMapping);
   }
 
@@ -120,8 +119,6 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   @Override
   public String toString() {
     return "LoadProfileTimeSeries{"
-        + "uuid="
-        + getUuid()
         + "loadProfile="
         + getLoadProfile()
         + ", valueMapping="
