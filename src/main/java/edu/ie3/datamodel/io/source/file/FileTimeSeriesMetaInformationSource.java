@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
  */
 public class FileTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
 
-
   private final Map<UUID, FileIndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
 
   /**
@@ -50,12 +49,16 @@ public class FileTimeSeriesMetaInformationSource extends TimeSeriesMetaInformati
   public FileTimeSeriesMetaInformationSource(FileDataSource dataSource) {
     // retrieve only the desired time series
     this.timeSeriesMetaInformation =
-        dataSource.getIndividualTimeSeriesMetaInformation(
-            TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]))
-                .collect(Collectors.toMap(IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
+        dataSource
+            .getIndividualTimeSeriesMetaInformation(
+                TimeSeriesUtils.getAcceptedColumnSchemes().toArray(new ColumnScheme[0]))
+            .collect(
+                Collectors.toMap(
+                    IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
 
     this.loadProfileMetaInformation =
-        dataSource.getLoadProfileMetaInformation()
+        dataSource
+            .getLoadProfileMetaInformation()
             .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
   }
 
