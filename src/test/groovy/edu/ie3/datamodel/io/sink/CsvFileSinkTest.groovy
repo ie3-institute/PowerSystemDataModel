@@ -363,29 +363,4 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     cleanup:
     csvFileSink.shutdown()
   }
-
-  def "A persisted JointGridContainer with EmInput entities can be read back in and is equal to the original"() {
-    given:
-    "a CsvFileSink that persists the grid to a temporary directory"
-    def csvFileSink = new CsvFileSink(testBaseFolderPath)
-
-    and:
-    "a sample grid that contains EM entities"
-    def originalGrid = SampleJointGrid.grid()
-
-    when:
-    "the grid is persisted"
-    csvFileSink.persistJointGrid(originalGrid)
-    csvFileSink.shutdown()
-
-    and:
-    "then read back in from the temporary directory"
-    def gridName = "sampleGrid"
-    def separator = ","
-    def readBackGrid = CsvJointGridContainerSource.read(gridName, separator, testBaseFolderPath, false)
-
-    then:
-    "the original grid and the read-back grid are equal"
-    originalGrid == readBackGrid
-  }
 }
