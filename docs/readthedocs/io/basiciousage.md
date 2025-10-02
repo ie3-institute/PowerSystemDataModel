@@ -12,6 +12,7 @@ csvfiles
 sql
 influxdb
 ValidationUtils.md
+converters.md
 ```
 
 ## Data sink structure
