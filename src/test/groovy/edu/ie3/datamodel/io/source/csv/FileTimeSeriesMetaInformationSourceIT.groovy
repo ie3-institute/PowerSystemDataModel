@@ -5,9 +5,9 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.file.FileType
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.file.FileType
 import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.source.file.FileTimeSeriesMetaInformationSource
 import spock.lang.Shared
@@ -77,4 +77,3 @@ class FileTimeSeriesMetaInformationSourceIT extends Specification implements Csv
     result.empty
   }
 }
-

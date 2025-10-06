@@ -7,8 +7,8 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.CsvFileConnector
-import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.file.FileType
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.input.system.LoadInput
@@ -436,4 +436,3 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     actual.get("g0").fullFilePath == Path.of("lpts_g0")
   }
 }
-

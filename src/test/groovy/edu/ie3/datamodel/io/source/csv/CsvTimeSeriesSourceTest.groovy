@@ -131,4 +131,3 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     UUID.fromString("eeccbe3c-a47e-448e-8eca-1f369d3c24e6") | ColumnScheme.VOLTAGE                        | Path.of("its_v_eeccbe3c-a47e-448e-8eca-1f369d3c24e6")   || 2               | VoltageValue
   }
 }
-
