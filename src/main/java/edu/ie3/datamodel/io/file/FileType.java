@@ -21,7 +21,7 @@ public enum FileType {
   public static FileType getFileType(String fileName) throws ParsingException {
     FileType[] fileTypes = FileType.values();
     return Arrays.stream(fileTypes)
-        .filter(f -> f.fileEnding.equals(fileName))
+        .filter(f -> fileName.endsWith(f.fileEnding))
         .findFirst()
         .orElseThrow(
             () ->
