@@ -16,6 +16,8 @@ import edu.ie3.datamodel.models.input.system.type.AcTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes an air condition */
 public class AcInput extends SystemParticipantInput implements HasType, HasThermalBus {
@@ -85,6 +87,11 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
   @Override
   public ThermalBusInput getThermalBus() {
     return thermalBus;
+  }
+
+  @Override
+  public ComparableQuantity<Power> sRated() {
+    return this.type.getsRated();
   }
 
   public AcInputCopyBuilder copy() {
