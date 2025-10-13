@@ -14,6 +14,8 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes a Wind Energy Converter */
 public class WecInput extends SystemParticipantInput implements HasType {
@@ -83,6 +85,11 @@ public class WecInput extends SystemParticipantInput implements HasType {
   @Override
   public WecTypeInput getType() {
     return type;
+  }
+
+  @Override
+  public ComparableQuantity<Power> sRated() {
+    return this.type.getsRated();
   }
 
   public WecInputCopyBuilder copy() {
