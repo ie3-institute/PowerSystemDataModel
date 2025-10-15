@@ -15,15 +15,17 @@ import java.util.function.Function;
 public abstract class FileConnector implements DataConnector {
 
   protected final Path baseDirectory;
-  private final Function<String, InputStream> inputStreamBuilder;
+
+  /** Optional factory for custom input streams; may be {@code null} to use the default handling. */
+  private final Function<String, InputStream> customInputStream;
 
   protected FileConnector(Path baseDirectory) {
     this(baseDirectory, null);
   }
 
-  protected FileConnector(Path baseDirectory, Function<String, InputStream> inputStreamBuilder) {
+  protected FileConnector(Path baseDirectory, Function<String, InputStream> customInputStream) {
     this.baseDirectory = baseDirectory;
-    this.inputStreamBuilder = inputStreamBuilder;
+    this.customInputStream = customInputStream;
   }
 
   /** Returns the base directory backing this connector. */
@@ -37,8 +39,8 @@ public abstract class FileConnector implements DataConnector {
    */
   protected InputStream openInputStream(Path filePath) throws FileNotFoundException {
     Path fullPath = resolveFilePath(filePath);
-    if (inputStreamBuilder != null) {
-      return inputStreamBuilder.apply(fullPath.toString());
+    if (customInputStream != null) {
+      return customInputStream.apply(fullPath.toString());
     }
     return new FileInputStream(fullPath.toFile());
   }

@@ -3,12 +3,13 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.io.source.csv
+package edu.ie3.datamodel.io.source.file
 
 import edu.ie3.datamodel.io.file.FileType
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
 import edu.ie3.datamodel.io.source.file.FileTimeSeriesMetaInformationSource
 import spock.lang.Shared
 import spock.lang.Specification
@@ -54,6 +55,7 @@ class FileTimeSeriesMetaInformationSourceIT extends Specification implements Csv
 
     then:
     result.present
+    result.get().fileType == FileType.CSV
     result.get().columnScheme.scheme == columnScheme
 
     where:
