@@ -72,23 +72,15 @@ public abstract class FileDataSource implements DataSource {
       final ColumnScheme... columnSchemes) {
     FileNamingStrategy namingStrategy = getNamingStrategy();
     return getTimeSeriesFilePaths(namingStrategy.getIndividualTimeSeriesPattern()).parallelStream()
+        .map(filePath -> resolveFileInformation(filePath, "individual time series"))
+        .flatMap(Optional::stream)
         .map(
-            filePath -> {
-              String fileName = filePath.getFileName().toString();
-              FileType fileType;
-              try {
-                fileType = FileType.getFileType(fileName);
-              } catch (ParsingException e) {
-                log.warn("Unable to load load profile meta data for {}", fileName, e);
-                fileType = null; // will be filtered out
-              }
-              /* Extract meta information from file path and enhance it with the file path itself */
+            fileMeta -> {
               IndividualTimeSeriesMetaInformation metaInformation =
-                  namingStrategy.individualTimeSeriesMetaInformation(filePath.toString());
+                  namingStrategy.individualTimeSeriesMetaInformation(
+                      fileMeta.filePath().toString());
               return new FileIndividualTimeSeriesMetaInformation(
-                  metaInformation,
-                  Path.of(FileNamingStrategy.removeFileNameEnding(fileName)),
-                  fileType);
+                  metaInformation, fileMeta.pathWithoutEnding(), fileMeta.fileType());
             })
         .filter(meta -> meta.getFileType() != null)
         .filter(
@@ -110,24 +102,15 @@ public abstract class FileDataSource implements DataSource {
     FileNamingStrategy namingStrategy = getNamingStrategy();
 
     return getTimeSeriesFilePaths(namingStrategy.getLoadProfileTimeSeriesPattern()).parallelStream()
+        .map(filePath -> resolveFileInformation(filePath, "load profile"))
+        .flatMap(Optional::stream)
         .map(
-            filePath -> {
-              String fileName = filePath.getFileName().toString();
-              FileType fileType;
-              try {
-                fileType = FileType.getFileType(fileName);
-              } catch (ParsingException e) {
-                log.warn("Unable to load load profile meta data for {}", fileName, e);
-                fileType = null; // will be filtered out
-              }
-
-              /* Extract meta information from file path and enhance it with the file path itself */
+            fileMeta -> {
               LoadProfileMetaInformation metaInformation =
-                  namingStrategy.loadProfileTimeSeriesMetaInformation(filePath.toString());
+                  namingStrategy.loadProfileTimeSeriesMetaInformation(
+                      fileMeta.filePath().toString());
               return new FileLoadProfileMetaInformation(
-                  metaInformation.getProfile(),
-                  Path.of(FileNamingStrategy.removeFileNameEnding(fileName)),
-                  fileType);
+                  metaInformation.getProfile(), fileMeta.pathWithoutEnding(), fileMeta.fileType());
             })
         .filter(meta -> meta.getFileType() != null)
         .filter(
@@ -138,4 +121,18 @@ public abstract class FileDataSource implements DataSource {
                         .anyMatch(
                             profile -> profile.getKey().equals(metaInformation.getProfile())));
   }
+
+  private Optional<FileMetaDetails> resolveFileInformation(Path filePath, String metaType) {
+    String fileName = filePath.getFileName().toString();
+    try {
+      FileType fileType = FileType.getFileType(fileName);
+      Path pathWithoutEnding = Path.of(FileNamingStrategy.removeFileNameEnding(fileName));
+      return Optional.of(new FileMetaDetails(filePath, pathWithoutEnding, fileType));
+    } catch (ParsingException e) {
+      log.warn("Unable to load {} meta data for {}", metaType, fileName, e);
+      return Optional.empty();
+    }
+  }
+
+  private record FileMetaDetails(Path filePath, Path pathWithoutEnding, FileType fileType) {}
 }
