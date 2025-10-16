@@ -16,7 +16,9 @@ public abstract class FileConnector implements DataConnector {
 
   protected final Path baseDirectory;
 
-  /** Optional factory for custom input streams; may be {@code null} to use the default handling. */
+  /**
+   * Optional factory for custom input streams; may be {@code null} when using the default handling.
+   */
   private final Function<String, InputStream> customInputStream;
 
   protected FileConnector(Path baseDirectory) {

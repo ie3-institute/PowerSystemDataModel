@@ -70,19 +70,18 @@ public abstract class FileDataSource implements DataSource {
 
   public Stream<FileIndividualTimeSeriesMetaInformation> getIndividualTimeSeriesMetaInformation(
       final ColumnScheme... columnSchemes) {
-    FileNamingStrategy namingStrategy = getNamingStrategy();
-    return getTimeSeriesFilePaths(namingStrategy.getIndividualTimeSeriesPattern()).parallelStream()
+    return getTimeSeriesFilePaths(fileNamingStrategy.getIndividualTimeSeriesPattern())
+        .parallelStream()
         .map(filePath -> resolveFileInformation(filePath, "individual time series"))
         .flatMap(Optional::stream)
         .map(
             fileMeta -> {
               IndividualTimeSeriesMetaInformation metaInformation =
-                  namingStrategy.individualTimeSeriesMetaInformation(
+                  fileNamingStrategy.individualTimeSeriesMetaInformation(
                       fileMeta.filePath().toString());
               return new FileIndividualTimeSeriesMetaInformation(
                   metaInformation, fileMeta.pathWithoutEnding(), fileMeta.fileType());
             })
-        .filter(meta -> meta.getFileType() != null)
         .filter(
             metaInformation ->
                 columnSchemes == null
@@ -99,20 +98,18 @@ public abstract class FileDataSource implements DataSource {
    */
   public Stream<FileLoadProfileMetaInformation> getLoadProfileMetaInformation(
       LoadProfile... profiles) {
-    FileNamingStrategy namingStrategy = getNamingStrategy();
-
-    return getTimeSeriesFilePaths(namingStrategy.getLoadProfileTimeSeriesPattern()).parallelStream()
+    return getTimeSeriesFilePaths(fileNamingStrategy.getLoadProfileTimeSeriesPattern())
+        .parallelStream()
         .map(filePath -> resolveFileInformation(filePath, "load profile"))
         .flatMap(Optional::stream)
         .map(
             fileMeta -> {
               LoadProfileMetaInformation metaInformation =
-                  namingStrategy.loadProfileTimeSeriesMetaInformation(
+                  fileNamingStrategy.loadProfileTimeSeriesMetaInformation(
                       fileMeta.filePath().toString());
               return new FileLoadProfileMetaInformation(
                   metaInformation.getProfile(), fileMeta.pathWithoutEnding(), fileMeta.fileType());
             })
-        .filter(meta -> meta.getFileType() != null)
         .filter(
             metaInformation ->
                 profiles == null

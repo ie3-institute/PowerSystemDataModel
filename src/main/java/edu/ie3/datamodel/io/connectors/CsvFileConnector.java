@@ -40,8 +40,8 @@ public class CsvFileConnector extends FileConnector {
     super(baseDirectory);
   }
 
-  public CsvFileConnector(Path baseDirectory, Function<String, InputStream> inputStreamBuilder) {
-    super(baseDirectory, inputStreamBuilder);
+  public CsvFileConnector(Path baseDirectory, Function<String, InputStream> customInputStream) {
+    super(baseDirectory, customInputStream);
   }
 
   public synchronized BufferedCsvWriter getOrInitWriter(

@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.source.csv.CsvTestDataMeta
-import edu.ie3.datamodel.io.source.file.FileTimeSeriesMetaInformationSource
 import spock.lang.Shared
 import spock.lang.Specification
 
