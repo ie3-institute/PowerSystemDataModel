@@ -13,14 +13,13 @@ import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -28,16 +27,13 @@ import tech.units.indriya.ComparableQuantity;
  * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
  */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
-
-  private static final Logger logger =
-      LoggerFactory.getLogger(CosmoTimeBasedWeatherValueFactory.class);
-
   private static final String DIFFUSE_IRRADIANCE = "diffuseIrradiance";
   private static final String DIRECT_IRRADIANCE = "directIrradiance";
   private static final String TEMPERATURE = "temperature";
-  private static final String GROUND_TEMPERATURE = "groundTemperature";
   private static final String WIND_DIRECTION = "windDirection";
   private static final String WIND_VELOCITY = "windVelocity";
+  private static final String GROUND_TEMPERATURE_0CM = "groundTemperature0cm";
+  private static final String GROUND_TEMPERATURE_80CM = "groundTemperature80cm";
 
   public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
@@ -62,9 +58,10 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             WIND_DIRECTION,
             WIND_VELOCITY);
 
-    Set<String> withGroundTemp = expandSet(minConstructorParams, GROUND_TEMPERATURE);
+    Set<String> withGroundTemp =
+        expandSet(minConstructorParams, GROUND_TEMPERATURE_0CM, GROUND_TEMPERATURE_80CM);
 
-    return List.of(minConstructorParams, withGroundTemp);
+    return Arrays.asList(minConstructorParams, withGroundTemp);
   }
 
   @Override
@@ -81,13 +78,10 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
         data.getQuantity(WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
     ComparableQuantity<Speed> windVelocity =
         data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
-
-    ComparableQuantity<Temperature> groundTemperature = null;
-    try {
-      groundTemperature = data.getQuantity(GROUND_TEMPERATURE, StandardUnits.TEMPERATURE);
-    } catch (IllegalArgumentException ignored) {
-
-    }
+    ComparableQuantity<Temperature> groundTemp0cm =
+        data.getQuantityOptional(GROUND_TEMPERATURE_0CM, StandardUnits.TEMPERATURE).orElse(null);
+    ComparableQuantity<Temperature> groundTemp80cm =
+        data.getQuantityOptional(GROUND_TEMPERATURE_80CM, StandardUnits.TEMPERATURE).orElse(null);
 
     WeatherValue weatherValue =
         new WeatherValue(
@@ -97,7 +91,8 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             temperature,
             windDirection,
             windVelocity,
-            groundTemperature);
+            groundTemp0cm,
+            groundTemp80cm);
 
     return new TimeBasedValue<>(time, weatherValue);
   }

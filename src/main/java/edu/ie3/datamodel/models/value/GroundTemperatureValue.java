@@ -1,48 +1,30 @@
 /*
- * © 2025. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.value;
 
-import edu.ie3.datamodel.models.StandardUnits;
-import java.util.Objects;
-import java.util.Optional;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes a ground temperature value. */
-public class GroundTemperatureValue implements Value {
-
-  /** Ground temperature (typically in K) */
-  private final ComparableQuantity<Temperature> temperature;
+/**
+ * Describes a ground temperature value. This class extends {@link TemperatureValue} to represent
+ * temperature at a specific depth in the ground.
+ */
+public class GroundTemperatureValue extends TemperatureValue {
 
   /**
-   * @param temperature Ground temperature (typically in K)
+   * Constructs a new GroundTemperatureValue.
+   *
+   * @param temperature The temperature quantity (typically in K)
    */
   public GroundTemperatureValue(ComparableQuantity<Temperature> temperature) {
-    this.temperature = temperature == null ? null : temperature.to(StandardUnits.TEMPERATURE);
-  }
-
-  public Optional<ComparableQuantity<Temperature>> getTemperature() {
-    return Optional.ofNullable(temperature);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    GroundTemperatureValue that = (GroundTemperatureValue) o;
-    return Objects.equals(temperature, that.temperature);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(temperature);
+    super(temperature);
   }
 
   @Override
   public String toString() {
-    return "GroundTemperatureValue{" + "temperature=" + temperature + '}';
+    return "GroundTemperatureValue{" + "temperature=" + getTemperature().orElse(null) + '}';
   }
 }

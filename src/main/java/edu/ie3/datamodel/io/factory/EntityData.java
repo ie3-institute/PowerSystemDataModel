@@ -61,6 +61,16 @@ public class EntityData extends FactoryData {
   }
 
   /**
+   * Checks if the entity data contains the given field.
+   *
+   * @param field field name
+   * @return true if the field is present, false otherwise
+   */
+  public boolean hasField(String field) {
+    return getFieldsToValues().containsKey(field);
+  }
+
+  /**
    * Returns boolean value for given field name. Throws {@link FactoryException} if field does not
    * exist, or field value is null or empty.
    *
