@@ -20,7 +20,7 @@ Why predominant?
 As of convention, the `SubGridContainers` hold also reference to the transformers leading to higher sub grids
 and their higher voltage coupling point. Thus, the higher voltage coupling point is part of more than one `SubGridContainer`.
 
-![Sub grid boundary definition for transformers with upstream switchgear](../../../_static/figures/transformerWithSwitchGear.png)
+![Sub grid boundary definition for transformers with upstream switchgear](../../../_static/figures/transformerWithSwitchGear.pdf)
 
 Let's shed a more detailed light on the boundaries of a sub grid as of our definition.
 This especially is important, if the switchgear of the transformer is modeled in detail.
