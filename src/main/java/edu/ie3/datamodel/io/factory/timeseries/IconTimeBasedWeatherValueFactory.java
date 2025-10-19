@@ -23,8 +23,8 @@ import tech.units.indriya.unit.Units;
 
 /**
  * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
- * value mapping in the column scheme, ie³ uses to store its data from German Federal Weather
- * Service's ICON-EU model
+ * value mapping in the column scheme, ie<sup>3</sup> uses to store its data from German Federal
+ * Weather Service's ICON-EU model
  */
 public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
   /* Redefine the column names to meet the icon specifications */
@@ -55,8 +55,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "albrad",
             "asobs",
             "aswdifuS",
-            GROUND_TEMPERATURE_0CM, // Already present in ICON data
-            GROUND_TEMPERATURE_80CM, // New optional field
+            GROUND_TEMPERATURE_0CM,
+            GROUND_TEMPERATURE_80CM,
             "u10m",
             "u20m",
             "u216m",
