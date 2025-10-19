@@ -100,7 +100,7 @@ CREATE TABLE public.time_series_weather
     temperature DOUBLE PRECISION,
     velocity DOUBLE PRECISION,
     ground_temperature_0cm DOUBLE PRECISION,
-    ground_temperature_80cm DOUBLE PRECISION,
+    ground_temperature_8_0cm DOUBLE PRECISION,
     grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
