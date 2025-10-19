@@ -49,7 +49,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       "type"            : "Household",
       "chargingpoints"  : "4",
       "cosphirated"     : "0.95",
-      "locationtype"    : "CHARGING_HUB_TOWN",
+      "locationtypes"    : "CHARGING_HUB_TOWN, STREET",
       "v2gsupport"     : "false"
     ]
     def inputClass = EvcsInput
@@ -83,7 +83,10 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       assert type == ChargingPointTypeUtils.HouseholdSocket
       assert chargingPoints == Integer.parseInt(parameter["chargingpoints"])
       assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
-      assert locationType == EvcsLocationType.CHARGING_HUB_TOWN
+      assert locationTypes == [
+        EvcsLocationType.CHARGING_HUB_TOWN,
+        EvcsLocationType.STREET
+      ]
       assert !v2gSupport
     }
   }
@@ -100,7 +103,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       "type"            : "-- invalid --",
       "chargingpoints"  : "4",
       "cosphirated"     : "0.95",
-      "locationtype"    : "CHARGING_HUB_TOWN",
+      "locationtypes"    : "[CHARGING_HUB_TOWN]",
       "v2gsupport"     : "false"
     ]
     def inputClass = EvcsInput
@@ -129,7 +132,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       "type"            : "Household",
       "chargingpoints"  : "4",
       "cosphirated"     : "0.95",
-      "locationType"    : "-- invalid --",
+      "locationTypes"    : "-- invalid --",
       "v2gsupport"     : "false"
     ]
     def inputClass = EvcsInput
@@ -143,6 +146,6 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.failure
-    input.exception.get().cause.message == "Exception while trying to parse field \"locationType\" with supposed int value \"-- invalid --\""
+    input.exception.get().cause.message == "Exception while trying to parse field \"locationTypes\" with supposed value \"-- invalid --\""
   }
 }

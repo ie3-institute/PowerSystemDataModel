@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTyp
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationTypeUtils;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,7 +34,7 @@ public class EvcsInputFactory
   private static final String TYPE = "type";
   private static final String CHARGING_POINTS = "chargingPoints";
   private static final String COS_PHI_RATED = "cosPhiRated";
-  private static final String LOCATION_TYPE = "locationType";
+  private static final String LOCATION_TYPES = "locationTypes";
   private static final String V2G_SUPPORT = "v2gSupport";
 
   public EvcsInputFactory() {
@@ -42,7 +43,7 @@ public class EvcsInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPE, V2G_SUPPORT};
+    return new String[] {TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPES, V2G_SUPPORT};
   }
 
   @Override
@@ -68,15 +69,24 @@ public class EvcsInputFactory
     final int chargingPoints = data.getInt(CHARGING_POINTS);
     final double cosPhi = data.getDouble(COS_PHI_RATED);
 
-    final EvcsLocationType locationType;
+    final List<EvcsLocationType> locationTypes;
     try {
-      locationType = EvcsLocationTypeUtils.parse(data.getField(LOCATION_TYPE));
-    } catch (ParsingException e) {
+      String locationTypesField = data.getField(LOCATION_TYPES);
+      if (locationTypesField.contains(",")) {
+        locationTypes = EvcsLocationTypeUtils.parse(locationTypesField);
+      } else {
+        locationTypes = List.of(EvcsLocationTypeUtils.parseSingle(locationTypesField));
+      }
+    } catch (ParsingException | RuntimeException e) {
+      Throwable cause =
+          e instanceof RuntimeException && e.getCause() instanceof ParsingException
+              ? e.getCause()
+              : e;
       throw new FactoryException(
           String.format(
-              "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
-              LOCATION_TYPE, data.getField(LOCATION_TYPE)),
-          e);
+              "Exception while trying to parse field \"%s\" with supposed value \"%s\"",
+              LOCATION_TYPES, data.getField(LOCATION_TYPES)),
+          cause);
     }
 
     final boolean v2gSupport = data.getBoolean(V2G_SUPPORT);
@@ -92,7 +102,7 @@ public class EvcsInputFactory
         type,
         chargingPoints,
         cosPhi,
-        locationType,
+        locationTypes,
         v2gSupport);
   }
 }
