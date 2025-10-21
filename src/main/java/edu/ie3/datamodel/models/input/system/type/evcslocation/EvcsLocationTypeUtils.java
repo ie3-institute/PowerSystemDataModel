@@ -75,7 +75,7 @@ public class EvcsLocationTypeUtils {
    * @throws ParsingException if string does not represent a location type
    */
   public static EvcsLocationType parseSingle(String parsableString) throws ParsingException {
-    final String key = toKey(parsableString);
+    final String key = toKey(parsableString.replace("[", "").replace("]", ""));
     if (nameToType.containsKey(key)) return nameToType.get(key);
     else throw new ParsingException("EvcsLocationType '" + key + "' does not exist.");
   }
