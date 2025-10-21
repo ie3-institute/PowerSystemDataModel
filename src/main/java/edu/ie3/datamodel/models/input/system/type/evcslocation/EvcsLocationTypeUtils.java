@@ -43,26 +43,10 @@ public class EvcsLocationTypeUtils {
       throw new ParsingException("Location types string cannot be null or empty");
     }
 
-    if (parsableString.startsWith("[") && parsableString.endsWith("]")) {
-      String listContent = parsableString.substring(1, parsableString.length() - 1);
-      if (listContent.isEmpty()) {
-        return java.util.Collections.emptyList();
-      }
-      return Arrays.stream(listContent.split(","))
-          .map(String::trim)
-          .filter(s -> !s.isEmpty())
-          .map(
-              s -> {
-                try {
-                  return parseSingle(s);
-                } catch (ParsingException e) {
-                  throw new RuntimeException(e);
-                }
-              })
-          .collect(Collectors.toList());
-    }
+    // Remove brackets if present
+    parsableString = parsableString.replace("[", "").replace("]", "");
 
-    // Check if it contains comma for multiple values (without brackets)
+    // Check if it contains comma for multiple values
     if (parsableString.contains(",")) {
       return Arrays.stream(parsableString.split(","))
           .map(String::trim)
