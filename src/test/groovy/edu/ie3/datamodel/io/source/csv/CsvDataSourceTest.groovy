@@ -7,10 +7,10 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.CsvFileConnector
-import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
-import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation
+import edu.ie3.datamodel.io.file.FileType
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import spock.lang.Shared
@@ -384,11 +384,11 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
   def "The CsvDataSource is able to build correct uuid to meta information mapping"() {
     given:
     def expected = [
-      (UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf"), ColumnScheme.APPARENT_POWER, Path.of("its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf")),
-      (UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, Path.of("its_p_fcf0b851-a836-4bde-8090-f44c382ed226")),
-      (UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND, Path.of("its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b")),
-      (UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_b88dee50-5484-4136-901d-050d8c1c97d1")),
-      (UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"))
+      (UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf")): new FileIndividualTimeSeriesMetaInformation(UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf"), ColumnScheme.APPARENT_POWER, Path.of("its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf"), FileType.CSV),
+      (UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new FileIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, Path.of("its_p_fcf0b851-a836-4bde-8090-f44c382ed226"), FileType.CSV),
+      (UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b")): new FileIndividualTimeSeriesMetaInformation(UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND, Path.of("its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b"), FileType.CSV),
+      (UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new FileIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_b88dee50-5484-4136-901d-050d8c1c97d1"), FileType.CSV),
+      (UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new FileIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), FileType.CSV)
     ]
 
     when:
@@ -401,9 +401,9 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
   def "The CsvDataSource is able to build correct uuid to meta information mapping when restricting column schemes"() {
     given:
     def expected = [
-      (UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_b88dee50-5484-4136-901d-050d8c1c97d1")),
-      (UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")),
-      (UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, Path.of("its_p_fcf0b851-a836-4bde-8090-f44c382ed226"))
+      (UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new FileIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_b88dee50-5484-4136-901d-050d8c1c97d1"), FileType.CSV),
+      (UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new FileIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, Path.of("its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), FileType.CSV),
+      (UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new FileIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, Path.of("its_p_fcf0b851-a836-4bde-8090-f44c382ed226"), FileType.CSV)
     ]
 
     when:

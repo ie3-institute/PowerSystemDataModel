@@ -9,11 +9,11 @@ import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RAN
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileData;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.factory.timeseries.RandomLoadProfileFactory;
+import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.io.source.csv.CsvLoadProfileSource;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
@@ -137,7 +137,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
       getRandomLoadProfile() throws SourceException {
     CsvDataSource buildInSource = getBuildInSource(LoadProfileSource.class, "/load");
 
-    CsvLoadProfileMetaInformation metaInformation =
+    FileLoadProfileMetaInformation metaInformation =
         buildInSource.getCsvLoadProfileMetaInformation(RANDOM_LOAD_PROFILE).values().stream()
             .findAny()
             .orElseThrow();
