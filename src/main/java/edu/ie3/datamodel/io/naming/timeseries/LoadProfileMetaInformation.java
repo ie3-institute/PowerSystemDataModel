@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.naming.timeseries;
 
-import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import java.util.Objects;
 import java.util.UUID;
 

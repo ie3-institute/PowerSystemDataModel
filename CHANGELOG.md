@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extend `GermanVoltageLevelUtils` with more synonymousIds [#143](https://github.com/ie3-institute/PowerSystemDataModel/issues/143)
 - Change spotless to use googleJavaFormat('1.28.0') [#1409](https://github.com/ie3-institute/PowerSystemDataModel/issues/1409)
 - Change `TimeSeries` to no longer extend `UniqueEntity` [#1441](https://github.com/ie3-institute/PowerSystemDataModel/issues/1441)
+- Refactor CSV handling into shared file-based infrastructure. [#1450](https://github.com/ie3-institute/PowerSystemDataModel/issues/1445)
 - Change Evcs.locationType from single element to list [#1460](https://github.com/ie3-institute/PowerSystemDataModel/issues/1460)
 
 ## [8.1.0] - 2025-07-25
@@ -130,6 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `MappingEntryies` not getting processed by adding `Getter` methods for record fields [#1084](https://github.com/ie3-institute/PowerSystemDataModel/issues/1084) 
 - Fixed "depth of discharge" in documentation [#872](https://github.com/ie3-institute/PowerSystemDataModel/issues/872)
 - Fixed project being build twice in CI [#994](https://github.com/ie3-institute/PowerSystemDataModel/issues/994)
+- Fix figure of SubGridContainer in rtd and clarify definitions [#1458](https://github.com/ie3-institute/PowerSystemDataModel/issues/1458) 
 
 ### Changed
 - Improvements to the search for corner points in `IdCoordinateSource` [#1016](https://github.com/ie3-institute/PowerSystemDataModel/issues/1016)
