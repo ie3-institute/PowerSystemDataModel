@@ -8,10 +8,11 @@ package edu.ie3.datamodel.io.source.csv
 import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
 
 import edu.ie3.datamodel.exceptions.SourceException
-import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
+import edu.ie3.datamodel.io.file.FileType
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.util.TimeUtil
@@ -19,7 +20,6 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import java.nio.file.Path
-import java.time.ZoneId
 
 class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
@@ -99,7 +99,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The factory method in csv time series source refuses to build time series with unsupported column type"() {
     given:
-    def metaInformation = new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), ColumnScheme.WEATHER, Path.of("its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"))
+    def metaInformation = new FileIndividualTimeSeriesMetaInformation(UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), ColumnScheme.WEATHER, Path.of("its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), FileType.CSV)
 
     when:
     CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation)
@@ -111,7 +111,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
   def "The factory method in csv time series source builds a time series source for all supported column types"() {
     given:
-    def metaInformation = new CsvIndividualTimeSeriesMetaInformation(uuid, columnScheme, path)
+    def metaInformation = new FileIndividualTimeSeriesMetaInformation(uuid, columnScheme, path, FileType.CSV)
 
     when:
     def actual = CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation)

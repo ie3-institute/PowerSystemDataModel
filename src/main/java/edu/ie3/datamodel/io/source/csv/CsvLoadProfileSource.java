@@ -8,8 +8,8 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
+import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.LoadProfileSource;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
@@ -37,7 +37,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
 
   public CsvLoadProfileSource(
       CsvDataSource source,
-      CsvLoadProfileMetaInformation metaInformation,
+      FileLoadProfileMetaInformation metaInformation,
       Class<V> entryClass,
       LoadProfileFactory<P, V> entryFactory) {
     super(metaInformation, entryClass, entryFactory);
@@ -98,6 +98,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
    * @return an individual time series
    */
   protected LoadProfileTimeSeries<P, V> buildLoadProfileTimeSeries(
+      FileLoadProfileMetaInformation metaInformation,
       Function<Map<String, String>, Try<LoadProfileEntry<V>, FactoryException>>
           fieldToValueFunction)
       throws SourceException {

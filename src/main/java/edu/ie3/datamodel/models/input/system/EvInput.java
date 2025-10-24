@@ -14,6 +14,8 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes an electric vehicle */
 public class EvInput extends SystemParticipantInput implements HasType {
@@ -69,6 +71,11 @@ public class EvInput extends SystemParticipantInput implements HasType {
   @Override
   public EvTypeInput getType() {
     return type;
+  }
+
+  @Override
+  public ComparableQuantity<Power> sRated() {
+    return this.type.getsRated();
   }
 
   public EvInputCopyBuilder copy() {

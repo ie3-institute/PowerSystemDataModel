@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added weathersource documentation [#1390](https://github.com/ie3-institute/PowerSystemDataModel/issues/1390)
 - Added standard asset parameter for `3wTransformer` in `ReadTheDocs` [#1417](https://github.com/ie3-institute/PowerSystemDataModel/issues/1417)
+- Added getter sRated for SystemParticipant inputs and updated them in tests in src[#1412](https://github.com/ie3-institute/PowerSystemDataModel/issues/1412)
+- Added converters documentation [#1139](https://github.com/ie3-institute/PowerSystemDataModel/issues/1139)
 - Added abstraction for power value sources [#1438](https://github.com/ie3-institute/PowerSystemDataModel/issues/1438)
 
 ### Fixed
@@ -16,12 +18,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix transformer susceptance in readTheDocs to negative values [#1078](https://github.com/ie3-institute/PowerSystemDataModel/issues/1078)
 - Added mising fields to field validation [#1422](https://github.com/ie3-institute/PowerSystemDataModel/issues/1422)
 - Fixed the issues with rtd for Cylindrical thermal storage [#1273](https://github.com/ie3-institute/PowerSystemDataModel/issues/1273)
+- Updated Controlling_em for all the loads in readthedocs[#1447](https://github.com/ie3-institute/PowerSystemDataModel/issues/1447)
+- Included a doFirst clause into `checkJavaVersion.gradle` [#1462](https://github.com/ie3-institute/PowerSystemDataModel/issues/1462)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
 - Extend `GermanVoltageLevelUtils` with more synonymousIds [#143](https://github.com/ie3-institute/PowerSystemDataModel/issues/143)
 - Change spotless to use googleJavaFormat('1.28.0') [#1409](https://github.com/ie3-institute/PowerSystemDataModel/issues/1409)
 - Change `TimeSeries` to no longer extend `UniqueEntity` [#1441](https://github.com/ie3-institute/PowerSystemDataModel/issues/1441)
+- Refactor CSV handling into shared file-based infrastructure. [#1450](https://github.com/ie3-institute/PowerSystemDataModel/issues/1445)
 
 ## [8.1.0] - 2025-07-25
 
@@ -126,6 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `MappingEntryies` not getting processed by adding `Getter` methods for record fields [#1084](https://github.com/ie3-institute/PowerSystemDataModel/issues/1084) 
 - Fixed "depth of discharge" in documentation [#872](https://github.com/ie3-institute/PowerSystemDataModel/issues/872)
 - Fixed project being build twice in CI [#994](https://github.com/ie3-institute/PowerSystemDataModel/issues/994)
+- Fix figure of SubGridContainer in rtd and clarify definitions [#1458](https://github.com/ie3-institute/PowerSystemDataModel/issues/1458) 
 
 ### Changed
 - Improvements to the search for corner points in `IdCoordinateSource` [#1016](https://github.com/ie3-institute/PowerSystemDataModel/issues/1016)
