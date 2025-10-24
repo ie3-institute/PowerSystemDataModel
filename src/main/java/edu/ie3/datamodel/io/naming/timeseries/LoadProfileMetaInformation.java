@@ -32,7 +32,7 @@ public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
 
   @Override
   public int hashCode() {
-    return Objects.hash(profile);
+    return Objects.hash(super.hashCode(), profile);
   }
 
   @Override

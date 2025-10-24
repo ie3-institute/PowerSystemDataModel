@@ -71,18 +71,8 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   }
 
   @Override
-  public Optional<PValue> getValue(TimeSeriesInputValue data) {
-    return loadProfileTimeSeries.getValue(data.time());
-  }
-
-  @Override
   public Supplier<Optional<PValue>> getValueSupplier(TimeSeriesInputValue data) {
     return loadProfileTimeSeries.supplyValue(data.time());
-  }
-
-  @Override
-  public P getProfile() {
-    return loadProfileTimeSeries.getLoadProfile();
   }
 
   @Override

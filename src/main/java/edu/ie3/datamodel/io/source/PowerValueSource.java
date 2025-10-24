@@ -17,29 +17,21 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Interface defining base functionality for power value sources. */
 public sealed interface PowerValueSource<
-        P extends PowerProfile, ID extends PowerValueSource.InputData>
+        P extends PowerProfile, I extends PowerValueSource.PowerValueIdentifier>
     permits PowerValueSource.MarkovBased, PowerValueSource.TimeSeriesBased {
 
   /** Returns the profile of this source. */
   P getProfile();
 
   /**
-   * Method to get the next power value based on the provided input data.
-   *
-   * @param data input data that is used to calculate the next power value.
-   * @return an option for the power value.
-   */
-  Optional<PValue> getValue(ID data);
-
-  /**
    * Method to get a supplier for the next power value based on the provided input data. Depending
    * on the implementation the supplier will either always return the same value or each time a
-   * random value. To return one constant value please use {@link #getValue(InputData)}.
+   * random value.
    *
    * @param data input data that is used to calculate the next power value.
    * @return A supplier for an option on the value at the given time step.
    */
-  Supplier<Optional<PValue>> getValueSupplier(ID data);
+  Supplier<Optional<PValue>> getValueSupplier(I data);
 
   /**
    * Method to determine the next timestamp for which data is present.
@@ -63,16 +55,16 @@ public sealed interface PowerValueSource<
       extends PowerValueSource<LoadProfile, TimeSeriesInputValue> {}
 
   /** Interface for markov-chain-based power value sources. */
-  non-sealed interface MarkovBased extends PowerValueSource<PowerProfile, InputData> {}
+  non-sealed interface MarkovBased extends PowerValueSource<PowerProfile, PowerValueIdentifier> {}
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // input data
 
   /**
-   * Interface for the input data of {@link #getValue(InputData)}. The data is used to determine the
-   * next power.
+   * Interface for the input data of {@link #getValueSupplier(PowerValueIdentifier)}. The data is
+   * used to determine the next power.
    */
-  sealed interface InputData permits PowerValueSource.TimeSeriesInputValue {
+  sealed interface PowerValueIdentifier permits PowerValueSource.TimeSeriesInputValue {
     /** Returns the timestamp for which a power value is needed. */
     ZonedDateTime getTime();
   }
@@ -82,7 +74,7 @@ public sealed interface PowerValueSource<
    *
    * @param time
    */
-  record TimeSeriesInputValue(ZonedDateTime time) implements InputData {
+  record TimeSeriesInputValue(ZonedDateTime time) implements PowerValueIdentifier {
     @Override
     public ZonedDateTime getTime() {
       return time;

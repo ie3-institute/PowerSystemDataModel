@@ -100,22 +100,10 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   }
 
   @Override
-  public Optional<PValue> getValue(TimeSeriesInputValue data) {
-    ZonedDateTime time = data.time();
-    return queryForValue(time).map(loadValue -> loadValue.getValue(time, profile));
-  }
-
-  @Override
   public Supplier<Optional<PValue>> getValueSupplier(TimeSeriesInputValue data) {
     ZonedDateTime time = data.time();
     Optional<LoadValues<P>> loadValueOption = queryForValue(time);
-
-    if (loadValueOption.isPresent()) {
-      LoadValues<P> loadValue = loadValueOption.get();
-      return () -> Optional.of(loadValue.getValue(time, profile));
-    } else {
-      return Optional::empty;
-    }
+    return () -> loadValueOption.map(v -> v.getValue(time, profile));
   }
 
   @Override
