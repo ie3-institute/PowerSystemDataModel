@@ -98,7 +98,6 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
    * @return an individual time series
    */
   protected LoadProfileTimeSeries<P, V> buildLoadProfileTimeSeries(
-      FileLoadProfileMetaInformation metaInformation,
       Function<Map<String, String>, Try<LoadProfileEntry<V>, FactoryException>>
           fieldToValueFunction)
       throws SourceException {

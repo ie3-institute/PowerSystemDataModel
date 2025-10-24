@@ -14,6 +14,7 @@ import edu.ie3.datamodel.io.factory.timeseries.LoadProfileData;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.factory.timeseries.RandomLoadProfileFactory;
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.io.source.csv.CsvLoadProfileSource;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
