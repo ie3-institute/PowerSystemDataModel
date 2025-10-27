@@ -17,11 +17,6 @@ public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
     this.profile = profile;
   }
 
-  public LoadProfileMetaInformation(UUID uuid, String profile) {
-    super(uuid);
-    this.profile = profile;
-  }
-
   public String getProfile() {
     return profile;
   }
@@ -41,13 +36,6 @@ public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
 
   @Override
   public String toString() {
-    return "LoadProfileTimeSeriesMetaInformation{"
-        + "uuid='"
-        + getUuid()
-        + '\''
-        + ", profile='"
-        + profile
-        + '\''
-        + '}';
+    return "LoadProfileTimeSeriesMetaInformation{profile='" + profile + '}';
   }
 }
