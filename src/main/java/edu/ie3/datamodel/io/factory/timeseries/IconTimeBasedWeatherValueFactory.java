@@ -33,7 +33,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   private static final String TEMPERATURE = "t2m";
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
-  private static final String GROUND_TEMPERATURE_0CM = "tG";
+  private static final String GROUND_TEMPERATURE_0CM = "t0cm";
   private static final String GROUND_TEMPERATURE_80CM = "t80cm";
 
   public IconTimeBasedWeatherValueFactory() {
@@ -92,9 +92,9 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
     ComparableQuantity<Temperature> groundTemp0cm =
-        data.getQuantityOptional(GROUND_TEMPERATURE_0CM, StandardUnits.TEMPERATURE).orElse(null);
+        data.getQuantityOptional(GROUND_TEMPERATURE_0CM, Units.KELVIN).orElse(null);
     ComparableQuantity<Temperature> groundTemp80cm =
-        data.getQuantityOptional(GROUND_TEMPERATURE_80CM, StandardUnits.TEMPERATURE).orElse(null);
+        data.getQuantityOptional(GROUND_TEMPERATURE_80CM, Units.KELVIN).orElse(null);
 
     WeatherValue weatherValue =
         new WeatherValue(

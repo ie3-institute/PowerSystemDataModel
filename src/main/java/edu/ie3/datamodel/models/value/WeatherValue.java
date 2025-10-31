@@ -29,32 +29,32 @@ public class WeatherValue implements Value {
   private final WindValue wind;
 
   /** Ground temperature value at 0cm depth for this coordinate */
-  private final GroundTemperatureValue groundTemperature0cm;
+  private final GroundTemperatureValue groundTemperatureValueOne;
 
   /** Ground temperature value at 80cm depth for this coordinate */
-  private final GroundTemperatureValue groundTemperature80cm;
+  private final GroundTemperatureValue groundTemperatureValueTwo;
 
   /**
    * @param coordinate of this weather value set
    * @param solarIrradiance values for this coordinate
    * @param temperature values for this coordinate
    * @param wind values for this coordinate
-   * @param groundTemperature0cm values for this coordinate (can be null)
-   * @param groundTemperature80cm values for this coordinate (can be null)
+   * @param groundTemperatureValueOne values for this coordinate (can be null)
+   * @param groundTemperatureValueTwo values for this coordinate (can be null)
    */
   public WeatherValue(
       Point coordinate,
       SolarIrradianceValue solarIrradiance,
       TemperatureValue temperature,
       WindValue wind,
-      GroundTemperatureValue groundTemperature0cm,
-      GroundTemperatureValue groundTemperature80cm) {
+      GroundTemperatureValue groundTemperatureValueOne,
+      GroundTemperatureValue groundTemperatureValueTwo) {
     this.coordinate = coordinate;
     this.solarIrradiance = solarIrradiance;
     this.temperature = temperature;
     this.wind = wind;
-    this.groundTemperature0cm = groundTemperature0cm;
-    this.groundTemperature80cm = groundTemperature80cm;
+    this.groundTemperatureValueOne = groundTemperatureValueOne;
+    this.groundTemperatureValueTwo = groundTemperatureValueTwo;
   }
 
   /**
@@ -67,9 +67,9 @@ public class WeatherValue implements Value {
    * @param direction Direction, the wind comes from as an angle from north increasing clockwise
    *     (typically in rad)
    * @param velocity Wind velocity for this coordinate (typically in m/s)
-   * @param groundTemp0cm Ground temperature at 0cm for this coordinate (typically in K, can be
+   * @param groundTempValOne Ground temperature at 0cm for this coordinate (typically in K, can be
    *     null)
-   * @param groundTemp80cm Ground temperature at 80cm for this coordinate (typically in K, can be
+   * @param groundTempValTwo Ground temperature at 80cm for this coordinate (typically in K, can be
    *     null)
    */
   public WeatherValue(
@@ -79,49 +79,15 @@ public class WeatherValue implements Value {
       ComparableQuantity<Temperature> temperature,
       ComparableQuantity<Angle> direction,
       ComparableQuantity<Speed> velocity,
-      ComparableQuantity<Temperature> groundTemp0cm,
-      ComparableQuantity<Temperature> groundTemp80cm) {
+      ComparableQuantity<Temperature> groundTempValOne,
+      ComparableQuantity<Temperature> groundTempValTwo) {
     this(
         coordinate,
         new SolarIrradianceValue(directSolarIrradiance, diffuseSolarIrradiance),
         new TemperatureValue(temperature),
         new WindValue(direction, velocity),
-        groundTemp0cm == null ? null : new GroundTemperatureValue(groundTemp0cm),
-        groundTemp80cm == null ? null : new GroundTemperatureValue(groundTemp80cm));
-  }
-
-  /**
-   * @deprecated Use the constructor that includes ground temperatures instead
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  public WeatherValue(
-      Point coordinate,
-      SolarIrradianceValue solarIrradiance,
-      TemperatureValue temperature,
-      WindValue wind) {
-    this(coordinate, solarIrradiance, temperature, wind, null, null);
-  }
-
-  /**
-   * @deprecated Use the constructor that includes ground temperatures instead
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  public WeatherValue(
-      Point coordinate,
-      ComparableQuantity<Irradiance> directSolarIrradiance,
-      ComparableQuantity<Irradiance> diffuseSolarIrradiance,
-      ComparableQuantity<Temperature> temperature,
-      ComparableQuantity<Angle> direction,
-      ComparableQuantity<Speed> velocity) {
-    this(
-        coordinate,
-        directSolarIrradiance,
-        diffuseSolarIrradiance,
-        temperature,
-        direction,
-        velocity,
-        null,
-        null);
+        groundTempValOne == null ? null : new GroundTemperatureValue(groundTempValOne),
+        groundTempValTwo == null ? null : new GroundTemperatureValue(groundTempValTwo));
   }
 
   public Point getCoordinate() {
@@ -140,12 +106,12 @@ public class WeatherValue implements Value {
     return wind;
   }
 
-  public Optional<GroundTemperatureValue> getGroundTemperature0cm() {
-    return Optional.ofNullable(groundTemperature0cm);
+  public Optional<GroundTemperatureValue> getGroundTemperatureValueOne() {
+    return Optional.ofNullable(groundTemperatureValueOne);
   }
 
-  public Optional<GroundTemperatureValue> getGroundTemperature80cm() {
-    return Optional.ofNullable(groundTemperature80cm);
+  public Optional<GroundTemperatureValue> getGroundTemperatureValueTwo() {
+    return Optional.ofNullable(groundTemperatureValueTwo);
   }
 
   @Override
@@ -157,8 +123,8 @@ public class WeatherValue implements Value {
         && solarIrradiance.equals(that.solarIrradiance)
         && temperature.equals(that.temperature)
         && wind.equals(that.wind)
-        && Objects.equals(groundTemperature0cm, that.groundTemperature0cm)
-        && Objects.equals(groundTemperature80cm, that.groundTemperature80cm);
+        && Objects.equals(groundTemperatureValueOne, that.groundTemperatureValueOne)
+        && Objects.equals(groundTemperatureValueTwo, that.groundTemperatureValueTwo);
   }
 
   @Override
@@ -168,8 +134,8 @@ public class WeatherValue implements Value {
         solarIrradiance,
         temperature,
         wind,
-        groundTemperature0cm,
-        groundTemperature80cm);
+        groundTemperatureValueOne,
+        groundTemperatureValueTwo);
   }
 
   @Override
@@ -183,10 +149,10 @@ public class WeatherValue implements Value {
         + temperature
         + ", wind="
         + wind
-        + ", groundTemperature0cm="
-        + groundTemperature0cm
-        + ", groundTemperature80cm="
-        + groundTemperature80cm
+        + ", groundTemperatureValueOne="
+        + groundTemperatureValueOne
+        + ", groundTemperatureValueTwo="
+        + groundTemperatureValueOne
         + '}';
   }
 }

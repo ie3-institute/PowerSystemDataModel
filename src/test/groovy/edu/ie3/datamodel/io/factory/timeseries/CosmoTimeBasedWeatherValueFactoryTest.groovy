@@ -28,7 +28,9 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "directIrradiance" : "286.872985839844",
       "temperature"      : "",
       "windDirection"    : "0",
-      "windVelocity"     : "1.66103506088257"
+      "windVelocity"     : "1.66103506088257",
+      "groundTemperatureValueOne"     : "",
+      "groundTemperatureValueTwo"     : ""
     ]
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
@@ -39,7 +41,9 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
         Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
         null,
         Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY)))
+        Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
+        null,
+        null))
 
     when:
     def model = factory.buildModel(data)
@@ -61,7 +65,9 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "directIrradiance" : "286.872985839844",
       "temperature"      : "278.019012451172",
       "windDirection"    : "0",
-      "windVelocity"     : "1.66103506088257"
+      "windVelocity"     : "1.66103506088257",
+      "groundTemperatureValueOne"     : "",
+      "groundTemperatureValueTwo"     : ""
     ]
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
@@ -72,7 +78,9 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
         Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
         Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY)))
+        Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
+    Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
+    Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE)))
 
     when:
     def model = factory.buildModel(data)
