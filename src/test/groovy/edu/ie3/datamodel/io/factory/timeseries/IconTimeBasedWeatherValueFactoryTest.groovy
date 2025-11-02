@@ -84,7 +84,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       "aswdirS"     : "2.317613203124999",
       "t2m"         : "289.1179319051744",
       "tg"          : "288.4101691197649",
-            "t_v1":"288.4101691197649",
+      "t_v1":"288.4101691197649",
       "t_v2":"288.4101691197649",
       "u10m"        : "0.3021732864307963",
       "u131m"       : "2.6058700426057797",
@@ -127,10 +127,10 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       assert QuantityUtil.isEquivalentAbs(it.value.wind.direction.get(), Quantities.getQuantity(214.16711674907722, PowerSystemUnits.DEGREE_GEOM))
       assert it.value.wind.velocity.present
       assert QuantityUtil.isEquivalentAbs(it.value.wind.velocity.get(), Quantities.getQuantity(4.640010877529081, PowerSystemUnits.METRE_PER_SECOND))
-        assert it.value.groundTemperatureValueOne.present
-        assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureValueOne.get().temperature.get(), Quantities.getQuantity(15.9679319051744, Units.CELSIUS))
-        assert it.value.groundTemperatureValueTwo.present
-        assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureValueTwo.get().temperature.get(), Quantities.getQuantity(15.9679319051744, Units.CELSIUS))
+      assert it.value.groundTemperatureValueOne.present
+      assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureValueOne.get().temperature.get(), Quantities.getQuantity(15.9679319051744, Units.CELSIUS))
+      assert it.value.groundTemperatureValueTwo.present
+      assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureValueTwo.get().temperature.get(), Quantities.getQuantity(15.9679319051744, Units.CELSIUS))
     }
   }
 }
