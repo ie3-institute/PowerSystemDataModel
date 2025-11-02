@@ -152,7 +152,7 @@ public class WeatherValue implements Value {
         + ", groundTemperatureValueOne="
         + groundTemperatureValueOne
         + ", groundTemperatureValueTwo="
-        + groundTemperatureValueOne
+        + groundTemperatureValueTwo
         + '}';
   }
 }
