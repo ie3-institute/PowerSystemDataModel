@@ -12,6 +12,7 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.value.GroundTemperatureValue
 import edu.ie3.datamodel.models.value.SolarIrradianceValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -142,8 +143,11 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
         ),
         new WindValue(
         Quantities.getQuantity(12.1314, WIND_DIRECTION),
-        Quantities.getQuantity(15.1617, WIND_VELOCITY),
-        Quantities.getQuantity(8, TEMPERATURE),
+        Quantities.getQuantity(15.1617, WIND_VELOCITY)),
+        new GroundTemperatureValue(
+        Quantities.getQuantity(8.0, TEMPERATURE)
+        ),
+        new GroundTemperatureValue(
         Quantities.getQuantity(9.5, TEMPERATURE)
         )
         )

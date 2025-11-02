@@ -128,9 +128,9 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       assert it.value.wind.velocity.present
       assert QuantityUtil.isEquivalentAbs(it.value.wind.velocity.get(), Quantities.getQuantity(4.640010877529081, PowerSystemUnits.METRE_PER_SECOND))
       assert it.value.groundTemperatureValueOne.present
-      assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureValueOne.get().temperature.get(), Quantities.getQuantity(15.9679319051744, Units.CELSIUS))
+      assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureValueOne.get().temperature.get(), Quantities.getQuantity(15.2601691197649, Units.CELSIUS))
       assert it.value.groundTemperatureValueTwo.present
-      assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureValueTwo.get().temperature.get(), Quantities.getQuantity(15.9679319051744, Units.CELSIUS))
+      assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureValueTwo.get().temperature.get(), Quantities.getQuantity(15.2601691197649, Units.CELSIUS))
     }
   }
 }
