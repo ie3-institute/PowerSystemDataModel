@@ -18,9 +18,9 @@ import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
-import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -40,13 +40,13 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
       FileLoadProfileMetaInformation metaInformation,
       Class<V> entryClass,
       LoadProfileFactory<P, V> entryFactory) {
-    super(entryClass, entryFactory);
+    super(metaInformation, entryClass, entryFactory);
     this.dataSource = source;
     this.filePath = metaInformation.getFullFilePath();
 
     /* Read in the full time series */
     try {
-      this.loadProfileTimeSeries = buildLoadProfileTimeSeries(metaInformation, this::createEntries);
+      this.loadProfileTimeSeries = buildLoadProfileTimeSeries(this::createEntries);
     } catch (SourceException e) {
       throw new IllegalArgumentException(
           "Unable to obtain load profile time series with profile '"
@@ -61,24 +61,18 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
     validate(entryClass, () -> dataSource.getSourceFields(filePath), entryFactory);
   }
 
-  @Override
   public LoadProfileTimeSeries<P, V> getTimeSeries() {
     return loadProfileTimeSeries;
   }
 
   @Override
-  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
-    return loadProfileTimeSeries.getTimeKeysAfter(time);
+  public Set<LoadProfileEntry<V>> getEntries() {
+    return loadProfileTimeSeries.getEntries();
   }
 
   @Override
-  public Optional<PValue> getValue(ZonedDateTime time) throws SourceException {
-    return loadProfileTimeSeries.getValue(time);
-  }
-
-  @Override
-  public P getLoadProfile() {
-    return getTimeSeries().getLoadProfile();
+  public Supplier<Optional<PValue>> getValueSupplier(TimeSeriesInputValue data) {
+    return loadProfileTimeSeries.supplyValue(data.time());
   }
 
   @Override
@@ -87,7 +81,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   }
 
   @Override
-  public Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling() {
+  public Optional<ComparableQuantity<Energy>> getProfileEnergyScaling() {
     return loadProfileTimeSeries.loadProfileScaling();
   }
 
@@ -98,15 +92,12 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
    * entries are obtained entries with the help of {@code fieldToValueFunction}. If the file does
    * not exist, an empty Stream is returned.
    *
-   * @param metaInformation containing an unique identifier of the time series, a path to the file
-   *     to read as well as the profile
    * @param fieldToValueFunction function, that is able to transfer a mapping (from field to value)
    *     onto a specific instance of the targeted entry class
    * @throws SourceException If the file cannot be read properly
    * @return an individual time series
    */
   protected LoadProfileTimeSeries<P, V> buildLoadProfileTimeSeries(
-      FileLoadProfileMetaInformation metaInformation,
       Function<Map<String, String>, Try<LoadProfileEntry<V>, FactoryException>>
           fieldToValueFunction)
       throws SourceException {
@@ -120,6 +111,6 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
             .getOrThrow()
             .collect(Collectors.toSet());
 
-    return entryFactory.build(metaInformation, entries);
+    return entryFactory.build(profile, entries);
   }
 }

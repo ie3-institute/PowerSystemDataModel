@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE;
 import static tech.units.indriya.unit.Units.WATT;
 
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
@@ -73,9 +72,7 @@ public class RandomLoadProfileFactory
 
   @Override
   public RandomLoadProfileTimeSeries build(
-      LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<RandomLoadValues>> entries) {
-    RandomLoadProfile profile = RANDOM_LOAD_PROFILE;
-
+      RandomLoadProfile profile, Set<LoadProfileEntry<RandomLoadValues>> entries) {
     ComparableQuantity<Power> maxPower = calculateMaxPower(profile, entries);
     ComparableQuantity<Energy> profileEnergyScaling = getLoadProfileEnergyScaling(profile);
 
