@@ -21,6 +21,7 @@ import edu.ie3.datamodel.models.result.CongestionResult
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.value.GroundTemperatureValue
 import edu.ie3.datamodel.models.value.SolarIrradianceValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -210,7 +211,9 @@ class UniquenessValidationUtilsTest extends Specification {
     GeoUtils.buildPoint(50d, 7d),
     new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
     new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
-    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))
+    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
+    new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
+    new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))
     )
 
     Set<TimeBasedValue<WeatherValue>> uniqueValues = [
@@ -232,7 +235,9 @@ class UniquenessValidationUtilsTest extends Specification {
     GeoUtils.buildPoint(50d, 7d),
     new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
     new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
-    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))
+    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
+    new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
+    new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))
     )
     Set<TimeBasedValue<WeatherValue>> notUniqueValues = [
       new TimeBasedValue<WeatherValue>(time, value),

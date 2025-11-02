@@ -24,6 +24,8 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY)
   )
 
@@ -33,6 +35,8 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(286.872d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(278.012d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(1.662d, StandardUnits.WIND_VELOCITY)
   )
 
@@ -42,6 +46,8 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(286.873d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(278.013d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(1.663d, StandardUnits.WIND_VELOCITY)
   )
 
@@ -51,6 +57,8 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(287.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(279.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(1.76103506088257d, StandardUnits.WIND_VELOCITY)
   )
 
@@ -60,6 +68,8 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(287.872d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(279.012d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(1.762d, StandardUnits.WIND_VELOCITY)
   )
 
@@ -69,6 +79,8 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(288.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(280.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(1.86103506088257d, StandardUnits.WIND_VELOCITY)
   )
 }
