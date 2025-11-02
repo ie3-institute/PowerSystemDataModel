@@ -63,11 +63,11 @@ Weather data is comprised of five key components:
      - Wind direction, where 0° is North, 90° is East, etc.
      - ° (degrees)
      
-        * - **`groundTemperatureValueOne`**
+   * - **`groundTemperatureValueOne`**
      - Ground temperature at 0cm for this coordinate.
      - K (Kelvin)
      
-        * - **`groundTemperatureValueTwo`**
+   * - **`groundTemperatureValueTwo`**
      - Ground temperature at 0cm for this coordinate.
      - K (Kelvin)
 ```
