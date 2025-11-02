@@ -223,8 +223,8 @@ trait TimeSeriesTestData {
       "temperature"             : "5.0",
       "time"                    : "2020-04-02T10:00:00Z",
       "velocity"                : "10.0",
-      "groundTemperature0cm"    : "",
-      "groundTemperature80cm"   : ""
+      "groundTemperatureValueOne"    : "",
+      "groundTemperatureValueTwo"   : ""
     ] as LinkedHashMap,
     [
       "coordinate"            : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
@@ -234,8 +234,8 @@ trait TimeSeriesTestData {
       "temperature"             : "15.0",
       "time"                    : "2020-04-02T10:15:00Z",
       "velocity"                : "20.0",
-      "groundTemperature0cm"    : "",
-      "groundTemperature80cm"   : ""
+      "groundTemperatureValueOne"    : "",
+      "groundTemperatureValueTwo"   : ""
     ] as LinkedHashMap,
     [
       "coordinate"            : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
@@ -245,8 +245,8 @@ trait TimeSeriesTestData {
       "temperature"             : "10.0",
       "time"                    : "2020-04-02T10:30:00Z",
       "velocity"                : "15.0",
-      "groundTemperature0cm"    : "",
-      "groundTemperature80cm"   : ""
+      "groundTemperatureValueOne"    : "",
+      "groundTemperatureValueTwo"   : ""
     ] as LinkedHashMap
   ] as Set
 

@@ -143,8 +143,8 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
         new WindValue(
         Quantities.getQuantity(12.1314, WIND_DIRECTION),
         Quantities.getQuantity(15.1617, WIND_VELOCITY),
-        Quantities.getQuantity(9.1011, TEMPERATURE)
-
+        Quantities.getQuantity(8, TEMPERATURE),
+        Quantities.getQuantity(9.5, TEMPERATURE)
         )
         )
         )

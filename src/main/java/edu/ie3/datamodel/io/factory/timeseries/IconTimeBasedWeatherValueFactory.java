@@ -33,8 +33,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   private static final String TEMPERATURE = "t2m";
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
-  private static final String GROUND_TEMPERATURE_0CM = "t0cm";
-  private static final String GROUND_TEMPERATURE_80CM = "t80cm";
+  private static final String GROUND_TEMPERATURE_VALUE_ONE = "groundtemperatureone";
+  private static final String GROUND_TEMPERATURE_VALUE_TWO = "groundtemperaturetwo";
 
   public IconTimeBasedWeatherValueFactory() {
     super();
@@ -55,8 +55,9 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "albrad",
             "asobs",
             "aswdifuS",
-            GROUND_TEMPERATURE_0CM,
-            GROUND_TEMPERATURE_80CM,
+            "t_g",
+            "t_v1",
+            "t_v2",
             "u10m",
             "u20m",
             "u216m",
@@ -91,10 +92,10 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
         data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
-    ComparableQuantity<Temperature> groundTemp0cm =
-        data.getQuantityOptional(GROUND_TEMPERATURE_0CM, Units.KELVIN).orElse(null);
-    ComparableQuantity<Temperature> groundTemp80cm =
-        data.getQuantityOptional(GROUND_TEMPERATURE_80CM, Units.KELVIN).orElse(null);
+    ComparableQuantity<Temperature> groundTemperatureValueOne =
+        data.getQuantityOptional(GROUND_TEMPERATURE_VALUE_ONE, Units.KELVIN).orElse(null);
+    ComparableQuantity<Temperature> groundTemperatureValueTwo =
+        data.getQuantityOptional(GROUND_TEMPERATURE_VALUE_TWO, Units.KELVIN).orElse(null);
 
     WeatherValue weatherValue =
         new WeatherValue(
@@ -104,8 +105,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             temperature,
             windDirection,
             windVelocity,
-            groundTemp0cm,
-            groundTemp80cm);
+            groundTemperatureValueOne,
+            groundTemperatureValueTwo);
     return new TimeBasedValue<>(time, weatherValue);
   }
 
