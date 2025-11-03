@@ -58,10 +58,10 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     Map<String, String> parameter = [
       "time"             : TimeUtil.withDefaults.toString(time),
       "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
-      "diffuseIrradiance": "182.671997070312",
+      "diffuseIrradiance": "282.671997070312",
       "directIrradiance" : "286.872985839844",
       "temperature"      : "278.019012451172",
-      "windDirection"    : "50",
+      "windDirection"    : "0",
       "windVelocity"     : "1.66103506088257"
     ]
 
