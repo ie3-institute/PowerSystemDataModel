@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -57,10 +58,10 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     Map<String, String> parameter = [
       "time"             : TimeUtil.withDefaults.toString(time),
       "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
-      "diffuseIrradiance": "282.671997070312",
+      "diffuseIrradiance": "182.671997070312",
       "directIrradiance" : "286.872985839844",
       "temperature"      : "278.019012451172",
-      "windDirection"    : "0",
+      "windDirection"    : "50",
       "windVelocity"     : "1.66103506088257"
     ]
 
@@ -80,4 +81,62 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     then:
     model == expectedResults
   }
+
+    def "A PsdmTimeBasedWeatherValueFactory should throw FactoryException if required field is missing"() {
+        given:
+        def factory = new CosmoTimeBasedWeatherValueFactory()
+        def coordinate = CosmoWeatherTestData.COORDINATE_193186
+        def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
+
+        // Missing 'directIrradiance' field
+        Map<String, String> parameter = [
+                "time"             : TimeUtil.withDefaults.toString(time),
+                "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
+                "diffuseIrradiance": "182.671997070312",
+                "temperature"      : "278.019012451172",
+                "windDirection"    : "50",
+                "windVelocity"     : "1.66103506088257"
+        ]
+
+        def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+        when:
+        factory.buildModel(data)
+
+        then:
+        thrown(FactoryException)
+    }
+
+    def "Smoke Test: This PsdmTimeBasedWeatherValueFactory should fail since expected results doesn't match input"() {
+        given:
+        def factory = new CosmoTimeBasedWeatherValueFactory()
+        def coordinate = CosmoWeatherTestData.COORDINATE_193186
+        def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
+
+        Map<String, String> parameter = [
+                "time"             : TimeUtil.withDefaults.toString(time),
+                "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
+                "diffuseIrradiance": "1.0",
+                "directIrradiance" : "2.0",
+                "temperature"      : "3.0",
+                "windDirection"    : "4",
+                "windVelocity"     : "5.0"
+        ]
+
+        def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+        def expectedResults = new TimeBasedValue(
+                time, new WeatherValue(coordinate,
+                Quantities.getQuantity(5.0, StandardUnits.SOLAR_IRRADIANCE),
+                Quantities.getQuantity(4.0, StandardUnits.SOLAR_IRRADIANCE),
+                Quantities.getQuantity(3.0, StandardUnits.TEMPERATURE),
+                Quantities.getQuantity(2d, StandardUnits.WIND_DIRECTION),
+                Quantities.getQuantity(1.0, StandardUnits.WIND_VELOCITY)))
+
+        when:
+        def model = factory.buildModel(data)
+
+        then:
+        model != expectedResults
+    }
 }
