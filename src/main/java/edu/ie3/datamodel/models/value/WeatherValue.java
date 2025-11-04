@@ -86,8 +86,8 @@ public class WeatherValue implements Value {
         new SolarIrradianceValue(directSolarIrradiance, diffuseSolarIrradiance),
         new TemperatureValue(temperature),
         new WindValue(direction, velocity),
-        groundTempValOne == null ? null : new GroundTemperatureValue(groundTempValOne),
-        groundTempValTwo == null ? null : new GroundTemperatureValue(groundTempValTwo));
+            groundTempValOne.map(GroundTemperatureValue::new),
+            groundTempValTwo.map(GroundTemperatureValue::new));
   }
 
   public Point getCoordinate() {
