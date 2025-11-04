@@ -186,7 +186,7 @@ trait TimeSeriesTestData {
     new TemperatureValue(Quantities.getQuantity(5d, CELSIUS)),
     new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
     Optional.empty(),
-    Optional.empty()
+    Optional.empty(),
     )
     ),
     new TimeBasedValue<>(
