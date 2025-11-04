@@ -9,40 +9,41 @@ import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RAN
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.io.csv.CsvLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileData;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.factory.timeseries.RandomLoadProfileFactory;
+import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.io.source.csv.CsvLoadProfileSource;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
-import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import edu.ie3.datamodel.utils.Try;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Power;
-import tech.units.indriya.ComparableQuantity;
 
 public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
-    extends EntitySource {
+    extends EntitySource implements PowerValueSource.TimeSeriesBased {
+  protected final P profile;
   protected final Class<V> entryClass;
   protected final LoadProfileFactory<P, V> entryFactory;
 
-  protected LoadProfileSource(Class<V> entryClass, LoadProfileFactory<P, V> entryFactory) {
+  protected LoadProfileSource(
+      LoadProfileMetaInformation metaInformation,
+      Class<V> entryClass,
+      LoadProfileFactory<P, V> entryFactory) {
+    this.profile = entryFactory.parseProfile(metaInformation.getProfile());
     this.entryClass = entryClass;
     this.entryFactory = entryFactory;
   }
@@ -60,33 +61,18 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
     return entryFactory.get(factoryData);
   }
 
-  public abstract LoadProfileTimeSeries<P, V> getTimeSeries();
+  /** Returns the load profile entries as a set. */
+  public abstract Set<LoadProfileEntry<V>> getEntries();
 
-  /**
-   * Method to return all time keys after a given timestamp.
-   *
-   * @param time given time
-   * @return a list of time keys
-   */
-  public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time);
+  @Override
+  public P getProfile() {
+    return profile;
+  }
 
-  /**
-   * Method to get the value for a given time.
-   *
-   * @param time for which a value is needed
-   * @return an optional
-   * @throws SourceException if an exception occurred
-   */
-  public abstract Optional<PValue> getValue(ZonedDateTime time) throws SourceException;
-
-  /** Returns the load profile of this source. */
-  public abstract P getLoadProfile();
-
-  /** Returns the maximal power value of the time series */
-  public abstract Optional<ComparableQuantity<Power>> getMaxPower();
-
-  /** Returns the load profile energy scaling for this load profile time series. */
-  public abstract Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling();
+  @Override
+  public Optional<ZonedDateTime> getNextTimeKey(ZonedDateTime time) {
+    return Optional.of(time.plusSeconds(getResolution(getProfile())));
+  }
 
   /**
    * Returns the resolution for the given {@link LoadProfile}.
@@ -125,7 +111,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
             metaInformation ->
                 new CsvLoadProfileSource<>(
                     buildInSource, metaInformation, BdewLoadValues.class, factory))
-        .collect(Collectors.toMap(CsvLoadProfileSource::getLoadProfile, Function.identity()));
+        .collect(Collectors.toMap(CsvLoadProfileSource::getProfile, Function.identity()));
   }
 
   /**
@@ -137,7 +123,7 @@ public abstract class LoadProfileSource<P extends LoadProfile, V extends LoadVal
       getRandomLoadProfile() throws SourceException {
     CsvDataSource buildInSource = getBuildInSource(LoadProfileSource.class, "/load");
 
-    CsvLoadProfileMetaInformation metaInformation =
+    FileLoadProfileMetaInformation metaInformation =
         buildInSource.getCsvLoadProfileMetaInformation(RANDOM_LOAD_PROFILE).values().stream()
             .findAny()
             .orElseThrow();

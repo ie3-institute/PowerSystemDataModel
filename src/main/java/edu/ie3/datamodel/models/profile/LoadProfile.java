@@ -6,16 +6,11 @@
 package edu.ie3.datamodel.models.profile;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public interface LoadProfile extends Serializable {
-  /**
-   * @return The identifying String
-   */
-  String getKey();
+public interface LoadProfile extends PowerProfile {
 
   /**
    * Parses the given key to {@link StandardLoadProfile}.

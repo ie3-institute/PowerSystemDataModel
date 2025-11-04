@@ -18,7 +18,7 @@ In contrast to the `JointGridContainer` it only covers one voltage level and the
 for the predominant voltage level apparent in the container.
 Why predominant?
 As of convention, the `SubGridContainers` hold also reference to the transformers leading to higher sub grids
-and their higher voltage coupling point.
+and their higher voltage coupling point. Thus, the higher voltage coupling point is part of more than one `SubGridContainer`.
 
 ![Sub grid boundary definition for transformers with upstream switchgear](../../../_static/figures/transformerWithSwitchGear.png)
 
