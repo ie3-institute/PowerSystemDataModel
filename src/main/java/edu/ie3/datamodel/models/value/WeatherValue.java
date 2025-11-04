@@ -28,11 +28,11 @@ public class WeatherValue implements Value {
   /** Wind values for this coordinate */
   private final WindValue wind;
 
-  /** Ground temperature value at 0cm depth for this coordinate */
-  private final GroundTemperatureValue groundTemperatureValueOne;
+  /** Ground temperature value for this coordinate */
+  private final Optional<GroundTemperatureValue> groundTemperatureValueOne;
 
-  /** Ground temperature value at 80cm depth for this coordinate */
-  private final GroundTemperatureValue groundTemperatureValueTwo;
+  /** Ground temperature value for this coordinate */
+  private final Optional<GroundTemperatureValue> groundTemperatureValueTwo;
 
   /**
    * @param coordinate of this weather value set
@@ -47,8 +47,8 @@ public class WeatherValue implements Value {
       SolarIrradianceValue solarIrradiance,
       TemperatureValue temperature,
       WindValue wind,
-      GroundTemperatureValue groundTemperatureValueOne,
-      GroundTemperatureValue groundTemperatureValueTwo) {
+      Optional<GroundTemperatureValue> groundTemperatureValueOne,
+      Optional<GroundTemperatureValue> groundTemperatureValueTwo) {
     this.coordinate = coordinate;
     this.solarIrradiance = solarIrradiance;
     this.temperature = temperature;
@@ -67,10 +67,8 @@ public class WeatherValue implements Value {
    * @param direction Direction, the wind comes from as an angle from north increasing clockwise
    *     (typically in rad)
    * @param velocity Wind velocity for this coordinate (typically in m/s)
-   * @param groundTempValOne Ground temperature at 0cm for this coordinate (typically in K, can be
-   *     null)
-   * @param groundTempValTwo Ground temperature at 80cm for this coordinate (typically in K, can be
-   *     null)
+   * @param groundTempValOne Ground temperature for this coordinate (typically in K, can be null)
+   * @param groundTempValTwo Ground temperature for this coordinate (typically in K, can be null)
    */
   public WeatherValue(
       Point coordinate,
@@ -79,15 +77,15 @@ public class WeatherValue implements Value {
       ComparableQuantity<Temperature> temperature,
       ComparableQuantity<Angle> direction,
       ComparableQuantity<Speed> velocity,
-      ComparableQuantity<Temperature> groundTempValOne,
-      ComparableQuantity<Temperature> groundTempValTwo) {
+      Optional<ComparableQuantity<Temperature>> groundTempValOne,
+      Optional<ComparableQuantity<Temperature>> groundTempValTwo) {
     this(
         coordinate,
         new SolarIrradianceValue(directSolarIrradiance, diffuseSolarIrradiance),
         new TemperatureValue(temperature),
         new WindValue(direction, velocity),
-            groundTempValOne.map(GroundTemperatureValue::new),
-            groundTempValTwo.map(GroundTemperatureValue::new));
+        groundTempValOne.map(GroundTemperatureValue::new),
+        groundTempValTwo.map(GroundTemperatureValue::new));
   }
 
   public Point getCoordinate() {
@@ -107,11 +105,11 @@ public class WeatherValue implements Value {
   }
 
   public Optional<GroundTemperatureValue> getGroundTemperatureValueOne() {
-    return Optional.ofNullable(groundTemperatureValueOne);
+    return groundTemperatureValueOne;
   }
 
   public Optional<GroundTemperatureValue> getGroundTemperatureValueTwo() {
-    return Optional.ofNullable(groundTemperatureValueTwo);
+    return groundTemperatureValueTwo;
   }
 
   @Override

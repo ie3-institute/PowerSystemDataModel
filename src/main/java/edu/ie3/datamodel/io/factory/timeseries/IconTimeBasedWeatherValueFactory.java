@@ -55,7 +55,6 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "albrad",
             "asobs",
             "aswdifuS",
-            "t_g",
             "t_v1",
             "t_v2",
             "u10m",
@@ -92,10 +91,10 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
         data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
-    ComparableQuantity<Temperature> groundTemperatureValueOne =
-        data.getQuantityOptional(GROUND_TEMPERATURE_VALUE_ONE, Units.KELVIN).orElse(null);
-    ComparableQuantity<Temperature> groundTemperatureValueTwo =
-        data.getQuantityOptional(GROUND_TEMPERATURE_VALUE_TWO, Units.KELVIN).orElse(null);
+    Optional<ComparableQuantity<Temperature>> groundTemperatureValueOne =
+        data.getQuantityOptional(GROUND_TEMPERATURE_VALUE_ONE, Units.KELVIN);
+    Optional<ComparableQuantity<Temperature>> groundTemperatureValueTwo =
+        data.getQuantityOptional(GROUND_TEMPERATURE_VALUE_TWO, Units.KELVIN);
 
     WeatherValue weatherValue =
         new WeatherValue(
