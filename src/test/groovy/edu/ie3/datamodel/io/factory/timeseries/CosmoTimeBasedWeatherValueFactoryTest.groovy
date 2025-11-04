@@ -58,7 +58,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     Map<String, String> parameter = [
       "time"             : TimeUtil.withDefaults.toString(time),
-      "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
+      "uuid"             : "c0aaf6fc-693a-458d-8d1d-d0a5093f262a",
       "diffuseIrradiance": "282.671997070312",
       "directIrradiance" : "286.872985839844",
       "temperature"      : "278.019012451172",
@@ -93,7 +93,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     // Missing 'directIrradiance' field
     Map<String, String> parameter = [
       "time"             : TimeUtil.withDefaults.toString(time),
-      "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
+      "uuid"             : "1fc66d18-ea7d-4690-890e-9ee946c8b7b5",
       "diffuseIrradiance": "182.671997070312",
       "temperature"      : "278.019012451172",
       "windDirection"    : "50",
@@ -117,7 +117,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     Map<String, String> parameter = [
       "time"             : TimeUtil.withDefaults.toString(time),
-      "uuid"             : "980f7714-8def-479f-baae-4deed6c8d6d1",
+      "uuid"             : "1fc66d18-ea7d-4690-890e-9ee946c8b7b5",
       "diffuseIrradiance": "1.0",
       "directIrradiance" : "2.0",
       "temperature"      : "3.0",
