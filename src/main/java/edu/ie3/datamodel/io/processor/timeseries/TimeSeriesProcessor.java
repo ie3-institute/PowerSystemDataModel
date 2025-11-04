@@ -172,6 +172,17 @@ public class TimeSeriesProcessor<
           .forEach(addFunction.apply(WEATHER_IRRADIANCE));
       mapFieldNameToGetter(TemperatureValue.class).forEach(addFunction.apply(WEATHER_TEMPERATURE));
       mapFieldNameToGetter(WindValue.class).forEach(addFunction.apply(WEATHER_WIND));
+      Map<String, GetterMethod> groundTempMap = mapFieldNameToGetter(GroundTemperatureValue.class);
+      groundTempMap.forEach(
+          (fieldName, getter) ->
+              addFunction
+                  .apply(GROUND_TEMPERATURE_ONE)
+                  .accept("groundTemperatureValueOne", getter));
+      groundTempMap.forEach(
+          (fieldName, getter) ->
+              addFunction
+                  .apply(GROUND_TEMPERATURE_TWO)
+                  .accept("groundTemperatureValueTwo", getter));
 
     } else if (valueClass.equals(BdewLoadValues.class)) {
 
@@ -272,6 +283,22 @@ public class TimeSeriesProcessor<
 
       Map<String, GetterMethod> windFieldToMethod = extractFieldToMethod(WEATHER_WIND);
       valueResult.putAll(processObject(weatherValue.getWind(), windFieldToMethod));
+
+      Map<String, GetterMethod> groundTempOneFieldToMethod =
+          extractFieldToMethod(GROUND_TEMPERATURE_ONE);
+      if (weatherValue.getGroundTemperatureValueOne().isPresent()) {
+        valueResult.putAll(
+            processObject(
+                weatherValue.getGroundTemperatureValueOne().get(), groundTempOneFieldToMethod));
+      }
+
+      Map<String, GetterMethod> groundTempTwoFieldToMethod =
+          extractFieldToMethod(GROUND_TEMPERATURE_TWO);
+      if (weatherValue.getGroundTemperatureValueTwo().isPresent()) {
+        valueResult.putAll(
+            processObject(
+                weatherValue.getGroundTemperatureValueTwo().get(), groundTempTwoFieldToMethod));
+      }
     }
 
     /* Join all information and sort them */

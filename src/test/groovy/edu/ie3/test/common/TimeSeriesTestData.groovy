@@ -185,8 +185,8 @@ trait TimeSeriesTestData {
     new SolarIrradianceValue(Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
     new TemperatureValue(Quantities.getQuantity(5d, CELSIUS)),
     new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
-    null,
-    null
+    Optional.empty(),
+    Optional.empty()
     )
     ),
     new TimeBasedValue<>(
@@ -196,8 +196,8 @@ trait TimeSeriesTestData {
     new SolarIrradianceValue(Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(20d, StandardUnits.SOLAR_IRRADIANCE)),
     new TemperatureValue(Quantities.getQuantity(15d, CELSIUS)),
     new WindValue(Quantities.getQuantity(15d, DEGREE_GEOM), Quantities.getQuantity(20d, METRE_PER_SECOND)),
-    null,
-    null
+    Optional.empty(),
+    Optional.empty()
     )
     ),
     new TimeBasedValue<>(
@@ -223,8 +223,6 @@ trait TimeSeriesTestData {
       "temperature"             : "5.0",
       "time"                    : "2020-04-02T10:00:00Z",
       "velocity"                : "10.0",
-      "groundTemperatureValueOne"    : "10.0",
-      "groundTemperatureValueTwo"   : "10.0"
     ] as LinkedHashMap,
     [
       "coordinate"            : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
@@ -234,8 +232,6 @@ trait TimeSeriesTestData {
       "temperature"             : "15.0",
       "time"                    : "2020-04-02T10:15:00Z",
       "velocity"                : "20.0",
-      "groundTemperatureValueOne"    : "10.0",
-      "groundTemperatureValueTwo"   : "10.0"
     ] as LinkedHashMap,
     [
       "coordinate"            : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
