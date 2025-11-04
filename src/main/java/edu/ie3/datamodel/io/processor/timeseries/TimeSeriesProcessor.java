@@ -286,18 +286,16 @@ public class TimeSeriesProcessor<
 
       Map<String, GetterMethod> groundTempOneFieldToMethod =
           extractFieldToMethod(GROUND_TEMPERATURE_ONE);
-      if (weatherValue.getGroundTemperatureValueOne().isPresent()) {
-        valueResult.putAll(
-            processObject(
-                weatherValue.getGroundTemperatureValueOne().get(), groundTempOneFieldToMethod));
+      Optional<GroundTemperatureValue> gtOneOpt = weatherValue.getGroundTemperatureValueOne();
+      if (gtOneOpt.isPresent()) {
+        valueResult.putAll(processObject(gtOneOpt.get(), groundTempOneFieldToMethod));
       }
 
       Map<String, GetterMethod> groundTempTwoFieldToMethod =
           extractFieldToMethod(GROUND_TEMPERATURE_TWO);
-      if (weatherValue.getGroundTemperatureValueTwo().isPresent()) {
-        valueResult.putAll(
-            processObject(
-                weatherValue.getGroundTemperatureValueTwo().get(), groundTempTwoFieldToMethod));
+      Optional<GroundTemperatureValue> gtTwoOpt = weatherValue.getGroundTemperatureValueTwo();
+      if (gtTwoOpt.isPresent()) {
+        valueResult.putAll(processObject(gtTwoOpt.get(), groundTempTwoFieldToMethod));
       }
     }
 
