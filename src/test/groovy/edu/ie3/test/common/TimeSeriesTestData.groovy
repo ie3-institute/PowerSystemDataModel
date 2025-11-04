@@ -207,8 +207,8 @@ trait TimeSeriesTestData {
     new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE)),
     new TemperatureValue(Quantities.getQuantity(10d, CELSIUS)),
     new WindValue(Quantities.getQuantity(10d, DEGREE_GEOM), Quantities.getQuantity(15d, METRE_PER_SECOND)),
-    new GroundTemperatureValue(Quantities.getQuantity(10d, CELSIUS)),
-    new GroundTemperatureValue(Quantities.getQuantity(10d, CELSIUS))
+    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(10d, CELSIUS))),
+    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(10d, CELSIUS)))
     )
     ),
   ] as Set

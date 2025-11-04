@@ -212,8 +212,8 @@ class UniquenessValidationUtilsTest extends Specification {
     new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
     new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
     new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
-    new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
-    new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))
+    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))),
+    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)))
     )
 
     Set<TimeBasedValue<WeatherValue>> uniqueValues = [
@@ -236,8 +236,8 @@ class UniquenessValidationUtilsTest extends Specification {
     new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
     new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
     new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
-    new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
-    new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))
+    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))),
+    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)))
     )
     Set<TimeBasedValue<WeatherValue>> notUniqueValues = [
       new TimeBasedValue<WeatherValue>(time, value),

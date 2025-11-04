@@ -144,13 +144,12 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
         new WindValue(
         Quantities.getQuantity(12.1314, WIND_DIRECTION),
         Quantities.getQuantity(15.1617, WIND_VELOCITY)),
-        new GroundTemperatureValue(
+        Optional.of(new GroundTemperatureValue(
         Quantities.getQuantity(8.0, TEMPERATURE)
-        ),
-        new GroundTemperatureValue(
+        )),
+        Optional.of(new GroundTemperatureValue(
         Quantities.getQuantity(9.5, TEMPERATURE)
-        )
-        )
+        )))
         )
 
     when:
