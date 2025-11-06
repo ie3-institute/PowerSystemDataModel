@@ -165,7 +165,14 @@ public class TimeSeriesProcessor<
     if (valueClass.equals(WeatherValue.class)) {
       /* Treat the nested weather values specially. */
       /* Flatten the nested structure of Weather value */
-      mapFieldNameToGetter(valueClass, Arrays.asList("solarIrradiance", "temperature", "wind"))
+      mapFieldNameToGetter(
+              valueClass,
+              Arrays.asList(
+                  "solarIrradiance",
+                  "temperature",
+                  "wind",
+                  "groundTemperatureLevel1",
+                  "groundTemperatureLevel2"))
           .forEach(addFunction.apply(VALUE));
 
       mapFieldNameToGetter(SolarIrradianceValue.class)
@@ -177,12 +184,12 @@ public class TimeSeriesProcessor<
           (fieldName, getter) ->
               addFunction
                   .apply(GROUND_TEMPERATURE_LEVEL_1)
-                  .accept("groundTemperatureValueOne", getter));
+                  .accept("groundTemperatureLevel1", getter));
       groundTempMap.forEach(
           (fieldName, getter) ->
               addFunction
                   .apply(GROUND_TEMPERATURE_LEVEL_2)
-                  .accept("groundTemperatureValueTwo", getter));
+                  .accept("groundTemperatureLevel2", getter));
 
     } else if (valueClass.equals(BdewLoadValues.class)) {
 
