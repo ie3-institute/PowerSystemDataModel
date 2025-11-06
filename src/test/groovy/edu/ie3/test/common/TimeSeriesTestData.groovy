@@ -241,8 +241,8 @@ trait TimeSeriesTestData {
       "temperature"             : "10.0",
       "time"                    : "2020-04-02T10:30:00Z",
       "velocity"                : "15.0",
-      "groundTemperatureValueOne"    : "10.0",
-      "groundTemperatureValueTwo"   : "10.0"
+      "groundTemperatureLevel1"    : "10.0",
+      "groundTemperatureLevel2"   : "10.0"
     ] as LinkedHashMap
   ] as Set
 

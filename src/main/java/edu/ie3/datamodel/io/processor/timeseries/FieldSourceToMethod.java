@@ -25,7 +25,7 @@ public record FieldSourceToMethod(FieldSource source, GetterMethod method) {
     WEATHER_IRRADIANCE,
     WEATHER_TEMPERATURE,
     WEATHER_WIND,
-    GROUND_TEMPERATURE_ONE,
-    GROUND_TEMPERATURE_TWO,
+    GROUND_TEMPERATURE_LEVEL_1,
+    GROUND_TEMPERATURE_LEVEL_2,
   }
 }

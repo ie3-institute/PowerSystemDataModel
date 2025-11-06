@@ -127,8 +127,8 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
       "temperature"      : "9.1011",
       "windVelocity"     : "12.1314",
       "windDirection"    : "15.1617",
-      "groundtemperatureone": "8.0",
-      "groundtemperaturetwo": "9.5"
+      "groundTemperaturLevel1": "8.0",
+      "groundTemperatureLevel2": "9.5"
     ]
     def expectedValue = new TimeBasedValue(
         TimeUtil.withDefaults.toZonedDateTime("2020-10-16T12:40:42Z"),
@@ -176,8 +176,8 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
       "temperature"      : "9.1011",
       "windvelocity"     : "12.1314",
       "winddirection"    : "15.1617",
-      "groundtemperatureone": "8.0",
-      "groundtemperaturetwo": "9.5"
+      "groundTemperaturLevel1": "8.0",
+      "groundTemperatureLevel2": "9.5"
     ]
 
     when:
@@ -202,8 +202,8 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
       "temperature"      : "9.1011",
       "windvelocity"     : "12.1314",
       "winddirection"    : "15.1617",
-      "groundtemperatureone": "8.0",
-      "groundtemperaturetwo": "9.5"
+      "groundTemperaturLevel1": "8.0",
+      "groundTemperatureLevel2": "9.5"
     ]
 
     when:
@@ -228,8 +228,8 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
       "temperature"      : "9.1011",
       "windvelocity"     : "12.1314",
       "winddirection"    : "15.1617",
-      "groundtemperatureone": "8.0",
-      "groundtemperaturetwo": "9.5"
+      "groundTemperaturLevel1": "8.0",
+      "groundTemperatureLevel2": "9.5"
     ]
 
     when:

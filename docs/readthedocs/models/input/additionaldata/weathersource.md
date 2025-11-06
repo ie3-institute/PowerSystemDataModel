@@ -63,13 +63,13 @@ Weather data is comprised of five key components:
      - Wind direction, where 0° is North, 90° is East, etc.
      - ° (degrees)
      
-   * - **`groundTemperatureValueOne`**
-     - Ground temperature at 0cm for this coordinate.
+   * - **`groundTemperatureLevel1`**
+     - Ground temperature at level 2 for this coordinate.
      - K (Kelvin)
      
-   * - **`groundTemperatureValueTwo`**
-     - Ground temperature at 0cm for this coordinate.
+   * - **`groundTemperatureLevel2`**
+     - Ground temperature at level 2 for this coordinate.
      - K (Kelvin)
 ```
 Weather data in COSMO and ICON formats is supported. Additional optional weather data can also be provided.
-The ground temperature measurements at 0 cm and 80 cm depth are used because underground cables are typically laid at around 80 cm depth.
+The ground temperature measurements at level 1 and level 2 depth are used. Underground cables are typically laid at around 80 cm depth.

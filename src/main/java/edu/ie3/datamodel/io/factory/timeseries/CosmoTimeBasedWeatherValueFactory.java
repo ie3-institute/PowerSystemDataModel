@@ -33,8 +33,8 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   private static final String TEMPERATURE = "temperature";
   private static final String WIND_DIRECTION = "windDirection";
   private static final String WIND_VELOCITY = "windVelocity";
-  private static final String GROUND_TEMPERATURE_VALUE_ONE = "groundTemperature0cm";
-  private static final String GROUND_TEMPERATURE_VALUE_TWO = "groundTemperature80cm";
+  private static final String GROUND_TEMPERATURE_LEVEL_1 = "groundTemperatureLevel1";
+  private static final String GROUND_TEMPERATURE_LEVEL_2 = "groundTemperatureLevel2";
 
   public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
@@ -60,7 +60,7 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             WIND_VELOCITY);
 
     Set<String> withGroundTemp =
-        expandSet(minConstructorParams, GROUND_TEMPERATURE_VALUE_ONE, GROUND_TEMPERATURE_VALUE_TWO);
+        expandSet(minConstructorParams, GROUND_TEMPERATURE_LEVEL_1, GROUND_TEMPERATURE_LEVEL_2);
 
     return Arrays.asList(minConstructorParams, withGroundTemp);
   }
@@ -80,9 +80,9 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
     ComparableQuantity<Speed> windVelocity =
         data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
     Optional<ComparableQuantity<Temperature>> groundTempValOne =
-        data.getQuantityOptional(GROUND_TEMPERATURE_VALUE_ONE, StandardUnits.TEMPERATURE);
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, StandardUnits.TEMPERATURE);
     Optional<ComparableQuantity<Temperature>> groundTempValTwo =
-        data.getQuantityOptional(GROUND_TEMPERATURE_VALUE_TWO, StandardUnits.TEMPERATURE);
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, StandardUnits.TEMPERATURE);
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,

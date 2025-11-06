@@ -29,8 +29,8 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "temperature"      : "",
       "windDirection"    : "0",
       "windVelocity"     : "1.66103506088257",
-      "groundTemperatureValueOne"     : "",
-      "groundTemperatureValueTwo"     : ""
+      "groundTemperatureLevel1"     : "",
+      "groundTemperatureLevel2"     : ""
     ]
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
@@ -66,8 +66,8 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "temperature"      : "278.019012451172",
       "windDirection"    : "0",
       "windVelocity"     : "1.66103506088257",
-      "groundTemperatureValueOne"     : "",
-      "groundTemperatureValueTwo"     : ""
+      "groundTemperatureLevel1"     : "",
+      "groundTemperatureLevel2"     : ""
     ]
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)

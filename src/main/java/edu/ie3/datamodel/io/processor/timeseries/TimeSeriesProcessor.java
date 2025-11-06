@@ -176,12 +176,12 @@ public class TimeSeriesProcessor<
       groundTempMap.forEach(
           (fieldName, getter) ->
               addFunction
-                  .apply(GROUND_TEMPERATURE_ONE)
+                  .apply(GROUND_TEMPERATURE_LEVEL_1)
                   .accept("groundTemperatureValueOne", getter));
       groundTempMap.forEach(
           (fieldName, getter) ->
               addFunction
-                  .apply(GROUND_TEMPERATURE_TWO)
+                  .apply(GROUND_TEMPERATURE_LEVEL_2)
                   .accept("groundTemperatureValueTwo", getter));
 
     } else if (valueClass.equals(BdewLoadValues.class)) {
@@ -285,15 +285,15 @@ public class TimeSeriesProcessor<
       valueResult.putAll(processObject(weatherValue.getWind(), windFieldToMethod));
 
       Map<String, GetterMethod> groundTempOneFieldToMethod =
-          extractFieldToMethod(GROUND_TEMPERATURE_ONE);
-      Optional<GroundTemperatureValue> gtOneOpt = weatherValue.getGroundTemperatureValueOne();
+          extractFieldToMethod(GROUND_TEMPERATURE_LEVEL_1);
+      Optional<GroundTemperatureValue> gtOneOpt = weatherValue.getGroundTemperatureLevel1();
       if (gtOneOpt.isPresent()) {
         valueResult.putAll(processObject(gtOneOpt.get(), groundTempOneFieldToMethod));
       }
 
       Map<String, GetterMethod> groundTempTwoFieldToMethod =
-          extractFieldToMethod(GROUND_TEMPERATURE_TWO);
-      Optional<GroundTemperatureValue> gtTwoOpt = weatherValue.getGroundTemperatureValueTwo();
+          extractFieldToMethod(GROUND_TEMPERATURE_LEVEL_2);
+      Optional<GroundTemperatureValue> gtTwoOpt = weatherValue.getGroundTemperatureLevel2();
       if (gtTwoOpt.isPresent()) {
         valueResult.putAll(processObject(gtTwoOpt.get(), groundTempTwoFieldToMethod));
       }

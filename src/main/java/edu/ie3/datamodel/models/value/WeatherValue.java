@@ -29,10 +29,10 @@ public class WeatherValue implements Value {
   private final WindValue wind;
 
   /** Ground temperature value for this coordinate */
-  private final Optional<GroundTemperatureValue> groundTemperatureValueOne;
+  private final Optional<GroundTemperatureValue> groundTemperatureLevel1;
 
   /** Ground temperature value for this coordinate */
-  private final Optional<GroundTemperatureValue> groundTemperatureValueTwo;
+  private final Optional<GroundTemperatureValue> groundTemperatureLevel2;
 
   /**
    * @param coordinate of this weather value set
@@ -53,8 +53,8 @@ public class WeatherValue implements Value {
     this.solarIrradiance = solarIrradiance;
     this.temperature = temperature;
     this.wind = wind;
-    this.groundTemperatureValueOne = groundTemperatureValueOne;
-    this.groundTemperatureValueTwo = groundTemperatureValueTwo;
+    this.groundTemperatureLevel1 = groundTemperatureValueOne;
+    this.groundTemperatureLevel2 = groundTemperatureValueTwo;
   }
 
   /**
@@ -106,12 +106,12 @@ public class WeatherValue implements Value {
     return wind;
   }
 
-  public Optional<GroundTemperatureValue> getGroundTemperatureValueOne() {
-    return groundTemperatureValueOne;
+  public Optional<GroundTemperatureValue> getGroundTemperatureLevel1() {
+    return groundTemperatureLevel1;
   }
 
-  public Optional<GroundTemperatureValue> getGroundTemperatureValueTwo() {
-    return groundTemperatureValueTwo;
+  public Optional<GroundTemperatureValue> getGroundTemperatureLevel2() {
+    return groundTemperatureLevel2;
   }
 
   @Override
@@ -123,8 +123,8 @@ public class WeatherValue implements Value {
         && solarIrradiance.equals(that.solarIrradiance)
         && temperature.equals(that.temperature)
         && wind.equals(that.wind)
-        && Objects.equals(groundTemperatureValueOne, that.groundTemperatureValueOne)
-        && Objects.equals(groundTemperatureValueTwo, that.groundTemperatureValueTwo);
+        && Objects.equals(groundTemperatureLevel1, that.groundTemperatureLevel1)
+        && Objects.equals(groundTemperatureLevel2, that.groundTemperatureLevel2);
   }
 
   @Override
@@ -134,8 +134,8 @@ public class WeatherValue implements Value {
         solarIrradiance,
         temperature,
         wind,
-        groundTemperatureValueOne,
-        groundTemperatureValueTwo);
+        groundTemperatureLevel1,
+        groundTemperatureLevel2);
   }
 
   @Override
@@ -149,10 +149,10 @@ public class WeatherValue implements Value {
         + temperature
         + ", wind="
         + wind
-        + ", groundTemperatureValueOne="
-        + groundTemperatureValueOne
-        + ", groundTemperatureValueTwo="
-        + groundTemperatureValueTwo
+        + ", groundTemperatureLevel1="
+        + groundTemperatureLevel1
+        + ", groundTemperatureLevel2="
+        + groundTemperatureLevel2
         + '}';
   }
 }
