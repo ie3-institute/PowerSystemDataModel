@@ -33,8 +33,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   private static final String TEMPERATURE = "t2m";
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
-  private static final String GROUND_TEMPERATURE_LEVEL_1 = "tg_1";
-  private static final String GROUND_TEMPERATURE_LEVEL_2 = "tg_2";
+  private static final String GROUND_TEMPERATURE_LEVEL_1 = "tg1";
+  private static final String GROUND_TEMPERATURE_LEVEL_2 = "tg2";
 
   public IconTimeBasedWeatherValueFactory() {
     super();
@@ -55,8 +55,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "albrad",
             "asobs",
             "aswdifuS",
-            "tg_1",
-            "tg_2",
+            "tg1",
+            "tg2",
             "u10m",
             "u20m",
             "u216m",
