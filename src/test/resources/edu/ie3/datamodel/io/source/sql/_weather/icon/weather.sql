@@ -7,6 +7,7 @@ CREATE TABLE public.weather
     aswdifu_s double precision,
     aswdir_s double precision,
     t_2m double precision,
+    t_g double precision,
     tg_1 double precision,
     tg_2 double precision,
     u_10m double precision,
