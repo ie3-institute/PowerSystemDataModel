@@ -83,7 +83,6 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       "aswdifuS"    : "0.5713421484374998",
       "aswdirS"     : "2.317613203124999",
       "t2m"         : "289.1179319051744",
-      "tg"          : "288.4101691197649",
       "tg1":"288.4101691197649",
       "tg2":"288.4101691197649",
       "u10m"        : "0.3021732864307963",
