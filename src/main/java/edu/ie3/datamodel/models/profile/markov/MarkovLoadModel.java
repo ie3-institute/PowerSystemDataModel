@@ -6,8 +6,10 @@
 package edu.ie3.datamodel.models.profile.markov;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /** Container for Markov-chain-based load models produced by simonaMarkovLoad. */
@@ -52,6 +54,35 @@ public record MarkovLoadModel(
 
     public int stateCount() {
       return values.length == 0 ? 0 : values[0].length;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof TransitionData(String dtype1, String encoding1, double[][][] values1)))
+        return false;
+      return Objects.equals(dtype, dtype1)
+          && Objects.equals(encoding, encoding1)
+          && Arrays.deepEquals(values, values1);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(dtype, encoding, Arrays.deepHashCode(values));
+    }
+
+    @Override
+    public String toString() {
+      return "TransitionData{"
+          + "dtype='"
+          + dtype
+          + '\''
+          + ", encoding='"
+          + encoding
+          + '\''
+          + ", values="
+          + Arrays.deepToString(values)
+          + '}';
     }
   }
 
