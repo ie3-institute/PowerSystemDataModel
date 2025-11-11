@@ -64,7 +64,7 @@ Weather data is comprised of five key components:
      - ° (degrees)
      
    * - **`groundTemperatureLevel1`**
-     - Ground temperature at level 2 for this coordinate.
+     - Ground temperature at level 1 for this coordinate.
      - K (Kelvin)
      
    * - **`groundTemperatureLevel2`**
