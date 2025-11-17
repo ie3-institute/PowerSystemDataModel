@@ -41,7 +41,7 @@ public class MarkovLoadModelFactory
     JsonNode dataNode = requireNode(root, "data");
     TransitionData transitionData =
         parseTransitions(dataNode, timeModel.bucketCount(), valueModel.discretization().states());
-    Optional<GmmBuckets> gmmBuckets = parseGmmBuckets(dataNode.path("gmms"));
+    GmmBuckets gmmBuckets = parseGmmBuckets(requireNode(dataNode, "gmms"));
 
     return new MarkovLoadModel(
         schema,
@@ -51,7 +51,7 @@ public class MarkovLoadModelFactory
         valueModel,
         parameters,
         transitionData,
-        gmmBuckets);
+        Optional.of(gmmBuckets));
   }
 
   @Override
@@ -234,12 +234,9 @@ public class MarkovLoadModelFactory
     return new TransitionData(dtype, encoding, values);
   }
 
-  private static Optional<GmmBuckets> parseGmmBuckets(JsonNode gmmsNode) {
-    if (gmmsNode == null
-        || gmmsNode.isMissingNode()
-        || gmmsNode.isNull()
-        || !gmmsNode.has("buckets")) {
-      return Optional.empty();
+  private static GmmBuckets parseGmmBuckets(JsonNode gmmsNode) {
+    if (gmmsNode == null || gmmsNode.isMissingNode() || gmmsNode.isNull()) {
+      throw new FactoryException("Missing field 'gmms'");
     }
     JsonNode bucketsNode = gmmsNode.get("buckets");
     if (!bucketsNode.isArray()) {
@@ -264,7 +261,7 @@ public class MarkovLoadModelFactory
       }
       buckets.add(new GmmBuckets.GmmBucket(List.copyOf(states)));
     }
-    return Optional.of(new GmmBuckets(List.copyOf(buckets)));
+    return new GmmBuckets(List.copyOf(buckets));
   }
 
   private static List<Double> readDoubleArray(JsonNode node, String field) {
