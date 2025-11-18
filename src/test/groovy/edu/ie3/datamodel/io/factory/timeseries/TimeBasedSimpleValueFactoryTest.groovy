@@ -100,7 +100,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
     def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
-      "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "price": "52.4"
     ], EnergyPriceValue)
@@ -139,7 +138,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def factory = new TimeBasedSimpleValueFactory(HeatAndPValue)
     def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
-      "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "heatDemand": "8.0"
@@ -158,7 +156,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def factory = new TimeBasedSimpleValueFactory(HeatDemandValue)
     def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
-      "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "heatDemand": "8.0"
     ], HeatDemandValue)
@@ -176,7 +173,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def factory = new TimeBasedSimpleValueFactory(SValue)
     def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
-      "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "q": "165.0"
@@ -195,7 +191,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def factory = new TimeBasedSimpleValueFactory(PValue)
     def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
-      "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "p": "500.0"
     ], PValue)
@@ -213,7 +208,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
     def time = zonedDateTime
     def data = new SimpleTimeBasedValueData([
-      "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time)
     ], NodeInput)
 
