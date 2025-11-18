@@ -110,7 +110,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
         )
 
     expect:
-    factory.buildModel(data) == expected
+    factory.buildModel(data).equals(expected)
   }
 
   def "The simple time based value factory builds correct heat and apparent power value"() {
