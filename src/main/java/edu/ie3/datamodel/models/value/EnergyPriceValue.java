@@ -32,12 +32,14 @@ public class EnergyPriceValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     EnergyPriceValue that = (EnergyPriceValue) o;
-    return Objects.equals(price, that.price);
+
+    return price.getValue().doubleValue() == that.price.getValue().doubleValue()
+            && price.getUnit().equals(that.price.getUnit());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(price);
+    return Objects.hash(price.getValue().doubleValue(), price.getUnit());
   }
 
   @Override
