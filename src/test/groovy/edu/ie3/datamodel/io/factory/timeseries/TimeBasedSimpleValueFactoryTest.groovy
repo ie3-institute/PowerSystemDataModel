@@ -131,8 +131,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
         )
 
     expect:
-    factory.buildModel(data).time == expected.time
-    factory.buildModel(data).value == expected.value
+    factory.buildModel(data).equals(expected)
   }
 
   def "The simple time based value factory builds correct heat and active power value"() {
@@ -151,8 +150,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
         )
 
     expect:
-    factory.buildModel(data).time == expected.time
-    factory.buildModel(data).value == expected.value
+    factory.buildModel(data).equals(expected)
   }
 
   def "The simple time based value factory builds correct heat demand value"() {
@@ -170,8 +168,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
         )
 
     expect:
-    factory.buildModel(data).time == expected.time
-    factory.buildModel(data).value == expected.value
+    factory.buildModel(data).equals(expected)
   }
 
   def "The simple time based value factory builds correct apparent power value"() {
@@ -190,8 +187,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
         )
 
     expect:
-    factory.buildModel(data).time == expected.time
-    factory.buildModel(data).value == expected.value
+    factory.buildModel(data).equals(expected)
   }
 
   def "The simple time based value factory builds correct active power value"() {
@@ -209,8 +205,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
         )
 
     expect:
-    factory.buildModel(data).time == expected.time
-    factory.buildModel(data).value == expected.value
+    factory.buildModel(data).equals(expected)
   }
 
   def "The simple time based value factory throws a FactoryException upon build request, if a class is not supported"() {
