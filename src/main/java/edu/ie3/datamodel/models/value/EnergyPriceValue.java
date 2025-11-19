@@ -33,8 +33,8 @@ public class EnergyPriceValue implements Value {
     if (o == null || getClass() != o.getClass()) return false;
     EnergyPriceValue that = (EnergyPriceValue) o;
 
-    return price.getValue().doubleValue() == that.price.getValue().doubleValue()
-        && price.getUnit().equals(that.price.getUnit());
+    return Objects.equals(price.getValue(), that.price.getValue())
+        && Objects.equals(price.getUnit(), that.price.getUnit());
   }
 
   @Override
