@@ -17,8 +17,6 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import java.time.ZoneId
-
 class TimeBasedSimpleValueFactoryTest extends Specification {
   @Shared
   TimeUtil defaultTimeUtil
@@ -110,7 +108,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
         )
 
     expect:
-    factory.buildModel(data) == expected
+    Objects.equals(factory.buildModel(data),expected)
   }
 
   def "The simple time based value factory builds correct heat and apparent power value"() {
