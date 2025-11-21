@@ -38,7 +38,6 @@ CREATE TABLE public.weather
     )
     TABLESPACE pg_default;
 
-/* Erstellt die Indizes */
 CREATE INDEX weather_coordinate_idx
     ON public.weather USING btree
         (coordinate_id ASC NULLS LAST)

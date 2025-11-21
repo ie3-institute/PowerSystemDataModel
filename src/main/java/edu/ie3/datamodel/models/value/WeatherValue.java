@@ -39,22 +39,22 @@ public class WeatherValue implements Value {
    * @param solarIrradiance values for this coordinate
    * @param temperature values for this coordinate
    * @param wind values for this coordinate
-   * @param groundTemperatureValueOne values for this coordinate (can be null)
-   * @param groundTemperatureValueTwo values for this coordinate (can be null)
+   * @param groundTemperatureLevel1 values for this coordinate (can be null)
+   * @param groundTemperatureLevel2 values for this coordinate (can be null)
    */
   public WeatherValue(
       Point coordinate,
       SolarIrradianceValue solarIrradiance,
       TemperatureValue temperature,
       WindValue wind,
-      Optional<GroundTemperatureValue> groundTemperatureValueOne,
-      Optional<GroundTemperatureValue> groundTemperatureValueTwo) {
+      Optional<GroundTemperatureValue> groundTemperatureLevel1,
+      Optional<GroundTemperatureValue> groundTemperatureLevel2) {
     this.coordinate = coordinate;
     this.solarIrradiance = solarIrradiance;
     this.temperature = temperature;
     this.wind = wind;
-    this.groundTemperatureLevel1 = groundTemperatureValueOne;
-    this.groundTemperatureLevel2 = groundTemperatureValueTwo;
+    this.groundTemperatureLevel1 = groundTemperatureLevel1;
+    this.groundTemperatureLevel2 = groundTemperatureLevel2;
   }
 
   /**

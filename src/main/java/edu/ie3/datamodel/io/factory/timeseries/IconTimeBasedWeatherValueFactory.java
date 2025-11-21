@@ -93,7 +93,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
         data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN);
-    Optional<ComparableQuantity<Temperature>> groundTemperatureLevl2 =
+    Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
         data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN);
 
     WeatherValue weatherValue =
@@ -105,7 +105,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             windDirection,
             windVelocity,
             groundTemperatureLevel1,
-            groundTemperatureLevl2);
+            groundTemperatureLevel2);
     return new TimeBasedValue<>(time, weatherValue);
   }
 
