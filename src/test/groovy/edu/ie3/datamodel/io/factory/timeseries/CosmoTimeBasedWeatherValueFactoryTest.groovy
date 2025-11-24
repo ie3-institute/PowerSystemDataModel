@@ -49,7 +49,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def model = factory.buildModel(data)
 
     then:
-    model == expectedResults
+    model.equals(expectedResults)
   }
 
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
