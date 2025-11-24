@@ -86,6 +86,6 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def model = factory.buildModel(data)
 
     then:
-    model == expectedResults
+    model.equals(expectedResults)
   }
 }
