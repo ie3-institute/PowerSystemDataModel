@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the issues with rtd for Cylindrical thermal storage [#1273](https://github.com/ie3-institute/PowerSystemDataModel/issues/1273)
 - Updated Controlling_em for all the loads in readthedocs[#1447](https://github.com/ie3-institute/PowerSystemDataModel/issues/1447)
 - Included a doFirst clause into `checkJavaVersion.gradle` [#1462](https://github.com/ie3-institute/PowerSystemDataModel/issues/1462)
+- Fixed `EnergyPriceValue.equals()` [#1479](https://github.com/ie3-institute/PowerSystemDataModel/issues/1479)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
