@@ -61,7 +61,7 @@ public class EntityPersistenceNamingStrategy {
    * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
    */
   private static final String LOAD_PROFILE_TIME_SERIES =
-      "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})";
+      "(?:lpts|markov)_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})";
 
   /**
    * Pattern to identify load profile time series in this instance of the naming strategy (takes

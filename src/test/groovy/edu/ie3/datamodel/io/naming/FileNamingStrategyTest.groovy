@@ -767,7 +767,7 @@ class FileNamingStrategyTest extends Specification {
     def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
     then:
-    actual == "test_grid" + escapedFileSeparator + "input" + escapedFileSeparator + "participants" + escapedFileSeparator + "time_series" + escapedFileSeparator + "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
+    actual == "test_grid" + escapedFileSeparator + "input" + escapedFileSeparator + "participants" + escapedFileSeparator + "time_series" + escapedFileSeparator + "(?:lpts|markov)_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
   }
 
   def "A FileNamingStrategy with FlatHierarchy returns correct individual time series file name pattern"() {
@@ -789,7 +789,7 @@ class FileNamingStrategyTest extends Specification {
     def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
     then:
-    actual == "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
+    actual == "(?:lpts|markov)_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
   }
 
   def "Trying to extract time series meta information throws an Exception, if it is provided a malformed string"() {

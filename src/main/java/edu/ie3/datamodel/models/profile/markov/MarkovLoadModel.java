@@ -59,11 +59,10 @@ public record MarkovLoadModel(
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (!(o instanceof TransitionData(String dtype1, String encoding1, double[][][] values1)))
-        return false;
-      return Objects.equals(dtype, dtype1)
-          && Objects.equals(encoding, encoding1)
-          && Arrays.deepEquals(values, values1);
+      if (!(o instanceof TransitionData other)) return false;
+      return Objects.equals(dtype, other.dtype)
+          && Objects.equals(encoding, other.encoding)
+          && Arrays.deepEquals(values, other.values);
     }
 
     @Override
