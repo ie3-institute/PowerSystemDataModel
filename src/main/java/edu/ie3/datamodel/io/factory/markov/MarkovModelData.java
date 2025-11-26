@@ -23,4 +23,18 @@ public class MarkovModelData extends FactoryData {
   public JsonNode getRoot() {
     return root;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof MarkovModelData that)) return false;
+    return Objects.equals(getTargetClass(), that.getTargetClass())
+        && Objects.equals(getFieldsToValues(), that.getFieldsToValues())
+        && Objects.equals(root, that.root);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getTargetClass(), getFieldsToValues(), root);
+  }
 }
