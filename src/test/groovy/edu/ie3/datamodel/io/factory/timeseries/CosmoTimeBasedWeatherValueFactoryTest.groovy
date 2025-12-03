@@ -135,7 +135,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
         Quantities.getQuantity(4.0, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(3.0, StandardUnits.TEMPERATURE),
         Quantities.getQuantity(2d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1.0, StandardUnits.WIND_VELOCITY)))
+        Quantities.getQuantity(1.0, StandardUnits.WIND_VELOCITY),
         Optional.empty(),
         Optional.empty()))
 
