@@ -67,6 +67,15 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     then:
     optTimeBasedValue.present
     equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+
+    def actualWeather =optTimeBasedValue.get().value
+    def expectedWeather = expectedTimeBasedValue.value
+
+    actualWeather.groundTemperatureLevel1.present
+    actualWeather.groundTemperatureLevel1.get().equals(expectedWeather.groundTemperatureLevel1.get())
+
+    actualWeather.groundTemperatureLevel2.present
+    actualWeather.groundTemperatureLevel2.get().equals(expectedWeather.groundTemperatureLevel2.get())
   }
 
   def "An InfluxDbWeatherSource can read multiple time series values for multiple coordinates"() {

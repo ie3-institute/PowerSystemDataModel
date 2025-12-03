@@ -65,7 +65,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "temperature"      : "278.019012451172",
       "windDirection"    : "0",
       "windVelocity"     : "1.66103506088257",
-      "groundTemperatureLevel1"     : "278.019012451172d",
+      "groundTemperatureLevel1"     : "278.019012451172",
       "groundTemperatureLevel2"     : ""
     ]
 

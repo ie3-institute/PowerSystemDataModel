@@ -45,6 +45,15 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     then:
     optTimeBasedValue.present
     equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+
+    def actualWeather =optTimeBasedValue.get().value
+    def expectedWeather = expectedTimeBasedValue.value
+
+    actualWeather.groundTemperatureLevel1.present
+    actualWeather.groundTemperatureLevel1.get().equals(expectedWeather.groundTemperatureLevel1.get())
+
+    actualWeather.groundTemperatureLevel2.present
+    actualWeather.groundTemperatureLevel2.get().equals(expectedWeather.groundTemperatureLevel2.get())
   }
 
   def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -116,7 +125,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
           "aswdifuS"    : "0.5713421484374998",
           "aswdirS"     : "2.317613203124999",
           "t2m"         : "289.1179319051744",
-          "tg"          : "288.4101691197649",
+          "tg1"         : "288.4101691197649",
+          "tg2"         : "288.4101691197649",
           "u10m"        : "0.3021732864307963",
           "u131m"       : "2.6058700426057797",
           "u20m"        : "0.32384365019387784",
@@ -161,7 +171,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
       "aswdifuS"    : "0.5713421484374998",
       "aswdirS"     : "2.317613203124999",
       "t2m"         : "289.1179319051744",
-      "tg"          : "288.4101691197649",
+      "tg1"         : "288.4101691197649",
+      "tg2"         : "288.4101691197649",
       "u10m"        : "0.3021732864307963",
       "u131m"       : "2.6058700426057797",
       "u20m"        : "0.32384365019387784",
@@ -205,7 +216,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
       "aswdifuS": "0.5713421484374998",
       "aswdirS" : "2.317613203124999",
       "t2m"     : "289.1179319051744",
-      "tg"      : "288.4101691197649",
+      "tg1"         : "288.4101691197649",
+      "tg2"         : "288.4101691197649",
       "u10m"    : "0.3021732864307963",
       "u131m"   : "2.6058700426057797",
       "u20m"    : "0.32384365019387784",
@@ -248,7 +260,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
       "aswdifuS"    : "0.5713421484374998",
       "aswdirS"     : "2.317613203124999",
       "t2m"         : "289.1179319051744",
-      "tg"          : "288.4101691197649",
+      "tg1"         : "288.4101691197649",
+      "tg2"         : "288.4101691197649",
       "u10m"        : "0.3021732864307963",
       "u131m"       : "2.6058700426057797",
       "u20m"        : "0.32384365019387784",
