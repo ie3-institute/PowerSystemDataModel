@@ -49,7 +49,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def model = factory.buildModel(data)
 
     then:
-    model.equals(expectedResults)
+    Objects.equals(model,expectedResults)
   }
 
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
@@ -85,7 +85,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def model = factory.buildModel(data)
 
     then:
-    model.equals(expectedResults)
+    Objects.equals(model,expectedResults)
   }
 
   def "A PsdmTimeBasedWeatherValueFactory should throw FactoryException if required field is missing"() {
@@ -135,7 +135,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
         Quantities.getQuantity(4.0, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(3.0, StandardUnits.TEMPERATURE),
         Quantities.getQuantity(2d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1.0, StandardUnits.WIND_VELOCITY),
+        Quantities.getQuantity(1.0, StandardUnits.WIND_VELOCITY)))
         Optional.empty(),
         Optional.empty()))
 
@@ -143,6 +143,6 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def model = factory.buildModel(data)
 
     then:
-    !model.equals(expectedResults)
+    !Objects.equals(model,expectedResults)
   }
 }
