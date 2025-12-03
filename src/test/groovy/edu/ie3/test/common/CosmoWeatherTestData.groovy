@@ -25,8 +25,8 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
-  Optional.of(Quantities.getQuantity(278.019012451172, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(278.019012451172, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE)),
+  Optional.of(Quantities.getQuantity(277.019012451172d, StandardUnits.TEMPERATURE))
   )
 
   public static final WeatherValue WEATHER_VALUE_193186_16H = new WeatherValue(
@@ -36,8 +36,8 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(278.012d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.662d, StandardUnits.WIND_VELOCITY),
-  Optional.of(Quantities.getQuantity(280.5d, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(281.1d, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE)),
+  Optional.of(Quantities.getQuantity(277.019012451172d, StandardUnits.TEMPERATURE))
   )
 
   public static final WeatherValue WEATHER_VALUE_193186_17H = new WeatherValue(
@@ -48,7 +48,7 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.663d, StandardUnits.WIND_VELOCITY),
   Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(277.019012451172d, StandardUnits.TEMPERATURE))
   )
 
   public static final WeatherValue WEATHER_VALUE_193187_15H = new WeatherValue(
@@ -59,7 +59,7 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.76103506088257d, StandardUnits.WIND_VELOCITY),
   Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(277.019012451172d, StandardUnits.TEMPERATURE))
   )
 
   public static final WeatherValue WEATHER_VALUE_193187_16H = new WeatherValue(
@@ -70,7 +70,7 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.762d, StandardUnits.WIND_VELOCITY),
   Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(277.019012451172d, StandardUnits.TEMPERATURE))
   )
 
   public static final WeatherValue WEATHER_VALUE_193188_15H = new WeatherValue(
@@ -81,6 +81,6 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.86103506088257d, StandardUnits.WIND_VELOCITY),
   Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(277.019012451172d, StandardUnits.TEMPERATURE))
   )
 }
