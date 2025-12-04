@@ -17,8 +17,8 @@ plugins {
 ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_21
-  groovyVersion = "4.0"
-  groovyBinaryVersion = "4.0.28"
+  groovyVersion = "5.0"
+  groovyBinaryVersion = "5.0.3"
 
   junitVersion = '6.0.1'
   testcontainersVersion = '1.21.3'
@@ -80,7 +80,7 @@ dependencies {
 
   testImplementation "org.junit.platform:junit-platform-launcher:$junitVersion"
   testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
-  testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
+  testImplementation "org.spockframework:spock-core:2.4-M7-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.4' // Mock creation with constructor parameters
   testImplementation 'net.bytebuddy:byte-buddy:1.18.2' // Mocks of classes
 
