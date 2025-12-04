@@ -21,19 +21,16 @@ class DomesticHotWaterStorageInputTest extends Specification {
         .returnTemp(ThermalUnitInputTestData.returnTemp).c(ThermalUnitInputTestData.c)
         .thermalBus(ThermalUnitInputTestData.thermalBus).build()
 
-
     then:
-    alteredUnit.with {
-      assert uuid == domesticHotWaterStorageInput.uuid
-      assert id == domesticHotWaterStorageInput.id
-      assert operator == domesticHotWaterStorageInput.operator
-      assert operationTime == domesticHotWaterStorageInput.operationTime
-      assert thermalBus == domesticHotWaterStorageInput.thermalBus
-      assert storageVolumeLvl == ThermalUnitInputTestData.storageVolumeLvl
-      assert inletTemp == ThermalUnitInputTestData.inletTemp
-      assert returnTemp == ThermalUnitInputTestData.returnTemp
-      assert c == ThermalUnitInputTestData.c
-    }
+      assert alteredUnit.uuid == domesticHotWaterStorageInput.uuid
+      assert alteredUnit.id == domesticHotWaterStorageInput.id
+      assert alteredUnit.operator == domesticHotWaterStorageInput.operator
+      assert alteredUnit.operationTime == domesticHotWaterStorageInput.operationTime
+      assert alteredUnit.thermalBus == domesticHotWaterStorageInput.thermalBus
+      assert alteredUnit.storageVolumeLvl == ThermalUnitInputTestData.storageVolumeLvl
+      assert alteredUnit.inletTemp == ThermalUnitInputTestData.inletTemp
+      assert alteredUnit.returnTemp == ThermalUnitInputTestData.returnTemp
+      assert alteredUnit.c == ThermalUnitInputTestData.c
   }
 
   def "Scaling a DomesticHotWaterStorageInput via builder should work as expected"() {
