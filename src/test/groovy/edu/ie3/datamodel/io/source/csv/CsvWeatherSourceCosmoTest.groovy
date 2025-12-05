@@ -128,15 +128,15 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
-      "time"             : "2020-10-16T12:40:42Z",
-      "coordinateId"     : "5",
-      "directIrradiance" : "1.234",
-      "diffuseIrradiance": "5.678",
-      "temperature"      : "9.1011",
-      "windVelocity"     : "12.1314",
-      "windDirection"    : "15.1617",
-      "groundTemperaturLevel1": "8.0",
+      "uuid"                   : "71a79f59-eebf-40c1-8358-ba7414077d57",
+      "time"                   : "2020-10-16T12:40:42Z",
+      "coordinateId"           : "5",
+      "directIrradiance"       : "1.234",
+      "diffuseIrradiance"      : "5.678",
+      "temperature"            : "9.1011",
+      "windVelocity"           : "12.1314",
+      "windDirection"          : "15.1617",
+      "groundTemperatureLevel1": "8.0",
       "groundTemperatureLevel2": "9.5"
     ]
     def expectedValue = new TimeBasedValue(
@@ -177,15 +177,15 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
-      "time"             : "2020-10-16T12:40:42Z",
-      "coordinateid"     : "",
-      "directirradiance" : "1.234",
-      "diffuseirradiance": "5.678",
-      "temperature"      : "9.1011",
-      "windvelocity"     : "12.1314",
-      "winddirection"    : "15.1617",
-      "groundTemperaturLevel1": "8.0",
+      "uuid"                   : "71a79f59-eebf-40c1-8358-ba7414077d57",
+      "time"                   : "2020-10-16T12:40:42Z",
+      "coordinateid"           : "",
+      "directirradiance"       : "1.234",
+      "diffuseirradiance"      : "5.678",
+      "temperature"            : "9.1011",
+      "windvelocity"           : "12.1314",
+      "winddirection"          : "15.1617",
+      "groundTemperaturLevel1" : "8.0",
       "groundTemperatureLevel2": "9.5"
     ]
 
@@ -204,14 +204,14 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
-      "time"             : "2020-10-16T12:40:42Z",
-      "directirradiance" : "1.234",
-      "diffuseirradiance": "5.678",
-      "temperature"      : "9.1011",
-      "windvelocity"     : "12.1314",
-      "winddirection"    : "15.1617",
-      "groundTemperaturLevel1": "8.0",
+      "uuid"                   : "71a79f59-eebf-40c1-8358-ba7414077d57",
+      "time"                   : "2020-10-16T12:40:42Z",
+      "directirradiance"       : "1.234",
+      "diffuseirradiance"      : "5.678",
+      "temperature"            : "9.1011",
+      "windvelocity"           : "12.1314",
+      "winddirection"          : "15.1617",
+      "groundTemperaturLevel1" : "8.0",
       "groundTemperatureLevel2": "9.5"
     ]
 
@@ -229,15 +229,15 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
-      "time"             : "2020-10-16T12:40:42Z",
-      "coordinateid"     : "6",
-      "directirradiance" : "1.234",
-      "diffuseirradiance": "5.678",
-      "temperature"      : "9.1011",
-      "windvelocity"     : "12.1314",
-      "winddirection"    : "15.1617",
-      "groundTemperaturLevel1": "8.0",
+      "uuid"                   : "71a79f59-eebf-40c1-8358-ba7414077d57",
+      "time"                   : "2020-10-16T12:40:42Z",
+      "coordinateid"           : "6",
+      "directirradiance"       : "1.234",
+      "diffuseirradiance"      : "5.678",
+      "temperature"            : "9.1011",
+      "windvelocity"           : "12.1314",
+      "winddirection"          : "15.1617",
+      "groundTemperaturLevel1" : "8.0",
       "groundTemperatureLevel2": "9.5"
     ]
 

@@ -29,10 +29,10 @@ public class WeatherValue implements Value {
   private final WindValue wind;
 
   /** Ground temperature value for this coordinate */
-  private final Optional<GroundTemperatureValue> groundTemperatureLevel1;
+  private final GroundTemperatureValue groundTemperatureLevel1;
 
   /** Ground temperature value for this coordinate */
-  private final Optional<GroundTemperatureValue> groundTemperatureLevel2;
+  private final GroundTemperatureValue groundTemperatureLevel2;
 
   /**
    * @param coordinate of this weather value set
@@ -53,8 +53,8 @@ public class WeatherValue implements Value {
     this.solarIrradiance = solarIrradiance;
     this.temperature = temperature;
     this.wind = wind;
-    this.groundTemperatureLevel1 = groundTemperatureLevel1;
-    this.groundTemperatureLevel2 = groundTemperatureLevel2;
+    this.groundTemperatureLevel1 = groundTemperatureLevel1.orElse(null);
+    this.groundTemperatureLevel2 = groundTemperatureLevel2.orElse(null);
   }
 
   /**
@@ -107,11 +107,11 @@ public class WeatherValue implements Value {
   }
 
   public Optional<GroundTemperatureValue> getGroundTemperatureLevel1() {
-    return groundTemperatureLevel1;
+    return Optional.ofNullable(groundTemperatureLevel1);
   }
 
   public Optional<GroundTemperatureValue> getGroundTemperatureLevel2() {
-    return groundTemperatureLevel2;
+    return Optional.ofNullable(groundTemperatureLevel2);
   }
 
   @Override

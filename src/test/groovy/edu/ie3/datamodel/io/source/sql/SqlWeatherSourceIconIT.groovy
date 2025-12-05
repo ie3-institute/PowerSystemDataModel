@@ -53,18 +53,16 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
     def expectedTimeBasedValue = new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H)
     when:
     def optTimeBasedValue = source.getWeather(IconWeatherTestData.TIME_15H, IconWeatherTestData.COORDINATE_67775)
+
     then:
     optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
+    Objects.equals(optTimeBasedValue.get(), expectedTimeBasedValue )
 
     def actualWeather =optTimeBasedValue.get().value
     def expectedWeather = expectedTimeBasedValue.value
 
-    actualWeather.groundTemperatureLevel1.present
-    actualWeather.groundTemperatureLevel1.get().equals(expectedWeather.groundTemperatureLevel1.get())
-
-    actualWeather.groundTemperatureLevel2.present
-    actualWeather.groundTemperatureLevel2.get().equals(expectedWeather.groundTemperatureLevel2.get())
+    Objects.equals(actualWeather.groundTemperatureLevel1, expectedWeather.groundTemperatureLevel1)
+    Objects.equals(actualWeather.groundTemperatureLevel2, expectedWeather.groundTemperatureLevel2)
   }
 
   def "A NativeSqlWeatherSource can read multiple timeseries values for multiple coordinates"() {

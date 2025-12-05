@@ -1,3 +1,6 @@
+# DDL
+CREATE DATABASE test_weather
+
 # DML
 # CONTEXT-DATABASE: test_weather
 

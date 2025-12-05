@@ -8,8 +8,8 @@ CREATE TABLE public.weather
     wind_velocity double precision,
     temperature double precision,
     tid serial,
-      ground_temperature_level_1 double precision,
-        ground_temperature_level_2 double precision,
+    ground_temperature_level_1 double precision,
+    ground_temperature_level_2 double precision,
     CONSTRAINT weather_pkey PRIMARY KEY (tid),
     CONSTRAINT "weather_datum_coordinate_id_unique" UNIQUE (time, coordinate_id)
 )
