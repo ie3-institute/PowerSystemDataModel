@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change spotless to use googleJavaFormat('1.28.0') [#1409](https://github.com/ie3-institute/PowerSystemDataModel/issues/1409)
 - Change `TimeSeries` to no longer extend `UniqueEntity` [#1441](https://github.com/ie3-institute/PowerSystemDataModel/issues/1441)
 - Refactor CSV handling into shared file-based infrastructure. [#1450](https://github.com/ie3-institute/PowerSystemDataModel/issues/1445)
+- Change `testcontainers` to v2 [#1496](https://github.com/ie3-institute/PowerSystemDataModel/issues/1496)
 
 ## [8.1.0] - 2025-07-25
 
