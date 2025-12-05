@@ -21,7 +21,7 @@ ext {
   groovyBinaryVersion = "4.0.28"
 
   junitVersion = '6.0.1'
-  testcontainersVersion = '1.21.3'
+  testcontainersVersion = '2.0.2'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -86,10 +86,10 @@ dependencies {
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
-  testImplementation "org.testcontainers:spock:$testcontainersVersion"
-  testImplementation "org.testcontainers:influxdb:$testcontainersVersion"
-  testImplementation "org.testcontainers:postgresql:$testcontainersVersion"
-  testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
+  testImplementation "org.testcontainers:testcontainers-spock:$testcontainersVersion"
+  testImplementation "org.testcontainers:testcontainers-influxdb:$testcontainersVersion"
+  testImplementation "org.testcontainers:testcontainers-postgresql:$testcontainersVersion"
+  testImplementation "org.testcontainers:testcontainers-couchbase:$testcontainersVersion"
 
   // logging
   implementation platform('org.apache.logging.log4j:log4j-bom:2.25.2')
