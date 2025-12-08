@@ -53,7 +53,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     optTimeBasedValue.present
     equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
 
-    def actualWeather =optTimeBasedValue.get().value
+    def actualWeather = optTimeBasedValue.get().value
     def expectedWeather = expectedTimeBasedValue.value
 
     actualWeather.groundTemperatureLevel1.present

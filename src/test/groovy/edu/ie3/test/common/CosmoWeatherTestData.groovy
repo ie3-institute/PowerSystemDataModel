@@ -25,7 +25,7 @@ class CosmoWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
-  Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE)),
+  Optional.of(Quantities.getQuantity(578.019012451172d, StandardUnits.TEMPERATURE)),
   Optional.of(Quantities.getQuantity(277.019012451172d, StandardUnits.TEMPERATURE))
   )
 
