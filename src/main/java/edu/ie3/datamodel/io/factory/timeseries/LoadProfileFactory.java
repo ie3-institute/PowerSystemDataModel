@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.Factory;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
@@ -37,8 +36,7 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
     super(valueClass);
   }
 
-  public abstract LoadProfileTimeSeries<P, V> build(
-      LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<V>> entries);
+  public abstract LoadProfileTimeSeries<P, V> build(P profile, Set<LoadProfileEntry<V>> entries);
 
   public abstract P parseProfile(String profile);
 

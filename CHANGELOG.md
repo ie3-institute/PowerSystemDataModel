@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added standard asset parameter for `3wTransformer` in `ReadTheDocs` [#1417](https://github.com/ie3-institute/PowerSystemDataModel/issues/1417)
 - Added getter sRated for SystemParticipant inputs and updated them in tests in src[#1412](https://github.com/ie3-institute/PowerSystemDataModel/issues/1412)
 - Added converters documentation [#1139](https://github.com/ie3-institute/PowerSystemDataModel/issues/1139)
+- Added abstraction for power value sources [#1438](https://github.com/ie3-institute/PowerSystemDataModel/issues/1438)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
@@ -19,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the issues with rtd for Cylindrical thermal storage [#1273](https://github.com/ie3-institute/PowerSystemDataModel/issues/1273)
 - Updated Controlling_em for all the loads in readthedocs[#1447](https://github.com/ie3-institute/PowerSystemDataModel/issues/1447)
 - Included a doFirst clause into `checkJavaVersion.gradle` [#1462](https://github.com/ie3-institute/PowerSystemDataModel/issues/1462)
+- Fixed `EnergyPriceValue.equals()` [#1479](https://github.com/ie3-institute/PowerSystemDataModel/issues/1479)
+- Fixed tests of `TimeBasedValue` [#1469](https://github.com/ie3-institute/PowerSystemDataModel/issues/1469)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
@@ -26,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change spotless to use googleJavaFormat('1.28.0') [#1409](https://github.com/ie3-institute/PowerSystemDataModel/issues/1409)
 - Change `TimeSeries` to no longer extend `UniqueEntity` [#1441](https://github.com/ie3-institute/PowerSystemDataModel/issues/1441)
 - Refactor CSV handling into shared file-based infrastructure. [#1450](https://github.com/ie3-institute/PowerSystemDataModel/issues/1445)
+- Change `testcontainers` to v2 [#1496](https://github.com/ie3-institute/PowerSystemDataModel/issues/1496)
 - Change Evcs.locationType from single element to list [#1460](https://github.com/ie3-institute/PowerSystemDataModel/issues/1460)
 
 ## [8.1.0] - 2025-07-25

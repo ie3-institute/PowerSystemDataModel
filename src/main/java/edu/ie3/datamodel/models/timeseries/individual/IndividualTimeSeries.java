@@ -60,13 +60,18 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
   }
 
   @Override
-  protected Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
+  public Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
     return timeToValue.keySet().stream()
         .filter(valueTime -> valueTime.compareTo(time) > 0)
         .min(Comparator.naturalOrder());
   }
 
-  @Override
+  /**
+   * Get all {@link ZonedDateTime}s after the given time.
+   *
+   * @param time given time
+   * @return a list of all time keys
+   */
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
     return timeToValue.keySet().stream().filter(timeKey -> timeKey.isAfter(time)).sorted().toList();
   }

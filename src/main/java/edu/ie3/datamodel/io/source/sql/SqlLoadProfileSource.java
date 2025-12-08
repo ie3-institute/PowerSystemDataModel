@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
@@ -22,10 +21,10 @@ import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -41,12 +40,9 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
     extends LoadProfileSource<P, V> {
-  protected static final Logger log = LoggerFactory.getLogger(SqlTimeSeriesSource.class);
+  protected static final Logger log = LoggerFactory.getLogger(SqlLoadProfileSource.class);
   private final SqlDataSource dataSource;
   private final String tableName;
-
-  private final LoadProfileMetaInformation metaInformation;
-  private final P loadProfile;
 
   // General fields
   private static final String WHERE = " WHERE ";
@@ -65,12 +61,10 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
       LoadProfileMetaInformation metaInformation,
       Class<V> entryClass,
       LoadProfileFactory<P, V> entryFactory) {
-    super(entryClass, entryFactory);
+    super(metaInformation, entryClass, entryFactory);
     this.dataSource = dataSource;
 
     this.tableName = "load_profiles";
-    this.metaInformation = metaInformation;
-    this.loadProfile = entryFactory.parseProfile(metaInformation.getProfile());
 
     String dbTimeColumnName =
         dataSource.getDbColumnName(entryFactory.getTimeFieldString(), tableName);
@@ -101,39 +95,27 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   @Override
-  public LoadProfileTimeSeries<P, V> getTimeSeries() {
-    Set<LoadProfileEntry<V>> entries = getEntries(queryFull, ps -> {});
-    return entryFactory.build(metaInformation, entries);
+  public Set<LoadProfileEntry<V>> getEntries() {
+    return getEntries(queryFull, ps -> {});
   }
 
   @Override
-  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
-    return List.of(time.plusMinutes(15));
-  }
-
-  @Override
-  public Optional<PValue> getValue(ZonedDateTime time) throws SourceException {
-    Set<LoadProfileEntry<V>> entries =
-        getEntries(queryTime, ps -> ps.setInt(1, TimeSeriesUtils.calculateQuarterHourOfDay(time)));
-    if (entries.isEmpty()) return Optional.empty();
-    if (entries.size() > 1) log.warn("Retrieved more than one result value, using the first");
-    return entries.stream().findFirst().map(entry -> entry.getValue().getValue(time, loadProfile));
-  }
-
-  @Override
-  public P getLoadProfile() {
-    return loadProfile;
+  public Supplier<Optional<PValue>> getValueSupplier(TimeSeriesInputValue data) {
+    ZonedDateTime time = data.time();
+    Optional<LoadValues<P>> loadValueOption = queryForValue(time);
+    return () -> loadValueOption.map(v -> v.getValue(time, profile));
   }
 
   @Override
   public Optional<ComparableQuantity<Power>> getMaxPower() {
+    // TODO: Improve this calculation
     return Optional.ofNullable(
-        entryFactory.calculateMaxPower(loadProfile, getEntries(queryFull, ps -> {})));
+        entryFactory.calculateMaxPower(profile, getEntries(queryFull, ps -> {})));
   }
 
   @Override
-  public Optional<ComparableQuantity<Energy>> getLoadProfileEnergyScaling() {
-    return Optional.ofNullable(entryFactory.getLoadProfileEnergyScaling(loadProfile));
+  public Optional<ComparableQuantity<Energy>> getProfileEnergyScaling() {
+    return Optional.ofNullable(entryFactory.getLoadProfileEnergyScaling(profile));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -151,6 +133,15 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
         .map(this::createEntity)
         .flatMap(Optional::stream)
         .collect(Collectors.toSet());
+  }
+
+  private Optional<LoadValues<P>> queryForValue(ZonedDateTime time) {
+    Set<LoadProfileEntry<V>> entries =
+        getEntries(queryTime, ps -> ps.setInt(1, TimeSeriesUtils.calculateQuarterHourOfDay(time)));
+    if (entries.isEmpty()) return Optional.empty();
+    if (entries.size() > 1) log.warn("Retrieved more than one result value, using the first");
+
+    return entries.stream().findFirst().map(LoadProfileEntry::getValue);
   }
 
   /**
@@ -178,7 +169,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
         + WHERE
         + LOAD_PROFILE
         + " = '"
-        + loadProfile.getKey()
+        + profile.getKey()
         + "'";
   }
 
@@ -197,7 +188,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
         + WHERE
         + LOAD_PROFILE
         + " = '"
-        + loadProfile.getKey()
+        + profile.getKey()
         + "' AND "
         + timeColumnName
         + "=?;";
