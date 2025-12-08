@@ -10,7 +10,6 @@ import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.util.TimeUtil
 import tech.units.indriya.quantity.Quantities
 
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class IconWeatherTestData extends WeatherTestData {
