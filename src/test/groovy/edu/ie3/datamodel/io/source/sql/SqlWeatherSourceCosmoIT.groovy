@@ -57,7 +57,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     optTimeBasedValue.present
-    Objects.equals(optTimeBasedValue.get(), expectedTimeBasedValue )
+    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
 
     def actualWeather =optTimeBasedValue.get().value
     def expectedWeather = expectedTimeBasedValue.value

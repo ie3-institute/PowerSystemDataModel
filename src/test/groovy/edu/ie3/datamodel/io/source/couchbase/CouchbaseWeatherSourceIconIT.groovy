@@ -91,7 +91,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
 
     then:
     optTimeBasedValue.present
-    Objects.equals(optTimeBasedValue.get(), expectedTimeBasedValue )
+    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
 
     def actualWeather =optTimeBasedValue.get().value
     def expectedWeather = expectedTimeBasedValue.value

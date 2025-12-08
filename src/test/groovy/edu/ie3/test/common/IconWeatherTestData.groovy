@@ -24,7 +24,7 @@ class IconWeatherTestData extends WeatherTestData {
   Quantities.getQuantity(228.021339757131, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(24.4741992659816, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(270.45278309919627, StandardUnits.WIND_DIRECTION),
-  Quantities.getQuantity(3.766014709613715, StandardUnits.WIND_VELOCITY),
+  Quantities.getQuantity(3.76601470961371, StandardUnits.WIND_VELOCITY),
   Optional.of(Quantities.getQuantity(15.2601691197649, StandardUnits.TEMPERATURE)),
   Optional.of(Quantities.getQuantity(12.374199265982, StandardUnits.TEMPERATURE))
   )

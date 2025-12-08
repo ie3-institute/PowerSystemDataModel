@@ -64,7 +64,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
     then:
     optTimeBasedValue.present
-    Objects.equals(optTimeBasedValue.get(), expectedTimeBasedValue )
+    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
 
     def actualWeather =optTimeBasedValue.get().value
     def expectedWeather = expectedTimeBasedValue.value
