@@ -23,14 +23,14 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     Map<String, String> parameter = [
-      "time"             : TimeUtil.withDefaults.toString(time),
-      "diffuseIrradiance": "282.671997070312",
-      "directIrradiance" : "286.872985839844",
-      "temperature"      : "",
-      "windDirection"    : "0",
-      "windVelocity"     : "1.66103506088257",
-      "groundTemperatureLevel1"     : "",
-      "groundTemperatureLevel2"     : ""
+      "time"                    : TimeUtil.withDefaults.toString(time),
+      "diffuseIrradiance"       : "282.671997070312",
+      "directIrradiance"        : "286.872985839844",
+      "temperature"             : "",
+      "windDirection"           : "0",
+      "windVelocity"            : "1.66103506088257",
+      "groundTemperatureLevel1" : "",
+      "groundTemperatureLevel2" : ""
     ]
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
