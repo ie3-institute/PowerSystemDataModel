@@ -90,12 +90,6 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
     then:
     optTimeBasedValue.present
     equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
-
-    def actualWeather =optTimeBasedValue.get().value
-    def expectedWeather = expectedTimeBasedValue.value
-
-    Objects.equals(actualWeather.groundTemperatureLevel1, expectedWeather.groundTemperatureLevel1)
-    Objects.equals(actualWeather.groundTemperatureLevel2, expectedWeather.groundTemperatureLevel2)
   }
 
   def "A CouchbaseWeatherSource can read multiple time series values for multiple coordinates"() {
