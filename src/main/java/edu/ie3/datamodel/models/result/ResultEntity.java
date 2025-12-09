@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.Entity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -12,6 +13,9 @@ import java.util.UUID;
 
 /** Abstract class to hold all mappings common to all result models */
 public abstract class ResultEntity implements Entity {
+  /* Static fields. */
+  public static final String TIME = "time";
+  public static final String INPUT_MODEL = "inputModel";
 
   /** date and time of the produced result */
   private ZonedDateTime time;
@@ -28,6 +32,15 @@ public abstract class ResultEntity implements Entity {
   protected ResultEntity(ZonedDateTime time, UUID inputModel) {
     this.time = time;
     this.inputModel = inputModel;
+  }
+
+  protected ResultEntity(ResultEntity resultEntity) {
+    this.time = resultEntity.time;
+    this.inputModel = resultEntity.inputModel;
+  }
+
+  protected static SourceValidator.Fields resultFields() {
+    return new SourceValidator.Fields(TIME, INPUT_MODEL);
   }
 
   public UUID getInputModel() {

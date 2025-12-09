@@ -5,11 +5,15 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
+import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Describes an operator, that operates assets */
 public class OperatorInput extends UniqueInputEntity {
+  /* Static field. */
+  public static final String ID = "id";
 
   public static final OperatorInput NO_OPERATOR_ASSIGNED =
       new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED");
@@ -26,6 +30,15 @@ public class OperatorInput extends UniqueInputEntity {
   public OperatorInput(UUID uuid, String id) {
     super(uuid);
     this.id = id;
+  }
+
+  public OperatorInput(UniqueEntity entity, String id) {
+    super(entity.getUuid());
+    this.id = id;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return UniqueEntity.uniqueEntityFields().add(ID);
   }
 
   public String getId() {

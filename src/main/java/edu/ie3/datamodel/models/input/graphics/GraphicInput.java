@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
@@ -13,6 +15,10 @@ import org.locationtech.jts.geom.LineString;
 
 /** Describes the graphic data belonging to grid assets */
 public abstract class GraphicInput extends UniqueInputEntity {
+  /* Static fields. */
+  public static final String GRAPHIC_LAYER = "graphicLayer";
+  public static final String PATH_LINE_STRING = "path";
+
   /** Description of the graphic layer, this graphic is located on */
   private final String graphicLayer;
 
@@ -31,6 +37,20 @@ public abstract class GraphicInput extends UniqueInputEntity {
         path == null
             ? null // can be null for NodeGraphicInput entities
             : GeoUtils.buildSafeLineString(path);
+  }
+
+  protected GraphicInput(UniqueEntity entity, String graphicLayer, LineString path) {
+    this(entity.getUuid(), graphicLayer, path);
+  }
+
+  protected GraphicInput(GraphicInput graphicInput) {
+    super(graphicInput.getUuid());
+    this.graphicLayer = graphicInput.getGraphicLayer();
+    this.path = graphicInput.getPath();
+  }
+
+  protected static SourceValidator.Fields graphicFields() {
+    return uniqueEntityFields().add(GRAPHIC_LAYER, PATH_LINE_STRING);
   }
 
   public String getGraphicLayer() {

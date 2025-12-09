@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.result.connector.SwitchResult;
 import java.time.ZonedDateTime;
@@ -36,7 +37,7 @@ public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
   }
 
   @Override
-  protected SwitchResult buildModel(EntityData data) {
+  protected SwitchResult buildModel(EntityData data) throws SourceException {
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModel = data.getUUID(INPUT_MODEL);
 

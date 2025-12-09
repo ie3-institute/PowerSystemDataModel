@@ -5,23 +5,19 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
-import edu.ie3.datamodel.exceptions.RawGridException;
-import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.io.factory.input.*;
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
+import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import edu.ie3.datamodel.utils.Try;
 import java.util.*;
 import java.util.stream.Stream;
@@ -39,37 +35,31 @@ public class RawGridSource extends AssetEntitySource {
   // general fields
   private final TypeSource typeSource;
 
-  // factories
-  private final NodeInputFactory nodeInputFactory;
-  private final LineInputFactory lineInputFactory;
-  private final Transformer2WInputFactory transformer2WInputFactory;
-  private final Transformer3WInputFactory transformer3WInputFactory;
-  private final SwitchInputFactory switchInputFactory;
-  private final MeasurementUnitInputFactory measurementUnitInputFactory;
-
   public RawGridSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
-
-    // init factories
-    this.nodeInputFactory = new NodeInputFactory();
-    this.lineInputFactory = new LineInputFactory();
-    this.transformer2WInputFactory = new Transformer2WInputFactory();
-    this.transformer3WInputFactory = new Transformer3WInputFactory();
-    this.switchInputFactory = new SwitchInputFactory();
-    this.measurementUnitInputFactory = new MeasurementUnitInputFactory();
   }
 
   @Override
   public void validate() throws ValidationException {
     Try.scanStream(
             Stream.of(
-                validate(NodeInput.class, dataSource, nodeInputFactory),
-                validate(LineInput.class, dataSource, lineInputFactory),
-                validate(Transformer2WInput.class, dataSource, transformer2WInputFactory),
-                validate(Transformer3WInput.class, dataSource, transformer3WInputFactory),
-                validate(SwitchInput.class, dataSource, switchInputFactory),
-                validate(MeasurementUnitInput.class, dataSource, measurementUnitInputFactory)),
+                validate(NodeInput.class, dataSource, new SourceValidator<>(NodeInput.getFields())),
+                validate(LineInput.class, dataSource, new SourceValidator<>(LineInput.getFields())),
+                validate(
+                    Transformer2WInput.class,
+                    dataSource,
+                    new SourceValidator<>(Transformer2WInput.getFields())),
+                validate(
+                    Transformer3WInput.class,
+                    dataSource,
+                    new SourceValidator<>(Transformer3WInput.getFields())),
+                validate(
+                    SwitchInput.class, dataSource, new SourceValidator<>(SwitchInput.getFields())),
+                validate(
+                    MeasurementUnitInput.class,
+                    dataSource,
+                    new SourceValidator<>(MeasurementUnitInput.getFields()))),
             "Validation",
             FailedValidationException::new)
         .getOrThrow();
@@ -208,12 +198,7 @@ public class RawGridSource extends AssetEntitySource {
    * @return a map of UUID to object- and uuid-unique {@link NodeInput} entities
    */
   public Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) throws SourceException {
-    return getEntities(
-            NodeInput.class,
-            dataSource,
-            nodeInputFactory,
-            data -> assetEnricher.apply(data, operators))
-        .collect(toMap());
+    return getEntities(NodeInput.class, dataSource, nodeBuildFunction(operators)).collect(toMap());
   }
 
   /**
@@ -255,8 +240,8 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, LineTypeInput> lineTypeInputs)
       throws SourceException {
-    return getTypedConnectorEntities(
-            LineInput.class, dataSource, lineInputFactory, operators, nodes, lineTypeInputs)
+    return getEntities(
+            LineInput.class, dataSource, lineBuildFunction(operators, nodes, lineTypeInputs))
         .collect(toMap());
   }
 
@@ -301,13 +286,10 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, Transformer2WTypeInput> transformer2WTypes)
       throws SourceException {
-    return getTypedConnectorEntities(
+    return getEntities(
             Transformer2WInput.class,
             dataSource,
-            transformer2WInputFactory,
-            operators,
-            nodes,
-            transformer2WTypes)
+            transformer2WBuildFunction(operators, nodes, transformer2WTypes))
         .collect(toSet());
   }
 
@@ -352,19 +334,10 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, Transformer3WTypeInput> transformer3WTypes)
       throws SourceException {
-    WrappedFunction<EntityData, Transformer3WInputEntityData> builder =
-        data ->
-            connectorEnricher
-                .andThen(
-                    biEnrich(
-                        "nodeC",
-                        nodes,
-                        TYPE,
-                        transformer3WTypes,
-                        Transformer3WInputEntityData::new))
-                .apply(data, operators, nodes);
-
-    return getEntities(Transformer3WInput.class, dataSource, transformer3WInputFactory, builder)
+    return getEntities(
+            Transformer3WInput.class,
+            dataSource,
+            transformer3WBuildFunction(operators, nodes, transformer3WTypes))
         .collect(toSet());
   }
 
@@ -403,11 +376,7 @@ public class RawGridSource extends AssetEntitySource {
    */
   public Set<SwitchInput> getSwitches(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
-    return getEntities(
-            SwitchInput.class,
-            dataSource,
-            switchInputFactory,
-            data -> connectorEnricher.apply(data, operators, nodes))
+    return getEntities(SwitchInput.class, dataSource, switchBuildFunction(operators, nodes))
         .collect(toSet());
   }
 
@@ -448,10 +417,148 @@ public class RawGridSource extends AssetEntitySource {
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
     return getEntities(
-            MeasurementUnitInput.class,
-            dataSource,
-            measurementUnitInputFactory,
-            data -> nodeAssetEnricher.apply(data, operators, nodes))
+            MeasurementUnitInput.class, dataSource, measurementBuildFunction(operators, nodes))
         .collect(toSet());
+  }
+
+  // build functions
+  protected static BuildFunction<TransformerInput> transformerBuilder(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) {
+    return entityData ->
+        entityData
+            .zip(connectorBuilder(operators, nodes))
+            .map(
+                pair -> {
+                  EntityData data = pair.getLeft();
+
+                  return new TransformerInput(
+                      pair.getRight(),
+                      data.getInt(TransformerInput.TAP_POS),
+                      data.getBoolean(TransformerInput.AUTO_TAP)) {
+                    @Override
+                    public TransformerInputCopyBuilder<? extends TransformerInputCopyBuilder<?>>
+                        copy() {
+                      return null;
+                    }
+                  };
+                },
+                SourceException.class);
+  }
+
+  protected static BuildFunction<NodeInput> nodeBuildFunction(Map<UUID, OperatorInput> operators) {
+    return assetBuilder(operators)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              return new NodeInput(
+                  pair.getRight(),
+                  data.getQuantity(NodeInput.V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE),
+                  data.getBoolean(NodeInput.SLACK),
+                  data.getPoint(NodeInput.GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION),
+                  data.getVoltageLvl(
+                      NodeInput.VOLT_LVL.toLowerCase(), NodeInput.V_RATED.toLowerCase()),
+                  data.getInt(NodeInput.SUBNET));
+            });
+  }
+
+  protected static BuildFunction<LineInput> lineBuildFunction(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, LineTypeInput> types) {
+    return connectorBuilder(operators, nodes)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+              ConnectorInput connectorInput = pair.getRight();
+
+              String olmString = data.getField(LineInput.OLM_CHARACTERISTIC);
+              OlmCharacteristicInput olmCharacteristic;
+
+              try {
+                olmCharacteristic =
+                    !olmString.isEmpty()
+                        ? new OlmCharacteristicInput(olmString)
+                        : OlmCharacteristicInput.CONSTANT_CHARACTERISTIC;
+              } catch (ParsingException e) {
+                throw new FactoryException(
+                    "Cannot parse the following overhead line monitoring characteristic: '"
+                        + olmString
+                        + "'",
+                    e);
+              }
+
+              return new LineInput(
+                  connectorInput,
+                  extractFunction(data, LineInput.TYPE, types),
+                  data.getQuantity(LineInput.LENGTH, StandardUnits.LINE_LENGTH),
+                  data.getLineString(LineInput.GEO_POSITION)
+                      .orElse(
+                          GridAndGeoUtils.buildSafeLineStringBetweenNodes(
+                              connectorInput.getNodeA(), connectorInput.getNodeB())),
+                  olmCharacteristic);
+            });
+  }
+
+  protected static BuildFunction<Transformer2WInput> transformer2WBuildFunction(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, Transformer2WTypeInput> types) {
+    return transformerBuilder(operators, nodes)
+        .with(
+            pair -> {
+              try {
+                return new Transformer2WInput(
+                    pair.getRight(),
+                    extractFunction(pair.getLeft(), Transformer2WInput.TYPE, types));
+              } catch (IllegalArgumentException e) {
+                throw new SourceException(e);
+              }
+            });
+  }
+
+  protected static BuildFunction<Transformer3WInput> transformer3WBuildFunction(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, Transformer3WTypeInput> types) {
+    return transformerBuilder(operators, nodes)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              try {
+                return new Transformer3WInput(
+                    pair.getRight(),
+                    extractFunction(data, Transformer3WInput.NODE_C, nodes),
+                    extractFunction(data, Transformer3WInput.TYPE, types));
+              } catch (IllegalArgumentException e) {
+                throw new SourceException(e);
+              }
+            });
+  }
+
+  protected static BuildFunction<SwitchInput> switchBuildFunction(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) {
+    return connectorBuilder(operators, nodes)
+        .with(
+            pair ->
+                new SwitchInput(pair.getRight(), pair.getLeft().getBoolean(SwitchInput.CLOSED)));
+  }
+
+  protected static BuildFunction<MeasurementUnitInput> measurementBuildFunction(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) {
+    return assetBuilder(operators)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              return new MeasurementUnitInput(
+                  pair.getRight(),
+                  extractFunction(data, MeasurementUnitInput.NODE, nodes),
+                  data.getBoolean(MeasurementUnitInput.V_MAG),
+                  data.getBoolean(MeasurementUnitInput.V_ANG),
+                  data.getBoolean(MeasurementUnitInput.P),
+                  data.getBoolean(MeasurementUnitInput.Q));
+            });
   }
 }

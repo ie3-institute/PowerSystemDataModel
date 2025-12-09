@@ -35,6 +35,10 @@ public abstract class ThermalInput extends AssetInput {
     super(uuid, id);
   }
 
+  protected ThermalInput(AssetInput assetInput) {
+    super(assetInput);
+  }
+
   @Override
   public abstract AssetInputCopyBuilder<?> copy();
 }

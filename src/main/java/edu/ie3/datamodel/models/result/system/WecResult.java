@@ -29,6 +29,10 @@ public class WecResult extends SystemParticipantResult {
     super(time, inputModel, p, q);
   }
 
+  public WecResult(SystemParticipantResult systemParticipantResult) {
+    super(systemParticipantResult);
+  }
+
   @Override
   public String toString() {
     return "WecResult{"

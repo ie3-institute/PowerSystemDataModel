@@ -6,11 +6,19 @@
 package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.io.extractor.HasNodes;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import java.util.*;
 
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */
 public class MeasurementUnitInput extends AssetInput implements HasNodes {
+  /* Static fields. */
+  public static final String NODE = "node";
+  public static final String V_MAG = "vMag";
+  public static final String V_ANG = "vAng";
+  public static final String P = "p";
+  public static final String Q = "q";
+
   /** Grid node, the asset is attached to */
   private final NodeInput node;
 
@@ -76,6 +84,20 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
     this.vAng = vAng;
     this.p = p;
     this.q = q;
+  }
+
+  public MeasurementUnitInput(
+      AssetInput assetInput, NodeInput node, boolean vMag, boolean vAng, boolean p, boolean q) {
+    super(assetInput);
+    this.node = node;
+    this.vMag = vMag;
+    this.vAng = vAng;
+    this.p = p;
+    this.q = q;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return assetFields().add(NODE, V_MAG, V_ANG, P, Q);
   }
 
   public NodeInput getNode() {

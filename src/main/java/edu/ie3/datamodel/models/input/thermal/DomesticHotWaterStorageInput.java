@@ -78,6 +78,10 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
     super(uuid, id, bus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
   }
 
+  public DomesticHotWaterStorageInput(AbstractStorageInput input) {
+    super(input);
+  }
+
   @Override
   public DomesticHotWaterStorageInputCopyBuilder copy() {
     return new DomesticHotWaterStorageInputCopyBuilder(this);

@@ -26,4 +26,8 @@ public abstract class ThermalSinkResult extends ThermalUnitResult {
   protected ThermalSinkResult(ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
     super(time, inputModel, qDot);
   }
+
+  protected ThermalSinkResult(ThermalUnitResult result) {
+    super(result);
+  }
 }

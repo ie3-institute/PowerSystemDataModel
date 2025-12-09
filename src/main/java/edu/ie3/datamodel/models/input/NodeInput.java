@@ -5,18 +5,26 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.geo.GeoUtils;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import javax.measure.quantity.Dimensionless;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
+  /* Public fields. */
+  public static final String V_TARGET = "vTarget";
+  public static final String V_RATED = "vRated";
+  public static final String SLACK = "slack";
+  public static final String GEO_POSITION = "geoPosition";
+  public static final String VOLT_LVL = "voltLvl";
+  public static final String SUBNET = "subnet";
+
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
   private final ComparableQuantity<Dimensionless> vTarget;
 
@@ -98,6 +106,25 @@ public class NodeInput extends AssetInput {
     this.subnet = subnet;
   }
 
+  public NodeInput(
+      AssetInput assetInput,
+      ComparableQuantity<Dimensionless> vTarget,
+      boolean slack,
+      Point geoPosition,
+      VoltageLevel voltLvl,
+      int subnet) {
+    this(
+        assetInput.getUuid(),
+        assetInput.getId(),
+        assetInput.getOperator(),
+        assetInput.getOperationTime(),
+        vTarget,
+        slack,
+        geoPosition,
+        voltLvl,
+        subnet);
+  }
+
   public ComparableQuantity<Dimensionless> getvTarget() {
     return vTarget;
   }
@@ -116,6 +143,10 @@ public class NodeInput extends AssetInput {
 
   public int getSubnet() {
     return subnet;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return assetFields().add(V_TARGET, V_RATED, SLACK, GEO_POSITION, VOLT_LVL, SUBNET);
   }
 
   @Override

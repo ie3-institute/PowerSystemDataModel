@@ -5,8 +5,12 @@
  */
 package edu.ie3.datamodel.models.input.connector
 
+import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.io.source.SourceValidator
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
+import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
+import edu.ie3.test.helper.FactoryTestHelper
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import spock.lang.Shared
@@ -14,10 +18,141 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 import tech.units.indriya.unit.Units
 
-class LineInputTest extends Specification {
+class LineInputTest extends Specification implements FactoryTestHelper {
 
   @Shared
   private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
+
+  def "A LineInput should return possible fields correctly"() {
+    when:
+    List<Set<String>> fields = LineInput.getFields().fields()
+
+    then:
+    fields == [
+      [
+        "geoPosition",
+        "id",
+        "length",
+        "nodeA",
+        "nodeB",
+        "olmCharacteristic",
+        "parallelDevices",
+        "type",
+        "uuid"
+      ] as Set,
+      [
+        "geoPosition",
+        "id",
+        "length",
+        "nodeA",
+        "nodeB",
+        "olmCharacteristic",
+        "operator",
+        "parallelDevices",
+        "type",
+        "uuid"
+      ] as Set,
+      [
+        "geoPosition",
+        "id",
+        "length",
+        "nodeA",
+        "nodeB",
+        "olmCharacteristic",
+        "operatesFrom",
+        "parallelDevices",
+        "type",
+        "uuid"
+      ] as Set,
+      [
+        "geoPosition",
+        "id",
+        "length",
+        "nodeA",
+        "nodeB",
+        "olmCharacteristic",
+        "operatesFrom",
+        "operator",
+        "parallelDevices",
+        "type",
+        "uuid"
+      ] as Set,
+      [
+        "geoPosition",
+        "id",
+        "length",
+        "nodeA",
+        "nodeB",
+        "olmCharacteristic",
+        "operatesUntil",
+        "parallelDevices",
+        "type",
+        "uuid"
+      ] as Set,
+      [
+        "geoPosition",
+        "id",
+        "length",
+        "nodeA",
+        "nodeB",
+        "olmCharacteristic",
+        "operatesUntil",
+        "operator",
+        "parallelDevices",
+        "type",
+        "uuid"
+      ] as Set,
+      [
+        "geoPosition",
+        "id",
+        "length",
+        "nodeA",
+        "nodeB",
+        "olmCharacteristic",
+        "operatesFrom",
+        "operatesUntil",
+        "parallelDevices",
+        "type",
+        "uuid"
+      ] as Set,
+      [
+        "geoPosition",
+        "id",
+        "length",
+        "nodeA",
+        "nodeB",
+        "olmCharacteristic",
+        "operatesFrom",
+        "operatesUntil",
+        "operator",
+        "parallelDevices",
+        "type",
+        "uuid"
+      ] as Set
+    ]
+  }
+
+  def "A LineInput should throw an exception on incorrect fields correctly"() {
+    given:
+    def actualFields = SourceValidator.newSet("uuid")
+    def validator = new SourceValidator()
+
+    when:
+    Try<Void, ValidationException> input = validator.validate(actualFields, LineInput)
+
+    then:
+    input.failure
+    input.exception.get().message == "The provided fields [uuid] are invalid for instance of 'LineInput'. \n" +
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'LineInput' are possible (NOT case-sensitive!):\n" +
+        "0: [geoPosition, id, length, nodeA, nodeB, olmCharacteristic, parallelDevices, type, uuid] or [geo_position, id, length, node_a, node_b, olm_characteristic, parallel_devices, type, uuid]\n" +
+        "1: [geoPosition, id, length, nodeA, nodeB, olmCharacteristic, operator, parallelDevices, type, uuid] or [geo_position, id, length, node_a, node_b, olm_characteristic, operator, parallel_devices, type, uuid]\n" +
+        "2: [geoPosition, id, length, nodeA, nodeB, olmCharacteristic, operatesFrom, parallelDevices, type, uuid] or [geo_position, id, length, node_a, node_b, olm_characteristic, operates_from, parallel_devices, type, uuid]\n" +
+        "3: [geoPosition, id, length, nodeA, nodeB, olmCharacteristic, operatesFrom, operator, parallelDevices, type, uuid] or [geo_position, id, length, node_a, node_b, olm_characteristic, operates_from, operator, parallel_devices, type, uuid]\n" +
+        "4: [geoPosition, id, length, nodeA, nodeB, olmCharacteristic, operatesUntil, parallelDevices, type, uuid] or [geo_position, id, length, node_a, node_b, olm_characteristic, operates_until, parallel_devices, type, uuid]\n" +
+        "5: [geoPosition, id, length, nodeA, nodeB, olmCharacteristic, operatesUntil, operator, parallelDevices, type, uuid] or [geo_position, id, length, node_a, node_b, olm_characteristic, operates_until, operator, parallel_devices, type, uuid]\n" +
+        "6: [geoPosition, id, length, nodeA, nodeB, olmCharacteristic, operatesFrom, operatesUntil, parallelDevices, type, uuid] or [geo_position, id, length, node_a, node_b, olm_characteristic, operates_from, operates_until, parallel_devices, type, uuid]\n" +
+        "7: [geoPosition, id, length, nodeA, nodeB, olmCharacteristic, operatesFrom, operatesUntil, operator, parallelDevices, type, uuid] or [geo_position, id, length, node_a, node_b, olm_characteristic, operates_from, operates_until, operator, parallel_devices, type, uuid]\n"
+  }
 
   def "Two LineInputs should be equal if all attributes are equal"() {
     given:

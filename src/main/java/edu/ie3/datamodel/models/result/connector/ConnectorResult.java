@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -15,6 +16,11 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors */
 public abstract class ConnectorResult extends ResultEntity {
+  /* Static fields. */
+  public static final String IAMAG = "iAMag";
+  public static final String IAANG = "iAAng";
+  public static final String IBMAG = "iBMag";
+  public static final String IBANG = "iBAng";
 
   /** Electric current magnitude @ port A, normally provided in Ampere */
   private ComparableQuantity<ElectricCurrent> iAMag;
@@ -50,6 +56,31 @@ public abstract class ConnectorResult extends ResultEntity {
     this.iAAng = iAAng;
     this.iBMag = iBMag;
     this.iBAng = iBAng;
+  }
+
+  protected ConnectorResult(
+      ResultEntity resultEntity,
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng) {
+    super(resultEntity);
+    this.iAMag = iAMag;
+    this.iAAng = iAAng;
+    this.iBMag = iBMag;
+    this.iBAng = iBAng;
+  }
+
+  protected ConnectorResult(ConnectorResult connectorResult) {
+    super(connectorResult);
+    this.iAMag = connectorResult.iAMag;
+    this.iAAng = connectorResult.iAAng;
+    this.iBMag = connectorResult.iBMag;
+    this.iBAng = connectorResult.iBAng;
+  }
+
+  protected static SourceValidator.Fields connectorResultFields() {
+    return resultFields().add(IAMAG, IAANG, IBMAG, IBANG);
   }
 
   public ComparableQuantity<ElectricCurrent> getiAMag() {

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import java.util.Collections;
@@ -24,7 +25,7 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
   private static final String LAT_ROT = "latRot";
 
   @Override
-  protected IdCoordinateInput buildModel(SimpleFactoryData data) {
+  protected IdCoordinateInput buildModel(SimpleFactoryData data) throws SourceException {
     int coordinateId = data.getInt(COORDINATE_ID);
     double lat = data.getDouble(LAT_GEO);
     double lon = data.getDouble(LONG_GEO);

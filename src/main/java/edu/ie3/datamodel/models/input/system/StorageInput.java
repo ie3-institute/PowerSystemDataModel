@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.io.extractor.HasType;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -19,6 +20,10 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes a battery storage */
 public class StorageInput extends SystemParticipantInput implements HasType {
+
+  /* Static fields. */
+  public static final String TYPE = "type";
+
   /** Type of this storage, containing default values for storages of this kind */
   private final StorageTypeInput type;
 
@@ -66,6 +71,15 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       StorageTypeInput type) {
     super(uuid, id, node, qCharacteristics, em);
     this.type = type;
+  }
+
+  public StorageInput(SystemParticipantInput systemParticipantInput, StorageTypeInput type) {
+    super(systemParticipantInput);
+    this.type = type;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantFields().add(TYPE);
   }
 
   @Override

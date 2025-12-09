@@ -5,11 +5,16 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
+import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Describes the type of an {@link edu.ie3.datamodel.models.input.AssetInput} */
 public abstract class AssetTypeInput extends UniqueInputEntity {
+  /* Static fields. */
+  public static final String ID = "id";
+
   /** Name or ID of the asset */
   private final String id;
 
@@ -20,6 +25,20 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
   protected AssetTypeInput(UUID uuid, String id) {
     super(uuid);
     this.id = id;
+  }
+
+  protected AssetTypeInput(UniqueEntity entity, String id) {
+    super(entity.getUuid());
+    this.id = id;
+  }
+
+  protected AssetTypeInput(AssetTypeInput assetTypeInput) {
+    super(assetTypeInput.getUuid());
+    this.id = assetTypeInput.getId();
+  }
+
+  protected static SourceValidator.Fields assetTypeFields() {
+    return uniqueEntityFields().add(ID);
   }
 
   public String getId() {

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
@@ -37,6 +38,14 @@ public class Transformer2WResult extends TransformerResult {
       ComparableQuantity<Angle> iBAng,
       int tapPos) {
     super(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+  }
+
+  public Transformer2WResult(TransformerResult transformerResult) {
+    super(transformerResult);
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return transformerResultFields();
   }
 
   @Override

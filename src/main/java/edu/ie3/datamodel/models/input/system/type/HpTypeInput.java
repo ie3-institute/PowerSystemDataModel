@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -15,6 +16,9 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpTypeInput extends SystemParticipantTypeInput {
+  /* Static fields. */
+  public static final String P_THERMAL = "pThermal";
+
   /** Thermal output of the heat pump (typically in kW), when sRated * cosphi_rated is consumed */
   private final ComparableQuantity<Power> pThermal;
 
@@ -38,6 +42,16 @@ public class HpTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Power> pThermal) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  public HpTypeInput(
+      SystemParticipantTypeInput systemParticipantTypeInput, ComparableQuantity<Power> pThermal) {
+    super(systemParticipantTypeInput);
+    this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantTypeFields().add(P_THERMAL);
   }
 
   public ComparableQuantity<Power> getpThermal() {

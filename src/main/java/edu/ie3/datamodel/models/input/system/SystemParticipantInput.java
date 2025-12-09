@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.io.extractor.HasEm;
 import edu.ie3.datamodel.io.extractor.HasNodes;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
@@ -20,6 +21,11 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes a system asset that is connected to a node */
 public abstract class SystemParticipantInput extends AssetInput implements HasNodes, HasEm {
+
+  /* Static fields. */
+  public static final String NODE = "node";
+  public static final String Q_CHARACTERISTICS = "qCharacteristics";
+  public static final String CONTROLLING_EM = "controllingEm";
 
   /** The node that the asset is connected to */
   private final NodeInput node;
@@ -77,6 +83,28 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     this.node = node;
     this.qCharacteristics = qCharacteristics;
     this.controllingEm = em;
+  }
+
+  protected SystemParticipantInput(
+      AssetInput assetInput,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em) {
+    super(assetInput);
+    this.node = node;
+    this.qCharacteristics = qCharacteristics;
+    this.controllingEm = em;
+  }
+
+  protected SystemParticipantInput(SystemParticipantInput systemParticipantInput) {
+    super(systemParticipantInput);
+    this.node = systemParticipantInput.node;
+    this.qCharacteristics = systemParticipantInput.qCharacteristics;
+    this.controllingEm = systemParticipantInput.controllingEm;
+  }
+
+  protected static SourceValidator.Fields participantFields() {
+    return assetFields().add(NODE, Q_CHARACTERISTICS, CONTROLLING_EM);
   }
 
   /**

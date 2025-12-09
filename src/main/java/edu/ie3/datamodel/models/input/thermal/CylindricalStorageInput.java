@@ -74,6 +74,10 @@ public class CylindricalStorageInput extends AbstractStorageInput {
     super(uuid, id, bus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
   }
 
+  public CylindricalStorageInput(AbstractStorageInput input) {
+    super(input);
+  }
+
   @Override
   public CylindricalStorageInputCopyBuilder copy() {
     return new CylindricalStorageInputCopyBuilder(this);

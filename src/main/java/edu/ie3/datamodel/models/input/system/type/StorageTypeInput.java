@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
@@ -19,6 +20,12 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {
+  /* Static fields. */
+  public static final String E_STORAGE = "eStorage";
+  public static final String P_MAX = "pMax";
+  public static final String ACTIVE_POWER_GRADIENT = "activePowerGradient";
+  public static final String ETA = "eta";
+
   /** Energy capacity (typically in kWh) */
   private final ComparableQuantity<Energy> eStorage;
 
@@ -59,6 +66,23 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
     this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
     this.eta = eta.to(StandardUnits.EFFICIENCY);
+  }
+
+  public StorageTypeInput(
+      SystemParticipantTypeInput systemParticipantTypeInput,
+      ComparableQuantity<Energy> eStorage,
+      ComparableQuantity<Power> pMax,
+      ComparableQuantity<DimensionlessRate> activePowerGradient,
+      ComparableQuantity<Dimensionless> eta) {
+    super(systemParticipantTypeInput);
+    this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
+    this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
+    this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
+    this.eta = eta.to(StandardUnits.EFFICIENCY);
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantTypeFields().add(E_STORAGE, P_MAX, ACTIVE_POWER_GRADIENT, ETA);
   }
 
   public ComparableQuantity<Dimensionless> getEta() {

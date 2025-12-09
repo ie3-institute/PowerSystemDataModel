@@ -32,6 +32,10 @@ public class EvResult extends ElectricalEnergyStorageResult {
     super(time, inputModel, p, q, soc);
   }
 
+  public EvResult(ElectricalEnergyStorageResult result) {
+    super(result);
+  }
+
   @Override
   public String toString() {
     return "EvResult{"

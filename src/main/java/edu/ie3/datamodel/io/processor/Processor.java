@@ -6,11 +6,11 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
-import edu.ie3.datamodel.io.factory.input.NodeInputFactory;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
@@ -66,8 +66,8 @@ public abstract class Processor<T> {
   private static final String OPERATES_UNTIL = "operatesUntil";
 
   private static final String VOLT_LVL_FIELD_NAME = "voltLvl";
-  private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
-  private static final String V_RATED = NodeInputFactory.V_RATED;
+  private static final String VOLT_LVL = NodeInput.VOLT_LVL;
+  private static final String V_RATED = NodeInput.V_RATED;
 
   private static final String PARALLEL_DEVICES = "parallelDevices";
 

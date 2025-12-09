@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.*;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -23,6 +24,13 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes a load */
 public class LoadInput extends SystemParticipantInput {
+
+  /* Static fields. */
+  public static final String LOAD_PROFILE = "loadProfile";
+  public static final String E_CONS_ANNUAL = "eConsAnnual";
+  public static final String S_RATED = "sRated";
+  public static final String COS_PHI = "cosPhiRated";
+
   /**
    * Reference to a load profile to use for the model. If you intend to assign specific values,
    * create an {@link IndividualTimeSeries} or {@link RepetitiveTimeSeries} and assign it via an
@@ -185,6 +193,23 @@ public class LoadInput extends SystemParticipantInput {
         eConsAnnual,
         sRated,
         cosPhiRated);
+  }
+
+  public LoadInput(
+      SystemParticipantInput systemParticipantInput,
+      LoadProfile loadProfile,
+      ComparableQuantity<Energy> eConsAnnual,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated) {
+    super(systemParticipantInput);
+    this.loadProfile = loadProfile;
+    this.eConsAnnual = eConsAnnual;
+    this.sRated = sRated;
+    this.cosPhiRated = cosPhiRated;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantFields().add(LOAD_PROFILE, E_CONS_ANNUAL, S_RATED, COS_PHI);
   }
 
   public LoadProfile getLoadProfile() {

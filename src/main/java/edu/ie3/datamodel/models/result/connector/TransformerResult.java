@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -17,6 +18,8 @@ import tech.units.indriya.ComparableQuantity;
  * actually creates a transformer representation.
  */
 public abstract class TransformerResult extends ConnectorResult {
+  /* Static fields. */
+  public static final String TAPPOS = "tapPos";
 
   /** Current tapping position if a transformer has a tap changer */
   private int tapPos;
@@ -42,6 +45,20 @@ public abstract class TransformerResult extends ConnectorResult {
       int tapPos) {
     super(time, inputModel, iAMag, iAAng, iBMag, iBAng);
     this.tapPos = tapPos;
+  }
+
+  protected TransformerResult(ConnectorResult connectorResult, int tapPos) {
+    super(connectorResult);
+    this.tapPos = tapPos;
+  }
+
+  protected TransformerResult(TransformerResult transformerResult) {
+    super(transformerResult);
+    this.tapPos = transformerResult.tapPos;
+  }
+
+  protected static SourceValidator.Fields transformerResultFields() {
+    return resultFields().add(TAPPOS);
   }
 
   public int getTapPos() {

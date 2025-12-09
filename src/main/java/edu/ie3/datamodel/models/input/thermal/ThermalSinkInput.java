@@ -36,6 +36,10 @@ public abstract class ThermalSinkInput extends ThermalUnitInput {
     super(uuid, id, operator, operationTime, bus);
   }
 
+  protected ThermalSinkInput(ThermalUnitInput thermalSinkInput) {
+    super(thermalSinkInput);
+  }
+
   @Override
   public abstract ThermalSinkInputCopyBuilder<?> copy();
 

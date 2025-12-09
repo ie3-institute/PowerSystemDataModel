@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
@@ -46,7 +47,7 @@ public class Transformer2WTypeInputFactory
   }
 
   @Override
-  protected Transformer2WTypeInput buildModel(EntityData data) {
+  protected Transformer2WTypeInput buildModel(EntityData data) throws SourceException {
     UUID uuid = data.getUUID(UUID);
     String id = data.getField(ID);
     ComparableQuantity<ElectricResistance> rSc = data.getQuantity(R_SC, StandardUnits.RESISTANCE);

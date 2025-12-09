@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.util.geo.GeoUtils;
@@ -33,7 +34,7 @@ public class SqlIdCoordinateFactory extends IdCoordinateFactory {
       Point point = GeoUtils.buildPoint(coordinate);
       return new IdCoordinateInput(coordinateId, point);
 
-    } catch (ParseException e) {
+    } catch (ParseException | SourceException e) {
       throw new FactoryException(e);
     }
   }

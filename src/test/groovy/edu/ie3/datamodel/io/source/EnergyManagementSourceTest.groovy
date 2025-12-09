@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source
 
 import static edu.ie3.test.helper.EntityMap.map
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.models.input.EmInput

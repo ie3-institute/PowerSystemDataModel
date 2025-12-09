@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.system;
 import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.io.extractor.HasThermalStorage;
 import edu.ie3.datamodel.io.extractor.HasType;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -24,6 +25,12 @@ import tech.units.indriya.ComparableQuantity;
 /** Describes a combined heat and power plant */
 public class ChpInput extends SystemParticipantInput
     implements HasType, HasThermalBus, HasThermalStorage {
+  /* Static fields. */
+  public static final String THERMAL_BUS = "thermalBus";
+  public static final String TYPE = "type";
+  public static final String THERMAL_STORAGE = "thermalStorage";
+  public static final String MARKET_REACTION = "marketReaction";
+
   /** The thermal bus, this model is connected to */
   private final ThermalBusInput thermalBus;
 
@@ -100,6 +107,23 @@ public class ChpInput extends SystemParticipantInput
     this.type = type;
     this.thermalStorage = thermalStorage;
     this.marketReaction = marketReaction;
+  }
+
+  public ChpInput(
+      SystemParticipantInput systemParticipantInput,
+      ChpTypeInput type,
+      ThermalBusInput thermalBus,
+      ThermalStorageInput thermalStorage,
+      boolean marketReaction) {
+    super(systemParticipantInput);
+    this.type = type;
+    this.thermalBus = thermalBus;
+    this.thermalStorage = thermalStorage;
+    this.marketReaction = marketReaction;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantFields().add(TYPE, THERMAL_BUS, THERMAL_STORAGE, MARKET_REACTION);
   }
 
   @Override

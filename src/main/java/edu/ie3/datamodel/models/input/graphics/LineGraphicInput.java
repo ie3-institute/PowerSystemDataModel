@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.graphics;
 
 import edu.ie3.datamodel.io.extractor.HasLine;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import java.util.Objects;
 import java.util.UUID;
@@ -16,6 +17,9 @@ import org.locationtech.jts.geom.LineString;
  * edu.ie3.datamodel.models.input.connector.LineInput}
  */
 public class LineGraphicInput extends GraphicInput implements HasLine {
+  /* Static fields. */
+  public static final String LINE = "line";
+
   /** The LineInput to this graphic data */
   private final LineInput line;
 
@@ -28,6 +32,15 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
   public LineGraphicInput(UUID uuid, String graphicLayer, LineString path, LineInput line) {
     super(uuid, graphicLayer, path);
     this.line = line;
+  }
+
+  public LineGraphicInput(GraphicInput graphicInput, LineInput lineInput) {
+    super(graphicInput);
+    this.line = lineInput;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return graphicFields().add(LINE);
   }
 
   @Override

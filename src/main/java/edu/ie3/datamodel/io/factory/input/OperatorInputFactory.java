@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -25,7 +26,7 @@ public class OperatorInputFactory extends UniqueEntityFactory<OperatorInput, Ent
   }
 
   @Override
-  protected OperatorInput buildModel(EntityData data) {
+  protected OperatorInput buildModel(EntityData data) throws SourceException {
     return new OperatorInput(data.getUUID(UUID), data.getField(ID));
   }
 }

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,6 +14,9 @@ import javax.measure.quantity.ElectricCurrent;
 import tech.units.indriya.ComparableQuantity;
 
 public class Transformer3WResult extends TransformerResult {
+  /* Static fields. */
+  public static final String ICMAG = "iCMag";
+  public static final String ICANG = "iCAng";
 
   /** Electric current magnitude @ port C, normally provided in Ampere */
   private ComparableQuantity<ElectricCurrent> iCMag;
@@ -44,6 +48,19 @@ public class Transformer3WResult extends TransformerResult {
     super(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
     this.iCAng = iCAng;
+  }
+
+  public Transformer3WResult(
+      TransformerResult transformerResult,
+      ComparableQuantity<ElectricCurrent> iCMag,
+      ComparableQuantity<Angle> iCAng) {
+    super(transformerResult);
+    this.iCMag = iCMag;
+    this.iCAng = iCAng;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return transformerResultFields().add(ICMAG, ICANG);
   }
 
   public ComparableQuantity<ElectricCurrent> getiCMag() {

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -13,6 +14,9 @@ import java.util.UUID;
 
 /** Describes an electrical grid switch between two {@link NodeInput}s */
 public class SwitchInput extends ConnectorInput {
+  /* Static fields. */
+  public static final String CLOSED = "closed";
+
   /** Is the switching state 'closed'? */
   private final boolean closed;
 
@@ -51,6 +55,15 @@ public class SwitchInput extends ConnectorInput {
   public SwitchInput(UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, boolean closed) {
     super(uuid, id, nodeA, nodeB, 1);
     this.closed = closed;
+  }
+
+  public SwitchInput(ConnectorInput connectorInput, boolean closed) {
+    super(connectorInput);
+    this.closed = closed;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return connectorFields(false).add(CLOSED);
   }
 
   public boolean isClosed() {

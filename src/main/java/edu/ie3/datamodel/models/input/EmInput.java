@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.io.extractor.HasEm;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Objects;
@@ -13,6 +14,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class EmInput extends AssetInput implements HasEm {
+  /* Static fields. */
+  public static final String CONTROL_STRATEGY = "controlStrategy";
+  public static final String CONTROLLING_EM = "controllingEm";
 
   /** Reference to the control strategy to be used for this model */
   private final String controlStrategy;
@@ -45,6 +49,16 @@ public class EmInput extends AssetInput implements HasEm {
     this.controllingEm = controllingEm;
   }
 
+  public EmInput(AssetInput assetInput, String emControlStrategy) {
+    this(assetInput, emControlStrategy, null);
+  }
+
+  public EmInput(AssetInput assetInput, String emControlStrategy, EmInput controllingEm) {
+    super(assetInput);
+    this.controlStrategy = emControlStrategy;
+    this.controllingEm = controllingEm;
+  }
+
   /**
    * Constructor for an operated energy management system
    *
@@ -57,6 +71,10 @@ public class EmInput extends AssetInput implements HasEm {
     super(uuid, id);
     this.controlStrategy = emControlStrategy;
     this.controllingEm = controllingEm;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return assetFields().add(CONTROL_STRATEGY, CONTROLLING_EM);
   }
 
   public String getControlStrategy() {

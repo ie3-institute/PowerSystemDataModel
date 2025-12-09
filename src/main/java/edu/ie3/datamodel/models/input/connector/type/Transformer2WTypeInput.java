@@ -5,15 +5,23 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.input.AssetTypeInput;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.*;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput} */
-public class Transformer2WTypeInput extends AssetTypeInput {
+public class Transformer2WTypeInput extends TransformerTypeInput {
+  /* Static fields. */
+  public static final String R_SC = "rSc";
+  public static final String X_SC = "xSc";
+  public static final String S_RATED = "sRated";
+  public static final String V_RATED_A = "vRatedA";
+  public static final String V_RATED_B = "vRatedB";
+  public static final String TAP_SIDE = "tapSide";
+
   /** Short circuit resistance (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> rSc;
 
@@ -29,29 +37,8 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   /** Rated voltage of the low voltage winding (typically in kV) */
   private final ComparableQuantity<ElectricPotential> vRatedB;
 
-  /** Phase-to-ground conductance (typically in nS) */
-  private final ComparableQuantity<ElectricConductance> gM;
-
-  /** Phase-to-ground susceptance (typically in nS) */
-  private final ComparableQuantity<ElectricConductance> bM;
-
-  /** Voltage magnitude deviation per tap position (typically in %) */
-  private final ComparableQuantity<Dimensionless> dV;
-
-  /** Voltage angle deviation per tap position (typically in °) */
-  private final ComparableQuantity<Angle> dPhi;
-
   /** Selection of winding, where the tap changer is installed. Low voltage, if true */
   private final boolean tapSide;
-
-  /** Neutral tap position */
-  private final int tapNeutr;
-
-  /** Minimum available tap position */
-  private final int tapMin;
-
-  /** Maximum available tap position */
-  private final int tapMax;
 
   /**
    * @param uuid of the input entity
@@ -86,20 +73,34 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       int tapNeutr,
       int tapMin,
       int tapMax) {
-    super(uuid, id);
+    super(uuid, id, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax);
     this.rSc = rSc.to(StandardUnits.RESISTANCE);
     this.xSc = xSc.to(StandardUnits.REACTANCE);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    this.gM = gM.to(StandardUnits.CONDUCTANCE);
-    this.bM = bM.to(StandardUnits.SUSCEPTANCE);
-    this.dV = dV.to(StandardUnits.DV_TAP);
-    this.dPhi = dPhi.to(StandardUnits.DPHI_TAP);
     this.tapSide = tapSide;
-    this.tapNeutr = tapNeutr;
-    this.tapMin = tapMin;
-    this.tapMax = tapMax;
+  }
+
+  public Transformer2WTypeInput(
+      TransformerTypeInput transformerTypeInput,
+      ComparableQuantity<ElectricResistance> rSc,
+      ComparableQuantity<ElectricResistance> xSc,
+      ComparableQuantity<Power> sRated,
+      ComparableQuantity<ElectricPotential> vRatedA,
+      ComparableQuantity<ElectricPotential> vRatedB,
+      boolean tapSide) {
+    super(transformerTypeInput);
+    this.rSc = rSc.to(StandardUnits.RESISTANCE);
+    this.xSc = xSc.to(StandardUnits.REACTANCE);
+    this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.vRatedA = vRatedA;
+    this.vRatedB = vRatedB;
+    this.tapSide = tapSide;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return transformerTypeFields().add(R_SC, X_SC, S_RATED, V_RATED_A, V_RATED_B, TAP_SIDE);
   }
 
   public ComparableQuantity<ElectricResistance> getrSc() {
@@ -122,36 +123,8 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     return vRatedB;
   }
 
-  public ComparableQuantity<ElectricConductance> getgM() {
-    return gM;
-  }
-
-  public ComparableQuantity<ElectricConductance> getbM() {
-    return bM;
-  }
-
-  public ComparableQuantity<Dimensionless> getdV() {
-    return dV;
-  }
-
-  public ComparableQuantity<Angle> getdPhi() {
-    return dPhi;
-  }
-
   public boolean isTapSide() {
     return tapSide;
-  }
-
-  public int getTapNeutr() {
-    return tapNeutr;
-  }
-
-  public int getTapMin() {
-    return tapMin;
-  }
-
-  public int getTapMax() {
-    return tapMax;
   }
 
   @Override
@@ -165,37 +138,16 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     if (!(o instanceof Transformer2WTypeInput that)) return false;
     if (!super.equals(o)) return false;
     return tapSide == that.tapSide
-        && tapNeutr == that.tapNeutr
-        && tapMin == that.tapMin
-        && tapMax == that.tapMax
         && rSc.equals(that.rSc)
         && xSc.equals(that.xSc)
         && sRated.equals(that.sRated)
         && vRatedA.equals(that.vRatedA)
-        && vRatedB.equals(that.vRatedB)
-        && gM.equals(that.gM)
-        && bM.equals(that.bM)
-        && dV.equals(that.dV)
-        && dPhi.equals(that.dPhi);
+        && vRatedB.equals(that.vRatedB);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        rSc,
-        xSc,
-        sRated,
-        vRatedA,
-        vRatedB,
-        gM,
-        bM,
-        dV,
-        dPhi,
-        tapSide,
-        tapNeutr,
-        tapMin,
-        tapMax);
+    return Objects.hash(super.hashCode(), rSc, xSc, sRated, vRatedA, vRatedB, tapSide);
   }
 
   @Override
@@ -216,21 +168,21 @@ public class Transformer2WTypeInput extends AssetTypeInput {
         + ", vRatedB="
         + vRatedB
         + ", gM="
-        + gM
+        + getbM()
         + ", bM="
-        + bM
+        + getbM()
         + ", dV="
-        + dV
+        + getdV()
         + ", dPhi="
-        + dPhi
+        + getdPhi()
         + ", tapSide="
         + tapSide
         + ", tapNeutr="
-        + tapNeutr
+        + getTapNeutr()
         + ", tapMin="
-        + tapMin
+        + getTapMin()
         + ", tapMax="
-        + tapMax
+        + getTapMax()
         + '}';
   }
 
@@ -239,21 +191,14 @@ public class Transformer2WTypeInput extends AssetTypeInput {
    * Transformer2WTypeInput}
    */
   public static final class Transformer2WTypeInputCopyBuilder
-      extends AssetTypeInput.AssetTypeInputCopyBuilder<Transformer2WTypeInputCopyBuilder> {
+      extends TransformerTypeInputCopyBuilder<Transformer2WTypeInputCopyBuilder> {
 
     private ComparableQuantity<ElectricResistance> rSc;
     private ComparableQuantity<ElectricResistance> xSc;
     private ComparableQuantity<Power> sRated;
     private ComparableQuantity<ElectricPotential> vRatedA;
     private ComparableQuantity<ElectricPotential> vRatedB;
-    private ComparableQuantity<ElectricConductance> gM;
-    private ComparableQuantity<ElectricConductance> bM;
-    private ComparableQuantity<Dimensionless> dV;
-    private ComparableQuantity<Angle> dPhi;
     private boolean tapSide;
-    private int tapNeutr;
-    private int tapMin;
-    private int tapMax;
 
     private Transformer2WTypeInputCopyBuilder(Transformer2WTypeInput entity) {
       super(entity);
@@ -262,14 +207,6 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       this.sRated = entity.sRated;
       this.vRatedA = entity.vRatedA;
       this.vRatedB = entity.vRatedB;
-      this.gM = entity.gM;
-      this.bM = entity.bM;
-      this.dV = entity.dV;
-      this.dPhi = entity.dPhi;
-      this.tapSide = entity.tapSide;
-      this.tapNeutr = entity.tapNeutr;
-      this.tapMin = entity.tapMin;
-      this.tapMax = entity.tapMax;
     }
 
     /** Setter */
@@ -300,51 +237,29 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder gM(ComparableQuantity<ElectricConductance> gM) {
-      this.gM = gM;
-      return thisInstance();
-    }
-
-    public Transformer2WTypeInputCopyBuilder bM(ComparableQuantity<ElectricConductance> bM) {
-      this.bM = bM;
-      return thisInstance();
-    }
-
-    public Transformer2WTypeInputCopyBuilder dV(ComparableQuantity<Dimensionless> dV) {
-      this.dV = dV;
-      return thisInstance();
-    }
-
-    public Transformer2WTypeInputCopyBuilder dPhi(ComparableQuantity<Angle> dPhi) {
-      this.dPhi = dPhi;
-      return thisInstance();
-    }
-
     public Transformer2WTypeInputCopyBuilder tapSide(boolean tapSide) {
       this.tapSide = tapSide;
-      return thisInstance();
-    }
-
-    public Transformer2WTypeInputCopyBuilder tapNeutr(int tapNeutr) {
-      this.tapNeutr = tapNeutr;
-      return thisInstance();
-    }
-
-    public Transformer2WTypeInputCopyBuilder tapMin(int tapMin) {
-      this.tapMin = tapMin;
-      return thisInstance();
-    }
-
-    public Transformer2WTypeInputCopyBuilder tapMax(int tapMax) {
-      this.tapMax = tapMax;
       return thisInstance();
     }
 
     @Override
     public Transformer2WTypeInput build() {
       return new Transformer2WTypeInput(
-          getUuid(), getId(), rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide,
-          tapNeutr, tapMin, tapMax);
+          getUuid(),
+          getId(),
+          rSc,
+          xSc,
+          sRated,
+          vRatedA,
+          vRatedB,
+          getGM(),
+          getBM(),
+          getDV(),
+          getDPhi(),
+          tapSide,
+          getTapNeutr(),
+          getTapMin(),
+          getTapMax());
     }
 
     @Override

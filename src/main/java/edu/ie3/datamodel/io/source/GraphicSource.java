@@ -9,10 +9,7 @@ import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
-import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
-import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
-import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputFactory;
+import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
@@ -22,11 +19,13 @@ import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.utils.Try;
+import edu.ie3.util.geo.GeoUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
+import org.locationtech.jts.geom.LineString;
 
 /**
  * Implementation that provides the capability to build entities of type {@link GraphicInput} from
@@ -40,25 +39,24 @@ public class GraphicSource extends AssetEntitySource {
   private final TypeSource typeSource;
   private final RawGridSource rawGridSource;
 
-  // factories
-  private final LineGraphicInputFactory lineGraphicInputFactory;
-  private final NodeGraphicInputFactory nodeGraphicInputFactory;
-
   public GraphicSource(TypeSource typeSource, RawGridSource rawGridSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
     this.rawGridSource = rawGridSource;
-
-    this.lineGraphicInputFactory = new LineGraphicInputFactory();
-    this.nodeGraphicInputFactory = new NodeGraphicInputFactory();
   }
 
   @Override
   public void validate() throws ValidationException {
     Try.scanStream(
             Stream.of(
-                validate(NodeGraphicInput.class, dataSource, nodeGraphicInputFactory),
-                validate(LineGraphicInput.class, dataSource, lineGraphicInputFactory)),
+                validate(
+                    NodeGraphicInput.class,
+                    dataSource,
+                    new SourceValidator<>(NodeGraphicInput.getFields())),
+                validate(
+                    LineGraphicInput.class,
+                    dataSource,
+                    new SourceValidator<>(LineGraphicInput.getFields()))),
             "Validation",
             FailedValidationException::new)
         .getOrThrow();
@@ -122,11 +120,7 @@ public class GraphicSource extends AssetEntitySource {
 
   public Set<NodeGraphicInput> getNodeGraphicInput(Map<UUID, NodeInput> nodes)
       throws SourceException {
-    return getEntities(
-            NodeGraphicInput.class,
-            dataSource,
-            nodeGraphicInputFactory,
-            enrich(NODE, nodes, NodeGraphicInputEntityData::new))
+    return getEntities(NodeGraphicInput.class, dataSource, nodeGraphicBuildFunction(nodes))
         .collect(toSet());
   }
 
@@ -144,11 +138,59 @@ public class GraphicSource extends AssetEntitySource {
 
   public Set<LineGraphicInput> getLineGraphicInput(Map<UUID, LineInput> lines)
       throws SourceException {
-    return getEntities(
-            LineGraphicInput.class,
-            dataSource,
-            lineGraphicInputFactory,
-            enrich("line", lines, LineGraphicInputEntityData::new))
+    return getEntities(LineGraphicInput.class, dataSource, lineGraphicBuildFunction(lines))
         .collect(toSet());
+  }
+
+  // building functions
+  protected static BuildFunction<GraphicInput> graphicBuilder() {
+    return entityData ->
+        entityData
+            .zip(uniqueEntityBuilder)
+            .map(
+                pair -> {
+                  EntityData data = pair.getLeft();
+
+                  String graphicLayer = data.getField(GraphicInput.GRAPHIC_LAYER);
+
+                  LineString path =
+                      data.getLineString(GraphicInput.PATH_LINE_STRING)
+                          .orElse(
+                              GeoUtils.buildSafeLineStringBetweenCoords(
+                                  NodeInput.DEFAULT_GEO_POSITION.getCoordinate(),
+                                  NodeInput.DEFAULT_GEO_POSITION.getCoordinate()));
+
+                  return new GraphicInput(pair.getRight(), graphicLayer, path) {
+                    @Override
+                    public GraphicInputCopyBuilder<? extends GraphicInputCopyBuilder<?>> copy() {
+                      return null;
+                    }
+                  };
+                },
+                SourceException.class);
+  }
+
+  protected static BuildFunction<NodeGraphicInput> nodeGraphicBuildFunction(
+      Map<UUID, NodeInput> nodes) {
+    return graphicBuilder()
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              return new NodeGraphicInput(
+                  pair.getRight(),
+                  extractFunction(data, NodeGraphicInput.NODE, nodes),
+                  data.getPoint(NodeGraphicInput.POINT).orElse(NodeInput.DEFAULT_GEO_POSITION));
+            });
+  }
+
+  protected static BuildFunction<LineGraphicInput> lineGraphicBuildFunction(
+      Map<UUID, LineInput> lines) {
+    return graphicBuilder()
+        .with(
+            pair ->
+                new LineGraphicInput(
+                    pair.getRight(),
+                    extractFunction(pair.getLeft(), LineGraphicInput.LINE, lines)));
   }
 }

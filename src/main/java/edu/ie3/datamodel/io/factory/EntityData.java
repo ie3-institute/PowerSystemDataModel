@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.factory;
 
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils;
@@ -45,6 +45,10 @@ public class EntityData extends FactoryData {
     super(fieldsToAttributes, entityClass);
   }
 
+  public EntityData(Map<String, String> fieldsToAttributes) {
+    super(fieldsToAttributes, null);
+  }
+
   /**
    * Creates a new EntityData object based on a given {@link FactoryData} object
    *
@@ -61,35 +65,35 @@ public class EntityData extends FactoryData {
   }
 
   /**
-   * Returns boolean value for given field name. Throws {@link FactoryException} if field does not
+   * Returns boolean value for given field name. Throws {@link SourceException} if field does not
    * exist, or field value is null or empty.
    *
    * @param field field name
    * @return true if value is "1" or "true", false otherwise
    */
-  public boolean getBoolean(String field) {
+  public boolean getBoolean(String field) throws SourceException {
     final String value = getField(field);
 
     if (value == null || value.trim().isEmpty())
-      throw new FactoryException(String.format("Field \"%s\" is null or empty", field));
+      throw new SourceException(String.format("Field \"%s\" is null or empty", field));
 
     return value.trim().equals("1") || value.trim().equalsIgnoreCase("true");
   }
 
   /**
    * Parses and returns a geometry from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
+   * SourceException} if field does not exist or parsing fails.
    *
    * @param field field name
    * @return Geometry if field value is not empty, empty Optional otherwise
    */
-  private Optional<Geometry> getGeometry(String field) {
+  private Optional<Geometry> getGeometry(String field) throws SourceException {
     String value = getField(field);
     try {
       if (value.trim().isEmpty()) return Optional.empty();
       else return Optional.of(geoJsonReader.read(value));
     } catch (ParseException pe) {
-      throw new FactoryException(
+      throw new SourceException(
           String.format(
               "Exception while trying to parse geometry of field \"%s\" with value \"%s\"",
               field, value),
@@ -99,17 +103,17 @@ public class EntityData extends FactoryData {
 
   /**
    * Parses and returns a geometrical LineString from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
+   * SourceException} if field does not exist or parsing fails.
    *
    * @param field field name
    * @return LineString if field value is not empty, empty Optional otherwise
    */
-  public Optional<LineString> getLineString(String field) {
+  public Optional<LineString> getLineString(String field) throws SourceException {
     Optional<Geometry> geom = getGeometry(field);
     if (geom.isPresent()) {
       if (geom.get() instanceof LineString lineString) return Optional.of(lineString);
       else
-        throw new FactoryException(
+        throw new SourceException(
             "Geometry is of type "
                 + geom.getClass().getSimpleName()
                 + ", but type LineString is required");
@@ -118,17 +122,17 @@ public class EntityData extends FactoryData {
 
   /**
    * Parses and returns a geometrical Point from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
+   * SourceException} if field does not exist or parsing fails.
    *
    * @param field field name
    * @return Point if field value is not empty, empty Optional otherwise
    */
-  public Optional<Point> getPoint(String field) {
+  public Optional<Point> getPoint(String field) throws SourceException {
     Optional<Geometry> geom = getGeometry(field);
     if (geom.isPresent()) {
       if (geom.get() instanceof Point point) return Optional.of(point);
       else
-        throw new FactoryException(
+        throw new SourceException(
             "Geometry is of type "
                 + geom.getClass().getSimpleName()
                 + ", but type Point is required");
@@ -137,20 +141,21 @@ public class EntityData extends FactoryData {
 
   /**
    * Parses and returns a voltage level from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
+   * SourceException} if field does not exist or parsing fails.
    *
    * @param voltLvlField name of the field containing the voltage level
    * @param ratedVoltField name of the field containing the rated voltage
    * @return Voltage level
    */
-  public VoltageLevel getVoltageLvl(String voltLvlField, String ratedVoltField) {
+  public VoltageLevel getVoltageLvl(String voltLvlField, String ratedVoltField)
+      throws SourceException {
     try {
       final String voltLvlId = getField(voltLvlField);
       final ComparableQuantity<ElectricPotential> vRated = getQuantity(ratedVoltField, KILOVOLT);
 
       return parseToGermanVoltLvlOrIndividual(voltLvlId, vRated);
     } catch (IllegalArgumentException iae) {
-      throw new FactoryException("VoltageLevel could not be parsed", iae);
+      throw new SourceException("VoltageLevel could not be parsed", iae);
     }
   }
 

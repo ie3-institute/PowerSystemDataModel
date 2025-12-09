@@ -6,14 +6,27 @@
 package edu.ie3.datamodel.models.input.connector;
 
 import edu.ie3.datamodel.io.extractor.HasNodes;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /** Describes an asset that connects two {@link NodeInput}s */
 public abstract class ConnectorInput extends AssetInput implements HasNodes {
+  /* Static fields. */
+  public static final String NODE_A = "nodeA";
+  public static final String NODE_B = "nodeB";
+
+  /**
+   * Attribute that _can_, but does not _have to_ be present for the creation of {@link
+   * ConnectorInput}s.
+   */
+  public static final String PARALLEL_DEVICES = "parallelDevices";
+
   /** Grid node at one side of the connector */
   private final NodeInput nodeA;
 
@@ -65,6 +78,30 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     this.nodeA = nodeA;
     this.nodeB = nodeB;
     this.parallelDevices = parallelDevices;
+  }
+
+  protected ConnectorInput(ConnectorInput input) {
+    super(input);
+    this.nodeA = input.getNodeA();
+    this.nodeB = input.getNodeB();
+    this.parallelDevices = input.getParallelDevices();
+  }
+
+  public ConnectorInput(
+      AssetInput assetInput, NodeInput nodeA, NodeInput nodeB, int parallelDevices) {
+    super(assetInput);
+    this.nodeA = nodeA;
+    this.nodeB = nodeB;
+    this.parallelDevices = parallelDevices;
+  }
+
+  protected static SourceValidator.Fields connectorFields(boolean includeParallelDevices) {
+    if (includeParallelDevices) {
+      return assetFields().add(NODE_A, NODE_B, PARALLEL_DEVICES);
+    } else {
+      // parallel devices is not included, since switched don't have this field
+      return assetFields().add(NODE_A, NODE_B);
+    }
   }
 
   public NodeInput getNodeA() {

@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.io.extractor.HasType;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -19,6 +20,10 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes a Wind Energy Converter */
 public class WecInput extends SystemParticipantInput implements HasType {
+
+  /* Static fields. */
+  public static final String TYPE = "type";
+  public static final String MARKET_REACTION = "marketReaction";
 
   /** Type of this WEC, containing default values for WEC assets of this kind */
   private final WecTypeInput type;
@@ -76,6 +81,17 @@ public class WecInput extends SystemParticipantInput implements HasType {
     super(uuid, id, node, qCharacteristics, em);
     this.type = type;
     this.marketReaction = marketReaction;
+  }
+
+  public WecInput(
+      SystemParticipantInput systemParticipantInput, WecTypeInput type, boolean marketReaction) {
+    super(systemParticipantInput);
+    this.type = type;
+    this.marketReaction = marketReaction;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantFields().add(TYPE, MARKET_REACTION);
   }
 
   public boolean isMarketReaction() {

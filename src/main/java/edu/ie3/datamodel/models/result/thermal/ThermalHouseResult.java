@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.thermal;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -15,6 +16,9 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Represents the results of {@link edu.ie3.datamodel.models.input.thermal.ThermalHouseInput} */
 public class ThermalHouseResult extends ThermalSinkResult {
+  /* Static fields. */
+  public static final String INDOOR_TEMPERATURE = "indoorTemperature";
+
   /** Indoor room temperature of the house */
   private ComparableQuantity<Temperature> indoorTemperature;
 
@@ -33,6 +37,16 @@ public class ThermalHouseResult extends ThermalSinkResult {
       ComparableQuantity<Temperature> indoorTemperature) {
     super(time, inputModel, qDot);
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
+  }
+
+  public ThermalHouseResult(
+      ThermalSinkResult thermalSinkResult, ComparableQuantity<Temperature> indoorTemperature) {
+    super(thermalSinkResult);
+    this.indoorTemperature = indoorTemperature;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return thermalUnitFields().add(INDOOR_TEMPERATURE);
   }
 
   public ComparableQuantity<Temperature> getIndoorTemperature() {

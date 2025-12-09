@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -15,6 +16,12 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput} */
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
+  /* Static fields. */
+  public static final String CAP_EX = "capex";
+  public static final String OP_EX = "opex";
+  public static final String S_RATED = "sRated";
+  public static final String COS_PHI_RATED = "cosPhiRated";
+
   /** Capital expense for this type of system participant (typically in €) */
   private final ComparableQuantity<Currency> capex;
 
@@ -47,6 +54,31 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     this.opex = opex;
     this.sRated = sRated;
     this.cosPhiRated = cosPhiRated;
+  }
+
+  protected SystemParticipantTypeInput(
+      AssetTypeInput assetTypeInput,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated) {
+    super(assetTypeInput);
+    this.capex = capex;
+    this.opex = opex;
+    this.sRated = sRated;
+    this.cosPhiRated = cosPhiRated;
+  }
+
+  protected SystemParticipantTypeInput(SystemParticipantTypeInput systemParticipantTypeInput) {
+    super(systemParticipantTypeInput);
+    this.capex = systemParticipantTypeInput.capex;
+    this.opex = systemParticipantTypeInput.opex;
+    this.sRated = systemParticipantTypeInput.sRated;
+    this.cosPhiRated = systemParticipantTypeInput.cosPhiRated;
+  }
+
+  protected static SourceValidator.Fields participantTypeFields() {
+    return assetTypeFields().add(CAP_EX, OP_EX, S_RATED, COS_PHI_RATED);
   }
 
   public ComparableQuantity<Currency> getCapex() {

@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import static edu.ie3.datamodel.models.StandardUnits.*;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
@@ -40,7 +41,7 @@ public class TimeBasedSimpleValueFactory<V extends Value>
 
   @Override
   @SuppressWarnings("unchecked")
-  protected TimeBasedValue<V> buildModel(SimpleTimeBasedValueData<V> data) {
+  protected TimeBasedValue<V> buildModel(SimpleTimeBasedValueData<V> data) throws SourceException {
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     V value;
 

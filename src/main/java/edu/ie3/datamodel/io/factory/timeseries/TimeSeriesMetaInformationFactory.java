@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
@@ -39,7 +40,7 @@ public class TimeSeriesMetaInformationFactory
   }
 
   @Override
-  protected TimeSeriesMetaInformation buildModel(EntityData data) {
+  protected TimeSeriesMetaInformation buildModel(EntityData data) throws SourceException {
     if (LoadProfileMetaInformation.class.isAssignableFrom(data.getTargetClass())) {
       String profile = data.getField(LOAD_PROFILE);
       return new LoadProfileMetaInformation(profile);

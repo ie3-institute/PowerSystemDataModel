@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -48,9 +49,9 @@ public abstract class FactoryData {
    * @param field field name
    * @return field value
    */
-  public String getField(String field) {
+  public String getField(String field) throws SourceException {
     if (!fieldsToAttributes.containsKey(field))
-      throw new FactoryException(String.format("Field \"%s\" not found in EntityData", field));
+      throw new SourceException(String.format("Field \"%s\" not found in EntityData", field));
 
     return fieldsToAttributes.get(field);
   }
@@ -74,7 +75,8 @@ public abstract class FactoryData {
    * @param <Q> unit type parameter
    * @return Quantity of given field with given unit
    */
-  public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
+  public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit)
+      throws SourceException {
     return Quantities.getQuantity(getDouble(field), unit);
   }
 
@@ -101,11 +103,11 @@ public abstract class FactoryData {
    * @param field field name
    * @return int value
    */
-  public int getInt(String field) {
+  public int getInt(String field) throws SourceException {
     try {
       return Integer.parseInt(getField(field));
     } catch (NumberFormatException nfe) {
-      throw new FactoryException(
+      throw new SourceException(
           String.format(
               "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
               field, getField(field)),
@@ -120,11 +122,11 @@ public abstract class FactoryData {
    * @param field field name
    * @return double value
    */
-  public double getDouble(String field) {
+  public double getDouble(String field) throws SourceException {
     try {
       return Double.parseDouble(getField(field));
     } catch (NumberFormatException nfe) {
-      throw new FactoryException(
+      throw new SourceException(
           String.format(
               "Exception while trying to parse field \"%s\" with supposed double value \"%s\"",
               field, getField(field)),
@@ -139,11 +141,11 @@ public abstract class FactoryData {
    * @param field field name
    * @return UUID
    */
-  public UUID getUUID(String field) {
+  public UUID getUUID(String field) throws SourceException {
     try {
       return UUID.fromString(getField(field));
     } catch (IllegalArgumentException iae) {
-      throw new FactoryException(
+      throw new SourceException(
           String.format(
               "Exception while trying to parse UUID of field \"%s\" with value \"%s\"",
               field, getField(field)),

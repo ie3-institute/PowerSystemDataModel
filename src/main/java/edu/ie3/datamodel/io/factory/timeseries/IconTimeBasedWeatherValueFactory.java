@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -77,7 +78,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   }
 
   @Override
-  protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
+  protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data)
+      throws SourceException {
     Point coordinate = data.getCoordinate();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
@@ -112,7 +114,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    * @return A {@link ComparableQuantity} of type {@link Speed}, that is converted to {@link
    *     StandardUnits#WIND_VELOCITY}
    */
-  private static ComparableQuantity<Angle> getWindDirection(TimeBasedWeatherValueData data) {
+  private static ComparableQuantity<Angle> getWindDirection(TimeBasedWeatherValueData data)
+      throws SourceException {
     /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
     double u =
         data.getDouble(WIND_VELOCITY_U); // Wind component from west to east (parallel to latitudes)
@@ -136,7 +139,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    * @return A {@link ComparableQuantity} of type {@link Speed}, that is converted to {@link
    *     StandardUnits#WIND_VELOCITY}
    */
-  private static ComparableQuantity<Speed> getWindVelocity(TimeBasedWeatherValueData data) {
+  private static ComparableQuantity<Speed> getWindVelocity(TimeBasedWeatherValueData data)
+      throws SourceException {
     /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
     double u = data.getDouble(WIND_VELOCITY_U);
     double v = data.getDouble(WIND_VELOCITY_V);

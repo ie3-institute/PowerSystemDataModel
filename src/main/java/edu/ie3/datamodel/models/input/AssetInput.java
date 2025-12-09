@@ -5,13 +5,20 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.OperationTime;
-import java.util.Objects;
-import java.util.UUID;
+import edu.ie3.datamodel.models.UniqueEntity;
+import java.util.*;
 
 /** Describes a grid asset under the assumption that every asset could be operable */
 public abstract class AssetInput extends UniqueInputEntity implements Operable {
+  /* Static fields. */
+  public static final String ID = "id";
+  public static final String OPERATOR = "operator";
+  public static final String OPERATES_FROM = "operatesFrom";
+  public static final String OPERATES_UNTIL = "operatesUntil";
+
   /** Time for which the entity is operated */
   private final OperationTime operationTime;
 
@@ -46,6 +53,18 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
     this(uuid, id, OperatorInput.NO_OPERATOR_ASSIGNED, OperationTime.notLimited());
   }
 
+  protected AssetInput(AssetInput assetInput) {
+    super(assetInput.getUuid());
+    this.operationTime = assetInput.getOperationTime();
+    this.operator = assetInput.getOperator();
+    this.id = assetInput.getId();
+  }
+
+  protected AssetInput(
+      UniqueEntity entity, String id, OperatorInput operator, OperationTime operationTime) {
+    this(entity.getUuid(), id, operator, operationTime);
+  }
+
   @Override
   public OperationTime getOperationTime() {
     return operationTime;
@@ -58,6 +77,14 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
 
   public String getId() {
     return id;
+  }
+
+  protected static SourceValidator.Fields assetFields() {
+    return uniqueEntityFields()
+        .add(ID)
+        .addOptional(OPERATOR)
+        .addOptional(OPERATES_FROM)
+        .addOptional(OPERATES_UNTIL);
   }
 
   public abstract AssetInputCopyBuilder<?> copy();

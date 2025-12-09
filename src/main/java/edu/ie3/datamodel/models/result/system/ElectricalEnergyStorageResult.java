@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -15,6 +16,8 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Represents everything, that is capable of storing electric energy */
 public abstract class ElectricalEnergyStorageResult extends SystemParticipantResult {
+  /* Static fields. */
+  public static final String SOC = "soc";
 
   /** State of Charge (SoC) in % */
   private final ComparableQuantity<Dimensionless> soc;
@@ -27,6 +30,21 @@ public abstract class ElectricalEnergyStorageResult extends SystemParticipantRes
       ComparableQuantity<Dimensionless> soc) {
     super(time, inputModel, p, q);
     this.soc = soc.to(StandardUnits.SOC);
+  }
+
+  protected ElectricalEnergyStorageResult(
+      SystemParticipantResult systemParticipantResult, ComparableQuantity<Dimensionless> soc) {
+    super(systemParticipantResult);
+    this.soc = soc.to(StandardUnits.SOC);
+  }
+
+  protected ElectricalEnergyStorageResult(ElectricalEnergyStorageResult result) {
+    super(result);
+    this.soc = result.soc;
+  }
+
+  public static SourceValidator.Fields electricalEnergyStorageFields() {
+    return participantFields().add(SOC);
   }
 
   public ComparableQuantity<Dimensionless> getSoc() {

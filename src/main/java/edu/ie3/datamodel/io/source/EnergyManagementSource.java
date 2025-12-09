@@ -5,13 +5,12 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.io.factory.input.EmInputFactory.CONTROLLING_EM;
+import static edu.ie3.datamodel.models.input.EmInput.CONTROLLING_EM;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.EmAssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.EmInputFactory;
+import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.Try;
@@ -20,12 +19,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class EnergyManagementSource extends AssetEntitySource {
 
   private final TypeSource typeSource;
-
-  private static final EmInputFactory emInputFactory = new EmInputFactory();
 
   public EnergyManagementSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
@@ -34,7 +32,7 @@ public class EnergyManagementSource extends AssetEntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    validate(EmInput.class, dataSource, emInputFactory).getOrThrow();
+    validate(EmInput.class, dataSource, new SourceValidator<>(EmInput.getFields())).getOrThrow();
   }
 
   /**
@@ -69,39 +67,39 @@ public class EnergyManagementSource extends AssetEntitySource {
    */
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
     return createEmInputs(
-        buildEntityData(EmInput.class, dataSource, data -> assetEnricher.apply(data, operators)));
+        buildEntity(AssetInput.class, dataSource).map(e -> e.zip(assetBuilder(operators))));
   }
 
   /**
    * Since each EM can itself be controlled by another EM, it does not suffice to link {@link
-   * EmInput}s via {@link EntitySource#enrichFunction} as we do for system participants in {@link
-   * SystemParticipantSource}. Instead, we use a recursive approach, starting with EMs at root level
-   * (which are not EM-controlled themselves).
+   * EmInput}s as we do for system participants in {@link SystemParticipantSource}. Instead, we use
+   * a recursive approach, starting with EMs at root level (which are not EM-controlled themselves).
    *
-   * @param assetEntityDataStream the data stream of {@link AssetInputEntityData} {@link Try}
-   *     objects
+   * @param assetStream the data stream of {@link AssetInput} {@link Try} objects
    * @return a map of UUID to {@link EmInput} entities
    */
   private static Map<UUID, EmInput> createEmInputs(
-      Stream<Try<AssetInputEntityData, SourceException>> assetEntityDataStream)
+      Stream<Try<Pair<EntityData, AssetInput>, SourceException>> assetStream)
       throws SourceException {
 
     // Split stream by failures and EMs that are themselves EM-controlled on one side, and EMs at
     // root position (that have not failed so far) on the other side, which do not have parents per
     // definition.
-    Map<Boolean, List<Try<AssetInputEntityData, SourceException>>> split =
-        assetEntityDataStream.collect(
+    Map<Boolean, List<Try<Pair<EntityData, AssetInput>, SourceException>>> split =
+        assetStream.collect(
             Collectors.partitioningBy(
                 dataTry ->
                     dataTry
                         .map(
                             data ->
-                                data.containsKey(CONTROLLING_EM)
-                                    && !data.getField(CONTROLLING_EM).isBlank())
+                                !data.getLeft()
+                                    .getFieldOptional(CONTROLLING_EM)
+                                    .orElse("")
+                                    .isBlank())
                         .getOrElse(() -> true)));
 
-    List<Try<AssetInputEntityData, SourceException>> rootEmsEntityData = split.get(false);
-    List<Try<AssetInputEntityData, SourceException>> others = split.get(true);
+    List<Try<Pair<EntityData, AssetInput>, SourceException>> rootEmsEntityData = split.get(false);
+    List<Try<Pair<EntityData, AssetInput>, SourceException>> others = split.get(true);
 
     // at the start, this is only root ems
     Map<UUID, EmInput> allEms =
@@ -111,8 +109,11 @@ public class EnergyManagementSource extends AssetEntitySource {
                     .map(
                         entityDataTry ->
                             entityDataTry.map(
-                                entityData -> new EmAssetInputEntityData(entityData, null)))
-                    .map(emInputFactory::get),
+                                pair ->
+                                    new EmInput(
+                                        pair.getRight(),
+                                        pair.getLeft().getField(EmInput.CONTROL_STRATEGY)),
+                                SourceException.class)),
                 EmInput.class)
             .collect(toMap());
 
@@ -126,27 +127,22 @@ public class EnergyManagementSource extends AssetEntitySource {
               others.stream()
                   .map(
                       dataTry ->
-                          dataTry.flatMap(
-                              data -> {
+                          dataTry.map(
+                              pair -> {
+                                EntityData data = pair.getLeft();
+
                                 // we already filtered out those entities that do not have a parent,
                                 // so the field should exist
-                                String uuidString = data.getField(CONTROLLING_EM);
-                                return Try.of(
-                                        () -> UUID.fromString(uuidString),
-                                        IllegalArgumentException.class)
-                                    .transformF(
-                                        iae ->
-                                            new SourceException(
-                                                String.format(
-                                                    "Exception while trying to parse UUID of field \"%s\" with value \"%s\"",
-                                                    CONTROLLING_EM, uuidString),
-                                                iae))
-                                    // failed UUID parses are filtered out at this point. We save
-                                    // the parsed UUID with the asset data
-                                    .map(
-                                        parentUuid ->
-                                            new AssetDataAndValidParentUuid(data, parentUuid));
-                              })),
+                                UUID parentUuid = data.getUUID(CONTROLLING_EM);
+
+                                // failed UUID parses are filtered out at this point. We save
+                                // the parsed UUID with the asset data
+                                return new AssetDataAndValidParentUuid(
+                                    pair.getRight(),
+                                    data.getField(EmInput.CONTROL_STRATEGY),
+                                    parentUuid);
+                              },
+                              SourceException.class)),
               AssetDataAndValidParentUuid.class);
 
       allEms.putAll(createHierarchicalEmInputs(othersWithParentUuid, allEms));
@@ -178,16 +174,13 @@ public class EnergyManagementSource extends AssetEntitySource {
     } else {
       // New EMs can be built at this level
       Map<UUID, EmInput> newEms =
-          unpack(
-                  toBeBuiltAtThisLevel.stream()
-                      .map(
-                          data -> {
-                            // exists because we checked above
-                            EmInput parentEm = lastLevelEms.get(data.parentEm);
-                            return emInputFactory.get(
-                                new EmAssetInputEntityData(data.entityData, parentEm));
-                          }),
-                  EmInput.class)
+          toBeBuiltAtThisLevel.stream()
+              .map(
+                  data -> {
+                    // exists because we checked above
+                    EmInput parentEm = lastLevelEms.get(data.parentEm);
+                    return new EmInput(data.assetInput, data.controlStrategy, parentEm);
+                  })
               .collect(toMap());
 
       if (!toBeBuiltAtNextLevel.isEmpty()) {
@@ -199,8 +192,9 @@ public class EnergyManagementSource extends AssetEntitySource {
   }
 
   /**
-   * Helper data record that holds an {@link AssetInputEntityData} and the UUID successfully parsed
-   * from {@link EmInputFactory#CONTROLLING_EM} field
+   * Helper data record that holds an {@link AssetInput}, a control strategy and the UUID
+   * successfully parsed from {@link EmInput#CONTROLLING_EM} field
    */
-  private record AssetDataAndValidParentUuid(AssetInputEntityData entityData, UUID parentEm) {}
+  private record AssetDataAndValidParentUuid(
+      AssetInput assetInput, String controlStrategy, UUID parentEm) {}
 }

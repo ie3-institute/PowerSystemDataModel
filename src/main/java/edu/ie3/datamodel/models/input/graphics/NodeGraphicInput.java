@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.graphics;
 
 import edu.ie3.datamodel.io.extractor.HasNodes;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.input.NodeInput;
 import java.util.*;
 import org.locationtech.jts.geom.LineString;
@@ -13,6 +14,10 @@ import org.locationtech.jts.geom.Point;
 
 /** Describes the graphic data belonging to a {@link NodeInput} */
 public class NodeGraphicInput extends GraphicInput implements HasNodes {
+  /* Static fields. */
+  public static final String POINT = "point";
+  public static final String NODE = "node";
+
   /** The NodeInput to this graphic data */
   private final NodeInput node;
 
@@ -31,6 +36,16 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
     super(uuid, graphicLayer, path);
     this.node = node;
     this.point = point;
+  }
+
+  public NodeGraphicInput(GraphicInput graphicInput, NodeInput node, Point point) {
+    super(graphicInput);
+    this.node = node;
+    this.point = point;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return graphicFields().add(POINT, NODE);
   }
 
   public NodeInput getNode() {

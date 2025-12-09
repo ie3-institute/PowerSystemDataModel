@@ -9,6 +9,7 @@ import static tech.units.indriya.unit.Units.WATT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
@@ -42,7 +43,8 @@ public class BdewLoadProfileFactory
   }
 
   @Override
-  protected LoadProfileEntry<BdewLoadValues> buildModel(LoadProfileData<BdewLoadValues> data) {
+  protected LoadProfileEntry<BdewLoadValues> buildModel(LoadProfileData<BdewLoadValues> data)
+      throws SourceException {
     int quarterHour = data.getInt(QUARTER_HOUR);
 
     boolean is1999Scheme =
@@ -51,10 +53,29 @@ public class BdewLoadProfileFactory
     BdewLoadValues values;
 
     if (is1999Scheme) {
-      values = new BdewLoadValues(BdewScheme.BDEW1999, BDEW1999_FIELDS.map(data::getDouble));
-
+      values =
+          new BdewLoadValues(
+              BdewScheme.BDEW1999,
+              BDEW1999_FIELDS.map(
+                  field -> {
+                    try {
+                      return data.getDouble(field);
+                    } catch (SourceException e) {
+                      throw new RuntimeException(e);
+                    }
+                  }));
     } else {
-      values = new BdewLoadValues(BdewScheme.BDEW2025, BDEW2025_FIELDS.map(data::getDouble));
+      values =
+          new BdewLoadValues(
+              BdewScheme.BDEW2025,
+              BDEW2025_FIELDS.map(
+                  field -> {
+                    try {
+                      return data.getDouble(field);
+                    } catch (SourceException e) {
+                      throw new RuntimeException(e);
+                    }
+                  }));
     }
 
     return new LoadProfileEntry<>(values, quarterHour);

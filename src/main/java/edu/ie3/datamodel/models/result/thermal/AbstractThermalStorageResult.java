@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.thermal;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -16,6 +17,9 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class representing the common results of different types of thermal storages */
 public abstract class AbstractThermalStorageResult extends ThermalStorageResult {
+  /* Static fields. */
+  public static final String FILL_LEVEL = "fillLevel";
+
   /** Fill level of the storage */
   private ComparableQuantity<Dimensionless> fillLevel;
 
@@ -36,6 +40,22 @@ public abstract class AbstractThermalStorageResult extends ThermalStorageResult 
       ComparableQuantity<Dimensionless> fillLevel) {
     super(time, inputModel, energy, qDot);
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
+  }
+
+  protected AbstractThermalStorageResult(
+      ThermalStorageResult thermalStorageResult, ComparableQuantity<Dimensionless> fillLevel) {
+    super(thermalStorageResult);
+    this.fillLevel = fillLevel;
+  }
+
+  protected AbstractThermalStorageResult(
+      AbstractThermalStorageResult abstractThermalStorageResult) {
+    super(abstractThermalStorageResult);
+    this.fillLevel = abstractThermalStorageResult.getFillLevel();
+  }
+
+  public static SourceValidator.Fields abstractThermalStorageFields() {
+    return thermalUnitFields().add(FILL_LEVEL);
   }
 
   public ComparableQuantity<Dimensionless> getFillLevel() {

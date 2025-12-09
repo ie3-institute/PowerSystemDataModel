@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,6 +14,9 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class that holds values common to result entities having heat result */
 public abstract class SystemParticipantWithHeatResult extends SystemParticipantResult {
+  /* Static fields. */
+  public static final String Q_DOT = "qDot";
+
   /** The thermal power output normally provided in MW */
   private final ComparableQuantity<Power> qDot;
 
@@ -31,6 +35,22 @@ public abstract class SystemParticipantWithHeatResult extends SystemParticipantR
       ComparableQuantity<Power> qDot) {
     super(time, inputModel, p, q);
     this.qDot = qDot;
+  }
+
+  protected SystemParticipantWithHeatResult(
+      SystemParticipantResult systemParticipantResult, ComparableQuantity<Power> qDot) {
+    super(systemParticipantResult);
+    this.qDot = qDot;
+  }
+
+  protected SystemParticipantWithHeatResult(
+      SystemParticipantWithHeatResult systemParticipantWithHeatResult) {
+    super(systemParticipantWithHeatResult);
+    this.qDot = systemParticipantWithHeatResult.qDot;
+  }
+
+  public static SourceValidator.Fields participantWithHeatFields() {
+    return participantFields().add(Q_DOT);
   }
 
   /**

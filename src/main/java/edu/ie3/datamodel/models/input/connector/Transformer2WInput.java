@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.connector;
 import static edu.ie3.datamodel.utils.validation.ConnectorValidationUtils.connectsNodesToCorrectVoltageSides;
 
 import edu.ie3.datamodel.io.extractor.HasType;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -20,6 +21,7 @@ import java.util.UUID;
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
 public class Transformer2WInput extends TransformerInput implements HasType {
+
   /** Type of this 2W transformer, containing default values for transformers of this kind */
   private final Transformer2WTypeInput type;
 
@@ -79,6 +81,16 @@ public class Transformer2WInput extends TransformerInput implements HasType {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     connectsNodesToCorrectVoltageSides(nodeA, nodeB);
     this.type = type;
+  }
+
+  public Transformer2WInput(TransformerInput transformerInput, Transformer2WTypeInput type) {
+    super(transformerInput, transformerInput.getTapPos(), transformerInput.isAutoTap());
+    connectsNodesToCorrectVoltageSides(getNodeA(), getNodeB());
+    this.type = type;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return transformerFields();
   }
 
   @Override

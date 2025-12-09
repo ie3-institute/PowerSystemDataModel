@@ -31,6 +31,10 @@ public class HpResult extends SystemParticipantWithHeatResult {
     super(time, inputModel, p, q, qDot);
   }
 
+  public HpResult(SystemParticipantWithHeatResult systemParticipantWithHeatResult) {
+    super(systemParticipantWithHeatResult);
+  }
+
   @Override
   public String toString() {
     return "HpResult{"

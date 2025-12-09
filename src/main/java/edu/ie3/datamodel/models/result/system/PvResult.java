@@ -29,6 +29,10 @@ public class PvResult extends SystemParticipantResult {
     super(time, inputModel, p, q);
   }
 
+  public PvResult(SystemParticipantResult systemParticipantResult) {
+    super(systemParticipantResult);
+  }
+
   @Override
   public String toString() {
     return "PvResult{"

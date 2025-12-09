@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -18,6 +19,13 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 public class EvcsInput extends SystemParticipantInput {
+
+  /* Static fields. */
+  public static final String TYPE = "type";
+  public static final String CHARGING_POINTS = "chargingPoints";
+  public static final String COS_PHI_RATED = "cosPhiRated";
+  public static final String LOCATION_TYPE = "locationType";
+  public static final String V2G_SUPPORT = "v2gSupport";
 
   /** type of all installed charging points */
   private final ChargingPointType type;
@@ -162,6 +170,26 @@ public class EvcsInput extends SystemParticipantInput {
       EvcsLocationType locationType,
       boolean v2gSupport) {
     this(uuid, id, node, qCharacteristics, em, type, 1, cosPhiRated, locationType, v2gSupport);
+  }
+
+  public EvcsInput(
+      SystemParticipantInput systemParticipantInput,
+      ChargingPointType type,
+      int chargingPoints,
+      double cosPhiRated,
+      EvcsLocationType locationType,
+      boolean v2gSupport) {
+    super(systemParticipantInput);
+    this.type = type;
+    this.chargingPoints = chargingPoints;
+    this.cosPhiRated = cosPhiRated;
+    this.locationType = locationType;
+    this.v2gSupport = v2gSupport;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantFields()
+        .add(TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPE, V2G_SUPPORT);
   }
 
   public ChargingPointType getType() {

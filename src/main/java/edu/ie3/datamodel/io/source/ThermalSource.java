@@ -5,9 +5,13 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.*;
+import static edu.ie3.datamodel.models.input.thermal.AbstractStorageInput.abstractThermalStorageFields;
+
+import edu.ie3.datamodel.exceptions.FailedValidationException;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.io.factory.input.*;
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.*;
 import edu.ie3.datamodel.utils.Try;
@@ -29,42 +33,31 @@ public class ThermalSource extends AssetEntitySource {
   // general fields
   private final TypeSource typeSource;
 
-  // factories
-  private final ThermalBusInputFactory thermalBusInputFactory;
-  private final CylindricalStorageInputFactory cylindricalStorageInputFactory;
-  private final DomesticHotWaterStorageInputFactory domesticHotWaterStorageInputFactory;
-  private final ThermalHouseInputFactory thermalHouseInputFactory;
-
-  // enriching function
-  protected static BiEnrichFunction<
-          EntityData, OperatorInput, ThermalBusInput, ThermalUnitInputEntityData>
-      thermalUnitEnricher =
-          (data, operators, buses) ->
-              assetEnricher
-                  .andThen(enrich("thermalbus", buses, ThermalUnitInputEntityData::new))
-                  .apply(data, operators);
-
   public ThermalSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
-
-    this.thermalBusInputFactory = new ThermalBusInputFactory();
-    this.cylindricalStorageInputFactory = new CylindricalStorageInputFactory();
-    this.domesticHotWaterStorageInputFactory = new DomesticHotWaterStorageInputFactory();
-    this.thermalHouseInputFactory = new ThermalHouseInputFactory();
   }
 
   @Override
   public void validate() throws ValidationException {
     Try.scanStream(
             Stream.of(
-                validate(ThermalBusInput.class, dataSource, thermalBusInputFactory),
-                validate(CylindricalStorageInput.class, dataSource, cylindricalStorageInputFactory),
+                validate(
+                    ThermalBusInput.class,
+                    dataSource,
+                    new SourceValidator<>(ThermalBusInput.getFields())),
+                validate(
+                    CylindricalStorageInput.class,
+                    dataSource,
+                    new SourceValidator<>(abstractThermalStorageFields())),
                 validate(
                     DomesticHotWaterStorageInput.class,
                     dataSource,
-                    domesticHotWaterStorageInputFactory),
-                validate(ThermalHouseInput.class, dataSource, thermalHouseInputFactory)),
+                    new SourceValidator<>(abstractThermalStorageFields())),
+                validate(
+                    ThermalHouseInput.class,
+                    dataSource,
+                    new SourceValidator<>(ThermalHouseInput.getFields()))),
             "Validation",
             FailedValidationException::new)
         .getOrThrow();
@@ -105,11 +98,7 @@ public class ThermalSource extends AssetEntitySource {
    */
   public Map<UUID, ThermalBusInput> getThermalBuses(Map<UUID, OperatorInput> operators)
       throws SourceException {
-    return getEntities(
-            ThermalBusInput.class,
-            dataSource,
-            thermalBusInputFactory,
-            data -> assetEnricher.apply(data, operators))
+    return getEntities(ThermalBusInput.class, dataSource, thermalBusBuilder(operators))
         .collect(toMap());
   }
 
@@ -200,10 +189,7 @@ public class ThermalSource extends AssetEntitySource {
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
     return getEntities(
-            ThermalHouseInput.class,
-            dataSource,
-            thermalHouseInputFactory,
-            data -> thermalUnitEnricher.apply(data, operators, thermalBuses))
+            ThermalHouseInput.class, dataSource, thermalHouseBuildFunction(operators, thermalBuses))
         .collect(toMap());
   }
 
@@ -267,8 +253,7 @@ public class ThermalSource extends AssetEntitySource {
     return getEntities(
             CylindricalStorageInput.class,
             dataSource,
-            cylindricalStorageInputFactory,
-            data -> thermalUnitEnricher.apply(data, operators, thermalBuses))
+            cylindricalStorageBuildFunction(operators, thermalBuses))
         .collect(toSet());
   }
 
@@ -298,8 +283,107 @@ public class ThermalSource extends AssetEntitySource {
     return getEntities(
             DomesticHotWaterStorageInput.class,
             dataSource,
-            domesticHotWaterStorageInputFactory,
-            data -> thermalUnitEnricher.apply(data, operators, thermalBuses))
+            dhwsBuildFunction(operators, thermalBuses))
         .collect(toSet());
+  }
+
+  // building function
+  protected static BuildFunction<ThermalInput> thermalBuilder(Map<UUID, OperatorInput> operators) {
+    return entityData ->
+        entityData
+            .zip(assetBuilder(operators))
+            .map(
+                pair ->
+                    new ThermalInput(pair.getRight()) {
+                      @Override
+                      public AssetInputCopyBuilder<?> copy() {
+                        return null;
+                      }
+                    },
+                SourceException.class);
+  }
+
+  protected static BuildFunction<ThermalBusInput> thermalBusBuilder(
+      Map<UUID, OperatorInput> operators) {
+    return thermalBuilder(operators).with(pair -> new ThermalBusInput(pair.getRight()));
+  }
+
+  protected static BuildFunction<ThermalUnitInput> thermalUnitBuilder(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses) {
+    return entityData ->
+        entityData
+            .zip(thermalBuilder(operators))
+            .map(
+                pair ->
+                    new ThermalUnitInput(
+                        pair.getRight(),
+                        extractFunction(
+                            pair.getLeft(), ThermalUnitInput.THERMAL_BUS, thermalBuses)) {
+                      @Override
+                      public ThermalUnitInputCopyBuilder<?> copy() {
+                        return null;
+                      }
+                    },
+                SourceException.class);
+  }
+
+  protected static BuildFunction<ThermalHouseInput> thermalHouseBuildFunction(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses) {
+    return thermalUnitBuilder(operators, thermalBuses)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+              return new ThermalHouseInput(
+                  pair.getRight(),
+                  data.getQuantity(
+                      ThermalHouseInput.ETH_LOSSES, StandardUnits.THERMAL_TRANSMISSION),
+                  data.getQuantity(ThermalHouseInput.ETH_CAPA, StandardUnits.HEAT_CAPACITY),
+                  data.getQuantity(ThermalHouseInput.TARGET_TEMPERATURE, StandardUnits.TEMPERATURE),
+                  data.getQuantity(
+                      ThermalHouseInput.UPPER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE),
+                  data.getQuantity(
+                      ThermalHouseInput.LOWER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE),
+                  data.getField(ThermalHouseInput.HOUSING_TYPE),
+                  data.getDouble(ThermalHouseInput.NUMBER_INHABITANTS));
+            });
+  }
+
+  protected static BuildFunction<AbstractStorageInput> thermalStorageBuilder(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses) {
+    return entityData ->
+        entityData
+            .zip(thermalUnitBuilder(operators, thermalBuses))
+            .map(
+                pair -> {
+                  EntityData data = pair.getLeft();
+                  return new AbstractStorageInput(
+                      pair.getRight(),
+                      data.getQuantity(
+                          AbstractStorageInput.STORAGE_VOLUME_LVL, StandardUnits.VOLUME),
+                      data.getQuantity(AbstractStorageInput.INLET_TEMP, StandardUnits.TEMPERATURE),
+                      data.getQuantity(AbstractStorageInput.RETURN_TEMP, StandardUnits.TEMPERATURE),
+                      data.getQuantity(
+                          AbstractStorageInput.C, StandardUnits.SPECIFIC_HEAT_CAPACITY),
+                      data.getQuantity(
+                          AbstractStorageInput.P_THERMAL_MAX, StandardUnits.ACTIVE_POWER_IN)) {
+                    @Override
+                    public ThermalStorageInputCopyBuilder<?> copy() {
+                      return null;
+                    }
+                  };
+                },
+                SourceException.class);
+  }
+
+  protected static BuildFunction<CylindricalStorageInput> cylindricalStorageBuildFunction(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses) {
+    return thermalStorageBuilder(operators, thermalBuses)
+        .with(pair -> new CylindricalStorageInput(pair.getRight()));
+  }
+
+  protected static BuildFunction<DomesticHotWaterStorageInput> dhwsBuildFunction(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses) {
+    return thermalStorageBuilder(operators, thermalBuses)
+        .with(pair -> new DomesticHotWaterStorageInput(pair.getRight()));
   }
 }

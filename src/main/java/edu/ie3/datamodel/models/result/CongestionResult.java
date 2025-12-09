@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.result;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,6 +14,13 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
 public class CongestionResult extends ResultEntity {
+  /* Static fields. */
+  public static final String TYPE = "type";
+  public static final String SUBGRID = "subgrid";
+  public static final String VALUE = "value";
+  public static final String MIN = "min";
+  public static final String MAX = "max";
+
   /** Values */
   private final Integer subgrid;
 
@@ -46,6 +54,25 @@ public class CongestionResult extends ResultEntity {
     this.value = value;
     this.min = min;
     this.max = max;
+  }
+
+  public CongestionResult(
+      ResultEntity resultEntity,
+      InputModelType type,
+      int subgrid,
+      ComparableQuantity<Dimensionless> value,
+      ComparableQuantity<Dimensionless> min,
+      ComparableQuantity<Dimensionless> max) {
+    super(resultEntity);
+    this.type = type;
+    this.subgrid = subgrid;
+    this.value = value;
+    this.min = min;
+    this.max = max;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return resultFields().add(TYPE, SUBGRID, VALUE, MIN, MAX);
   }
 
   public InputModelType getType() {

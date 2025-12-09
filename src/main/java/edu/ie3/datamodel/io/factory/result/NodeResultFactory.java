@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
@@ -40,7 +41,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   }
 
   @Override
-  protected NodeResult buildModel(EntityData data) {
+  protected NodeResult buildModel(EntityData data) throws SourceException {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Dimensionless> vMagValue =

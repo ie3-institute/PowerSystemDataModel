@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
@@ -33,6 +34,14 @@ public class LineResult extends ConnectorResult {
       ComparableQuantity<ElectricCurrent> iBMag,
       ComparableQuantity<Angle> iBAng) {
     super(time, inputModel, iAMag, iAAng, iBMag, iBAng);
+  }
+
+  public LineResult(ConnectorResult connectorResult) {
+    super(connectorResult);
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return connectorResultFields();
   }
 
   @Override

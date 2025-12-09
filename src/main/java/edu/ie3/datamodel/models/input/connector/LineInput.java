@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.connector;
 
 import edu.ie3.datamodel.io.extractor.HasType;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -24,6 +25,12 @@ import tech.units.indriya.ComparableQuantity;
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
 public class LineInput extends ConnectorInput implements HasType {
+
+  /* Static fields. */
+  public static final String LENGTH = "length";
+  public static final String GEO_POSITION = "geoPosition";
+  public static final String OLM_CHARACTERISTIC = "olmCharacteristic";
+  public static final String TYPE = "type";
 
   /** Type of this line, containing default values for lines of this kind */
   private final LineTypeInput type;
@@ -101,6 +108,23 @@ public class LineInput extends ConnectorInput implements HasType {
     this.length = length.to(StandardUnits.LINE_LENGTH);
     this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
+  }
+
+  public LineInput(
+      ConnectorInput connectorInput,
+      LineTypeInput type,
+      ComparableQuantity<Length> length,
+      LineString geoPosition,
+      OlmCharacteristicInput olmCharacteristic) {
+    super(connectorInput);
+    this.type = type;
+    this.length = length.to(StandardUnits.LINE_LENGTH);
+    this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
+    this.olmCharacteristic = olmCharacteristic;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return connectorFields(true).add(TYPE, GEO_POSITION, OLM_CHARACTERISTIC, LENGTH);
   }
 
   @Override

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.thermal;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
@@ -15,6 +16,8 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Representation of a result with regard to a thermal unit */
 public abstract class ThermalUnitResult extends ResultEntity {
+  /* Static fields. */
+  public static final String Q_DOT = "qDot";
 
   /**
    * Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power
@@ -32,6 +35,20 @@ public abstract class ThermalUnitResult extends ResultEntity {
   protected ThermalUnitResult(ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
     super(time, inputModel);
     this.qDot = qDot;
+  }
+
+  protected ThermalUnitResult(ResultEntity result, ComparableQuantity<Power> qDot) {
+    super(result);
+    this.qDot = qDot;
+  }
+
+  protected ThermalUnitResult(ThermalUnitResult result) {
+    super(result);
+    this.qDot = result.qDot;
+  }
+
+  protected static SourceValidator.Fields thermalUnitFields() {
+    return resultFields().add(Q_DOT);
   }
 
   public ComparableQuantity<Power> getqDot() {

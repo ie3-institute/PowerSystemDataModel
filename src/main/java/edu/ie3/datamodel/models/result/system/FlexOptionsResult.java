@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -14,6 +15,10 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Represents results of flexibility request */
 public class FlexOptionsResult extends ResultEntity {
+  /* Static fields. */
+  public static final String P_REF = "pRef";
+  public static final String P_MIN = "pMin";
+  public static final String P_MAX = "pMax";
 
   /**
    * Active power (might be negative, thus feed-in) that was suggested for regular usage by the
@@ -54,6 +59,21 @@ public class FlexOptionsResult extends ResultEntity {
     this.pRef = pRef;
     this.pMin = pMin;
     this.pMax = pMax;
+  }
+
+  public FlexOptionsResult(
+      ResultEntity resultEntity,
+      ComparableQuantity<Power> pRef,
+      ComparableQuantity<Power> pMin,
+      ComparableQuantity<Power> pMax) {
+    super(resultEntity);
+    this.pRef = pRef;
+    this.pMin = pMin;
+    this.pMax = pMax;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return resultFields().add(P_REF, P_MIN, P_MAX);
   }
 
   public ComparableQuantity<Power> getpRef() {

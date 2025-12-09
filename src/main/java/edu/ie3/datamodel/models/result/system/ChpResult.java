@@ -31,6 +31,10 @@ public class ChpResult extends SystemParticipantWithHeatResult {
     super(time, inputModel, p, q, qDot);
   }
 
+  public ChpResult(SystemParticipantWithHeatResult systemParticipantWithHeatResult) {
+    super(systemParticipantWithHeatResult);
+  }
+
   @Override
   public String toString() {
     return "ChpResult{"

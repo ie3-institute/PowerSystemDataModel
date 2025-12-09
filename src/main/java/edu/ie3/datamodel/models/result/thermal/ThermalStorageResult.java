@@ -18,6 +18,9 @@ import tech.units.indriya.ComparableQuantity;
  * edu.ie3.datamodel.models.input.thermal.ThermalStorageInput}
  */
 public abstract class ThermalStorageResult extends ThermalUnitResult {
+  /* Static fields. */
+  public static final String ENERGY = "energy";
+
   /** Currently stored energy */
   private ComparableQuantity<Energy> energy;
 
@@ -36,6 +39,17 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
       ComparableQuantity<Power> qDot) {
     super(time, inputModel, qDot);
     this.energy = energy.to(StandardUnits.ENERGY_RESULT);
+  }
+
+  protected ThermalStorageResult(
+      ThermalUnitResult thermalUnitResult, ComparableQuantity<Energy> energy) {
+    super(thermalUnitResult);
+    this.energy = energy;
+  }
+
+  protected ThermalStorageResult(ThermalStorageResult thermalStorageResult) {
+    super(thermalStorageResult);
+    this.energy = thermalStorageResult.getEnergy();
   }
 
   public ComparableQuantity<Energy> getEnergy() {

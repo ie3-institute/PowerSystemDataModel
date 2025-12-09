@@ -13,6 +13,9 @@ import java.util.UUID;
 
 /** Abstract class for grouping all common properties to thermal models. */
 public abstract class ThermalUnitInput extends ThermalInput implements HasThermalBus {
+  /* Static fields. */
+  public static final String THERMAL_BUS = "thermalbus";
+
   /** The thermal bus, a thermal unit is connected to. */
   private final ThermalBusInput thermalBus;
 
@@ -41,6 +44,16 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
       ThermalBusInput thermalBus) {
     super(uuid, id, operator, operationTime);
     this.thermalBus = thermalBus;
+  }
+
+  protected ThermalUnitInput(ThermalInput thermalInput, ThermalBusInput thermalBus) {
+    super(thermalInput);
+    this.thermalBus = thermalBus;
+  }
+
+  protected ThermalUnitInput(ThermalUnitInput other) {
+    super(other);
+    this.thermalBus = other.thermalBus;
   }
 
   @Override

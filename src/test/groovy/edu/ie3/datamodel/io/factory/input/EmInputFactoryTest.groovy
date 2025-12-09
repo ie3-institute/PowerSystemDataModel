@@ -12,7 +12,6 @@ import edu.ie3.datamodel.utils.Try
 import spock.lang.Specification
 
 import java.time.ZonedDateTime
-import java.util.stream.Collectors
 
 class EmInputFactoryTest extends Specification {
 

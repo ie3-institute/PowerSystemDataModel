@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.thermal;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -33,6 +34,14 @@ public class ThermalBusInput extends ThermalInput {
    */
   public ThermalBusInput(UUID uuid, String id) {
     super(uuid, id);
+  }
+
+  public ThermalBusInput(ThermalInput thermalInput) {
+    super(thermalInput);
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return assetFields();
   }
 
   public ThermalBusInputCopyBuilder copy() {

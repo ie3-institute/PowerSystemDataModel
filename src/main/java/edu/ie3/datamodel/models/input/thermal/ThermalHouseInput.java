@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.thermal;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -17,6 +18,15 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Quite simple thermal model of a house to serve as a heat sink */
 public class ThermalHouseInput extends ThermalSinkInput {
+  /* Static fields. */
+  public static final String ETH_LOSSES = "ethLosses";
+  public static final String ETH_CAPA = "ethCapa";
+  public static final String TARGET_TEMPERATURE = "targetTemperature";
+  public static final String UPPER_TEMPERATURE_LIMIT = "upperTemperatureLimit";
+  public static final String LOWER_TEMPERATURE_LIMIT = "lowerTemperatureLimit";
+  public static final String HOUSING_TYPE = "housingType";
+  public static final String NUMBER_INHABITANTS = "numberInhabitants";
+
   /** Thermal, transitional losses of the included thermal house model (typically in kW/K) */
   private final ComparableQuantity<ThermalConductance> ethLosses;
 
@@ -106,6 +116,37 @@ public class ThermalHouseInput extends ThermalSinkInput {
     this.lowerTemperatureLimit = lowerTemperatureLimit.to(StandardUnits.TEMPERATURE);
     this.housingType = housingType;
     this.numberInhabitants = numberInhabitants;
+  }
+
+  public ThermalHouseInput(
+      ThermalUnitInput thermalUnit,
+      ComparableQuantity<ThermalConductance> ethLosses,
+      ComparableQuantity<HeatCapacity> ethCapa,
+      ComparableQuantity<Temperature> targetTemperature,
+      ComparableQuantity<Temperature> upperTemperatureLimit,
+      ComparableQuantity<Temperature> lowerTemperatureLimit,
+      String housingType,
+      double numberInhabitants) {
+    super(thermalUnit);
+    this.ethLosses = ethLosses.to(StandardUnits.THERMAL_TRANSMISSION);
+    this.ethCapa = ethCapa.to(StandardUnits.HEAT_CAPACITY);
+    this.targetTemperature = targetTemperature.to(StandardUnits.TEMPERATURE);
+    this.upperTemperatureLimit = upperTemperatureLimit.to(StandardUnits.TEMPERATURE);
+    this.lowerTemperatureLimit = lowerTemperatureLimit.to(StandardUnits.TEMPERATURE);
+    this.housingType = housingType;
+    this.numberInhabitants = numberInhabitants;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return assetFields()
+        .add(
+            ETH_LOSSES,
+            ETH_CAPA,
+            TARGET_TEMPERATURE,
+            UPPER_TEMPERATURE_LIMIT,
+            LOWER_TEMPERATURE_LIMIT,
+            HOUSING_TYPE,
+            NUMBER_INHABITANTS);
   }
 
   public ComparableQuantity<ThermalConductance> getEthLosses() {

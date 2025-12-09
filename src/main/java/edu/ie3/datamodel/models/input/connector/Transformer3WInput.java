@@ -9,6 +9,7 @@ import static edu.ie3.datamodel.utils.validation.ConnectorValidationUtils.connec
 import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 
 import edu.ie3.datamodel.io.extractor.HasType;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -21,6 +22,10 @@ import tech.units.indriya.quantity.Quantities;
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
 public class Transformer3WInput extends TransformerInput implements HasType {
+  /* Static fields. */
+  public static final String TYPE = "type";
+  public static final String NODE_C = "nodeC";
+
   /** Type of this 3W transformer, containing default values for transformers of this kind */
   private final Transformer3WTypeInput type;
 
@@ -174,6 +179,26 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             null,
             nodeA.getVoltLvl(),
             nodeA.getSubnet());
+  }
+
+  public Transformer3WInput(
+      TransformerInput transformerInput, NodeInput nodeC, Transformer3WTypeInput type) {
+    this(
+        transformerInput.getUuid(),
+        transformerInput.getId(),
+        transformerInput.getOperator(),
+        transformerInput.getOperationTime(),
+        transformerInput.getNodeA(),
+        transformerInput.getNodeB(),
+        nodeC,
+        transformerInput.getParallelDevices(),
+        type,
+        transformerInput.getTapPos(),
+        transformerInput.isAutoTap());
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return transformerFields().add(NODE_C);
   }
 
   /**

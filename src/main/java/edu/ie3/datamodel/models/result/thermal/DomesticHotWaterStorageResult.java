@@ -23,4 +23,8 @@ public class DomesticHotWaterStorageResult extends AbstractThermalStorageResult 
       ComparableQuantity<Dimensionless> fillLevel) {
     super(time, inputModel, energy, qDot, fillLevel);
   }
+
+  public DomesticHotWaterStorageResult(AbstractThermalStorageResult abstractThermalStorageResult) {
+    super(abstractThermalStorageResult);
+  }
 }

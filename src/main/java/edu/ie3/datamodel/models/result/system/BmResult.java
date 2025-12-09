@@ -29,6 +29,10 @@ public class BmResult extends SystemParticipantResult {
     super(time, inputModel, p, q);
   }
 
+  public BmResult(SystemParticipantResult systemParticipantResult) {
+    super(systemParticipantResult);
+  }
+
   @Override
   public String toString() {
     return "BmResult{"

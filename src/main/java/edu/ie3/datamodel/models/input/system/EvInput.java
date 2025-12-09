@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.io.extractor.HasType;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -19,6 +20,9 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes an electric vehicle */
 public class EvInput extends SystemParticipantInput implements HasType {
+  /* Static fields. */
+  public static final String TYPE = "type";
+
   /** Type of this EV, containing default values for EVs of this kind */
   private final EvTypeInput type;
 
@@ -66,6 +70,15 @@ public class EvInput extends SystemParticipantInput implements HasType {
       EvTypeInput type) {
     super(uuid, id, node, qCharacteristics, em);
     this.type = type;
+  }
+
+  public EvInput(SystemParticipantInput systemParticipantInput, EvTypeInput type) {
+    super(systemParticipantInput);
+    this.type = type;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantFields().add(TYPE);
   }
 
   @Override

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -20,6 +21,17 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes a photovoltaic plant */
 public class PvInput extends SystemParticipantInput {
+
+  /* Static fields. */
+  public static final String ALBEDO = "albedo";
+  public static final String AZIMUTH = "azimuth";
+  public static final String ETA_CONV = "etaConv";
+  public static final String ELEVATION_ANGLE = "elevationAngle";
+  public static final String KG = "kG";
+  public static final String KT = "kT";
+  public static final String MARKET_REACTION = "marketReaction";
+  public static final String S_RATED = "sRated";
+  public static final String COS_PHI_RATED = "cosPhiRated";
 
   /** Albedo value (typically a value between 0 and 1) */
   private final double albedo;
@@ -140,6 +152,43 @@ public class PvInput extends SystemParticipantInput {
     this.marketReaction = marketReaction;
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
+  }
+
+  public PvInput(
+      SystemParticipantInput systemParticipantInput,
+      double albedo,
+      ComparableQuantity<Angle> azimuth,
+      ComparableQuantity<Dimensionless> etaConv,
+      ComparableQuantity<Angle> elevationAngle,
+      double kG,
+      double kT,
+      boolean marketReaction,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated) {
+    super(systemParticipantInput);
+    this.albedo = albedo;
+    this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
+    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
+    this.elevationAngle = elevationAngle;
+    this.kG = kG;
+    this.kT = kT;
+    this.marketReaction = marketReaction;
+    this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.cosPhiRated = cosPhiRated;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantFields()
+        .add(
+            ALBEDO,
+            AZIMUTH,
+            ETA_CONV,
+            ELEVATION_ANGLE,
+            KG,
+            KT,
+            MARKET_REACTION,
+            S_RATED,
+            COS_PHI_RATED);
   }
 
   public double getAlbedo() {

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
@@ -17,6 +18,9 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.BmInput} */
 public class BmTypeInput extends SystemParticipantTypeInput {
+  /* Static fields. */
+  public static final String ACTIVE_POWER_GRADIENT = "activePowerGradient";
+  public static final String ETA_CONV = "etaConv";
 
   /** Permissible load gradient (typically in %/h) */
   private final ComparableQuantity<DimensionlessRate> activePowerGradient;
@@ -46,6 +50,19 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
+  }
+
+  public BmTypeInput(
+      SystemParticipantTypeInput systemParticipantTypeInput,
+      ComparableQuantity<DimensionlessRate> activePowerGradient,
+      ComparableQuantity<Dimensionless> etaConv) {
+    super(systemParticipantTypeInput);
+    this.activePowerGradient = activePowerGradient;
+    this.etaConv = etaConv;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantTypeFields().add(ACTIVE_POWER_GRADIENT, ETA_CONV);
   }
 
   public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {

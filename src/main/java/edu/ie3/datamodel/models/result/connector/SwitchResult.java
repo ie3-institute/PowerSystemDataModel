@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -14,6 +15,8 @@ import java.util.UUID;
  * Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.SwitchInput}
  */
 public class SwitchResult extends ResultEntity {
+  /* Static fields. */
+  public static final String CLOSED = "closed";
 
   /** is the switching state 'closed'? */
   private boolean closed;
@@ -28,6 +31,15 @@ public class SwitchResult extends ResultEntity {
   public SwitchResult(ZonedDateTime time, UUID inputModel, boolean closed) {
     super(time, inputModel);
     this.closed = closed;
+  }
+
+  public SwitchResult(ResultEntity resultEntity, boolean closed) {
+    super(resultEntity);
+    this.closed = closed;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return resultFields().add(CLOSED);
   }
 
   public boolean getClosed() {

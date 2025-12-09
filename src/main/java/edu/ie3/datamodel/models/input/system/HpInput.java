@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.io.extractor.HasType;
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -21,6 +22,10 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes a heat pump */
 public class HpInput extends SystemParticipantInput implements HasType, HasThermalBus {
+  /* Static fields. */
+  public static final String TYPE = "type";
+  public static final String THERMAL_BUS = "thermalBus";
+
   /** Type of this heat pump, containing default values for heat pump of this kind */
   private final HpTypeInput type;
 
@@ -77,6 +82,17 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
     super(uuid, id, node, qCharacteristics, em);
     this.thermalBus = thermalBus;
     this.type = type;
+  }
+
+  public HpInput(
+      SystemParticipantInput systemParticipantInput, HpTypeInput type, ThermalBusInput thermalBus) {
+    super(systemParticipantInput);
+    this.type = type;
+    this.thermalBus = thermalBus;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantFields().add(THERMAL_BUS, TYPE);
   }
 
   @Override

@@ -253,10 +253,14 @@ public class SqlSink {
 
       if (timeSeries instanceof LoadProfileTimeSeries<?, ?> lpts) {
         timeSeriesIdentifier = lpts.getLoadProfile().getKey();
-        queryBuilder = this::basicInsertQueryValuesLPTS;
+        queryBuilder =
+            (schemaName1, tableName, headerElements1) ->
+                basicInsertQueryValuesLPTS(schemaName1, tableName, headerElements1);
       } else {
         timeSeriesIdentifier = timeSeries.getUuid().toString();
-        queryBuilder = this::basicInsertQueryValuesITS;
+        queryBuilder =
+            (schemaName1, tableName, headerElements1) ->
+                basicInsertQueryValuesITS(schemaName1, tableName, headerElements1);
       }
 
       String query =

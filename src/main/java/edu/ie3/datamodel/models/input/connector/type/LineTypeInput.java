@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
@@ -17,6 +18,14 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.LineInput} */
 public class LineTypeInput extends AssetTypeInput {
+  /* Static fields. */
+  public static final String B = "b";
+  public static final String G = "g";
+  public static final String R = "r";
+  public static final String X = "x";
+  public static final String I_MAX = "iMax";
+  public static final String V_RATED = "vRated";
+
   /** Specific phase-to-ground susceptance for this type of line (typically in µS/km) */
   private final ComparableQuantity<SpecificConductance> b;
 
@@ -61,6 +70,10 @@ public class LineTypeInput extends AssetTypeInput {
     this.g = g.to(StandardUnits.CONDUCTANCE_PER_LENGTH);
     this.iMax = iMax.to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return assetTypeFields().add(R, X, B, G, I_MAX, V_RATED);
   }
 
   public ComparableQuantity<SpecificConductance> getB() {
@@ -146,7 +159,7 @@ public class LineTypeInput extends AssetTypeInput {
     private ComparableQuantity<ElectricCurrent> iMax;
     private ComparableQuantity<ElectricPotential> vRated;
 
-    protected LineTypeInputCopyBuilder(LineTypeInput entity) {
+    public LineTypeInputCopyBuilder(LineTypeInput entity) {
       super(entity);
       this.b = entity.b;
       this.g = entity.g;

@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -65,7 +66,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   }
 
   @Override
-  protected ThermalUnitResult buildModel(EntityData data) {
+  protected ThermalUnitResult buildModel(EntityData data) throws SourceException {
     Class<? extends Entity> clazz = data.getTargetClass();
 
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));

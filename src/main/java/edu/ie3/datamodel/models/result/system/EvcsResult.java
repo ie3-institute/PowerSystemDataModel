@@ -29,6 +29,10 @@ public class EvcsResult extends SystemParticipantResult {
     super(time, inputModel, p, q);
   }
 
+  public EvcsResult(SystemParticipantResult systemParticipantResult) {
+    super(systemParticipantResult);
+  }
+
   @Override
   public String toString() {
     return "EvcsResult{"

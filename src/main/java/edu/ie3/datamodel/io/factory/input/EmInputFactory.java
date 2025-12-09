@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -31,7 +32,8 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInpu
       UUID uuid,
       String id,
       OperatorInput operator,
-      OperationTime operationTime) {
+      OperationTime operationTime)
+      throws SourceException {
     String controlStrategy = data.getField(CONTROL_STRATEGY);
 
     EmInput parentEm = data.getControllingEm();

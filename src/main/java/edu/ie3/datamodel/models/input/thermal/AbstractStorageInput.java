@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.thermal;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -18,6 +19,13 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Thermal storage with cylindrical shape */
 public abstract class AbstractStorageInput extends ThermalStorageInput {
+  /* Static fields. */
+  public static final String STORAGE_VOLUME_LVL = "storageVolumeLvl";
+  public static final String INLET_TEMP = "inletTemp";
+  public static final String RETURN_TEMP = "returnTemp";
+  public static final String C = "c";
+  public static final String P_THERMAL_MAX = "pThermalMax";
+
   /** Available storage volume (typically in m³) */
   private final ComparableQuantity<Volume> storageVolumeLvl;
 
@@ -89,6 +97,34 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
     this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
     this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
     this.pThermalMax = pThermalMax.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  public AbstractStorageInput(
+      ThermalUnitInput thermalUnitInput,
+      ComparableQuantity<Volume> storageVolumeLvl,
+      ComparableQuantity<Temperature> inletTemp,
+      ComparableQuantity<Temperature> returnTemp,
+      ComparableQuantity<SpecificHeatCapacity> c,
+      ComparableQuantity<Power> pThermalMax) {
+    super(thermalUnitInput);
+    this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
+    this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
+    this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
+    this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
+    this.pThermalMax = pThermalMax.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  public AbstractStorageInput(AbstractStorageInput input) {
+    super(input);
+    this.storageVolumeLvl = input.storageVolumeLvl;
+    this.inletTemp = input.inletTemp;
+    this.returnTemp = input.returnTemp;
+    this.c = input.c;
+    this.pThermalMax = input.pThermalMax;
+  }
+
+  public static SourceValidator.Fields abstractThermalStorageFields() {
+    return assetFields().add(STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX);
   }
 
   public ComparableQuantity<Volume> getStorageVolumeLvl() {

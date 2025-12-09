@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.processor.result;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
-import edu.ie3.datamodel.io.factory.result.SystemParticipantResultFactory;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.CongestionResult;
@@ -21,9 +20,10 @@ import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
 import edu.ie3.util.exceptions.QuantityException;
-import java.util.*;
+import java.util.List;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -31,7 +31,7 @@ import javax.measure.quantity.Power;
 /**
  * 'Serializer' for {@link ResultEntity}s into a fieldName to value representation to allow for an
  * easy processing into a database or file sink e.g. .csv It is important that the units used in
- * this class are equal to the units used {@link SystemParticipantResultFactory} to prevent invalid
+ * this class are equal to the units used while building the models to prevent invalid
  * interpretation of unit prefixes!
  *
  * @version 0.1

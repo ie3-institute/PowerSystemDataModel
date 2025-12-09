@@ -9,6 +9,7 @@ import static tech.units.indriya.unit.Units.PERCENT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.result.CongestionResult.InputModelType;
@@ -42,7 +43,7 @@ public class CongestionResultFactory extends ResultEntityFactory<CongestionResul
   }
 
   @Override
-  protected CongestionResult buildModel(EntityData data) {
+  protected CongestionResult buildModel(EntityData data) throws SourceException {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModel = data.getUUID(INPUT_MODEL);
 

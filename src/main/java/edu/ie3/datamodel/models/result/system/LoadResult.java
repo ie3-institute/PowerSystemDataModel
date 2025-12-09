@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Power;
@@ -27,6 +28,14 @@ public class LoadResult extends SystemParticipantResult {
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q) {
     super(time, inputModel, p, q);
+  }
+
+  public LoadResult(SystemParticipantResult systemParticipantResult) {
+    super(systemParticipantResult);
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantFields();
   }
 
   @Override

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -16,6 +17,12 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput} */
 public class ChpTypeInput extends SystemParticipantTypeInput {
+  /* Static fields. */
+  public static final String ETA_EL = "etaEl";
+  public static final String ETA_THERMAL = "etaThermal";
+  public static final String P_THERMAL = "pThermal";
+  public static final String P_OWN = "pOwn";
+
   /** Electrical efficiency (typically in %) */
   private final ComparableQuantity<Dimensionless> etaEl;
 
@@ -56,6 +63,23 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
     this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  public ChpTypeInput(
+      SystemParticipantTypeInput systemParticipantTypeInput,
+      ComparableQuantity<Dimensionless> etaEl,
+      ComparableQuantity<Dimensionless> etaThermal,
+      ComparableQuantity<Power> pThermal,
+      ComparableQuantity<Power> pOwn) {
+    super(systemParticipantTypeInput);
+    this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
+    this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
+    this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
+    this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantTypeFields().add(ETA_EL, ETA_THERMAL, P_THERMAL, P_OWN);
   }
 
   public ComparableQuantity<Dimensionless> getEtaEl() {

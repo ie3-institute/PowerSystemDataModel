@@ -3,13 +3,86 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.models.input.system
+package edu.ie3.datamodel.models.input
 
-import edu.ie3.datamodel.models.input.EmInput
+
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 
 class EmInputTest extends Specification {
+
+  def "An EmInput should return the valid fields correctly"() {
+    given:
+    def validCombinations = [
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesFrom"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesUntil"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operatesFrom",
+        "operatesUntil"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesFrom"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesUntil"
+      ],
+      [
+        "uuid",
+        "id",
+        "controlStrategy",
+        "controllingEm",
+        "operator",
+        "operatesFrom",
+        "operatesUntil"
+      ]
+    ].collect { it as Set }
+
+    when:
+    def fieldCombinations = EmInput.getFields().fields()
+
+    then:
+    fieldCombinations == validCombinations
+  }
+
 
   def "The EmInput constructors work as expected"() {
     when:

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import java.util.Map;
 import javax.measure.Quantity;
@@ -32,7 +33,8 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
   }
 
   @Override
-  public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
+  public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit)
+      throws SourceException {
     return getField(field).isEmpty() ? null : super.getQuantity(field, unit);
   }
 

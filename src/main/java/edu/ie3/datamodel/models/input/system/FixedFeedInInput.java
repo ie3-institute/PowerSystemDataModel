@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -18,6 +19,11 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Dummy class to represent a constant feed in regardless of its type */
 public class FixedFeedInInput extends SystemParticipantInput {
+
+  /* Static fields. */
+  public static final String S_RATED = "sRated";
+  public static final String COSPHI_RATED = "cosPhiRated";
+
   /** Rated apparent power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
 
@@ -74,6 +80,19 @@ public class FixedFeedInInput extends SystemParticipantInput {
     super(uuid, id, node, qCharacteristics, em);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
+  }
+
+  public FixedFeedInInput(
+      SystemParticipantInput systemParticipantInput,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated) {
+    super(systemParticipantInput);
+    this.sRated = sRated;
+    this.cosPhiRated = cosPhiRated;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantFields().add(S_RATED, COSPHI_RATED);
   }
 
   public ComparableQuantity<Power> getsRated() {

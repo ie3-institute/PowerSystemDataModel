@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
@@ -87,7 +88,7 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
   protected abstract String[] getAdditionalFields();
 
   @Override
-  protected T buildModel(D data) {
+  protected T buildModel(D data) throws SourceException {
     UUID uuid = data.getUUID(UUID);
     String id = data.getField(ID);
     OperatorInput operator = data.getOperatorInput();
@@ -107,7 +108,8 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
    * @return newly created asset object
    */
   protected abstract T buildModel(
-      D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime);
+      D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime)
+      throws SourceException;
 
   /**
    * Creates an {@link OperationTime} from the entity data from attributes OPERATES_FROM and

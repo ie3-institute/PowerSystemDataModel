@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -59,7 +60,8 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   }
 
   @Override
-  protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
+  protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data)
+      throws SourceException {
     Point coordinate = data.getCoordinate();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =

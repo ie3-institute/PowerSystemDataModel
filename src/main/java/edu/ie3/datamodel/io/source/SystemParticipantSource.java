@@ -5,28 +5,33 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
-import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.exceptions.SystemParticipantsException;
-import edu.ie3.datamodel.exceptions.ValidationException;
+import static edu.ie3.datamodel.models.input.system.SystemParticipantInput.CONTROLLING_EM;
+
+import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.participant.*;
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.system.*;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
+import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils;
+import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
+import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationTypeUtils;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
+import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.Try;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.stream.Stream;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Implementation that provides the capability to build entities of type {@link
@@ -34,41 +39,11 @@ import java.util.stream.Stream;
  */
 public class SystemParticipantSource extends AssetEntitySource {
 
-  private static final String THERMAL_STORAGE = "thermalstorage";
-  private static final String THERMAL_BUS = "thermalbus";
-
   // general fields
   private final TypeSource typeSource;
   private final RawGridSource rawGridSource;
   private final ThermalSource thermalSource;
   private final EnergyManagementSource energyManagementSource;
-
-  // factories
-  private final BmInputFactory bmInputFactory;
-  private final ChpInputFactory chpInputFactory;
-  private final EvInputFactory evInputFactory;
-  private final FixedFeedInInputFactory fixedFeedInInputFactory;
-  private final HpInputFactory hpInputFactory;
-  private final LoadInputFactory loadInputFactory;
-  private final PvInputFactory pvInputFactory;
-  private final StorageInputFactory storageInputFactory;
-  private final WecInputFactory wecInputFactory;
-  private final EvcsInputFactory evcsInputFactory;
-
-  // enriching function
-  protected static final TriEnrichFunction<
-          EntityData, OperatorInput, NodeInput, EmInput, SystemParticipantEntityData>
-      participantEnricher =
-          (data, operators, nodes, emUnits) ->
-              assetEnricher
-                  .andThen(enrich(NODE, nodes, NodeAssetInputEntityData::new))
-                  .andThen(
-                      enrichWithDefault(
-                          SystemParticipantInputEntityFactory.CONTROLLING_EM,
-                          emUnits,
-                          null,
-                          SystemParticipantEntityData::new))
-                  .apply(data, operators);
 
   public SystemParticipantSource(
       TypeSource typeSource,
@@ -82,34 +57,29 @@ public class SystemParticipantSource extends AssetEntitySource {
     this.rawGridSource = rawGridSource;
     this.thermalSource = thermalSource;
     this.energyManagementSource = energyManagementSource;
-
-    // init factories
-    this.bmInputFactory = new BmInputFactory();
-    this.chpInputFactory = new ChpInputFactory();
-    this.evInputFactory = new EvInputFactory();
-    this.fixedFeedInInputFactory = new FixedFeedInInputFactory();
-    this.hpInputFactory = new HpInputFactory();
-    this.loadInputFactory = new LoadInputFactory();
-    this.pvInputFactory = new PvInputFactory();
-    this.storageInputFactory = new StorageInputFactory();
-    this.wecInputFactory = new WecInputFactory();
-    this.evcsInputFactory = new EvcsInputFactory();
   }
 
   @Override
   public void validate() throws ValidationException {
     Try.scanStream(
             Stream.of(
-                validate(BmInput.class, dataSource, bmInputFactory),
-                validate(ChpInput.class, dataSource, chpInputFactory),
-                validate(EvInput.class, dataSource, evInputFactory),
-                validate(FixedFeedInInput.class, dataSource, fixedFeedInInputFactory),
-                validate(HpInput.class, dataSource, hpInputFactory),
-                validate(LoadInput.class, dataSource, loadInputFactory),
-                validate(PvInput.class, dataSource, pvInputFactory),
-                validate(StorageInput.class, dataSource, storageInputFactory),
-                validate(WecInput.class, dataSource, wecInputFactory),
-                validate(EvcsInput.class, dataSource, evcsInputFactory)),
+                validate(BmInput.class, dataSource, new SourceValidator<>(BmInput.getFields())),
+                validate(ChpInput.class, dataSource, new SourceValidator<>(ChpInput.getFields())),
+                validate(EvInput.class, dataSource, new SourceValidator<>(EvInput.getFields())),
+                validate(
+                    FixedFeedInInput.class,
+                    dataSource,
+                    new SourceValidator<>(FixedFeedInInput.getFields())),
+                validate(HpInput.class, dataSource, new SourceValidator<>(HpInput.getFields())),
+                validate(LoadInput.class, dataSource, new SourceValidator<>(LoadInput.getFields())),
+                validate(PvInput.class, dataSource, new SourceValidator<>(PvInput.getFields())),
+                validate(
+                    StorageInput.class,
+                    dataSource,
+                    new SourceValidator<>(StorageInput.getFields())),
+                validate(WecInput.class, dataSource, new SourceValidator<>(WecInput.getFields())),
+                validate(
+                    EvcsInput.class, dataSource, new SourceValidator<>(EvcsInput.getFields()))),
             "Validation",
             FailedValidationException::new)
         .getOrThrow();
@@ -286,10 +256,7 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
     return getEntities(
-            FixedFeedInInput.class,
-            dataSource,
-            fixedFeedInInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+            FixedFeedInInput.class, dataSource, fixedFeedInBuildFunction(operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -330,11 +297,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<PvInput> getPvPlants(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
-    return getEntities(
-            PvInput.class,
-            dataSource,
-            pvInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+    return getEntities(PvInput.class, dataSource, pvBuildFunction(operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -375,11 +338,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<LoadInput> getLoads(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
-    return getEntities(
-            LoadInput.class,
-            dataSource,
-            loadInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+    return getEntities(LoadInput.class, dataSource, loadBuildFunction(operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -420,11 +379,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<EvcsInput> getEvcs(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
-    return getEntities(
-            EvcsInput.class,
-            dataSource,
-            evcsInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+    return getEntities(EvcsInput.class, dataSource, evcsBuildFunction(operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -470,14 +425,7 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, EmInput> emUnits,
       Map<UUID, BmTypeInput> types)
       throws SourceException {
-    return getEntities(
-            BmInput.class,
-            dataSource,
-            bmInputFactory,
-            data ->
-                participantEnricher
-                    .andThen(enrichTypes(types))
-                    .apply(data, operators, nodes, emUnits))
+    return getEntities(BmInput.class, dataSource, bmBuildFunction(operators, nodes, emUnits, types))
         .collect(toSet());
   }
 
@@ -526,13 +474,7 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, StorageTypeInput> types)
       throws SourceException {
     return getEntities(
-            StorageInput.class,
-            dataSource,
-            storageInputFactory,
-            data ->
-                participantEnricher
-                    .andThen(enrichTypes(types))
-                    .apply(data, operators, nodes, emUnits))
+            StorageInput.class, dataSource, storageBuildFunction(operators, nodes, emUnits, types))
         .collect(toSet());
   }
 
@@ -579,13 +521,7 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, WecTypeInput> types)
       throws SourceException {
     return getEntities(
-            WecInput.class,
-            dataSource,
-            wecInputFactory,
-            data ->
-                participantEnricher
-                    .andThen(enrichTypes(types))
-                    .apply(data, operators, nodes, emUnits))
+            WecInput.class, dataSource, wecBuildFunction(operators, nodes, emUnits, types))
         .collect(toSet());
   }
 
@@ -630,14 +566,7 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, EmInput> emUnits,
       Map<UUID, EvTypeInput> types)
       throws SourceException {
-    return getEntities(
-            EvInput.class,
-            dataSource,
-            evInputFactory,
-            data ->
-                participantEnricher
-                    .andThen(enrichTypes(types))
-                    .apply(data, operators, nodes, emUnits))
+    return getEntities(EvInput.class, dataSource, evBuildFunction(operators, nodes, emUnits, types))
         .collect(toSet());
   }
 
@@ -681,21 +610,11 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, ThermalBusInput> thermalBuses,
       Map<UUID, ThermalStorageInput> thermalStorages)
       throws SourceException {
-
-    WrappedFunction<EntityData, ChpInputEntityData> builder =
-        data ->
-            participantEnricher
-                .andThen(enrichTypes(types))
-                .andThen(
-                    biEnrich(
-                        THERMAL_BUS,
-                        thermalBuses,
-                        THERMAL_STORAGE,
-                        thermalStorages,
-                        ChpInputEntityData::new))
-                .apply(data, operators, nodes, emUnits);
-
-    return getEntities(ChpInput.class, dataSource, chpInputFactory, builder).collect(toSet());
+    return getEntities(
+            ChpInput.class,
+            dataSource,
+            chpBuildFunction(operators, nodes, emUnits, types, thermalBuses, thermalStorages))
+        .collect(toSet());
   }
 
   public Set<HpInput> getHeatPumps() throws SourceException {
@@ -733,29 +652,254 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, HpTypeInput> types,
       Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
-
-    WrappedFunction<EntityData, HpInputEntityData> builder =
-        data ->
-            participantEnricher
-                .andThen(enrichTypes(types))
-                .andThen(enrich(THERMAL_BUS, thermalBuses, HpInputEntityData::new))
-                .apply(data, operators, nodes, emUnits);
-    return getEntities(HpInput.class, dataSource, hpInputFactory, builder).collect(toSet());
+    return getEntities(
+            HpInput.class,
+            dataSource,
+            hpBuildFunction(operators, nodes, emUnits, types, thermalBuses))
+        .collect(toSet());
   }
 
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  // building function
+  protected static BuildFunction<SystemParticipantInput> getParticipantBuilder(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {
+    return entityData ->
+        entityData
+            .zip(assetBuilder(operators))
+            .map(
+                pair -> {
+                  EntityData data = pair.getLeft();
 
-  /**
-   * Builds a function for enriching {@link SystemParticipantEntityData} with types.
-   *
-   * @param types all known types
-   * @return a typed entity data
-   * @param <T> type of types
-   */
-  private static <T extends SystemParticipantTypeInput, D extends SystemParticipantEntityData>
-      WrappedFunction<D, SystemParticipantTypedEntityData<T>> enrichTypes(Map<UUID, T> types) {
-    BiFunction<D, T, SystemParticipantTypedEntityData<T>> typeEnricher =
-        SystemParticipantTypedEntityData::new;
-    return entityData -> enrich(TYPE, types, typeEnricher).apply(entityData);
+                  ReactivePowerCharacteristic qCharacteristics;
+                  String Q_CHARACTERISTICS = SystemParticipantInput.Q_CHARACTERISTICS;
+
+                  try {
+                    qCharacteristics =
+                        ReactivePowerCharacteristic.parse(data.getField(Q_CHARACTERISTICS));
+                  } catch (ParsingException e) {
+                    throw new SourceException(
+                        "Cannot parse the following reactive power characteristic: '"
+                            + data.getField(Q_CHARACTERISTICS)
+                            + "'",
+                        e);
+                  }
+
+                  return new SystemParticipantInput(
+                      pair.getRight(),
+                      extractFunction(data, SystemParticipantInput.NODE, nodes),
+                      qCharacteristics,
+                      extractWithDefault(data, CONTROLLING_EM, emUnits, null)) {
+                    @Override
+                    public ComparableQuantity<Power> sRated() {
+                      return null;
+                    }
+
+                    @Override
+                    public SystemParticipantInputCopyBuilder<?> copy() {
+                      return null;
+                    }
+                  };
+                },
+                SourceException.class);
+  }
+
+  protected static BuildFunction<BmInput> bmBuildFunction(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, BmTypeInput> types) {
+    return getParticipantBuilder(operators, nodes, emUnits)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              return new BmInput(
+                  pair.getRight(),
+                  extractFunction(data, BmInput.TYPE, types),
+                  data.getBoolean(BmInput.MARKET_REACTION),
+                  data.getBoolean(BmInput.COST_CONTROLLED),
+                  data.getQuantity(BmInput.FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE));
+            });
+  }
+
+  protected static BuildFunction<ChpInput> chpBuildFunction(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, ChpTypeInput> types,
+      Map<UUID, ThermalBusInput> thermalBuses,
+      Map<UUID, ThermalStorageInput> thermalStorages) {
+    return getParticipantBuilder(operators, nodes, emUnits)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              return new ChpInput(
+                  pair.getRight(),
+                  extractFunction(data, ChpInput.TYPE, types),
+                  extractFunction(data, ChpInput.THERMAL_BUS, thermalBuses),
+                  extractFunction(data, ChpInput.THERMAL_STORAGE, thermalStorages),
+                  data.getBoolean(ChpInput.MARKET_REACTION));
+            });
+  }
+
+  protected static BuildFunction<EvcsInput> evcsBuildFunction(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {
+    return getParticipantBuilder(operators, nodes, emUnits)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+              ChargingPointType type;
+              String TYPE = EvcsInput.TYPE;
+
+              try {
+                type = ChargingPointTypeUtils.parse(data.getField(TYPE));
+              } catch (ChargingPointTypeException e) {
+                throw new SourceException(
+                    String.format(
+                        "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
+                        TYPE, data.getField(TYPE)),
+                    e);
+              }
+
+              EvcsLocationType locationType;
+              String LOCATION_TYPE = EvcsInput.LOCATION_TYPE;
+
+              try {
+                locationType = EvcsLocationTypeUtils.parse(data.getField(LOCATION_TYPE));
+              } catch (ParsingException e) {
+                throw new SourceException(
+                    String.format(
+                        "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
+                        LOCATION_TYPE, data.getField(LOCATION_TYPE)),
+                    e);
+              }
+
+              return new EvcsInput(
+                  pair.getRight(),
+                  type,
+                  data.getInt(EvcsInput.CHARGING_POINTS),
+                  data.getDouble(EvcsInput.COS_PHI_RATED),
+                  locationType,
+                  data.getBoolean(EvcsInput.V2G_SUPPORT));
+            });
+  }
+
+  protected static BuildFunction<EvInput> evBuildFunction(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, EvTypeInput> types) {
+    return getParticipantBuilder(operators, nodes, emUnits)
+        .with(
+            pair ->
+                new EvInput(pair.getRight(), extractFunction(pair.getLeft(), EvInput.TYPE, types)));
+  }
+
+  protected static BuildFunction<FixedFeedInInput> fixedFeedInBuildFunction(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {
+    return getParticipantBuilder(operators, nodes, emUnits)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+              return new FixedFeedInInput(
+                  pair.getRight(),
+                  data.getQuantity(FixedFeedInInput.S_RATED, StandardUnits.S_RATED),
+                  data.getDouble(FixedFeedInInput.COSPHI_RATED));
+            });
+  }
+
+  protected static BuildFunction<HpInput> hpBuildFunction(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, HpTypeInput> types,
+      Map<UUID, ThermalBusInput> thermalBuses) {
+    return getParticipantBuilder(operators, nodes, emUnits)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              return new HpInput(
+                  pair.getRight(),
+                  extractFunction(data, HpInput.TYPE, types),
+                  extractFunction(data, HpInput.THERMAL_BUS, thermalBuses));
+            });
+  }
+
+  protected static BuildFunction<LoadInput> loadBuildFunction(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {
+    return getParticipantBuilder(operators, nodes, emUnits)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+              SystemParticipantInput p = pair.getRight();
+
+              LoadProfile loadProfile;
+              try {
+                loadProfile = LoadProfile.parse(data.getField(LoadInput.LOAD_PROFILE));
+              } catch (ParsingException e) {
+                log.warn(
+                    "Cannot parse the standard load profile \"{}\" of load \"{}\". Assign no load profile instead.",
+                    data.getField(LoadInput.LOAD_PROFILE),
+                    p.getId());
+                loadProfile = LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
+              }
+
+              return new LoadInput(
+                  p,
+                  loadProfile,
+                  data.getQuantity(LoadInput.E_CONS_ANNUAL, StandardUnits.ENERGY_IN),
+                  data.getQuantity(LoadInput.S_RATED, StandardUnits.S_RATED),
+                  data.getDouble(LoadInput.COS_PHI));
+            });
+  }
+
+  protected static BuildFunction<PvInput> pvBuildFunction(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {
+    return getParticipantBuilder(operators, nodes, emUnits)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+              return new PvInput(
+                  pair.getRight(),
+                  data.getDouble(PvInput.ALBEDO),
+                  data.getQuantity(PvInput.AZIMUTH, StandardUnits.AZIMUTH),
+                  data.getQuantity(PvInput.ETA_CONV, StandardUnits.EFFICIENCY),
+                  data.getQuantity(PvInput.ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE),
+                  data.getDouble(PvInput.KG),
+                  data.getDouble(PvInput.KT),
+                  data.getBoolean(PvInput.MARKET_REACTION),
+                  data.getQuantity(PvInput.S_RATED, StandardUnits.S_RATED),
+                  data.getDouble(PvInput.COS_PHI_RATED));
+            });
+  }
+
+  protected static BuildFunction<StorageInput> storageBuildFunction(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, StorageTypeInput> types) {
+    return getParticipantBuilder(operators, nodes, emUnits)
+        .with(
+            pair ->
+                new StorageInput(
+                    pair.getRight(), extractFunction(pair.getLeft(), StorageInput.TYPE, types)));
+  }
+
+  protected static BuildFunction<WecInput> wecBuildFunction(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, WecTypeInput> types) {
+    return getParticipantBuilder(operators, nodes, emUnits)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              return new WecInput(
+                  pair.getRight(),
+                  extractFunction(data, WecInput.TYPE, types),
+                  data.getBoolean(WecInput.MARKET_REACTION));
+            });
   }
 }

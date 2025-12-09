@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -17,6 +18,11 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvTypeInput extends SystemParticipantTypeInput {
+  /* Static fields. */
+  public static final String E_STORAGE = "eStorage";
+  public static final String E_CONS = "eCons";
+  public static final String S_RATED_DC = "sRatedDC";
+
   /** Energy capacity of the storage (typically in kWh) */
   private final ComparableQuantity<Energy> eStorage;
 
@@ -51,6 +57,21 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
     this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  public EvTypeInput(
+      SystemParticipantTypeInput systemParticipantTypeInput,
+      ComparableQuantity<Energy> eStorage,
+      ComparableQuantity<SpecificEnergy> eCons,
+      ComparableQuantity<Power> sRatedDC) {
+    super(systemParticipantTypeInput);
+    this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
+    this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
+    this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return participantTypeFields().add(E_STORAGE, E_CONS, S_RATED_DC);
   }
 
   public ComparableQuantity<Energy> geteStorage() {

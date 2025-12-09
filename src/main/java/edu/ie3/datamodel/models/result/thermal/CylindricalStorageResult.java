@@ -23,4 +23,8 @@ public class CylindricalStorageResult extends AbstractThermalStorageResult {
       ComparableQuantity<Dimensionless> fillLevel) {
     super(time, inputModel, energy, qDot, fillLevel);
   }
+
+  public CylindricalStorageResult(AbstractThermalStorageResult abstractThermalStorageResult) {
+    super(abstractThermalStorageResult);
+  }
 }

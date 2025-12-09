@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.typeinput;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
@@ -93,7 +94,7 @@ public class SystemParticipantTypeInputFactory
   }
 
   @Override
-  protected SystemParticipantTypeInput buildModel(EntityData data) {
+  protected SystemParticipantTypeInput buildModel(EntityData data) throws SourceException {
     UUID uuid = data.getUUID(UUID);
     String id = data.getField(ID);
     ComparableQuantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
@@ -126,7 +127,8 @@ public class SystemParticipantTypeInputFactory
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
-      double cosPhi) {
+      double cosPhi)
+      throws SourceException {
     ComparableQuantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
 
     ComparableQuantity<SpecificEnergy> eCons =
@@ -145,7 +147,8 @@ public class SystemParticipantTypeInputFactory
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
-      double cosPhi) {
+      double cosPhi)
+      throws SourceException {
     ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
     return new HpTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal);
@@ -158,7 +161,8 @@ public class SystemParticipantTypeInputFactory
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
-      double cosPhi) {
+      double cosPhi)
+      throws SourceException {
     ComparableQuantity<DimensionlessRate> loadGradient =
         data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     ComparableQuantity<Dimensionless> etaConv =
@@ -174,7 +178,8 @@ public class SystemParticipantTypeInputFactory
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
-      double cosPhi) {
+      double cosPhi)
+      throws SourceException {
     ComparableQuantity<Dimensionless> etaConv =
         data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
 
@@ -204,7 +209,8 @@ public class SystemParticipantTypeInputFactory
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
-      double cosPhi) {
+      double cosPhi)
+      throws SourceException {
     ComparableQuantity<Dimensionless> etaEl = data.getQuantity(ETA_EL, StandardUnits.EFFICIENCY);
 
     ComparableQuantity<Dimensionless> etaThermal =
@@ -225,7 +231,8 @@ public class SystemParticipantTypeInputFactory
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
-      double cosPhi) {
+      double cosPhi)
+      throws SourceException {
     ComparableQuantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
     ComparableQuantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN);
     ComparableQuantity<DimensionlessRate> activePowerGradient =

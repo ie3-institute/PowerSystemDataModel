@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models;
 
+import static edu.ie3.datamodel.io.source.SourceValidator.*;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
@@ -27,6 +29,10 @@ public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
   @Override
   public UUID getUuid() {
     return uuid;
+  }
+
+  protected static Fields uniqueEntityFields() {
+    return new Fields(UUID_FIELD_NAME);
   }
 
   @Override

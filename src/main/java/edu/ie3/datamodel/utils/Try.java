@@ -7,6 +7,7 @@ package edu.ie3.datamodel.utils;
 
 import static java.util.stream.Collectors.partitioningBy;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.TryException;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -247,6 +248,10 @@ public abstract class Try<T, E extends Exception> {
     return transformS(mapper);
   }
 
+  public <U> Try<U, E> map(TryFunction<? super T, ? extends U, E> mapper, Class<E> clazz) {
+    return flatMap(t -> Try.of(() -> mapper.apply(t), clazz));
+  }
+
   /**
    * Method to transform and flat the data.
    *
@@ -321,6 +326,10 @@ public abstract class Try<T, E extends Exception> {
    * @param <P> type of zipped data
    */
   public abstract <R, P> Try<P, E> zip(Try<R, E> that, BiFunction<T, R, P> zipper);
+
+  public <R> Try<Pair<T, R>, E> flatZip(Function<T, Try<R, E>> fcn) {
+    return zip(flatMap(fcn));
+  }
 
   /**
    * Method to convert a {@link Try} object to a common type.
@@ -654,7 +663,12 @@ public abstract class Try<T, E extends Exception> {
    */
   @FunctionalInterface
   public interface TrySupplier<T, E extends Exception> {
-    T get() throws E;
+    T get() throws E, SourceException;
+  }
+
+  @FunctionalInterface
+  public interface TryFunction<T, R, E extends Exception> {
+    R apply(T t) throws E;
   }
 
   /**

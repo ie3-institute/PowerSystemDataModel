@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -14,6 +15,9 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput} */
 public class NodeResult extends ResultEntity {
+  /* Static fields. */
+  public static final String VMAG = "vMag";
+  public static final String VANG = "vAng";
 
   /** Voltage magnitude @ this node in p.u. */
   private ComparableQuantity<Dimensionless> vMag;
@@ -37,6 +41,19 @@ public class NodeResult extends ResultEntity {
     super(time, inputModel);
     this.vMag = vMag;
     this.vAng = vAng;
+  }
+
+  public NodeResult(
+      ResultEntity resultEntity,
+      ComparableQuantity<Dimensionless> vMag,
+      ComparableQuantity<Angle> vAng) {
+    super(resultEntity);
+    this.vMag = vMag;
+    this.vAng = vAng;
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return resultFields().add(VMAG, VANG);
   }
 
   public ComparableQuantity<Dimensionless> getvMag() {

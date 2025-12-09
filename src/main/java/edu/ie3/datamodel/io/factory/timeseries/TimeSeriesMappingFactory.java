@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
@@ -27,7 +28,8 @@ public class TimeSeriesMappingFactory
   }
 
   @Override
-  protected TimeSeriesMappingSource.MappingEntry buildModel(EntityData data) {
+  protected TimeSeriesMappingSource.MappingEntry buildModel(EntityData data)
+      throws SourceException {
     UUID asset = data.getUUID(ASSET);
     UUID timeSeries = data.getUUID(TIME_SERIES);
     return new TimeSeriesMappingSource.MappingEntry(asset, timeSeries);

@@ -36,6 +36,10 @@ public abstract class ThermalStorageInput extends ThermalUnitInput {
     super(uuid, id, operator, operationTime, bus);
   }
 
+  protected ThermalStorageInput(ThermalUnitInput input) {
+    super(input);
+  }
+
   @Override
   public abstract ThermalStorageInputCopyBuilder<?> copy();
 
