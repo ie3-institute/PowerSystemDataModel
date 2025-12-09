@@ -7,8 +7,8 @@
     "temperature": 278.019012451172,
     "winddirection": 0,
     "windvelocity": 1.66103506088257,
-    "groundTemperatureLevel1": 278.019012451172,
-    "groundTemperatureLevel2": 277.019012451172
+    "groundTemperatureLevel1": 1.123456789123,
+    "groundTemperatureLevel2": 2.123456789123
   },
   {
     "coordinateid": 193187,
@@ -18,8 +18,8 @@
     "temperature": 279.019012451172,
     "winddirection": 0,
     "windvelocity": 1.76103506088257,
-    "groundTemperatureLevel1": 278.019012451172,
-    "groundTemperatureLevel2": 277.019012451172
+    "groundTemperatureLevel1": 7.123456789123,
+    "groundTemperatureLevel2": 8.123456789123
   },
   {
     "coordinateid": 193188,
@@ -29,8 +29,8 @@
     "temperature": 280.019012451172,
     "winddirection": 0,
     "windvelocity": 1.86103506088257,
-    "groundTemperatureLevel1": 278.019012451172,
-    "groundTemperatureLevel2": 277.019012451172
+    "groundTemperatureLevel1": 11.123456789123,
+    "groundTemperatureLevel2": 12.123456789123
   },
   {
     "coordinateid": 193186,
@@ -40,8 +40,8 @@
     "temperature": 278.012,
     "winddirection": 0,
     "windvelocity": 1.662,
-    "groundTemperatureLevel1": 278.019012451172,
-    "groundTemperatureLevel2": 277.019012451172
+    "groundTemperatureLevel1": 3.123456789123,
+    "groundTemperatureLevel2": 4.123456789123
   },
   {
     "coordinateid": 193187,
@@ -51,8 +51,8 @@
     "temperature": 279.012,
     "winddirection": 0,
     "windvelocity": 1.762,
-    "groundTemperatureLevel1": 278.019012451172,
-    "groundTemperatureLevel2": 277.019012451172
+    "groundTemperatureLevel1": 9.123456789123,
+    "groundTemperatureLevel2": 10.123456789123
   },
   {
     "coordinateid": 193186,
@@ -62,7 +62,7 @@
     "temperature": 278.013,
     "winddirection": 0,
     "windvelocity": 1.663,
-    "groundTemperatureLevel1": 278.019012451172,
-    "groundTemperatureLevel2": 277.019012451172
+    "groundTemperatureLevel1": 5.123456789123,
+    "groundTemperatureLevel2": 6.123456789123
   }
 ]
