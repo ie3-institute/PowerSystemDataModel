@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -61,28 +60,18 @@ public class SystemParticipantSource extends AssetEntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    Try.scanStream(
-            Stream.of(
-                validate(BmInput.class, dataSource, new SourceValidator<>(BmInput.getFields())),
-                validate(ChpInput.class, dataSource, new SourceValidator<>(ChpInput.getFields())),
-                validate(EvInput.class, dataSource, new SourceValidator<>(EvInput.getFields())),
-                validate(
-                    FixedFeedInInput.class,
-                    dataSource,
-                    new SourceValidator<>(FixedFeedInInput.getFields())),
-                validate(HpInput.class, dataSource, new SourceValidator<>(HpInput.getFields())),
-                validate(LoadInput.class, dataSource, new SourceValidator<>(LoadInput.getFields())),
-                validate(PvInput.class, dataSource, new SourceValidator<>(PvInput.getFields())),
-                validate(
-                    StorageInput.class,
-                    dataSource,
-                    new SourceValidator<>(StorageInput.getFields())),
-                validate(WecInput.class, dataSource, new SourceValidator<>(WecInput.getFields())),
-                validate(
-                    EvcsInput.class, dataSource, new SourceValidator<>(EvcsInput.getFields()))),
-            "Validation",
-            FailedValidationException::new)
-        .getOrThrow();
+    validate(
+        dataSource,
+        BmInput.class,
+        ChpInput.class,
+        EvInput.class,
+        FixedFeedInInput.class,
+        HpInput.class,
+        LoadInput.class,
+        PvInput.class,
+        StorageInput.class,
+        WecInput.class,
+        EvcsInput.class);
   }
 
   /**
@@ -659,7 +648,7 @@ public class SystemParticipantSource extends AssetEntitySource {
         .collect(toSet());
   }
 
-  // building function
+  // build function
   protected static BuildFunction<SystemParticipantInput> getParticipantBuilder(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {
     return entityData ->

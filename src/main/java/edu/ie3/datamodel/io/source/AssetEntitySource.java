@@ -29,7 +29,11 @@ public abstract class AssetEntitySource extends EntitySource {
 
   protected final DataSource dataSource;
 
-  // enriching functions
+  protected AssetEntitySource(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
+
+  // build functions
   protected static BuildFunction<AssetInput> assetBuilder(Map<UUID, OperatorInput> operators) {
     return entityData ->
         entityData
@@ -89,9 +93,5 @@ public abstract class AssetEntitySource extends EntitySource {
                   };
                 },
                 SourceException.class);
-  }
-
-  protected AssetEntitySource(DataSource dataSource) {
-    this.dataSource = dataSource;
   }
 }

@@ -5,20 +5,18 @@
  */
 package edu.ie3.datamodel.io.source
 
-import static edu.ie3.datamodel.io.source.EntitySource.*
+import static edu.ie3.datamodel.io.source.EntitySource.extractEntity
+import static edu.ie3.datamodel.io.source.EntitySource.extractFunction
+import static edu.ie3.datamodel.io.source.EntitySource.getEntities
+import static edu.ie3.datamodel.io.source.EntitySource.toMap
 import static edu.ie3.test.helper.EntityMap.map
 
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.EntityData
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
-import edu.ie3.datamodel.io.factory.input.OperatorInputFactory
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.utils.Try
-import edu.ie3.datamodel.utils.validation.DummyAssetInput
 import edu.ie3.test.common.GridTestData
-import org.apache.commons.lang3.tuple.Pair
 import spock.lang.Specification
 
 class EntitySourceTest extends Specification {
@@ -29,7 +27,7 @@ class EntitySourceTest extends Specification {
     def source = DummyDataSource.of(parameter)
 
     when:
-    def actual = getEntities(OperatorInput, source, new OperatorInputFactory())
+    def actual = getEntities(OperatorInput, source, TypeSource.operatorBuildFunction).collect(toMap())
 
     then:
     actual.size() == 1
@@ -43,106 +41,12 @@ class EntitySourceTest extends Specification {
     def source = DummyDataSource.of(parameter)
 
     when:
-    getEntities(OperatorInput, source, new OperatorInputFactory())
+    getEntities(OperatorInput, source, TypeSource.operatorBuildFunction)
 
     then:
     SourceException ex = thrown()
     ex.message == "1 exception(s) occurred within \"OperatorInput\" data: \n" +
-    "        An error occurred when creating instance of OperatorInput.class. Caused by: Field \"id\" not found in EntityData"
-  }
-
-  def "An EntitySource can build EntityData correctly"() {
-    given:
-    Map<String, String> parameter = ["operator": GridTestData.profBroccoli.uuid.toString()]
-    def source = DummyDataSource.of(parameter)
-
-    when:
-    def actual = buildEntityData(DummyAssetInput, source).toList()
-
-    then:
-    actual.size() == 1
-    actual.get(0).success
-  }
-
-  def "An EntitySource can enrich and build EntityData correctly"() {
-    given:
-    Map<String, String> parameter = ["operator": GridTestData.profBroccoli.uuid.toString()]
-    def entityMap = map([GridTestData.profBroccoli])
-    def source = DummyDataSource.of(parameter)
-    def fcn = enrich("operator", entityMap, AssetInputEntityData::new)
-
-    when:
-    def actual = buildEntityData(DummyAssetInput, source, fcn).toList()
-
-    then:
-    actual.size() == 1
-    actual.get(0).success
-    def data = actual.get(0).data.get()
-
-    data.targetClass == DummyAssetInput
-    data.fieldsToValues.size() == 0
-  }
-
-  def "An EntitySource can enrich EntityData with default fallback"() {
-    given:
-    def entityMap = map([GridTestData.profBroccoli])
-    def entityData1 = new EntityData(["operator": GridTestData.profBroccoli.uuid.toString()], NodeInput)
-    def entityData2 = new EntityData(["operator": ""], NodeInput)
-    def fcn = enrichWithDefault("operator", entityMap, OperatorInput.NO_OPERATOR_ASSIGNED, AssetInputEntityData::new)
-
-    when:
-    def enrichedWithEntity = fcn.apply(new Try.Success<>(entityData1))
-    def enrichedWithDefault = fcn.apply(new Try.Success<>(entityData2))
-
-    then:
-    enrichedWithEntity.success
-    enrichedWithEntity.data.get().operatorInput == GridTestData.profBroccoli
-
-    enrichedWithDefault.success
-    enrichedWithDefault.data.get().operatorInput == OperatorInput.NO_OPERATOR_ASSIGNED
-  }
-
-  def "An EntitySource can enrich EntityData"() {
-    given:
-    def entityMap = map([GridTestData.profBroccoli])
-    def entityData = new EntityData(["operator": GridTestData.profBroccoli.uuid.toString()], NodeInput)
-    def fcn = enrich("operator", entityMap, AssetInputEntityData::new)
-
-    when:
-    def enrichedData = fcn.apply(new Try.Success<>(entityData))
-
-    then:
-    enrichedData.success
-    enrichedData.data.get().operatorInput == GridTestData.profBroccoli
-  }
-
-  def "An EntitySource can enrich EntityData with two entities"() {
-    given:
-    def entityMap = map([GridTestData.nodeA, GridTestData.nodeB])
-    def entityData = new AssetInputEntityData(["nodeA": GridTestData.nodeA.uuid.toString(), "nodeB": GridTestData.nodeB.uuid.toString()], LineInput)
-    def fcn = biEnrich("nodeA", entityMap, "nodeB", entityMap, ConnectorInputEntityData::new)
-
-    when:
-    def enrichedData = fcn.apply(new Try.Success<>(entityData))
-
-    then:
-    enrichedData.success
-    enrichedData.data.get().nodeA == GridTestData.nodeA
-    enrichedData.data.get().nodeB == GridTestData.nodeB
-  }
-
-  def "An EntitySource's builder function should work as expected"() {
-    given:
-    def entityData = new EntityData(["operator": ""], NodeInput)
-    def pair = Pair.of(entityData, GridTestData.profBroccoli)
-    def fcn = enrichFunction(["operator"], AssetInputEntityData::new)
-
-    when:
-    def result = fcn.apply(pair)
-
-    then:
-    result.fieldsToValues.isEmpty()
-    result.operatorInput == GridTestData.profBroccoli
+        "        Field \"id\" not found in EntityData"
   }
 
   def "An EntitySource can extract an Entity from a map correctly if a field name is given"() {
@@ -151,11 +55,10 @@ class EntitySourceTest extends Specification {
     def entityMap = map([GridTestData.profBroccoli])
 
     when:
-    def actual = extractFunction(new Try.Success<>(entityData), "operator", entityMap)
+    def actual = extractFunction(entityData, "operator", entityMap)
 
     then:
-    actual.success
-    actual.data.get() == GridTestData.profBroccoli
+    actual == GridTestData.profBroccoli
   }
 
   def "An EntitySource returns a failure if an entity can not be extracted from a given map"() {
@@ -163,7 +66,7 @@ class EntitySourceTest extends Specification {
     def entityData = new EntityData(fieldsToAttributes, NodeInput)
 
     when:
-    def actual = extractFunction(new Try.Success<>(entityData), "operator", entityMap)
+    def actual = extractEntity(entityData, "operator", entityMap)
 
     then:
     actual.failure
@@ -172,8 +75,12 @@ class EntitySourceTest extends Specification {
 
     where:
     fieldsToAttributes                                      | entityMap                                 | expectedMessage
-    ["operator": "no uuid"]                                 | map([OperatorInput.NO_OPERATOR_ASSIGNED]) | "Extracting UUID for field 'operator' failed. Caused by: Exception while trying to parse UUID of field \"operator\" with value \"no uuid\""
-    ["operator": GridTestData.profBroccoli.uuid.toString()] | map([OperatorInput.NO_OPERATOR_ASSIGNED]) | "Extracting UUID for field 'operator' failed. Caused by: Entity with uuid f15105c4-a2de-4ab8-a621-4bc98e372d92 was not provided."
+    ["operator": "no uuid"]                                 | map([
+      OperatorInput.NO_OPERATOR_ASSIGNED
+    ]) | "Extracting UUID for field 'operator' failed. Caused by: Exception while trying to parse UUID of field \"operator\" with value \"no uuid\""
+    ["operator": GridTestData.profBroccoli.uuid.toString()] | map([
+      OperatorInput.NO_OPERATOR_ASSIGNED
+    ]) | "Extracting UUID for field 'operator' failed. Caused by: Entity with uuid f15105c4-a2de-4ab8-a621-4bc98e372d92 was not provided."
   }
 
   def "An EntitySource returns a failure if a given map does not contain the given uuid"() {
@@ -184,7 +91,7 @@ class EntitySourceTest extends Specification {
     ])
 
     when:
-    def actual = extractFunction(uuid, entityMap)
+    def actual = extractEntity(uuid, entityMap)
 
     then:
     actual.failure

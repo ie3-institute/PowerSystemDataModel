@@ -5,7 +5,10 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.*;
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
@@ -16,12 +19,8 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.TransformerTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
-import edu.ie3.datamodel.utils.Try;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link
@@ -40,35 +39,18 @@ public class TypeSource extends EntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    List<Try<Void, ValidationException>> result = new ArrayList<>();
-
-    Stream.of(
-            validate(EvTypeInput.class, dataSource, new SourceValidator<>(EvTypeInput.getFields())),
-            validate(HpTypeInput.class, dataSource, new SourceValidator<>(HpTypeInput.getFields())),
-            validate(BmTypeInput.class, dataSource, new SourceValidator<>(BmTypeInput.getFields())),
-            validate(
-                WecTypeInput.class, dataSource, new SourceValidator<>(WecTypeInput.getFields())),
-            validate(
-                ChpTypeInput.class, dataSource, new SourceValidator<>(ChpTypeInput.getFields())),
-            validate(
-                StorageTypeInput.class,
-                dataSource,
-                new SourceValidator<>(StorageTypeInput.getFields())),
-            validate(
-                OperatorInput.class, dataSource, new SourceValidator<>(OperatorInput.getFields())),
-            validate(
-                LineTypeInput.class, dataSource, new SourceValidator<>(LineTypeInput.getFields())),
-            validate(
-                Transformer2WTypeInput.class,
-                dataSource,
-                new SourceValidator<>(Transformer2WTypeInput.getFields())),
-            validate(
-                Transformer3WTypeInput.class,
-                dataSource,
-                new SourceValidator<>(Transformer3WTypeInput.getFields())))
-        .forEach(result::add);
-
-    Try.scanCollection(result, Void.class, FailedValidationException::new).getOrThrow();
+    validate(
+        dataSource,
+        EvTypeInput.class,
+        HpTypeInput.class,
+        BmTypeInput.class,
+        WecTypeInput.class,
+        ChpTypeInput.class,
+        StorageTypeInput.class,
+        OperatorInput.class,
+        LineTypeInput.class,
+        Transformer2WTypeInput.class,
+        Transformer3WTypeInput.class);
   }
 
   /**
@@ -206,7 +188,7 @@ public class TypeSource extends EntitySource {
     return getEntities(EvTypeInput.class, dataSource, evTypeBuildFunction).collect(toMap());
   }
 
-  // building functions
+  // build functions
   protected static final BuildFunction<AssetTypeInput> assetTypeBuilder =
       entityData ->
           entityData

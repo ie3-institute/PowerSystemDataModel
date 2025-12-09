@@ -20,7 +20,6 @@ import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInp
 import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import edu.ie3.datamodel.utils.Try;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Implementation that provides the capability to build entities held by {@link RawGridElements} as
@@ -42,27 +41,14 @@ public class RawGridSource extends AssetEntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    Try.scanStream(
-            Stream.of(
-                validate(NodeInput.class, dataSource, new SourceValidator<>(NodeInput.getFields())),
-                validate(LineInput.class, dataSource, new SourceValidator<>(LineInput.getFields())),
-                validate(
-                    Transformer2WInput.class,
-                    dataSource,
-                    new SourceValidator<>(Transformer2WInput.getFields())),
-                validate(
-                    Transformer3WInput.class,
-                    dataSource,
-                    new SourceValidator<>(Transformer3WInput.getFields())),
-                validate(
-                    SwitchInput.class, dataSource, new SourceValidator<>(SwitchInput.getFields())),
-                validate(
-                    MeasurementUnitInput.class,
-                    dataSource,
-                    new SourceValidator<>(MeasurementUnitInput.getFields()))),
-            "Validation",
-            FailedValidationException::new)
-        .getOrThrow();
+    validate(
+        dataSource,
+        NodeInput.class,
+        LineInput.class,
+        Transformer2WInput.class,
+        Transformer3WInput.class,
+        SwitchInput.class,
+        MeasurementUnitInput.class);
   }
 
   /**

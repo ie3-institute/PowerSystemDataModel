@@ -5,16 +5,12 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.models.input.thermal.AbstractStorageInput.abstractThermalStorageFields;
-
-import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.*;
-import edu.ie3.datamodel.utils.Try;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -40,27 +36,12 @@ public class ThermalSource extends AssetEntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    Try.scanStream(
-            Stream.of(
-                validate(
-                    ThermalBusInput.class,
-                    dataSource,
-                    new SourceValidator<>(ThermalBusInput.getFields())),
-                validate(
-                    CylindricalStorageInput.class,
-                    dataSource,
-                    new SourceValidator<>(abstractThermalStorageFields())),
-                validate(
-                    DomesticHotWaterStorageInput.class,
-                    dataSource,
-                    new SourceValidator<>(abstractThermalStorageFields())),
-                validate(
-                    ThermalHouseInput.class,
-                    dataSource,
-                    new SourceValidator<>(ThermalHouseInput.getFields()))),
-            "Validation",
-            FailedValidationException::new)
-        .getOrThrow();
+    validate(
+        dataSource,
+        ThermalBusInput.class,
+        CylindricalStorageInput.class,
+        DomesticHotWaterStorageInput.class,
+        ThermalHouseInput.class);
   }
 
   /**
@@ -287,7 +268,7 @@ public class ThermalSource extends AssetEntitySource {
         .collect(toSet());
   }
 
-  // building function
+  // build function
   protected static BuildFunction<ThermalInput> thermalBuilder(Map<UUID, OperatorInput> operators) {
     return entityData ->
         entityData

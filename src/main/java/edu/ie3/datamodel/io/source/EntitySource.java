@@ -62,6 +62,17 @@ public abstract class EntitySource {
    */
   public abstract void validate() throws ValidationException;
 
+  @SafeVarargs
+  protected static <C extends Entity> void validate(
+      DataSource dataSource, Class<? extends C>... entityClasses) throws FailedValidationException {
+    Try.scanStream(
+            Stream.of(entityClasses)
+                .map(clazz -> validate(clazz, dataSource, new SourceValidator<>())),
+            "Validation",
+            FailedValidationException::new)
+        .getOrThrow();
+  }
+
   /**
    * Method for validating a single source.
    *
@@ -231,7 +242,7 @@ public abstract class EntitySource {
    * @return an enrichment
    * @param <R> type of entity
    */
-  private static <R> Try<R, SourceException> extractEntity(
+  protected static <R> Try<R, SourceException> extractEntity(
       EntityData data, String fieldName, Map<UUID, R> entities) {
     return Try.of(() -> data.getUUID(fieldName), SourceException.class)
         .flatMap(entityUuid -> extractEntity(entityUuid, entities))
@@ -252,7 +263,7 @@ public abstract class EntitySource {
    * @return a try of the {@link Entity}
    * @param <T> type of entity
    */
-  private static <T> Try<T, SourceException> extractEntity(UUID uuid, Map<UUID, T> entityMap) {
+  protected static <T> Try<T, SourceException> extractEntity(UUID uuid, Map<UUID, T> entityMap) {
     // We either find a matching entity for given UUID, thus return a success
     // ... or find no matching entity, returning a failure.
     return Try.from(

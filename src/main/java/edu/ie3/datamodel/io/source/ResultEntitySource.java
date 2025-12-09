@@ -5,13 +5,11 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.models.result.system.ElectricalEnergyStorageResult.electricalEnergyStorageFields;
-import static edu.ie3.datamodel.models.result.system.SystemParticipantResult.participantFields;
-import static edu.ie3.datamodel.models.result.system.SystemParticipantWithHeatResult.participantWithHeatFields;
-import static edu.ie3.datamodel.models.result.thermal.AbstractThermalStorageResult.abstractThermalStorageFields;
 import static tech.units.indriya.unit.Units.PERCENT;
 
-import edu.ie3.datamodel.exceptions.*;
+import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.CongestionResult;
@@ -24,11 +22,8 @@ import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -46,6 +41,10 @@ public class ResultEntitySource extends EntitySource {
   private final DataSource dataSource;
   protected final TimeUtil timeUtil;
 
+  public ResultEntitySource(DataSource dataSource) {
+    this(dataSource, TimeUtil.withDefaults);
+  }
+
   public ResultEntitySource(DataSource dataSource, TimeUtil timeUtil) {
     this.dataSource = dataSource;
     this.timeUtil = timeUtil;
@@ -58,59 +57,29 @@ public class ResultEntitySource extends EntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    List<Try<Void, ValidationException>> results =
-        new ArrayList<>(
-            Stream.of(
-                    LoadResult.class,
-                    FixedFeedInResult.class,
-                    BmResult.class,
-                    PvResult.class,
-                    WecResult.class,
-                    EvcsResult.class,
-                    EmResult.class)
-                .map(c -> validate(c, dataSource, new SourceValidator<>(participantFields())))
-                .toList());
-
-    Stream.of(ChpResult.class, HpResult.class)
-        .map(c -> validate(c, dataSource, new SourceValidator<>(participantWithHeatFields())))
-        .forEach(results::add);
-
-    Stream.of(StorageResult.class, EvResult.class)
-        .map(c -> validate(c, dataSource, new SourceValidator<>(electricalEnergyStorageFields())))
-        .forEach(results::add);
-
-    Stream.of(CylindricalStorageResult.class, DomesticHotWaterStorageResult.class)
-        .map(c -> validate(c, dataSource, new SourceValidator<>(abstractThermalStorageFields())))
-        .forEach(results::add);
-
-    Stream.of(
-            validate(
-                ThermalHouseResult.class,
-                dataSource,
-                new SourceValidator<>(ThermalHouseResult.getFields())),
-            validate(
-                SwitchResult.class, dataSource, new SourceValidator<>(SwitchResult.getFields())),
-            validate(NodeResult.class, dataSource, new SourceValidator<>(NodeResult.getFields())),
-            validate(LineResult.class, dataSource, new SourceValidator<>(LineResult.getFields())),
-            validate(
-                Transformer2WResult.class,
-                dataSource,
-                new SourceValidator<>(Transformer2WResult.getFields())),
-            validate(
-                Transformer3WResult.class,
-                dataSource,
-                new SourceValidator<>(Transformer3WResult.getFields())),
-            validate(
-                FlexOptionsResult.class,
-                dataSource,
-                new SourceValidator<>(FlexOptionsResult.getFields())),
-            validate(
-                CongestionResult.class,
-                dataSource,
-                new SourceValidator<>(CongestionResult.getFields())))
-        .forEach(results::add);
-
-    Try.scanCollection(results, Void.class, FailedValidationException::new).getOrThrow();
+    validate(
+        dataSource,
+        LoadResult.class,
+        FixedFeedInResult.class,
+        BmResult.class,
+        PvResult.class,
+        WecResult.class,
+        EvcsResult.class,
+        EmResult.class,
+        ChpResult.class,
+        HpResult.class,
+        StorageResult.class,
+        EvResult.class,
+        CylindricalStorageResult.class,
+        DomesticHotWaterStorageResult.class,
+        ThermalHouseResult.class,
+        NodeResult.class,
+        SwitchResult.class,
+        LineResult.class,
+        Transformer2WResult.class,
+        Transformer3WResult.class,
+        FlexOptionsResult.class,
+        CongestionResult.class);
   }
 
   /**
@@ -123,19 +92,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link NodeResult} entities
    */
   public Set<NodeResult> getNodeResults() throws SourceException {
-    BuildFunction<NodeResult> buildFunction =
-        buildResult(timeUtil)
-            .with(
-                pair -> {
-                  EntityData data = pair.getLeft();
-
-                  return new NodeResult(
-                      pair.getRight(),
-                      data.getQuantity(NodeResult.VMAG, StandardUnits.VOLTAGE_MAGNITUDE),
-                      data.getQuantity(NodeResult.VANG, StandardUnits.VOLTAGE_ANGLE));
-                });
-
-    return getResultEntities(NodeResult.class, buildFunction);
+    return getResultEntities(NodeResult.class, nodeResultBuildFunction(timeUtil));
   }
 
   /**
@@ -149,13 +106,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link SwitchResult} entities
    */
   public Set<SwitchResult> getSwitchResults() throws SourceException {
-    return getResultEntities(
-        SwitchResult.class,
-        buildResult(timeUtil)
-            .with(
-                pair ->
-                    new SwitchResult(
-                        pair.getRight(), pair.getLeft().getBoolean(SwitchResult.CLOSED))));
+    return getResultEntities(SwitchResult.class, switchResultBuildFunction(timeUtil));
   }
 
   /**
@@ -168,9 +119,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link LineResult} entities
    */
   public Set<LineResult> getLineResults() throws SourceException {
-    return getResultEntities(
-        LineResult.class,
-        connectorResultBuilder(timeUtil).with(pair -> new LineResult(pair.getRight())));
+    return getResultEntities(LineResult.class, lineResultBuildFunction(timeUtil));
   }
 
   /**
@@ -184,9 +133,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link Transformer2WResult} entities
    */
   public Set<Transformer2WResult> getTransformer2WResultResults() throws SourceException {
-    return getResultEntities(
-        Transformer2WResult.class,
-        transformerResultBuilder(timeUtil).with(pair -> new Transformer2WResult(pair.getRight())));
+    return getResultEntities(Transformer2WResult.class, transformer2WResultBuilder(timeUtil));
   }
 
   /**
@@ -200,21 +147,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link Transformer3WResult} entities
    */
   public Set<Transformer3WResult> getTransformer3WResultResults() throws SourceException {
-    BuildFunction<Transformer3WResult> buildFunction =
-        transformerResultBuilder(timeUtil)
-            .with(
-                pair -> {
-                  EntityData data = pair.getLeft();
-
-                  return new Transformer3WResult(
-                      pair.getRight(),
-                      data.getQuantity(
-                          Transformer3WResult.ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
-                      data.getQuantity(
-                          Transformer3WResult.ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE));
-                });
-
-    return getResultEntities(Transformer3WResult.class, buildFunction);
+    return getResultEntities(Transformer3WResult.class, transformer3WResultBuilder(timeUtil));
   }
 
   /**
@@ -228,20 +161,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link FlexOptionsResult} entities
    */
   public Set<FlexOptionsResult> getFlexOptionsResults() throws SourceException {
-    BuildFunction<FlexOptionsResult> buildFunction =
-        buildResult(timeUtil)
-            .with(
-                pair -> {
-                  EntityData data = pair.getLeft();
-
-                  return new FlexOptionsResult(
-                      pair.getRight(),
-                      data.getQuantity(FlexOptionsResult.P_REF, StandardUnits.ACTIVE_POWER_RESULT),
-                      data.getQuantity(FlexOptionsResult.P_MIN, StandardUnits.ACTIVE_POWER_RESULT),
-                      data.getQuantity(FlexOptionsResult.P_MAX, StandardUnits.ACTIVE_POWER_RESULT));
-                });
-
-    return getResultEntities(FlexOptionsResult.class, buildFunction);
+    return getResultEntities(FlexOptionsResult.class, flexOptionsResultBuildFunction(timeUtil));
   }
 
   /**
@@ -254,9 +174,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link LoadResult} entities
    */
   public Set<LoadResult> getLoadResults() throws SourceException {
-    return getResultEntities(
-        LoadResult.class,
-        participantResultBuilder(timeUtil).with(pair -> new LoadResult(pair.getRight())));
+    return getResultEntities(LoadResult.class, loadResultBuildFunction(timeUtil));
   }
 
   /**
@@ -269,9 +187,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link PvResult} entities
    */
   public Set<PvResult> getPvResults() throws SourceException {
-    return getResultEntities(
-        PvResult.class,
-        participantResultBuilder(timeUtil).with(pair -> new PvResult(pair.getRight())));
+    return getResultEntities(PvResult.class, pvResultBuildFunction(timeUtil));
   }
 
   /**
@@ -285,9 +201,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link FixedFeedInResult} entities
    */
   public Set<FixedFeedInResult> getFixedFeedInResults() throws SourceException {
-    return getResultEntities(
-        FixedFeedInResult.class,
-        participantResultBuilder(timeUtil).with(pair -> new FixedFeedInResult(pair.getRight())));
+    return getResultEntities(FixedFeedInResult.class, fixedFeedInResultBuildFunction(timeUtil));
   }
 
   /**
@@ -300,9 +214,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link BmResult} entities
    */
   public Set<BmResult> getBmResults() throws SourceException {
-    return getResultEntities(
-        BmResult.class,
-        participantResultBuilder(timeUtil).with(pair -> new BmResult(pair.getRight())));
+    return getResultEntities(BmResult.class, bmResultBuildFunction(timeUtil));
   }
 
   /**
@@ -315,9 +227,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link ChpResult} entities
    */
   public Set<ChpResult> getChpResults() throws SourceException {
-    return getResultEntities(
-        ChpResult.class,
-        participantWithHeatResultBuilder(timeUtil).with(pair -> new ChpResult(pair.getRight())));
+    return getResultEntities(ChpResult.class, chpResultBuildFunction(timeUtil));
   }
 
   /**
@@ -330,9 +240,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link WecResult} entities
    */
   public Set<WecResult> getWecResults() throws SourceException {
-    return getResultEntities(
-        WecResult.class,
-        participantResultBuilder(timeUtil).with(pair -> new WecResult(pair.getRight())));
+    return getResultEntities(WecResult.class, wecResultBuildFunction(timeUtil));
   }
 
   /**
@@ -346,10 +254,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link StorageResult} entities
    */
   public Set<StorageResult> getStorageResults() throws SourceException {
-    return getResultEntities(
-        StorageResult.class,
-        electricalEnergyStorageResultBuilder(timeUtil)
-            .with(pair -> new StorageResult(pair.getRight())));
+    return getResultEntities(StorageResult.class, storageResultBuildFunction(timeUtil));
   }
 
   /**
@@ -362,9 +267,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link EvcsResult} entities
    */
   public Set<EvcsResult> getEvcsResults() throws SourceException {
-    return getResultEntities(
-        EvcsResult.class,
-        participantResultBuilder(timeUtil).with(pair -> new EvcsResult(pair.getRight())));
+    return getResultEntities(EvcsResult.class, evcsResultBuildFunction(timeUtil));
   }
 
   /**
@@ -377,9 +280,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link EvResult} entities
    */
   public Set<EvResult> getEvResults() throws SourceException {
-    return getResultEntities(
-        EvResult.class,
-        electricalEnergyStorageResultBuilder(timeUtil).with(pair -> new EvResult(pair.getRight())));
+    return getResultEntities(EvResult.class, evResultBuildFunction(timeUtil));
   }
 
   /**
@@ -392,9 +293,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link HpResult} entities
    */
   public Set<HpResult> getHpResults() throws SourceException {
-    return getResultEntities(
-        HpResult.class,
-        participantWithHeatResultBuilder(timeUtil).with(pair -> new HpResult(pair.getRight())));
+    return getResultEntities(HpResult.class, hpResultBuildFunction(timeUtil));
   }
 
   /**
@@ -409,9 +308,7 @@ public class ResultEntitySource extends EntitySource {
    */
   public Set<CylindricalStorageResult> getCylindricalStorageResult() throws SourceException {
     return getResultEntities(
-        CylindricalStorageResult.class,
-        abstractThermalStorageResultBuilder(timeUtil)
-            .with(pair -> new CylindricalStorageResult(pair.getRight())));
+        CylindricalStorageResult.class, cylindricalStorageResultBuilder(timeUtil));
   }
 
   /**
@@ -426,10 +323,7 @@ public class ResultEntitySource extends EntitySource {
    */
   public Set<DomesticHotWaterStorageResult> getDomesticHotWaterStorageResult()
       throws SourceException {
-    return getResultEntities(
-        DomesticHotWaterStorageResult.class,
-        abstractThermalStorageResultBuilder(timeUtil)
-            .with(pair -> new DomesticHotWaterStorageResult(pair.getRight())));
+    return getResultEntities(DomesticHotWaterStorageResult.class, dhwsResultBuilder(timeUtil));
   }
 
   /**
@@ -443,17 +337,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link ThermalHouseResult} entities
    */
   public Set<ThermalHouseResult> getThermalHouseResults() throws SourceException {
-    return getResultEntities(
-        ThermalHouseResult.class,
-        thermalSinkResultBuilder(timeUtil)
-            .with(
-                pair ->
-                    new ThermalHouseResult(
-                        pair.getRight(),
-                        pair.getLeft()
-                            .getQuantity(
-                                ThermalHouseResult.INDOOR_TEMPERATURE,
-                                StandardUnits.TEMPERATURE))));
+    return getResultEntities(ThermalHouseResult.class, thermalHouseResultBuildFunction(timeUtil));
   }
 
   /**
@@ -466,9 +350,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link EmResult} entities
    */
   public Set<EmResult> getEmResults() throws SourceException {
-    return getResultEntities(
-        EmResult.class,
-        participantResultBuilder(timeUtil).with(pair -> new EmResult(pair.getRight())));
+    return getResultEntities(EmResult.class, emResultBuildFunction(timeUtil));
   }
 
   /**
@@ -477,31 +359,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and subgrid unique {@link CongestionResult} entities
    */
   public Set<CongestionResult> getCongestionResults() throws SourceException {
-    BuildFunction<CongestionResult> buildFunction =
-        buildResult(timeUtil)
-            .with(
-                pair -> {
-                  EntityData data = pair.getLeft();
-
-                  String typeString = data.getField(CongestionResult.TYPE);
-
-                  CongestionResult.InputModelType type =
-                      Try.of(
-                              () -> CongestionResult.InputModelType.parse(typeString),
-                              ParsingException.class)
-                          .transformF(SourceException::new)
-                          .getOrThrow();
-
-                  return new CongestionResult(
-                      pair.getRight(),
-                      type,
-                      data.getInt(CongestionResult.SUBGRID),
-                      data.getQuantity(CongestionResult.VALUE, PERCENT),
-                      data.getQuantity(CongestionResult.MIN, PERCENT),
-                      data.getQuantity(CongestionResult.MAX, PERCENT));
-                });
-
-    return getResultEntities(CongestionResult.class, buildFunction);
+    return getResultEntities(CongestionResult.class, congestionResultBuildFunction(timeUtil));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -519,6 +377,7 @@ public class ResultEntitySource extends EntitySource {
     return getEntities(entityClass, dataSource, buildFunction).collect(toSet());
   }
 
+  // build functions
   protected static BuildFunction<ResultEntity> buildResult(TimeUtil timeUtil) {
     return entityData ->
         entityData.flatMap(
@@ -532,6 +391,67 @@ public class ResultEntitySource extends EntitySource {
                 return Try.Failure.of(
                     new SourceException("Could not build result model due to: ", e));
               }
+            });
+  }
+
+  protected static BuildFunction<NodeResult> nodeResultBuildFunction(TimeUtil timeUtil) {
+    return buildResult(timeUtil)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              return new NodeResult(
+                  pair.getRight(),
+                  data.getQuantity(NodeResult.VMAG, StandardUnits.VOLTAGE_MAGNITUDE),
+                  data.getQuantity(NodeResult.VANG, StandardUnits.VOLTAGE_ANGLE));
+            });
+  }
+
+  protected static BuildFunction<FlexOptionsResult> flexOptionsResultBuildFunction(
+      TimeUtil timeUtil) {
+    return buildResult(timeUtil)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              return new FlexOptionsResult(
+                  pair.getRight(),
+                  data.getQuantity(FlexOptionsResult.P_REF, StandardUnits.ACTIVE_POWER_RESULT),
+                  data.getQuantity(FlexOptionsResult.P_MIN, StandardUnits.ACTIVE_POWER_RESULT),
+                  data.getQuantity(FlexOptionsResult.P_MAX, StandardUnits.ACTIVE_POWER_RESULT));
+            });
+  }
+
+  protected static BuildFunction<SwitchResult> switchResultBuildFunction(TimeUtil timeUtil) {
+    return buildResult(timeUtil)
+        .with(
+            pair ->
+                new SwitchResult(pair.getRight(), pair.getLeft().getBoolean(SwitchResult.CLOSED)));
+  }
+
+  protected static BuildFunction<CongestionResult> congestionResultBuildFunction(
+      TimeUtil timeUtil) {
+    return buildResult(timeUtil)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              String typeString = data.getField(CongestionResult.TYPE);
+
+              CongestionResult.InputModelType type =
+                  Try.of(
+                          () -> CongestionResult.InputModelType.parse(typeString),
+                          ParsingException.class)
+                      .transformF(SourceException::new)
+                      .getOrThrow();
+
+              return new CongestionResult(
+                  pair.getRight(),
+                  type,
+                  data.getInt(CongestionResult.SUBGRID),
+                  data.getQuantity(CongestionResult.VALUE, PERCENT),
+                  data.getQuantity(CongestionResult.MIN, PERCENT),
+                  data.getQuantity(CongestionResult.MAX, PERCENT));
             });
   }
 
@@ -556,6 +476,10 @@ public class ResultEntitySource extends EntitySource {
                 SourceException.class);
   }
 
+  protected static BuildFunction<LineResult> lineResultBuildFunction(TimeUtil timeUtil) {
+    return connectorResultBuilder(timeUtil).with(pair -> new LineResult(pair.getRight()));
+  }
+
   protected static BuildFunction<TransformerResult> transformerResultBuilder(TimeUtil timeUtil) {
     return entityData ->
         entityData
@@ -565,6 +489,28 @@ public class ResultEntitySource extends EntitySource {
                     new TransformerResult(
                         pair.getRight(), pair.getLeft().getInt(TransformerResult.TAPPOS)) {},
                 SourceException.class);
+  }
+
+  protected static BuildFunction<Transformer2WResult> transformer2WResultBuilder(
+      TimeUtil timeUtil) {
+    return transformerResultBuilder(timeUtil)
+        .with(pair -> new Transformer2WResult(pair.getRight()));
+  }
+
+  protected static BuildFunction<Transformer3WResult> transformer3WResultBuilder(
+      TimeUtil timeUtil) {
+    return transformerResultBuilder(timeUtil)
+        .with(
+            pair -> {
+              EntityData data = pair.getLeft();
+
+              return new Transformer3WResult(
+                  pair.getRight(),
+                  data.getQuantity(
+                      Transformer3WResult.ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
+                  data.getQuantity(
+                      Transformer3WResult.ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE));
+            });
   }
 
   protected static BuildFunction<SystemParticipantResult> participantResultBuilder(
@@ -587,11 +533,40 @@ public class ResultEntitySource extends EntitySource {
                 SourceException.class);
   }
 
+  protected static BuildFunction<LoadResult> loadResultBuildFunction(TimeUtil timeUtil) {
+    return participantResultBuilder(timeUtil).with(pair -> new LoadResult(pair.getRight()));
+  }
+
+  protected static BuildFunction<PvResult> pvResultBuildFunction(TimeUtil timeUtil) {
+    return participantResultBuilder(timeUtil).with(pair -> new PvResult(pair.getRight()));
+  }
+
+  protected static BuildFunction<FixedFeedInResult> fixedFeedInResultBuildFunction(
+      TimeUtil timeUtil) {
+    return participantResultBuilder(timeUtil).with(pair -> new FixedFeedInResult(pair.getRight()));
+  }
+
+  protected static BuildFunction<BmResult> bmResultBuildFunction(TimeUtil timeUtil) {
+    return participantResultBuilder(timeUtil).with(pair -> new BmResult(pair.getRight()));
+  }
+
+  protected static BuildFunction<WecResult> wecResultBuildFunction(TimeUtil timeUtil) {
+    return participantResultBuilder(timeUtil).with(pair -> new WecResult(pair.getRight()));
+  }
+
+  protected static BuildFunction<EvcsResult> evcsResultBuildFunction(TimeUtil timeUtil) {
+    return participantResultBuilder(timeUtil).with(pair -> new EvcsResult(pair.getRight()));
+  }
+
+  protected static BuildFunction<EmResult> emResultBuildFunction(TimeUtil timeUtil) {
+    return participantResultBuilder(timeUtil).with(pair -> new EmResult(pair.getRight()));
+  }
+
   protected static BuildFunction<SystemParticipantWithHeatResult> participantWithHeatResultBuilder(
       TimeUtil timeUtil) {
     return entityData ->
         entityData
-            .zip(participantWithHeatResultBuilder(timeUtil))
+            .zip(participantResultBuilder(timeUtil))
             .map(
                 pair -> {
                   EntityData data = pair.getLeft();
@@ -602,6 +577,14 @@ public class ResultEntitySource extends EntitySource {
                           SystemParticipantWithHeatResult.Q_DOT, StandardUnits.Q_DOT_RESULT)) {};
                 },
                 SourceException.class);
+  }
+
+  protected static BuildFunction<ChpResult> chpResultBuildFunction(TimeUtil timeUtil) {
+    return participantWithHeatResultBuilder(timeUtil).with(pair -> new ChpResult(pair.getRight()));
+  }
+
+  protected static BuildFunction<HpResult> hpResultBuildFunction(TimeUtil timeUtil) {
+    return participantWithHeatResultBuilder(timeUtil).with(pair -> new HpResult(pair.getRight()));
   }
 
   protected static BuildFunction<ElectricalEnergyStorageResult>
@@ -621,6 +604,16 @@ public class ResultEntitySource extends EntitySource {
                       }
                     },
                 SourceException.class);
+  }
+
+  protected static BuildFunction<StorageResult> storageResultBuildFunction(TimeUtil timeUtil) {
+    return electricalEnergyStorageResultBuilder(timeUtil)
+        .with(pair -> new StorageResult(pair.getRight()));
+  }
+
+  protected static BuildFunction<EvResult> evResultBuildFunction(TimeUtil timeUtil) {
+    return electricalEnergyStorageResultBuilder(timeUtil)
+        .with(pair -> new EvResult(pair.getRight()));
   }
 
   protected static BuildFunction<ThermalUnitResult> thermalUnitResultBuilder(TimeUtil timeUtil) {
@@ -656,7 +649,20 @@ public class ResultEntitySource extends EntitySource {
                 SourceException.class);
   }
 
-  protected BuildFunction<ThermalStorageResult> thermalStorageResultBuilder(TimeUtil timeUtil) {
+  protected static BuildFunction<ThermalHouseResult> thermalHouseResultBuildFunction(
+      TimeUtil timeUtil) {
+    return thermalSinkResultBuilder(timeUtil)
+        .with(
+            pair ->
+                new ThermalHouseResult(
+                    pair.getRight(),
+                    pair.getLeft()
+                        .getQuantity(
+                            ThermalHouseResult.INDOOR_TEMPERATURE, StandardUnits.TEMPERATURE)));
+  }
+
+  protected static BuildFunction<ThermalStorageResult> thermalStorageResultBuilder(
+      TimeUtil timeUtil) {
     return entityData ->
         entityData
             .zip(thermalUnitResultBuilder(timeUtil))
@@ -675,7 +681,7 @@ public class ResultEntitySource extends EntitySource {
                 SourceException.class);
   }
 
-  protected BuildFunction<AbstractThermalStorageResult> abstractThermalStorageResultBuilder(
+  protected static BuildFunction<AbstractThermalStorageResult> abstractThermalStorageResultBuilder(
       TimeUtil timeUtil) {
     return entityData ->
         entityData
@@ -689,5 +695,17 @@ public class ResultEntitySource extends EntitySource {
                                 AbstractThermalStorageResult.FILL_LEVEL,
                                 StandardUnits.FILL_LEVEL)) {},
                 SourceException.class);
+  }
+
+  protected static BuildFunction<CylindricalStorageResult> cylindricalStorageResultBuilder(
+      TimeUtil timeUtil) {
+    return abstractThermalStorageResultBuilder(timeUtil)
+        .with(pair -> new CylindricalStorageResult(pair.getRight()));
+  }
+
+  protected static BuildFunction<DomesticHotWaterStorageResult> dhwsResultBuilder(
+      TimeUtil timeUtil) {
+    return abstractThermalStorageResultBuilder(timeUtil)
+        .with(pair -> new DomesticHotWaterStorageResult(pair.getRight()));
   }
 }

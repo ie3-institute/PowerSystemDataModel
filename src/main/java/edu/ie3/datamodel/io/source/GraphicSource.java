@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
 import org.locationtech.jts.geom.LineString;
 
 /**
@@ -47,19 +45,7 @@ public class GraphicSource extends AssetEntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    Try.scanStream(
-            Stream.of(
-                validate(
-                    NodeGraphicInput.class,
-                    dataSource,
-                    new SourceValidator<>(NodeGraphicInput.getFields())),
-                validate(
-                    LineGraphicInput.class,
-                    dataSource,
-                    new SourceValidator<>(LineGraphicInput.getFields()))),
-            "Validation",
-            FailedValidationException::new)
-        .getOrThrow();
+    validate(dataSource, NodeGraphicInput.class, LineGraphicInput.class);
   }
 
   /** Returns the graphic elements of the grid or throws a {@link SourceException} */

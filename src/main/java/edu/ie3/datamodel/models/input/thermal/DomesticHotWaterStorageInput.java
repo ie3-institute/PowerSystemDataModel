@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.thermal;
 
+import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
@@ -80,6 +81,10 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
 
   public DomesticHotWaterStorageInput(AbstractStorageInput input) {
     super(input);
+  }
+
+  public static SourceValidator.Fields getFields() {
+    return abstractThermalStorageFields();
   }
 
   @Override

@@ -5,7 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import edu.ie3.datamodel.exceptions.FactoryException
+
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -101,7 +102,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     factory.buildModel(data)
 
     then:
-    thrown(FactoryException)
+    thrown(SourceException)
   }
 
   def "Smoke Test: This PsdmTimeBasedWeatherValueFactory should fail since expected results doesn't match input"() {
