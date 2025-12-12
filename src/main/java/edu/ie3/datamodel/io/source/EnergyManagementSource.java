@@ -67,7 +67,7 @@ public class EnergyManagementSource extends AssetEntitySource {
    */
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
     return createEmInputs(
-        buildEntity(AssetInput.class, dataSource).map(e -> e.zip(assetBuilder(operators))));
+        buildEntity(EmInput.class, dataSource).map(e -> e.zip(assetBuilder(operators))));
   }
 
   /**
@@ -143,7 +143,7 @@ public class EnergyManagementSource extends AssetEntitySource {
                                     parentUuid);
                               },
                               SourceException.class)),
-              AssetDataAndValidParentUuid.class);
+              "EmInput");
 
       allEms.putAll(createHierarchicalEmInputs(othersWithParentUuid, allEms));
     }

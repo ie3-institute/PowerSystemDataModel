@@ -213,6 +213,21 @@ public abstract class EntitySource {
    * Method to unpack a stream of tries.
    *
    * @param inputStream given stream
+   * @param className name of the class of the entity
+   * @return a stream of entities
+   * @param <S> type of entity
+   * @param <E> type of exception
+   * @throws SourceException - if an error occurred during reading
+   */
+  protected static <S, E extends Exception> Stream<S> unpack(
+      Stream<Try<S, E>> inputStream, String className) throws SourceException {
+    return Try.scanStream(inputStream, className, SourceException::new).getOrThrow();
+  }
+
+  /**
+   * Method to unpack a stream of tries.
+   *
+   * @param inputStream given stream
    * @param clazz class of the entity
    * @return a stream of entities
    * @param <S> type of entity
