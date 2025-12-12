@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
@@ -20,11 +22,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {
-  /* Static fields. */
-  public static final String E_STORAGE = "eStorage";
-  public static final String P_MAX = "pMax";
-  public static final String ACTIVE_POWER_GRADIENT = "activePowerGradient";
-  public static final String ETA = "eta";
 
   /** Energy capacity (typically in kWh) */
   private final ComparableQuantity<Energy> eStorage;

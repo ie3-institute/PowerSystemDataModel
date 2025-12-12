@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.CLOSED;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -14,8 +16,6 @@ import java.util.UUID;
 
 /** Describes an electrical grid switch between two {@link NodeInput}s */
 public class SwitchInput extends ConnectorInput {
-  /* Static fields. */
-  public static final String CLOSED = "closed";
 
   /** Is the switching state 'closed'? */
   private final boolean closed;

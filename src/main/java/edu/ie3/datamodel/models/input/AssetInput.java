@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.OperationTime;
@@ -13,11 +15,6 @@ import java.util.*;
 
 /** Describes a grid asset under the assumption that every asset could be operable */
 public abstract class AssetInput extends UniqueInputEntity implements Operable {
-  /* Static fields. */
-  public static final String ID = "id";
-  public static final String OPERATOR = "operator";
-  public static final String OPERATES_FROM = "operatesFrom";
-  public static final String OPERATES_UNTIL = "operatesUntil";
 
   /** Time for which the entity is operated */
   private final OperationTime operationTime;

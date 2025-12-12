@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -17,13 +19,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
-  /* Public fields. */
-  public static final String V_TARGET = "vTarget";
-  public static final String V_RATED = "vRated";
-  public static final String SLACK = "slack";
-  public static final String GEO_POSITION = "geoPosition";
-  public static final String VOLT_LVL = "voltLvl";
-  public static final String SUBNET = "subnet";
 
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
   private final ComparableQuantity<Dimensionless> vTarget;

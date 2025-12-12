@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.exceptions.SourceException;
@@ -195,8 +197,7 @@ public class TypeSource extends EntitySource {
               .zip(uniqueEntityBuilder)
               .map(
                   pair ->
-                      new AssetTypeInput(
-                          pair.getRight(), pair.getLeft().getField(AssetTypeInput.ID)) {
+                      new AssetTypeInput(pair.getRight(), pair.getLeft().getField(ID)) {
                         @Override
                         public AssetTypeInputCopyBuilder<?> copy() {
                           return null;
@@ -206,7 +207,7 @@ public class TypeSource extends EntitySource {
 
   protected static BuildFunction<OperatorInput> operatorBuildFunction =
       uniqueEntityBuilder.with(
-          pair -> new OperatorInput(pair.getRight(), pair.getLeft().getField(OperatorInput.ID)));
+          pair -> new OperatorInput(pair.getRight(), pair.getLeft().getField(ID)));
 
   protected static BuildFunction<LineTypeInput> lineTypeBuildFunction =
       uniqueEntityBuilder.with(
@@ -215,13 +216,13 @@ public class TypeSource extends EntitySource {
 
             return new LineTypeInput(
                 pair.getRight().getUuid(),
-                data.getField(LineTypeInput.ID),
-                data.getQuantity(LineTypeInput.B, StandardUnits.SUSCEPTANCE_PER_LENGTH),
-                data.getQuantity(LineTypeInput.G, StandardUnits.CONDUCTANCE_PER_LENGTH),
-                data.getQuantity(LineTypeInput.R, StandardUnits.RESISTANCE_PER_LENGTH),
-                data.getQuantity(LineTypeInput.X, StandardUnits.REACTANCE_PER_LENGTH),
-                data.getQuantity(LineTypeInput.I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
-                data.getQuantity(LineTypeInput.V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE));
+                data.getField(ID),
+                data.getQuantity(B, StandardUnits.SUSCEPTANCE_PER_LENGTH),
+                data.getQuantity(G, StandardUnits.CONDUCTANCE_PER_LENGTH),
+                data.getQuantity(R, StandardUnits.RESISTANCE_PER_LENGTH),
+                data.getQuantity(X, StandardUnits.REACTANCE_PER_LENGTH),
+                data.getQuantity(I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
+                data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE));
           });
 
   protected static BuildFunction<TransformerTypeInput> transformerTypeBuilder =
@@ -233,13 +234,15 @@ public class TypeSource extends EntitySource {
                     EntityData data = pair.getLeft();
                     return new TransformerTypeInput(
                         pair.getRight(),
-                        data.getQuantity(TransformerTypeInput.G_M, StandardUnits.CONDUCTANCE),
-                        data.getQuantity(TransformerTypeInput.B_M, StandardUnits.SUSCEPTANCE),
-                        data.getQuantity(TransformerTypeInput.D_V, StandardUnits.DV_TAP),
-                        data.getQuantity(TransformerTypeInput.D_PHI, StandardUnits.DPHI_TAP),
-                        data.getInt(TransformerTypeInput.TAP_NEUTR),
-                        data.getInt(TransformerTypeInput.TAP_MIN),
-                        data.getInt(TransformerTypeInput.TAP_MAX)) {
+                        data.getQuantity(G_M, StandardUnits.CONDUCTANCE),
+                        data.getQuantity(B_M, StandardUnits.SUSCEPTANCE),
+                        data.getQuantity(D_V, StandardUnits.DV_TAP),
+                        data.getQuantity(D_PHI, StandardUnits.DPHI_TAP),
+                        data.getQuantity(V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE),
+                        data.getQuantity(V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE),
+                        data.getInt(TAP_NEUTR),
+                        data.getInt(TAP_MIN),
+                        data.getInt(TAP_MAX)) {
                       @Override
                       public AssetTypeInputCopyBuilder<?> copy() {
                         return null;
@@ -255,14 +258,10 @@ public class TypeSource extends EntitySource {
 
             return new Transformer2WTypeInput(
                 pair.getRight(),
-                data.getQuantity(Transformer2WTypeInput.R_SC, StandardUnits.RESISTANCE),
-                data.getQuantity(Transformer2WTypeInput.X_SC, StandardUnits.RESISTANCE),
-                data.getQuantity(Transformer2WTypeInput.S_RATED, StandardUnits.S_RATED),
-                data.getQuantity(
-                    Transformer2WTypeInput.V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE),
-                data.getQuantity(
-                    Transformer2WTypeInput.V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE),
-                data.getBoolean(Transformer2WTypeInput.TAP_SIDE));
+                data.getQuantity(R_SC, StandardUnits.RESISTANCE),
+                data.getQuantity(X_SC, StandardUnits.RESISTANCE),
+                data.getQuantity(S_RATED, StandardUnits.S_RATED),
+                data.getBoolean(TAP_SIDE));
           });
 
   protected static BuildFunction<Transformer3WTypeInput> transformer3WTypeBuildFunction =
@@ -272,21 +271,16 @@ public class TypeSource extends EntitySource {
 
             return new Transformer3WTypeInput(
                 pair.getRight(),
-                data.getQuantity(Transformer3WTypeInput.S_RATED_A, StandardUnits.S_RATED),
-                data.getQuantity(Transformer3WTypeInput.S_RATED_B, StandardUnits.S_RATED),
-                data.getQuantity(Transformer3WTypeInput.S_RATED_C, StandardUnits.S_RATED),
-                data.getQuantity(
-                    Transformer3WTypeInput.V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE),
-                data.getQuantity(
-                    Transformer3WTypeInput.V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE),
-                data.getQuantity(
-                    Transformer3WTypeInput.V_RATED_C, StandardUnits.RATED_VOLTAGE_MAGNITUDE),
-                data.getQuantity(Transformer3WTypeInput.R_SC_A, StandardUnits.RESISTANCE),
-                data.getQuantity(Transformer3WTypeInput.R_SC_B, StandardUnits.RESISTANCE),
-                data.getQuantity(Transformer3WTypeInput.R_SC_C, StandardUnits.RESISTANCE),
-                data.getQuantity(Transformer3WTypeInput.X_SC_A, StandardUnits.RESISTANCE),
-                data.getQuantity(Transformer3WTypeInput.X_SC_B, StandardUnits.RESISTANCE),
-                data.getQuantity(Transformer3WTypeInput.X_SC_C, StandardUnits.RESISTANCE));
+                data.getQuantity(S_RATED_A, StandardUnits.S_RATED),
+                data.getQuantity(S_RATED_B, StandardUnits.S_RATED),
+                data.getQuantity(S_RATED_C, StandardUnits.S_RATED),
+                data.getQuantity(V_RATED_C, StandardUnits.RATED_VOLTAGE_MAGNITUDE),
+                data.getQuantity(R_SC_A, StandardUnits.RESISTANCE),
+                data.getQuantity(R_SC_B, StandardUnits.RESISTANCE),
+                data.getQuantity(R_SC_C, StandardUnits.RESISTANCE),
+                data.getQuantity(X_SC_A, StandardUnits.RESISTANCE),
+                data.getQuantity(X_SC_B, StandardUnits.RESISTANCE),
+                data.getQuantity(X_SC_C, StandardUnits.RESISTANCE));
           });
 
   protected static BuildFunction<SystemParticipantTypeInput> systemParticipantTypeBuilder =
@@ -298,11 +292,10 @@ public class TypeSource extends EntitySource {
                     EntityData data = pair.getLeft();
                     return new SystemParticipantTypeInput(
                         pair.getRight(),
-                        data.getQuantity(SystemParticipantTypeInput.CAP_EX, StandardUnits.CAPEX),
-                        data.getQuantity(
-                            SystemParticipantTypeInput.OP_EX, StandardUnits.ENERGY_PRICE),
-                        data.getQuantity(SystemParticipantTypeInput.S_RATED, StandardUnits.S_RATED),
-                        data.getDouble(SystemParticipantTypeInput.COS_PHI_RATED)) {
+                        data.getQuantity(CAP_EX, StandardUnits.CAPEX),
+                        data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE),
+                        data.getQuantity(S_RATED, StandardUnits.S_RATED),
+                        data.getDouble(COS_PHI_RATED)) {
                       @Override
                       public SystemParticipantTypeInputCopyBuilder<?> copy() {
                         return null;
@@ -318,9 +311,8 @@ public class TypeSource extends EntitySource {
 
             return new BmTypeInput(
                 pair.getRight(),
-                data.getQuantity(
-                    BmTypeInput.ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT),
-                data.getQuantity(BmTypeInput.ETA_CONV, StandardUnits.EFFICIENCY));
+                data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT),
+                data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY));
           });
 
   protected static BuildFunction<ChpTypeInput> chpTypeBuildFunction =
@@ -330,10 +322,10 @@ public class TypeSource extends EntitySource {
 
             return new ChpTypeInput(
                 pair.getRight(),
-                data.getQuantity(ChpTypeInput.ETA_EL, StandardUnits.EFFICIENCY),
-                data.getQuantity(ChpTypeInput.ETA_THERMAL, StandardUnits.EFFICIENCY),
-                data.getQuantity(ChpTypeInput.P_THERMAL, StandardUnits.ACTIVE_POWER_IN),
-                data.getQuantity(ChpTypeInput.P_OWN, StandardUnits.ACTIVE_POWER_IN));
+                data.getQuantity(ETA_EL, StandardUnits.EFFICIENCY),
+                data.getQuantity(ETA_THERMAL, StandardUnits.EFFICIENCY),
+                data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN),
+                data.getQuantity(P_OWN, StandardUnits.ACTIVE_POWER_IN));
           });
 
   protected static BuildFunction<HpTypeInput> hpTypeBuildFunction =
@@ -341,8 +333,7 @@ public class TypeSource extends EntitySource {
           pair ->
               new HpTypeInput(
                   pair.getRight(),
-                  pair.getLeft()
-                      .getQuantity(HpTypeInput.P_THERMAL, StandardUnits.ACTIVE_POWER_IN)));
+                  pair.getLeft().getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN)));
 
   protected static BuildFunction<StorageTypeInput> storageBuildFunction =
       systemParticipantTypeBuilder.with(
@@ -351,11 +342,10 @@ public class TypeSource extends EntitySource {
 
             return new StorageTypeInput(
                 pair.getRight(),
-                data.getQuantity(StorageTypeInput.E_STORAGE, StandardUnits.ENERGY_IN),
-                data.getQuantity(StorageTypeInput.P_MAX, StandardUnits.ACTIVE_POWER_IN),
-                data.getQuantity(
-                    StorageTypeInput.ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT),
-                data.getQuantity(StorageTypeInput.ETA, StandardUnits.EFFICIENCY));
+                data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN),
+                data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN),
+                data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT),
+                data.getQuantity(ETA, StandardUnits.EFFICIENCY));
           });
 
   protected static BuildFunction<WecTypeInput> wecTypeBuildFunction =
@@ -364,7 +354,6 @@ public class TypeSource extends EntitySource {
             EntityData data = pair.getLeft();
 
             WecCharacteristicInput cpCharacteristic;
-            String CP_CHARACTERISTIC = WecTypeInput.CP_CHARACTERISTIC;
 
             try {
               cpCharacteristic = new WecCharacteristicInput(data.getField(CP_CHARACTERISTIC));
@@ -379,9 +368,9 @@ public class TypeSource extends EntitySource {
             return new WecTypeInput(
                 pair.getRight(),
                 cpCharacteristic,
-                data.getQuantity(WecTypeInput.ETA_CONV, StandardUnits.EFFICIENCY),
-                data.getQuantity(WecTypeInput.ROTOR_AREA, StandardUnits.ROTOR_AREA),
-                data.getQuantity(WecTypeInput.HUB_HEIGHT, StandardUnits.HUB_HEIGHT));
+                data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY),
+                data.getQuantity(ROTOR_AREA, StandardUnits.ROTOR_AREA),
+                data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT));
           });
 
   protected static BuildFunction<EvTypeInput> evTypeBuildFunction =
@@ -390,8 +379,8 @@ public class TypeSource extends EntitySource {
             EntityData data = pair.getLeft();
             return new EvTypeInput(
                 pair.getRight(),
-                data.getQuantity(EvTypeInput.E_STORAGE, StandardUnits.ENERGY_IN),
-                data.getQuantity(EvTypeInput.E_CONS, StandardUnits.ENERGY_PER_DISTANCE),
-                data.getQuantity(EvTypeInput.S_RATED_DC, StandardUnits.ACTIVE_POWER_IN));
+                data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN),
+                data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE),
+                data.getQuantity(S_RATED_DC, StandardUnits.ACTIVE_POWER_IN));
           });
 }

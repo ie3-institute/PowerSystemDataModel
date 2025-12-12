@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.Q_DOT;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -14,8 +16,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class that holds values common to result entities having heat result */
 public abstract class SystemParticipantWithHeatResult extends SystemParticipantResult {
-  /* Static fields. */
-  public static final String Q_DOT = "qDot";
 
   /** The thermal power output normally provided in MW */
   private final ComparableQuantity<Power> qDot;

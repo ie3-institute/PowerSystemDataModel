@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.io.extractor.HasThermalStorage;
 import edu.ie3.datamodel.io.extractor.HasType;
@@ -25,11 +27,6 @@ import tech.units.indriya.ComparableQuantity;
 /** Describes a combined heat and power plant */
 public class ChpInput extends SystemParticipantInput
     implements HasType, HasThermalBus, HasThermalStorage {
-  /* Static fields. */
-  public static final String THERMAL_BUS = "thermalBus";
-  public static final String TYPE = "type";
-  public static final String THERMAL_STORAGE = "thermalStorage";
-  public static final String MARKET_REACTION = "marketReaction";
 
   /** The thermal bus, this model is connected to */
   private final ThermalBusInput thermalBus;

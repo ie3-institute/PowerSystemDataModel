@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
 import static tech.units.indriya.unit.Units.PERCENT;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
@@ -383,8 +384,8 @@ public class ResultEntitySource extends EntitySource {
         entityData.flatMap(
             data -> {
               try {
-                ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(ResultEntity.TIME));
-                UUID inputModel = data.getUUID(ResultEntity.INPUT_MODEL);
+                ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
+                UUID inputModel = data.getUUID(INPUT_MODEL);
 
                 return Try.Success.of(new ResultEntity(time, inputModel) {});
               } catch (Exception e) {
@@ -402,8 +403,8 @@ public class ResultEntitySource extends EntitySource {
 
               return new NodeResult(
                   pair.getRight(),
-                  data.getQuantity(NodeResult.VMAG, StandardUnits.VOLTAGE_MAGNITUDE),
-                  data.getQuantity(NodeResult.VANG, StandardUnits.VOLTAGE_ANGLE));
+                  data.getQuantity(V_MAG, StandardUnits.VOLTAGE_MAGNITUDE),
+                  data.getQuantity(V_ANG, StandardUnits.VOLTAGE_ANGLE));
             });
   }
 
@@ -416,17 +417,15 @@ public class ResultEntitySource extends EntitySource {
 
               return new FlexOptionsResult(
                   pair.getRight(),
-                  data.getQuantity(FlexOptionsResult.P_REF, StandardUnits.ACTIVE_POWER_RESULT),
-                  data.getQuantity(FlexOptionsResult.P_MIN, StandardUnits.ACTIVE_POWER_RESULT),
-                  data.getQuantity(FlexOptionsResult.P_MAX, StandardUnits.ACTIVE_POWER_RESULT));
+                  data.getQuantity(P_REF, StandardUnits.ACTIVE_POWER_RESULT),
+                  data.getQuantity(P_MIN, StandardUnits.ACTIVE_POWER_RESULT),
+                  data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_RESULT));
             });
   }
 
   protected static BuildFunction<SwitchResult> switchResultBuildFunction(TimeUtil timeUtil) {
     return buildResult(timeUtil)
-        .with(
-            pair ->
-                new SwitchResult(pair.getRight(), pair.getLeft().getBoolean(SwitchResult.CLOSED)));
+        .with(pair -> new SwitchResult(pair.getRight(), pair.getLeft().getBoolean(CLOSED)));
   }
 
   protected static BuildFunction<CongestionResult> congestionResultBuildFunction(
@@ -436,7 +435,7 @@ public class ResultEntitySource extends EntitySource {
             pair -> {
               EntityData data = pair.getLeft();
 
-              String typeString = data.getField(CongestionResult.TYPE);
+              String typeString = data.getField(TYPE);
 
               CongestionResult.InputModelType type =
                   Try.of(
@@ -448,10 +447,10 @@ public class ResultEntitySource extends EntitySource {
               return new CongestionResult(
                   pair.getRight(),
                   type,
-                  data.getInt(CongestionResult.SUBGRID),
-                  data.getQuantity(CongestionResult.VALUE, PERCENT),
-                  data.getQuantity(CongestionResult.MIN, PERCENT),
-                  data.getQuantity(CongestionResult.MAX, PERCENT));
+                  data.getInt(SUBGRID),
+                  data.getQuantity(VALUE, PERCENT),
+                  data.getQuantity(MIN, PERCENT),
+                  data.getQuantity(MAX, PERCENT));
             });
   }
 
@@ -465,13 +464,10 @@ public class ResultEntitySource extends EntitySource {
 
                   return new ConnectorResult(
                       pair.getRight(),
-                      data.getQuantity(
-                          ConnectorResult.IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
-                      data.getQuantity(ConnectorResult.IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE),
-                      data.getQuantity(
-                          ConnectorResult.IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
-                      data.getQuantity(
-                          ConnectorResult.IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE)) {};
+                      data.getQuantity(IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
+                      data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE),
+                      data.getQuantity(IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
+                      data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE)) {};
                 },
                 SourceException.class);
   }
@@ -485,9 +481,7 @@ public class ResultEntitySource extends EntitySource {
         entityData
             .zip(connectorResultBuilder(timeUtil))
             .map(
-                pair ->
-                    new TransformerResult(
-                        pair.getRight(), pair.getLeft().getInt(TransformerResult.TAPPOS)) {},
+                pair -> new TransformerResult(pair.getRight(), pair.getLeft().getInt(TAPPOS)) {},
                 SourceException.class);
   }
 
@@ -506,10 +500,8 @@ public class ResultEntitySource extends EntitySource {
 
               return new Transformer3WResult(
                   pair.getRight(),
-                  data.getQuantity(
-                      Transformer3WResult.ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
-                  data.getQuantity(
-                      Transformer3WResult.ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE));
+                  data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
+                  data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE));
             });
   }
 
@@ -524,11 +516,8 @@ public class ResultEntitySource extends EntitySource {
 
                   return new SystemParticipantResult(
                       pair.getRight(),
-                      data.getQuantity(
-                          SystemParticipantResult.POWER, StandardUnits.ACTIVE_POWER_RESULT),
-                      data.getQuantity(
-                          SystemParticipantResult.REACTIVE_POWER,
-                          StandardUnits.REACTIVE_POWER_RESULT)) {};
+                      data.getQuantity(POWER, StandardUnits.ACTIVE_POWER_RESULT),
+                      data.getQuantity(REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT)) {};
                 },
                 SourceException.class);
   }
@@ -572,9 +561,7 @@ public class ResultEntitySource extends EntitySource {
                   EntityData data = pair.getLeft();
 
                   return new SystemParticipantWithHeatResult(
-                      pair.getRight(),
-                      data.getQuantity(
-                          SystemParticipantWithHeatResult.Q_DOT, StandardUnits.Q_DOT_RESULT)) {};
+                      pair.getRight(), data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT)) {};
                 },
                 SourceException.class);
   }
@@ -595,9 +582,7 @@ public class ResultEntitySource extends EntitySource {
             .map(
                 pair ->
                     new ElectricalEnergyStorageResult(
-                        pair.getRight(),
-                        pair.getLeft()
-                            .getQuantity(ElectricalEnergyStorageResult.SOC, StandardUnits.SOC)) {
+                        pair.getRight(), pair.getLeft().getQuantity(SOC, StandardUnits.SOC)) {
                       @Override
                       public ComparableQuantity<Dimensionless> getSoc() {
                         return super.getSoc();
@@ -624,8 +609,7 @@ public class ResultEntitySource extends EntitySource {
                 pair ->
                     new ThermalUnitResult(
                         pair.getRight(),
-                        pair.getLeft()
-                            .getQuantity(ThermalUnitResult.Q_DOT, StandardUnits.HEAT_DEMAND)) {
+                        pair.getLeft().getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND)) {
                       @Override
                       public ComparableQuantity<Power> getqDot() {
                         return super.getqDot();
@@ -656,9 +640,7 @@ public class ResultEntitySource extends EntitySource {
             pair ->
                 new ThermalHouseResult(
                     pair.getRight(),
-                    pair.getLeft()
-                        .getQuantity(
-                            ThermalHouseResult.INDOOR_TEMPERATURE, StandardUnits.TEMPERATURE)));
+                    pair.getLeft().getQuantity(INDOOR_TEMPERATURE, StandardUnits.TEMPERATURE)));
   }
 
   protected static BuildFunction<ThermalStorageResult> thermalStorageResultBuilder(
@@ -670,9 +652,7 @@ public class ResultEntitySource extends EntitySource {
                 pair ->
                     new ThermalStorageResult(
                         pair.getRight(),
-                        pair.getLeft()
-                            .getQuantity(
-                                ThermalStorageResult.ENERGY, StandardUnits.ENERGY_RESULT)) {
+                        pair.getLeft().getQuantity(ENERGY, StandardUnits.ENERGY_RESULT)) {
                       @Override
                       public ComparableQuantity<Energy> getEnergy() {
                         return super.getEnergy();
@@ -690,10 +670,7 @@ public class ResultEntitySource extends EntitySource {
                 pair ->
                     new AbstractThermalStorageResult(
                         pair.getRight(),
-                        pair.getLeft()
-                            .getQuantity(
-                                AbstractThermalStorageResult.FILL_LEVEL,
-                                StandardUnits.FILL_LEVEL)) {},
+                        pair.getLeft().getQuantity(FILL_LEVEL, StandardUnits.FILL_LEVEL)) {},
                 SourceException.class);
   }
 

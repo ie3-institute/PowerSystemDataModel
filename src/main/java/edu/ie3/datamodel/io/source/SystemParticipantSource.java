@@ -5,10 +5,11 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.models.input.system.SystemParticipantInput.CONTROLLING_EM;
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
 
 import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.naming.EntityFieldNames;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -659,8 +660,6 @@ public class SystemParticipantSource extends AssetEntitySource {
                   EntityData data = pair.getLeft();
 
                   ReactivePowerCharacteristic qCharacteristics;
-                  String Q_CHARACTERISTICS = SystemParticipantInput.Q_CHARACTERISTICS;
-
                   try {
                     qCharacteristics =
                         ReactivePowerCharacteristic.parse(data.getField(Q_CHARACTERISTICS));
@@ -674,7 +673,7 @@ public class SystemParticipantSource extends AssetEntitySource {
 
                   return new SystemParticipantInput(
                       pair.getRight(),
-                      extractFunction(data, SystemParticipantInput.NODE, nodes),
+                      extractFunction(data, NODE, nodes),
                       qCharacteristics,
                       extractWithDefault(data, CONTROLLING_EM, emUnits, null)) {
                     @Override
@@ -703,10 +702,10 @@ public class SystemParticipantSource extends AssetEntitySource {
 
               return new BmInput(
                   pair.getRight(),
-                  extractFunction(data, BmInput.TYPE, types),
-                  data.getBoolean(BmInput.MARKET_REACTION),
-                  data.getBoolean(BmInput.COST_CONTROLLED),
-                  data.getQuantity(BmInput.FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE));
+                  extractFunction(data, TYPE, types),
+                  data.getBoolean(MARKET_REACTION),
+                  data.getBoolean(COST_CONTROLLED),
+                  data.getQuantity(FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE));
             });
   }
 
@@ -724,10 +723,10 @@ public class SystemParticipantSource extends AssetEntitySource {
 
               return new ChpInput(
                   pair.getRight(),
-                  extractFunction(data, ChpInput.TYPE, types),
-                  extractFunction(data, ChpInput.THERMAL_BUS, thermalBuses),
-                  extractFunction(data, ChpInput.THERMAL_STORAGE, thermalStorages),
-                  data.getBoolean(ChpInput.MARKET_REACTION));
+                  extractFunction(data, TYPE, types),
+                  extractFunction(data, THERMAL_BUS, thermalBuses),
+                  extractFunction(data, THERMAL_STORAGE, thermalStorages),
+                  data.getBoolean(MARKET_REACTION));
             });
   }
 
@@ -738,7 +737,6 @@ public class SystemParticipantSource extends AssetEntitySource {
             pair -> {
               EntityData data = pair.getLeft();
               ChargingPointType type;
-              String TYPE = EvcsInput.TYPE;
 
               try {
                 type = ChargingPointTypeUtils.parse(data.getField(TYPE));
@@ -751,7 +749,6 @@ public class SystemParticipantSource extends AssetEntitySource {
               }
 
               EvcsLocationType locationType;
-              String LOCATION_TYPE = EvcsInput.LOCATION_TYPE;
 
               try {
                 locationType = EvcsLocationTypeUtils.parse(data.getField(LOCATION_TYPE));
@@ -766,10 +763,10 @@ public class SystemParticipantSource extends AssetEntitySource {
               return new EvcsInput(
                   pair.getRight(),
                   type,
-                  data.getInt(EvcsInput.CHARGING_POINTS),
-                  data.getDouble(EvcsInput.COS_PHI_RATED),
+                  data.getInt(CHARGING_POINTS),
+                  data.getDouble(COS_PHI_RATED),
                   locationType,
-                  data.getBoolean(EvcsInput.V2G_SUPPORT));
+                  data.getBoolean(V2G_SUPPORT));
             });
   }
 
@@ -779,9 +776,7 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, EmInput> emUnits,
       Map<UUID, EvTypeInput> types) {
     return getParticipantBuilder(operators, nodes, emUnits)
-        .with(
-            pair ->
-                new EvInput(pair.getRight(), extractFunction(pair.getLeft(), EvInput.TYPE, types)));
+        .with(pair -> new EvInput(pair.getRight(), extractFunction(pair.getLeft(), TYPE, types)));
   }
 
   protected static BuildFunction<FixedFeedInInput> fixedFeedInBuildFunction(
@@ -792,8 +787,8 @@ public class SystemParticipantSource extends AssetEntitySource {
               EntityData data = pair.getLeft();
               return new FixedFeedInInput(
                   pair.getRight(),
-                  data.getQuantity(FixedFeedInInput.S_RATED, StandardUnits.S_RATED),
-                  data.getDouble(FixedFeedInInput.COSPHI_RATED));
+                  data.getQuantity(S_RATED, StandardUnits.S_RATED),
+                  data.getDouble(COS_PHI_RATED));
             });
   }
 
@@ -810,8 +805,8 @@ public class SystemParticipantSource extends AssetEntitySource {
 
               return new HpInput(
                   pair.getRight(),
-                  extractFunction(data, HpInput.TYPE, types),
-                  extractFunction(data, HpInput.THERMAL_BUS, thermalBuses));
+                  extractFunction(data, TYPE, types),
+                  extractFunction(data, THERMAL_BUS, thermalBuses));
             });
   }
 
@@ -825,11 +820,11 @@ public class SystemParticipantSource extends AssetEntitySource {
 
               LoadProfile loadProfile;
               try {
-                loadProfile = LoadProfile.parse(data.getField(LoadInput.LOAD_PROFILE));
+                loadProfile = LoadProfile.parse(data.getField(LOAD_PROFILE));
               } catch (ParsingException e) {
                 log.warn(
                     "Cannot parse the standard load profile \"{}\" of load \"{}\". Assign no load profile instead.",
-                    data.getField(LoadInput.LOAD_PROFILE),
+                    data.getField(LOAD_PROFILE),
                     p.getId());
                 loadProfile = LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
               }
@@ -837,9 +832,9 @@ public class SystemParticipantSource extends AssetEntitySource {
               return new LoadInput(
                   p,
                   loadProfile,
-                  data.getQuantity(LoadInput.E_CONS_ANNUAL, StandardUnits.ENERGY_IN),
-                  data.getQuantity(LoadInput.S_RATED, StandardUnits.S_RATED),
-                  data.getDouble(LoadInput.COS_PHI));
+                  data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN),
+                  data.getQuantity(S_RATED, StandardUnits.S_RATED),
+                  data.getDouble(EntityFieldNames.COS_PHI_RATED));
             });
   }
 
@@ -851,15 +846,15 @@ public class SystemParticipantSource extends AssetEntitySource {
               EntityData data = pair.getLeft();
               return new PvInput(
                   pair.getRight(),
-                  data.getDouble(PvInput.ALBEDO),
-                  data.getQuantity(PvInput.AZIMUTH, StandardUnits.AZIMUTH),
-                  data.getQuantity(PvInput.ETA_CONV, StandardUnits.EFFICIENCY),
-                  data.getQuantity(PvInput.ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE),
-                  data.getDouble(PvInput.KG),
-                  data.getDouble(PvInput.KT),
-                  data.getBoolean(PvInput.MARKET_REACTION),
-                  data.getQuantity(PvInput.S_RATED, StandardUnits.S_RATED),
-                  data.getDouble(PvInput.COS_PHI_RATED));
+                  data.getDouble(ALBEDO),
+                  data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH),
+                  data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY),
+                  data.getQuantity(ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE),
+                  data.getDouble(KG),
+                  data.getDouble(KT),
+                  data.getBoolean(MARKET_REACTION),
+                  data.getQuantity(S_RATED, StandardUnits.S_RATED),
+                  data.getDouble(COS_PHI_RATED));
             });
   }
 
@@ -871,8 +866,7 @@ public class SystemParticipantSource extends AssetEntitySource {
     return getParticipantBuilder(operators, nodes, emUnits)
         .with(
             pair ->
-                new StorageInput(
-                    pair.getRight(), extractFunction(pair.getLeft(), StorageInput.TYPE, types)));
+                new StorageInput(pair.getRight(), extractFunction(pair.getLeft(), TYPE, types)));
   }
 
   protected static BuildFunction<WecInput> wecBuildFunction(
@@ -887,8 +881,8 @@ public class SystemParticipantSource extends AssetEntitySource {
 
               return new WecInput(
                   pair.getRight(),
-                  extractFunction(data, WecInput.TYPE, types),
-                  data.getBoolean(WecInput.MARKET_REACTION));
+                  extractFunction(data, TYPE, types),
+                  data.getBoolean(MARKET_REACTION));
             });
   }
 }

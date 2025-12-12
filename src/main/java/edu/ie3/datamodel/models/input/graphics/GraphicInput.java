@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.GRAPHIC_LAYER;
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.PATH_LINE_STRING;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
@@ -15,9 +18,6 @@ import org.locationtech.jts.geom.LineString;
 
 /** Describes the graphic data belonging to grid assets */
 public abstract class GraphicInput extends UniqueInputEntity {
-  /* Static fields. */
-  public static final String GRAPHIC_LAYER = "graphicLayer";
-  public static final String PATH_LINE_STRING = "path";
 
   /** Description of the graphic layer, this graphic is located on */
   private final String graphicLayer;

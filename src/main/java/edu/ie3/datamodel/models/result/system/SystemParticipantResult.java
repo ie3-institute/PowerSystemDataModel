@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.POWER;
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.REACTIVE_POWER;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
@@ -15,9 +18,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class that holds values common to all other result entities */
 public abstract class SystemParticipantResult extends ResultEntity {
-  /* Static fields. */
-  public static final String POWER = "p";
-  public static final String REACTIVE_POWER = "q";
 
   /** active power output normally provided in MW */
   private ComparableQuantity<Power> p;

@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.P_THERMAL;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
@@ -16,8 +18,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpTypeInput extends SystemParticipantTypeInput {
-  /* Static fields. */
-  public static final String P_THERMAL = "pThermal";
 
   /** Thermal output of the heat pump (typically in kW), when sRated * cosphi_rated is consumed */
   private final ComparableQuantity<Power> pThermal;

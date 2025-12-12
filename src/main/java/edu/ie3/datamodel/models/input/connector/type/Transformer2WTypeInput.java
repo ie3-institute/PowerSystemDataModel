@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
@@ -14,13 +16,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput} */
 public class Transformer2WTypeInput extends TransformerTypeInput {
-  /* Static fields. */
-  public static final String R_SC = "rSc";
-  public static final String X_SC = "xSc";
-  public static final String S_RATED = "sRated";
-  public static final String V_RATED_A = "vRatedA";
-  public static final String V_RATED_B = "vRatedB";
-  public static final String TAP_SIDE = "tapSide";
 
   /** Short circuit resistance (typically in Ohm) */
   private final ComparableQuantity<ElectricResistance> rSc;
@@ -30,12 +25,6 @@ public class Transformer2WTypeInput extends TransformerTypeInput {
 
   /** Rated apparent power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
-
-  /** Rated voltage of the high voltage winding (typically in kV) */
-  private final ComparableQuantity<ElectricPotential> vRatedA;
-
-  /** Rated voltage of the low voltage winding (typically in kV) */
-  private final ComparableQuantity<ElectricPotential> vRatedB;
 
   /** Selection of winding, where the tap changer is installed. Low voltage, if true */
   private final boolean tapSide;
@@ -73,12 +62,10 @@ public class Transformer2WTypeInput extends TransformerTypeInput {
       int tapNeutr,
       int tapMin,
       int tapMax) {
-    super(uuid, id, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax);
+    super(uuid, id, gM, bM, dV, dPhi, vRatedA, vRatedB, tapNeutr, tapMin, tapMax);
     this.rSc = rSc.to(StandardUnits.RESISTANCE);
     this.xSc = xSc.to(StandardUnits.REACTANCE);
     this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.tapSide = tapSide;
   }
 
@@ -87,20 +74,16 @@ public class Transformer2WTypeInput extends TransformerTypeInput {
       ComparableQuantity<ElectricResistance> rSc,
       ComparableQuantity<ElectricResistance> xSc,
       ComparableQuantity<Power> sRated,
-      ComparableQuantity<ElectricPotential> vRatedA,
-      ComparableQuantity<ElectricPotential> vRatedB,
       boolean tapSide) {
     super(transformerTypeInput);
     this.rSc = rSc.to(StandardUnits.RESISTANCE);
     this.xSc = xSc.to(StandardUnits.REACTANCE);
     this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.vRatedA = vRatedA;
-    this.vRatedB = vRatedB;
     this.tapSide = tapSide;
   }
 
   public static SourceValidator.Fields getFields() {
-    return transformerTypeFields().add(R_SC, X_SC, S_RATED, V_RATED_A, V_RATED_B, TAP_SIDE);
+    return transformerTypeFields().add(R_SC, X_SC, S_RATED, TAP_SIDE);
   }
 
   public ComparableQuantity<ElectricResistance> getrSc() {
@@ -113,14 +96,6 @@ public class Transformer2WTypeInput extends TransformerTypeInput {
 
   public ComparableQuantity<Power> getsRated() {
     return sRated;
-  }
-
-  public ComparableQuantity<ElectricPotential> getvRatedA() {
-    return vRatedA;
-  }
-
-  public ComparableQuantity<ElectricPotential> getvRatedB() {
-    return vRatedB;
   }
 
   public boolean isTapSide() {
@@ -140,14 +115,12 @@ public class Transformer2WTypeInput extends TransformerTypeInput {
     return tapSide == that.tapSide
         && rSc.equals(that.rSc)
         && xSc.equals(that.xSc)
-        && sRated.equals(that.sRated)
-        && vRatedA.equals(that.vRatedA)
-        && vRatedB.equals(that.vRatedB);
+        && sRated.equals(that.sRated);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), rSc, xSc, sRated, vRatedA, vRatedB, tapSide);
+    return Objects.hash(super.hashCode(), rSc, xSc, sRated, tapSide);
   }
 
   @Override
@@ -164,9 +137,9 @@ public class Transformer2WTypeInput extends TransformerTypeInput {
         + ", sRated="
         + sRated
         + ", vRatedA="
-        + vRatedA
+        + getvRatedA()
         + ", vRatedB="
-        + vRatedB
+        + getvRatedB()
         + ", gM="
         + getbM()
         + ", bM="
@@ -196,8 +169,6 @@ public class Transformer2WTypeInput extends TransformerTypeInput {
     private ComparableQuantity<ElectricResistance> rSc;
     private ComparableQuantity<ElectricResistance> xSc;
     private ComparableQuantity<Power> sRated;
-    private ComparableQuantity<ElectricPotential> vRatedA;
-    private ComparableQuantity<ElectricPotential> vRatedB;
     private boolean tapSide;
 
     private Transformer2WTypeInputCopyBuilder(Transformer2WTypeInput entity) {
@@ -205,8 +176,6 @@ public class Transformer2WTypeInput extends TransformerTypeInput {
       this.rSc = entity.rSc;
       this.xSc = entity.xSc;
       this.sRated = entity.sRated;
-      this.vRatedA = entity.vRatedA;
-      this.vRatedB = entity.vRatedB;
     }
 
     /** Setter */
@@ -225,18 +194,6 @@ public class Transformer2WTypeInput extends TransformerTypeInput {
       return thisInstance();
     }
 
-    public Transformer2WTypeInputCopyBuilder vRatedA(
-        ComparableQuantity<ElectricPotential> vRatedA) {
-      this.vRatedA = vRatedA;
-      return thisInstance();
-    }
-
-    public Transformer2WTypeInputCopyBuilder vRatedB(
-        ComparableQuantity<ElectricPotential> vRatedB) {
-      this.vRatedB = vRatedB;
-      return thisInstance();
-    }
-
     public Transformer2WTypeInputCopyBuilder tapSide(boolean tapSide) {
       this.tapSide = tapSide;
       return thisInstance();
@@ -250,8 +207,8 @@ public class Transformer2WTypeInput extends TransformerTypeInput {
           rSc,
           xSc,
           sRated,
-          vRatedA,
-          vRatedB,
+          getVRatedA(),
+          getVRatedB(),
           getGM(),
           getBM(),
           getDV(),

@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.exceptions.GraphicSourceException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
@@ -137,10 +139,10 @@ public class GraphicSource extends AssetEntitySource {
                 pair -> {
                   EntityData data = pair.getLeft();
 
-                  String graphicLayer = data.getField(GraphicInput.GRAPHIC_LAYER);
+                  String graphicLayer = data.getField(GRAPHIC_LAYER);
 
                   LineString path =
-                      data.getLineString(GraphicInput.PATH_LINE_STRING)
+                      data.getLineString(PATH_LINE_STRING)
                           .orElse(
                               GeoUtils.buildSafeLineStringBetweenCoords(
                                   NodeInput.DEFAULT_GEO_POSITION.getCoordinate(),
@@ -165,8 +167,8 @@ public class GraphicSource extends AssetEntitySource {
 
               return new NodeGraphicInput(
                   pair.getRight(),
-                  extractFunction(data, NodeGraphicInput.NODE, nodes),
-                  data.getPoint(NodeGraphicInput.POINT).orElse(NodeInput.DEFAULT_GEO_POSITION));
+                  extractFunction(data, NODE, nodes),
+                  data.getPoint(POINT).orElse(NodeInput.DEFAULT_GEO_POSITION));
             });
   }
 
@@ -176,7 +178,6 @@ public class GraphicSource extends AssetEntitySource {
         .with(
             pair ->
                 new LineGraphicInput(
-                    pair.getRight(),
-                    extractFunction(pair.getLeft(), LineGraphicInput.LINE, lines)));
+                    pair.getRight(), extractFunction(pair.getLeft(), LINE, lines)));
   }
 }

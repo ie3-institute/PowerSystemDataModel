@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
@@ -298,8 +300,7 @@ public class ThermalSource extends AssetEntitySource {
                 pair ->
                     new ThermalUnitInput(
                         pair.getRight(),
-                        extractFunction(
-                            pair.getLeft(), ThermalUnitInput.THERMAL_BUS, thermalBuses)) {
+                        extractFunction(pair.getLeft(), THERMAL_BUS, thermalBuses)) {
                       @Override
                       public ThermalUnitInputCopyBuilder<?> copy() {
                         return null;
@@ -316,16 +317,13 @@ public class ThermalSource extends AssetEntitySource {
               EntityData data = pair.getLeft();
               return new ThermalHouseInput(
                   pair.getRight(),
-                  data.getQuantity(
-                      ThermalHouseInput.ETH_LOSSES, StandardUnits.THERMAL_TRANSMISSION),
-                  data.getQuantity(ThermalHouseInput.ETH_CAPA, StandardUnits.HEAT_CAPACITY),
-                  data.getQuantity(ThermalHouseInput.TARGET_TEMPERATURE, StandardUnits.TEMPERATURE),
-                  data.getQuantity(
-                      ThermalHouseInput.UPPER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE),
-                  data.getQuantity(
-                      ThermalHouseInput.LOWER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE),
-                  data.getField(ThermalHouseInput.HOUSING_TYPE),
-                  data.getDouble(ThermalHouseInput.NUMBER_INHABITANTS));
+                  data.getQuantity(ETH_LOSSES, StandardUnits.THERMAL_TRANSMISSION),
+                  data.getQuantity(ETH_CAPA, StandardUnits.HEAT_CAPACITY),
+                  data.getQuantity(TARGET_TEMPERATURE, StandardUnits.TEMPERATURE),
+                  data.getQuantity(UPPER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE),
+                  data.getQuantity(LOWER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE),
+                  data.getField(HOUSING_TYPE),
+                  data.getDouble(NUMBER_INHABITANTS));
             });
   }
 
@@ -339,14 +337,11 @@ public class ThermalSource extends AssetEntitySource {
                   EntityData data = pair.getLeft();
                   return new AbstractStorageInput(
                       pair.getRight(),
-                      data.getQuantity(
-                          AbstractStorageInput.STORAGE_VOLUME_LVL, StandardUnits.VOLUME),
-                      data.getQuantity(AbstractStorageInput.INLET_TEMP, StandardUnits.TEMPERATURE),
-                      data.getQuantity(AbstractStorageInput.RETURN_TEMP, StandardUnits.TEMPERATURE),
-                      data.getQuantity(
-                          AbstractStorageInput.C, StandardUnits.SPECIFIC_HEAT_CAPACITY),
-                      data.getQuantity(
-                          AbstractStorageInput.P_THERMAL_MAX, StandardUnits.ACTIVE_POWER_IN)) {
+                      data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME),
+                      data.getQuantity(INLET_TEMP, StandardUnits.TEMPERATURE),
+                      data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE),
+                      data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY),
+                      data.getQuantity(P_THERMAL_MAX, StandardUnits.ACTIVE_POWER_IN)) {
                     @Override
                     public ThermalStorageInputCopyBuilder<?> copy() {
                       return null;

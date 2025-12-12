@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
@@ -22,12 +24,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes a biomass plant */
 public class BmInput extends SystemParticipantInput implements HasType {
-
-  /* Static fields. */
-  public static final String TYPE = "type";
-  public static final String MARKET_REACTION = "marketReaction";
-  public static final String COST_CONTROLLED = "costControlled";
-  public static final String FEED_IN_TARIFF = "feedInTariff";
 
   /** Type of this BM plant, containing default values for BM plants of this kind */
   private final BmTypeInput type;

@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.extractor.HasEm;
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.io.source.SourceValidator;
@@ -21,11 +23,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes a system asset that is connected to a node */
 public abstract class SystemParticipantInput extends AssetInput implements HasNodes, HasEm {
-
-  /* Static fields. */
-  public static final String NODE = "node";
-  public static final String Q_CHARACTERISTICS = "qCharacteristics";
-  public static final String CONTROLLING_EM = "controllingEm";
 
   /** The node that the asset is connected to */
   private final NodeInput node;

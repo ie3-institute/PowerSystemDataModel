@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -418,9 +420,7 @@ public class RawGridSource extends AssetEntitySource {
                   EntityData data = pair.getLeft();
 
                   return new TransformerInput(
-                      pair.getRight(),
-                      data.getInt(TransformerInput.TAP_POS),
-                      data.getBoolean(TransformerInput.AUTO_TAP)) {
+                      pair.getRight(), data.getInt(TAP_POS), data.getBoolean(AUTO_TAP)) {
                     @Override
                     public TransformerInputCopyBuilder<? extends TransformerInputCopyBuilder<?>>
                         copy() {
@@ -439,12 +439,11 @@ public class RawGridSource extends AssetEntitySource {
 
               return new NodeInput(
                   pair.getRight(),
-                  data.getQuantity(NodeInput.V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE),
-                  data.getBoolean(NodeInput.SLACK),
-                  data.getPoint(NodeInput.GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION),
-                  data.getVoltageLvl(
-                      NodeInput.VOLT_LVL.toLowerCase(), NodeInput.V_RATED.toLowerCase()),
-                  data.getInt(NodeInput.SUBNET));
+                  data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE),
+                  data.getBoolean(SLACK),
+                  data.getPoint(GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION),
+                  data.getVoltageLvl(VOLT_LVL.toLowerCase(), V_RATED.toLowerCase()),
+                  data.getInt(SUBNET));
             });
   }
 
@@ -458,7 +457,7 @@ public class RawGridSource extends AssetEntitySource {
               EntityData data = pair.getLeft();
               ConnectorInput connectorInput = pair.getRight();
 
-              String olmString = data.getField(LineInput.OLM_CHARACTERISTIC);
+              String olmString = data.getField(OLM_CHARACTERISTIC);
               OlmCharacteristicInput olmCharacteristic;
 
               try {
@@ -476,9 +475,9 @@ public class RawGridSource extends AssetEntitySource {
 
               return new LineInput(
                   connectorInput,
-                  extractFunction(data, LineInput.TYPE, types),
-                  data.getQuantity(LineInput.LENGTH, StandardUnits.LINE_LENGTH),
-                  data.getLineString(LineInput.GEO_POSITION)
+                  extractFunction(data, TYPE, types),
+                  data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH),
+                  data.getLineString(GEO_POSITION)
                       .orElse(
                           GridAndGeoUtils.buildSafeLineStringBetweenNodes(
                               connectorInput.getNodeA(), connectorInput.getNodeB())),
@@ -495,8 +494,7 @@ public class RawGridSource extends AssetEntitySource {
             pair -> {
               try {
                 return new Transformer2WInput(
-                    pair.getRight(),
-                    extractFunction(pair.getLeft(), Transformer2WInput.TYPE, types));
+                    pair.getRight(), extractFunction(pair.getLeft(), TYPE, types));
               } catch (IllegalArgumentException e) {
                 throw new SourceException(e);
               }
@@ -515,8 +513,8 @@ public class RawGridSource extends AssetEntitySource {
               try {
                 return new Transformer3WInput(
                     pair.getRight(),
-                    extractFunction(data, Transformer3WInput.NODE_C, nodes),
-                    extractFunction(data, Transformer3WInput.TYPE, types));
+                    extractFunction(data, NODE_C, nodes),
+                    extractFunction(data, TYPE, types));
               } catch (IllegalArgumentException e) {
                 throw new SourceException(e);
               }
@@ -526,9 +524,7 @@ public class RawGridSource extends AssetEntitySource {
   protected static BuildFunction<SwitchInput> switchBuildFunction(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) {
     return connectorBuilder(operators, nodes)
-        .with(
-            pair ->
-                new SwitchInput(pair.getRight(), pair.getLeft().getBoolean(SwitchInput.CLOSED)));
+        .with(pair -> new SwitchInput(pair.getRight(), pair.getLeft().getBoolean(CLOSED)));
   }
 
   protected static BuildFunction<MeasurementUnitInput> measurementBuildFunction(
@@ -540,11 +536,11 @@ public class RawGridSource extends AssetEntitySource {
 
               return new MeasurementUnitInput(
                   pair.getRight(),
-                  extractFunction(data, MeasurementUnitInput.NODE, nodes),
-                  data.getBoolean(MeasurementUnitInput.V_MAG),
-                  data.getBoolean(MeasurementUnitInput.V_ANG),
-                  data.getBoolean(MeasurementUnitInput.P),
-                  data.getBoolean(MeasurementUnitInput.Q));
+                  extractFunction(data, NODE, nodes),
+                  data.getBoolean(V_MAG),
+                  data.getBoolean(V_ANG),
+                  data.getBoolean(POWER),
+                  data.getBoolean(REACTIVE_POWER));
             });
   }
 }

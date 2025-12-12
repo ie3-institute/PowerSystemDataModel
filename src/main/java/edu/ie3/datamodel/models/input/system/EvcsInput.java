@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -19,13 +21,6 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 public class EvcsInput extends SystemParticipantInput {
-
-  /* Static fields. */
-  public static final String TYPE = "type";
-  public static final String CHARGING_POINTS = "chargingPoints";
-  public static final String COS_PHI_RATED = "cosPhiRated";
-  public static final String LOCATION_TYPE = "locationType";
-  public static final String V2G_SUPPORT = "v2gSupport";
 
   /** type of all installed charging points */
   private final ChargingPointType type;

@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.models.result;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.INPUT_MODEL;
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.TIME;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.Entity;
 import java.time.ZonedDateTime;
@@ -13,9 +16,6 @@ import java.util.UUID;
 
 /** Abstract class to hold all mappings common to all result models */
 public abstract class ResultEntity implements Entity {
-  /* Static fields. */
-  public static final String TIME = "time";
-  public static final String INPUT_MODEL = "inputModel";
 
   /** date and time of the produced result */
   private ZonedDateTime time;

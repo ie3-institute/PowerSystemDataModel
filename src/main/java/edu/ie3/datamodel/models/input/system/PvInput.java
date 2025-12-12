@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -21,17 +23,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes a photovoltaic plant */
 public class PvInput extends SystemParticipantInput {
-
-  /* Static fields. */
-  public static final String ALBEDO = "albedo";
-  public static final String AZIMUTH = "azimuth";
-  public static final String ETA_CONV = "etaConv";
-  public static final String ELEVATION_ANGLE = "elevationAngle";
-  public static final String KG = "kG";
-  public static final String KT = "kT";
-  public static final String MARKET_REACTION = "marketReaction";
-  public static final String S_RATED = "sRated";
-  public static final String COS_PHI_RATED = "cosPhiRated";
 
   /** Albedo value (typically a value between 0 and 1) */
   private final double albedo;

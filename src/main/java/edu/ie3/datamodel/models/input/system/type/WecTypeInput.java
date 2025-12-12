@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
@@ -20,11 +22,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput} */
 public class WecTypeInput extends SystemParticipantTypeInput {
-  /* Static fields. */
-  public static final String CP_CHARACTERISTIC = "cpCharacteristic";
-  public static final String ETA_CONV = "etaConv";
-  public static final String ROTOR_AREA = "rotorArea";
-  public static final String HUB_HEIGHT = "hubHeight";
 
   /** Betz curve of this type */
   private final WecCharacteristicInput cpCharacteristic;

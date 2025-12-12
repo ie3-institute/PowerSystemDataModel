@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
@@ -14,19 +16,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput} */
 public class Transformer3WTypeInput extends TransformerTypeInput {
-  /* Static fields. */
-  public static final String S_RATED_A = "sRatedA";
-  public static final String S_RATED_B = "sRatedB";
-  public static final String S_RATED_C = "sRatedC";
-  public static final String V_RATED_A = "vRatedA";
-  public static final String V_RATED_B = "vRatedB";
-  public static final String V_RATED_C = "vRatedC";
-  public static final String R_SC_A = "rScA";
-  public static final String R_SC_B = "rScB";
-  public static final String R_SC_C = "rScC";
-  public static final String X_SC_A = "xScA";
-  public static final String X_SC_B = "xScB";
-  public static final String X_SC_C = "xScC";
 
   /** Rated apparent power of the high voltage winding (typically in kVA) */
   private final ComparableQuantity<Power> sRatedA; // Hv
@@ -36,12 +25,6 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
 
   /** Rated apparent power of the low voltage windings (typically in kVA) */
   private final ComparableQuantity<Power> sRatedC; // Lv
-
-  /** Rated voltage magnitude of the high voltage winding (typically in kV) */
-  private final ComparableQuantity<ElectricPotential> vRatedA; // Hv
-
-  /** Rated voltage magnitude of the medium voltage winding (typically in kV) */
-  private final ComparableQuantity<ElectricPotential> vRatedB; // Mv
 
   /** Rated voltage magnitude of the low voltage winding (typically in kV) */
   private final ComparableQuantity<ElectricPotential> vRatedC; // Lv
@@ -109,12 +92,10 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
       int tapNeutr,
       int tapMin,
       int tapMax) {
-    super(uuid, id, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax);
+    super(uuid, id, gM, bM, dV, dPhi, vRatedA, vRatedB, tapNeutr, tapMin, tapMax);
     this.sRatedA = sRatedA.to(StandardUnits.S_RATED);
     this.sRatedB = sRatedB.to(StandardUnits.S_RATED);
     this.sRatedC = sRatedC.to(StandardUnits.S_RATED);
-    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.vRatedC = vRatedC.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.rScA = rScA.to(StandardUnits.RESISTANCE);
     this.rScB = rScB.to(StandardUnits.RESISTANCE);
@@ -129,8 +110,6 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
       ComparableQuantity<Power> sRatedA,
       ComparableQuantity<Power> sRatedB,
       ComparableQuantity<Power> sRatedC,
-      ComparableQuantity<ElectricPotential> vRatedA,
-      ComparableQuantity<ElectricPotential> vRatedB,
       ComparableQuantity<ElectricPotential> vRatedC,
       ComparableQuantity<ElectricResistance> rScA,
       ComparableQuantity<ElectricResistance> rScB,
@@ -142,8 +121,6 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
     this.sRatedA = sRatedA.to(StandardUnits.S_RATED);
     this.sRatedB = sRatedB.to(StandardUnits.S_RATED);
     this.sRatedC = sRatedC.to(StandardUnits.S_RATED);
-    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.vRatedC = vRatedC.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.rScA = rScA.to(StandardUnits.RESISTANCE);
     this.rScB = rScB.to(StandardUnits.RESISTANCE);
@@ -156,8 +133,8 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
   public static SourceValidator.Fields getFields() {
     return transformerTypeFields()
         .add(
-            S_RATED_A, S_RATED_B, S_RATED_C, V_RATED_A, V_RATED_B, V_RATED_C, R_SC_A, R_SC_B,
-            R_SC_C, X_SC_A, X_SC_B, X_SC_C);
+            S_RATED_A, S_RATED_B, S_RATED_C, V_RATED_C, R_SC_A, R_SC_B, R_SC_C, X_SC_A, X_SC_B,
+            X_SC_C);
   }
 
   public ComparableQuantity<Power> getsRatedA() {
@@ -170,14 +147,6 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
 
   public ComparableQuantity<Power> getsRatedC() {
     return sRatedC;
-  }
-
-  public ComparableQuantity<ElectricPotential> getvRatedA() {
-    return vRatedA;
-  }
-
-  public ComparableQuantity<ElectricPotential> getvRatedB() {
-    return vRatedB;
   }
 
   public ComparableQuantity<ElectricPotential> getvRatedC() {
@@ -221,8 +190,6 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
     return sRatedA.equals(that.sRatedA)
         && sRatedB.equals(that.sRatedB)
         && sRatedC.equals(that.sRatedC)
-        && vRatedA.equals(that.vRatedA)
-        && vRatedB.equals(that.vRatedB)
         && vRatedC.equals(that.vRatedC)
         && rScA.equals(that.rScA)
         && rScB.equals(that.rScB)
@@ -235,19 +202,7 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        sRatedA,
-        sRatedB,
-        sRatedC,
-        vRatedA,
-        vRatedB,
-        vRatedC,
-        rScA,
-        rScB,
-        rScC,
-        xScA,
-        xScB,
-        xScC);
+        super.hashCode(), sRatedA, sRatedB, sRatedC, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC);
   }
 
   @Override
@@ -264,9 +219,9 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
         + ", sRatedC="
         + sRatedC
         + ", vRatedA="
-        + vRatedA
+        + getvRatedA()
         + ", vRatedB="
-        + vRatedB
+        + getvRatedB()
         + ", vRatedC="
         + vRatedC
         + ", rScA="
@@ -308,8 +263,6 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
     private ComparableQuantity<Power> sRatedA;
     private ComparableQuantity<Power> sRatedB;
     private ComparableQuantity<Power> sRatedC;
-    private ComparableQuantity<ElectricPotential> vRatedA;
-    private ComparableQuantity<ElectricPotential> vRatedB;
     private ComparableQuantity<ElectricPotential> vRatedC;
     private ComparableQuantity<ElectricResistance> rScA;
     private ComparableQuantity<ElectricResistance> rScB;
@@ -323,8 +276,6 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
       this.sRatedA = entity.sRatedA;
       this.sRatedB = entity.sRatedB;
       this.sRatedC = entity.sRatedC;
-      this.vRatedA = entity.vRatedA;
-      this.vRatedB = entity.vRatedB;
       this.vRatedC = entity.vRatedC;
       this.rScA = entity.rScA;
       this.rScB = entity.rScB;
@@ -347,18 +298,6 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
 
     public Transformer3WTypeInputCopyBuilder sRatedC(ComparableQuantity<Power> sRatedC) {
       this.sRatedC = sRatedC;
-      return thisInstance();
-    }
-
-    public Transformer3WTypeInputCopyBuilder vRatedA(
-        ComparableQuantity<ElectricPotential> vRatedA) {
-      this.vRatedA = vRatedA;
-      return thisInstance();
-    }
-
-    public Transformer3WTypeInputCopyBuilder vRatedB(
-        ComparableQuantity<ElectricPotential> vRatedB) {
-      this.vRatedB = vRatedB;
       return thisInstance();
     }
 
@@ -406,8 +345,8 @@ public class Transformer3WTypeInput extends TransformerTypeInput {
           sRatedA,
           sRatedB,
           sRatedC,
-          vRatedA,
-          vRatedB,
+          getVRatedA(),
+          getVRatedB(),
           vRatedC,
           rScA,
           rScB,

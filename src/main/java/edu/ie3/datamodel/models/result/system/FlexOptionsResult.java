@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
@@ -15,10 +17,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Represents results of flexibility request */
 public class FlexOptionsResult extends ResultEntity {
-  /* Static fields. */
-  public static final String P_REF = "pRef";
-  public static final String P_MIN = "pMin";
-  public static final String P_MAX = "pMax";
 
   /**
    * Active power (might be negative, thus feed-in) that was suggested for regular usage by the

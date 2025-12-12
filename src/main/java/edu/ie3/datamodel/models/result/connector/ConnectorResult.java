@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
@@ -16,11 +18,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors */
 public abstract class ConnectorResult extends ResultEntity {
-  /* Static fields. */
-  public static final String IAMAG = "iAMag";
-  public static final String IAANG = "iAAng";
-  public static final String IBMAG = "iBMag";
-  public static final String IBANG = "iBAng";
 
   /** Electric current magnitude @ port A, normally provided in Ampere */
   private ComparableQuantity<ElectricCurrent> iAMag;

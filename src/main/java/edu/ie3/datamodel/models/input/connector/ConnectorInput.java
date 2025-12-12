@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
@@ -17,15 +19,6 @@ import java.util.UUID;
 
 /** Describes an asset that connects two {@link NodeInput}s */
 public abstract class ConnectorInput extends AssetInput implements HasNodes {
-  /* Static fields. */
-  public static final String NODE_A = "nodeA";
-  public static final String NODE_B = "nodeB";
-
-  /**
-   * Attribute that _can_, but does not _have to_ be present for the creation of {@link
-   * ConnectorInput}s.
-   */
-  public static final String PARALLEL_DEVICES = "parallelDevices";
 
   /** Grid node at one side of the connector */
   private final NodeInput nodeA;

@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.CONTROLLING_EM;
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.CONTROL_STRATEGY;
+
 import edu.ie3.datamodel.io.extractor.HasEm;
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
@@ -14,9 +17,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class EmInput extends AssetInput implements HasEm {
-  /* Static fields. */
-  public static final String CONTROL_STRATEGY = "controlStrategy";
-  public static final String CONTROLLING_EM = "controllingEm";
 
   /** Reference to the control strategy to be used for this model */
   private final String controlStrategy;

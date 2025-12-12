@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -14,10 +16,6 @@ import java.util.UUID;
 
 /** Describes an electrical grid transformer, is "located" in the inferior subnet */
 public abstract class TransformerInput extends ConnectorInput {
-  /* Public fields. */
-  public static final String TYPE = "type";
-  public static final String TAP_POS = "tapPos";
-  public static final String AUTO_TAP = "autoTap";
 
   /** Tap position of this transformer */
   private final int tapPos;

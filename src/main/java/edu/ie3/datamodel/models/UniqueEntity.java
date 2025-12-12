@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.UUID_FIELD_NAME;
 import static edu.ie3.datamodel.io.source.SourceValidator.*;
 
 import java.io.Serializable;
@@ -13,8 +14,6 @@ import java.util.UUID;
 
 /** Supplies every subclass with a generated UUID, making it unique */
 public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
-  /** Field name of {@link UniqueEntity} uuid */
-  public static final String UUID_FIELD_NAME = "uuid";
 
   private final UUID uuid;
 

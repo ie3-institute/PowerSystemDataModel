@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
 import static edu.ie3.datamodel.models.input.OperatorInput.NO_OPERATOR_ASSIGNED;
 
 import edu.ie3.datamodel.exceptions.SourceException;
@@ -42,11 +43,10 @@ public abstract class AssetEntitySource extends EntitySource {
                 pair -> {
                   EntityData data = pair.getLeft();
                   OperatorInput operatorInput =
-                      extractWithDefault(
-                          data, AssetInput.OPERATOR, operators, NO_OPERATOR_ASSIGNED);
+                      extractWithDefault(data, OPERATOR, operators, NO_OPERATOR_ASSIGNED);
 
-                  String from = data.getFieldOptional(AssetInput.OPERATES_FROM).orElse(null);
-                  String until = data.getFieldOptional(AssetInput.OPERATES_UNTIL).orElse(null);
+                  String from = data.getFieldOptional(OPERATES_FROM).orElse(null);
+                  String until = data.getFieldOptional(OPERATES_UNTIL).orElse(null);
 
                   OperationTime.OperationTimeBuilder builder =
                       new OperationTime.OperationTimeBuilder();
@@ -57,8 +57,7 @@ public abstract class AssetEntitySource extends EntitySource {
 
                   OperationTime time = builder.build();
 
-                  return new AssetInput(
-                      pair.getRight(), data.getField(AssetInput.ID), operatorInput, time) {
+                  return new AssetInput(pair.getRight(), data.getField(ID), operatorInput, time) {
                     @Override
                     public AssetInputCopyBuilder<?> copy() {
                       return null;
@@ -76,13 +75,11 @@ public abstract class AssetEntitySource extends EntitySource {
             .map(
                 pair -> {
                   EntityData data = pair.getLeft();
-                  NodeInput nodeA = extractFunction(data, ConnectorInput.NODE_A, nodes);
-                  NodeInput nodeB = extractFunction(data, ConnectorInput.NODE_B, nodes);
+                  NodeInput nodeA = extractFunction(data, NODE_A, nodes);
+                  NodeInput nodeB = extractFunction(data, NODE_B, nodes);
 
                   int parallelDevices =
-                      Try.of(
-                              () -> data.getInt(ConnectorInput.PARALLEL_DEVICES),
-                              SourceException.class)
+                      Try.of(() -> data.getInt(PARALLEL_DEVICES), SourceException.class)
                           .convert(Function.identity(), f -> 1);
 
                   return new ConnectorInput(pair.getRight(), nodeA, nodeB, parallelDevices) {

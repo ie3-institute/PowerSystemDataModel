@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
@@ -17,11 +19,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput} */
 public class ChpTypeInput extends SystemParticipantTypeInput {
-  /* Static fields. */
-  public static final String ETA_EL = "etaEl";
-  public static final String ETA_THERMAL = "etaThermal";
-  public static final String P_THERMAL = "pThermal";
-  public static final String P_OWN = "pOwn";
 
   /** Electrical efficiency (typically in %) */
   private final ComparableQuantity<Dimensionless> etaEl;

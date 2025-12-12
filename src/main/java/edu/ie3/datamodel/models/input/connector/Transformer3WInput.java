@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.NODE_C;
 import static edu.ie3.datamodel.utils.validation.ConnectorValidationUtils.connectsNodesToCorrectVoltageSides;
 import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 
@@ -22,9 +23,6 @@ import tech.units.indriya.quantity.Quantities;
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
 public class Transformer3WInput extends TransformerInput implements HasType {
-  /* Static fields. */
-  public static final String TYPE = "type";
-  public static final String NODE_C = "nodeC";
 
   /** Type of this 3W transformer, containing default values for transformers of this kind */
   private final Transformer3WTypeInput type;

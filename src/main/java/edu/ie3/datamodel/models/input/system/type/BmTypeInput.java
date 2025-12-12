@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.ACTIVE_POWER_GRADIENT;
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.ETA_CONV;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
@@ -18,9 +21,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.BmInput} */
 public class BmTypeInput extends SystemParticipantTypeInput {
-  /* Static fields. */
-  public static final String ACTIVE_POWER_GRADIENT = "activePowerGradient";
-  public static final String ETA_CONV = "etaConv";
 
   /** Permissible load gradient (typically in %/h) */
   private final ComparableQuantity<DimensionlessRate> activePowerGradient;

@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.result;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.source.SourceValidator;
 import java.time.ZonedDateTime;
@@ -14,12 +16,6 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
 public class CongestionResult extends ResultEntity {
-  /* Static fields. */
-  public static final String TYPE = "type";
-  public static final String SUBGRID = "subgrid";
-  public static final String VALUE = "value";
-  public static final String MIN = "min";
-  public static final String MAX = "max";
 
   /** Values */
   private final Integer subgrid;

@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.result.thermal;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.FILL_LEVEL;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
@@ -17,8 +19,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class representing the common results of different types of thermal storages */
 public abstract class AbstractThermalStorageResult extends ThermalStorageResult {
-  /* Static fields. */
-  public static final String FILL_LEVEL = "fillLevel";
 
   /** Fill level of the storage */
   private ComparableQuantity<Dimensionless> fillLevel;

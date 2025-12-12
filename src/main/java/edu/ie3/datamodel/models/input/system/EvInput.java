@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.TYPE;
+
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
@@ -20,8 +22,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes an electric vehicle */
 public class EvInput extends SystemParticipantInput implements HasType {
-  /* Static fields. */
-  public static final String TYPE = "type";
 
   /** Type of this EV, containing default values for EVs of this kind */
   private final EvTypeInput type;

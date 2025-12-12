@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.THERMAL_BUS;
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.TYPE;
+
 import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.io.source.SourceValidator;
@@ -22,9 +25,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes a heat pump */
 public class HpInput extends SystemParticipantInput implements HasType, HasThermalBus {
-  /* Static fields. */
-  public static final String TYPE = "type";
-  public static final String THERMAL_BUS = "thermalBus";
 
   /** Type of this heat pump, containing default values for heat pump of this kind */
   private final HpTypeInput type;

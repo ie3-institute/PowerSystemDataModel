@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.SOC;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
@@ -16,8 +18,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Represents everything, that is capable of storing electric energy */
 public abstract class ElectricalEnergyStorageResult extends SystemParticipantResult {
-  /* Static fields. */
-  public static final String SOC = "soc";
 
   /** State of Charge (SoC) in % */
   private final ComparableQuantity<Dimensionless> soc;

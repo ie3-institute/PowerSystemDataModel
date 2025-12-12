@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
@@ -25,12 +27,6 @@ import tech.units.indriya.ComparableQuantity;
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
 public class LineInput extends ConnectorInput implements HasType {
-
-  /* Static fields. */
-  public static final String LENGTH = "length";
-  public static final String GEO_POSITION = "geoPosition";
-  public static final String OLM_CHARACTERISTIC = "olmCharacteristic";
-  public static final String TYPE = "type";
 
   /** Type of this line, containing default values for lines of this kind */
   private final LineTypeInput type;

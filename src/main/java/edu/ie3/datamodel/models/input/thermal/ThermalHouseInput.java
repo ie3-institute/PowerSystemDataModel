@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.thermal;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -18,14 +20,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Quite simple thermal model of a house to serve as a heat sink */
 public class ThermalHouseInput extends ThermalSinkInput {
-  /* Static fields. */
-  public static final String ETH_LOSSES = "ethLosses";
-  public static final String ETH_CAPA = "ethCapa";
-  public static final String TARGET_TEMPERATURE = "targetTemperature";
-  public static final String UPPER_TEMPERATURE_LIMIT = "upperTemperatureLimit";
-  public static final String LOWER_TEMPERATURE_LIMIT = "lowerTemperatureLimit";
-  public static final String HOUSING_TYPE = "housingType";
-  public static final String NUMBER_INHABITANTS = "numberInhabitants";
 
   /** Thermal, transitional losses of the included thermal house model (typically in kW/K) */
   private final ComparableQuantity<ThermalConductance> ethLosses;

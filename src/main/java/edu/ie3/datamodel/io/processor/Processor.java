@@ -5,12 +5,14 @@
 */
 package edu.ie3.datamodel.io.processor;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.UUID_FIELD_NAME;
+
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
+import edu.ie3.datamodel.io.naming.EntityFieldNames;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
@@ -66,8 +68,8 @@ public abstract class Processor<T> {
   private static final String OPERATES_UNTIL = "operatesUntil";
 
   private static final String VOLT_LVL_FIELD_NAME = "voltLvl";
-  private static final String VOLT_LVL = NodeInput.VOLT_LVL;
-  private static final String V_RATED = NodeInput.V_RATED;
+  private static final String VOLT_LVL = EntityFieldNames.VOLT_LVL;
+  private static final String V_RATED = EntityFieldNames.V_RATED;
 
   private static final String PARALLEL_DEVICES = "parallelDevices";
 
@@ -98,8 +100,8 @@ public abstract class Processor<T> {
   private static class UuidFirstComparator implements Comparator<String> {
     @Override
     public int compare(String a, String b) {
-      if (a.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return -1;
-      else if (b.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return 1;
+      if (a.equalsIgnoreCase(UUID_FIELD_NAME)) return -1;
+      else if (b.equalsIgnoreCase(UUID_FIELD_NAME)) return 1;
       else return a.compareTo(b);
     }
   }

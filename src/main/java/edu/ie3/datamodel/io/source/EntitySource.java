@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.UUID_FIELD_NAME;
+
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
@@ -198,10 +200,7 @@ public abstract class EntitySource {
   protected static BuildFunction<UniqueEntity> uniqueEntityBuilder =
       entityData ->
           entityData
-              .flatMap(
-                  data ->
-                      Try.of(
-                          () -> data.getUUID(UniqueEntity.UUID_FIELD_NAME), SourceException.class))
+              .flatMap(data -> Try.of(() -> data.getUUID(UUID_FIELD_NAME), SourceException.class))
               .map(uuid -> (UniqueEntity) new UniqueInputEntity(uuid) {})
               .transformF(
                   exception ->

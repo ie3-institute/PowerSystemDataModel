@@ -5,11 +5,13 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.models.input.EmInput.CONTROLLING_EM;
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.CONTROLLING_EM;
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.CONTROL_STRATEGY;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.naming.EntityFieldNames;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -111,8 +113,7 @@ public class EnergyManagementSource extends AssetEntitySource {
                             entityDataTry.map(
                                 pair ->
                                     new EmInput(
-                                        pair.getRight(),
-                                        pair.getLeft().getField(EmInput.CONTROL_STRATEGY)),
+                                        pair.getRight(), pair.getLeft().getField(CONTROL_STRATEGY)),
                                 SourceException.class)),
                 EmInput.class)
             .collect(toMap());
@@ -138,9 +139,7 @@ public class EnergyManagementSource extends AssetEntitySource {
                                 // failed UUID parses are filtered out at this point. We save
                                 // the parsed UUID with the asset data
                                 return new AssetDataAndValidParentUuid(
-                                    pair.getRight(),
-                                    data.getField(EmInput.CONTROL_STRATEGY),
-                                    parentUuid);
+                                    pair.getRight(), data.getField(CONTROL_STRATEGY), parentUuid);
                               },
                               SourceException.class)),
               "EmInput");
@@ -193,7 +192,7 @@ public class EnergyManagementSource extends AssetEntitySource {
 
   /**
    * Helper data record that holds an {@link AssetInput}, a control strategy and the UUID
-   * successfully parsed from {@link EmInput#CONTROLLING_EM} field
+   * successfully parsed from {@link EntityFieldNames#CONTROLLING_EM} field
    */
   private record AssetDataAndValidParentUuid(
       AssetInput assetInput, String controlStrategy, UUID parentEm) {}

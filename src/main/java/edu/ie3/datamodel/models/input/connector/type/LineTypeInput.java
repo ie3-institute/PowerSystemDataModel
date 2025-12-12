@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import static edu.ie3.datamodel.io.naming.EntityFieldNames.*;
+
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
@@ -18,13 +20,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.LineInput} */
 public class LineTypeInput extends AssetTypeInput {
-  /* Static fields. */
-  public static final String B = "b";
-  public static final String G = "g";
-  public static final String R = "r";
-  public static final String X = "x";
-  public static final String I_MAX = "iMax";
-  public static final String V_RATED = "vRated";
 
   /** Specific phase-to-ground susceptance for this type of line (typically in µS/km) */
   private final ComparableQuantity<SpecificConductance> b;
