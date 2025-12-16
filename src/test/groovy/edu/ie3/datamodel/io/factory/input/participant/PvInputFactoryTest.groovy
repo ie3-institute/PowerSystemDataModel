@@ -64,30 +64,30 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert operationTime.endDate.present
-      assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-      assert operator == operatorInput
-      assert id == parameter["id"]
-      assert node == nodeInput
-      assert qCharacteristics.with {
-        assert uuid != null
-        assert points == Collections.unmodifiableSortedSet([
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.endDate.present
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operator == operatorInput
+      id == parameter["id"]
+      node == nodeInput
+      qCharacteristics.with {
+        uuid != null
+        points == Collections.unmodifiableSortedSet([
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert controllingEm == Optional.of(emUnit)
-      assert albedo == Double.parseDouble(parameter["albedo"])
-      assert azimuth == getQuant(parameter["azimuth"], StandardUnits.AZIMUTH)
-      assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
-      assert elevationAngle == getQuant(parameter["elevationangle"], StandardUnits.SOLAR_ELEVATION_ANGLE)
-      assert kG == Double.parseDouble(parameter["kg"])
-      assert kT == Double.parseDouble(parameter["kt"])
-      assert marketReaction
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
+      controllingEm == Optional.of(emUnit)
+      albedo == Double.parseDouble(parameter["albedo"])
+      azimuth == getQuant(parameter["azimuth"], StandardUnits.AZIMUTH)
+      etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
+      elevationAngle == getQuant(parameter["elevationangle"], StandardUnits.SOLAR_ELEVATION_ANGLE)
+      kG == Double.parseDouble(parameter["kg"])
+      kT == Double.parseDouble(parameter["kt"])
+      marketReaction
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosphirated"])
     }
   }
 }

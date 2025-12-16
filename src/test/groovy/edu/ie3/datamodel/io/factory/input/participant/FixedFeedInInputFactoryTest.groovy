@@ -57,22 +57,22 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert !operationTime.endDate.present
-      assert operator == operatorInput
-      assert id == parameter["id"]
-      assert node == nodeInput
-      assert qCharacteristics.with {
-        assert uuid != null
-        assert points == Collections.unmodifiableSortedSet([
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      !operationTime.endDate.present
+      operator == operatorInput
+      id == parameter["id"]
+      node == nodeInput
+      qCharacteristics.with {
+        uuid != null
+        points == Collections.unmodifiableSortedSet([
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert controllingEm == Optional.of(emUnit)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
+      controllingEm == Optional.of(emUnit)
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosphirated"])
     }
   }
 

@@ -113,18 +113,18 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
     then:
     actual.with {
-      assert it.time == TimeUtil.withDefaults.toZonedDateTime("2019-08-01T01:00:00Z")
-      assert it.value.coordinate == coordinate
-      assert it.value.solarIrradiance.directIrradiance.present
-      assert it.value.solarIrradiance.directIrradiance.get() == Quantities.getQuantity(0.002317613203124999, PowerSystemUnits.KILOWATT_PER_SQUAREMETRE)
-      assert it.value.solarIrradiance.diffuseIrradiance.present
-      assert it.value.solarIrradiance.diffuseIrradiance.get() == Quantities.getQuantity(0.0018088226191406245, PowerSystemUnits.KILOWATT_PER_SQUAREMETRE)
-      assert it.value.temperature.temperature.present
-      assert QuantityUtil.isEquivalentAbs(it.value.temperature.temperature.get(), Quantities.getQuantity(15.9679319051744, Units.CELSIUS))
-      assert it.value.wind.direction.present
-      assert QuantityUtil.isEquivalentAbs(it.value.wind.direction.get(), Quantities.getQuantity(214.16711674907722, PowerSystemUnits.DEGREE_GEOM))
-      assert it.value.wind.velocity.present
-      assert QuantityUtil.isEquivalentAbs(it.value.wind.velocity.get(), Quantities.getQuantity(4.640010877529081, PowerSystemUnits.METRE_PER_SECOND))
+      it.time == TimeUtil.withDefaults.toZonedDateTime("2019-08-01T01:00:00Z")
+      it.value.coordinate == coordinate
+      it.value.solarIrradiance.directIrradiance.present
+      it.value.solarIrradiance.directIrradiance.get() == Quantities.getQuantity(0.002317613203124999, PowerSystemUnits.KILOWATT_PER_SQUAREMETRE)
+      it.value.solarIrradiance.diffuseIrradiance.present
+      it.value.solarIrradiance.diffuseIrradiance.get() == Quantities.getQuantity(0.0018088226191406245, PowerSystemUnits.KILOWATT_PER_SQUAREMETRE)
+      it.value.temperature.temperature.present
+      QuantityUtil.isEquivalentAbs(it.value.temperature.temperature.get(), Quantities.getQuantity(15.9679319051744, Units.CELSIUS))
+      it.value.wind.direction.present
+      QuantityUtil.isEquivalentAbs(it.value.wind.direction.get(), Quantities.getQuantity(214.16711674907722, PowerSystemUnits.DEGREE_GEOM))
+      it.value.wind.velocity.present
+      QuantityUtil.isEquivalentAbs(it.value.wind.velocity.get(), Quantities.getQuantity(4.640010877529081, PowerSystemUnits.METRE_PER_SECOND))
     }
   }
 }

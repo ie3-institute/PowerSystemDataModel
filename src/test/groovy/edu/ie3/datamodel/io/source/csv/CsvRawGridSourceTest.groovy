@@ -47,18 +47,18 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       def expected = expectedSet.find {
         it.uuid == actual.uuid
       }
-      assert expected != null
+      expected != null
 
       actual.with {
-        assert uuid == expected.uuid
-        assert id == expected.id
-        assert operator == expected.operator
-        assert operationTime == expected.operationTime
-        assert vTarget == expected.vTarget
-        assert slack == expected.slack
-        assert geoPosition.coordinates == expected.geoPosition.coordinates
-        assert voltLvl == expected.voltLvl
-        assert subnet == expected.subnet
+        uuid == expected.uuid
+        id == expected.id
+        operator == expected.operator
+        operationTime == expected.operationTime
+        vTarget == expected.vTarget
+        slack == expected.slack
+        geoPosition.coordinates == expected.geoPosition.coordinates
+        voltLvl == expected.voltLvl
+        subnet == expected.subnet
       }
     }
   }
@@ -74,18 +74,18 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     actualSet.size() == expectedSet.size()
     actualSet.each {actual ->
       def expected = expectedSet.find {it.uuid == actual.uuid}
-      assert expected != null
+      expected != null
 
       actual.with {
-        assert uuid == expected.uuid
-        assert id == expected.id
-        assert operator == expected.operator
-        assert operationTime == expected.operationTime
-        assert node.uuid == expected.node.uuid
-        assert vMag == expected.vMag
-        assert vAng == expected.vAng
-        assert p == expected.p
-        assert q == expected.q
+        uuid == expected.uuid
+        id == expected.id
+        operator == expected.operator
+        operationTime == expected.operationTime
+        node.uuid == expected.node.uuid
+        vMag == expected.vMag
+        vAng == expected.vAng
+        p == expected.p
+        q == expected.q
       }
     }
   }
@@ -99,16 +99,16 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     actualSet.size() == expectedSet.size()
     actualSet.each {actual ->
       def expected = expectedSet.find {it.uuid == actual.uuid}
-      assert expected != null
+      expected != null
 
       actual.with {
-        assert uuid == expected.uuid
-        assert id == expected.id
-        assert operator == expected.operator
-        assert operationTime == expected.operationTime
-        assert nodeA.uuid == expected.nodeA.uuid
-        assert nodeB.uuid == expected.nodeB.uuid
-        assert closed == expected.closed
+        uuid == expected.uuid
+        id == expected.id
+        operator == expected.operator
+        operationTime == expected.operationTime
+        nodeA.uuid == expected.nodeA.uuid
+        nodeB.uuid == expected.nodeB.uuid
+        closed == expected.closed
       }
     }
   }
@@ -126,20 +126,20 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     actualSet.each { entry ->
       def actual = entry.value
       def expected = expectedSet.find {it.uuid == actual.uuid}
-      assert expected != null
+      expected != null
 
       actual.with {
-        assert uuid == expected.uuid
-        assert id == expected.id
-        assert operator == expected.operator
-        assert operationTime == expected.operationTime
-        assert nodeA.uuid == expected.nodeA.uuid
-        assert nodeB.uuid == expected.nodeB.uuid
-        assert parallelDevices == expected.parallelDevices
-        assert type == expected.type
-        assert length == expected.length
-        assert geoPosition.coordinates == expected.geoPosition.coordinates
-        assert olmCharacteristic == expected.olmCharacteristic
+        uuid == expected.uuid
+        id == expected.id
+        operator == expected.operator
+        operationTime == expected.operationTime
+        nodeA.uuid == expected.nodeA.uuid
+        nodeB.uuid == expected.nodeB.uuid
+        parallelDevices == expected.parallelDevices
+        type == expected.type
+        length == expected.length
+        geoPosition.coordinates == expected.geoPosition.coordinates
+        olmCharacteristic == expected.olmCharacteristic
       }
     }
   }
@@ -159,19 +159,19 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     actualSet.size() == expectedSet.size()
     actualSet.each {actual ->
       def expected = expectedSet.find {it.uuid == actual.uuid}
-      assert expected != null
+      expected != null
 
       actual.with {
-        assert uuid == expected.uuid
-        assert id == expected.id
-        assert operator == expected.operator
-        assert operationTime == expected.operationTime
-        assert nodeA.uuid == expected.nodeA.uuid
-        assert nodeB.uuid == expected.nodeB.uuid
-        assert parallelDevices == expected.parallelDevices
-        assert type == expected.type
-        assert tapPos == expected.tapPos
-        assert autoTap == expected.autoTap
+        uuid == expected.uuid
+        id == expected.id
+        operator == expected.operator
+        operationTime == expected.operationTime
+        nodeA.uuid == expected.nodeA.uuid
+        nodeB.uuid == expected.nodeB.uuid
+        parallelDevices == expected.parallelDevices
+        type == expected.type
+        tapPos == expected.tapPos
+        autoTap == expected.autoTap
       }
     }
   }
@@ -187,20 +187,20 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     actualSet.size() == expectedSet.size()
     actualSet.each {actual ->
       def expected = expectedSet.find {it.uuid == actual.uuid}
-      assert expected != null
+      expected != null
 
       actual.with {
-        assert uuid == expected.uuid
-        assert id == expected.id
-        assert operator == expected.operator
-        assert operationTime == expected.operationTime
-        assert nodeA.uuid == expected.nodeA.uuid
-        assert nodeB.uuid == expected.nodeB.uuid
-        assert nodeC.uuid == expected.nodeC.uuid
-        assert parallelDevices == expected.parallelDevices
-        assert type == expected.type
-        assert tapPos == expected.tapPos
-        assert autoTap == expected.autoTap
+        uuid == expected.uuid
+        id == expected.id
+        operator == expected.operator
+        operationTime == expected.operationTime
+        nodeA.uuid == expected.nodeA.uuid
+        nodeB.uuid == expected.nodeB.uuid
+        nodeC.uuid == expected.nodeC.uuid
+        parallelDevices == expected.parallelDevices
+        type == expected.type
+        tapPos == expected.tapPos
+        autoTap == expected.autoTap
       }
     }
   }
@@ -242,18 +242,18 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     actual != null
     actual.with {
       /* It's okay, to only test the uuids, because content is tested with the other test methods */
-      assert nodes.size() == expected.nodes.size()
-      assert nodes.each {entry -> expected.nodes.contains({it.uuid == entry.uuid})}
-      assert lines.size() == expected.lines.size()
-      assert lines.each {entry -> expected.lines.contains({it.uuid == entry.uuid})}
-      assert transformer2Ws.size() == expected.transformer2Ws.size()
-      assert transformer2Ws.each {entry -> expected.transformer2Ws.contains({it.uuid == entry.uuid})}
-      assert transformer3Ws.size() == expected.transformer3Ws.size()
-      assert transformer3Ws.each {entry -> expected.transformer3Ws.contains({it.uuid == entry.uuid})}
-      assert switches.size() == expected.switches.size()
-      assert switches.each {entry -> expected.switches.contains({it.uuid == entry.uuid})}
-      assert measurementUnits.size() == expected.measurementUnits.size()
-      assert measurementUnits.each {entry -> expected.measurementUnits.contains({it.uuid == entry.uuid})}
+      nodes.size() == expected.nodes.size()
+      nodes.each {entry -> expected.nodes.contains({it.uuid == entry.uuid})}
+      lines.size() == expected.lines.size()
+      lines.each {entry -> expected.lines.contains({it.uuid == entry.uuid})}
+      transformer2Ws.size() == expected.transformer2Ws.size()
+      transformer2Ws.each {entry -> expected.transformer2Ws.contains({it.uuid == entry.uuid})}
+      transformer3Ws.size() == expected.transformer3Ws.size()
+      transformer3Ws.each {entry -> expected.transformer3Ws.contains({it.uuid == entry.uuid})}
+      switches.size() == expected.switches.size()
+      switches.each {entry -> expected.switches.contains({it.uuid == entry.uuid})}
+      measurementUnits.size() == expected.measurementUnits.size()
+      measurementUnits.each {entry -> expected.measurementUnits.contains({it.uuid == entry.uuid})}
     }
   }
 

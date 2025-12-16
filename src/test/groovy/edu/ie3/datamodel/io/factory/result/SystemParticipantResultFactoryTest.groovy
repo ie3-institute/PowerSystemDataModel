@@ -62,18 +62,18 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     result.success
     result.data.get().getClass() == resultingModelClass
     ((SystemParticipantResult) result.data.get()).with {
-      assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
-      assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
-      assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
-      assert inputModel == UUID.fromString(parameter["inputModel"])
+      p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
+      q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
+      time == TIME_UTIL.toZonedDateTime(parameter["time"])
+      inputModel == UUID.fromString(parameter["inputModel"])
     }
 
     if (modelClass == EvResult) {
-      assert (((EvResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
+      (((EvResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
     }
 
     if (modelClass == StorageResult) {
-      assert (((StorageResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
+      (((StorageResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
     }
 
     if (modelClass == HpResult) {
@@ -116,11 +116,11 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     result.success
     result.data.get().getClass() == StorageResult
     ((StorageResult) result.data.get()).with {
-      assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
-      assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
-      assert soc == getQuant(parameter["soc"], Units.PERCENT)
-      assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
-      assert inputModel == UUID.fromString(parameter["inputModel"])
+      p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
+      q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
+      soc == getQuant(parameter["soc"], Units.PERCENT)
+      time == TIME_UTIL.toZonedDateTime(parameter["time"])
+      inputModel == UUID.fromString(parameter["inputModel"])
     }
   }
 

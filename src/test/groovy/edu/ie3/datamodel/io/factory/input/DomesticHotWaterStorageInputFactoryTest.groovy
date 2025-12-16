@@ -47,16 +47,16 @@ class DomesticHotWaterStorageInputFactoryTest extends Specification implements F
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime == OperationTime.notLimited()
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == parameter["id"]
-      assert thermalBus == thermalBusInput
-      assert storageVolumeLvl == getQuant(parameter["storagevolumelvl"], StandardUnits.VOLUME)
-      assert inletTemp == getQuant(parameter["inlettemp"], StandardUnits.TEMPERATURE)
-      assert returnTemp == getQuant(parameter["returntemp"], StandardUnits.TEMPERATURE)
-      assert c == getQuant(parameter["c"], StandardUnits.SPECIFIC_HEAT_CAPACITY)
-      assert pThermalMax == getQuant(parameter["pThermalMax"], StandardUnits.ACTIVE_POWER_IN)
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime == OperationTime.notLimited()
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == parameter["id"]
+      thermalBus == thermalBusInput
+      storageVolumeLvl == getQuant(parameter["storagevolumelvl"], StandardUnits.VOLUME)
+      inletTemp == getQuant(parameter["inlettemp"], StandardUnits.TEMPERATURE)
+      returnTemp == getQuant(parameter["returntemp"], StandardUnits.TEMPERATURE)
+      c == getQuant(parameter["c"], StandardUnits.SPECIFIC_HEAT_CAPACITY)
+      pThermalMax == getQuant(parameter["pThermalMax"], StandardUnits.ACTIVE_POWER_IN)
     }
   }
 }

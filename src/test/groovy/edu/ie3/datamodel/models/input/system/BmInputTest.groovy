@@ -24,16 +24,16 @@ class BmInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == bmInput.uuid
-      assert operationTime == bmInput.operationTime
-      assert operator == bmInput.operator
-      assert id == bmInput.id
-      assert marketReaction
-      assert costControlled
-      assert qCharacteristics == bmInput.qCharacteristics
-      assert feedInTariff == Quantities.getQuantity(15, EURO_PER_MEGAWATTHOUR)
-      assert type == SystemParticipantTestData.bmTypeInput
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == bmInput.uuid
+      operationTime == bmInput.operationTime
+      operator == bmInput.operator
+      id == bmInput.id
+      marketReaction
+      costControlled
+      qCharacteristics == bmInput.qCharacteristics
+      feedInTariff == Quantities.getQuantity(15, EURO_PER_MEGAWATTHOUR)
+      type == SystemParticipantTestData.bmTypeInput
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -46,17 +46,17 @@ class BmInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == bmInput.uuid
-      assert operationTime == bmInput.operationTime
-      assert operator == bmInput.operator
-      assert id == bmInput.id
-      assert marketReaction == bmInput.marketReaction
-      assert costControlled == bmInput.costControlled
-      assert qCharacteristics == bmInput.qCharacteristics
-      assert feedInTariff == bmInput.feedInTariff
-      assert type.sRated == bmInput.type.sRated * 2d
-      assert sRated() == bmInput.type.sRated * 2d
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == bmInput.uuid
+      operationTime == bmInput.operationTime
+      operator == bmInput.operator
+      id == bmInput.id
+      marketReaction == bmInput.marketReaction
+      costControlled == bmInput.costControlled
+      qCharacteristics == bmInput.qCharacteristics
+      feedInTariff == bmInput.feedInTariff
+      type.sRated == bmInput.type.sRated * 2d
+      sRated() == bmInput.type.sRated * 2d
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

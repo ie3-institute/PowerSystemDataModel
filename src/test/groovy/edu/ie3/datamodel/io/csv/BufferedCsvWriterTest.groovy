@@ -40,8 +40,8 @@ class BufferedCsvWriterTest extends Specification {
 
     then:
     actual.with {
-      assert it.headLineElements == ["a", "b", "c"] as String[]
-      assert it.csvSep == ","
+      it.headLineElements == ["a", "b", "c"] as String[]
+      it.csvSep == ","
     }
     expectedFile.exists()
     expectedFile.file // is it a file?

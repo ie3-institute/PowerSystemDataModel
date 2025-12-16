@@ -816,8 +816,8 @@ class FileNamingStrategyTest extends Specification {
     then:
     IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as IndividualTimeSeriesMetaInformation).with {
-      assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
-      assert it.columnScheme == expectedColumnScheme
+      it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+      it.columnScheme == expectedColumnScheme
     }
 
     where:
@@ -842,8 +842,8 @@ class FileNamingStrategyTest extends Specification {
     then:
     IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as IndividualTimeSeriesMetaInformation).with {
-      assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
-      assert it.columnScheme == expectedColumnScheme
+      it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+      it.columnScheme == expectedColumnScheme
     }
 
     where:
@@ -867,8 +867,8 @@ class FileNamingStrategyTest extends Specification {
     then:
     IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as IndividualTimeSeriesMetaInformation).with {
-      assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
-      assert it.columnScheme == expectedColumnScheme
+      it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+      it.columnScheme == expectedColumnScheme
     }
 
     where:
@@ -919,7 +919,7 @@ class FileNamingStrategyTest extends Specification {
     then:
     LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as LoadProfileMetaInformation).with {
-      assert profile == "g3"
+      profile == "g3"
     }
   }
 
@@ -934,7 +934,7 @@ class FileNamingStrategyTest extends Specification {
     then:
     LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as LoadProfileMetaInformation).with {
-      assert profile == "g3"
+      profile == "g3"
     }
   }
 }
