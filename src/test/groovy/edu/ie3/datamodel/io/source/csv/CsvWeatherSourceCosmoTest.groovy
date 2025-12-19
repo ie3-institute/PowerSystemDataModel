@@ -200,8 +200,6 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
       "temperature"            : "9.1011",
       "windvelocity"           : "12.1314",
       "winddirection"          : "15.1617",
-      "groundTemperaturLevel1" : "8.0",
-      "groundTemperatureLevel2": "9.5"
     ]
 
     when:
