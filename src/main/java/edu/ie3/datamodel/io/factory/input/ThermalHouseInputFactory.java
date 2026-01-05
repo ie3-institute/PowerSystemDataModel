@@ -25,6 +25,7 @@ public class ThermalHouseInputFactory
   private static final String LOWER_TEMPERATURE_LIMIT = "lowerTemperatureLimit";
   private static final String HOUSING_TYPE = "housingType";
   private static final String NUMBER_INHABITANTS = "numberInhabitants";
+  private static final String THERMAL_BUS = "thermalBus";
 
   public ThermalHouseInputFactory() {
     super(ThermalHouseInput.class);
@@ -39,7 +40,8 @@ public class ThermalHouseInputFactory
       UPPER_TEMPERATURE_LIMIT,
       LOWER_TEMPERATURE_LIMIT,
       HOUSING_TYPE,
-      NUMBER_INHABITANTS
+      NUMBER_INHABITANTS,
+      THERMAL_BUS
     };
   }
 

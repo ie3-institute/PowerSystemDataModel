@@ -83,7 +83,7 @@ Model of a heat pump.
 
    * - thermalBus
      -
-     - Connection point to the thermal system
+     - UUID of the [thermal bus](#thermal-bus-model)
 
    * - qCharacteristics
      -
@@ -91,7 +91,7 @@ Model of a heat pump.
 
    * - type
      -
-     -
+     - UUID of the HP type model
 
    * - controllingEm
      -
