@@ -16,22 +16,32 @@ import edu.ie3.datamodel.io.factory.markov.MarkovModelData;
 import edu.ie3.datamodel.io.file.FileType;
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.EntitySource;
+import edu.ie3.datamodel.io.source.PowerValueSource;
+import edu.ie3.datamodel.io.source.markov.MarkovLoadValueSource;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
+import edu.ie3.datamodel.models.profile.markov.MarkovPowerProfile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.measure.quantity.Energy;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /** Source that reads Markov-based load models from JSON files. */
-public class JsonMarkovProfileSource extends EntitySource {
+public class JsonMarkovProfileSource extends EntitySource implements PowerValueSource.MarkovBased {
 
   private final JsonDataSource dataSource;
   private final FileLoadProfileMetaInformation metaInformation;
   private final MarkovLoadModelFactory factory;
   private final ObjectMapper objectMapper = new ObjectMapper();
+  private final MarkovPowerProfile profile;
   private MarkovLoadModel cachedModel;
+  private volatile MarkovLoadValueSource delegate;
 
   public JsonMarkovProfileSource(
       JsonDataSource dataSource, FileLoadProfileMetaInformation metaInformation) {
@@ -45,6 +55,7 @@ public class JsonMarkovProfileSource extends EntitySource {
     this.dataSource = Objects.requireNonNull(dataSource, "dataSource");
     this.metaInformation = Objects.requireNonNull(metaInformation, "metaInformation");
     this.factory = Objects.requireNonNull(factory, "factory");
+    this.profile = new MarkovPowerProfile(metaInformation.getProfile());
     if (metaInformation.getFileType() != FileType.JSON) {
       throw new IllegalArgumentException("Markov profile source requires JSON meta information.");
     }
@@ -81,6 +92,31 @@ public class JsonMarkovProfileSource extends EntitySource {
     factory.validate(fields, MarkovLoadModel.class).getOrThrow();
   }
 
+  @Override
+  public MarkovPowerProfile getProfile() {
+    return profile;
+  }
+
+  @Override
+  public MarkovValueSupplier getValueSupplier(PowerValueSource.MarkovInputValue data) {
+    return getDelegate().getValueSupplier(data);
+  }
+
+  @Override
+  public Optional<ZonedDateTime> getNextTimeKey(ZonedDateTime time) {
+    return getDelegate().getNextTimeKey(time);
+  }
+
+  @Override
+  public Optional<ComparableQuantity<Power>> getMaxPower() {
+    return getDelegate().getMaxPower();
+  }
+
+  @Override
+  public Optional<ComparableQuantity<Energy>> getProfileEnergyScaling() {
+    return getDelegate().getProfileEnergyScaling();
+  }
+
   private JsonNode readModelTree() throws SourceException {
     Path filePath = metaInformation.getFullFilePath();
     try (InputStream inputStream = dataSource.initInputStream(filePath)) {
@@ -113,5 +149,28 @@ public class JsonMarkovProfileSource extends EntitySource {
 
   private static String join(String prefix, String name) {
     return prefix.isEmpty() ? name : prefix + "." + name;
+  }
+
+  private MarkovLoadValueSource getDelegate() {
+    MarkovLoadValueSource current = delegate;
+    if (current == null) {
+      synchronized (this) {
+        current = delegate;
+        if (current == null) {
+          current = new MarkovLoadValueSource(profile, loadModelUnchecked());
+          delegate = current;
+        }
+      }
+    }
+    return current;
+  }
+
+  private MarkovLoadModel loadModelUnchecked() {
+    try {
+      return getModel();
+    } catch (SourceException e) {
+      throw new IllegalStateException(
+          "Unable to load Markov model '" + metaInformation.getProfile() + "'.", e);
+    }
   }
 }

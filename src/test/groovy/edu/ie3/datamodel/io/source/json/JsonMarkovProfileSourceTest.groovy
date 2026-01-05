@@ -9,11 +9,17 @@ import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.file.FileType
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation
+import edu.ie3.datamodel.io.source.PowerValueSource
+import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.ZonedDateTime
+import java.util.OptionalDouble
+import java.util.OptionalInt
 
 class JsonMarkovProfileSourceTest extends Specification {
 
@@ -72,6 +78,34 @@ class JsonMarkovProfileSourceTest extends Specification {
     thrown(SourceException)
   }
 
+  def "source exposes Markov-based power value supplier"() {
+    given:
+    Files.writeString(jsonFile, validModelJson())
+    def source = new JsonMarkovProfileSource(
+        new JsonDataSource(tempDir, new FileNamingStrategy()),
+        new FileLoadProfileMetaInformation("profile1", jsonFile, FileType.JSON)
+        )
+    def referencePower = Quantities.getQuantity(10d, StandardUnits.ACTIVE_POWER_IN)
+    def input = new PowerValueSource.MarkovInputValue(
+        ZonedDateTime.parse("2025-01-01T00:00:00Z"),
+        OptionalInt.of(0),
+        OptionalDouble.empty(),
+        referencePower,
+        42L)
+
+    when:
+    def supplier = source.getValueSupplier(input)
+    def value = supplier.get()
+
+    then:
+    source.getProfile().key() == "profile1"
+    source.getMaxPower().isPresent()
+    source.getMaxPower().get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 10d
+    value.isPresent()
+    supplier.getNextState() == 0
+    value.get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 10d
+  }
+
   private static String validModelJson() {
     return """
       {
@@ -90,7 +124,10 @@ class JsonMarkovProfileSourceTest extends Specification {
         },
         "value_model": {
           "value_unit": "W",
-          "normalization": { "method": "none" },
+          "normalization": {
+            "method": "none",
+            "reference_power": { "value": 10.0, "unit": "kW" }
+          },
           "discretization": {
             "states": 2,
             "thresholds_right": [0.5]
@@ -120,11 +157,11 @@ class JsonMarkovProfileSourceTest extends Specification {
             "buckets": [
               {
                 "states": [
-                  {
-                    "weights": [0.6],
-                    "means": [1.0],
-                    "variances": [0.2]
-                  },
+                    {
+                      "weights": [0.6],
+                      "means": [1.0],
+                    "variances": [0.0]
+                    },
                   null
                 ]
               }

@@ -48,6 +48,7 @@ class JsonFileConnectorTest extends Specification {
     when:
     def reader = connector.initReader(Path.of("data"))
     def line = reader.readLine()
+    reader.close()
 
     then:
     line == "[1,2,3]"

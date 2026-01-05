@@ -33,6 +33,11 @@ class MarkovLoadModelFactoryTest extends Specification {
     gmmState.weights() == [0.6d]
     gmmState.means() == [1.0d]
     gmmState.variances() == [0.2d]
+    model.valueModel().normalization().referencePower().isPresent()
+    with(model.valueModel().normalization().referencePower().get()) {
+      value() == 1.5d
+      unit() == "kW"
+    }
   }
 
   def "buildModel throws FactoryException on transition dimension mismatch"() {
@@ -64,7 +69,10 @@ class MarkovLoadModelFactoryTest extends Specification {
         },
         "value_model": {
           "value_unit": "W",
-          "normalization": { "method": "none" },
+          "normalization": {
+            "method": "none",
+            "reference_power": { "value": 1.5, "unit": "kW" }
+          },
           "discretization": {
             "states": 2,
             "thresholds_right": [0.5]

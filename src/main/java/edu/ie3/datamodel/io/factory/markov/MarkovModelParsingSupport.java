@@ -58,7 +58,11 @@ interface MarkovModelParsingSupport {
     String valueUnit = requireText(valueNode, "value_unit");
     JsonNode normalizationNode = requireNode(valueNode, "normalization");
     String normalizationMethod = requireText(normalizationNode, "method");
-    ValueModel.Normalization normalization = new ValueModel.Normalization(normalizationMethod);
+    ValueModel.Normalization normalization =
+        new ValueModel.Normalization(
+            normalizationMethod,
+            parsePowerReference(normalizationNode, "reference_power"),
+            parsePowerReference(normalizationNode, "min_power"));
 
     JsonNode discretizationNode = requireNode(valueNode, "discretization");
     int states = requireInt(discretizationNode, "states");
@@ -159,6 +163,17 @@ interface MarkovModelParsingSupport {
       throw new FactoryException("Field '" + field + "' must be textual");
     }
     return value.asText();
+  }
+
+  default double requireDouble(JsonNode node, String field) {
+    JsonNode value = node.get(field);
+    if (value == null || value.isMissingNode() || value.isNull()) {
+      throw new FactoryException("Missing field '" + field + "'");
+    }
+    if (!value.isNumber()) {
+      throw new FactoryException("Field '" + field + "' must be numeric");
+    }
+    return value.asDouble();
   }
 
   default int requireInt(JsonNode node, String field) {
@@ -285,5 +300,19 @@ interface MarkovModelParsingSupport {
     List<Double> values = new ArrayList<>();
     arrayNode.forEach(element -> values.add(element.asDouble()));
     return List.copyOf(values);
+  }
+
+  default Optional<ValueModel.Normalization.PowerReference> parsePowerReference(
+      JsonNode parent, String field) {
+    JsonNode referenceNode = parent.get(field);
+    if (referenceNode == null || referenceNode.isMissingNode() || referenceNode.isNull()) {
+      return Optional.empty();
+    }
+    if (!referenceNode.isObject()) {
+      throw new FactoryException("Field '" + field + "' must be an object");
+    }
+    double value = requireDouble(referenceNode, "value");
+    String unit = requireText(referenceNode, "unit");
+    return Optional.of(new ValueModel.Normalization.PowerReference(value, unit));
   }
 }

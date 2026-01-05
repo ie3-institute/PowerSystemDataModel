@@ -34,7 +34,11 @@ public record MarkovLoadModel(
   public record ValueModel(
       String valueUnit, Normalization normalization, Discretization discretization) {
 
-    public record Normalization(String method) {}
+    public record Normalization(
+        String method, Optional<PowerReference> referencePower, Optional<PowerReference> minPower) {
+
+      public record PowerReference(double value, String unit) {}
+    }
 
     public record Discretization(int states, List<Double> thresholdsRight) {}
   }
