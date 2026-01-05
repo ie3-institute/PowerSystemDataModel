@@ -21,6 +21,7 @@ public abstract class AbstractThermalStorageInputFactory<T extends AbstractStora
   private static final String RETURN_TEMP = "returnTemp";
   private static final String C = "c";
   private static final String P_THERMAL_MAX = "pThermalMax";
+  private static final String THERMAL_BUS = "thermalBus";
 
   public AbstractThermalStorageInputFactory(Class<T> clazz) {
     super(clazz);
@@ -28,7 +29,9 @@ public abstract class AbstractThermalStorageInputFactory<T extends AbstractStora
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX};
+    return new String[] {
+      STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX, THERMAL_BUS
+    };
   }
 
   protected ComparableQuantity<Volume> getStorageVolumeLvl(ThermalUnitInputEntityData data) {
