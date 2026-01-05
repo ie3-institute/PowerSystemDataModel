@@ -262,9 +262,9 @@ public class MarkovLoadValueSource implements MarkovBased {
       if (distribution.length == 0) {
         return new StepResult(currentState, 0d);
       }
-      int nextState = drawState(distribution, rng);
-      double normalized = sampleNormalizedValue(bucket, nextState, rng);
-      return new StepResult(nextState, normalized);
+      int nextStateIndex = drawState(distribution, rng);
+      double normalized = sampleNormalizedValue(bucket, nextStateIndex, rng);
+      return new StepResult(nextStateIndex, normalized);
     }
 
     private double[] sanitizeDistribution(int bucket, double[] row) {
