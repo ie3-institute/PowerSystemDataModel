@@ -111,112 +111,6 @@ public class MarkovLoadValueSource implements MarkovBased {
     return lookup;
   }
 
-  private int bucketId(ZonedDateTime time) {
-    ZonedDateTime zoned = time.withZoneSameInstant(zoneId);
-    int month = zoned.getMonthValue() - 1;
-    int isWeekend = isWeekend(zoned) ? 1 : 0;
-    int quarterHour = zoned.getHour() * 4 + zoned.getMinute() / 15;
-    return Math.floorMod(
-        month * MONTH_FACTOR + isWeekend * WEEKEND_FACTOR + quarterHour, bucketCount);
-  }
-
-  private boolean isWeekend(ZonedDateTime time) {
-    DayOfWeek day = time.getDayOfWeek();
-    return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
-  }
-
-  private int resolveState(MarkovInputValue input) {
-    if (input.previousState().isPresent()) {
-      int state = input.previousState().getAsInt();
-      if (state < 0 || state >= stateCount) {
-        throw new IllegalArgumentException("Previous state out of bounds: " + state);
-      }
-      return state;
-    }
-    double normalized = input.initialNormalizedValue().orElseThrow();
-    return discretize(normalized);
-  }
-
-  private int discretize(double normalized) {
-    double value = clamp01(normalized);
-    for (int i = 0; i < discretizationThresholds.length; i++) {
-      if (value <= discretizationThresholds[i]) {
-        return i;
-      }
-    }
-    return discretizationThresholds.length;
-  }
-
-  private StepResult simulateStep(int bucket, int currentState, SplittableRandom rng) {
-    double[] row = transitions[bucket][currentState];
-    double[] distribution = sanitizeDistribution(bucket, row);
-    if (distribution.length == 0) {
-      return new StepResult(currentState, 0d);
-    }
-    int nextState = drawState(distribution, rng);
-    double normalized = sampleNormalizedValue(bucket, nextState, rng);
-    return new StepResult(nextState, normalized);
-  }
-
-  private double[] sanitizeDistribution(int bucket, double[] row) {
-    double[] sanitized = new double[stateCount];
-    double sum = 0d;
-    for (int state = 0; state < stateCount; state++) {
-      double sanitizedValue = 0d;
-      if (state < row.length) {
-        double value = row[state];
-        if (value > 0d && !Double.isNaN(value) && gmmStates[bucket][state] != null) {
-          sanitizedValue = value;
-          sum += value;
-        }
-      }
-      sanitized[state] = sanitizedValue;
-    }
-    if (sum <= 0d) {
-      return new double[0];
-    }
-    for (int i = 0; i < sanitized.length; i++) {
-      sanitized[i] /= sum;
-    }
-    return sanitized;
-  }
-
-  private int drawState(double[] distribution, SplittableRandom rng) {
-    double sample = rng.nextDouble();
-    double cumulative = 0d;
-    for (int i = 0; i < distribution.length; i++) {
-      cumulative += distribution[i];
-      if (sample <= cumulative) {
-        return i;
-      }
-    }
-    return distribution.length - 1;
-  }
-
-  private double sampleNormalizedValue(int bucket, int state, SplittableRandom rng) {
-    GmmStateData gmm = gmmStates[bucket][state];
-    if (gmm == null) {
-      return 0d;
-    }
-    return clamp01(gmm.sample(rng));
-  }
-
-  private long deriveSeed(MarkovInputValue input, int bucket, int state) {
-    long seed = input.randomSeed();
-    seed = 31 * seed + bucket;
-    seed = 31 * seed + state;
-    long slot =
-        input.time().withZoneSameInstant(zoneId).toInstant().toEpochMilli()
-            / (samplingIntervalMinutes * 60_000L);
-    return 31 * seed + slot;
-  }
-
-  private ComparableQuantity<Power> scale(
-      ComparableQuantity<Power> referencePower, double normalizedValue) {
-    double clamped = clamp01(normalizedValue);
-    return referencePower.multiply(clamped).asType(Power.class);
-  }
-
   private ComparableQuantity<Power> convertReferencePower(
       ValueModel.Normalization.PowerReference reference) {
     if (!"kW".equalsIgnoreCase(reference.unit())) {
@@ -224,12 +118,6 @@ public class MarkovLoadValueSource implements MarkovBased {
           "Unsupported reference power unit '" + reference.unit() + "'. Only kW is supported.");
     }
     return Quantities.getQuantity(reference.value(), StandardUnits.ACTIVE_POWER_IN);
-  }
-
-  private static double clamp01(double value) {
-    if (value < 0d) return 0d;
-    if (value > 1d) return 1d;
-    return value;
   }
 
   private record StepResult(int nextState, double normalizedValue, Optional<PValue> value) {
@@ -330,6 +218,118 @@ public class MarkovLoadValueSource implements MarkovBased {
       ComparableQuantity<Power> power = scale(input.referencePower(), step.normalizedValue());
       return new StepResult(
           step.nextState(), step.normalizedValue(), Optional.of(new PValue(power)));
+    }
+
+    private int bucketId(ZonedDateTime time) {
+      ZonedDateTime zoned = time.withZoneSameInstant(zoneId);
+      int month = zoned.getMonthValue() - 1;
+      int weekendFlag = isWeekend(zoned) ? 1 : 0;
+      int quarterHour = zoned.getHour() * 4 + zoned.getMinute() / 15;
+      return Math.floorMod(
+          month * MONTH_FACTOR + weekendFlag * WEEKEND_FACTOR + quarterHour, bucketCount);
+    }
+
+    private boolean isWeekend(ZonedDateTime time) {
+      DayOfWeek day = time.getDayOfWeek();
+      return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
+    }
+
+    private int resolveState(MarkovInputValue input) {
+      if (input.previousState().isPresent()) {
+        int state = input.previousState().getAsInt();
+        if (state < 0 || state >= stateCount) {
+          throw new IllegalArgumentException("Previous state out of bounds: " + state);
+        }
+        return state;
+      }
+      double normalized = input.initialNormalizedValue().orElseThrow();
+      return discretize(normalized);
+    }
+
+    private int discretize(double normalized) {
+      double value = clamp01(normalized);
+      for (int i = 0; i < discretizationThresholds.length; i++) {
+        if (value <= discretizationThresholds[i]) {
+          return i;
+        }
+      }
+      return discretizationThresholds.length;
+    }
+
+    private StepResult simulateStep(int bucket, int currentState, SplittableRandom rng) {
+      double[] row = transitions[bucket][currentState];
+      double[] distribution = sanitizeDistribution(bucket, row);
+      if (distribution.length == 0) {
+        return new StepResult(currentState, 0d);
+      }
+      int nextState = drawState(distribution, rng);
+      double normalized = sampleNormalizedValue(bucket, nextState, rng);
+      return new StepResult(nextState, normalized);
+    }
+
+    private double[] sanitizeDistribution(int bucket, double[] row) {
+      double[] sanitized = new double[stateCount];
+      double sum = 0d;
+      for (int state = 0; state < stateCount; state++) {
+        double sanitizedValue = 0d;
+        if (state < row.length) {
+          double value = row[state];
+          if (value > 0d && !Double.isNaN(value) && gmmStates[bucket][state] != null) {
+            sanitizedValue = value;
+            sum += value;
+          }
+        }
+        sanitized[state] = sanitizedValue;
+      }
+      if (sum <= 0d) {
+        return new double[0];
+      }
+      for (int i = 0; i < sanitized.length; i++) {
+        sanitized[i] /= sum;
+      }
+      return sanitized;
+    }
+
+    private int drawState(double[] distribution, SplittableRandom rng) {
+      double sample = rng.nextDouble();
+      double cumulative = 0d;
+      for (int i = 0; i < distribution.length; i++) {
+        cumulative += distribution[i];
+        if (sample <= cumulative) {
+          return i;
+        }
+      }
+      return distribution.length - 1;
+    }
+
+    private double sampleNormalizedValue(int bucket, int state, SplittableRandom rng) {
+      GmmStateData gmm = gmmStates[bucket][state];
+      if (gmm == null) {
+        return 0d;
+      }
+      return clamp01(gmm.sample(rng));
+    }
+
+    private long deriveSeed(MarkovInputValue input, int bucket, int state) {
+      long seed = input.randomSeed();
+      seed = 31 * seed + bucket;
+      seed = 31 * seed + state;
+      long slot =
+          input.time().withZoneSameInstant(zoneId).toInstant().toEpochMilli()
+              / (samplingIntervalMinutes * 60_000L);
+      return 31 * seed + slot;
+    }
+
+    private ComparableQuantity<Power> scale(
+        ComparableQuantity<Power> referencePower, double normalizedValue) {
+      double clamped = clamp01(normalizedValue);
+      return referencePower.multiply(clamped).asType(Power.class);
+    }
+
+    private double clamp01(double value) {
+      if (value < 0d) return 0d;
+      if (value > 1d) return 1d;
+      return value;
     }
   }
 }
