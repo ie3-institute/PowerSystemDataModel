@@ -25,9 +25,9 @@ This reflects a simple shoe box with transmission losses
      -
      - Human readable identifier
      
-   * - bus
+   * - thermalBus
      -
-     - Thermal bus, the model is connected to
+     - UUID of the [thermal bus](#thermal-bus-model)
 
    * - operator
      -
