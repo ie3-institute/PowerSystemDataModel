@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.markov;
 
 import edu.ie3.datamodel.io.source.PowerValueSource.MarkovBased;
-import edu.ie3.datamodel.io.source.PowerValueSource.MarkovInputValue;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.profile.PowerProfile;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
@@ -36,7 +35,6 @@ public class MarkovLoadValueSource implements MarkovBased {
   private static final int MONTH_FACTOR = QUARTER_HOURS_PER_DAY * 2;
 
   private final PowerProfile profile;
-  private final MarkovLoadModel model;
   private final ZoneId zoneId;
   private final double[][][] transitions;
   private final int bucketCount;
@@ -48,23 +46,23 @@ public class MarkovLoadValueSource implements MarkovBased {
 
   public MarkovLoadValueSource(PowerProfile profile, MarkovLoadModel model) {
     this.profile = Objects.requireNonNull(profile, "profile");
-    this.model = Objects.requireNonNull(model, "model");
-    this.zoneId = ZoneId.of(model.timeModel().timezone());
-    this.transitions = model.transitionData().values();
-    this.bucketCount = model.timeModel().bucketCount();
-    this.stateCount = model.valueModel().discretization().states();
-    this.samplingIntervalMinutes = model.timeModel().samplingIntervalMinutes();
+    MarkovLoadModel nonNullModel = Objects.requireNonNull(model, "model");
+    this.zoneId = ZoneId.of(nonNullModel.timeModel().timezone());
+    this.transitions = nonNullModel.transitionData().values();
+    this.bucketCount = nonNullModel.timeModel().bucketCount();
+    this.stateCount = nonNullModel.valueModel().discretization().states();
+    this.samplingIntervalMinutes = nonNullModel.timeModel().samplingIntervalMinutes();
     this.discretizationThresholds =
-        model.valueModel().discretization().thresholdsRight().stream()
+        nonNullModel.valueModel().discretization().thresholdsRight().stream()
             .mapToDouble(Double::doubleValue)
             .toArray();
     this.gmmStates =
         buildGmmStates(
-            model
+            nonNullModel
                 .gmmBuckets()
                 .orElseThrow(() -> new IllegalArgumentException("Markov model lacks GMM data.")));
     this.referencePowerFromModel =
-        model.valueModel().normalization().referencePower().map(this::convertReferencePower);
+        nonNullModel.valueModel().normalization().referencePower().map(this::convertReferencePower);
   }
 
   @Override
@@ -152,7 +150,7 @@ public class MarkovLoadValueSource implements MarkovBased {
   private StepResult simulateStep(int bucket, int currentState, SplittableRandom rng) {
     double[] row = transitions[bucket][currentState];
     double[] distribution = sanitizeDistribution(bucket, row);
-    if (distribution == null) {
+    if (distribution.length == 0) {
       return new StepResult(currentState, 0d);
     }
     int nextState = drawState(distribution, rng);
@@ -164,20 +162,18 @@ public class MarkovLoadValueSource implements MarkovBased {
     double[] sanitized = new double[stateCount];
     double sum = 0d;
     for (int state = 0; state < stateCount; state++) {
-      double value = state < row.length ? row[state] : 0d;
-      if (value <= 0d || Double.isNaN(value)) {
-        sanitized[state] = 0d;
-        continue;
+      double sanitizedValue = 0d;
+      if (state < row.length) {
+        double value = row[state];
+        if (value > 0d && !Double.isNaN(value) && gmmStates[bucket][state] != null) {
+          sanitizedValue = value;
+          sum += value;
+        }
       }
-      if (gmmStates[bucket][state] == null) {
-        sanitized[state] = 0d;
-        continue;
-      }
-      sanitized[state] = value;
-      sum += value;
+      sanitized[state] = sanitizedValue;
     }
     if (sum <= 0d) {
-      return null;
+      return new double[0];
     }
     for (int i = 0; i < sanitized.length; i++) {
       sanitized[i] /= sum;
@@ -218,10 +214,7 @@ public class MarkovLoadValueSource implements MarkovBased {
   private ComparableQuantity<Power> scale(
       ComparableQuantity<Power> referencePower, double normalizedValue) {
     double clamped = clamp01(normalizedValue);
-    @SuppressWarnings("unchecked")
-    ComparableQuantity<Power> scaled =
-        (ComparableQuantity<Power>) referencePower.multiply(clamped).asType(Power.class);
-    return scaled;
+    return referencePower.multiply(clamped).asType(Power.class);
   }
 
   private ComparableQuantity<Power> convertReferencePower(
@@ -237,15 +230,6 @@ public class MarkovLoadValueSource implements MarkovBased {
     if (value < 0d) return 0d;
     if (value > 1d) return 1d;
     return value;
-  }
-
-  private StepResult calculate(MarkovInputValue input) {
-    int bucket = bucketId(input.time());
-    int currentState = resolveState(input);
-    SplittableRandom rng = new SplittableRandom(deriveSeed(input, bucket, currentState));
-    StepResult step = simulateStep(bucket, currentState, rng);
-    ComparableQuantity<Power> power = scale(input.referencePower(), step.normalizedValue());
-    return new StepResult(step.nextState(), step.normalizedValue(), Optional.of(new PValue(power)));
   }
 
   private record StepResult(int nextState, double normalizedValue, Optional<PValue> value) {
@@ -333,9 +317,19 @@ public class MarkovLoadValueSource implements MarkovBased {
         return;
       }
       evaluated = true;
-      StepResult result = calculate(input);
+      StepResult result = calculate();
       this.cached = result.value();
       this.nextState = result.nextState();
+    }
+
+    private StepResult calculate() {
+      int bucket = bucketId(input.time());
+      int currentState = resolveState(input);
+      SplittableRandom rng = new SplittableRandom(deriveSeed(input, bucket, currentState));
+      StepResult step = simulateStep(bucket, currentState, rng);
+      ComparableQuantity<Power> power = scale(input.referencePower(), step.normalizedValue());
+      return new StepResult(
+          step.nextState(), step.normalizedValue(), Optional.of(new PValue(power)));
     }
   }
 }

@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -41,7 +42,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
   private final ObjectMapper objectMapper = new ObjectMapper();
   private final MarkovPowerProfile profile;
   private MarkovLoadModel cachedModel;
-  private volatile MarkovLoadValueSource delegate;
+  private final AtomicReference<MarkovLoadValueSource> delegate = new AtomicReference<>();
 
   public JsonMarkovProfileSource(
       JsonDataSource dataSource, FileLoadProfileMetaInformation metaInformation) {
@@ -152,17 +153,15 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
   }
 
   private MarkovLoadValueSource getDelegate() {
-    MarkovLoadValueSource current = delegate;
-    if (current == null) {
-      synchronized (this) {
-        current = delegate;
-        if (current == null) {
-          current = new MarkovLoadValueSource(profile, loadModelUnchecked());
-          delegate = current;
-        }
-      }
+    MarkovLoadValueSource current = delegate.get();
+    if (current != null) {
+      return current;
     }
-    return current;
+    MarkovLoadValueSource created = new MarkovLoadValueSource(profile, loadModelUnchecked());
+    if (delegate.compareAndSet(null, created)) {
+      return created;
+    }
+    return delegate.get();
   }
 
   private MarkovLoadModel loadModelUnchecked() {
