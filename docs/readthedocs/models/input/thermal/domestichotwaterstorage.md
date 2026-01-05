@@ -6,9 +6,9 @@ Model of a domestic hot water storage using a fluid to store thermal energy.
 
 ## Attributes, Units and Remarks
 
-```{eval-rst}
-.. list-table::
-   :widths: 33 33 33
+```{list-table}
+   :widths: auto
+   :class: wrapping
    :header-rows: 1
 
 
@@ -17,24 +17,24 @@ Model of a domestic hot water storage using a fluid to store thermal energy.
      - Remarks
 
    * - uuid
-     - --
+     -
      -
 
    * - id
-     - --
+     -
      - Human readable identifier
 
    * - operator
-     - --
+     -
      -
 
    * - operationTime
-     - --
+     -
      - Timely restriction of operation
 
    * - thermalBus
-     - --
-     - Connection point to the thermal system
+     -
+     - UUID of the [thermal bus](#thermal-bus-model)
 
    * - storageVolumeLvl
      - m³
@@ -49,7 +49,7 @@ Model of a domestic hot water storage using a fluid to store thermal energy.
      - Temperature of the outlet
 
    * - c
-     - kWh / (K :math:`\cdot` m³)
+     - kWh / (K &middot; m³)
      - Specific heat capacity of the storage medium
      
    * - pThermalMax

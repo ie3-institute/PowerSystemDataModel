@@ -33,10 +33,6 @@ A coupling point to thermal system - equivalent to [electrical node](../grid/nod
      -
      - Timely restriction of operation
 
-   * - bus
-     -
-     - Connection point to the thermal system
-
 ```
 
 ## Caveats
