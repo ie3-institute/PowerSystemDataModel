@@ -33,9 +33,14 @@ class MarkovLoadModelFactoryTest extends Specification {
     gmmState.weights() == [0.6d]
     gmmState.means() == [1.0d]
     gmmState.variances() == [0.2d]
-    model.valueModel().normalization().referencePower().isPresent()
-    with(model.valueModel().normalization().referencePower().get()) {
+    model.valueModel().normalization().maxPower().isPresent()
+    with(model.valueModel().normalization().maxPower().get()) {
       value() == 1.5d
+      unit() == "kW"
+    }
+    model.valueModel().normalization().minPower().isPresent()
+    with(model.valueModel().normalization().minPower().get()) {
+      value() == 0.1d
       unit() == "kW"
     }
   }
@@ -71,7 +76,8 @@ class MarkovLoadModelFactoryTest extends Specification {
           "value_unit": "W",
           "normalization": {
             "method": "none",
-            "reference_power": { "value": 1.5, "unit": "kW" }
+            "max_power": { "value": 1.5, "unit": "kW" },
+            "min_power": { "value": 0.1, "unit": "kW" }
           },
           "discretization": {
             "states": 2,

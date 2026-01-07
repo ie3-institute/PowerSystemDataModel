@@ -42,7 +42,8 @@ public class MarkovLoadValueSource implements MarkovBased {
   private final int samplingIntervalMinutes;
   private final double[] discretizationThresholds;
   private final GmmStateData[][] gmmStates;
-  private final Optional<ComparableQuantity<Power>> referencePowerFromModel;
+  private final ComparableQuantity<Power> maxPowerFromModel;
+  private final ComparableQuantity<Power> minPowerFromModel;
 
   public MarkovLoadValueSource(PowerProfile profile, MarkovLoadModel model) {
     this.profile = Objects.requireNonNull(profile, "profile");
@@ -61,8 +62,22 @@ public class MarkovLoadValueSource implements MarkovBased {
             nonNullModel
                 .gmmBuckets()
                 .orElseThrow(() -> new IllegalArgumentException("Markov model lacks GMM data.")));
-    this.referencePowerFromModel =
-        nonNullModel.valueModel().normalization().referencePower().map(this::convertReferencePower);
+    this.maxPowerFromModel =
+        nonNullModel
+            .valueModel()
+            .normalization()
+            .maxPower()
+            .map(this::convertPowerReference)
+            .orElseThrow(
+                () -> new IllegalArgumentException("Markov model lacks normalization.max_power"));
+    this.minPowerFromModel =
+        nonNullModel
+            .valueModel()
+            .normalization()
+            .minPower()
+            .map(this::convertPowerReference)
+            .orElseThrow(
+                () -> new IllegalArgumentException("Markov model lacks normalization.min_power"));
   }
 
   @Override
@@ -83,7 +98,7 @@ public class MarkovLoadValueSource implements MarkovBased {
 
   @Override
   public Optional<ComparableQuantity<Power>> getMaxPower() {
-    return referencePowerFromModel;
+    return Optional.of(maxPowerFromModel);
   }
 
   @Override
@@ -111,7 +126,7 @@ public class MarkovLoadValueSource implements MarkovBased {
     return lookup;
   }
 
-  private ComparableQuantity<Power> convertReferencePower(
+  private ComparableQuantity<Power> convertPowerReference(
       ValueModel.Normalization.PowerReference reference) {
     if (!"kW".equalsIgnoreCase(reference.unit())) {
       throw new IllegalArgumentException(
@@ -322,8 +337,14 @@ public class MarkovLoadValueSource implements MarkovBased {
 
     private ComparableQuantity<Power> scale(
         ComparableQuantity<Power> referencePower, double normalizedValue) {
+      Objects.requireNonNull(referencePower, "referencePower");
+      if (!maxPowerFromModel.isGreaterThan(minPowerFromModel)) {
+        throw new IllegalStateException(
+            "Markov model normalization has non-positive range (max <= min).");
+      }
       double clamped = clamp01(normalizedValue);
-      return referencePower.multiply(clamped).asType(Power.class);
+      ComparableQuantity<Power> range = maxPowerFromModel.subtract(minPowerFromModel);
+      return minPowerFromModel.add(range.multiply(clamped)).asType(Power.class);
     }
 
     private double clamp01(double value) {

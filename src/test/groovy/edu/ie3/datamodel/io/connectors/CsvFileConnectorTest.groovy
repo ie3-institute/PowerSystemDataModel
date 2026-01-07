@@ -15,6 +15,7 @@ import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.io.Reader
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -50,12 +51,18 @@ class CsvFileConnectorTest extends Specification {
   }
 
   def "The csv file connector initializes a reader without Exception, if the foreseen file is apparent"() {
+    given:
+    Reader reader = null
+
     when:
     def filePath = fileNamingStrategy.getFilePath(NodeInput).orElseThrow()
-    cfc.initReader(filePath)
+    reader = cfc.initReader(filePath)
 
     then:
     noExceptionThrown()
+
+    cleanup:
+    reader?.close()
   }
 
   def "The csv file connector is able to init writers utilizing a directory hierarchy"() {

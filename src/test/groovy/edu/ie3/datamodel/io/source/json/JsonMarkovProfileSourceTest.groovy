@@ -126,7 +126,8 @@ class JsonMarkovProfileSourceTest extends Specification {
           "value_unit": "W",
           "normalization": {
             "method": "none",
-            "reference_power": { "value": 10.0, "unit": "kW" }
+            "max_power": { "value": 10.0, "unit": "kW" },
+            "min_power": { "value": 0.5, "unit": "kW" }
           },
           "discretization": {
             "states": 2,

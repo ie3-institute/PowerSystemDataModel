@@ -44,10 +44,32 @@ class MarkovLoadValueSourceTest extends Specification {
     then:
     value.isPresent()
     supplier.getNextState() == 1
-    value.get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 4d
+    value.get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 4.2d
     supplier.get().is(value) // cached result reused
     source.getMaxPower().isPresent()
     source.getMaxPower().get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 5d
+  }
+
+  def "supplier denormalizes using model min and max power"() {
+    given:
+    def model = loadModel(deterministicTransitions(), deterministicStates())
+    def source = new MarkovLoadValueSource(profile, model)
+    def reference = Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)
+    def input = new PowerValueSource.MarkovInputValue(
+        ZonedDateTime.parse("2025-01-01T00:00:00Z"),
+        OptionalInt.of(0),
+        OptionalDouble.empty(),
+        reference,
+        17L
+        )
+
+    when:
+    def supplier = source.getValueSupplier(input)
+    def value = supplier.get()
+
+    then:
+    supplier.getNextState() == 1
+    value.get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 4.2d
   }
 
   def "supplier uses initial normalized value when no previous state is present"() {
@@ -68,7 +90,7 @@ class MarkovLoadValueSourceTest extends Specification {
 
     then:
     supplier.getNextState() == 0 // discretized from initial normalized value
-    supplier.get().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 2d
+    supplier.get().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 2.6d
   }
 
   def "supplier returns zero power when transitions row has no usable probabilities"() {
@@ -91,24 +113,11 @@ class MarkovLoadValueSourceTest extends Specification {
     then:
     supplier.getNextState() == 0 // stays in current state
     value.isPresent()
-    value.get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 0d
-  }
-
-  def "reference power metadata optional"() {
-    given:
-    def model = loadModel(deterministicTransitions(), deterministicStates(), false)
-    def source = new MarkovLoadValueSource(profile, model)
-
-    expect:
-    source.getMaxPower().isEmpty()
+    value.get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 1d
   }
 
   private loadModel(String transitions, String states) {
-    return loadModel(transitions, states, true)
-  }
-
-  private loadModel(String transitions, String states, boolean includeReference) {
-    def json = modelJson(transitions, states, includeReference)
+    def json = modelJson(transitions, states)
     def root = objectMapper.readTree(json)
     factory.get(new MarkovModelData(root)).getOrThrow()
   }
@@ -176,17 +185,12 @@ class MarkovLoadValueSourceTest extends Specification {
     """.stripIndent()
   }
 
-  private static String modelJson(String transitions, String states, boolean includeReference) {
-    def normalization = includeReference ?
-        """
+  private static String modelJson(String transitions, String states) {
+    def normalization = """
         {
           "method": "none",
-          "reference_power": { "value": 5.0, "unit": "kW" }
-        }
-        """ :
-        """
-        {
-          "method": "none"
+          "max_power": { "value": 5.0, "unit": "kW" },
+          "min_power": { "value": 1.0, "unit": "kW" }
         }
         """
     return """

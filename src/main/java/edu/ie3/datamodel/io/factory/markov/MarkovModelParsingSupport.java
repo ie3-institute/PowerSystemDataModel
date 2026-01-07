@@ -61,7 +61,7 @@ interface MarkovModelParsingSupport {
     ValueModel.Normalization normalization =
         new ValueModel.Normalization(
             normalizationMethod,
-            parsePowerReference(normalizationNode, "reference_power"),
+            parsePowerReference(normalizationNode, "max_power"),
             parsePowerReference(normalizationNode, "min_power"));
 
     JsonNode discretizationNode = requireNode(valueNode, "discretization");
