@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.markov;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import edu.ie3.datamodel.io.factory.Factory;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.*;

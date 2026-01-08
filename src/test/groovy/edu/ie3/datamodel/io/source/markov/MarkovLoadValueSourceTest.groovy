@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.markov
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import edu.ie3.datamodel.io.factory.markov.MarkovLoadModelFactory
 import edu.ie3.datamodel.io.factory.markov.MarkovModelData
 import edu.ie3.datamodel.io.source.PowerValueSource
@@ -13,6 +12,7 @@ import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.profile.markov.MarkovPowerProfile
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
+import tools.jackson.databind.ObjectMapper
 
 import java.time.ZonedDateTime
 

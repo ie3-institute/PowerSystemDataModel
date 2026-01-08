@@ -5,8 +5,8 @@
 */
 package edu.ie3.datamodel.io.source.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
@@ -142,8 +142,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
       return;
     }
     if (node.isObject()) {
-      node.fieldNames()
-          .forEachRemaining(name -> collectFields(join(prefix, name), node.get(name), collector));
+      node.propertyNames().forEach(name -> collectFields(join(prefix, name), node.get(name), collector));
     } else if (!prefix.isEmpty()) {
       collector.add(prefix);
     }

@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.markov
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import edu.ie3.datamodel.exceptions.FactoryException
 import spock.lang.Specification
 

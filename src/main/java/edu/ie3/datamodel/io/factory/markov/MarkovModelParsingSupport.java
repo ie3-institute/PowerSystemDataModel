@@ -5,22 +5,13 @@
 */
 package edu.ie3.datamodel.io.factory.markov;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.Generator;
-import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.GmmBuckets;
-import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.Parameters;
-import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.TimeModel;
-import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.TransitionData;
-import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.ValueModel;
+import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.*;
+import tools.jackson.databind.JsonNode;
+
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Shared parsing helpers for Markov model JSON documents. This is intentionally package-private as
@@ -34,18 +25,16 @@ interface MarkovModelParsingSupport {
     Map<String, String> config = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     JsonNode configNode = generatorNode.path("config");
     if (configNode.isObject()) {
-      Iterator<Map.Entry<String, JsonNode>> fields = configNode.fields();
-      while (fields.hasNext()) {
-        Map.Entry<String, JsonNode> entry = fields.next();
-        config.put(entry.getKey(), entry.getValue().asText());
-      }
+        for (Map.Entry<String, JsonNode> entry : configNode.properties()) {
+            config.put(entry.getKey(), entry.getValue().asString());
+        }
     }
     return new Generator(name, version, config);
   }
 
   default TimeModel parseTimeModel(JsonNode timeNode) {
     int bucketCount = requireInt(timeNode, "bucket_count");
-    String formula = requireNode(timeNode, "bucket_encoding").path("formula").asText("");
+    String formula = requireNode(timeNode, "bucket_encoding").path("formula").asString("");
     if (formula.isEmpty()) {
       throw new FactoryException("Missing bucket encoding formula");
     }
@@ -81,7 +70,7 @@ interface MarkovModelParsingSupport {
   default Parameters parseParameters(JsonNode parametersNode) {
     Parameters.TransitionParameters transitions =
         new Parameters.TransitionParameters(
-            parametersNode.path("transitions").path("empty_row_strategy").asText(""));
+            parametersNode.path("transitions").path("empty_row_strategy").asString(""));
     if (transitions.emptyRowStrategy().isEmpty()) {
       transitions = null;
     }
@@ -91,7 +80,7 @@ interface MarkovModelParsingSupport {
         gmmNode.isMissingNode() || gmmNode.isNull() || gmmNode.isEmpty()
             ? null
             : new Parameters.GmmParameters(
-                gmmNode.path("value_col").asText(""),
+                gmmNode.path("value_col").asString(""),
                 optionalInt(gmmNode, "verbose"),
                 optionalInt(gmmNode, "heartbeat_seconds"));
 
@@ -159,10 +148,10 @@ interface MarkovModelParsingSupport {
     if (value == null || value.isMissingNode() || value.isNull()) {
       throw new FactoryException("Missing field '" + field + "'");
     }
-    if (!value.isTextual()) {
+    if (!value.isString()) {
       throw new FactoryException("Field '" + field + "' must be textual");
     }
-    return value.asText();
+    return value.asString();
   }
 
   default double requireDouble(JsonNode node, String field) {
