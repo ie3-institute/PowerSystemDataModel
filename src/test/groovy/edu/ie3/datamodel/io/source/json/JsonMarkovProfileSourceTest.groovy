@@ -18,8 +18,6 @@ import tech.units.indriya.quantity.Quantities
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.ZonedDateTime
-import java.util.OptionalDouble
-import java.util.OptionalInt
 
 class JsonMarkovProfileSourceTest extends Specification {
 
@@ -86,7 +84,7 @@ class JsonMarkovProfileSourceTest extends Specification {
         new FileLoadProfileMetaInformation("profile1", jsonFile, FileType.JSON)
         )
     def referencePower = Quantities.getQuantity(10d, StandardUnits.ACTIVE_POWER_IN)
-    def input = new PowerValueSource.MarkovInputValue(
+    def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.of(0),
         OptionalDouble.empty(),

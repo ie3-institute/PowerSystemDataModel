@@ -88,7 +88,7 @@ interface MarkovModelParsingSupport {
 
     JsonNode gmmNode = parametersNode.path("gmm");
     Parameters.GmmParameters gmm =
-        gmmNode.isMissingNode() || gmmNode.isNull() || gmmNode.size() == 0
+        gmmNode.isMissingNode() || gmmNode.isNull() || gmmNode.isEmpty()
             ? null
             : new Parameters.GmmParameters(
                 gmmNode.path("value_col").asText(""),

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.SplittableRandom;
+import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -86,9 +87,10 @@ public class MarkovLoadValueSource implements MarkovBased {
   }
 
   @Override
-  public MarkovValueSupplier getValueSupplier(MarkovInputValue data) {
+  public Supplier<MarkovOutputValue> getValueSupplier(MarkovIdentifier data) {
     Objects.requireNonNull(data, "data");
-    return new MarkovSupplier(data);
+    MarkovSupplier s = new MarkovSupplier(data);
+    return () -> new MarkovOutputValue(s.get(), s.nextState);
   }
 
   @Override
@@ -193,23 +195,21 @@ public class MarkovLoadValueSource implements MarkovBased {
     }
   }
 
-  private final class MarkovSupplier implements MarkovValueSupplier {
-    private final MarkovInputValue input;
+  private final class MarkovSupplier {
+    private final MarkovIdentifier input;
     private Optional<PValue> cached = Optional.empty();
     private Integer nextState;
     private boolean evaluated;
 
-    private MarkovSupplier(MarkovInputValue input) {
+    private MarkovSupplier(MarkovIdentifier input) {
       this.input = input;
     }
 
-    @Override
     public Optional<PValue> get() {
       evaluate();
       return cached;
     }
 
-    @Override
     public int getNextState() {
       evaluate();
       return nextState;
@@ -249,7 +249,7 @@ public class MarkovLoadValueSource implements MarkovBased {
       return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
 
-    private int resolveState(MarkovInputValue input) {
+    private int resolveState(MarkovIdentifier input) {
       if (input.previousState().isPresent()) {
         int state = input.previousState().getAsInt();
         if (state < 0 || state >= stateCount) {
@@ -325,7 +325,7 @@ public class MarkovLoadValueSource implements MarkovBased {
       return clamp01(gmm.sample(rng));
     }
 
-    private long deriveSeed(MarkovInputValue input, int bucket, int state) {
+    private long deriveSeed(MarkovIdentifier input, int bucket, int state) {
       long seed = input.randomSeed();
       seed = 31 * seed + bucket;
       seed = 31 * seed + state;

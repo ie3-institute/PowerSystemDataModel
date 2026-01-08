@@ -15,8 +15,6 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import java.time.ZonedDateTime
-import java.util.OptionalDouble
-import java.util.OptionalInt
 
 class MarkovLoadValueSourceTest extends Specification {
 
@@ -29,7 +27,7 @@ class MarkovLoadValueSourceTest extends Specification {
     def model = loadModel(deterministicTransitions(), deterministicStates())
     def source = new MarkovLoadValueSource(profile, model)
     def reference = Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)
-    def input = new PowerValueSource.MarkovInputValue(
+    def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.of(0),
         OptionalDouble.empty(),
@@ -55,7 +53,7 @@ class MarkovLoadValueSourceTest extends Specification {
     def model = loadModel(deterministicTransitions(), deterministicStates())
     def source = new MarkovLoadValueSource(profile, model)
     def reference = Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)
-    def input = new PowerValueSource.MarkovInputValue(
+    def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.of(0),
         OptionalDouble.empty(),
@@ -77,7 +75,7 @@ class MarkovLoadValueSourceTest extends Specification {
     def model = loadModel(selfLoopTransitions(), deterministicStates())
     def source = new MarkovLoadValueSource(profile, model)
     def reference = Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)
-    def input = new PowerValueSource.MarkovInputValue(
+    def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.empty(),
         OptionalDouble.of(0.25d),
@@ -98,7 +96,7 @@ class MarkovLoadValueSourceTest extends Specification {
     def model = loadModel(emptyTransitions(), missingStateGmms())
     def source = new MarkovLoadValueSource(profile, model)
     def reference = Quantities.getQuantity(3d, StandardUnits.ACTIVE_POWER_IN)
-    def input = new PowerValueSource.MarkovInputValue(
+    def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.of(0),
         OptionalDouble.empty(),

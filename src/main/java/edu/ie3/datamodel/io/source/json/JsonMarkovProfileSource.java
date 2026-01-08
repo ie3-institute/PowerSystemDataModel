@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -99,8 +100,8 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
   }
 
   @Override
-  public MarkovValueSupplier getValueSupplier(PowerValueSource.MarkovInputValue data) {
-    return getDelegate().getValueSupplier(data);
+  public Supplier<MarkovOutputValue> getValueSupplier(MarkovIdentifier data) {
+    return () -> cachedModel.getPower(data);
   }
 
   @Override

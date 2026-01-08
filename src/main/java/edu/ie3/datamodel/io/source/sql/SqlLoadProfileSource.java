@@ -16,7 +16,6 @@ import edu.ie3.datamodel.io.source.LoadProfileSource;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
-import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
@@ -100,10 +99,10 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   }
 
   @Override
-  public Supplier<Optional<PValue>> getValueSupplier(TimeSeriesInputValue data) {
+  public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesIdentifier data) {
     ZonedDateTime time = data.time();
     Optional<LoadValues<P>> loadValueOption = queryForValue(time);
-    return () -> loadValueOption.map(v -> v.getValue(time, profile));
+    return TimeSeriesOutputValue.from(() -> loadValueOption.map(v -> v.getValue(time, profile)));
   }
 
   @Override

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.profile.markov;
 
+import edu.ie3.datamodel.io.source.PowerValueSource;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,11 @@ public record MarkovLoadModel(
     Parameters parameters,
     TransitionData transitionData,
     Optional<GmmBuckets> gmmBuckets) {
+
+  public PowerValueSource.MarkovOutputValue getPower(PowerValueSource.MarkovIdentifier data) {
+    // TODO: Implement
+    return null;
+  }
 
   public record Generator(String name, String version, Map<String, String> config) {}
 
