@@ -252,9 +252,7 @@ public abstract class EntitySource {
           BiFunction<E, T, R> buildingFcn) {
     return entityData ->
         entityData
-            .zip(
-                extractFunction(entityData, fieldName, entities)
-                    .orElse(() -> Try.Success.of(defaultEntity)))
+            .zip(extractWithDefaultFunction(entityData, fieldName, entities, defaultEntity))
             .map(enrichFunction(List.of(fieldName), buildingFcn));
   }
 
@@ -381,6 +379,30 @@ public abstract class EntitySource {
                                 + fieldName
                                 + "' failed. Caused by: "
                                 + exception.getMessage())));
+  }
+
+  /**
+   * Method to extract an entity with default.
+   *
+   * @param entityData data containing complex entities
+   * @param fieldName name of the field
+   * @param entities map: uuid to {@link Entity}
+   * @param defaultEntity that is used if the field is empty
+   * @return an enrichment
+   * @param <E> type of entity data
+   * @param <R> type of entity
+   */
+  protected static <E extends EntityData, R> Try<R, SourceException> extractWithDefaultFunction(
+      Try<E, SourceException> entityData,
+      String fieldName,
+      Map<UUID, R> entities,
+      R defaultEntity) {
+    if (entityData.convert(data -> data.isFieldEmpty(fieldName), f -> false)) {
+      // return the default entity, if the field is empty
+      return new Try.Success<>(defaultEntity);
+    } else {
+      return extractFunction(entityData, fieldName, entities);
+    }
   }
 
   /**
