@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.Factory;
-import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.LoadValues;
@@ -20,10 +20,9 @@ import tech.units.indriya.quantity.Quantities;
 /**
  * Base factory for all {@link LoadProfileTimeSeries}.
  *
- * @param <P> type of load profile
  * @param <V> type of load values
  */
-public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadValues<P>>
+public abstract class LoadProfileFactory<V extends LoadValues>
     extends Factory<V, LoadProfileData<V>, LoadProfileEntry<V>> {
   protected static final String QUARTER_HOUR = "quarterHour";
 
@@ -36,20 +35,19 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
     super(valueClass);
   }
 
-  public abstract LoadProfileTimeSeries<P, V> build(P profile, Set<LoadProfileEntry<V>> entries);
-
-  public abstract P parseProfile(String profile);
+  public abstract LoadProfileTimeSeries<V> build(
+      PowerProfileKey powerProfileKey, Set<LoadProfileEntry<V>> entries);
 
   /**
    * Calculates the maximum average power consumption per quarter-hour for a given calculated over
    * all seasons and weekday types of given load profile
    *
-   * @param loadProfile given load profile
+   * @param powerProfileKey given load profile key
    * @param entries with power values
    * @return the maximal average power
    */
   public abstract ComparableQuantity<Power> calculateMaxPower(
-      P loadProfile, Set<LoadProfileEntry<V>> entries);
+      PowerProfileKey powerProfileKey, Set<LoadProfileEntry<V>> entries);
 
   /** Returns the quarter-hour field. */
   public String getTimeFieldString() {
@@ -57,7 +55,7 @@ public abstract class LoadProfileFactory<P extends LoadProfile, V extends LoadVa
   }
 
   /** Returns the load profile energy scaling. The default value is 1000 kWh */
-  public ComparableQuantity<Energy> getLoadProfileEnergyScaling(P loadProfile) {
+  public ComparableQuantity<Energy> getLoadProfileEnergyScaling(PowerProfileKey powerProfileKey) {
     return Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR);
   }
 }

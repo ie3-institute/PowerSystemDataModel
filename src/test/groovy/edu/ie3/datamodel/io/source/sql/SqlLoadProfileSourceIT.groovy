@@ -34,7 +34,7 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
   SqlConnector connector
 
   @Shared
-  SqlLoadProfileSource<BdewStandardLoadProfile, BdewLoadValues> loadSource
+  SqlLoadProfileSource<BdewLoadValues> loadSource
 
   @Shared
   DatabaseNamingStrategy namingStrategy

@@ -9,20 +9,33 @@ import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RAN
 
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.profile.LoadProfile
+import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import spock.lang.Specification
+
+import java.util.stream.Stream
 
 class LoadProfileSourceTest extends Specification {
 
   def "A LoadProfileSource should return the correct profile resolution for a given load profile"() {
     given:
-    def allProfiles = LoadProfile.getAllProfiles()
-
+    def allProfiles = Stream.of(BdewStandardLoadProfile.values(), NbwTemperatureDependantLoadProfile.values(), new LoadProfile[] {
+      RANDOM_LOAD_PROFILE
+    }).flatMap {
+      Arrays.stream(it)
+    }
 
     when:
-    def resolutions = Arrays.stream(allProfiles).map { it -> LoadProfileSource.getResolution(it) }.toList()
+    def resolutions = allProfiles.map {
+      it -> LoadProfileSource.getResolution(it.key)
+    }.toList()
+    def resolutionForNoKeyAssigned = LoadProfileSource.getResolution(PowerProfileKey.NO_KEY_ASSIGNED)
 
     then:
-    resolutions.every { resolution -> resolution == 900 }
+    resolutions.every {
+      resolution -> resolution == 900
+    }
+    resolutionForNoKeyAssigned == Long.MAX_VALUE
   }
 
 
@@ -32,8 +45,12 @@ class LoadProfileSourceTest extends Specification {
 
     then:
     profiles.size() == 16
-    BdewStandardLoadProfile.values().every { profiles.keySet().contains(it) }
-    profiles.values().every { it.timeSeries.entries.size() == 96 }
+    BdewStandardLoadProfile.values().every {
+      profiles.keySet().contains(it.key)
+    }
+    profiles.values().every {
+      it.timeSeries.entries.size() == 96
+    }
   }
 
   def "A LoadProfileSource should read in the build-in RandomLoadProfile"() {
@@ -41,7 +58,7 @@ class LoadProfileSourceTest extends Specification {
     def random = LoadProfileSource.randomLoadProfile.timeSeries
 
     then:
-    random.loadProfile == RANDOM_LOAD_PROFILE
+    random.powerProfileKey == RANDOM_LOAD_PROFILE.key
     random.entries.size() == 96
   }
 }

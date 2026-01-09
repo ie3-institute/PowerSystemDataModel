@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
 import de.lmu.ifi.dbs.elki.math.statistics.distribution.GeneralizedExtremeValueDistribution;
-import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import java.util.Set;
 import javax.measure.quantity.Energy;
@@ -17,15 +17,14 @@ import tech.units.indriya.ComparableQuantity;
  * Describes a random load profile time series based on a {@link
  * GeneralizedExtremeValueDistribution}. Each value of this# timeseries is given in kW.
  */
-public class RandomLoadProfileTimeSeries
-    extends LoadProfileTimeSeries<LoadProfile.RandomLoadProfile, RandomLoadValues> {
+public class RandomLoadProfileTimeSeries extends LoadProfileTimeSeries<RandomLoadValues> {
 
   public RandomLoadProfileTimeSeries(
-      LoadProfile.RandomLoadProfile loadProfile,
+      PowerProfileKey powerProfileKey,
       Set<LoadProfileEntry<RandomLoadValues>> entries,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(loadProfile, entries, maxPower, profileEnergyScaling);
+    super(powerProfileKey, entries, maxPower, profileEnergyScaling);
   }
 
   @Override

@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import java.util.Objects;
 import java.util.Set;
@@ -17,15 +17,14 @@ import tech.units.indriya.ComparableQuantity;
  * Describes a bdew load profile time series with repetitive values that can be calculated from a
  * pattern. Each value of this timeseries is given in W.
  */
-public class BdewLoadProfileTimeSeries
-    extends LoadProfileTimeSeries<BdewStandardLoadProfile, BdewLoadValues> {
+public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadValues> {
 
   public BdewLoadProfileTimeSeries(
-      BdewStandardLoadProfile loadProfile,
+      PowerProfileKey powerProfileKey,
       Set<LoadProfileEntry<BdewLoadValues>> values,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(loadProfile, values, maxPower, profileEnergyScaling);
+    super(powerProfileKey, values, maxPower, profileEnergyScaling);
   }
 
   @Override
@@ -43,8 +42,8 @@ public class BdewLoadProfileTimeSeries
   @Override
   public String toString() {
     return "BDEWLoadProfileTimeSeries{"
-        + "loadProfile="
-        + getLoadProfile()
+        + "loadProfileKey="
+        + getPowerProfileKey().getValue()
         + ", valueMapping="
         + getValueMapping()
         + '}';
