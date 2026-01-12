@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Included a doFirst clause into `checkJavaVersion.gradle` [#1462](https://github.com/ie3-institute/PowerSystemDataModel/issues/1462)
 - Fixed `EnergyPriceValue.equals()` [#1479](https://github.com/ie3-institute/PowerSystemDataModel/issues/1479)
 - Fixed tests of `TimeBasedValue` [#1469](https://github.com/ie3-institute/PowerSystemDataModel/issues/1469)
+- Requiring `thermalBus` field in house and storage input [#1509](https://github.com/ie3-institute/PowerSystemDataModel/issues/1509)
+- Fixed handling of erroneous field values in `EntitySource.enrichWithDefault()` [#1511](https://github.com/ie3-institute/PowerSystemDataModel/issues/1511)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
@@ -31,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change `TimeSeries` to no longer extend `UniqueEntity` [#1441](https://github.com/ie3-institute/PowerSystemDataModel/issues/1441)
 - Refactor CSV handling into shared file-based infrastructure. [#1450](https://github.com/ie3-institute/PowerSystemDataModel/issues/1445)
 - Change `testcontainers` to v2 [#1496](https://github.com/ie3-institute/PowerSystemDataModel/issues/1496)
+- Update thermal input documentation [#1506](https://github.com/ie3-institute/PowerSystemDataModel/issues/1506)
 
 ## [8.1.0] - 2025-07-25
 

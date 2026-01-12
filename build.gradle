@@ -20,7 +20,7 @@ ext {
   groovyVersion = "4.0"
   groovyBinaryVersion = "4.0.28"
 
-  junitVersion = '6.0.1'
+  junitVersion = '6.0.2'
   testcontainersVersion = '2.0.3'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
@@ -82,7 +82,7 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
   testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
   testImplementation 'org.objenesis:objenesis:3.4' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.18.2' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.18.3' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
