@@ -92,10 +92,11 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
-        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN);
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN)
+            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
-        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN);
-
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN)
+            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
