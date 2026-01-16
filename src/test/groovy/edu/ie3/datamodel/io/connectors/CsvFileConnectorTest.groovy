@@ -76,6 +76,9 @@ class CsvFileConnectorTest extends Specification {
     noExceptionThrown()
     nodeFile.exists()
     nodeFile.file // is it a file?
+
+    cleanup:
+    connector.shutdown()
   }
 
   def "The csv file connector is able to init writers utilizing no directory hierarchy"() {
@@ -95,6 +98,9 @@ class CsvFileConnectorTest extends Specification {
     noExceptionThrown()
     nodeFile.exists()
     nodeFile.file // is it a file?
+
+    cleanup:
+    connector.shutdown()
   }
 
   def "Initialising a writer with incorrect base directory leads to ConnectorException"() {

@@ -29,28 +29,19 @@ import org.slf4j.LoggerFactory;
  * @version 0.1
  * @since 19.03.20
  */
-public class CsvFileConnector implements DataConnector {
+public class CsvFileConnector extends FileConnector {
   private static final Logger log = LoggerFactory.getLogger(CsvFileConnector.class);
 
   private final Map<Class<? extends Entity>, BufferedCsvWriter> entityWriters = new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
-  private final Path baseDirectory;
-  private final Optional<Function<String, InputStream>> customInputStream;
   private static final String FILE_ENDING = ".csv";
 
   public CsvFileConnector(Path baseDirectory) {
-    this.baseDirectory = baseDirectory;
-    this.customInputStream = Optional.empty();
+    super(baseDirectory);
   }
 
-  public CsvFileConnector(Path baseDirectory, Function<String, InputStream> inputStreamSupplier) {
-    this.baseDirectory = baseDirectory;
-    this.customInputStream = Optional.ofNullable(inputStreamSupplier);
-  }
-
-  /** Returns the base directory of this connector. */
-  public Path getBaseDirectory() {
-    return baseDirectory;
+  public CsvFileConnector(Path baseDirectory, Function<String, InputStream> customInputStream) {
+    super(baseDirectory, customInputStream);
   }
 
   public synchronized BufferedCsvWriter getOrInitWriter(
@@ -92,6 +83,19 @@ public class CsvFileConnector implements DataConnector {
       throw new ConnectorException(
           "Can neither find suitable writer nor build the correct one in CsvFileConnector.", e);
     }
+  }
+
+  /**
+   * Initializes a reader for the given file name.
+   *
+   * @param filePath path of file starting from base folder, including file name but not file
+   *     extension
+   * @return the reader that contains information about the file to be read in
+   * @throws FileNotFoundException if no file with the provided file name can be found
+   */
+  public BufferedReader initReader(Path filePath) throws FileNotFoundException {
+    InputStream inputStream = openInputStream(filePath);
+    return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8), 16384);
   }
 
   /**
@@ -158,28 +162,6 @@ public class CsvFileConnector implements DataConnector {
     }
   }
 
-  /**
-   * Initializes a file reader for the given file name.
-   *
-   * @param filePath path of file starting from base folder, including file name but not file
-   *     extension
-   * @return the reader that contains information about the file to be read in
-   * @throws FileNotFoundException if no file with the provided file name can be found
-   */
-  public BufferedReader initReader(Path filePath) throws FileNotFoundException {
-    Path fullPath = baseDirectory.resolve(filePath.toString() + FILE_ENDING);
-
-    InputStream inputStream;
-
-    if (customInputStream.isPresent()) {
-      inputStream = customInputStream.get().apply(fullPath.toString());
-    } else {
-      inputStream = new FileInputStream(fullPath.toFile());
-    }
-
-    return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8), 16384);
-  }
-
   @Override
   public void shutdown() {
     Stream.of(entityWriters.values(), timeSeriesWriters.values())
@@ -192,5 +174,10 @@ public class CsvFileConnector implements DataConnector {
                 log.error("Error during CsvFileConnector shutdown process.", e);
               }
             });
+  }
+
+  @Override
+  protected String getFileEnding() {
+    return FILE_ENDING;
   }
 }

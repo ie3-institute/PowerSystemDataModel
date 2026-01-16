@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.naming.timeseries;
 
-import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -15,11 +14,6 @@ public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
 
   public LoadProfileMetaInformation(String profile) {
     super(UUID.randomUUID());
-    this.profile = profile;
-  }
-
-  public LoadProfileMetaInformation(UUID uuid, String profile) {
-    super(uuid);
     this.profile = profile;
   }
 
@@ -42,13 +36,6 @@ public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
 
   @Override
   public String toString() {
-    return "LoadProfileTimeSeriesMetaInformation{"
-        + "uuid='"
-        + getUuid()
-        + '\''
-        + ", profile='"
-        + profile
-        + '\''
-        + '}';
+    return "LoadProfileTimeSeriesMetaInformation{profile='" + profile + '}';
   }
 }
