@@ -7,6 +7,7 @@ package edu.ie3.test.helper
 
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.value.GroundTemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.util.quantities.QuantityUtil
 
@@ -45,9 +46,9 @@ trait WeatherSourceTestHelper {
     return true
   }
 
-  static boolean compareOptionalTemperature(def optA, def optB) {
-    if (optA.present != optB.present) return false
-    if (!optA.present) return true
+  static boolean compareOptionalTemperature(Optional<GroundTemperatureValue> optA,Optional<GroundTemperatureValue> optB) {
+    if (optA.isPresent() != optB.isPresent()) return false
+    if (!optA.isPresent()) return true
     return QuantityUtil.isEquivalentAbs(
         optA.get().getTemperature().get(),
         optB.get().getTemperature().get(),
