@@ -5,9 +5,9 @@ CREATE DATABASE test_weather
 # CONTEXT-DATABASE: test_weather
 
 
-weather,coordinate_id=193186 diffuse_irradiance=286.872985839844,direct_irradiance=282.671997070312,temperature=278.019012451172,wind_direction=0,wind_velocity=1.66103506088257,ground_temperature_level_1=1.123456789123,ground_temperature_level_2=2.123456789123 1588086000000
-weather,coordinate_id=193187 diffuse_irradiance=287.872985839844,direct_irradiance=283.671997070312,temperature=279.019012451172,wind_direction=0,wind_velocity=1.76103506088257,ground_temperature_level_1=7.123456789123,ground_temperature_level_2=8.123456789123 1588086000000
-weather,coordinate_id=193188 diffuse_irradiance=288.872985839844,direct_irradiance=284.671997070312,temperature=280.019012451172,wind_direction=0,wind_velocity=1.86103506088257,ground_temperature_level_1=11.123456789123,ground_temperature_level_2=12.123456789123 1588086000000
-weather,coordinate_id=193186 diffuse_irradiance=286.872,direct_irradiance=282.672,temperature=278.012,wind_direction=0,wind_velocity=1.662,ground_temperature_level_1=3.123456789123,ground_temperature_level_2=4.123456789123 1588089600000
-weather,coordinate_id=193187 diffuse_irradiance=287.872,direct_irradiance=283.672,temperature=279.012,wind_direction=0,wind_velocity=1.762,ground_temperature_level_1=9.123456789123,ground_temperature_level_2=10.123456789123 1588089600000
-weather,coordinate_id=193186 diffuse_irradiance=286.873,direct_irradiance=282.673,temperature=278.013,wind_direction=0,wind_velocity=1.663,ground_temperature_level_1=5.123456789123,ground_temperature_level_2=6.123456789123 1588093200000
+weather,coordinate_id=193186 diffuse_irradiance=286.872985839844,direct_irradiance=282.671997070312,temperature=278.019012451172,wind_direction=0,wind_velocity=1.66103506088257,ground_temperature_level_1=268.15,ground_temperature_level_2=269.15 1588086000000
+weather,coordinate_id=193187 diffuse_irradiance=287.872985839844,direct_irradiance=283.671997070312,temperature=279.019012451172,wind_direction=0,wind_velocity=1.76103506088257,ground_temperature_level_1=274.15,ground_temperature_level_2=275.15 1588086000000
+weather,coordinate_id=193188 diffuse_irradiance=288.872985839844,direct_irradiance=284.671997070312,temperature=280.019012451172,wind_direction=0,wind_velocity=1.86103506088257,ground_temperature_level_1=278.15,ground_temperature_level_2=279.15 1588086000000
+weather,coordinate_id=193186 diffuse_irradiance=286.872,direct_irradiance=282.672,temperature=278.012,wind_direction=0,wind_velocity=1.662,ground_temperature_level_1=270.15,ground_temperature_level_2=271.15 1588089600000
+weather,coordinate_id=193187 diffuse_irradiance=287.872,direct_irradiance=283.672,temperature=279.012,wind_direction=0,wind_velocity=1.762,ground_temperature_level_1=276.15,ground_temperature_level_2=277.15 1588089600000
+weather,coordinate_id=193186 diffuse_irradiance=286.873,direct_irradiance=282.673,temperature=278.013,wind_direction=0,wind_velocity=1.663,ground_temperature_level_1=272.15,ground_temperature_level_2=273.15 1588093200000
