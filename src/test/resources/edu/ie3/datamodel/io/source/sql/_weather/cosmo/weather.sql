@@ -8,6 +8,8 @@ CREATE TABLE public.weather
     wind_velocity double precision,
     temperature double precision,
     tid serial,
+    ground_temperature_level_1 double precision,
+    ground_temperature_level_2 double precision,
     CONSTRAINT weather_pkey PRIMARY KEY (tid),
     CONSTRAINT "weather_datum_coordinate_id_unique" UNIQUE (time, coordinate_id)
 )
@@ -27,11 +29,11 @@ CREATE INDEX weather_coordinate_id_time_idx
     TABLESPACE pg_default;
 
 INSERT INTO
-    public.weather (time, coordinate_id, diffuse_irradiance, direct_irradiance, wind_direction, wind_velocity, temperature)
+    public.weather (time, coordinate_id, diffuse_irradiance, direct_irradiance, wind_direction, wind_velocity, temperature, ground_temperature_level_1, ground_temperature_level_2)
 VALUES
-('2020-04-28 15:00:00+0', 193186, 286.872985839844, 282.671997070312, 0, 1.66103506088257, 278.019012451172),
-('2020-04-28 15:00:00+0', 193187, 287.872985839844, 283.671997070312, 0, 1.76103506088257, 279.019012451172),
-('2020-04-28 15:00:00+0', 193188, 288.872985839844, 284.671997070312, 0, 1.86103506088257, 280.019012451172),
-('2020-04-28 16:00:00+0', 193186, 286.872, 282.672, 0, 1.662, 278.012),
-('2020-04-28 16:00:00+0', 193187, 287.872, 283.672, 0, 1.762, 279.012),
-('2020-04-28 17:00:00+0', 193186, 286.873, 282.673, 0, 1.663, 278.013);
+('2020-04-28 15:00:00+0', 193186, 286.872985839844, 282.671997070312, 0, 1.66103506088257, 278.019012451172, 268.15, 269.15),
+('2020-04-28 15:00:00+0', 193187, 287.872985839844, 283.671997070312, 0, 1.76103506088257, 279.019012451172, 274.15, 275.15),
+('2020-04-28 15:00:00+0', 193188, 288.872985839844, 284.671997070312, 0, 1.86103506088257, 280.019012451172, 278.15, 279.15),
+('2020-04-28 16:00:00+0', 193186, 286.872, 282.672, 0, 1.662, 278.012, 270.15, 271.15),
+('2020-04-28 16:00:00+0', 193187, 287.872, 283.672, 0, 1.762, 279.012, 276.15, 277.15),
+('2020-04-28 17:00:00+0', 193186, 286.873, 282.673, 0, 1.663, 278.013, 272.15, 273.15);

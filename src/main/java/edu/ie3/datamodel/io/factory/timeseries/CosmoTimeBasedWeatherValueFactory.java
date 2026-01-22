@@ -13,8 +13,9 @@ import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
@@ -32,6 +33,8 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   private static final String TEMPERATURE = "temperature";
   private static final String WIND_DIRECTION = "windDirection";
   private static final String WIND_VELOCITY = "windVelocity";
+  private static final String GROUND_TEMPERATURE_LEVEL_1 = "groundTemperatureLevel1";
+  private static final String GROUND_TEMPERATURE_LEVEL_2 = "groundTemperatureLevel2";
 
   public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
@@ -55,7 +58,11 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             TEMPERATURE,
             WIND_DIRECTION,
             WIND_VELOCITY);
-    return Collections.singletonList(minConstructorParams);
+
+    Set<String> withGroundTemp =
+        expandSet(minConstructorParams, GROUND_TEMPERATURE_LEVEL_1, GROUND_TEMPERATURE_LEVEL_2);
+
+    return Arrays.asList(minConstructorParams, withGroundTemp);
   }
 
   @Override
@@ -72,6 +79,10 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
         data.getQuantity(WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
     ComparableQuantity<Speed> windVelocity =
         data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
+    Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, StandardUnits.TEMPERATURE);
+    Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, StandardUnits.TEMPERATURE);
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
@@ -79,7 +90,10 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             diffuseIrradiance,
             temperature,
             windDirection,
-            windVelocity);
+            windVelocity,
+            groundTemperatureLevel1,
+            groundTemperatureLevel2);
+
     return new TimeBasedValue<>(time, weatherValue);
   }
 }
