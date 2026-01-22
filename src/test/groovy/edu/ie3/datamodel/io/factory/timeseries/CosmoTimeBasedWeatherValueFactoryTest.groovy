@@ -13,6 +13,7 @@ import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
 class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
@@ -71,14 +72,17 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
+    def temperatureKelvin = Quantities.getQuantity(Double.parseDouble(parameter.get("temperature")), Units.KELVIN)
+    def expectedTemperature = temperatureKelvin.to(StandardUnits.TEMPERATURE)
+
     def expectedResults = new TimeBasedValue(
         time, new WeatherValue(coordinate,
         Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
-        Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
+        expectedTemperature,
         Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
         Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
-        Optional.of(Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE)),
+        Optional.of(expectedTemperature),
         Optional.empty()))
 
     when:

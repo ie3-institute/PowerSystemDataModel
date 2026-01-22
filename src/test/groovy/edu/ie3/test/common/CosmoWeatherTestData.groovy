@@ -21,65 +21,65 @@ class CosmoWeatherTestData extends WeatherTestData {
   COORDINATE_193186,
   Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
-  Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(4.869012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
-  Optional.of(Quantities.getQuantity(268.15, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(269.15, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(-5d, StandardUnits.TEMPERATURE)),
+  Optional.of(Quantities.getQuantity(-4d, StandardUnits.TEMPERATURE))
   )
 
   public static final WeatherValue WEATHER_VALUE_193186_16H = new WeatherValue(
   COORDINATE_193186,
   Quantities.getQuantity(282.672d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(286.872d, StandardUnits.SOLAR_IRRADIANCE),
-  Quantities.getQuantity(278.012d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(4.862d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.662d, StandardUnits.WIND_VELOCITY),
-  Optional.of(Quantities.getQuantity(270.15, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(271.15, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(-3d, StandardUnits.TEMPERATURE)),
+  Optional.of(Quantities.getQuantity(-2d, StandardUnits.TEMPERATURE))
   )
 
   public static final WeatherValue WEATHER_VALUE_193186_17H = new WeatherValue(
   COORDINATE_193186,
   Quantities.getQuantity(282.673d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(286.873d, StandardUnits.SOLAR_IRRADIANCE),
-  Quantities.getQuantity(278.013d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(4.863d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.663d, StandardUnits.WIND_VELOCITY),
-  Optional.of(Quantities.getQuantity(272.15, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(273.15, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(-1d, StandardUnits.TEMPERATURE)),
+  Optional.of(Quantities.getQuantity(0d, StandardUnits.TEMPERATURE))
   )
 
   public static final WeatherValue WEATHER_VALUE_193187_15H = new WeatherValue(
   COORDINATE_193187,
   Quantities.getQuantity(283.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(287.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
-  Quantities.getQuantity(279.019012451172d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(5.869012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.76103506088257d, StandardUnits.WIND_VELOCITY),
-  Optional.of(Quantities.getQuantity(274.15, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(275.15, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(1d, StandardUnits.TEMPERATURE)),
+  Optional.of(Quantities.getQuantity(2d, StandardUnits.TEMPERATURE))
   )
 
   public static final WeatherValue WEATHER_VALUE_193187_16H = new WeatherValue(
   COORDINATE_193187,
   Quantities.getQuantity(283.672d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(287.872d, StandardUnits.SOLAR_IRRADIANCE),
-  Quantities.getQuantity(279.012d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(5.862d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.762d, StandardUnits.WIND_VELOCITY),
-  Optional.of(Quantities.getQuantity(276.15, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(277.15, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(3d, StandardUnits.TEMPERATURE)),
+  Optional.of(Quantities.getQuantity(4d, StandardUnits.TEMPERATURE))
   )
 
   public static final WeatherValue WEATHER_VALUE_193188_15H = new WeatherValue(
   COORDINATE_193188,
   Quantities.getQuantity(284.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
   Quantities.getQuantity(288.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
-  Quantities.getQuantity(280.019012451172d, StandardUnits.TEMPERATURE),
+  Quantities.getQuantity(6.869012451172d, StandardUnits.TEMPERATURE),
   Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
   Quantities.getQuantity(1.86103506088257d, StandardUnits.WIND_VELOCITY),
-  Optional.of(Quantities.getQuantity(278.15, StandardUnits.TEMPERATURE)),
-  Optional.of(Quantities.getQuantity(279.15, StandardUnits.TEMPERATURE))
+  Optional.of(Quantities.getQuantity(5d, StandardUnits.TEMPERATURE)),
+  Optional.of(Quantities.getQuantity(6d, StandardUnits.TEMPERATURE))
   )
 }
