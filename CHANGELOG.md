@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update CI-Pipeline [#1527](https://github.com/ie3-institute/PowerSystemDataModel/issues/1527)
 - Update `gradle` to 9.3.0 [#1526](https://github.com/ie3-institute/PowerSystemDataModel/issues/1526)
 - Fix update of `gradle` [#1529](https://github.com/ie3-institute/PowerSystemDataModel/issues/1529)
+- Reintroduce `gradlew.bat` [#1531](https://github.com/ie3-institute/PowerSystemDataModel/issues/1531)
 
 ## [8.1.0] - 2025-07-25
 
