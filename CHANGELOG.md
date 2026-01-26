@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactor CSV handling into shared file-based infrastructure. [#1450](https://github.com/ie3-institute/PowerSystemDataModel/issues/1445)
 - Change `testcontainers` to v2 [#1496](https://github.com/ie3-institute/PowerSystemDataModel/issues/1496)
 - Update thermal input documentation [#1506](https://github.com/ie3-institute/PowerSystemDataModel/issues/1506)
+- Update `gradle` to 9.3.0 [#1526](https://github.com/ie3-institute/PowerSystemDataModel/issues/1526)
 
 ## [8.1.0] - 2025-07-25
 
