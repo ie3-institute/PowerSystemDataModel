@@ -74,9 +74,8 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
         data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Irradiance> diffuseIrradiance =
         data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
-    ComparableQuantity<Temperature> temperatureRaw = data.getQuantity(TEMPERATURE, Units.KELVIN);
     ComparableQuantity<Temperature> temperature =
-        (temperatureRaw != null) ? temperatureRaw.to(StandardUnits.TEMPERATURE) : null;
+        data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection =
         data.getQuantity(WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
     ComparableQuantity<Speed> windVelocity =

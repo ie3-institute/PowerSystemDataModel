@@ -17,7 +17,7 @@ import tech.units.indriya.unit.Units
 
 class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
-  def "A PsdmTimeBasedWeatherValueFactory should be able to create time series with missing values"() {
+  def "A PsdmTimeBasedWeatherValueFactory should throw an Exception if the required field 'temperature' is missing"() {
     given:
     def factory = new CosmoTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
@@ -36,21 +36,11 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
-    def expectedResults = new TimeBasedValue(
-        time, new WeatherValue(coordinate,
-        Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
-        Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
-        null,
-        Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
-        Optional.empty(),
-        Optional.empty()))
-
     when:
-    def model = factory.buildModel(data)
+    factory.buildModel(data)
 
     then:
-    Objects.equals(model,expectedResults)
+    thrown(NullPointerException)
   }
 
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
@@ -72,8 +62,10 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
-    def temperatureKelvin = Quantities.getQuantity(Double.parseDouble(parameter.get("temperature")), Units.KELVIN)
-    def expectedTemperature = temperatureKelvin.to(StandardUnits.TEMPERATURE)
+    def expectedTemperature = Quantities.getQuantity(
+        Double.parseDouble(parameter.get("temperature")),
+        Units.KELVIN
+        )
 
     def expectedResults = new TimeBasedValue(
         time, new WeatherValue(coordinate,

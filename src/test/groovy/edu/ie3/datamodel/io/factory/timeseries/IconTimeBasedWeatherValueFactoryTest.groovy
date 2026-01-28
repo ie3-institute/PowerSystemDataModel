@@ -195,4 +195,29 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
     then:
     !model.equals(expectedResults)
   }
+
+  def "A IconTimeBasedWeatherValueFactory should throw an Exception if the required field 't2m' is missing"() {
+    given:
+    def factory = new IconTimeBasedWeatherValueFactory()
+    def coordinate = CosmoWeatherTestData.COORDINATE_67775
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
+
+    Map<String, String> parameter = [
+      "time"        : TimeUtil.withDefaults.toString(time),
+      "aswdifdS"    : "1.0",
+      "aswdirS"     : "2.0",
+      "t2m"         : "",
+      "u131m"       : "4.0",
+      "v131m"       : "5.0",
+      "coordinateId": "67775"
+    ]
+
+    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+    when:
+    factory.buildModel(data)
+
+    then:
+    thrown(Exception)
+  }
 }
