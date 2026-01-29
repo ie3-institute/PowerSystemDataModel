@@ -40,7 +40,8 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     factory.buildModel(data)
 
     then:
-    thrown(NullPointerException)
+    def exception = thrown(FactoryException)
+    exception.message.toLowerCase().contains("temperature")
   }
 
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
@@ -62,19 +63,14 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
-    def expectedTemperature = Quantities.getQuantity(
-        Double.parseDouble(parameter.get("temperature")),
-        Units.KELVIN
-        )
-
     def expectedResults = new TimeBasedValue(
         time, new WeatherValue(coordinate,
         Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
-        expectedTemperature,
+        Quantities.getQuantity(278.019012451172d, Units.KELVIN),
         Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
         Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
-        Optional.of(expectedTemperature),
+        Optional.of(Quantities.getQuantity(278.019012451172d, Units.KELVIN)),
         Optional.empty()))
 
     when:

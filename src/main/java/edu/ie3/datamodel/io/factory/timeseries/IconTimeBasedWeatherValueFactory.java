@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -88,7 +89,12 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     ComparableQuantity<Irradiance> diffuseIrradiance =
         data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Temperature> temperature =
-        data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
+        data.getQuantityOptional(TEMPERATURE, Units.KELVIN)
+            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE))
+            .orElseThrow(
+                () ->
+                    new FactoryException(
+                        "The field \"" + TEMPERATURE + "\" is missing but required."));
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =

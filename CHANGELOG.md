@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed tests of `TimeBasedValue` [#1469](https://github.com/ie3-institute/PowerSystemDataModel/issues/1469)
 - Requiring `thermalBus` field in house and storage input [#1509](https://github.com/ie3-institute/PowerSystemDataModel/issues/1509)
 - Fixed handling of erroneous field values in `EntitySource.enrichWithDefault()` [#1511](https://github.com/ie3-institute/PowerSystemDataModel/issues/1511)
+- Aligned temperature processing in Cosmo and Icon factories to kelvin and added checks to prevent NullPointerExceptions for missing values. [#1521](https://github.com/ie3-institute/PowerSystemDataModel/issues/1521)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)

@@ -200,10 +200,9 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
     given:
     def factory = new IconTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_67775
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     Map<String, String> parameter = [
-      "time"        : TimeUtil.withDefaults.toString(time),
+      "time"        : "2019-01-01T00:00:00Z",
       "aswdifdS"    : "1.0",
       "aswdirS"     : "2.0",
       "t2m"         : "",
@@ -218,6 +217,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
     factory.buildModel(data)
 
     then:
-    thrown(Exception)
+    def exception = thrown(FactoryException)
+    exception.message.toLowerCase().contains("t2m")
   }
 }
