@@ -32,8 +32,8 @@ abstract class WeatherTestData {
         case 193186: return Optional.of(GeoUtils.buildPoint(7d, 49d))
         case 193187: return Optional.of(GeoUtils.buildPoint(8d, 49d))
         case 193188: return Optional.of(GeoUtils.buildPoint(7d, 50d))
-        case 67775: return Optional.of(GeoUtils.buildPoint(8d, 50d))
-        case 67776: return Optional.of(GeoUtils.buildPoint(7d, 51d))
+        case 67775 : return Optional.of(GeoUtils.buildPoint(8d, 50d))
+        case 67776 : return Optional.of(GeoUtils.buildPoint(7d, 51d))
       }
       return Optional.empty()
     }
@@ -43,21 +43,11 @@ abstract class WeatherTestData {
     }
     @Override
     Optional<Integer> getId(Point coordinate) {
-      if (coordinate.x == 49 && coordinate.y == 7) {
-        return Optional.of(193186)
-      }
-      if (coordinate.x == 49 && coordinate.y == 8) {
-        return Optional.of(193187)
-      }
-      if (coordinate.x == 50 && coordinate.y == 7) {
-        return Optional.of(193188)
-      }
-      if (coordinate.x == 50 && coordinate.y == 8) {
-        return Optional.of(67775)
-      }
-      if (coordinate.x == 51 && coordinate.y == 7) {
-        return Optional.of(67776)
-      }
+      if (coordinate.x == 49 && coordinate.y == 7) return Optional.of(193186)
+      if (coordinate.x == 49 && coordinate.y == 8) return Optional.of(193187)
+      if (coordinate.x == 50 && coordinate.y == 7) return Optional.of(193188)
+      if (coordinate.x == 50 && coordinate.y == 8) return Optional.of(67775)
+      if (coordinate.x == 51 && coordinate.y == 7) return Optional.of(67776)
       return Optional.empty()
     }
 
