@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.IconWeatherTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
-import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.Container
@@ -53,9 +52,10 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
     def expectedTimeBasedValue = new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H)
     when:
     def optTimeBasedValue = source.getWeather(IconWeatherTestData.TIME_15H, IconWeatherTestData.COORDINATE_67775)
+
     then:
     optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
+    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
   }
 
   def "A NativeSqlWeatherSource can read multiple timeseries values for multiple coordinates"() {

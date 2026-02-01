@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added getter sRated for SystemParticipant inputs and updated them in tests in src[#1412](https://github.com/ie3-institute/PowerSystemDataModel/issues/1412)
 - Added converters documentation [#1139](https://github.com/ie3-institute/PowerSystemDataModel/issues/1139)
 - Added abstraction for power value sources [#1438](https://github.com/ie3-institute/PowerSystemDataModel/issues/1438)
+- Add ground temperatures level 1 and 2 as option to weather data. [#1343](https://github.com/ie3-institute/PowerSystemDataModel/issues/1343)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `EnergyPriceValue.equals()` [#1479](https://github.com/ie3-institute/PowerSystemDataModel/issues/1479)
 - Fixed tests of `TimeBasedValue` [#1469](https://github.com/ie3-institute/PowerSystemDataModel/issues/1469)
 - Requiring `thermalBus` field in house and storage input [#1509](https://github.com/ie3-institute/PowerSystemDataModel/issues/1509)
+- Fixed handling of erroneous field values in `EntitySource.enrichWithDefault()` [#1511](https://github.com/ie3-institute/PowerSystemDataModel/issues/1511)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
@@ -32,6 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactor CSV handling into shared file-based infrastructure. [#1450](https://github.com/ie3-institute/PowerSystemDataModel/issues/1445)
 - Change `testcontainers` to v2 [#1496](https://github.com/ie3-institute/PowerSystemDataModel/issues/1496)
 - Update thermal input documentation [#1506](https://github.com/ie3-institute/PowerSystemDataModel/issues/1506)
+- Update CI-Pipeline [#1527](https://github.com/ie3-institute/PowerSystemDataModel/issues/1527)
+- Update `gradle` to 9.3.0 [#1526](https://github.com/ie3-institute/PowerSystemDataModel/issues/1526)
+- Fix update of `gradle` [#1529](https://github.com/ie3-institute/PowerSystemDataModel/issues/1529)
+- Reintroduce `gradlew.bat` [#1531](https://github.com/ie3-institute/PowerSystemDataModel/issues/1531)
 
 ## [8.1.0] - 2025-07-25
 
