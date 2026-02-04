@@ -13,17 +13,16 @@ import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
+def
 class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
-  def "A PsdmTimeBasedWeatherValueFactory should be able to create time series with missing values"() {
+  def "A PsdmTimeBasedWeatherValueFactory should throw an Exception if a required field is empty"() {
     given:
     def factory = new CosmoTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     Map<String, String> parameter = [
-      "time"                    : TimeUtil.withDefaults.toString(time),
+      "time"                    : "2019-01-01T00:00:00Z",
       "diffuseIrradiance"       : "282.671997070312",
       "directIrradiance"        : "286.872985839844",
       "temperature"             : "",
@@ -35,22 +34,14 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
-    def expectedResults = new TimeBasedValue(
-        time, new WeatherValue(coordinate,
-        Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
-        Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
-        null,
-        Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
-        Optional.empty(),
-        Optional.empty()))
-
     when:
-    def model = factory.buildModel(data)
+    factory.buildModel(data)
 
     then:
-    Objects.equals(model,expectedResults)
+    def exception = thrown(FactoryException)
+    exception.message.toLowerCase().contains("temperature")
   }
+
 
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
     given:
