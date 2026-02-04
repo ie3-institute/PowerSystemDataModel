@@ -50,9 +50,6 @@ apply from: scriptsLocation + 'branchName.gradle' // checks naming scheme of bra
 
 repositories {
   mavenCentral() // searches in Sonatype's repository 'Maven Central'
-
-  // sonatype snapshot repo
-  maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
