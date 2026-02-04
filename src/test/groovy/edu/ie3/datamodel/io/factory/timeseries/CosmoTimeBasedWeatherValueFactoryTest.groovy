@@ -17,14 +17,13 @@ import tech.units.indriya.unit.Units
 
 class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
-  def "A PsdmTimeBasedWeatherValueFactory should throw an Exception if the required field 'temperature' is missing"() {
+  def "A PsdmTimeBasedWeatherValueFactory should throw an Exception if a required field is empty"() {
     given:
     def factory = new CosmoTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     Map<String, String> parameter = [
-      "time"                    : TimeUtil.withDefaults.toString(time),
+      "time"                    : "2019-01-01T00:00:00Z",
       "diffuseIrradiance"       : "282.671997070312",
       "directIrradiance"        : "286.872985839844",
       "temperature"             : "",
@@ -84,11 +83,10 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     given:
     def factory = new CosmoTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     // Missing 'directIrradiance' field
     Map<String, String> parameter = [
-      "time"             : TimeUtil.withDefaults.toString(time),
+      "time"             : "2019-01-01T00:00:00Z",
       "diffuseIrradiance": "182.671997070312",
       "temperature"      : "278.019012451172",
       "windDirection"    : "50",
@@ -122,7 +120,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
     def expectedResults = new TimeBasedValue(
-        time, new WeatherValue(coordinate,
+      time, new WeatherValue(coordinate,
         Quantities.getQuantity(5.0, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(4.0, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(3.0, StandardUnits.TEMPERATURE),
