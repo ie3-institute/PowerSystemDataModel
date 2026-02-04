@@ -13,7 +13,7 @@ import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-def
+
 class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
   def "A PsdmTimeBasedWeatherValueFactory should throw an Exception if a required field is empty"() {
