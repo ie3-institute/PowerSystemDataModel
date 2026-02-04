@@ -34,7 +34,7 @@ Model of a cylindrical thermal storage using a fluid to store thermal energy.
 
    * - thermalBus
      -
-     - Connection point to the thermal system
+     - UUID of the [thermal bus](#thermal-bus-model)
 
    * - storageVolumeLvl
      - m³

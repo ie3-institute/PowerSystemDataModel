@@ -33,6 +33,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   private static final String TEMPERATURE = "t2m";
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
+  private static final String GROUND_TEMPERATURE_LEVEL_1 = "tg1";
+  private static final String GROUND_TEMPERATURE_LEVEL_2 = "tg2";
 
   public IconTimeBasedWeatherValueFactory() {
     super();
@@ -53,7 +55,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "albrad",
             "asobs",
             "aswdifuS",
-            "tG",
+            "tg1",
+            "tg2",
             "u10m",
             "u20m",
             "u216m",
@@ -88,6 +91,12 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
         data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
+    Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN)
+            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
+    Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN)
+            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
@@ -95,7 +104,9 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             diffuseIrradiance,
             temperature,
             windDirection,
-            windVelocity);
+            windVelocity,
+            groundTemperatureLevel1,
+            groundTemperatureLevel2);
     return new TimeBasedValue<>(time, weatherValue);
   }
 
