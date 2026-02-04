@@ -19,180 +19,205 @@ import tech.units.indriya.quantity.Quantities
 import tech.units.indriya.unit.Units
 
 class IconTimeBasedWeatherValueFactoryTest extends Specification {
-  def "A time based weather value factory for ICON column scheme determines wind velocity angle correctly"() {
-    given:
-    def data = new TimeBasedWeatherValueData([
-      "u131m": u.toString(),
-      "v131m": v.toString(),
-    ], Mock(Point))
-    def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.DEGREE_GEOM)
+    def "A time based weather value factory for ICON column scheme determines wind velocity angle correctly"() {
+        given:
+        def data = new TimeBasedWeatherValueData([
+                "u131m": u.toString(),
+                "v131m": v.toString(),
+        ], Mock(Point))
+        def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.DEGREE_GEOM)
 
-    when:
-    def actual = IconTimeBasedWeatherValueFactory.getWindDirection(data)
+        when:
+        def actual = IconTimeBasedWeatherValueFactory.getWindDirection(data)
 
-    then:
-    actual.getUnit() == StandardUnits.WIND_DIRECTION
-    QuantityUtil.isEquivalentAbs(actual, expected, 1E-10.doubleValue())
+        then:
+        actual.getUnit() == StandardUnits.WIND_DIRECTION
+        QuantityUtil.isEquivalentAbs(actual, expected, 1E-10.doubleValue())
 
-    where:
-    u    | v    || expectedValue
-    0.0  | -5.0 || 0.0
-    -5.0 | -5.0 || 45.0
-    -5.0 | 0.0  || 90.0
-    -5.0 | 5.0  || 135.0
-    0.0  | 5.0  || 180.0
-    5.0  | 5.0  || 225.0
-    5.0  | 0.0  || 270.0
-    5.0  | -5.0 || 315.0
-  }
-
-  def "A time based weather value factory for ICON column scheme determines wind velocity correctly"() {
-    given:
-    def data = new TimeBasedWeatherValueData([
-      "u131m": u.toString(),
-      "v131m": v.toString(),
-    ], Mock(Point))
-    def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.METRE_PER_SECOND)
-
-    when:
-    def actual = IconTimeBasedWeatherValueFactory.getWindVelocity(data)
-
-    then:
-    actual.getUnit() == StandardUnits.WIND_VELOCITY
-    QuantityUtil.isEquivalentAbs(actual, expected, 1E-10.doubleValue())
-
-    where:
-    u    | v    | w    || expectedValue
-    0.0  | -5.0 | 0.0  || 5.0
-    -5.0 | -5.0 | 10.0 || 7.071067811865
-    -5.0 | 0.0  | 20.0 || 5.0
-    -5.0 | 5.0  | 30.0 || 7.071067811865
-    0.0  | 5.0  | 40.0 || 5.0
-    5.0  | 5.0  | 50.0 || 7.071067811865
-    5.0  | 0.0  | 60.0 || 5.0
-    5.0  | -5.0 | 70.0 || 7.071067811865
-  }
-
-  def "A time based weather value factory for ICON column scheme builds a single time based value correctly"() {
-    given:
-    def factory = new IconTimeBasedWeatherValueFactory()
-    def coordinate = CosmoWeatherTestData.COORDINATE_67775
-
-    def parameter = [
-      "time"        : "2019-08-01T01:00:00Z",
-      "albRad"      : "13.015240669",
-      "asobS"       : "3.555093673828124",
-      "aswdifdS"    : "1.8088226191406245",
-      "aswdifuS"    : "0.5713421484374998",
-      "aswdirS"     : "2.317613203124999",
-      "t2m"         : "289.1179319051744",
-      "tg1"         : "288.4101691197649",
-      "tg2"         : "288.4101691197649",
-      "u10m"        : "0.3021732864307963",
-      "u131m"       : "2.6058700426057797",
-      "u20m"        : "0.32384365019387784",
-      "u216m"       : "3.9015497418041756",
-      "u65m"        : "1.2823686334340363",
-      "v10m"        : "1.3852550649486943",
-      "v131m"       : "3.8391590569599927",
-      "v20m"        : "1.3726831152710628",
-      "v216m"       : "4.339362039492466",
-      "v65m"        : "2.809877942347672",
-      "w131m"       : "-0.02633474740256081",
-      "w20m"        : "-0.0100060345167524",
-      "w216m"       : "-0.030348050471342078",
-      "w65m"        : "-0.01817112027569893",
-      "z0"          : "0.955323922526438",
-      "coordinateId": "67775",
-      "p131m"       : "",
-      "p20m"        : "",
-      "p65m"        : "",
-      "sobsRad"     : "",
-      "t131m"       : ""
-    ]
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
-
-    when:
-    def actual = factory.buildModel(data)
-
-    then:
-    actual.with {
-      assert it.time == TimeUtil.withDefaults.toZonedDateTime("2019-08-01T01:00:00Z")
-      assert it.value.coordinate == coordinate
-      assert it.value.solarIrradiance.directIrradiance.present
-      assert it.value.solarIrradiance.directIrradiance.get() == Quantities.getQuantity(0.002317613203124999, PowerSystemUnits.KILOWATT_PER_SQUAREMETRE)
-      assert it.value.solarIrradiance.diffuseIrradiance.present
-      assert it.value.solarIrradiance.diffuseIrradiance.get() == Quantities.getQuantity(0.0018088226191406245, PowerSystemUnits.KILOWATT_PER_SQUAREMETRE)
-      assert it.value.temperature.temperature.present
-      assert QuantityUtil.isEquivalentAbs(it.value.temperature.temperature.get(), Quantities.getQuantity(15.9679319051744, Units.CELSIUS))
-      assert it.value.wind.direction.present
-      assert QuantityUtil.isEquivalentAbs(it.value.wind.direction.get(), Quantities.getQuantity(214.16711674907722, PowerSystemUnits.DEGREE_GEOM))
-      assert it.value.wind.velocity.present
-      assert QuantityUtil.isEquivalentAbs(it.value.wind.velocity.get(), Quantities.getQuantity(4.640010877529081, PowerSystemUnits.METRE_PER_SECOND))
-      assert it.value.groundTemperatureLevel1.present
-      assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureLevel1.get().temperature.get(), Quantities.getQuantity(15.2601691197649, Units.CELSIUS))
-      assert it.value.groundTemperatureLevel2.present
-      assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureLevel2.get().temperature.get(), Quantities.getQuantity(15.2601691197649, Units.CELSIUS))
+        where:
+        u    | v    || expectedValue
+        0.0  | -5.0 || 0.0
+        -5.0 | -5.0 || 45.0
+        -5.0 | 0.0  || 90.0
+        -5.0 | 5.0  || 135.0
+        0.0  | 5.0  || 180.0
+        5.0  | 5.0  || 225.0
+        5.0  | 0.0  || 270.0
+        5.0  | -5.0 || 315.0
     }
-  }
 
-  def "A IconTimeBasedWeatherValueFactory should throw FactoryException if required field is missing"() {
-    given:
-    def factory = new IconTimeBasedWeatherValueFactory()
-    def coordinate = CosmoWeatherTestData.COORDINATE_67775
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
+    def "A time based weather value factory for ICON column scheme determines wind velocity correctly"() {
+        given:
+        def data = new TimeBasedWeatherValueData([
+                "u131m": u.toString(),
+                "v131m": v.toString(),
+        ], Mock(Point))
+        def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.METRE_PER_SECOND)
 
-    // Missing 'aswdirS' (Direct Irradiance)
-    Map<String, String> parameter = [
-      "time"        : TimeUtil.withDefaults.toString(time),
-      "aswdifdS"    : "1.0",
-      "t2m"         : "2.0",
-      "u131m"       : "3.0",
-      "v131m"       : "4.0",
-      "coordinateId": "67775"
-    ]
+        when:
+        def actual = IconTimeBasedWeatherValueFactory.getWindVelocity(data)
 
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+        then:
+        actual.getUnit() == StandardUnits.WIND_VELOCITY
+        QuantityUtil.isEquivalentAbs(actual, expected, 1E-10.doubleValue())
 
-    when:
-    factory.buildModel(data)
+        where:
+        u    | v    | w    || expectedValue
+        0.0  | -5.0 | 0.0  || 5.0
+        -5.0 | -5.0 | 10.0 || 7.071067811865
+        -5.0 | 0.0  | 20.0 || 5.0
+        -5.0 | 5.0  | 30.0 || 7.071067811865
+        0.0  | 5.0  | 40.0 || 5.0
+        5.0  | 5.0  | 50.0 || 7.071067811865
+        5.0  | 0.0  | 60.0 || 5.0
+        5.0  | -5.0 | 70.0 || 7.071067811865
+    }
 
-    then:
-    thrown(FactoryException)
-  }
+    def "A time based weather value factory for ICON column scheme builds a single time based value correctly"() {
+        given:
+        def factory = new IconTimeBasedWeatherValueFactory()
+        def coordinate = CosmoWeatherTestData.COORDINATE_67775
 
-  def "Smoke Test: This IconTimeBasedWeatherValueFactory should fail since expected results doesn't match input"() {
-    given:
-    def factory = new IconTimeBasedWeatherValueFactory()
-    def coordinate = CosmoWeatherTestData.COORDINATE_67775
-    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
+        def parameter = [
+                "time"        : "2019-08-01T01:00:00Z",
+                "albRad"      : "13.015240669",
+                "asobS"       : "3.555093673828124",
+                "aswdifdS"    : "1.8088226191406245",
+                "aswdifuS"    : "0.5713421484374998",
+                "aswdirS"     : "2.317613203124999",
+                "t2m"         : "289.1179319051744",
+                "tg1"         : "288.4101691197649",
+                "tg2"         : "288.4101691197649",
+                "u10m"        : "0.3021732864307963",
+                "u131m"       : "2.6058700426057797",
+                "u20m"        : "0.32384365019387784",
+                "u216m"       : "3.9015497418041756",
+                "u65m"        : "1.2823686334340363",
+                "v10m"        : "1.3852550649486943",
+                "v131m"       : "3.8391590569599927",
+                "v20m"        : "1.3726831152710628",
+                "v216m"       : "4.339362039492466",
+                "v65m"        : "2.809877942347672",
+                "w131m"       : "-0.02633474740256081",
+                "w20m"        : "-0.0100060345167524",
+                "w216m"       : "-0.030348050471342078",
+                "w65m"        : "-0.01817112027569893",
+                "z0"          : "0.955323922526438",
+                "coordinateId": "67775",
+                "p131m"       : "",
+                "p20m"        : "",
+                "p65m"        : "",
+                "sobsRad"     : "",
+                "t131m"       : ""
+        ]
+        def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
-    Map<String, String> parameter = [
-      "time"        : TimeUtil.withDefaults.toString(time),
-      "aswdifdS"    : "1.0",
-      "aswdirS"     : "2.0",
-      "t2m"         : "3.0",
-      "u131m"       : "4.0",
-      "v131m"       : "5.0",
-      "coordinateId": "50000"
-    ]
+        when:
+        def actual = factory.buildModel(data)
 
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+        then:
+        actual.with {
+            assert it.time == TimeUtil.withDefaults.toZonedDateTime("2019-08-01T01:00:00Z")
+            assert it.value.coordinate == coordinate
+            assert it.value.solarIrradiance.directIrradiance.present
+            assert it.value.solarIrradiance.directIrradiance.get() == Quantities.getQuantity(0.002317613203124999, PowerSystemUnits.KILOWATT_PER_SQUAREMETRE)
+            assert it.value.solarIrradiance.diffuseIrradiance.present
+            assert it.value.solarIrradiance.diffuseIrradiance.get() == Quantities.getQuantity(0.0018088226191406245, PowerSystemUnits.KILOWATT_PER_SQUAREMETRE)
+            assert it.value.temperature.temperature.present
+            assert QuantityUtil.isEquivalentAbs(it.value.temperature.temperature.get(), Quantities.getQuantity(15.9679319051744, Units.CELSIUS))
+            assert it.value.wind.direction.present
+            assert QuantityUtil.isEquivalentAbs(it.value.wind.direction.get(), Quantities.getQuantity(214.16711674907722, PowerSystemUnits.DEGREE_GEOM))
+            assert it.value.wind.velocity.present
+            assert QuantityUtil.isEquivalentAbs(it.value.wind.velocity.get(), Quantities.getQuantity(4.640010877529081, PowerSystemUnits.METRE_PER_SECOND))
+            assert it.value.groundTemperatureLevel1.present
+            assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureLevel1.get().temperature.get(), Quantities.getQuantity(15.2601691197649, Units.CELSIUS))
+            assert it.value.groundTemperatureLevel2.present
+            assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureLevel2.get().temperature.get(), Quantities.getQuantity(15.2601691197649, Units.CELSIUS))
+        }
+    }
 
-    def expectedResults = new TimeBasedValue(
-        time, new WeatherValue(coordinate,
-        Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE),
-        Quantities.getQuantity(4d, StandardUnits.SOLAR_IRRADIANCE),
-        Quantities.getQuantity(3d, StandardUnits.TEMPERATURE),
-        Quantities.getQuantity(2d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1d, StandardUnits.WIND_VELOCITY),
-        Optional.empty(),
-        Optional.empty()))
+    def "A IconTimeBasedWeatherValueFactory should throw FactoryException if required field is missing"() {
+        given:
+        def factory = new IconTimeBasedWeatherValueFactory()
+        def coordinate = CosmoWeatherTestData.COORDINATE_67775
+        def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
-    when:
-    def model = factory.buildModel(data)
+        // Missing 'aswdirS' (Direct Irradiance)
+        Map<String, String> parameter = [
+                "time"        : TimeUtil.withDefaults.toString(time),
+                "aswdifdS"    : "1.0",
+                "t2m"         : "2.0",
+                "u131m"       : "3.0",
+                "v131m"       : "4.0",
+                "coordinateId": "67775"
+        ]
 
-    then:
-    !model.equals(expectedResults)
-  }
+        def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+        when:
+        factory.buildModel(data)
+
+        then:
+        thrown(FactoryException)
+    }
+
+    def "Smoke Test: This IconTimeBasedWeatherValueFactory should fail since expected results doesn't match input"() {
+        given:
+        def factory = new IconTimeBasedWeatherValueFactory()
+        def coordinate = CosmoWeatherTestData.COORDINATE_67775
+        def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
+
+        Map<String, String> parameter = [
+                "time"        : TimeUtil.withDefaults.toString(time),
+                "aswdifdS"    : "1.0",
+                "aswdirS"     : "2.0",
+                "t2m"         : "3.0",
+                "u131m"       : "4.0",
+                "v131m"       : "5.0",
+                "coordinateId": "50000"
+        ]
+
+        def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+        def expectedResults = new TimeBasedValue(
+                time, new WeatherValue(coordinate,
+                Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE),
+                Quantities.getQuantity(4d, StandardUnits.SOLAR_IRRADIANCE),
+                Quantities.getQuantity(3d, StandardUnits.TEMPERATURE),
+                Quantities.getQuantity(2d, StandardUnits.WIND_DIRECTION),
+                Quantities.getQuantity(1d, StandardUnits.WIND_VELOCITY),
+                Optional.empty(),
+                Optional.empty()))
+
+        when:
+        def model = factory.buildModel(data)
+
+        then:
+        !model.equals(expectedResults)
+    }
+
+    def "A IconTimeBasedWeatherValueFactory should throw an Exception if the required field 't2m' is missing"() {
+        given:
+        def factory = new IconTimeBasedWeatherValueFactory()
+        def coordinate = CosmoWeatherTestData.COORDINATE_67775
+
+        Map<String, String> parameter = [
+                "time"        : "2019-01-01T00:00:00Z",
+                "aswdifdS"    : "1.0",
+                "aswdirS"     : "2.0",
+                "t2m"         : "",
+                "u131m"       : "4.0",
+                "v131m"       : "5.0",
+                "coordinateId": "67775"
+        ]
+
+        def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+        when:
+        factory.buildModel(data)
+
+        then:
+        def exception = thrown(FactoryException)
+        exception.message.toLowerCase().contains("t2m")
+    }
 }
