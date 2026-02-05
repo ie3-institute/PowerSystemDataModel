@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -65,35 +66,61 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
         return Arrays.asList(minConstructorParams, withGroundTemp);
     }
 
-    @Override
-    protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
-        Point coordinate = data.getCoordinate();
-        ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
-        ComparableQuantity<Irradiance> directIrradiance =
-                data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
-        ComparableQuantity<Irradiance> diffuseIrradiance =
-                data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
-        ComparableQuantity<Temperature> temperature =
-                data.getQuantity(TEMPERATURE, StandardUnits.TEMPERATURE);
-        ComparableQuantity<Angle> windDirection =
-                data.getQuantity(WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
-        ComparableQuantity<Speed> windVelocity =
-                data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
-        Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
-                data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, StandardUnits.TEMPERATURE);
-        Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
-                data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, StandardUnits.TEMPERATURE);
-        WeatherValue weatherValue =
-                new WeatherValue(
-                        coordinate,
-                        directIrradiance,
-                        diffuseIrradiance,
-                        temperature,
-                        windDirection,
-                        windVelocity,
-                        groundTemperatureLevel1,
-                        groundTemperatureLevel2);
+  @Override
+  protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
+    Set<String> requiredFields =
+        newSet(
+            TIME,
+            DIFFUSE_IRRADIANCE,
+            DIRECT_IRRADIANCE,
+            TEMPERATURE,
+            WIND_DIRECTION,
+            WIND_VELOCITY);
+    validatedRequiredFields(data, requiredFields);
+    Point coordinate = data.getCoordinate();
+    ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
+    ComparableQuantity<Irradiance> directIrradiance =
+        data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
+    ComparableQuantity<Irradiance> diffuseIrradiance =
+        data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
+    ComparableQuantity<Temperature> temperature =
+        data.getQuantity(TEMPERATURE, StandardUnits.TEMPERATURE);
+    ComparableQuantity<Angle> windDirection =
+        data.getQuantity(WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
+    ComparableQuantity<Speed> windVelocity =
+        data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
+    Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, StandardUnits.TEMPERATURE);
+    Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, StandardUnits.TEMPERATURE);
+    WeatherValue weatherValue =
+        new WeatherValue(
+            coordinate,
+            directIrradiance,
+            diffuseIrradiance,
+            temperature,
+            windDirection,
+            windVelocity,
+            groundTemperatureLevel1,
+            groundTemperatureLevel2);
 
-        return new TimeBasedValue<>(time, weatherValue);
+    return new TimeBasedValue<>(time, weatherValue);
+  }
+
+  /**
+   * * Validates that all required fields are present and not empty in the provided data
+   *
+   * @param data the data to validate
+   * @param requiredFields the fields that must be present and non-empty
+   * @throws FactoryException if any required field is missing or empty
+   */
+  protected void validatedRequiredFields(
+      TimeBasedWeatherValueData data, Set<String> requiredFields) {
+    for (String field : requiredFields) {
+      String value = data.getField(field);
+      if (value == null || value.isEmpty()) {
+        throw new FactoryException("The field \"" + field + "\" is missing or empty.");
+      }
     }
+  }
 }

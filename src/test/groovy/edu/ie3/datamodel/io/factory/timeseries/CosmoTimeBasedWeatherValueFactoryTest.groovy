@@ -17,41 +17,32 @@ import tech.units.indriya.unit.Units
 
 class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
-    def "A PsdmTimeBasedWeatherValueFactory should be able to create time series with missing values"() {
-        given:
-        def factory = new CosmoTimeBasedWeatherValueFactory()
-        def coordinate = CosmoWeatherTestData.COORDINATE_193186
-        def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
+  def "A PsdmTimeBasedWeatherValueFactory should throw an Exception if a required field is empty"() {
+    given:
+    def factory = new CosmoTimeBasedWeatherValueFactory()
+    def coordinate = CosmoWeatherTestData.COORDINATE_193186
 
-        Map<String, String> parameter = [
-                "time"                    : TimeUtil.withDefaults.toString(time),
-                "diffuseIrradiance"       : "282.671997070312",
-                "directIrradiance"        : "286.872985839844",
-                "temperature"             : "",
-                "windDirection"           : "0",
-                "windVelocity"            : "1.66103506088257",
-                "groundTemperatureLevel1" : "",
-                "groundTemperatureLevel2" : ""
-        ]
+    Map<String, String> parameter = [
+      "time"                    : "2019-01-01T00:00:00Z",
+      "diffuseIrradiance"       : "282.671997070312",
+      "directIrradiance"        : "286.872985839844",
+      "temperature"             : "",
+      "windDirection"           : "0",
+      "windVelocity"            : "1.66103506088257",
+      "groundTemperatureLevel1" : "",
+      "groundTemperatureLevel2" : ""
+    ]
 
-        def data = new TimeBasedWeatherValueData(parameter, coordinate)
+    def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
-        def expectedResults = new TimeBasedValue(
-                time, new WeatherValue(coordinate,
-                Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
-                Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
-                null,
-                Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
-                Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
-                Optional.empty(),
-                Optional.empty()))
+    when:
+    factory.buildModel(data)
 
-        when:
-        def model = factory.buildModel(data)
+    then:
+    def exception = thrown(FactoryException)
+    exception.message == 'The field "temperature" is missing or empty.'
+  }
 
-        then:
-        Objects.equals(model,expectedResults)
-    }
 
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
     given:
