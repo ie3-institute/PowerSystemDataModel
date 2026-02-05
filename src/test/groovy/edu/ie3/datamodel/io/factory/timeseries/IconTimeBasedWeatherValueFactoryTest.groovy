@@ -196,7 +196,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
     !model.equals(expectedResults)
   }
 
-  def "A IconTimeBasedWeatherValueFactory should throw an Exception if the required field 't2m' is missing"() {
+  def "A IconTimeBasedWeatherValueFactory should throw an Exception if the required field 't2m' is empty"() {
     given:
     def factory = new IconTimeBasedWeatherValueFactory()
     def coordinate = CosmoWeatherTestData.COORDINATE_67775
