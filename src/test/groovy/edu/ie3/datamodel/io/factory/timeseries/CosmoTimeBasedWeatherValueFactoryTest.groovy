@@ -121,7 +121,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
     def expectedResults = new TimeBasedValue(
-      time, new WeatherValue(coordinate,
+        time, new WeatherValue(coordinate,
         Quantities.getQuantity(5.0, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(4.0, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(3.0, StandardUnits.TEMPERATURE),

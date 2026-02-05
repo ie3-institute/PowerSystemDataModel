@@ -2,7 +2,7 @@
  * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
- */
+*/
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
@@ -29,42 +29,42 @@ import tech.units.indriya.ComparableQuantity;
  * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
  */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
-    private static final String DIFFUSE_IRRADIANCE = "diffuseIrradiance";
-    private static final String DIRECT_IRRADIANCE = "directIrradiance";
-    private static final String TEMPERATURE = "temperature";
-    private static final String WIND_DIRECTION = "windDirection";
-    private static final String WIND_VELOCITY = "windVelocity";
-    private static final String GROUND_TEMPERATURE_LEVEL_1 = "groundTemperatureLevel1";
-    private static final String GROUND_TEMPERATURE_LEVEL_2 = "groundTemperatureLevel2";
+  private static final String DIFFUSE_IRRADIANCE = "diffuseIrradiance";
+  private static final String DIRECT_IRRADIANCE = "directIrradiance";
+  private static final String TEMPERATURE = "temperature";
+  private static final String WIND_DIRECTION = "windDirection";
+  private static final String WIND_VELOCITY = "windVelocity";
+  private static final String GROUND_TEMPERATURE_LEVEL_1 = "groundTemperatureLevel1";
+  private static final String GROUND_TEMPERATURE_LEVEL_2 = "groundTemperatureLevel2";
 
-    public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
-        super(timeUtil);
-    }
+  public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
+    super(timeUtil);
+  }
 
-    public CosmoTimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
-        super(dateTimeFormatter);
-    }
+  public CosmoTimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
+    super(dateTimeFormatter);
+  }
 
-    public CosmoTimeBasedWeatherValueFactory() {
-        super();
-    }
+  public CosmoTimeBasedWeatherValueFactory() {
+    super();
+  }
 
-    @Override
-    protected List<Set<String>> getFields(Class<?> entityClass) {
-        Set<String> minConstructorParams =
-                newSet(
-                        COORDINATE_ID,
-                        DIFFUSE_IRRADIANCE,
-                        DIRECT_IRRADIANCE,
-                        TEMPERATURE,
-                        WIND_DIRECTION,
-                        WIND_VELOCITY);
+  @Override
+  protected List<Set<String>> getFields(Class<?> entityClass) {
+    Set<String> minConstructorParams =
+        newSet(
+            COORDINATE_ID,
+            DIFFUSE_IRRADIANCE,
+            DIRECT_IRRADIANCE,
+            TEMPERATURE,
+            WIND_DIRECTION,
+            WIND_VELOCITY);
 
-        Set<String> withGroundTemp =
-                expandSet(minConstructorParams, GROUND_TEMPERATURE_LEVEL_1, GROUND_TEMPERATURE_LEVEL_2);
+    Set<String> withGroundTemp =
+        expandSet(minConstructorParams, GROUND_TEMPERATURE_LEVEL_1, GROUND_TEMPERATURE_LEVEL_2);
 
-        return Arrays.asList(minConstructorParams, withGroundTemp);
-    }
+    return Arrays.asList(minConstructorParams, withGroundTemp);
+  }
 
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
