@@ -218,6 +218,6 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
     then:
     def exception = thrown(FactoryException)
-    exception.message.toLowerCase().contains("t2m")
+    exception.message == 'The field "t2m" is missing or empty.'
   }
 }
