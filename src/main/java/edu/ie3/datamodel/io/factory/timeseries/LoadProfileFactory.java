@@ -10,12 +10,10 @@ import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.LoadValues;
-import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.Set;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.Quantities;
 
 /**
  * Base factory for all {@link LoadProfileTimeSeries}.
@@ -26,7 +24,7 @@ public abstract class LoadProfileFactory<V extends LoadValues>
     extends Factory<V, LoadProfileData<V>, LoadProfileEntry<V>> {
   protected static final String QUARTER_HOUR = "quarterHour";
 
-  public LoadProfileFactory(Class<? extends V> valueClass) {
+  protected LoadProfileFactory(Class<? extends V> valueClass) {
     super(valueClass);
   }
 
@@ -54,8 +52,7 @@ public abstract class LoadProfileFactory<V extends LoadValues>
     return QUARTER_HOUR;
   }
 
-  /** Returns the load profile energy scaling. The default value is 1000 kWh */
-  public ComparableQuantity<Energy> getLoadProfileEnergyScaling(PowerProfileKey powerProfileKey) {
-    return Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR);
-  }
+  /** Returns the load profile energy scaling. */
+  public abstract ComparableQuantity<Energy> getLoadProfileEnergyScaling(
+      PowerProfileKey powerProfileKey);
 }

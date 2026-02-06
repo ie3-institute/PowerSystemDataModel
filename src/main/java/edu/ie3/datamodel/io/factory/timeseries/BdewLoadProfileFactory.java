@@ -79,7 +79,7 @@ public class BdewLoadProfileFactory extends LoadProfileFactory<BdewLoadValues> {
       PowerProfileKey powerProfileKey, Set<LoadProfileEntry<BdewLoadValues>> entries) {
     Function<BdewLoadValues, Double> valueExtractor;
 
-    if (powerProfileKey.equalsAny(H25, G25, P25, S25)) {
+    if (powerProfileKey.equalsAny(H0, H25, P25, S25)) {
       // maximum dynamization factor is on day 366 (leap year) or day 365 (regular year).
       // The difference between day 365 and day 366 is negligible, thus pick 366
       valueExtractor = v -> BdewLoadValues.dynamization(v.getMaxValue(true), 366);

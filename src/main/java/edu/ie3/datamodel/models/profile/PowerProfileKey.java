@@ -37,10 +37,6 @@ public final class PowerProfileKey implements Serializable {
     return Arrays.stream(others).anyMatch(this::equals);
   }
 
-  private boolean equals(String other) {
-    return value.equalsIgnoreCase(toUniformKey(other));
-  }
-
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
