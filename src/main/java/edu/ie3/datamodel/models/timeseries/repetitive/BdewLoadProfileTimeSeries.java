@@ -41,11 +41,6 @@ public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadVal
 
   @Override
   public String toString() {
-    return "BDEWLoadProfileTimeSeries{"
-        + "loadProfileKey="
-        + getPowerProfileKey().getValue()
-        + ", valueMapping="
-        + getValueMapping()
-        + '}';
+    return "BDEW" + super.toString();
   }
 }
