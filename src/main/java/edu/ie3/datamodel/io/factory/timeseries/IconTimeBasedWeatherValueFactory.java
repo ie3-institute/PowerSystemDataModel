@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -81,6 +82,15 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
 
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
+    Set<String> requiredFields =
+        newSet(
+            TIME,
+            DIFFUSE_IRRADIANCE,
+            DIRECT_IRRADIANCE,
+            TEMPERATURE,
+            WIND_VELOCITY_U,
+            WIND_VELOCITY_V);
+    validatedRequiredFields(data, requiredFields);
     Point coordinate = data.getCoordinate();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
@@ -154,5 +164,22 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
 
     double velocity = Math.sqrt(Math.pow(u, 2) + Math.pow(v, 2));
     return Quantities.getQuantity(velocity, Units.METRE_PER_SECOND).to(StandardUnits.WIND_VELOCITY);
+  }
+
+  /**
+   * * Validates that all required fields are present and not empty in the provided data
+   *
+   * @param data the data to validate
+   * @param requiredFields the fields that must be present and non-empty
+   * @throws FactoryException if any required field is missing or empty
+   */
+  protected void validatedRequiredFields(
+      TimeBasedWeatherValueData data, Set<String> requiredFields) {
+    for (String field : requiredFields) {
+      String value = data.getField(field);
+      if (value == null || value.isEmpty()) {
+        throw new FactoryException("The field \"" + field + "\" is missing or empty.");
+      }
+    }
   }
 }

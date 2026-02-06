@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added converters documentation [#1139](https://github.com/ie3-institute/PowerSystemDataModel/issues/1139)
 - Added abstraction for power value sources [#1438](https://github.com/ie3-institute/PowerSystemDataModel/issues/1438)
 - Add ground temperatures level 1 and 2 as option to weather data. [#1343](https://github.com/ie3-institute/PowerSystemDataModel/issues/1343)
+- Add validation for required fields in ICON and COSMO `TimebasedWeatherValueFactories` [#1537](https://github.com/ie3-institute/PowerSystemDataModel/issues/1537)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
@@ -38,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update `gradle` to 9.3.0 [#1526](https://github.com/ie3-institute/PowerSystemDataModel/issues/1526)
 - Fix update of `gradle` [#1529](https://github.com/ie3-institute/PowerSystemDataModel/issues/1529)
 - Reintroduce `gradlew.bat` [#1531](https://github.com/ie3-institute/PowerSystemDataModel/issues/1531)
+- Remove snapshot repository [#1538](https://github.com/ie3-institute/PowerSystemDataModel/issues/1538)
 
 ## [8.1.0] - 2025-07-25
 
