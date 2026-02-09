@@ -13,7 +13,7 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of a {@link edu.ie3.datamodel.models.input.system.AcInput} */
+/** Describes the type of {@link edu.ie3.datamodel.models.input.system.AcInput} */
 public class AcTypeInput extends SystemParticipantTypeInput {
   /**
    * Thermal output of the air condition (typically in kW), when sRated * cosPhi_rated is consumed
@@ -23,7 +23,7 @@ public class AcTypeInput extends SystemParticipantTypeInput {
   /**
    * @param uuid of the input entity
    * @param id of this type of AC
-   * @param capex Captial expense for this type of AC (typically in €)
+   * @param capex Capital expense for this type of AC (typically in €)
    * @param opex Operating expense for this type of AC (typically in €)
    * @param cosPhiRated Power factor for this type of AC
    * @param sRated Rated apparent power
