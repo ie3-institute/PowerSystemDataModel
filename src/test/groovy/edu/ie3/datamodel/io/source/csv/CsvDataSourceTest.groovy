@@ -292,7 +292,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid",
       "active_power_gradient",
       "capex",
-      "cosphi_rated",
+      "cosPhiRated",
       "eta_conv",
       "id",
       "opex",
