@@ -159,7 +159,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "id",
       "opex",
       "s_rated",
-      "olmcharacteristic",
+      "olmCharacteristic",
       "cosPhiFixed"
     ] as String[]
     def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\",\"cosPhiFixed:{(0.0,1.0)}\""
@@ -174,7 +174,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       opex               : "50.0",
       sRated             : "25.0",
       uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-      olmcharacteristic  : "olm:{(0.0,1.0)}",
+      olmCharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : "cosPhiFixed:{(0.0,1.0)}"
     ]
   }
@@ -297,7 +297,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "id",
       "opex",
       "s_rated",
-      "olmcharacteristic",
+      "olmCharacteristic",
       "cosPhiFixed"
     ] as String[]
     def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\","
@@ -312,7 +312,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       opex               : "50.0",
       sRated             : "25.0",
       uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-      olmcharacteristic  : "olm:{(0.0,1.0)}",
+      olmCharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : ""
     ]
   }
