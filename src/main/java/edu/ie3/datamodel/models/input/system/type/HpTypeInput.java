@@ -15,7 +15,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpTypeInput extends SystemParticipantTypeInput {
-  /** Thermal output of the heat pump (typically in kW), when sRated * cosphi_rated is consumed */
+  /** Thermal output of the heat pump (typically in kW), when sRated * cosPhi_rated is consumed */
   private final ComparableQuantity<Power> pThermal;
 
   /**
@@ -23,9 +23,9 @@ public class HpTypeInput extends SystemParticipantTypeInput {
    * @param id of this type of HP
    * @param capex Captial expense for this type of HP (typically in €)
    * @param opex Operating expense for this type of HP (typically in €)
-   * @param cosphiRated Power factor for this type of HP
+   * @param cosPhiRated Power factor for this type of HP
    * @param sRated Rated apparent power
-   * @param pThermal Thermal output of the heat pump, when sRated * cosphi_rated is consumed
+   * @param pThermal Thermal output of the heat pump, when sRated * cosPhi_rated is consumed
    *     electrically
    */
   public HpTypeInput(
@@ -34,9 +34,9 @@ public class HpTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Currency> capex,
       ComparableQuantity<EnergyPrice> opex,
       ComparableQuantity<Power> sRated,
-      double cosphiRated,
+      double cosPhiRated,
       ComparableQuantity<Power> pThermal) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
@@ -75,7 +75,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
         + getOpex()
         + ", sRated="
         + getsRated()
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + getCosPhiRated()
         + "pThermal="
         + pThermal

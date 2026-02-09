@@ -49,7 +49,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
       "loadprofile"	     : profileKey,
       "econsannual"        : "3",
       "srated"             : "4",
-      "cosphirated"        : "5"
+      "cosPhiRated"        : "5"
     ]
     Try<LoadInput, FactoryException> input = inputFactory.get(
         new SystemParticipantEntityData(parameter, inputClass, nodeInput, emUnit))
@@ -73,7 +73,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
       assert loadProfile == profile
       assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)
       assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
+      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
     }
 
     where:
