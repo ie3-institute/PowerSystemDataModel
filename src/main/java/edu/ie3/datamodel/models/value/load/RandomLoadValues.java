@@ -9,7 +9,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT;
 
 import de.lmu.ifi.dbs.elki.math.statistics.distribution.GeneralizedExtremeValueDistribution;
 import de.lmu.ifi.dbs.elki.utilities.random.RandomFactory;
-import edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
@@ -23,7 +23,7 @@ import tech.units.indriya.quantity.Quantities;
  * sampled for each quarter hour of a day, subdivided into workdays, Saturdays and Sundays. In
  * general the GEV is described by the three parameters "location", "scale" and "shape"
  */
-public class RandomLoadValues implements LoadValues<RandomLoadProfile> {
+public class RandomLoadValues implements LoadValues {
   /** Shape parameter for a Saturday */
   private final double kSa;
 
@@ -95,7 +95,7 @@ public class RandomLoadValues implements LoadValues<RandomLoadProfile> {
   }
 
   @Override
-  public PValue getValue(ZonedDateTime time, RandomLoadProfile loadProfile) {
+  public PValue getValue(ZonedDateTime time, PowerProfileKey powerProfileKey) {
     return new PValue(Quantities.getQuantity(getValue(time.getDayOfWeek()), KILOWATT));
   }
 

@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
+import static edu.ie3.datamodel.models.profile.BdewStandardLoadProfile.G2
+import static edu.ie3.datamodel.models.profile.BdewStandardLoadProfile.G3
+
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
@@ -111,7 +114,7 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
     then:
     result.size() == 2
 
-    result.keySet() == ["g2", "g3"] as Set
+    result.keySet() == [G2.key, G3.key] as Set
   }
 
   def "The SQL time series meta information source returns correct meta information for a given load profile"() {
@@ -123,9 +126,9 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
 
     where:
     profile || expected
-    BdewStandardLoadProfile.G2 || true
+    G2 || true
     BdewStandardLoadProfile.G3 || true
-    BdewStandardLoadProfile.L0 ||false
+    BdewStandardLoadProfile.L0 || false
   }
 
   def "The SQL time series meta information source returns an empty optional for an unknown load profile"() {

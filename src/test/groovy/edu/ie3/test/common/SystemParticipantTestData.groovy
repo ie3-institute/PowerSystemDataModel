@@ -24,6 +24,7 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import edu.ie3.datamodel.models.profile.StandardLoadProfile
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.*
@@ -258,7 +259,7 @@ class SystemParticipantTestData {
 
   // Load
   protected static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
-  protected static final StandardLoadProfile standardLoadProfile = BdewStandardLoadProfile.H0
+  protected static final PowerProfileKey powerProfileKey = BdewStandardLoadProfile.H0.key
   public static final LoadInput loadInput = new LoadInput(
   UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"),
   "test_loadInput",
@@ -267,7 +268,7 @@ class SystemParticipantTestData {
   participantNode,
   cosPhiFixed,
   emInput,
-  standardLoadProfile,
+  powerProfileKey,
   eConsAnnual,
   sRated,
   cosPhiRated
