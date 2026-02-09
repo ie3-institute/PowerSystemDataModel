@@ -16,7 +16,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.UUID;
 
 public class HpInputFactory
-    extends ThermalSystemParticipantInputFactory<HpInput, HpInputEntityData> {
+    extends ThermalSystemParticipantInputFactory<HpInput, HpTypeInput, HpInputEntityData> {
 
   public HpInputFactory() {
     super(HpInput.class);
@@ -32,17 +32,9 @@ public class HpInputFactory
       ThermalBusInput thermalBusInput,
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
-      Object typeInput) {
+      HpTypeInput typeInput) {
 
     return new HpInput(
-        uuid,
-        id,
-        operator,
-        operationTime,
-        node,
-        thermalBusInput,
-        qCharacteristics,
-        em,
-        (HpTypeInput) typeInput);
+        uuid, id, operator, operationTime, node, thermalBusInput, qCharacteristics, em, typeInput);
   }
 }

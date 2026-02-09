@@ -16,7 +16,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.UUID;
 
 public class AcInputFactory
-    extends ThermalSystemParticipantInputFactory<AcInput, AcInputEntityData> {
+    extends ThermalSystemParticipantInputFactory<AcInput, AcTypeInput, AcInputEntityData> {
 
   public AcInputFactory() {
     super(AcInput.class);
@@ -32,17 +32,9 @@ public class AcInputFactory
       ThermalBusInput thermalBusInput,
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
-      Object typeInput) {
+      AcTypeInput typeInput) {
 
     return new AcInput(
-        uuid,
-        id,
-        operator,
-        operationTime,
-        node,
-        thermalBusInput,
-        qCharacteristics,
-        em,
-        (AcTypeInput) typeInput);
+        uuid, id, operator, operationTime, node, thermalBusInput, qCharacteristics, em, typeInput);
   }
 }

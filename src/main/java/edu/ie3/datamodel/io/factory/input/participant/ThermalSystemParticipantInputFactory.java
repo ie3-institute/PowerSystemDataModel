@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.UUID;
 
@@ -18,10 +19,13 @@ import java.util.UUID;
  * Abstract factory for thermal system participants that share common construction patterns
  *
  * @param <M> The model type (AcInput, HpInput, etc.)
+ * @param <T> The type input type (AcTypeInput, HpTypeInput, etc.)
  * @param <D> The entity data type
  */
 public abstract class ThermalSystemParticipantInputFactory<
-        M extends SystemParticipantInput, D extends ThermalSystemParticipantEntityData<?>>
+        M extends SystemParticipantInput,
+        T extends SystemParticipantTypeInput,
+        D extends ThermalSystemParticipantEntityData<T>>
     extends SystemParticipantInputEntityFactory<M, D> {
 
   protected static final String TYPE = "type";
@@ -83,5 +87,5 @@ public abstract class ThermalSystemParticipantInputFactory<
       ThermalBusInput thermalBusInput,
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
-      Object typeInput);
+      T typeInput);
 }
