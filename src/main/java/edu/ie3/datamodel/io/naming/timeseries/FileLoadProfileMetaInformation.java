@@ -19,6 +19,13 @@ public class FileLoadProfileMetaInformation extends LoadProfileMetaInformation {
     this.fileType = fileType;
   }
 
+  public FileLoadProfileMetaInformation(
+      LoadProfileMetaInformation metaInformation, Path fullFilePath, FileType fileType) {
+    super(metaInformation.getProfileKey());
+    this.fullFilePath = fullFilePath;
+    this.fileType = fileType;
+  }
+
   public Path getFullFilePath() {
     return fullFilePath;
   }

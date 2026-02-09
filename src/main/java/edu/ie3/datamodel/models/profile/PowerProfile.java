@@ -13,5 +13,5 @@ public interface PowerProfile extends Serializable {
   /**
    * @return The identifying String
    */
-  String getKey();
+  PowerProfileKey getKey();
 }

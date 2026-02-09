@@ -54,7 +54,8 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
             .executeQuery(loadMetaInformationQuery)
             .map(this::createLoadProfileEntity)
             .flatMap(Optional::stream)
-            .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
+            .collect(
+                Collectors.toMap(LoadProfileMetaInformation::getProfileKey, Function.identity()));
   }
 
   /**

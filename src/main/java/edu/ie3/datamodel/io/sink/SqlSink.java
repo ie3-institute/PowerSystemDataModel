@@ -251,8 +251,8 @@ public class SqlSink {
       TriFunction<String, String, String[], String> queryBuilder;
       String timeSeriesIdentifier;
 
-      if (timeSeries instanceof LoadProfileTimeSeries<?, ?> lpts) {
-        timeSeriesIdentifier = lpts.getLoadProfile().getKey();
+      if (timeSeries instanceof LoadProfileTimeSeries<?> lpts) {
+        timeSeriesIdentifier = lpts.getPowerProfileKey().getValue();
         queryBuilder = this::basicInsertQueryValuesLPTS;
       } else {
         timeSeriesIdentifier = timeSeries.getUuid().toString();

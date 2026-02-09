@@ -155,7 +155,8 @@ public class TimeSeriesProcessor<
                 jointMapping.put(fieldName, new FieldSourceToMethod(source, getter));
 
     /* Get the mapping from field name to getter method ignoring the getter for returning all entries */
-    mapFieldNameToGetter(timeSeriesClass, Arrays.asList("entries", "uuid", "type", "loadProfile"))
+    mapFieldNameToGetter(
+            timeSeriesClass, Arrays.asList("entries", "uuid", "type", "powerProfileKey"))
         .forEach(addFunction.apply(TIMESERIES));
 
     /* Get the mapping from field name to getter method for the entry, but ignoring the getter for the value */
