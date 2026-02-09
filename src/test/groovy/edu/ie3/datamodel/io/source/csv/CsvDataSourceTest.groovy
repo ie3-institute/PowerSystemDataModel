@@ -154,12 +154,12 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid",
       "active_power_gradient",
       "capex",
-      "cosPhiRated",
+      "cosphi_rated",
       "eta_conv",
       "id",
       "opex",
       "s_rated",
-      "olmCharacteristic",
+      "olmcharacteristic",
       "cosPhiFixed"
     ] as String[]
     def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\",\"cosPhiFixed:{(0.0,1.0)}\""
@@ -168,13 +168,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
       activePowerGradient: "25.0",
       capex              : "100.0",
-      cosPhiRated        : "0.95",
+      cosphiRated        : "0.95",
       etaConv            : "98.0",
       id                 : "test_bmTypeInput",
       opex               : "50.0",
       sRated             : "25.0",
       uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-      olmCharacteristic  : "olm:{(0.0,1.0)}",
+      olmcharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : "cosPhiFixed:{(0.0,1.0)}"
     ]
   }
@@ -292,12 +292,12 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid",
       "active_power_gradient",
       "capex",
-      "cosPhiRated",
+      "cosphi_rated",
       "eta_conv",
       "id",
       "opex",
       "s_rated",
-      "olmCharacteristic",
+      "olmcharacteristic",
       "cosPhiFixed"
     ] as String[]
     def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\","
@@ -306,13 +306,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
       activePowerGradient: "25.0",
       capex              : "100.0",
-      cosPhiRated        : "0.95",
+      cosphiRated        : "0.95",
       etaConv            : "98.0",
       id                 : "test_bmTypeInput",
       opex               : "50.0",
       sRated             : "25.0",
       uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-      olmCharacteristic  : "olm:{(0.0,1.0)}",
+      olmcharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : ""
     ]
   }

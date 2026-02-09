@@ -43,7 +43,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
       "id"              : "TestID",
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
       "srated"          : "3",
-      "cosPhiRated"     : "4"
+      "cosphirated"     : "4"
     ]
     def inputClass = FixedFeedInInput
     def nodeInput = Mock(NodeInput)
@@ -72,7 +72,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
       }
       assert controllingEm == Optional.of(emUnit)
       assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
+      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
     }
   }
 

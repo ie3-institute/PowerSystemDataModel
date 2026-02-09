@@ -49,7 +49,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
       "kt"              : "8",
       "marketreaction"  : "true",
       "srated"          : "9",
-      "cosPhiRated"     : "10",
+      "cosphirated"     : "10",
     ]
     def inputClass = PvInput
     def nodeInput = Mock(NodeInput)
@@ -87,7 +87,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
       assert kT == Double.parseDouble(parameter["kt"])
       assert marketReaction
       assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
+      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
     }
   }
 }
