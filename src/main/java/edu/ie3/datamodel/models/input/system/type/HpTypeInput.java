@@ -15,7 +15,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpTypeInput extends SystemParticipantTypeInput {
-  /** Thermal output of the heat pump (typically in kW), when sRated * cosPhi_rated is consumed */
+  /** Thermal output of the heat pump (typically in kW), when sRated * cosPhiRated is consumed */
   private final ComparableQuantity<Power> pThermal;
 
   /**
@@ -25,7 +25,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
    * @param opex Operating expense for this type of HP (typically in €)
    * @param cosPhiRated Power factor for this type of HP
    * @param sRated Rated apparent power
-   * @param pThermal Thermal output of the heat pump, when sRated * cosPhi_rated is consumed
+   * @param pThermal Thermal output of the heat pump, when sRated * cosPhiRated is consumed
    *     electrically
    */
   public HpTypeInput(
