@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
 - Fix transformer susceptance in readTheDocs to negative values [#1078](https://github.com/ie3-institute/PowerSystemDataModel/issues/1078)
-- Added mising fields to field validation [#1422](https://github.com/ie3-institute/PowerSystemDataModel/issues/1422)
+- Added missing fields to field validation [#1422](https://github.com/ie3-institute/PowerSystemDataModel/issues/1422)
 - Fixed the issues with rtd for Cylindrical thermal storage [#1273](https://github.com/ie3-institute/PowerSystemDataModel/issues/1273)
 - Updated Controlling_em for all the loads in readthedocs[#1447](https://github.com/ie3-institute/PowerSystemDataModel/issues/1447)
 - Included a doFirst clause into `checkJavaVersion.gradle` [#1462](https://github.com/ie3-institute/PowerSystemDataModel/issues/1462)
