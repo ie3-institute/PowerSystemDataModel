@@ -154,7 +154,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid",
       "active_power_gradient",
       "capex",
-      "cosphi_rated",
+      "cosPhiRated",
       "eta_conv",
       "id",
       "opex",
@@ -168,7 +168,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
       activePowerGradient: "25.0",
       capex              : "100.0",
-      cosphiRated        : "0.95",
+      cosPhiRated        : "0.95",
       etaConv            : "98.0",
       id                 : "test_bmTypeInput",
       opex               : "50.0",
@@ -306,7 +306,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
       activePowerGradient: "25.0",
       capex              : "100.0",
-      cosphiRated        : "0.95",
+      cosPhiRated        : "0.95",
       etaConv            : "98.0",
       id                 : "test_bmTypeInput",
       opex               : "50.0",

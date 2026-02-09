@@ -251,7 +251,7 @@ public class PvInput extends SystemParticipantInput {
         + marketReaction
         + ", sRated="
         + sRated
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + cosPhiRated
         + '}';
   }

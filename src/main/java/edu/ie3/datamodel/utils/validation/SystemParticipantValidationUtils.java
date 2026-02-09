@@ -102,7 +102,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *   <li>capex is not null and not negative
    *   <li>opex is not null and not negative
    *   <li>sRated is not null and not negative
-   *   <li>cosphiRated is between zero and one
+   *   <li>cosPhiRated is between zero and one
    * </ul>
    *
    * <p>A "distribution" method, that forwards the check request to specific implementations to

@@ -43,7 +43,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
       "id"              : "TestID",
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
       "srated"          : "3",
-      "cosphirated"     : "4"
+      "cosPhiRated"     : "4"
     ]
     def inputClass = FixedFeedInInput
     def nodeInput = Mock(NodeInput)

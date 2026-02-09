@@ -34,7 +34,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
    * @param eStorage Energy capacity of the storage
    * @param eCons Consumed electric energy per driven distance
    * @param sRated Rated apparent power for this type of EV (typically in kVA)
-   * @param cosphiRated Power factor for this type of EV
+   * @param cosPhiRated Power factor for this type of EV
    * @param sRatedDC power for DC (typically in kW)
    */
   public EvTypeInput(
@@ -45,9 +45,9 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Energy> eStorage,
       ComparableQuantity<SpecificEnergy> eCons,
       ComparableQuantity<Power> sRated,
-      double cosphiRated,
+      double cosPhiRated,
       ComparableQuantity<Power> sRatedDC) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
     this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
@@ -98,7 +98,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
         + getOpex()
         + ", sRated="
         + getsRated()
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + getCosPhiRated()
         + "eStorage="
         + eStorage
