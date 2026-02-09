@@ -72,7 +72,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
       }
       assert controllingEm == Optional.of(emUnit)
       assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
+      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
     }
   }
 
