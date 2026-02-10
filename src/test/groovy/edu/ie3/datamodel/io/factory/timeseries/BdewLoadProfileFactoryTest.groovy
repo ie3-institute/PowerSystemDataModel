@@ -125,16 +125,16 @@ class BdewLoadProfileFactoryTest extends Specification {
 
   def "A BDEWLoadProfileFactory builds time series from entries"() {
     when:
-    def lpts = factory.build(BdewStandardLoadProfile.G0, allEntries)
+    def lpts = factory.build(BdewStandardLoadProfile.G0.key, allEntries)
 
     then:
-    lpts.loadProfile == BdewStandardLoadProfile.G0
+    lpts.powerProfileKey == BdewStandardLoadProfile.G0.key
     lpts.entries.size() == 3
   }
 
   def "A BDEWLoadProfileFactory does return the max power correctly"() {
     when:
-    def maxPower = factory.calculateMaxPower(BdewStandardLoadProfile.G0, allEntries)
+    def maxPower = factory.calculateMaxPower(BdewStandardLoadProfile.G0.key, allEntries)
 
     then:
     maxPower == Quantities.getQuantity(77.7, PowerSystemUnits.WATT)
@@ -142,7 +142,7 @@ class BdewLoadProfileFactoryTest extends Specification {
 
   def "A BDEWLoadProfileFactory does return an energy scaling correctly"() {
     when:
-    def energyScaling = factory.getLoadProfileEnergyScaling(BdewStandardLoadProfile.G0)
+    def energyScaling = factory.getLoadProfileEnergyScaling(BdewStandardLoadProfile.G0.key)
 
     then:
     energyScaling == Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR)

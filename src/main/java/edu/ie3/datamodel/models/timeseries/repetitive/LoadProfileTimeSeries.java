@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
-import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
@@ -20,9 +20,9 @@ import tech.units.indriya.ComparableQuantity;
 /**
  * Describes a load profile time series with repetitive values that can be calculated from a pattern
  */
-public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P>>
+public class LoadProfileTimeSeries<V extends LoadValues>
     extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
-  protected final P loadProfile;
+  protected final PowerProfileKey powerProfileKey;
   protected final Map<Integer, V> valueMapping;
 
   /**
@@ -35,12 +35,12 @@ public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P
   private final ComparableQuantity<Energy> profileEnergyScaling;
 
   public LoadProfileTimeSeries(
-      P loadProfile,
+      PowerProfileKey powerProfileKey,
       Set<LoadProfileEntry<V>> entries,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
     super(entries);
-    this.loadProfile = loadProfile;
+    this.powerProfileKey = powerProfileKey;
     this.valueMapping =
         entries.stream()
             .collect(
@@ -63,9 +63,9 @@ public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P
     return Optional.ofNullable(profileEnergyScaling);
   }
 
-  /** Returns the {@link LoadProfile}. */
-  public P getLoadProfile() {
-    return loadProfile;
+  /** Returns the {@link PowerProfileKey}. */
+  public PowerProfileKey getPowerProfileKey() {
+    return powerProfileKey;
   }
 
   @Override
@@ -87,8 +87,8 @@ public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P
    */
   public Supplier<Optional<PValue>> supplyValue(ZonedDateTime time) {
     int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
-    LoadValues<P> loadValue = valueMapping.get(quarterHour);
-    return () -> Optional.ofNullable(loadValue.getValue(time, loadProfile));
+    LoadValues loadValue = valueMapping.get(quarterHour);
+    return () -> Optional.ofNullable(loadValue.getValue(time, powerProfileKey));
   }
 
   @Override
@@ -109,7 +109,7 @@ public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P
   @Override
   protected PValue calc(ZonedDateTime time) {
     int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
-    return valueMapping.get(quarterHour).getValue(time, loadProfile);
+    return valueMapping.get(quarterHour).getValue(time, powerProfileKey);
   }
 
   @Override
@@ -117,8 +117,8 @@ public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    LoadProfileTimeSeries<?, ?> that = (LoadProfileTimeSeries<?, ?>) o;
-    return loadProfile.equals(that.loadProfile) && valueMapping.equals(that.valueMapping);
+    LoadProfileTimeSeries<?> that = (LoadProfileTimeSeries<?>) o;
+    return powerProfileKey.equals(that.powerProfileKey) && valueMapping.equals(that.valueMapping);
   }
 
   @Override
@@ -130,7 +130,7 @@ public class LoadProfileTimeSeries<P extends LoadProfile, V extends LoadValues<P
   public String toString() {
     return "LoadProfileTimeSeries{"
         + "loadProfile="
-        + getLoadProfile()
+        + getPowerProfileKey().getValue()
         + ", valueMapping="
         + getValueMapping()
         + '}';

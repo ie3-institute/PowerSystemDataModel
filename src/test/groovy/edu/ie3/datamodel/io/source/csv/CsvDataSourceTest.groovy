@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -422,9 +423,9 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     actual.size() == 3
-    actual.get("r1").fullFilePath == Path.of("lpts_r1")
-    actual.get("r2").fullFilePath == Path.of("lpts_r2")
-    actual.get("g0").fullFilePath == Path.of("lpts_g0")
+    actual.get(new PowerProfileKey("r1")).fullFilePath == Path.of("lpts_r1")
+    actual.get(new PowerProfileKey("r2")).fullFilePath == Path.of("lpts_r2")
+    actual.get(new PowerProfileKey("g0")).fullFilePath == Path.of("lpts_g0")
   }
 
   def "The CsvDataSource is able to build correct load profile meta information when restricting load profile"() {
@@ -433,6 +434,6 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     actual.size() == 1
-    actual.get("g0").fullFilePath == Path.of("lpts_g0")
+    actual.get(new PowerProfileKey("g0")).fullFilePath == Path.of("lpts_g0")
   }
 }

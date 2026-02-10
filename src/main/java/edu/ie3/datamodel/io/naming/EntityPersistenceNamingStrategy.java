@@ -371,12 +371,12 @@ public class EntityPersistenceNamingStrategy {
         logger.error("Unable to determine content of time series {}", timeSeries);
         return Optional.empty();
       }
-    } else if (timeSeries instanceof LoadProfileTimeSeries<?, ?> loadProfileTimeSeries) {
+    } else if (timeSeries instanceof LoadProfileTimeSeries<?> loadProfileTimeSeries) {
       return Optional.of(
           prefix
               .concat("lpts")
               .concat("_")
-              .concat(loadProfileTimeSeries.getLoadProfile().getKey())
+              .concat(loadProfileTimeSeries.getPowerProfileKey().getValue())
               .concat(suffix));
     } else {
       logger.error("There is no naming strategy defined for {}", timeSeries);

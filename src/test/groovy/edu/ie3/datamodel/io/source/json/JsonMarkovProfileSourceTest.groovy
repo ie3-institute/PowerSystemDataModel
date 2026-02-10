@@ -93,7 +93,7 @@ class JsonMarkovProfileSourceTest extends Specification {
     def output = supplier.get()
 
     then:
-    source.getProfile().key() == "profile1"
+    source.getProfileKey().getValue() == "profile1"
     source.getMaxPower().isPresent()
     source.getMaxPower().get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 10d
     output.value().isPresent()

@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.models.profile;
 
-import edu.ie3.datamodel.exceptions.ParsingException;
-
 /**
  * German standard electricity load profiles, defined by the bdew (Bundesverband der Energie- und
  * Wasserwirtschaft; engl.Federal Association of the Energy and Water Industry). For more details
@@ -30,25 +28,14 @@ public enum BdewStandardLoadProfile implements StandardLoadProfile {
   P25("p25"), // PV profile
   S25("s25"); // Combined PV and storage profile
 
-  private final String key;
+  private final PowerProfileKey key;
 
   BdewStandardLoadProfile(String key) {
-    this.key = key.toLowerCase();
-  }
-
-  /**
-   * Get the predefined bdew load profile based on the given key
-   *
-   * @param key key to check for
-   * @return The corresponding bdew load profile or throw {@link IllegalArgumentException}, if no
-   *     matching load profile can be found
-   */
-  public static BdewStandardLoadProfile get(String key) throws ParsingException {
-    return LoadProfile.getProfile(BdewStandardLoadProfile.values(), key);
+    this.key = new PowerProfileKey(key);
   }
 
   @Override
-  public String getKey() {
+  public PowerProfileKey getKey() {
     return key;
   }
 

@@ -15,6 +15,7 @@ import edu.ie3.datamodel.io.file.FileType;
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.EntitySource;
 import edu.ie3.datamodel.io.source.PowerValueSource;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
 import edu.ie3.datamodel.models.profile.markov.MarkovPowerProfile;
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
     this.dataSource = Objects.requireNonNull(dataSource, "dataSource");
     this.metaInformation = Objects.requireNonNull(metaInformation, "metaInformation");
     this.factory = Objects.requireNonNull(factory, "factory");
-    this.profile = new MarkovPowerProfile(metaInformation.getProfile());
+    this.profile = new MarkovPowerProfile(metaInformation.getProfileKey());
     if (metaInformation.getFileType() != FileType.JSON) {
       throw new IllegalArgumentException("Markov profile source requires JSON meta information.");
     }
@@ -77,7 +78,10 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
         cachedModel = factory.get(new MarkovModelData(root)).getOrThrow();
       } catch (FactoryException e) {
         throw new SourceException(
-            "Unable to build Markov load model from '" + metaInformation.getProfile() + "'.", e);
+            "Unable to build Markov load model from '"
+                + metaInformation.getProfileKey().getValue()
+                + "'.",
+            e);
       }
     }
     return cachedModel;
@@ -90,13 +94,20 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
       root = readModelTree();
     } catch (SourceException e) {
       throw new FailedValidationException(
-          "Unable to read Markov model '" + metaInformation.getProfile() + "' for validation.", e);
+          "Unable to read Markov model '"
+              + metaInformation.getProfileKey().getValue()
+              + "' for validation.",
+          e);
     }
     Set<String> fields = collectFieldNames(root);
     factory.validate(fields, MarkovLoadModel.class).getOrThrow();
   }
 
   @Override
+  public PowerProfileKey getProfileKey() {
+    return profile.key();
+  }
+
   public MarkovPowerProfile getProfile() {
     return profile;
   }
@@ -161,7 +172,10 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
       return getModel();
     } catch (SourceException e) {
       throw new IllegalStateException(
-          "Unable to load Markov model '" + metaInformation.getProfile() + "'.", e);
+          "Unable to load Markov model '"
+              + metaInformation.getProfileKey().getValue()
+              + "'.",
+          e);
     }
   }
 }

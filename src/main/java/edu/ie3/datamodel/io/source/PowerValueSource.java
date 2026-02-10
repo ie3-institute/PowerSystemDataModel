@@ -5,8 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.models.profile.LoadProfile;
-import edu.ie3.datamodel.models.profile.PowerProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -20,13 +19,12 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Interface defining base functionality for power value sources. */
 public sealed interface PowerValueSource<
-        P extends PowerProfile,
         I extends PowerValueSource.PowerValueIdentifier,
         O extends PowerValueSource.PowerOutputValue>
     permits PowerValueSource.MarkovBased, PowerValueSource.TimeSeriesBased {
 
   /** Returns the profile of this source. */
-  P getProfile();
+  PowerProfileKey getProfileKey();
 
   /**
    * Method to get a supplier for the next power value based on the provided input data. Depending
@@ -57,11 +55,10 @@ public sealed interface PowerValueSource<
 
   /** Interface for time-series-based power value sources. */
   non-sealed interface TimeSeriesBased
-      extends PowerValueSource<LoadProfile, TimeSeriesIdentifier, TimeSeriesOutputValue> {}
+      extends PowerValueSource<TimeSeriesInputValue, TimeSeriesOutputValue> {}
 
   /** Interface for markov-chain-based power value sources. */
-  non-sealed interface MarkovBased
-      extends PowerValueSource<PowerProfile, MarkovIdentifier, MarkovOutputValue> {}
+  non-sealed interface MarkovBased extends PowerValueSource<MarkovIdentifier, MarkovOutputValue> {}
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // input data
@@ -70,7 +67,7 @@ public sealed interface PowerValueSource<
    * Interface for the input data of {@link #getValueSupplier(PowerValueIdentifier)}. The data is
    * used to determine the next power.
    */
-  sealed interface PowerValueIdentifier permits TimeSeriesIdentifier, MarkovIdentifier {
+  sealed interface PowerValueIdentifier permits TimeSeriesInputValue, MarkovIdentifier {
     /** Returns the timestamp for which a power value is needed. */
     ZonedDateTime time();
   }
@@ -80,7 +77,7 @@ public sealed interface PowerValueSource<
    *
    * @param time
    */
-  record TimeSeriesIdentifier(ZonedDateTime time) implements PowerValueIdentifier {}
+  record TimeSeriesInputValue(ZonedDateTime time) implements PowerValueIdentifier {}
 
   /**
    * Input data for Markov-based power value sources, containing everything needed for a single

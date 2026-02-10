@@ -410,7 +410,7 @@ trait TimeSeriesTestData {
   ] as Set
 
   BdewLoadProfileTimeSeries loadProfileTimeSeries =  new BdewLoadProfileTimeSeries(
-  BdewStandardLoadProfile.G2,
+  BdewStandardLoadProfile.G2.key,
   [
     new LoadProfileEntry<>(
     new BdewLoadValues(BdewLoadValues.BdewScheme.BDEW1999,

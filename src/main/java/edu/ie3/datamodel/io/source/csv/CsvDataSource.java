@@ -10,14 +10,11 @@ import static edu.ie3.datamodel.io.file.FileType.CSV;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
-import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
-import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.*;
 import edu.ie3.datamodel.io.source.file.FileDataSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
@@ -126,11 +123,11 @@ public class CsvDataSource extends FileDataSource {
    *
    * @return A mapping from profile to the load profile time series meta information
    */
-  public Map<String, FileLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
+  public Map<PowerProfileKey, FileLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
       LoadProfile... profiles) {
     return getLoadProfileMetaInformation(profiles)
         .filter(metaInformation -> metaInformation.getFileType() == CSV)
-        .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
+        .collect(Collectors.toMap(LoadProfileMetaInformation::getProfileKey, Function.identity()));
   }
 
   /**

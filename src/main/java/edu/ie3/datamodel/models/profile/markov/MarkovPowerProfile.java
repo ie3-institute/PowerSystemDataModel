@@ -6,20 +6,27 @@
 package edu.ie3.datamodel.models.profile.markov;
 
 import edu.ie3.datamodel.models.profile.PowerProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import java.util.Objects;
 
 /** Simple {@link PowerProfile} implementation for Markov-based load models. */
-public record MarkovPowerProfile(String key) implements PowerProfile {
+public record MarkovPowerProfile(PowerProfileKey key) implements PowerProfile {
 
   public MarkovPowerProfile {
     Objects.requireNonNull(key, "key");
-    if (key.isBlank()) {
+    if (key.noKeyAssigned) {
       throw new IllegalArgumentException("Profile key must not be blank.");
     }
   }
 
-  @Override
-  public String getKey() {
-    return key;
+  public MarkovPowerProfile(String key) {
+    this(buildKey(key));
+  }
+
+  private static PowerProfileKey buildKey(String key) {
+    if (key == null || key.isBlank()) {
+      throw new IllegalArgumentException("Profile key must not be blank.");
+    }
+    return new PowerProfileKey(key);
   }
 }

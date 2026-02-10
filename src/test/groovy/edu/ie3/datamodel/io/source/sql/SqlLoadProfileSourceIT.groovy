@@ -34,7 +34,7 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
   SqlConnector connector
 
   @Shared
-  SqlLoadProfileSource<BdewStandardLoadProfile, BdewLoadValues> loadSource
+  SqlLoadProfileSource<BdewLoadValues> loadSource
 
   @Shared
   DatabaseNamingStrategy namingStrategy
@@ -63,7 +63,7 @@ class SqlLoadProfileSourceIT extends Specification implements TestContainerHelpe
 
   def "A SqlTimeSeriesSource can read and correctly parse a single value for a specific date"() {
     when:
-    def supplier = loadSource.getValueSupplier(new PowerValueSource.TimeSeriesIdentifier(TIME_00MIN))
+    def supplier = loadSource.getValueSupplier(new PowerValueSource.TimeSeriesInputValue(TIME_00MIN))
     def value = supplier.get().value()
 
     then:

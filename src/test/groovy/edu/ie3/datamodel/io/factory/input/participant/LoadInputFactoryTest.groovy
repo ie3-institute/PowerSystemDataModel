@@ -78,7 +78,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 
     where:
     profileKey || profile
-    "G-4"      || BdewStandardLoadProfile.G4
-    "ep1"      || NbwTemperatureDependantLoadProfile.EP1
+    "G-4"      || BdewStandardLoadProfile.G4.key
+    "ep1"      || NbwTemperatureDependantLoadProfile.EP1.key
   }
 }

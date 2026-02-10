@@ -11,13 +11,14 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.LoadProfileSource;
-import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -28,9 +29,8 @@ import tech.units.indriya.ComparableQuantity;
 /**
  * Source that is capable of providing information around load profile time series from csv files.
  */
-public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
-    extends LoadProfileSource<P, V> {
-  private final LoadProfileTimeSeries<P, V> loadProfileTimeSeries;
+public class CsvLoadProfileSource<V extends LoadValues> extends LoadProfileSource<V> {
+  private final LoadProfileTimeSeries<V> loadProfileTimeSeries;
   private final CsvDataSource dataSource;
   private final Path filePath;
 
@@ -38,7 +38,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
       CsvDataSource source,
       FileLoadProfileMetaInformation metaInformation,
       Class<V> entryClass,
-      LoadProfileFactory<P, V> entryFactory) {
+      LoadProfileFactory<V> entryFactory) {
     super(metaInformation, entryClass, entryFactory);
     this.dataSource = source;
     this.filePath = metaInformation.getFullFilePath();
@@ -49,7 +49,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
     } catch (SourceException e) {
       throw new IllegalArgumentException(
           "Unable to obtain load profile time series with profile '"
-              + metaInformation.getProfile()
+              + metaInformation.getProfileKey().getValue()
               + "'. Please check arguments!",
           e);
     }
@@ -60,7 +60,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
     validate(entryClass, () -> dataSource.getSourceFields(filePath), entryFactory);
   }
 
-  public LoadProfileTimeSeries<P, V> getTimeSeries() {
+  public LoadProfileTimeSeries<V> getTimeSeries() {
     return loadProfileTimeSeries;
   }
 
@@ -70,7 +70,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   }
 
   @Override
-  public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesIdentifier data) {
+  public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesInputValue data) {
     return TimeSeriesOutputValue.from(loadProfileTimeSeries.supplyValue(data.time()));
   }
 
@@ -96,7 +96,7 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
    * @throws SourceException If the file cannot be read properly
    * @return an individual time series
    */
-  protected LoadProfileTimeSeries<P, V> buildLoadProfileTimeSeries(
+  protected LoadProfileTimeSeries<V> buildLoadProfileTimeSeries(
       Function<Map<String, String>, Try<LoadProfileEntry<V>, FactoryException>>
           fieldToValueFunction)
       throws SourceException {
@@ -110,6 +110,6 @@ public class CsvLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
             .getOrThrow()
             .collect(Collectors.toSet());
 
-    return entryFactory.build(profile, entries);
+    return entryFactory.build(powerProfileKey, entries);
   }
 }

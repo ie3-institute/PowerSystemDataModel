@@ -13,7 +13,6 @@ import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.LoadProfileSource;
-import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
@@ -34,11 +33,9 @@ import tech.units.indriya.ComparableQuantity;
 /**
  * Sql source for {@link LoadProfileTimeSeries}.
  *
- * @param <P> type of load profile
  * @param <V> type of load values
  */
-public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>>
-    extends LoadProfileSource<P, V> {
+public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSource<V> {
   protected static final Logger log = LoggerFactory.getLogger(SqlLoadProfileSource.class);
   private final SqlDataSource dataSource;
   private final String tableName;
@@ -59,7 +56,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
       SqlDataSource dataSource,
       LoadProfileMetaInformation metaInformation,
       Class<V> entryClass,
-      LoadProfileFactory<P, V> entryFactory) {
+      LoadProfileFactory<V> entryFactory) {
     super(metaInformation, entryClass, entryFactory);
     this.dataSource = dataSource;
 
@@ -78,7 +75,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
       DatabaseNamingStrategy namingStrategy,
       LoadProfileMetaInformation metaInformation,
       Class<V> entryClass,
-      LoadProfileFactory<P, V> entryFactory) {
+      LoadProfileFactory<V> entryFactory) {
     this(
         new SqlDataSource(connector, schemaName, namingStrategy),
         metaInformation,
@@ -99,22 +96,22 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
   }
 
   @Override
-  public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesIdentifier data) {
+  public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesInputValue data) {
     ZonedDateTime time = data.time();
-    Optional<LoadValues<P>> loadValueOption = queryForValue(time);
-    return TimeSeriesOutputValue.from(() -> loadValueOption.map(v -> v.getValue(time, profile)));
+    Optional<LoadValues> loadValueOption = queryForValue(time);
+    return TimeSeriesOutputValue.from(() -> loadValueOption.map(v -> v.getValue(time, powerProfileKey)));
   }
 
   @Override
   public Optional<ComparableQuantity<Power>> getMaxPower() {
     // TODO: Improve this calculation
     return Optional.ofNullable(
-        entryFactory.calculateMaxPower(profile, getEntries(queryFull, ps -> {})));
+        entryFactory.calculateMaxPower(powerProfileKey, getEntries(queryFull, ps -> {})));
   }
 
   @Override
   public Optional<ComparableQuantity<Energy>> getProfileEnergyScaling() {
-    return Optional.ofNullable(entryFactory.getLoadProfileEnergyScaling(profile));
+    return Optional.ofNullable(entryFactory.getLoadProfileEnergyScaling(powerProfileKey));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -134,7 +131,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
         .collect(Collectors.toSet());
   }
 
-  private Optional<LoadValues<P>> queryForValue(ZonedDateTime time) {
+  private Optional<LoadValues> queryForValue(ZonedDateTime time) {
     Set<LoadProfileEntry<V>> entries =
         getEntries(queryTime, ps -> ps.setInt(1, TimeSeriesUtils.calculateQuarterHourOfDay(time)));
     if (entries.isEmpty()) return Optional.empty();
@@ -168,7 +165,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
         + WHERE
         + LOAD_PROFILE
         + " = '"
-        + profile.getKey()
+        + powerProfileKey.getValue()
         + "'";
   }
 
@@ -187,7 +184,7 @@ public class SqlLoadProfileSource<P extends LoadProfile, V extends LoadValues<P>
         + WHERE
         + LOAD_PROFILE
         + " = '"
-        + profile.getKey()
+        + powerProfileKey.getValue()
         + "' AND "
         + timeColumnName
         + "=?;";
