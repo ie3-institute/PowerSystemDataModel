@@ -39,7 +39,7 @@ public class MarkovLoadModelFactory
     String schema = requireText(root, "schema");
     ZonedDateTime generatedAt = parseTimestamp(requireText(root, "generated_at"));
     Generator generator = parseGenerator(requireNode(root, "generator"));
-    TimeModel timeModel = parseTimeModel(requireNode(root, "time_model"));
+    TimeModel timeModel = extractTimeModel(requireNode(root, "time_model"));
     ValueModel valueModel = parseValueModel(requireNode(root, "value_model"));
     Parameters parameters = parseParameters(root.path("parameters"));
 

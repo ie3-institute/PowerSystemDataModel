@@ -31,8 +31,8 @@ interface MarkovModelParsingSupport {
     return new Generator(name, version, config);
   }
 
-  /** Parses the time model block, including bucket count and sampling interval. */
-  default TimeModel parseTimeModel(JsonNode timeNode) {
+  /** Extracts the time model block, including bucket count and sampling interval. */
+  default TimeModel extractTimeModel(JsonNode timeNode) {
     int bucketCount = requireInt(timeNode, "bucket_count");
     String formula = requireNode(timeNode, "bucket_encoding").path("formula").asString("");
     if (formula.isEmpty()) {

@@ -160,6 +160,12 @@ The following keys are supported until now:
 ##### Load Profile Time Series
 
 The following profiles are supported until now:
+
+Note:
+Load profile keys must be unique across all load-profile sources. Do not use the same profile key
+for both CSV (lpts_*) and Markov JSON (markov_*), e.g. avoid having both lpts_h0.csv and
+markov_h0.json.
+
 ```{list-table}
    :widths: auto
    :class: wrapping
