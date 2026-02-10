@@ -402,7 +402,7 @@ class FileNamingStrategyTest extends Specification {
     given:
     def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
     def timeSeries = Mock(LoadProfileTimeSeries)
-    timeSeries.loadProfile >> type
+    timeSeries.powerProfileKey >> type
 
     when:
     def actual = strategy.getFilePath(timeSeries)
@@ -412,8 +412,8 @@ class FileNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz                 | type                       || expectedFileName
-    LoadProfileTimeSeries | BdewStandardLoadProfile.G3 || Path.of("test_grid", "input", "participants", "time_series", "lpts_g3")
+    clazz                 | type                           || expectedFileName
+    LoadProfileTimeSeries | BdewStandardLoadProfile.G3.key || Path.of("test_grid", "input", "participants", "time_series", "lpts_g3")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory path for time series mapping"() {
@@ -710,7 +710,7 @@ class FileNamingStrategyTest extends Specification {
     given: "a naming strategy without pre- or suffixes"
     def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
     def timeSeries = Mock(LoadProfileTimeSeries)
-    timeSeries.loadProfile >> type
+    timeSeries.powerProfileKey >> type
 
     when:
     def actual = strategy.getFilePath(timeSeries)
@@ -720,8 +720,8 @@ class FileNamingStrategyTest extends Specification {
     actual.get() == expectedFilePath
 
     where:
-    clazz                 | type               || expectedFilePath
-    LoadProfileTimeSeries | BdewStandardLoadProfile.G3 || Path.of("lpts_g3")
+    clazz                 | type                           || expectedFilePath
+    LoadProfileTimeSeries | BdewStandardLoadProfile.G3.key || Path.of("lpts_g3")
   }
 
   def "A FileNamingStrategy with FlatHierarchy does return valid file path for individual time series"() {
@@ -919,7 +919,7 @@ class FileNamingStrategyTest extends Specification {
     then:
     LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as LoadProfileMetaInformation).with {
-      assert profile == "g3"
+      assert profileKey.value == "g3"
     }
   }
 
@@ -934,7 +934,7 @@ class FileNamingStrategyTest extends Specification {
     then:
     LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as LoadProfileMetaInformation).with {
-      assert profile == "g3"
+      assert profileKey.value == "g3"
     }
   }
 }

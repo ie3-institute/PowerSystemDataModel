@@ -15,6 +15,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.Try;
@@ -304,6 +305,8 @@ public abstract class Processor<T> {
           resultStringBuilder.append(((CharacteristicInput<?, ?>) methodReturnObject).serialize());
       case "InputModelType" ->
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
+      case "PowerProfileKey" ->
+          resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
       default ->
           throw new EntityProcessorException(
               "Unable to process value for attribute/field '"
