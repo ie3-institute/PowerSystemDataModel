@@ -29,4 +29,9 @@ public record MarkovPowerProfile(PowerProfileKey key) implements PowerProfile {
     }
     return new PowerProfileKey(key);
   }
+
+  @Override
+  public PowerProfileKey getKey() {
+    return key;
+  }
 }
