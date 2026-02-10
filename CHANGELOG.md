@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reintroduce `gradlew.bat` [#1531](https://github.com/ie3-institute/PowerSystemDataModel/issues/1531)
 - Remove snapshot repository [#1538](https://github.com/ie3-institute/PowerSystemDataModel/issues/1538)
 - Refactored the handling of power profiles [#1514](https://github.com/ie3-institute/PowerSystemDataModel/issues/1514)
+- Updated `gradle` dependency shadowJar to work with Gradle 9 [#1545](https://github.com/ie3-institute/PowerSystemDataModel/issues/1545)
 
 ## [8.1.0] - 2025-07-25
 
