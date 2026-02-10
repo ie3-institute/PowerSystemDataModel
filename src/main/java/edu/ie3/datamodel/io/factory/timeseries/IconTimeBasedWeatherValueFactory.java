@@ -134,7 +134,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    *     StandardUnits#WIND_VELOCITY}
    */
   private static ComparableQuantity<Angle> getWindDirection(TimeBasedWeatherValueData data) {
-    /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
+    /* Get the three-dimensional parts of the wind velocity vector in Cartesian coordinates */
     double u =
         data.getDouble(WIND_VELOCITY_U); // Wind component from west to east (parallel to latitudes)
     double v =
@@ -147,7 +147,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   }
 
   /**
-   * Determines the wind velocity. In ICON the wind velocity is given in three dimensional Cartesian
+   * Determines the wind velocity. In ICON the wind velocity is given in three-dimensional Cartesian
    * coordinates. Here, the upward component is neglected. We choose to use the wind velocity
    * calculations at 131 m above ground, as this is a height that pretty good matches the common hub
    * height of today's onshore wind generators, that are commonly connected to the voltage levels of
@@ -158,7 +158,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    *     StandardUnits#WIND_VELOCITY}
    */
   private static ComparableQuantity<Speed> getWindVelocity(TimeBasedWeatherValueData data) {
-    /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
+    /* Get the three-dimensional parts of the wind velocity vector in Cartesian coordinates */
     double u = data.getDouble(WIND_VELOCITY_U);
     double v = data.getDouble(WIND_VELOCITY_V);
 
