@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -33,6 +34,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   private static final String TEMPERATURE = "t2m";
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
+  private static final String GROUND_TEMPERATURE_LEVEL_1 = "tg1";
+  private static final String GROUND_TEMPERATURE_LEVEL_2 = "tg2";
 
   public IconTimeBasedWeatherValueFactory() {
     super();
@@ -53,7 +56,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "albrad",
             "asobs",
             "aswdifuS",
-            "tG",
+            "tg1",
+            "tg2",
             "u10m",
             "u20m",
             "u216m",
@@ -78,6 +82,15 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
 
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
+    Set<String> requiredFields =
+        newSet(
+            TIME,
+            DIFFUSE_IRRADIANCE,
+            DIRECT_IRRADIANCE,
+            TEMPERATURE,
+            WIND_VELOCITY_U,
+            WIND_VELOCITY_V);
+    validatedRequiredFields(data, requiredFields);
     Point coordinate = data.getCoordinate();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
@@ -88,6 +101,12 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
         data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
+    Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN)
+            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
+    Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN)
+            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
@@ -95,7 +114,9 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             diffuseIrradiance,
             temperature,
             windDirection,
-            windVelocity);
+            windVelocity,
+            groundTemperatureLevel1,
+            groundTemperatureLevel2);
     return new TimeBasedValue<>(time, weatherValue);
   }
 
@@ -113,7 +134,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    *     StandardUnits#WIND_VELOCITY}
    */
   private static ComparableQuantity<Angle> getWindDirection(TimeBasedWeatherValueData data) {
-    /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
+    /* Get the three-dimensional parts of the wind velocity vector in Cartesian coordinates */
     double u =
         data.getDouble(WIND_VELOCITY_U); // Wind component from west to east (parallel to latitudes)
     double v =
@@ -126,7 +147,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   }
 
   /**
-   * Determines the wind velocity. In ICON the wind velocity is given in three dimensional Cartesian
+   * Determines the wind velocity. In ICON the wind velocity is given in three-dimensional Cartesian
    * coordinates. Here, the upward component is neglected. We choose to use the wind velocity
    * calculations at 131 m above ground, as this is a height that pretty good matches the common hub
    * height of today's onshore wind generators, that are commonly connected to the voltage levels of
@@ -137,11 +158,28 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    *     StandardUnits#WIND_VELOCITY}
    */
   private static ComparableQuantity<Speed> getWindVelocity(TimeBasedWeatherValueData data) {
-    /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
+    /* Get the three-dimensional parts of the wind velocity vector in Cartesian coordinates */
     double u = data.getDouble(WIND_VELOCITY_U);
     double v = data.getDouble(WIND_VELOCITY_V);
 
     double velocity = Math.sqrt(Math.pow(u, 2) + Math.pow(v, 2));
     return Quantities.getQuantity(velocity, Units.METRE_PER_SECOND).to(StandardUnits.WIND_VELOCITY);
+  }
+
+  /**
+   * * Validates that all required fields are present and not empty in the provided data
+   *
+   * @param data the data to validate
+   * @param requiredFields the fields that must be present and non-empty
+   * @throws FactoryException if any required field is missing or empty
+   */
+  protected void validatedRequiredFields(
+      TimeBasedWeatherValueData data, Set<String> requiredFields) {
+    for (String field : requiredFields) {
+      String value = data.getField(field);
+      if (value == null || value.isEmpty()) {
+        throw new FactoryException("The field \"" + field + "\" is missing or empty.");
+      }
+    }
   }
 }

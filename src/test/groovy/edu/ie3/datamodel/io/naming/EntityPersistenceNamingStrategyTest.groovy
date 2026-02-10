@@ -414,7 +414,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     given:
     EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
     BdewLoadProfileTimeSeries timeSeries = Mock(BdewLoadProfileTimeSeries)
-    timeSeries.loadProfile >> type
+    timeSeries.powerProfileKey >> type
 
     when:
     Optional<String> actual = strategy.getEntityName(timeSeries)
@@ -424,8 +424,8 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz                     | type                       || expectedFileName
-    BdewLoadProfileTimeSeries | BdewStandardLoadProfile.G3 || "lpts_g3"
+    clazz                     | type                           || expectedFileName
+    BdewLoadProfileTimeSeries | BdewStandardLoadProfile.G3.key || "lpts_g3"
   }
 
   def "A EntityPersistenceNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {

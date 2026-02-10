@@ -606,7 +606,7 @@ class BdewLoadProfileTest extends Specification {
   // helper methods
 
   private List<BdewLoadValues> read(BdewStandardLoadProfile profile) {
-    source.getSourceData(Path.of("lpts_"+profile.key)).map { it -> factory.buildModel(new LoadProfileData<>(it, BdewLoadValues)).value }.toList()
+    source.getSourceData(Path.of("lpts_"+profile.key.value)).map { it -> factory.buildModel(new LoadProfileData<>(it, BdewLoadValues)).value }.toList()
   }
 
   private static double sumValues(List<BdewLoadValues> values, Function<BdewLoadValues, Double> extractor) {

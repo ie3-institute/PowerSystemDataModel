@@ -23,7 +23,7 @@ class LoadInputTest extends Specification {
     def loadInput = SystemParticipantTestData.loadInput
 
     when:
-    def alteredUnit = loadInput.copy().loadprofile(BdewStandardLoadProfile.G0)
+    def alteredUnit = loadInput.copy().loadProfile(BdewStandardLoadProfile.G0.key)
         .eConsAnnual(Quantities.getQuantity(6000, KILOWATTHOUR)).sRated(Quantities.getQuantity(0d, KILOVOLTAMPERE))
         .cosPhiRated(0.8).node(GridTestData.nodeG)
         .qCharacteristics(CosPhiFixed.CONSTANT_CHARACTERISTIC).build()
@@ -34,7 +34,7 @@ class LoadInputTest extends Specification {
       assert operationTime == loadInput.operationTime
       assert operator == loadInput.operator
       assert id == loadInput.id
-      assert loadProfile == BdewStandardLoadProfile.G0
+      assert loadProfile == BdewStandardLoadProfile.G0.key
       assert node == GridTestData.nodeG
       assert qCharacteristics == CosPhiFixed.CONSTANT_CHARACTERISTIC
       assert eConsAnnual == Quantities.getQuantity(6000, KILOWATTHOUR)

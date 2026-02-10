@@ -58,6 +58,8 @@
 \definecolor{tuViolette}{cmyk}{0.25, 1, 0, 0}
 \definecolor{tuYellow}{cmyk}{0.05, 0.08, 1, 0}
 \definecolor{tuBrown}{cmyk}{0.05, 0.69, 1, 0}
+\definecolor{red}{rgb}{1, 0, 0}
+\definecolor{blue}{rgb}{0, 0, 1}
 
 % === pgfplots ===
 % Definition of cycle lists
@@ -176,9 +178,26 @@
 	        \draw (port_d.east) -- (winding_a.west) (winding_b.east) -- (port_e.west);
 	        
 	        \node[tuGreen, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_a.south) {A \\ \SI{110}{\kV} \\ 1};
-	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_b.south) {B \\ \SI{110}{\kV} \\ 1};
-	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_c.south) {C \\ \SI{110}{\kV} \\ 1};
-	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_d.south) {D \\ \SI{110}{\kV} \\ 1};
+	        \node[tuGreen, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_b.south) {B \\ \SI{110}{\kV} \\ 1};
+	        \node[tuGreen, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_c.south) {C \\ \SI{110}{\kV} \\ 1};
+	        \node[tuGreen, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_d.south) {D \\ \SI{110}{\kV} \\ 1};
 	        \node[tuOrange, anchor = north, inner sep = 2mm, text width = 10mm, align = center] at (port_e.south) {E \\ \SI{10}{\kV} \\ 2};
+
+            % Corner points of SubGridContainerA
+            \node[anchor=south west, font=\footnotesize] (SGC_A_SW) at (-0.5, 0.75) {SubGridContainer A}; % South West corner
+            \node[anchor=south east] (SGC_A_SE) at (5.25, 1.0) {}; % South East corner
+            \node[anchor=south west] (SGC_A_NW) at (-0.5, -1.5) {}; % North West corner
+            \node[anchor=south east] (SGC_A_NE) at (5.25, -1.5) {}; % North East corner
+
+            % Corner points of SubGridContainerA
+            \node[anchor=south west] (SGC_B_NW) at (4.0, 0.75) {}; % North West corner
+            \node[anchor=south east, font=\footnotesize] (SGC_B_NE) at (8.25, 0.75) {SubGridContainer B}; % North East corner
+            \node[anchor=north west] (SGC_B_SW) at (4.0, -2.0) {}; % South West corner
+            \node[anchor=south east] (SGC_B_SE) at (8.25, -2.0) {}; % South East corner
+
+            % Draw a red rectangle using the defined nodes
+            \draw [red] (SGC_A_SW.north west) -- (SGC_A_SE.north east) -- (SGC_A_NE.south east) -- (SGC_A_NW.south west) -- cycle;
+            % Draw a bluerectangle using the defined nodes
+            \draw [blue] (SGC_B_SW.north west) -- (SGC_B_SE.south east) -- (SGC_B_NE.south east) -- (SGC_B_NW.south west) -- cycle;
 	    \end{tikzpicture}
 \end{document}

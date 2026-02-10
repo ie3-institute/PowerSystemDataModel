@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
+
 import edu.ie3.datamodel.models.profile.LoadProfile
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
 import edu.ie3.datamodel.models.value.load.RandomLoadValues
@@ -130,22 +130,17 @@ class RandomLoadProfileFactoryTest extends Specification {
   }
 
   def "A RandomLoadProfileFactory builds time series from entries"() {
-    given:
-    UUID uuid = UUID.fromString("fa3894c1-25af-479c-8a40-1323bb9150a9")
-    LoadProfileMetaInformation metaInformation = new LoadProfileMetaInformation(uuid, "random")
-
-
     when:
-    def lpts = factory.build(metaInformation, allEntries)
+    def lpts = factory.build(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE.key, allEntries)
 
     then:
-    lpts.loadProfile == LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE
+    lpts.powerProfileKey == LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE.key
     lpts.entries.size() == 3
   }
 
   def "A RandomLoadProfileFactory does return the max power correctly"() {
     when:
-    def maxPower = factory.calculateMaxPower(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE, allEntries)
+    def maxPower = factory.calculateMaxPower(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE.key, allEntries)
 
     then:
     maxPower == Quantities.getQuantity(159d, PowerSystemUnits.WATT)
@@ -153,7 +148,7 @@ class RandomLoadProfileFactoryTest extends Specification {
 
   def "A RandomLoadProfileFactory does return an energy scaling correctly"() {
     when:
-    def energyScaling = factory.getLoadProfileEnergyScaling(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE)
+    def energyScaling = factory.getLoadProfileEnergyScaling(LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE.key)
 
     then:
     energyScaling == Quantities.getQuantity(716.5416966513656, PowerSystemUnits.KILOWATTHOUR)

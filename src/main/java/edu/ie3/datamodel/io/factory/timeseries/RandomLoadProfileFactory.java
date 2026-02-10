@@ -5,11 +5,9 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE;
 import static tech.units.indriya.unit.Units.WATT;
 
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
-import edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
@@ -21,8 +19,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
-public class RandomLoadProfileFactory
-    extends LoadProfileFactory<RandomLoadProfile, RandomLoadValues> {
+public class RandomLoadProfileFactory extends LoadProfileFactory<RandomLoadValues> {
   public static final String K_WEEKDAY = "kWd";
   public static final String K_SATURDAY = "kSa";
   public static final String K_SUNDAY = "kSu";
@@ -73,18 +70,12 @@ public class RandomLoadProfileFactory
 
   @Override
   public RandomLoadProfileTimeSeries build(
-      LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<RandomLoadValues>> entries) {
-    RandomLoadProfile profile = RANDOM_LOAD_PROFILE;
+      PowerProfileKey powerProfileKey, Set<LoadProfileEntry<RandomLoadValues>> entries) {
+    ComparableQuantity<Power> maxPower = calculateMaxPower(powerProfileKey, entries);
+    ComparableQuantity<Energy> profileEnergyScaling = getLoadProfileEnergyScaling(powerProfileKey);
 
-    ComparableQuantity<Power> maxPower = calculateMaxPower(profile, entries);
-    ComparableQuantity<Energy> profileEnergyScaling = getLoadProfileEnergyScaling(profile);
-
-    return new RandomLoadProfileTimeSeries(profile, entries, maxPower, profileEnergyScaling);
-  }
-
-  @Override
-  public RandomLoadProfile parseProfile(String profile) {
-    return RANDOM_LOAD_PROFILE;
+    return new RandomLoadProfileTimeSeries(
+        powerProfileKey, entries, maxPower, profileEnergyScaling);
   }
 
   /**
@@ -95,7 +86,7 @@ public class RandomLoadProfileFactory
    */
   @Override
   public ComparableQuantity<Power> calculateMaxPower(
-      RandomLoadProfile loadProfile, Set<LoadProfileEntry<RandomLoadValues>> loadProfileEntries) {
+      PowerProfileKey powerProfileKey, Set<LoadProfileEntry<RandomLoadValues>> loadProfileEntries) {
     return Quantities.getQuantity(159d, WATT);
   }
 
@@ -110,7 +101,7 @@ public class RandomLoadProfileFactory
    * 2019.
    */
   @Override
-  public ComparableQuantity<Energy> getLoadProfileEnergyScaling(RandomLoadProfile loadProfile) {
+  public ComparableQuantity<Energy> getLoadProfileEnergyScaling(PowerProfileKey powerProfileKey) {
     return Quantities.getQuantity(716.5416966513656, PowerSystemUnits.KILOWATTHOUR);
   }
 }

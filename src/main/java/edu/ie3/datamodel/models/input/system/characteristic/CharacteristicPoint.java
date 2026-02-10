@@ -131,7 +131,7 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
    * are on the same location there, the ordinate is taken into account.
    *
    * @param b The other point
-   * @return The comparision result
+   * @return The comparison result
    */
   @Override
   public int compareTo(CharacteristicPoint<A, O> b) {
