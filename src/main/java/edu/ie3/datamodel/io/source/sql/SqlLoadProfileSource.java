@@ -99,7 +99,8 @@ public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
   public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesInputValue data) {
     ZonedDateTime time = data.time();
     Optional<LoadValues> loadValueOption = queryForValue(time);
-    return TimeSeriesOutputValue.from(() -> loadValueOption.map(v -> v.getValue(time, powerProfileKey)));
+    return TimeSeriesOutputValue.from(
+        () -> loadValueOption.map(v -> v.getValue(time, powerProfileKey)));
   }
 
   @Override

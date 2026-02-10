@@ -172,10 +172,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
       return getModel();
     } catch (SourceException e) {
       throw new IllegalStateException(
-          "Unable to load Markov model '"
-              + metaInformation.getProfileKey().getValue()
-              + "'.",
-          e);
+          "Unable to load Markov model '" + metaInformation.getProfileKey().getValue() + "'.", e);
     }
   }
 }
