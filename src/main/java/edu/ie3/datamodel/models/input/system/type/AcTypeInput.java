@@ -16,7 +16,7 @@ import tech.units.indriya.ComparableQuantity;
 /** Describes the type of {@link edu.ie3.datamodel.models.input.system.AcInput} */
 public class AcTypeInput extends SystemParticipantTypeInput {
   /**
-   * Thermal output of the air condition (typically in kW), when sRated * cosPhi_rated is consumed
+   * Thermal output of the air condition (typically in kW), when sRated * cosPhiRated is consumed
    */
   private final ComparableQuantity<Power> pThermal;
 
@@ -27,7 +27,7 @@ public class AcTypeInput extends SystemParticipantTypeInput {
    * @param opex Operating expense for this type of AC (typically in €)
    * @param cosPhiRated Power factor for this type of AC
    * @param sRated Rated apparent power
-   * @param pThermal Thermal output of the air condition, when sRated * cosPhi_rated is consumed
+   * @param pThermal Thermal output of the air condition, when sRated * cosPhiRated is consumed
    *     electrically
    */
   public AcTypeInput(
@@ -86,7 +86,7 @@ public class AcTypeInput extends SystemParticipantTypeInput {
 
   /**
    * A builder pattern based approach to create copies of {@link AcTypeInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link AcTypeInput}
+   * field values. For detailed field descriptions refer to Javadocs of {@link AcTypeInput}
    */
   public static class AcTypeInputCopyBuilder
       extends SystemParticipantTypeInputCopyBuilder<AcTypeInput.AcTypeInputCopyBuilder> {
