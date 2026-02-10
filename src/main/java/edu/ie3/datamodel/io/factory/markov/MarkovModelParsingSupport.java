@@ -62,6 +62,15 @@ interface MarkovModelParsingSupport {
       throw new FactoryException("thresholds_right must be an array");
     }
     thresholdsNode.forEach(element -> thresholds.add(element.asDouble()));
+    if (thresholds.size() != Math.max(0, states - 1)) {
+      throw new FactoryException(
+          "Discretization thresholds_right must contain "
+              + Math.max(0, states - 1)
+              + " entries for "
+              + states
+              + " states, but found "
+              + thresholds.size());
+    }
     ValueModel.Discretization discretization =
         new ValueModel.Discretization(states, List.copyOf(thresholds));
 

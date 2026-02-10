@@ -13,7 +13,6 @@ import edu.ie3.datamodel.io.source.PowerValueSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
 import spock.lang.Specification
-import tech.units.indriya.quantity.Quantities
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -83,12 +82,10 @@ class JsonMarkovProfileSourceTest extends Specification {
         new JsonDataSource(tempDir, new FileNamingStrategy()),
         new FileLoadProfileMetaInformation("profile1", jsonFile, FileType.JSON)
         )
-    def referencePower = Quantities.getQuantity(10d, StandardUnits.ACTIVE_POWER_IN)
     def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.of(0),
         OptionalDouble.empty(),
-        referencePower,
         42L)
 
     when:

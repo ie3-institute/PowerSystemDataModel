@@ -290,7 +290,7 @@ public class MarkovLoadModel {
       int currentState = resolveState(input);
       SplittableRandom rng = new SplittableRandom(deriveSeed(input, bucket, currentState));
       StepResult step = simulateStep(bucket, currentState, rng);
-      ComparableQuantity<Power> power = scale(input.referencePower(), step.normalizedValue());
+      ComparableQuantity<Power> power = scale(step.normalizedValue());
       return new StepResult(
           step.nextState(), step.normalizedValue(), Optional.of(new PValue(power)));
     }
@@ -396,9 +396,7 @@ public class MarkovLoadModel {
       return 31 * seed + slot;
     }
 
-    private ComparableQuantity<Power> scale(
-        ComparableQuantity<Power> referencePower, double normalizedValue) {
-      Objects.requireNonNull(referencePower, "referencePower");
+    private ComparableQuantity<Power> scale(double normalizedValue) {
       if (!maxPowerFromModel.isGreaterThan(minPowerFromModel)) {
         throw new IllegalStateException(
             "Markov model normalization has non-positive range (max <= min).");

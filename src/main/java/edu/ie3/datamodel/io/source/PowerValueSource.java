@@ -87,14 +87,13 @@ public sealed interface PowerValueSource<
    * simonaMarkovLoad step.
    *
    * <p>Provide either {@code previousState} (typical for subsequent steps) or an {@code
-   * initialNormalizedValue} (for the first step). The {@code referencePower} is used to scale
-   * normalized values to real power, while {@code randomSeed} enables reproducible sampling.
+   * initialNormalizedValue} (for the first step). The {@code randomSeed} enables reproducible
+   * sampling.
    */
   record MarkovIdentifier(
       ZonedDateTime time,
       OptionalInt previousState,
       OptionalDouble initialNormalizedValue,
-      ComparableQuantity<Power> referencePower,
       long randomSeed)
       implements PowerValueIdentifier {
 
@@ -102,7 +101,6 @@ public sealed interface PowerValueSource<
       Objects.requireNonNull(time, "time");
       Objects.requireNonNull(previousState, "previousState");
       Objects.requireNonNull(initialNormalizedValue, "initialNormalizedValue");
-      Objects.requireNonNull(referencePower, "referencePower");
       if (previousState.isEmpty() && initialNormalizedValue.isEmpty()) {
         throw new IllegalArgumentException(
             "Need either previous state or an initial normalized value to start the Markov chain.");

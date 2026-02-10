@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.factory.markov.MarkovModelData
 import edu.ie3.datamodel.io.source.PowerValueSource
 import edu.ie3.datamodel.models.StandardUnits
 import spock.lang.Specification
-import tech.units.indriya.quantity.Quantities
 import tools.jackson.databind.ObjectMapper
 
 import java.time.ZonedDateTime
@@ -23,12 +22,10 @@ class MarkovLoadModelTest extends Specification {
   def "supplier scales deterministic normalized values and exposes next state"() {
     given:
     def model = loadModel(deterministicTransitions(), deterministicStates())
-    def reference = Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)
     def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.of(0),
         OptionalDouble.empty(),
-        reference,
         99L
         )
 
@@ -50,12 +47,10 @@ class MarkovLoadModelTest extends Specification {
   def "supplier denormalizes using model min and max power"() {
     given:
     def model = loadModel(deterministicTransitions(), deterministicStates())
-    def reference = Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)
     def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.of(0),
         OptionalDouble.empty(),
-        reference,
         17L
         )
 
@@ -71,12 +66,10 @@ class MarkovLoadModelTest extends Specification {
   def "supplier uses initial normalized value when no previous state is present"() {
     given:
     def model = loadModel(selfLoopTransitions(), deterministicStates())
-    def reference = Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)
     def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.empty(),
         OptionalDouble.of(0.25d),
-        reference,
         13L
         )
 
@@ -92,12 +85,10 @@ class MarkovLoadModelTest extends Specification {
   def "supplier returns zero power when transitions row has no usable probabilities"() {
     given:
     def model = loadModel(emptyTransitions(), missingStateGmms())
-    def reference = Quantities.getQuantity(3d, StandardUnits.ACTIVE_POWER_IN)
     def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.of(0),
         OptionalDouble.empty(),
-        reference,
         7L
         )
 
