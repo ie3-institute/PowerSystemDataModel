@@ -5,11 +5,11 @@
 */
 package edu.ie3.datamodel.io.factory.markov;
 
-import tools.jackson.databind.JsonNode;
 import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
 import java.util.Collections;
 import java.util.Objects;
+import tools.jackson.databind.JsonNode;
 
 /** Factory data wrapper around a parsed Markov-load JSON tree. */
 public class MarkovModelData extends FactoryData {

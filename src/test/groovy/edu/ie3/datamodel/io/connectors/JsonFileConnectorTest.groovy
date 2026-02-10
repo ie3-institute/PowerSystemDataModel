@@ -38,19 +38,4 @@ class JsonFileConnectorTest extends Specification {
     then:
     content == """{"foo":"bar"}"""
   }
-
-  def "initReader returns buffered reader with UTF-8 decoding"() {
-    given:
-    def file = tempDir.resolve("data.json")
-    Files.writeString(file, "[1,2,3]")
-    def connector = new JsonFileConnector(tempDir)
-
-    when:
-    def reader = connector.initReader(Path.of("data"))
-    def line = reader.readLine()
-    reader.close()
-
-    then:
-    line == "[1,2,3]"
-  }
 }

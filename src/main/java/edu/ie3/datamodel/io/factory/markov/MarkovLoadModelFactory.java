@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.markov;
 
-import tools.jackson.databind.JsonNode;
 import edu.ie3.datamodel.io.factory.Factory;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.*;
@@ -13,8 +12,14 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import tools.jackson.databind.JsonNode;
 
-/** Factory turning Markov JSON data into {@link MarkovLoadModel}s. */
+/**
+ * Factory turning Markov JSON data into {@link MarkovLoadModel}s.
+ *
+ * <p>The JSON fields follow the simonaMarkovLoad schema (snake_case), which is mapped to the model
+ * records used within PSDM.
+ */
 public class MarkovLoadModelFactory
     extends Factory<MarkovLoadModel, MarkovModelData, MarkovLoadModel>
     implements MarkovModelParsingSupport {
@@ -23,6 +28,11 @@ public class MarkovLoadModelFactory
     super(MarkovLoadModel.class);
   }
 
+  /**
+   * Build a {@link MarkovLoadModel} from a parsed JSON tree.
+   *
+   * <p>This method validates the transition shape and requires GMM buckets to be present.
+   */
   @Override
   protected MarkovLoadModel buildModel(MarkovModelData data) {
     JsonNode root = data.getRoot();

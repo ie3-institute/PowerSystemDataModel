@@ -85,6 +85,10 @@ public sealed interface PowerValueSource<
   /**
    * Input data for Markov-based power value sources, containing everything needed for a single
    * simonaMarkovLoad step.
+   *
+   * <p>Provide either {@code previousState} (typical for subsequent steps) or an {@code
+   * initialNormalizedValue} (for the first step). The {@code referencePower} is used to scale
+   * normalized values to real power, while {@code randomSeed} enables reproducible sampling.
    */
   record MarkovIdentifier(
       ZonedDateTime time,
@@ -126,6 +130,6 @@ public sealed interface PowerValueSource<
     }
   }
 
-  /** Input data for Markov-based power values. */
+  /** Output data for Markov-based power values, including the next state. */
   record MarkovOutputValue(Optional<PValue> value, int nextState) implements PowerOutputValue {}
 }

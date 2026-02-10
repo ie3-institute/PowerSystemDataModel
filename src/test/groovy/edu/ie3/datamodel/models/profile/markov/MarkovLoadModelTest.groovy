@@ -3,29 +3,26 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.io.source.markov
+package edu.ie3.datamodel.models.profile.markov
 
 import edu.ie3.datamodel.io.factory.markov.MarkovLoadModelFactory
 import edu.ie3.datamodel.io.factory.markov.MarkovModelData
 import edu.ie3.datamodel.io.source.PowerValueSource
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.profile.markov.MarkovPowerProfile
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 import tools.jackson.databind.ObjectMapper
 
 import java.time.ZonedDateTime
 
-class MarkovLoadValueSourceTest extends Specification {
+class MarkovLoadModelTest extends Specification {
 
   private final ObjectMapper objectMapper = new ObjectMapper()
   private final MarkovLoadModelFactory factory = new MarkovLoadModelFactory()
-  private final MarkovPowerProfile profile = new MarkovPowerProfile("profile1")
 
   def "supplier scales deterministic normalized values and exposes next state"() {
     given:
     def model = loadModel(deterministicTransitions(), deterministicStates())
-    def source = new MarkovLoadValueSource(profile, model)
     def reference = Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)
     def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
@@ -36,22 +33,23 @@ class MarkovLoadValueSourceTest extends Specification {
         )
 
     when:
-    def supplier = source.getValueSupplier(input)
-    def value = supplier.get()
+    def supplier = model.getValueSupplier(input)
+    def output = supplier.get()
+    def outputAgain = supplier.get()
 
     then:
-    value.isPresent()
-    supplier.getNextState() == 1
-    value.get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 4.2d
-    supplier.get().is(value) // cached result reused
-    source.getMaxPower().isPresent()
-    source.getMaxPower().get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 5d
+    output.value().isPresent()
+    output.nextState() == 1
+    output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 4.2d
+    outputAgain.value() == output.value()
+    outputAgain.nextState() == output.nextState()
+    model.getMaxPower().isPresent()
+    model.getMaxPower().get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 5d
   }
 
   def "supplier denormalizes using model min and max power"() {
     given:
     def model = loadModel(deterministicTransitions(), deterministicStates())
-    def source = new MarkovLoadValueSource(profile, model)
     def reference = Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)
     def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
@@ -62,18 +60,17 @@ class MarkovLoadValueSourceTest extends Specification {
         )
 
     when:
-    def supplier = source.getValueSupplier(input)
-    def value = supplier.get()
+    def supplier = model.getValueSupplier(input)
+    def output = supplier.get()
 
     then:
-    supplier.getNextState() == 1
-    value.get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 4.2d
+    output.nextState() == 1
+    output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 4.2d
   }
 
   def "supplier uses initial normalized value when no previous state is present"() {
     given:
     def model = loadModel(selfLoopTransitions(), deterministicStates())
-    def source = new MarkovLoadValueSource(profile, model)
     def reference = Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)
     def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
@@ -84,17 +81,17 @@ class MarkovLoadValueSourceTest extends Specification {
         )
 
     when:
-    def supplier = source.getValueSupplier(input)
+    def supplier = model.getValueSupplier(input)
+    def output = supplier.get()
 
     then:
-    supplier.getNextState() == 0 // discretized from initial normalized value
-    supplier.get().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 2.6d
+    output.nextState() == 0 // discretized from initial normalized value
+    output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 2.6d
   }
 
   def "supplier returns zero power when transitions row has no usable probabilities"() {
     given:
     def model = loadModel(emptyTransitions(), missingStateGmms())
-    def source = new MarkovLoadValueSource(profile, model)
     def reference = Quantities.getQuantity(3d, StandardUnits.ACTIVE_POWER_IN)
     def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
@@ -105,13 +102,13 @@ class MarkovLoadValueSourceTest extends Specification {
         )
 
     when:
-    def supplier = source.getValueSupplier(input)
-    def value = supplier.get()
+    def supplier = model.getValueSupplier(input)
+    def output = supplier.get()
 
     then:
-    supplier.getNextState() == 0 // stays in current state
-    value.isPresent()
-    value.get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 1d
+    output.nextState() == 0 // stays in current state
+    output.value().isPresent()
+    output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 1d
   }
 
   private loadModel(String transitions, String states) {

@@ -7,11 +7,10 @@ package edu.ie3.datamodel.io.factory.markov;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.*;
-import tools.jackson.databind.JsonNode;
-
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import tools.jackson.databind.JsonNode;
 
 /**
  * Shared parsing helpers for Markov model JSON documents. This is intentionally package-private as
@@ -25,13 +24,14 @@ interface MarkovModelParsingSupport {
     Map<String, String> config = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     JsonNode configNode = generatorNode.path("config");
     if (configNode.isObject()) {
-        for (Map.Entry<String, JsonNode> entry : configNode.properties()) {
-            config.put(entry.getKey(), entry.getValue().asString());
-        }
+      for (Map.Entry<String, JsonNode> entry : configNode.properties()) {
+        config.put(entry.getKey(), entry.getValue().asString());
+      }
     }
     return new Generator(name, version, config);
   }
 
+  /** Parses the time model block, including bucket count and sampling interval. */
   default TimeModel parseTimeModel(JsonNode timeNode) {
     int bucketCount = requireInt(timeNode, "bucket_count");
     String formula = requireNode(timeNode, "bucket_encoding").path("formula").asString("");
@@ -43,6 +43,7 @@ interface MarkovModelParsingSupport {
     return new TimeModel(bucketCount, formula, samplingInterval, timezone);
   }
 
+  /** Parses value model settings (unit, normalization, discretization thresholds). */
   default ValueModel parseValueModel(JsonNode valueNode) {
     String valueUnit = requireText(valueNode, "value_unit");
     JsonNode normalizationNode = requireNode(valueNode, "normalization");
@@ -67,6 +68,7 @@ interface MarkovModelParsingSupport {
     return new ValueModel(valueUnit, normalization, discretization);
   }
 
+  /** Parses optional parameter blocks (transitions and GMM). */
   default Parameters parseParameters(JsonNode parametersNode) {
     Parameters.TransitionParameters transitions =
         new Parameters.TransitionParameters(
@@ -87,6 +89,11 @@ interface MarkovModelParsingSupport {
     return new Parameters(transitions, gmm);
   }
 
+  /**
+   * Parses the transition matrix section.
+   *
+   * <p>The expected shape is [bucket, state, state].
+   */
   default TransitionData parseTransitions(
       JsonNode dataNode, int expectedBucketCount, int stateCount) {
     JsonNode transitionsNode = requireNode(dataNode, "transitions");
@@ -105,6 +112,7 @@ interface MarkovModelParsingSupport {
     return new TransitionData(dtype, encoding, values);
   }
 
+  /** Parses GMM buckets. Individual states may be null, which disables sampling for that state. */
   default GmmBuckets parseGmmBuckets(JsonNode gmmsNode) {
     if (gmmsNode == null || gmmsNode.isMissingNode() || gmmsNode.isNull()) {
       throw new FactoryException("Missing field 'gmms'");

@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.json;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
@@ -17,7 +15,6 @@ import edu.ie3.datamodel.io.file.FileType;
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.EntitySource;
 import edu.ie3.datamodel.io.source.PowerValueSource;
-import edu.ie3.datamodel.io.source.markov.MarkovLoadValueSource;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
 import edu.ie3.datamodel.models.profile.markov.MarkovPowerProfile;
 import java.io.IOException;
@@ -28,13 +25,19 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
-/** Source that reads Markov-based load models from JSON files. */
+/**
+ * Source that reads Markov-based load models from JSON files.
+ *
+ * <p>The JSON file is parsed lazily and cached. All power value requests are delegated to the
+ * parsed {@link MarkovLoadModel}.
+ */
 public class JsonMarkovProfileSource extends EntitySource implements PowerValueSource.MarkovBased {
 
   private final JsonDataSource dataSource;
@@ -43,7 +46,6 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
   private final ObjectMapper objectMapper = new ObjectMapper();
   private final MarkovPowerProfile profile;
   private MarkovLoadModel cachedModel;
-  private final AtomicReference<MarkovLoadValueSource> delegate = new AtomicReference<>();
 
   public JsonMarkovProfileSource(
       JsonDataSource dataSource, FileLoadProfileMetaInformation metaInformation) {
@@ -99,24 +101,25 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
     return profile;
   }
 
+  /** Delegates to the cached {@link MarkovLoadModel} for a single simulation step. */
   @Override
   public Supplier<MarkovOutputValue> getValueSupplier(MarkovIdentifier data) {
-    return () -> cachedModel.getPower(data);
+    return getModelUnchecked().getValueSupplier(data);
   }
 
   @Override
   public Optional<ZonedDateTime> getNextTimeKey(ZonedDateTime time) {
-    return getDelegate().getNextTimeKey(time);
+    return getModelUnchecked().getNextTimeKey(time);
   }
 
   @Override
   public Optional<ComparableQuantity<Power>> getMaxPower() {
-    return getDelegate().getMaxPower();
+    return getModelUnchecked().getMaxPower();
   }
 
   @Override
   public Optional<ComparableQuantity<Energy>> getProfileEnergyScaling() {
-    return getDelegate().getProfileEnergyScaling();
+    return getModelUnchecked().getProfileEnergyScaling();
   }
 
   private JsonNode readModelTree() throws SourceException {
@@ -142,7 +145,8 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
       return;
     }
     if (node.isObject()) {
-      node.propertyNames().forEach(name -> collectFields(join(prefix, name), node.get(name), collector));
+      node.propertyNames()
+          .forEach(name -> collectFields(join(prefix, name), node.get(name), collector));
     } else if (!prefix.isEmpty()) {
       collector.add(prefix);
     }
@@ -152,19 +156,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
     return prefix.isEmpty() ? name : prefix + "." + name;
   }
 
-  private MarkovLoadValueSource getDelegate() {
-    MarkovLoadValueSource current = delegate.get();
-    if (current != null) {
-      return current;
-    }
-    MarkovLoadValueSource created = new MarkovLoadValueSource(profile, loadModelUnchecked());
-    if (delegate.compareAndSet(null, created)) {
-      return created;
-    }
-    return delegate.get();
-  }
-
-  private MarkovLoadModel loadModelUnchecked() {
+  private MarkovLoadModel getModelUnchecked() {
     try {
       return getModel();
     } catch (SourceException e) {

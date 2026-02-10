@@ -5,9 +5,9 @@
  */
 package edu.ie3.datamodel.io.factory.markov
 
-import tools.jackson.databind.ObjectMapper
 import edu.ie3.datamodel.exceptions.FactoryException
 import spock.lang.Specification
+import tools.jackson.databind.ObjectMapper
 
 class MarkovLoadModelFactoryTest extends Specification {
   private final ObjectMapper objectMapper = new ObjectMapper()

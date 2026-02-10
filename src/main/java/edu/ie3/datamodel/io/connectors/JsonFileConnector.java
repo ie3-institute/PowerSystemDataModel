@@ -5,11 +5,8 @@
 */
 package edu.ie3.datamodel.io.connectors;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.function.Function;
 
@@ -23,17 +20,6 @@ public class JsonFileConnector extends FileConnector {
 
   public JsonFileConnector(Path baseDirectory, Function<String, InputStream> customInputStream) {
     super(baseDirectory, customInputStream);
-  }
-
-  /**
-   * Opens a buffered reader for the given JSON file, using UTF-8 decoding.
-   *
-   * @param filePath relative path without ending
-   * @return buffered reader referencing the JSON file
-   */
-  public BufferedReader initReader(Path filePath) throws FileNotFoundException {
-    InputStream inputStream = openInputStream(filePath);
-    return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8), 16384);
   }
 
   /**
