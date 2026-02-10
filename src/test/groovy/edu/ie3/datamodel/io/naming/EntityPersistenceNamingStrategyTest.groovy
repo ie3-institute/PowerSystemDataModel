@@ -142,7 +142,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     def meta = ens.loadProfileTimesSeriesMetaInformation(fileName)
 
     then:
-    meta.profile == "demo2"
+    meta.profileKey.getValue() == "demo2"
   }
 
   def "The EntityPersistenceNamingStrategy is able to prepare the prefix properly"() {
