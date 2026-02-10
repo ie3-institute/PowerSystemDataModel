@@ -254,7 +254,7 @@ public class LoadInput extends SystemParticipantInput {
         + eConsAnnual
         + ", sRated="
         + sRated
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + cosPhiRated
         + '}';
   }

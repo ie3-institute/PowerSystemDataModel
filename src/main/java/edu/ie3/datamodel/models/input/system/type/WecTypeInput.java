@@ -36,7 +36,7 @@ public class WecTypeInput extends SystemParticipantTypeInput {
    * @param id of this type of WEC
    * @param capex Captial expense for this type of WEC (typically in €)
    * @param opex Operating expense for this type of WEC (typically in €)
-   * @param cosphiRated Power factor for this type of WEC
+   * @param cosPhiRated Power factor for this type of WEC
    * @param cpCharacteristic Betz curve of this type
    * @param etaConv Efficiency of converter for this type of WEC (typically in %)
    * @param sRated Rated apparent power for this type of WEC (typically in kVA)
@@ -49,12 +49,12 @@ public class WecTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Currency> capex,
       ComparableQuantity<EnergyPrice> opex,
       ComparableQuantity<Power> sRated,
-      double cosphiRated,
+      double cosPhiRated,
       WecCharacteristicInput cpCharacteristic,
       ComparableQuantity<Dimensionless> etaConv,
       ComparableQuantity<Area> rotorArea,
       ComparableQuantity<Length> hubHeight) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.cpCharacteristic = cpCharacteristic;
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
     this.rotorArea = rotorArea.to(StandardUnits.ROTOR_AREA);
@@ -111,7 +111,7 @@ public class WecTypeInput extends SystemParticipantTypeInput {
         + getOpex()
         + ", sRated="
         + getsRated()
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + getCosPhiRated()
         + ", cpCharacteristic="
         + cpCharacteristic

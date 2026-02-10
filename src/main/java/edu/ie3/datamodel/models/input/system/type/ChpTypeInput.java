@@ -36,7 +36,7 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
    * @param etaEl Electrical efficiency
    * @param etaThermal Thermal efficiency
    * @param sRated Rated electrical apparent power
-   * @param cosphiRated Power factor for this type of CHP
+   * @param cosPhiRated Power factor for this type of CHP
    * @param pThermal Rated thermal power
    * @param pOwn Internal consumption
    */
@@ -48,10 +48,10 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Dimensionless> etaEl,
       ComparableQuantity<Dimensionless> etaThermal,
       ComparableQuantity<Power> sRated,
-      double cosphiRated,
+      double cosPhiRated,
       ComparableQuantity<Power> pThermal,
       ComparableQuantity<Power> pOwn) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
     this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
@@ -108,7 +108,7 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
         + getOpex()
         + ", sRated="
         + getsRated()
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + getCosPhiRated()
         + "etaEl="
         + etaEl
