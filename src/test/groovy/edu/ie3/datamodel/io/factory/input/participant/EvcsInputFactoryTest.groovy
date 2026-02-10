@@ -48,7 +48,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
       "type"            : "Household",
       "chargingpoints"  : "4",
-      "cosPhiRated"     : "0.95",
+      "cosphirated"     : "0.95",
       "locationtype"    : "CHARGING_HUB_TOWN",
       "v2gsupport"     : "false"
     ]
@@ -82,7 +82,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       assert controllingEm == Optional.of(emUnit)
       assert type == ChargingPointTypeUtils.HouseholdSocket
       assert chargingPoints == Integer.parseInt(parameter["chargingpoints"])
-      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
+      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
       assert locationType == EvcsLocationType.CHARGING_HUB_TOWN
       assert !v2gSupport
     }
@@ -99,7 +99,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
       "type"            : "-- invalid --",
       "chargingpoints"  : "4",
-      "cosPhiRated"     : "0.95",
+      "cosphirated"     : "0.95",
       "locationtype"    : "CHARGING_HUB_TOWN",
       "v2gsupport"     : "false"
     ]
@@ -128,7 +128,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
       "type"            : "Household",
       "chargingpoints"  : "4",
-      "cosPhiRated"     : "0.95",
+      "cosphirated"     : "0.95",
       "locationType"    : "-- invalid --",
       "v2gsupport"     : "false"
     ]
