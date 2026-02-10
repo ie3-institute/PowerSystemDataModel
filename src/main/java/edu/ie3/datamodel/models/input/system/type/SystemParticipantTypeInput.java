@@ -96,7 +96,7 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
         + opex
         + ", sRated="
         + sRated
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + cosPhiRated
         + '}';
   }

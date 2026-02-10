@@ -14,7 +14,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * Describes a bdew load profile time series with repetitive values that can be calculated from a
+ * Describes a BDEW load profile time series with repetitive values that can be calculated from a
  * pattern. Each value of this timeseries is given in W.
  */
 public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadValues> {

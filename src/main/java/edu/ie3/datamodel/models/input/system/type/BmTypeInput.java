@@ -29,7 +29,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
    * @param id of this type of BM
    * @param capex Capital expense for this type of BM (typically in €)
    * @param opex Operating expense for this type of BM (typically in €)
-   * @param cosphiRated Power factor for this type of BM
+   * @param cosPhiRated Power factor for this type of BM
    * @param activePowerGradient Maximum permissible gradient of active power change
    * @param sRated Rated apparent power for this type of BM (typically in kVA)
    * @param etaConv Efficiency of converter for this type of BM (typically in %)
@@ -41,9 +41,9 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<EnergyPrice> opex,
       ComparableQuantity<DimensionlessRate> activePowerGradient,
       ComparableQuantity<Power> sRated,
-      double cosphiRated,
+      double cosPhiRated,
       ComparableQuantity<Dimensionless> etaConv) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
   }
@@ -87,7 +87,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
         + getOpex()
         + ", sRated="
         + getsRated()
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + getCosPhiRated()
         + "loadGradient="
         + activePowerGradient

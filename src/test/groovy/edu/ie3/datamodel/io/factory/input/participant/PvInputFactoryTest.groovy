@@ -49,7 +49,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
       "kt"              : "8",
       "marketreaction"  : "true",
       "srated"          : "9",
-      "cosphirated"          : "10",
+      "cosphirated"     : "10",
     ]
     def inputClass = PvInput
     def nodeInput = Mock(NodeInput)
