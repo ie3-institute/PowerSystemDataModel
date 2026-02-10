@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.naming
 
-import edu.ie3.datamodel.io.factory.input.participant.AcInputFactoryTest
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
@@ -102,7 +101,6 @@ class FileNamingStrategyTest extends Specification {
     then:
     res.present
     res.get() == expectedPath
-
 
     where:
     modelClass               || expectedPath

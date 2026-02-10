@@ -246,6 +246,7 @@ class InputEntityProcessorTest extends Specification {
       "type"            : SystemParticipantTestData.evInput.type.getUuid().toString(),
       "controllingEm"   : SystemParticipantTestData.evInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
+
     LoadInput        | SystemParticipantTestData.loadInput        || [
       "uuid"               : SystemParticipantTestData.loadInput.uuid.toString(),
       "cosPhiRated"        : SystemParticipantTestData.loadInput.cosPhiRated.toString(),
