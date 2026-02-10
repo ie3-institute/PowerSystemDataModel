@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
-- Added weathersource documentation [#1390](https://github.com/ie3-institute/PowerSystemDataModel/issues/1390)
+- Added weatherSource documentation [#1390](https://github.com/ie3-institute/PowerSystemDataModel/issues/1390)
 - Added standard asset parameter for `3wTransformer` in `ReadTheDocs` [#1417](https://github.com/ie3-institute/PowerSystemDataModel/issues/1417)
 - Added getter sRated for SystemParticipant inputs and updated them in tests in src[#1412](https://github.com/ie3-institute/PowerSystemDataModel/issues/1412)
 - Added converters documentation [#1139](https://github.com/ie3-institute/PowerSystemDataModel/issues/1139)
@@ -19,14 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
 - Fix transformer susceptance in readTheDocs to negative values [#1078](https://github.com/ie3-institute/PowerSystemDataModel/issues/1078)
-- Added mising fields to field validation [#1422](https://github.com/ie3-institute/PowerSystemDataModel/issues/1422)
+- Added missing fields to field validation [#1422](https://github.com/ie3-institute/PowerSystemDataModel/issues/1422)
 - Fixed the issues with rtd for Cylindrical thermal storage [#1273](https://github.com/ie3-institute/PowerSystemDataModel/issues/1273)
-- Updated Controlling_em for all the loads in readthedocs[#1447](https://github.com/ie3-institute/PowerSystemDataModel/issues/1447)
+- Updated Controlling_em for all the loads in readTheDocs [#1447](https://github.com/ie3-institute/PowerSystemDataModel/issues/1447)
 - Included a doFirst clause into `checkJavaVersion.gradle` [#1462](https://github.com/ie3-institute/PowerSystemDataModel/issues/1462)
 - Fixed `EnergyPriceValue.equals()` [#1479](https://github.com/ie3-institute/PowerSystemDataModel/issues/1479)
 - Fixed tests of `TimeBasedValue` [#1469](https://github.com/ie3-institute/PowerSystemDataModel/issues/1469)
 - Requiring `thermalBus` field in house and storage input [#1509](https://github.com/ie3-institute/PowerSystemDataModel/issues/1509)
 - Fixed handling of erroneous field values in `EntitySource.enrichWithDefault()` [#1511](https://github.com/ie3-institute/PowerSystemDataModel/issues/1511)
+- Fixed some minor typos and inconsistencies in variable naming [#1542](https://github.com/ie3-institute/PowerSystemDataModel/issues/1542)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
@@ -42,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reintroduce `gradlew.bat` [#1531](https://github.com/ie3-institute/PowerSystemDataModel/issues/1531)
 - Remove snapshot repository [#1538](https://github.com/ie3-institute/PowerSystemDataModel/issues/1538)
 - Refactored the handling of power profiles [#1514](https://github.com/ie3-institute/PowerSystemDataModel/issues/1514)
+- Updated `gradle` dependency shadowJar to work with Gradle 9 [#1545](https://github.com/ie3-institute/PowerSystemDataModel/issues/1545)
 
 ## [8.1.0] - 2025-07-25
 
@@ -71,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated dependabot workflow and added CODEOWNERS [#1328](https://github.com/ie3-institute/PowerSystemDataModel/issues/1328)
 - Extend azimuth angle range to [-180°, 180°] for PV inputs [#1330](https://github.com/ie3-institute/PowerSystemDataModel/issues/1330)
 - Improved error messages when reading and validating an invalid grid [#1354](https://github.com/ie3-institute/PowerSystemDataModel/issues/1354)
-- Changed `SubgridContainer` to represent galvanically seperated grids [#1226](https://github.com/ie3-institute/PowerSystemDataModel/issues/1226)
+- Changed `SubgridContainer` to represent galvanically separated grids [#1226](https://github.com/ie3-institute/PowerSystemDataModel/issues/1226)
 
 ## [7.0.0] - 2025-05-08
 
@@ -87,7 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Replaced `return this` with `return thisInstance` in CopyBuilders [#1250](https://github.com/ie3-institute/PowerSystemDataModel/issues/1250)
 - Removed Jenkinsfile [#1315](https://github.com/ie3-institute/PowerSystemDataModel/issues/1315)
-- Updated readthedocs config [#1317](https://github.com/ie3-institute/PowerSystemDataModel/issues/1317)
+- Updated readTheDocs config [#1317](https://github.com/ie3-institute/PowerSystemDataModel/issues/1317)
 
 ### Updates
 - Updated gradle to v8.14
@@ -114,12 +116,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removing opened `SwitchInput` during connectivity check [#1221](https://github.com/ie3-institute/PowerSystemDataModel/issues/1221)
 - Fixed example in ReadTheDocs [#1244](https://github.com/ie3-institute/PowerSystemDataModel/issues/1244)
-- Remove double test in ThermalValidationUtils [#1260](https://github.com/ie3-institute/PowerSystemDataModel/issues/1260)]
+- Remove double test in ThermalValidationUtils [#1260](https://github.com/ie3-institute/PowerSystemDataModel/issues/1260)
 
 ### Changed
 - Storage minimum level parameter removed from cylindrical thermal storage [#1123](https://github.com/ie3-institute/PowerSystemDataModel/issues/1123)
 - Converted eval-rst to myst syntax in ReadTheDocs, fixed line wrapping and widths [#1137](https://github.com/ie3-institute/PowerSystemDataModel/issues/1137)
-- Improving usage of streams on sql fetches [#827](https://github.com/ie3-institute/PowerSystemDataModel/issues/827)
+- Improving usage of streams on SQL fetches [#827](https://github.com/ie3-institute/PowerSystemDataModel/issues/827)
 - Improving error message when using the outdated csv format [#1112](https://github.com/ie3-institute/PowerSystemDataModel/issues/1112)
 - Changed ThermalUnitValidation: Ensure that thermal boundaries of thermal house are not the same [#1186](https://github.com/ie3-institute/PowerSystemDataModel/issues/1186)
 - Converted `MappingEntry` into a normal class [#1087](https://github.com/ie3-institute/PowerSystemDataModel/issues/1087)
@@ -230,7 +232,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use nio paths instead of strings for file path [#723](https://github.com/ie3-institute/PowerSystemDataModel/issues/723)
 - Data source will throw an exceptions instead of returning an empty optionals [#707](https://github.com/ie3-institute/PowerSystemDataModel/issues/707)
 - Improving `ValidationUtils` [#758](https://github.com/ie3-institute/PowerSystemDataModel/issues/758)
-- conversion from rst to markdown myst[#979](https://github.com/ie3-institute/PowerSystemDataModel/pull/985)
+- conversion from rst to Markdown myst[#979](https://github.com/ie3-institute/PowerSystemDataModel/pull/985)
 
 ## [3.0.0] - 2023-02-16
 
@@ -270,7 +272,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Miscellaneous code smells
 - Fix JavaDoc creation
   - Create JavaDoc with java 17 instead of java 8
-  - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
+  - Let JavaDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
 - `BufferedCsvWriter` writes columns in the order, that the headline elements are defined [#434](https://github.com/ie3-institute/PowerSystemDataModel/issues/393)
 - Cleaned up `IndividualTimeSeriesMetaInformation`-related methods in `CsvFileConnector` [#544](https://github.com/ie3-institute/PowerSystemDataModel/issues/544)
 - Fixed spotlessApply handling for `.groovy` files [#637](https://github.com/ie3-institute/PowerSystemDataModel/issues/637)
@@ -359,7 +361,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   added possibility to allow `null` values in time series for missing values (e.g. if some measure data points from real world data time series are missing)
 -   moved api docs to own branch incl. automated api-docs deployment
 -   added methods for nearest and all coordinates to IdCoordinateSource
--   utilize factory in IdCoordinateSource to maintain highest possible flexibility
+-   utilize factory in IdCoordinateSource to maintain the highest possible flexibility
 -   added coordinate distance sort method to GridAndGeoUtils
 -   BREAKING: Harmonized field naming for time information
 -   BREAKING: Properly applying snake case to result file names
@@ -395,14 +397,14 @@ and [#248](https://github.com/ie3-institute/PowerSystemDataModel/issues/248))
 -   New constructor in ``Transformer3WInput`` that allows the internal node to be marked as slack
 -   Method in ``ContainerUtils`` to modify a provided ``SubGridContainer`` with slack nodes and make it usable for
 most of the commonly known power flow calculations
--   gradle task to create JavaDoc HTML files in the folder 'docs/javadoc'
+-   Gradle task to create JavaDoc HTML files in the folder 'docs/javadoc'
 -   added missing ``HpResult`` model
 -   Implementation of ``DataConnector``, ``WeatherSource`` and ``DataSink`` for InfluxDB
 -   Introduction of a ``IdCoordinateSource`` and implementation of  corresponding csv source for ID to coordinate mapping
 -   Factory for ``TimeBasedValues<WeatherValue>``
 -   Documentation with Sphinx / ReadTheDocs: [https://powersystemdatamodel.readthedocs.io/en/latest/](https://powersystemdatamodel.readthedocs.io/en/latest/)
 -   Introduction of``SwitchResultFactory`` to build adapted ``SwitchResult`` entities
--   Copy method for all `RawGridElements` and `SystemParticipants` input entities which allow an easy to use entity copy with altered field values
+-   Copy method for all `RawGridElements` and `SystemParticipants` input entities which allow an easy-to-use entity copy with altered field values
 -   ``distanceBetweenNodes(NodeInput nodeA, NodeInput nodeB)`` in ``GridAndGeoUtils``
 -   Additional constructors based on lists of entities in ``RawGridElements``, ``SystemParticipants`` and ``GraphicElements``
 -   Added ``DistanceWeightedGraph`` + corresponding utility method to generate a graph topology whose vertices are `NodeInput` entities and its edges are weighted with the distance between the vertices in meter
