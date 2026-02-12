@@ -229,7 +229,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     // extract all EmInput entities
     Set<EmInput> emInputs =
         systemParticipants.allEntitiesAsList().stream()
-            .filter(Objects::nonNull)
+            .filter(HasEm.class::isInstance)
             .map(HasEm.class::cast)
             .map(HasEm::getControllingEm)
             .flatMap(Optional::stream)

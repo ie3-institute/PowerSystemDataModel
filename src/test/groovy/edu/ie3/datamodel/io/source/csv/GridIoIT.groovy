@@ -10,6 +10,11 @@ import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.sink.CsvFileSink
+import edu.ie3.datamodel.models.OperationTime
+import edu.ie3.datamodel.models.input.EmInput
+import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.container.JointGridContainer
+import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
 import spock.lang.Specification
@@ -92,5 +97,54 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
 
     then:
     thrown(FileException)
+  }
+
+  def "Input flat JointGridContainer with EmInput equals Output flat JointGridContainer."() {
+    given:
+    def gridName = "vn_simona"
+    def separator = ","
+    def baseGrid = CsvJointGridContainerSource.read(gridName, separator, jointGridFolderPath, false)
+
+    def emInput = new EmInput(
+        UUID.randomUUID(),
+        "test_em",
+        OperatorInput.NO_OPERATOR_ASSIGNED,
+        OperationTime.notLimited(),
+        "control_strategy_test",
+        null
+        )
+
+    def participants = baseGrid.systemParticipants
+    def oldPv = participants.pvPlants.first()
+    def newPv = oldPv.copy().em(emInput).build()
+
+    def newPvs = (participants.pvPlants - oldPv + newPv)
+
+    def newParticipants = new SystemParticipants(
+        participants.bmPlants,
+        participants.chpPlants,
+        participants.evcs,
+        participants.evs,
+        participants.fixedFeedIns,
+        participants.heatPumps,
+        participants.loads,
+        newPvs,
+        participants.storages,
+        participants.wecPlants
+        )
+
+    def gridWithEm = new JointGridContainer(
+        baseGrid.gridName,
+        baseGrid.rawGrid,
+        newParticipants,
+        baseGrid.graphics
+        )
+
+    when:
+    sinkFlat.persistJointGrid(gridWithEm)
+    def readGrid = CsvJointGridContainerSource.read(gridName, separator, tempDirectory.toAbsolutePath(), false)
+
+    then:
+    gridWithEm == readGrid
   }
 }
