@@ -19,7 +19,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
   /**
    * Constructor for DomesticHotWaterStorageInput
    *
-   * @param uuid Unique identifier of domestic hot water storage
+   * @param uuid Unique identifier of a certain domestic hot water storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
    * @param operationTime operation time of the asset
