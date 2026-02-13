@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.Quantity;
 
@@ -53,7 +52,7 @@ public class ThermalValidationUtils extends ValidationUtils {
             thermalGrid.domesticHotWaterStorages().stream().map(ThermalValidationUtils::check))
         .flatMap(Function.identity())
         .flatMap(List::stream)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**
