@@ -77,7 +77,6 @@ class SampleJointGrid extends SystemParticipantTestData {
         elevationAngle,
         kG,
         kT,
-        false,
         sRated,
         cosPhiRated)
 
