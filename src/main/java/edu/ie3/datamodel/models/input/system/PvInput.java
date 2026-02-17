@@ -192,15 +192,7 @@ public class PvInput extends SystemParticipantInput {
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        albedo,
-        azimuth,
-        etaConv,
-        elevationAngle,
-        kG,
-        kT,
-        sRated,
-        cosPhiRated);
+        super.hashCode(), albedo, azimuth, etaConv, elevationAngle, kG, kT, sRated, cosPhiRated);
   }
 
   @Override
