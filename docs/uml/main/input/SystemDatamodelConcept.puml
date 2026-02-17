@@ -175,7 +175,6 @@ package models {
 
             class BmInput {
                 - type: BmTypeInput
-                - marketReaction: Boolean
                 - costControlled: Boolean
                 - feedInTariff: ComparableQuantity<SpecificCurrency> [€/MWh]
             }
@@ -186,7 +185,6 @@ package models {
                 - thermalBus: ThermalBusInput
                 - type: ChpTypeInput
                 - thermalStorage: ThermalStorageInput
-                - marketReaction: Boolean
             }
             ChpInput --|> SystemParticipantInput
             ChpInput ..|> HasThermalBus
@@ -232,7 +230,6 @@ package models {
                 - elevationAngle: ComparableQuantity<Angle> [°]
                 - kG: Double
                 - kT: Double
-                - marketReaction: Boolean
                 - sRated: ComparableQuantity<Power> [kVA]
                 - cosPhiRated: double
             }
@@ -240,14 +237,12 @@ package models {
 
             class StorageInput {
                 - type: StorageTypeInput
-                - behaviour: StorageStrategy
             }
             StorageInput --|> SystemParticipantInput
             StorageInput ..|> HasType
 
             class WecInput{
                 - type: WecTypeInput
-                - marketReaction: boolean
             }
             WecInput --|> SystemParticipantInput
             WecInput ..|> HasType
