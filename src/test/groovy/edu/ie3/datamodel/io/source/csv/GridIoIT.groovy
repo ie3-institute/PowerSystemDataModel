@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.util.io.FileIOUtils
+import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Files
