@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Requiring `thermalBus` field in house and storage input [#1509](https://github.com/ie3-institute/PowerSystemDataModel/issues/1509)
 - Fixed handling of erroneous field values in `EntitySource.enrichWithDefault()` [#1511](https://github.com/ie3-institute/PowerSystemDataModel/issues/1511)
 - Fixed some minor typos and inconsistencies in variable naming [#1542](https://github.com/ie3-institute/PowerSystemDataModel/issues/1542)
+- Aligned temperature processing in `COSMO` and `ICON` factories to Kelvin [#1521](https://github.com/ie3-institute/PowerSystemDataModel/issues/1521)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
@@ -43,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove snapshot repository [#1538](https://github.com/ie3-institute/PowerSystemDataModel/issues/1538)
 - Refactored the handling of power profiles [#1514](https://github.com/ie3-institute/PowerSystemDataModel/issues/1514)
 - Updated `gradle` dependency shadowJar to work with Gradle 9 [#1545](https://github.com/ie3-institute/PowerSystemDataModel/issues/1545)
+- Removed `ThermalUnits` (duplication to `ThermalGrids`) [#874](https://github.com/ie3-institute/PowerSystemDataModel/issues/874)
 
 ## [8.1.0] - 2025-07-25
 
@@ -131,6 +133,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced `LoadProfileInput` with `LoadProfileTimeSeries` [#1228](https://github.com/ie3-institute/PowerSystemDataModel/issues/1228)
 - Enhance `CsvDataSource` [#1246](https://github.com/ie3-institute/PowerSystemDataModel/issues/1246)
 - Updated `_joint_grid` csv files from simona [#750](https://github.com/ie3-institute/PowerSystemDataModel/issues/750)
+- Small harmonisation in `ThermalGrid` validation [#1549](https://github.com/ie3-institute/PowerSystemDataModel/issues/1549)
 
 ### Updates
 - Updated gradle to v8.13 [#1264](https://github.com/ie3-institute/PowerSystemDataModel/issues/1264)

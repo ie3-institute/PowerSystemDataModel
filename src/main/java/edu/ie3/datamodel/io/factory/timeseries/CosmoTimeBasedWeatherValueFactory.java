@@ -23,6 +23,7 @@ import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.unit.Units;
 
 /**
  * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
@@ -84,15 +85,17 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
     ComparableQuantity<Irradiance> diffuseIrradiance =
         data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Temperature> temperature =
-        data.getQuantity(TEMPERATURE, StandardUnits.TEMPERATURE);
+        data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection =
         data.getQuantity(WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
     ComparableQuantity<Speed> windVelocity =
         data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
-        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, StandardUnits.TEMPERATURE);
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN)
+            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
-        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, StandardUnits.TEMPERATURE);
+        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN)
+            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
