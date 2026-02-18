@@ -139,8 +139,7 @@ class SystemParticipantTestData {
   participantNode,
   cosPhiP,
   emInput,
-  wecType,
-  false
+  wecType
   )
 
   // CHP
@@ -198,8 +197,7 @@ class SystemParticipantTestData {
   cosPhiFixed,
   emInput,
   chpTypeInput,
-  thermalStorage,
-  false
+  thermalStorage
   )
 
   // BM
@@ -225,7 +223,6 @@ class SystemParticipantTestData {
   qV,
   emInput,
   bmTypeInput,
-  false,
   false,
   feedInTarif
   )
