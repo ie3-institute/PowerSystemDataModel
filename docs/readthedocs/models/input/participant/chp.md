@@ -109,11 +109,6 @@ Combined heat and power plant.
      -
      - Reference to thermal storage
 
-   * - marketReaction
-     -
-     - Whether to adapt output based on (volatile)
-       market price or not
-
    * - controllingEm
      -
      - UUID reference to an [Energy Management Unit](em_model) that is controlling

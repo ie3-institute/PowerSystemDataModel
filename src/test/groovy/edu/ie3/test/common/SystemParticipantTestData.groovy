@@ -25,7 +25,6 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.profile.PowerProfileKey
-import edu.ie3.datamodel.models.profile.StandardLoadProfile
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.*
 import tech.units.indriya.ComparableQuantity
@@ -110,7 +109,6 @@ class SystemParticipantTestData {
   elevationAngle,
   kG,
   kT,
-  false,
   sRated,
   cosPhiRated
   )
@@ -141,8 +139,7 @@ class SystemParticipantTestData {
   participantNode,
   cosPhiP,
   emInput,
-  wecType,
-  false
+  wecType
   )
 
   // CHP
@@ -200,8 +197,7 @@ class SystemParticipantTestData {
   cosPhiFixed,
   emInput,
   chpTypeInput,
-  thermalStorage,
-  false
+  thermalStorage
   )
 
   // BM
@@ -227,7 +223,6 @@ class SystemParticipantTestData {
   qV,
   emInput,
   bmTypeInput,
-  false,
   false,
   feedInTarif
   )
