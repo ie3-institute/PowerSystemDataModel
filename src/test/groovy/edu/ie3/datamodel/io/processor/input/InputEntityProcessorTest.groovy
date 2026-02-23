@@ -152,6 +152,18 @@ class InputEntityProcessorTest extends Specification {
 
     where:
     modelClass       | modelInstance                              || expectedResult
+    AcInput          | SystemParticipantTestData.acInput          || [
+      "uuid"            : SystemParticipantTestData.acInput.uuid.toString(),
+      "id"              : SystemParticipantTestData.acInput.id,
+      "node"            : SystemParticipantTestData.acInput.node.uuid.toString(),
+      "operatesUntil"   : SystemParticipantTestData.acInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+      "operatesFrom"    : SystemParticipantTestData.acInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+      "operator"        : SystemParticipantTestData.acInput.operator.uuid.toString(),
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
+      "thermalBus"      : SystemParticipantTestData.acInput.thermalBus.uuid.toString(),
+      "type"            : SystemParticipantTestData.acInput.type.uuid.toString(),
+      "controllingEm"   : SystemParticipantTestData.acInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
+    ]
     FixedFeedInInput | SystemParticipantTestData.fixedFeedInInput || [
       "uuid"            : SystemParticipantTestData.fixedFeedInInput.uuid.toString(),
       "cosPhiRated"     : SystemParticipantTestData.fixedFeedInInput.cosPhiRated.toString(),

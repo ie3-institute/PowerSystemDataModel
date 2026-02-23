@@ -319,6 +319,28 @@ class SystemParticipantTestData {
   hpTypeInput
   )
 
+  public static final AcTypeInput acTypeInput = new AcTypeInput(
+  typeUuid,
+  "test_acTypeInput",
+  capex,
+  opex,
+  sRated,
+  cosPhiRated,
+  pThermal
+  )
+
+  public static final AcInput acInput = new AcInput(
+  UUID.fromString("42e538e7-f29d-48ad-b376-277f24200ae0"),
+  "test_acInput",
+  operator,
+  operationTime,
+  participantNode,
+  thermalBus,
+  cosPhiFixed,
+  emInput,
+  acTypeInput
+  )
+
   // charging station
   public static final boolean v2gSupport = false
   public static final evcsInput = new EvcsInput(
@@ -338,6 +360,7 @@ class SystemParticipantTestData {
 
   public static SystemParticipants emptySystemParticipants =
   new SystemParticipants(
+  [] as Set,
   [] as Set,
   [] as Set,
   [] as Set,
