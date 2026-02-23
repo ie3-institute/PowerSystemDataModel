@@ -139,6 +139,7 @@ input/thermal/domestichotwaterstorage
 maxdepth: 1
 ---
 input/participant/general
+input/participant/ac
 input/participant/bm
 input/participant/chp
 input/participant/ev
@@ -196,6 +197,7 @@ result/grid/congestion
 ---
 maxdepth: 1
 ---
+result/participant/ac
 result/participant/bm
 result/participant/chp
 result/participant/ev

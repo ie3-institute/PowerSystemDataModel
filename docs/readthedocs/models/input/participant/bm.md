@@ -93,11 +93,6 @@ Model of a biomass power plant.
      -
      -
 
-   * - marketReaction
-     -
-     - Whether to adapt output based on (volatile)
-       market price or not
-
    * - costControlled
      -
      - Whether to adapt output based on the difference

@@ -25,6 +25,7 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
     // non-existent (empty)
     def chpResults = csvResultEntitySource.chpResults
     def hpResults = csvResultEntitySource.hpResults
+    def acResults = csvResultEntitySource.acResults
     def evResults = csvResultEntitySource.evResults
     def evcsResults = csvResultEntitySource.evcsResults
     def loadResults = csvResultEntitySource.loadResults
@@ -38,7 +39,7 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
     bmResults.size() == retd.BM_RESULT_SIZE
     fixedFeedInResults.size() == retd.FIXED_FEED_IN_RESULT_SIZE
     emResults.size() == retd.EM_RESULT_SIZE
-    chpResults.empty && hpResults.empty && evResults.empty && evcsResults.empty &&
+    chpResults.empty && hpResults.empty && acResults.empty && evResults.empty && evcsResults.empty &&
         loadResults.empty && storageResults.empty && thermalHouseResults.empty && flexOptionsResults.empty
 
     bmResults.first().inputModel == retd.BM_INPUT_MODEL

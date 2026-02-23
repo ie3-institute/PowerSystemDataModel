@@ -173,9 +173,17 @@ package models {
             SystemParticipantInput ..|> HasNodes
             SystemParticipantInput ..|> NodeInput
 
+            class AcInput {
+                - type: AcTypeInput
+                - thermalBus: ThermalBusInput
+            }
+            AcInput --|> SystemParticipantInput
+            AcInput ..|> HasType
+            AcInput ..|> HasThermalBus
+            AcInput *-- ThermalBusInput
+
             class BmInput {
                 - type: BmTypeInput
-                - marketReaction: Boolean
                 - costControlled: Boolean
                 - feedInTariff: ComparableQuantity<SpecificCurrency> [€/MWh]
             }
@@ -186,7 +194,6 @@ package models {
                 - thermalBus: ThermalBusInput
                 - type: ChpTypeInput
                 - thermalStorage: ThermalStorageInput
-                - marketReaction: Boolean
             }
             ChpInput --|> SystemParticipantInput
             ChpInput ..|> HasThermalBus
@@ -214,7 +221,7 @@ package models {
             HpInput --|> SystemParticipantInput
             HpInput ..|> HasType
             HpInput ..|> HasThermalBus
-            ChpInput *-- ThermalBusInput
+            HpInput *-- ThermalBusInput
 
             class LoadInput {
                 - standardLoadProfile: StandardLoadProfile
@@ -232,7 +239,6 @@ package models {
                 - elevationAngle: ComparableQuantity<Angle> [°]
                 - kG: Double
                 - kT: Double
-                - marketReaction: Boolean
                 - sRated: ComparableQuantity<Power> [kVA]
                 - cosPhiRated: double
             }
@@ -240,14 +246,12 @@ package models {
 
             class StorageInput {
                 - type: StorageTypeInput
-                - behaviour: StorageStrategy
             }
             StorageInput --|> SystemParticipantInput
             StorageInput ..|> HasType
 
             class WecInput{
                 - type: WecTypeInput
-                - marketReaction: boolean
             }
             WecInput --|> SystemParticipantInput
             WecInput ..|> HasType
