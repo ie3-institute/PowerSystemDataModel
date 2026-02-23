@@ -47,7 +47,6 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
       "elevationangle"  : "6",
       "kg"              : "7",
       "kt"              : "8",
-      "marketreaction"  : "true",
       "srated"          : "9",
       "cosphirated"     : "10",
     ]
@@ -85,7 +84,6 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
       assert elevationAngle == getQuant(parameter["elevationangle"], StandardUnits.SOLAR_ELEVATION_ANGLE)
       assert kG == Double.parseDouble(parameter["kg"])
       assert kT == Double.parseDouble(parameter["kt"])
-      assert marketReaction
       assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
       assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
     }

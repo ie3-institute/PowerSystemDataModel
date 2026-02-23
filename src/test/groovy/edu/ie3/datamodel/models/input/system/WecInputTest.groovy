@@ -16,7 +16,7 @@ class WecInputTest extends Specification {
     def wec = SystemParticipantTestData.wecInput
 
     when:
-    def alteredUnit = wec.copy().type(SystemParticipantTestData.wecType).marketReaction(true).build()
+    def alteredUnit = wec.copy().type(SystemParticipantTestData.wecType).build()
 
     then:
     alteredUnit.with {
@@ -26,7 +26,6 @@ class WecInputTest extends Specification {
       assert id == wec.id
       assert qCharacteristics == wec.qCharacteristics
       assert type == SystemParticipantTestData.wecType
-      assert marketReaction
       assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
@@ -49,7 +48,6 @@ class WecInputTest extends Specification {
       assert sRated() == wec.type.sRated * 2d
       assert type.rotorArea == wec.type.rotorArea * 2d
       assert type.hubHeight == wec.type.hubHeight
-      assert marketReaction == wec.marketReaction
       assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }

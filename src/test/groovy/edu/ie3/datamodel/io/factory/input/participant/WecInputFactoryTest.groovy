@@ -40,8 +40,7 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
       "operatesfrom"    : "",
       "operatesuntil"   : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
       "id"              : "TestID",
-      "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
-      "marketreaction"  : "true"
+      "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}"
     ]
     def inputClass = WecInput
     def nodeInput = Mock(NodeInput)
@@ -72,7 +71,6 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
       }
       assert controllingEm == Optional.of(emUnit)
       assert type == typeInput
-      assert marketReaction
     }
   }
 }
