@@ -244,8 +244,8 @@ public class ValidationUtils {
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  protected static void detectNegativeQuantities(Quantity<?>[] quantities, UniqueEntity entity)
-      throws InvalidEntityException {
+  protected static void detectNegativeQuantities(
+      Map<String, Quantity<?>> quantities, UniqueEntity entity) throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() < 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be zero or positive");
@@ -259,7 +259,7 @@ public class ValidationUtils {
    * @param entity Unique entity holding the malformed quantities
    */
   protected static void detectZeroOrNegativeQuantities(
-      Quantity<?>[] quantities, UniqueEntity entity) throws InvalidEntityException {
+      Map<String, Quantity<?>> quantities, UniqueEntity entity) throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() <= 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be positive");
@@ -271,8 +271,8 @@ public class ValidationUtils {
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  protected static void detectPositiveQuantities(Quantity<?>[] quantities, UniqueEntity entity)
-      throws InvalidEntityException {
+  protected static void detectPositiveQuantities(
+      Map<String, Quantity<?>> quantities, UniqueEntity entity) throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() > 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be negative");
@@ -288,12 +288,15 @@ public class ValidationUtils {
    * @param msg Message prefix to use for the exception message: [msg]: [malformedQuantities]
    */
   protected static void detectMalformedQuantities(
-      Quantity<?>[] quantities, UniqueEntity entity, Predicate<Quantity<?>> predicate, String msg)
+      Map<String, Quantity<?>> quantities,
+      UniqueEntity entity,
+      Predicate<Quantity<?>> predicate,
+      String msg)
       throws InvalidEntityException {
     String malformedQuantities =
-        Arrays.stream(quantities)
-            .filter(predicate)
-            .map(Quantity::toString)
+        quantities.entrySet().stream()
+            .filter(e -> predicate.test(e.getValue()))
+            .map(e -> e.getKey() + "=" + e.getValue())
             .collect(Collectors.joining(", "));
     if (!malformedQuantities.isEmpty()) {
       throw new InvalidEntityException(msg + ": " + malformedQuantities, entity);
