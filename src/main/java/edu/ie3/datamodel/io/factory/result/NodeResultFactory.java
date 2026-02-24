@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
@@ -29,12 +29,6 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
    */
   public NodeResultFactory(DateTimeFormatter dateTimeFormatter) {
     super(dateTimeFormatter, NodeResult.class);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, V_MAG, V_ANG);
-    return List.of(minConstructorParams);
   }
 
   @Override

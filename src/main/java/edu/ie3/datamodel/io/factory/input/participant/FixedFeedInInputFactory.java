@@ -24,11 +24,6 @@ public class FixedFeedInInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {S_RATED, COS_PHI_RATED};
-  }
-
-  @Override
   protected FixedFeedInInput buildModel(
       SystemParticipantEntityData data,
       UUID uuid,

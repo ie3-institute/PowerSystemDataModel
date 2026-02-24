@@ -20,11 +20,6 @@ public class Transformer3WInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {NODE_A, NODE_B, NODE_C, PARALLEL_DEVICES, TAP_POS, AUTO_TAP};
-  }
-
-  @Override
   protected Transformer3WInput buildModel(
       Transformer3WInputEntityData data,
       UUID uuid,

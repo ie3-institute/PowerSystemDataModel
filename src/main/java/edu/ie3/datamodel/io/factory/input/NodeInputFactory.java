@@ -22,11 +22,6 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {V_TARGET, V_RATED, SLACK, GEO_POSITION, VOLT_LVL, SUBNET};
-  }
-
-  @Override
   protected NodeInput buildModel(
       AssetInputEntityData data,
       UUID uuid,

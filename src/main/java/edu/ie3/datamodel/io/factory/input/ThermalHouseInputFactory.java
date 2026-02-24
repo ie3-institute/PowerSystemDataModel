@@ -24,20 +24,6 @@ public class ThermalHouseInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {
-      ETH_LOSSES,
-      ETH_CAPA,
-      TARGET_TEMPERATURE,
-      UPPER_TEMPERATURE_LIMIT,
-      LOWER_TEMPERATURE_LIMIT,
-      HOUSING_TYPE,
-      NUMBER_INHABITANTS,
-      THERMAL_BUS
-    };
-  }
-
-  @Override
   protected ThermalHouseInput buildModel(
       ThermalUnitInputEntityData data,
       UUID uuid,

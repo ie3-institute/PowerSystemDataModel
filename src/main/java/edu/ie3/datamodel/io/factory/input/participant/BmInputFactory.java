@@ -26,11 +26,6 @@ public class BmInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE, COST_CONTROLLED, FEED_IN_TARIFF};
-  }
-
-  @Override
   protected BmInput buildModel(
       SystemParticipantTypedEntityData<BmTypeInput> data,
       UUID uuid,

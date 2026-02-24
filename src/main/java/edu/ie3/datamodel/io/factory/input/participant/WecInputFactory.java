@@ -23,11 +23,6 @@ public class WecInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE};
-  }
-
-  @Override
   protected WecInput buildModel(
       SystemParticipantTypedEntityData<WecTypeInput> data,
       UUID uuid,

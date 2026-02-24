@@ -23,11 +23,6 @@ public class StorageInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE};
-  }
-
-  @Override
   protected StorageInput buildModel(
       SystemParticipantTypedEntityData<StorageTypeInput> data,
       UUID uuid,

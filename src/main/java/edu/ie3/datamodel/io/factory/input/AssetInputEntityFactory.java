@@ -9,9 +9,8 @@ import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.UUID;
 
 /**
  * Abstract factory class that can be extended in order for creating {@link AssetInput} entities
@@ -28,59 +27,6 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
   protected AssetInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
-
-  /**
-   * Returns list of sets of attribute names that the entity requires to be built.
-   *
-   * <p>The mandatory attributes required to create an {@link AssetInput} are enhanced with custom
-   * attribute names that each subclass factory determines in {@link #getAdditionalFields()}.
-   *
-   * @param entityClass class of the entity
-   * @return list of possible attribute sets
-   */
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> constructorParamsMin = newSet(UUID, ID);
-    Set<String> constructorParamsFrom = expandSet(constructorParamsMin, OPERATES_FROM);
-    Set<String> constructorParamsUntil = expandSet(constructorParamsMin, OPERATES_UNTIL);
-    Set<String> constructorParamsBoth = expandSet(constructorParamsFrom, OPERATES_UNTIL);
-
-    // with operator field
-    Set<String> constructorParamsOperator = expandSet(constructorParamsMin, OPERATOR);
-    Set<String> constructorParamsOperatorFrom = expandSet(constructorParamsFrom, OPERATOR);
-    Set<String> constructorParamsOperatorUntil = expandSet(constructorParamsUntil, OPERATOR);
-    Set<String> constructorParamsOperatorBoth = expandSet(constructorParamsBoth, OPERATOR);
-
-    final String[] additionalFields = getAdditionalFields();
-
-    constructorParamsMin = expandSet(constructorParamsMin, additionalFields);
-    constructorParamsFrom = expandSet(constructorParamsFrom, additionalFields);
-    constructorParamsUntil = expandSet(constructorParamsUntil, additionalFields);
-    constructorParamsBoth = expandSet(constructorParamsBoth, additionalFields);
-
-    constructorParamsOperator = expandSet(constructorParamsOperator, additionalFields);
-    constructorParamsOperatorFrom = expandSet(constructorParamsOperatorFrom, additionalFields);
-    constructorParamsOperatorUntil = expandSet(constructorParamsOperatorUntil, additionalFields);
-    constructorParamsOperatorBoth = expandSet(constructorParamsOperatorBoth, additionalFields);
-
-    return Arrays.asList(
-        constructorParamsMin,
-        constructorParamsFrom,
-        constructorParamsUntil,
-        constructorParamsBoth,
-        constructorParamsOperator,
-        constructorParamsOperatorFrom,
-        constructorParamsOperatorUntil,
-        constructorParamsOperatorBoth);
-  }
-
-  /**
-   * Returns fields other than the required fields of {@link SystemParticipantInput} that have to be
-   * present.
-   *
-   * @return Array of field names, can be empty but not null
-   */
-  protected abstract String[] getAdditionalFields();
 
   @Override
   protected T buildModel(D data) {

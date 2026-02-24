@@ -14,7 +14,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.system.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -62,22 +62,6 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
         EvResult.class,
         HpResult.class,
         EmResult.class);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    /// all result models have the same constructor except StorageResult
-    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, POWER, REACTIVE_POWER);
-
-    if (ElectricalEnergyStorageResult.class.isAssignableFrom(entityClass)) {
-      minConstructorParams = expandSet(minConstructorParams, SOC);
-    }
-
-    if (SystemParticipantWithHeatResult.class.isAssignableFrom(entityClass)) {
-      minConstructorParams = expandSet(minConstructorParams, Q_DOT);
-    }
-
-    return List.of(minConstructorParams);
   }
 
   @Override

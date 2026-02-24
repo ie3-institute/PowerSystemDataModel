@@ -8,16 +8,18 @@ package edu.ie3.datamodel.io.factory;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.naming.FieldNames;
+import edu.ie3.datamodel.io.naming.FieldNaming;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.utils.CollectionUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Abstract factory class, that is able to transfer specific "flat" information in to actual model
@@ -109,10 +111,28 @@ public abstract class Factory<C, D extends FactoryData, R>
    * Returns list of sets of attribute names that the entity requires to be built. At least one of
    * these sets needs to be delivered for entity creation to be successful.
    *
-   * @param entityClass class that can be used to specify the fields that are returned
+   * @param clazz class that can be used to specify the fields that are returned
    * @return list of possible attribute sets
    */
-  protected abstract List<Set<String>> getFields(Class<?> entityClass);
+  protected List<Set<String>> getFields(Class<?> clazz) {
+    if (!supportedClasses.contains(clazz)) {
+      throw new FactoryException("The given factory cannot handle target class '" + clazz + "'.");
+    }
+
+    List<Set<String>> fieldSets = new ArrayList<>(FieldNaming.getMandatoryFields(clazz));
+
+    for (String optional : FieldNaming.getOptionalFields(clazz)) {
+      List<Set<String>> tmp = new ArrayList<>(fieldSets);
+
+      for (Set<String> set : fieldSets) {
+        tmp.add(expandSet(set, optional));
+      }
+
+      fieldSets = tmp;
+    }
+
+    return fieldSets;
+  }
 
   /**
    * Method for validating the actual fields. The actual fields need to fully contain at least one

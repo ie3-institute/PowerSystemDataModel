@@ -10,7 +10,7 @@ import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.util.geo.GeoUtils;
-import java.util.*;
+import java.util.UUID;
 import org.locationtech.jts.geom.LineString;
 
 /**
@@ -26,30 +26,6 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
   protected GraphicInputFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
-
-  /**
-   * Returns list of sets of attribute names that the entity requires to be built.
-   *
-   * <p>The mandatory attributes required to create an {@link GraphicInput} are enhanced with custom
-   * attribute names that each subclass factory determines in {@link #getAdditionalFields()}.
-   *
-   * @param entityClass class of the entity
-   * @return list of possible attribute sets
-   */
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> constructorParamsMin = newSet(UUID, GRAPHIC_LAYER, PATH_LINE_STRING);
-    final String[] additionalFields = getAdditionalFields();
-    constructorParamsMin = expandSet(constructorParamsMin, additionalFields);
-    return Collections.singletonList(constructorParamsMin);
-  }
-
-  /**
-   * Returns fields other than the required fields of {@link GraphicInput} that have to be present.
-   *
-   * @return Array of field names, can be empty but not null
-   */
-  protected abstract String[] getAdditionalFields();
 
   @Override
   protected T buildModel(D data) {

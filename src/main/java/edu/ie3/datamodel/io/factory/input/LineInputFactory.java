@@ -28,13 +28,6 @@ public class LineInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {
-      NODE_A, NODE_B, PARALLEL_DEVICES, LENGTH, GEO_POSITION, OLM_CHARACTERISTIC, TYPE
-    };
-  }
-
-  @Override
   protected LineInput buildModel(
       TypedConnectorInputEntityData<LineTypeInput> data,
       UUID uuid,

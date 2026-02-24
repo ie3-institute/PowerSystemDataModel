@@ -17,11 +17,6 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInpu
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {CONTROL_STRATEGY, CONTROLLING_EM};
-  }
-
-  @Override
   protected EmInput buildModel(
       EmAssetInputEntityData data,
       UUID uuid,

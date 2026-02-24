@@ -26,11 +26,6 @@ public class LoadInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {LOAD_PROFILE, E_CONS_ANNUAL, S_RATED, COS_PHI_RATED};
-  }
-
-  @Override
   protected LoadInput buildModel(
       SystemParticipantEntityData data,
       UUID uuid,

@@ -35,11 +35,6 @@ public class EvcsInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPE, V2G_SUPPORT};
-  }
-
-  @Override
   protected EvcsInput buildModel(
       SystemParticipantEntityData data,
       UUID uuid,

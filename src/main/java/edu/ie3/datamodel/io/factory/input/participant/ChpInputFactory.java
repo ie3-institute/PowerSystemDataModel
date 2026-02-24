@@ -21,11 +21,6 @@ public class ChpInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {THERMAL_BUS, TYPE, THERMAL_STORAGE};
-  }
-
-  @Override
   protected ChpInput buildModel(
       ChpInputEntityData data,
       UUID uuid,

@@ -23,11 +23,6 @@ public class EvInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE};
-  }
-
-  @Override
   protected EvInput buildModel(
       SystemParticipantTypedEntityData<EvTypeInput> data,
       UUID uuid,

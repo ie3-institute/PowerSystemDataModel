@@ -8,9 +8,6 @@ package edu.ie3.datamodel.io.factory.typeinput;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import javax.measure.quantity.*;
 import tech.units.indriya.ComparableQuantity;
@@ -20,16 +17,6 @@ public class Transformer2WTypeInputFactory
 
   public Transformer2WTypeInputFactory() {
     super(Transformer2WTypeInput.class);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> constructorParams =
-        newSet(
-            UUID, ID, R_SC, X_SC, S_RATED, V_RATED_A, V_RATED_B, G_M, B_M, D_V, D_PHI, TAP_SIDE,
-            TAP_NEUTR, TAP_MIN, TAP_MAX);
-
-    return Collections.singletonList(constructorParams);
   }
 
   @Override

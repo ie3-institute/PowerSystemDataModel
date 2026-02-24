@@ -19,11 +19,6 @@ public class MeasurementUnitInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {NODE, V_MAG, V_ANG, P, Q};
-  }
-
-  @Override
   protected MeasurementUnitInput buildModel(
       NodeAssetInputEntityData data,
       UUID uuid,

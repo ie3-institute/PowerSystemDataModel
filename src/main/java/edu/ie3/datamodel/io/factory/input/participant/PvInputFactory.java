@@ -26,13 +26,6 @@ public class PvInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {
-      ALBEDO, AZIMUTH, ETA_CONV, ELEVATION_ANGLE, KG, KT, S_RATED, COS_PHI_RATED
-    };
-  }
-
-  @Override
   protected PvInput buildModel(
       SystemParticipantEntityData data,
       UUID uuid,

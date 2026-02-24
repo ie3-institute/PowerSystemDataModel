@@ -36,19 +36,6 @@ public abstract class SystemParticipantInputEntityFactory<
   }
 
   @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    List<Set<String>> fields = new ArrayList<>(super.getFields(entityClass));
-
-    for (Set<String> set : fields) {
-      set.add(Q_CHARACTERISTICS);
-      set.add(NODE);
-      set.add(CONTROLLING_EM);
-    }
-
-    return fields;
-  }
-
-  @Override
   protected T buildModel(
       D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     NodeInput node = data.getNode();

@@ -33,11 +33,6 @@ public abstract class ThermalSystemParticipantInputFactory<
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE, THERMAL_BUS};
-  }
-
-  @Override
   protected final M buildModel(
       D data,
       UUID uuid,

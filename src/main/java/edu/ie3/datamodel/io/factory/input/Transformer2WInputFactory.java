@@ -21,11 +21,6 @@ public class Transformer2WInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {NODE_A, NODE_B, PARALLEL_DEVICES, TAP_POS, AUTO_TAP};
-  }
-
-  @Override
   protected Transformer2WInput buildModel(
       TypedConnectorInputEntityData<Transformer2WTypeInput> data,
       UUID uuid,

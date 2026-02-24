@@ -25,11 +25,6 @@ public final class NodeGraphicInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {POINT, NODE};
-  }
-
-  @Override
   protected NodeGraphicInput buildModel(
       NodeGraphicInputEntityData data, UUID uuid, String graphicLayer, LineString path) {
     final Point point = data.getPoint(POINT).orElse(NodeInput.DEFAULT_GEO_POSITION);

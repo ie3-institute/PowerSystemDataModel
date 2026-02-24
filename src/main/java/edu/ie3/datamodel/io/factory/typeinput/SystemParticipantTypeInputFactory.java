@@ -15,9 +15,6 @@ import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import edu.ie3.util.quantities.interfaces.SpecificEnergy;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import javax.measure.quantity.*;
 import tech.units.indriya.ComparableQuantity;
@@ -34,33 +31,6 @@ public class SystemParticipantTypeInputFactory
         WecTypeInput.class,
         ChpTypeInput.class,
         StorageTypeInput.class);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> standardConstructorParams = newSet(UUID, ID, CAP_EX, OP_EX, S_RATED, COS_PHI_RATED);
-
-    Set<String> constructorParameters = null;
-    if (entityClass.equals(EvTypeInput.class)) {
-      constructorParameters = expandSet(standardConstructorParams, E_STORAGE, E_CONS, S_RATED_DC);
-    } else if (entityClass.equals(HpTypeInput.class)) {
-      constructorParameters = expandSet(standardConstructorParams, P_THERMAL);
-    } else if (entityClass.equals(AcTypeInput.class)) {
-      constructorParameters = expandSet(standardConstructorParams, P_THERMAL);
-    } else if (entityClass.equals(BmTypeInput.class)) {
-      constructorParameters = expandSet(standardConstructorParams, ACTIVE_POWER_GRADIENT, ETA_CONV);
-    } else if (entityClass.equals(WecTypeInput.class)) {
-      constructorParameters =
-          expandSet(standardConstructorParams, CP_CHARACTERISTIC, ETA_CONV, ROTOR_AREA, HUB_HEIGHT);
-    } else if (entityClass.equals(ChpTypeInput.class)) { // into new file
-      constructorParameters =
-          expandSet(standardConstructorParams, ETA_EL, ETA_THERMAL, P_THERMAL, P_OWN);
-    } else if (entityClass.equals(StorageTypeInput.class)) {
-      constructorParameters =
-          expandSet(standardConstructorParams, E_STORAGE, P_MAX, ACTIVE_POWER_GRADIENT, ETA);
-    }
-
-    return Collections.singletonList(constructorParameters);
   }
 
   @Override

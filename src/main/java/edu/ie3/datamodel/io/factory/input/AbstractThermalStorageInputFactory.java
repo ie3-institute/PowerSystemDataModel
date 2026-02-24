@@ -20,13 +20,6 @@ public abstract class AbstractThermalStorageInputFactory<T extends AbstractStora
     super(clazz);
   }
 
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {
-      STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX, THERMAL_BUS
-    };
-  }
-
   protected ComparableQuantity<Volume> getStorageVolumeLvl(ThermalUnitInputEntityData data) {
     return data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
   }

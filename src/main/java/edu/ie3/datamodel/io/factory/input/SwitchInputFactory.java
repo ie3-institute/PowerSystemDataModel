@@ -19,11 +19,6 @@ public class SwitchInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {NODE_A, NODE_B, CLOSED};
-  }
-
-  @Override
   protected SwitchInput buildModel(
       ConnectorInputEntityData data,
       UUID uuid,
