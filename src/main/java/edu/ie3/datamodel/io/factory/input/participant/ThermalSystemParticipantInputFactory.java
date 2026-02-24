@@ -28,9 +28,6 @@ public abstract class ThermalSystemParticipantInputFactory<
         D extends ThermalSystemParticipantEntityData<T>>
     extends SystemParticipantInputEntityFactory<M, D> {
 
-  protected static final String TYPE = "type";
-  protected static final String THERMAL_BUS = "thermalBus";
-
   protected ThermalSystemParticipantInputFactory(Class<M> modelClass) {
     super(modelClass);
   }

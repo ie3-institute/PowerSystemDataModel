@@ -16,8 +16,6 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
 public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
-  private static final String VMAG = "vMag";
-  private static final String VANG = "vAng";
 
   public NodeResultFactory() {
     super(NodeResult.class);
@@ -35,7 +33,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, VMAG, VANG);
+    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, V_MAG, V_ANG);
     return List.of(minConstructorParams);
   }
 
@@ -44,8 +42,8 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Dimensionless> vMagValue =
-        data.getQuantity(VMAG, StandardUnits.VOLTAGE_MAGNITUDE);
-    ComparableQuantity<Angle> vAngValue = data.getQuantity(VANG, StandardUnits.VOLTAGE_ANGLE);
+        data.getQuantity(V_MAG, StandardUnits.VOLTAGE_MAGNITUDE);
+    ComparableQuantity<Angle> vAngValue = data.getQuantity(V_ANG, StandardUnits.VOLTAGE_ANGLE);
 
     return new NodeResult(zdtTime, inputModelUuid, vMagValue, vAngValue);
   }

@@ -25,11 +25,6 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class SystemParticipantResultFactory extends ResultEntityFactory<SystemParticipantResult> {
 
-  private static final String POWER = "p";
-  private static final String REACTIVE_POWER = "q";
-  private static final String SOC = "soc";
-  private static final String Q_DOT = "qDot";
-
   public SystemParticipantResultFactory() {
     super(
         LoadResult.class,

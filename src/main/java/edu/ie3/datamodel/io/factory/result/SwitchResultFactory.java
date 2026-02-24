@@ -13,8 +13,6 @@ import java.util.*;
 
 public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
 
-  private static final String CLOSED = "closed";
-
   public SwitchResultFactory() {
     super(SwitchResult.class);
   }

@@ -20,9 +20,6 @@ import tech.units.indriya.ComparableQuantity;
 public class BmInputFactory
     extends SystemParticipantInputEntityFactory<
         BmInput, SystemParticipantTypedEntityData<BmTypeInput>> {
-  private static final String TYPE = "type";
-  private static final String COST_CONTROLLED = "costControlled";
-  private static final String FEED_IN_TARIFF = "feedInTariff";
 
   public BmInputFactory() {
     super(BmInput.class);

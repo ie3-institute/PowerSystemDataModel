@@ -19,12 +19,6 @@ import javax.measure.quantity.ElectricPotential;
 import tech.units.indriya.ComparableQuantity;
 
 public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeInput> {
-  private static final String B = "b";
-  private static final String G = "g";
-  private static final String R = "r";
-  private static final String X = "x";
-  private static final String I_MAX = "iMax";
-  private static final String V_RATED = "vRated";
 
   public LineTypeInputFactory() {
     super(LineTypeInput.class);

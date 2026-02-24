@@ -34,7 +34,7 @@ public class EnergyManagementSource extends AssetEntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    validate(EmInput.class, dataSource, emInputFactory).getOrThrow();
+    validate(EmInput.class, dataSource).getOrThrow();
   }
 
   /**

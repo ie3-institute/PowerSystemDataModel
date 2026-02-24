@@ -67,16 +67,32 @@ public abstract class EntitySource {
   public abstract void validate() throws ValidationException;
 
   /**
+   * Method to validate the given entity classes.
+   *
+   * @param dataSource data source to use for the validation
+   * @param classes to validate
+   */
+  @SafeVarargs
+  protected static void validate(DataSource dataSource, Class<? extends Entity>... classes)
+      throws FailedValidationException {
+    Try.scanStream(
+            Arrays.stream(classes).map(c -> validate(c, dataSource)),
+            "Void",
+            FailedValidationException::new)
+        .getOrThrow();
+  }
+
+  /**
    * Method for validating a single source.
    *
    * @param entityClass class to be validated
    * @param dataSource source for the fields
-   * @param validator used to validate
    * @param <C> type of the class
    */
   protected static <C extends Entity> Try<Void, ValidationException> validate(
-      Class<? extends C> entityClass, DataSource dataSource, SourceValidator<C> validator) {
-    return validate(entityClass, () -> dataSource.getSourceFields(entityClass), validator);
+      Class<? extends C> entityClass, DataSource dataSource) {
+    return validate(
+        entityClass, () -> dataSource.getSourceFields(entityClass), DataSource::validate);
   }
 
   /**

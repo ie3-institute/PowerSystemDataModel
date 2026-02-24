@@ -24,10 +24,6 @@ import java.util.*;
 public abstract class AssetInputEntityFactory<T extends AssetInput, D extends AssetInputEntityData>
     extends UniqueEntityFactory<T, D> {
 
-  protected static final String OPERATOR = "operator";
-  protected static final String OPERATES_FROM = "operatesFrom";
-  protected static final String OPERATES_UNTIL = "operatesUntil";
-
   @SafeVarargs
   protected AssetInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);

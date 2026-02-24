@@ -22,11 +22,6 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
 public class CongestionResultFactory extends ResultEntityFactory<CongestionResult> {
-  private static final String TYPE = "type";
-  private static final String SUBGRID = "subgrid";
-  private static final String VALUE = "value";
-  private static final String MIN = "min";
-  private static final String MAX = "max";
 
   public CongestionResultFactory() {
     super(CongestionResult.class);

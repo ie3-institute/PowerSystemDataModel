@@ -15,9 +15,6 @@ import java.util.UUID;
 
 public class ChpInputFactory
     extends SystemParticipantInputEntityFactory<ChpInput, ChpInputEntityData> {
-  private static final String THERMAL_BUS = "thermalBus";
-  private static final String TYPE = "type";
-  private static final String THERMAL_STORAGE = "thermalStorage";
 
   public ChpInputFactory() {
     super(ChpInput.class);

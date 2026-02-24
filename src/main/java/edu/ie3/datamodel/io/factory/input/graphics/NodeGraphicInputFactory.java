@@ -20,9 +20,6 @@ import org.locationtech.jts.geom.Point;
 public final class NodeGraphicInputFactory
     extends GraphicInputFactory<NodeGraphicInput, NodeGraphicInputEntityData> {
 
-  private static final String POINT = "point";
-  private static final String NODE = "node";
-
   public NodeGraphicInputFactory() {
     super(NodeGraphicInput.class);
   }

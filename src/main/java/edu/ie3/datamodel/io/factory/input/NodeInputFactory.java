@@ -16,12 +16,6 @@ import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
 public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetInputEntityData> {
-  private static final String V_TARGET = "vTarget";
-  public static final String V_RATED = "vRated";
-  private static final String SLACK = "slack";
-  private static final String GEO_POSITION = "geoPosition";
-  public static final String VOLT_LVL = "voltLvl";
-  private static final String SUBNET = "subnet";
 
   public NodeInputFactory() {
     super(NodeInput.class);

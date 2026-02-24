@@ -30,12 +30,6 @@ public abstract class SystemParticipantInputEntityFactory<
         T extends SystemParticipantInput, D extends SystemParticipantEntityData>
     extends AssetInputEntityFactory<T, D> {
 
-  private static final String NODE = "node";
-
-  private static final String Q_CHARACTERISTICS = "qCharacteristics";
-
-  public static final String CONTROLLING_EM = "controllingEm";
-
   @SafeVarargs
   protected SystemParticipantInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);

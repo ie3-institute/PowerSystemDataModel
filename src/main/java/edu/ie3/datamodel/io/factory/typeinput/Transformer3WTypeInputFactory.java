@@ -17,25 +17,6 @@ import tech.units.indriya.ComparableQuantity;
 
 public class Transformer3WTypeInputFactory
     extends AssetTypeInputEntityFactory<Transformer3WTypeInput> {
-  private static final String S_RATED_A = "sRatedA";
-  private static final String S_RATED_B = "sRatedB";
-  private static final String S_RATED_C = "sRatedC";
-  private static final String V_RATED_A = "vRatedA";
-  private static final String V_RATED_B = "vRatedB";
-  private static final String V_RATED_C = "vRatedC";
-  private static final String R_SC_A = "rScA";
-  private static final String R_SC_B = "rScB";
-  private static final String R_SC_C = "rScC";
-  private static final String X_SC_A = "xScA";
-  private static final String X_SC_B = "xScB";
-  private static final String X_SC_C = "xScC";
-  private static final String G_M = "gM";
-  private static final String B_M = "bM";
-  private static final String D_V = "dV";
-  private static final String D_PHI = "dPhi";
-  private static final String TAP_NEUTR = "tapNeutr";
-  private static final String TAP_MIN = "tapMin";
-  private static final String TAP_MAX = "tapMax";
 
   public Transformer3WTypeInputFactory() {
     super(Transformer3WTypeInput.class);

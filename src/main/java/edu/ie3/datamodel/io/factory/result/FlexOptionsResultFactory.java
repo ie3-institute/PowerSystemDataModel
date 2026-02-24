@@ -16,10 +16,6 @@ import tech.units.indriya.ComparableQuantity;
 
 public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsResult> {
 
-  private static final String P_REF = "pRef";
-  private static final String P_MIN = "pMin";
-  private static final String P_MAX = "pMax";
-
   public FlexOptionsResultFactory() {
     super(FlexOptionsResult.class);
   }

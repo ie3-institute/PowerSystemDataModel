@@ -12,10 +12,6 @@ import java.util.*;
 
 public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInputEntityData> {
 
-  private static final String CONTROL_STRATEGY = "controlStrategy";
-
-  public static final String CONTROLLING_EM = "controllingEm";
-
   public EmInputFactory() {
     super(EmInput.class);
   }

@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.SystemParticipantsException;
 import edu.ie3.datamodel.exceptions.ValidationException;
@@ -26,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
-import java.util.stream.Stream;
 
 /**
  * Implementation that provides the capability to build entities of type {@link
@@ -100,22 +98,19 @@ public class SystemParticipantSource extends AssetEntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    Try.scanStream(
-            Stream.of(
-                validate(AcInput.class, dataSource, acInputFactory),
-                validate(BmInput.class, dataSource, bmInputFactory),
-                validate(ChpInput.class, dataSource, chpInputFactory),
-                validate(EvInput.class, dataSource, evInputFactory),
-                validate(FixedFeedInInput.class, dataSource, fixedFeedInInputFactory),
-                validate(HpInput.class, dataSource, hpInputFactory),
-                validate(LoadInput.class, dataSource, loadInputFactory),
-                validate(PvInput.class, dataSource, pvInputFactory),
-                validate(StorageInput.class, dataSource, storageInputFactory),
-                validate(WecInput.class, dataSource, wecInputFactory),
-                validate(EvcsInput.class, dataSource, evcsInputFactory)),
-            "Validation",
-            FailedValidationException::new)
-        .getOrThrow();
+    validate(
+        dataSource,
+        AcInput.class,
+        BmInput.class,
+        ChpInput.class,
+        EvInput.class,
+        FixedFeedInInput.class,
+        HpInput.class,
+        LoadInput.class,
+        PvInput.class,
+        StorageInput.class,
+        WecInput.class,
+        EvcsInput.class);
   }
 
   /**

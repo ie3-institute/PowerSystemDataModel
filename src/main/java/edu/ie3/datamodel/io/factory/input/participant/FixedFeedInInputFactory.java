@@ -19,16 +19,13 @@ import tech.units.indriya.ComparableQuantity;
 public class FixedFeedInInputFactory
     extends SystemParticipantInputEntityFactory<FixedFeedInInput, SystemParticipantEntityData> {
 
-  private static final String S_RATED = "sRated";
-  private static final String COSPHI_RATED = "cosPhiRated";
-
   public FixedFeedInInputFactory() {
     super(FixedFeedInInput.class);
   }
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {S_RATED, COSPHI_RATED};
+    return new String[] {S_RATED, COS_PHI_RATED};
   }
 
   @Override
@@ -42,7 +39,7 @@ public class FixedFeedInInputFactory
       OperationTime operationTime) {
     final EmInput em = data.getControllingEm().orElse(null);
     final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
-    final double cosPhiRated = data.getDouble(COSPHI_RATED);
+    final double cosPhiRated = data.getDouble(COS_PHI_RATED);
 
     return new FixedFeedInInput(
         uuid, id, operator, operationTime, node, qCharacteristics, em, sRated, cosPhiRated);

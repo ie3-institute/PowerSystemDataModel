@@ -22,10 +22,6 @@ import org.locationtech.jts.geom.LineString;
 public abstract class GraphicInputFactory<T extends GraphicInput, D extends EntityData>
     extends EntityFactory<T, D> {
 
-  private static final String UUID = "uuid";
-  private static final String GRAPHIC_LAYER = "graphicLayer";
-  private static final String PATH_LINE_STRING = "path";
-
   @SafeVarargs
   protected GraphicInputFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);

@@ -20,14 +20,6 @@ import tech.units.indriya.ComparableQuantity;
 
 public class PvInputFactory
     extends SystemParticipantInputEntityFactory<PvInput, SystemParticipantEntityData> {
-  private static final String ALBEDO = "albedo";
-  private static final String AZIMUTH = "azimuth";
-  private static final String ETA_CONV = "etaConv";
-  private static final String ELEVATION_ANGLE = "elevationAngle";
-  private static final String KG = "kG";
-  private static final String KT = "kT";
-  private static final String S_RATED = "sRated";
-  private static final String COS_PHI_RATED = "cosPhiRated";
 
   public PvInputFactory() {
     super(PvInput.class);

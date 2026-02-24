@@ -23,10 +23,6 @@ import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
 public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
-  private static final String Q_DOT = "qDot";
-  private static final String INDOOR_TEMPERATURE = "indoorTemperature";
-  private static final String ENERGY = "energy";
-  private static final String FILL_LEVEL = "fillLevel";
 
   public ThermalResultFactory() {
     super(

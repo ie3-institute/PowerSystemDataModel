@@ -30,12 +30,6 @@ import java.util.UUID;
 public class EvcsInputFactory
     extends SystemParticipantInputEntityFactory<EvcsInput, SystemParticipantEntityData> {
 
-  private static final String TYPE = "type";
-  private static final String CHARGING_POINTS = "chargingPoints";
-  private static final String COS_PHI_RATED = "cosPhiRated";
-  private static final String LOCATION_TYPE = "locationType";
-  private static final String V2G_SUPPORT = "v2gSupport";
-
   public EvcsInputFactory() {
     super(EvcsInput.class);
   }

@@ -22,14 +22,6 @@ import tech.units.indriya.ComparableQuantity;
 
 public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
 
-  private static final String IAMAG = "iAMag";
-  private static final String IAANG = "iAAng";
-  private static final String IBMAG = "iBMag";
-  private static final String IBANG = "iBAng";
-  private static final String ICMAG = "iCMag";
-  private static final String ICANG = "iCAng";
-  private static final String TAPPOS = "tapPos";
-
   public ConnectorResultFactory() {
     super(LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
   }

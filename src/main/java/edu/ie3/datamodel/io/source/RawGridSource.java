@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.RawGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
@@ -24,7 +23,6 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.utils.Try;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Implementation that provides the capability to build entities held by {@link RawGridElements} as
@@ -62,17 +60,14 @@ public class RawGridSource extends AssetEntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    Try.scanStream(
-            Stream.of(
-                validate(NodeInput.class, dataSource, nodeInputFactory),
-                validate(LineInput.class, dataSource, lineInputFactory),
-                validate(Transformer2WInput.class, dataSource, transformer2WInputFactory),
-                validate(Transformer3WInput.class, dataSource, transformer3WInputFactory),
-                validate(SwitchInput.class, dataSource, switchInputFactory),
-                validate(MeasurementUnitInput.class, dataSource, measurementUnitInputFactory)),
-            "Validation",
-            FailedValidationException::new)
-        .getOrThrow();
+    validate(
+        dataSource,
+        NodeInput.class,
+        LineInput.class,
+        Transformer2WInput.class,
+        Transformer3WInput.class,
+        SwitchInput.class,
+        MeasurementUnitInput.class);
   }
 
   /**

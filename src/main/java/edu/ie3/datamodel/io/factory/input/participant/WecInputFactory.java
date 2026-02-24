@@ -17,7 +17,6 @@ import java.util.UUID;
 public class WecInputFactory
     extends SystemParticipantInputEntityFactory<
         WecInput, SystemParticipantTypedEntityData<WecTypeInput>> {
-  private static final String TYPE = "type";
 
   public WecInputFactory() {
     super(WecInput.class);
