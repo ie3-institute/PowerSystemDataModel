@@ -17,7 +17,7 @@ import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
 import java.util.List;
-import javax.measure.Quantity;
+import java.util.Map;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -137,11 +137,13 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
           Try.ofVoid(
               () ->
                   detectNegativeQuantities(
-                      new Quantity<?>[] {
-                        systemParticipantTypeInput.getCapex(),
-                        systemParticipantTypeInput.getOpex(),
-                        systemParticipantTypeInput.getsRated()
-                      },
+                      Map.of(
+                          "capex",
+                          systemParticipantTypeInput.getCapex(),
+                          "opex",
+                          systemParticipantTypeInput.getOpex(),
+                          "sRated",
+                          systemParticipantTypeInput.getsRated()),
                       systemParticipantTypeInput),
               InvalidEntityException.class));
     } catch (TryException e) {
@@ -211,7 +213,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                new Quantity<?>[] {bmTypeInput.getActivePowerGradient()}, bmTypeInput),
+                Map.of("activePowerGradient", bmTypeInput.getActivePowerGradient()), bmTypeInput),
         () ->
             isBetweenZeroAndHundredPercent(
                 bmTypeInput, bmTypeInput.getEtaConv(), "Efficiency of inverter"));
@@ -250,10 +252,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   private static List<Try<Void, InvalidEntityException>> checkChpType(ChpTypeInput chpTypeInput) {
     return Try.ofVoid(
         InvalidEntityException.class,
-        () -> detectNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpOwn()}, chpTypeInput),
+        () -> detectNegativeQuantities(Map.of("pOwn", chpTypeInput.getpOwn()), chpTypeInput),
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {chpTypeInput.getpThermal()}, chpTypeInput),
+                Map.of("pThermal", chpTypeInput.getpThermal()), chpTypeInput),
         () ->
             isBetweenZeroAndHundredPercent(
                 chpTypeInput, chpTypeInput.getEtaEl(), "Electrical efficiency"),
@@ -293,9 +295,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     return Try.ofVoid(
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {
-                  evTypeInput.geteStorage(), evTypeInput.geteCons(),
-                },
+                Map.of("eStorage", evTypeInput.geteStorage(), "eCons", evTypeInput.geteCons()),
                 evTypeInput),
         InvalidEntityException.class);
   }
@@ -318,7 +318,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                new Quantity<?>[] {fixedFeedInInput.getsRated()}, fixedFeedInInput),
+                Map.of("sRated", fixedFeedInInput.getsRated()), fixedFeedInInput),
         () -> checkRatedPowerFactor(fixedFeedInInput, fixedFeedInInput.getCosPhiRated()));
   }
 
@@ -353,9 +353,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     return Try.ofVoid(
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {
-                  hpTypeInput.getsRated(), hpTypeInput.getpThermal(),
-                },
+                Map.of("sRated", hpTypeInput.getsRated(), "pThermal", hpTypeInput.getpThermal()),
                 hpTypeInput),
         InvalidEntityException.class);
   }
@@ -391,9 +389,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     return Try.ofVoid(
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {
-                  acTypeInput.getsRated(), acTypeInput.getpThermal(),
-                },
+                Map.of("sRated", acTypeInput.getsRated(), "pThermal", acTypeInput.getpThermal()),
                 acTypeInput),
         InvalidEntityException.class);
   }
@@ -427,7 +423,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
             InvalidEntityException.class,
             () ->
                 detectNegativeQuantities(
-                    new Quantity<?>[] {loadInput.getsRated(), loadInput.geteConsAnnual()},
+                    Map.of(
+                        "sRated", loadInput.getsRated(), "eConsAnnual", loadInput.geteConsAnnual()),
                     loadInput),
             () -> checkRatedPowerFactor(loadInput, loadInput.getCosPhiRated())));
 
@@ -453,7 +450,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   private static List<Try<Void, InvalidEntityException>> checkPv(PvInput pvInput) {
     return Try.ofVoid(
         InvalidEntityException.class,
-        () -> detectNegativeQuantities(new Quantity<?>[] {pvInput.getsRated()}, pvInput),
+        () -> detectNegativeQuantities(Map.of("sRated", pvInput.getsRated()), pvInput),
         () -> checkAlbedo(pvInput),
         () -> checkAzimuth(pvInput),
         () ->
@@ -550,13 +547,13 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                 "Efficiency of the electrical converter"),
         () ->
             detectNegativeQuantities(
-                new Quantity<?>[] {
-                  storageTypeInput.getpMax(), storageTypeInput.getActivePowerGradient(),
-                },
+                Map.of(
+                    "pMax", storageTypeInput.getpMax(),
+                    "activePowerGradient", storageTypeInput.getActivePowerGradient()),
                 storageTypeInput),
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {storageTypeInput.geteStorage()}, storageTypeInput));
+                Map.of("eStorage", storageTypeInput.geteStorage()), storageTypeInput));
   }
 
   /**
@@ -596,7 +593,11 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                 wecTypeInput, wecTypeInput.getEtaConv(), "Efficiency of the converter"),
         () ->
             detectNegativeQuantities(
-                new Quantity<?>[] {wecTypeInput.getRotorArea(), wecTypeInput.getHubHeight()},
+                Map.of(
+                    "rotorArea",
+                    wecTypeInput.getRotorArea(),
+                    "hubHeight",
+                    wecTypeInput.getHubHeight()),
                 wecTypeInput));
   }
 
@@ -629,7 +630,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         chargingPointValidation,
         () -> checkRatedPowerFactor(evcsInput, evcsInput.getCosPhiRated()),
         () ->
-            detectNegativeQuantities(new Quantity[] {evcsInput.getType().getsRated()}, evcsInput));
+            detectNegativeQuantities(Map.of("sRated", evcsInput.getType().getsRated()), evcsInput));
   }
 
   /**

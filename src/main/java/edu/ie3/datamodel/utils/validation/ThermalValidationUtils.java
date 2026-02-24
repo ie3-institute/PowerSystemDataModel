@@ -13,10 +13,10 @@ import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import javax.measure.Quantity;
 
 public class ThermalValidationUtils extends ValidationUtils {
 
@@ -194,10 +194,10 @@ public class ThermalValidationUtils extends ValidationUtils {
                 InvalidEntityException.class,
                 () ->
                     detectNegativeQuantities(
-                        new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput),
+                        Map.of("ethLosses", thermalHouseInput.getEthLosses()), thermalHouseInput),
                 () ->
                     detectZeroOrNegativeQuantities(
-                        new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput)));
+                        Map.of("ethCapa", thermalHouseInput.getEthCapa()), thermalHouseInput)));
 
     if (thermalHouseInput
             .getLowerTemperatureLimit()
@@ -279,11 +279,13 @@ public class ThermalValidationUtils extends ValidationUtils {
         Try.ofVoid(
             () ->
                 detectZeroOrNegativeQuantities(
-                    new Quantity<?>[] {
-                      cylindricalStorageInput.getStorageVolumeLvl(),
-                      cylindricalStorageInput.getC(),
-                      cylindricalStorageInput.getpThermalMax()
-                    },
+                    Map.of(
+                        "storageVolumeLvl",
+                        cylindricalStorageInput.getStorageVolumeLvl(),
+                        "c",
+                        cylindricalStorageInput.getC(),
+                        "pThermalMax",
+                        cylindricalStorageInput.getpThermalMax()),
                     cylindricalStorageInput),
             InvalidEntityException.class));
 
@@ -330,11 +332,13 @@ public class ThermalValidationUtils extends ValidationUtils {
         Try.ofVoid(
             () ->
                 detectZeroOrNegativeQuantities(
-                    new Quantity<?>[] {
-                      domesticHotWaterStorageInput.getStorageVolumeLvl(),
-                      domesticHotWaterStorageInput.getC(),
-                      domesticHotWaterStorageInput.getpThermalMax()
-                    },
+                    Map.of(
+                        "storageVolumeLvl",
+                        domesticHotWaterStorageInput.getStorageVolumeLvl(),
+                        "c",
+                        domesticHotWaterStorageInput.getC(),
+                        "pThermalMax",
+                        domesticHotWaterStorageInput.getpThermalMax()),
                     domesticHotWaterStorageInput),
             InvalidEntityException.class));
 
