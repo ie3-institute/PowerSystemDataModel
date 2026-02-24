@@ -76,13 +76,13 @@ class ValidationUtilsTest extends Specification {
         )
 
     when:
-    ValidationUtils.detectNegativeQuantities([asset.getB()] as Quantity<SpecificConductance>[], asset)
+    ValidationUtils.detectNegativeQuantities(ValidationUtils.quantities("b", asset.getB()), asset)
 
     then:
     noExceptionThrown()
 
     when:
-    ValidationUtils.detectNegativeQuantities([invalidAsset.getB()] as Quantity<SpecificConductance>[], invalidAsset)
+    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities("b", invalidAsset.getB()), invalidAsset)
 
     then:
     InvalidEntityException ex = thrown()
@@ -113,13 +113,13 @@ class ValidationUtilsTest extends Specification {
         )
 
     when:
-    ValidationUtils.detectZeroOrNegativeQuantities([asset.getB()] as Quantity<SpecificConductance>[], asset)
+    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities("b", asset.getB()), asset)
 
     then:
     noExceptionThrown()
 
     when:
-    ValidationUtils.detectZeroOrNegativeQuantities([invalidAsset.getB()] as Quantity<SpecificConductance>[], invalidAsset)
+    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities("b", invalidAsset.getB()), invalidAsset)
 
     then:
     InvalidEntityException ex = thrown()

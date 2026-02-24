@@ -19,7 +19,6 @@ import edu.ie3.util.geo.GeoUtils;
 import edu.ie3.util.quantities.QuantityUtil;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
@@ -110,7 +109,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
             InvalidEntityException.class,
             () -> connectsNodesInDifferentSubnets(line, false),
             () -> connectsNodesWithDifferentVoltageLevels(line, false),
-            () -> detectZeroOrNegativeQuantities(Map.of("length", line.getLength()), line)));
+            () -> detectZeroOrNegativeQuantities(quantities("length", line.getLength()), line)));
 
     /* these two won't throw exceptions and will only log */
     coordinatesOfLineEqualCoordinatesOfNodes(line);
@@ -146,16 +145,14 @@ public class ConnectorValidationUtils extends ValidationUtils {
     return Try.ofVoid(
         InvalidEntityException.class,
         () ->
-            detectNegativeQuantities(Map.of("b", lineType.getB(), "g", lineType.getG()), lineType),
+            detectNegativeQuantities(
+                quantities("b", lineType.getB(), "g", lineType.getG()), lineType),
         () ->
             detectZeroOrNegativeQuantities(
-                Map.of(
-                    "vRated",
-                    lineType.getvRated(),
-                    "iMax",
-                    lineType.getiMax(),
-                    "r",
-                    lineType.getR()),
+                quantities(
+                    "vRated", lineType.getvRated(),
+                    "iMax", lineType.getiMax(),
+                    "r", lineType.getR()),
                 lineType));
   }
 
@@ -227,27 +224,22 @@ public class ConnectorValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                Map.of(
-                    "gM",
-                    transformer2WType.getgM(),
-                    "dPhi",
-                    transformer2WType.getdPhi(),
-                    "rSc",
-                    transformer2WType.getrSc()),
+                quantities(
+                    "gM", transformer2WType.getgM(),
+                    "dPhi", transformer2WType.getdPhi(),
+                    "rSc", transformer2WType.getrSc()),
                 transformer2WType),
         () ->
             detectZeroOrNegativeQuantities(
-                Map.of(
-                    "sRated",
-                    transformer2WType.getsRated(),
-                    "vRatedA",
-                    transformer2WType.getvRatedA(),
-                    "vRatedB",
-                    transformer2WType.getvRatedB(),
-                    "xSc",
-                    transformer2WType.getxSc()),
+                quantities(
+                    "sRated", transformer2WType.getsRated(),
+                    "vRatedA", transformer2WType.getvRatedA(),
+                    "vRatedB", transformer2WType.getvRatedB(),
+                    "xSc", transformer2WType.getxSc()),
                 transformer2WType),
-        () -> detectPositiveQuantities(Map.of("bM", transformer2WType.getbM()), transformer2WType),
+        () ->
+            detectPositiveQuantities(
+                quantities("bM", transformer2WType.getbM()), transformer2WType),
         () -> checkVoltageMagnitudeChangePerTapPosition(transformer2WType),
         () -> checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer2WType),
         () -> checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer2WType));
@@ -341,25 +333,27 @@ public class ConnectorValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                Map.of("gM", transformer3WType.getgM(), "dPhi", transformer3WType.getdPhi()),
+                quantities("gM", transformer3WType.getgM(), "dPhi", transformer3WType.getdPhi()),
                 transformer3WType),
         () ->
             detectZeroOrNegativeQuantities(
-                Map.ofEntries(
-                    Map.entry("sRatedA", transformer3WType.getsRatedA()),
-                    Map.entry("sRatedB", transformer3WType.getsRatedB()),
-                    Map.entry("sRatedC", transformer3WType.getsRatedC()),
-                    Map.entry("vRatedA", transformer3WType.getvRatedA()),
-                    Map.entry("vRatedB", transformer3WType.getvRatedB()),
-                    Map.entry("vRatedC", transformer3WType.getvRatedC()),
-                    Map.entry("rScA", transformer3WType.getrScA()),
-                    Map.entry("rScB", transformer3WType.getrScB()),
-                    Map.entry("rScC", transformer3WType.getrScC()),
-                    Map.entry("xScA", transformer3WType.getxScA()),
-                    Map.entry("xScB", transformer3WType.getxScB()),
-                    Map.entry("xScC", transformer3WType.getxScC())),
+                quantities(
+                    "sRatedA", transformer3WType.getsRatedA(),
+                    "sRatedB", transformer3WType.getsRatedB(),
+                    "sRatedC", transformer3WType.getsRatedC(),
+                    "vRatedA", transformer3WType.getvRatedA(),
+                    "vRatedB", transformer3WType.getvRatedB(),
+                    "vRatedC", transformer3WType.getvRatedC(),
+                    "rScA", transformer3WType.getrScA(),
+                    "rScB", transformer3WType.getrScB(),
+                    "rScC", transformer3WType.getrScC(),
+                    "xScA", transformer3WType.getxScA(),
+                    "xScB", transformer3WType.getxScB(),
+                    "xScC", transformer3WType.getxScC()),
                 transformer3WType),
-        () -> detectPositiveQuantities(Map.of("bM", transformer3WType.getbM()), transformer3WType),
+        () ->
+            detectPositiveQuantities(
+                quantities("bM", transformer3WType.getbM()), transformer3WType),
         () -> checkVoltageMagnitudeChangePerTapPosition(transformer3WType),
         () -> checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer3WType),
         () -> checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer3WType));
