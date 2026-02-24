@@ -267,12 +267,12 @@ public final class BdewLoadValues implements LoadValues {
       return switch (key) {
         case "Wi", "Winter" -> WINTER;
         case "Su", "Summer" -> SUMMER;
-        case "Tr", "Intermediate" -> TRANSITION;
+        case "Tr", "Transition" -> TRANSITION;
         default ->
             throw new ParsingException(
                 "There is no season for key:"
                     + key
-                    + ". Permissible keys: 'Wi', 'Winter', 'Su', 'Summer', 'Tr', 'Intermediate'");
+                    + ". Permissible keys: 'Wi', 'Winter', 'Su', 'Summer', 'Tr', 'Transition'");
       };
     }
 

@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `gradle` dependency shadowJar to work with Gradle 9 [#1545](https://github.com/ie3-institute/PowerSystemDataModel/issues/1545)
 - Removed `ThermalUnits` (duplication to `ThermalGrids`) [#874](https://github.com/ie3-institute/PowerSystemDataModel/issues/874)
 - Removed market reaction field from `PvInput`, `WecInput`, `BmInput`, `ChpInput` [#1554](https://github.com/ie3-institute/PowerSystemDataModel/issues/1554)
+- Changed `Intermediate` to `Transition` for BdewSeason [#1419](https://github.com/ie3-institute/PowerSystemDataModel/issues/1419)
 
 ## [8.1.0] - 2025-07-25
 
