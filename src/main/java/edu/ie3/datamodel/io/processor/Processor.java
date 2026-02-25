@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
-import edu.ie3.datamodel.io.naming.FieldNames;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -63,14 +63,14 @@ public abstract class Processor<T> {
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
 
   private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
-  private static final String OPERATES_FROM = FieldNames.OPERATES_FROM;
-  private static final String OPERATES_UNTIL = FieldNames.OPERATES_UNTIL;
+  private static final String OPERATES_FROM = FieldNamingStrategy.OPERATES_FROM;
+  private static final String OPERATES_UNTIL = FieldNamingStrategy.OPERATES_UNTIL;
 
-  private static final String VOLT_LVL_FIELD_NAME = FieldNames.VOLT_LVL;
-  private static final String VOLT_LVL = FieldNames.VOLT_LVL;
-  private static final String V_RATED = FieldNames.V_RATED;
+  private static final String VOLT_LVL_FIELD_NAME = FieldNamingStrategy.VOLT_LVL;
+  private static final String VOLT_LVL = FieldNamingStrategy.VOLT_LVL;
+  private static final String V_RATED = FieldNamingStrategy.V_RATED;
 
-  private static final String PARALLEL_DEVICES = FieldNames.PARALLEL_DEVICES;
+  private static final String PARALLEL_DEVICES = FieldNamingStrategy.PARALLEL_DEVICES;
 
   /**
    * Instantiates a Processor for a foreseen class

@@ -7,8 +7,8 @@ package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.naming.FieldNames;
-import edu.ie3.datamodel.io.naming.FieldNaming;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
+import edu.ie3.datamodel.io.naming.ModelFields;
 import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.io.source.SourceValidator;
 import edu.ie3.datamodel.utils.CollectionUtils;
@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
  * @param <R> Type of the intended return type (might differ slightly from target class (cf. {@link
  *     edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueFactory})).
  */
-public abstract class Factory<C, D extends FactoryData, R>
-    implements FieldNames, SourceValidator<C> {
+public abstract class Factory<C, D extends FactoryData, R> extends FieldNamingStrategy
+    implements SourceValidator<C> {
   public static final Logger log = LoggerFactory.getLogger(Factory.class);
 
   private final List<Class<? extends C>> supportedClasses;
@@ -118,9 +118,9 @@ public abstract class Factory<C, D extends FactoryData, R>
       throw new FactoryException("The given factory cannot handle target class '" + clazz + "'.");
     }
 
-    List<Set<String>> fieldSets = new ArrayList<>(FieldNaming.getMandatoryFields(clazz));
+    List<Set<String>> fieldSets = new ArrayList<>(ModelFields.getMandatoryFields(clazz));
 
-    for (String optional : FieldNaming.getOptionalFields(clazz)) {
+    for (String optional : ModelFields.getOptionalFields(clazz)) {
       List<Set<String>> tmp = new ArrayList<>(fieldSets);
 
       for (Set<String> set : fieldSets) {
@@ -162,7 +162,7 @@ public abstract class Factory<C, D extends FactoryData, R>
    * @param attributes attribute names
    * @return new set exactly containing attribute names
    */
-  protected static TreeSet<String> newSet(String... attributes) {
+  protected static SortedSet<String> newSet(String... attributes) {
     return CollectionUtils.newSet(attributes);
   }
 
@@ -175,7 +175,7 @@ public abstract class Factory<C, D extends FactoryData, R>
    * @param more attribute names to expand given set with
    * @return new set exactly containing given attribute set plus additional attributes
    */
-  protected static TreeSet<String> expandSet(Set<String> attributeSet, String... more) {
+  protected static SortedSet<String> expandSet(Set<String> attributeSet, String... more) {
     return CollectionUtils.expandSet(attributeSet, more);
   }
 }

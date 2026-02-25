@@ -10,7 +10,7 @@ import static edu.ie3.datamodel.utils.CollectionUtils.*;
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.naming.FieldNaming;
+import edu.ie3.datamodel.io.naming.ModelFields;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.utils.CollectionUtils;
 import edu.ie3.datamodel.utils.Try;
@@ -71,9 +71,9 @@ public interface DataSource {
     return validate(
         actualFields,
         entityClass,
-        FieldNaming.getMandatoryFields(entityClass),
-        FieldNaming.getOptionalFields(entityClass),
-        FieldNaming.getUnsupportedFields(entityClass));
+        ModelFields.getMandatoryFields(entityClass),
+        ModelFields.getOptionalFields(entityClass),
+        ModelFields.getUnsupportedFields(entityClass));
   }
 
   /**

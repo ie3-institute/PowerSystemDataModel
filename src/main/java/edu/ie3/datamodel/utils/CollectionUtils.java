@@ -5,10 +5,7 @@
 */
 package edu.ie3.datamodel.utils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class CollectionUtils {
 
@@ -23,7 +20,7 @@ public class CollectionUtils {
    * @param attributes attribute names
    * @return new set exactly containing attribute names
    */
-  public static TreeSet<String> newSet(String... attributes) {
+  public static SortedSet<String> newSet(String... attributes) {
     TreeSet<String> set = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     set.addAll(Arrays.asList(attributes));
     return set;
@@ -38,7 +35,7 @@ public class CollectionUtils {
    * @param more attribute names to expand given set with
    * @return new set exactly containing given attribute set plus additional attributes
    */
-  public static TreeSet<String> expandSet(Collection<String> attributeSet, String... more) {
+  public static SortedSet<String> expandSet(Collection<String> attributeSet, String... more) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     newSet.addAll(attributeSet);
     newSet.addAll(Arrays.asList(more));

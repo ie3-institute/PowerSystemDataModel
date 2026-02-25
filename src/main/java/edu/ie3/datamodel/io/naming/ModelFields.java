@@ -46,7 +46,11 @@ import java.util.stream.Stream;
  * to register and retrieve mandatory, optional and unsupported fields for entity and value classes.
  * This is used for validating sources.
  */
-public final class FieldNaming implements FieldNames {
+public final class ModelFields extends FieldNamingStrategy {
+
+  private ModelFields() {
+    throw new IllegalStateException("Utility classes cannot be instantiated");
+  }
 
   // field stores
   private static final Map<Class<? extends Entity>, Set<String>> mandatoryFields = new HashMap<>();
@@ -100,8 +104,8 @@ public final class FieldNaming implements FieldNames {
       Class<? extends Entity> entityClass,
       Set<String> mandatoryFields,
       Set<String> optionalFields) {
-    FieldNaming.mandatoryFields.putIfAbsent(entityClass, mandatoryFields);
-    FieldNaming.optionalFields.putIfAbsent(entityClass, optionalFields);
+    ModelFields.mandatoryFields.putIfAbsent(entityClass, mandatoryFields);
+    ModelFields.optionalFields.putIfAbsent(entityClass, optionalFields);
   }
 
   /**
@@ -113,7 +117,7 @@ public final class FieldNaming implements FieldNames {
    * @param mandatoryFields the mandatory fields to register
    */
   public static void register(Class<? extends Entity> entityClass, Set<String> mandatoryFields) {
-    FieldNaming.mandatoryFields.putIfAbsent(entityClass, mandatoryFields);
+    ModelFields.mandatoryFields.putIfAbsent(entityClass, mandatoryFields);
   }
 
   /**
@@ -139,19 +143,21 @@ public final class FieldNaming implements FieldNames {
    * @param optionalFields the optional fields to register
    */
   public static void registerOptional(Class<?> entityClass, Set<String> optionalFields) {
-    FieldNaming.optionalFields.putIfAbsent(entityClass, optionalFields);
+    ModelFields.optionalFields.putIfAbsent(entityClass, optionalFields);
   }
 
   /**
    * Method to register unsupported fields for a given entity class.
    *
-   * <p>NOTE: This method will only add fields, if no fields are registered yet!
+   * <p>NOTE: This method will only add fields, if no fields are registered yet and !
    *
    * @param entityClass for which fields should be registered
    * @param unsupportedFields the unsupported fields to register
    */
   public static void registerUnsupported(Class<?> entityClass, Set<String> unsupportedFields) {
-    FieldNaming.unsupportedFields.putIfAbsent(entityClass, unsupportedFields);
+    if (!mandatoryFields.containsKey(entityClass)) {
+      ModelFields.unsupportedFields.putIfAbsent(entityClass, unsupportedFields);
+    }
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -188,8 +194,8 @@ public final class FieldNaming implements FieldNames {
   private static void addMandatory(
       Class<? extends Entity> entityClass, String... additionalFields) {
     Set<String> oldSet =
-        FieldNaming.mandatoryFields.getOrDefault(entityClass, Collections.emptySet());
-    FieldNaming.mandatoryFields.put(entityClass, expandSet(oldSet, additionalFields));
+        ModelFields.mandatoryFields.getOrDefault(entityClass, Collections.emptySet());
+    ModelFields.mandatoryFields.put(entityClass, expandSet(oldSet, additionalFields));
   }
 
   /** Method for registering all asset type fields. */
@@ -270,7 +276,7 @@ public final class FieldNaming implements FieldNames {
     addMandatory(MeasurementUnitInput.class, NODE, V_MAG, V_ANG, P, Q);
 
     // adding unsupported fields
-    registerUnsupported(SwitchInput.class, newSet(PARALLEL_DEVICES));
+    ModelFields.unsupportedFields.put(SwitchInput.class, newSet(PARALLEL_DEVICES));
   }
 
   /** Method for registering all participant fields. */
