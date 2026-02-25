@@ -36,17 +36,17 @@ public class MarkovLoadModelFactory
   @Override
   protected MarkovLoadModel buildModel(MarkovModelData data) {
     JsonNode root = data.getRoot();
-    String schema = requireText(root, "schema");
-    ZonedDateTime generatedAt = parseTimestamp(requireText(root, "generated_at"));
-    Generator generator = parseGenerator(requireNode(root, "generator"));
-    TimeModel timeModel = extractTimeModel(requireNode(root, "time_model"));
-    ValueModel valueModel = parseValueModel(requireNode(root, "value_model"));
+    String schema = extractText(root, "schema");
+    ZonedDateTime generatedAt = parseTimestamp(extractText(root, "generated_at"));
+    Generator generator = parseGenerator(extractNode(root, "generator"));
+    TimeModel timeModel = extractTimeModel(extractNode(root, "time_model"));
+    ValueModel valueModel = parseValueModel(extractNode(root, "value_model"));
     Parameters parameters = parseParameters(root.path("parameters"));
 
-    JsonNode dataNode = requireNode(root, "data");
+    JsonNode dataNode = extractNode(root, "data");
     TransitionData transitionData =
         parseTransitions(dataNode, timeModel.bucketCount(), valueModel.discretization().states());
-    GmmBuckets gmmBuckets = parseGmmBuckets(requireNode(dataNode, "gmms"));
+    GmmBuckets gmmBuckets = parseGmmBuckets(extractNode(dataNode, "gmms"));
 
     return new MarkovLoadModel(
         schema,

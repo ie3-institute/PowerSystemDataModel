@@ -166,6 +166,9 @@ Load profile keys must be unique across all load-profile sources. Do not use the
 for both CSV (lpts_*) and Markov JSON (markov_*), e.g. avoid having both lpts_h0.csv and
 markov_h0.json.
 
+Markov-based load models (`markov_*`) do not support energy scaling. Calls to
+`getProfileEnergyScaling()` will always return `Optional.empty()`.
+
 ```{list-table}
    :widths: auto
    :class: wrapping

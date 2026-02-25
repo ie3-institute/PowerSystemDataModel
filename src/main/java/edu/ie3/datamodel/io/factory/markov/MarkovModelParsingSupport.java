@@ -19,8 +19,8 @@ import tools.jackson.databind.JsonNode;
 interface MarkovModelParsingSupport {
 
   default Generator parseGenerator(JsonNode generatorNode) {
-    String name = requireText(generatorNode, "name");
-    String version = requireText(generatorNode, "version");
+    String name = extractText(generatorNode, "name");
+    String version = extractText(generatorNode, "version");
     Map<String, String> config = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     JsonNode configNode = generatorNode.path("config");
     if (configNode.isObject()) {
@@ -33,35 +33,30 @@ interface MarkovModelParsingSupport {
 
   /** Extracts the time model block, including bucket count and sampling interval. */
   default TimeModel extractTimeModel(JsonNode timeNode) {
-    int bucketCount = requireInt(timeNode, "bucket_count");
-    String formula = requireNode(timeNode, "bucket_encoding").path("formula").asString("");
+    int bucketCount = extractInt(timeNode, "bucket_count");
+    String formula = extractNode(timeNode, "bucket_encoding").path("formula").asString("");
     if (formula.isEmpty()) {
       throw new FactoryException("Missing bucket encoding formula");
     }
-    int samplingInterval = requireInt(timeNode, "sampling_interval_minutes");
-    String timezone = requireText(timeNode, "timezone");
+    int samplingInterval = extractInt(timeNode, "sampling_interval_minutes");
+    String timezone = extractText(timeNode, "timezone");
     return new TimeModel(bucketCount, formula, samplingInterval, timezone);
   }
 
   /** Parses value model settings (unit, normalization, discretization thresholds). */
   default ValueModel parseValueModel(JsonNode valueNode) {
-    String valueUnit = requireText(valueNode, "value_unit");
-    JsonNode normalizationNode = requireNode(valueNode, "normalization");
-    String normalizationMethod = requireText(normalizationNode, "method");
+    String valueUnit = extractText(valueNode, "value_unit");
+    JsonNode normalizationNode = extractNode(valueNode, "normalization");
+    String normalizationMethod = extractText(normalizationNode, "method");
     ValueModel.Normalization normalization =
         new ValueModel.Normalization(
             normalizationMethod,
             parsePowerReference(normalizationNode, "max_power"),
             parsePowerReference(normalizationNode, "min_power"));
 
-    JsonNode discretizationNode = requireNode(valueNode, "discretization");
-    int states = requireInt(discretizationNode, "states");
-    List<Double> thresholds = new ArrayList<>();
-    JsonNode thresholdsNode = requireNode(discretizationNode, "thresholds_right");
-    if (!thresholdsNode.isArray()) {
-      throw new FactoryException("thresholds_right must be an array");
-    }
-    thresholdsNode.forEach(element -> thresholds.add(element.asDouble()));
+    JsonNode discretizationNode = extractNode(valueNode, "discretization");
+    int states = extractInt(discretizationNode, "states");
+    List<Double> thresholds = readDoubleArray(discretizationNode, "thresholds_right");
     if (thresholds.size() != Math.max(0, states - 1)) {
       throw new FactoryException(
           "Discretization thresholds_right must contain "
@@ -71,8 +66,7 @@ interface MarkovModelParsingSupport {
               + " states, but found "
               + thresholds.size());
     }
-    ValueModel.Discretization discretization =
-        new ValueModel.Discretization(states, List.copyOf(thresholds));
+    ValueModel.Discretization discretization = new ValueModel.Discretization(states, thresholds);
 
     return new ValueModel(valueUnit, normalization, discretization);
   }
@@ -105,9 +99,9 @@ interface MarkovModelParsingSupport {
    */
   default TransitionData parseTransitions(
       JsonNode dataNode, int expectedBucketCount, int stateCount) {
-    JsonNode transitionsNode = requireNode(dataNode, "transitions");
-    String dtype = requireText(transitionsNode, "dtype");
-    String encoding = requireText(transitionsNode, "encoding");
+    JsonNode transitionsNode = extractNode(dataNode, "transitions");
+    String dtype = extractText(transitionsNode, "dtype");
+    String encoding = extractText(transitionsNode, "encoding");
 
     int[] shape = parseTransitionShape(transitionsNode);
     int buckets = shape[0];
@@ -115,7 +109,7 @@ interface MarkovModelParsingSupport {
     int columns = shape[2];
     validateTransitionShape(expectedBucketCount, stateCount, buckets, rows, columns);
 
-    JsonNode valuesNode = requireNode(transitionsNode, "values");
+    JsonNode valuesNode = extractNode(transitionsNode, "values");
     double[][][] values = parseTransitionValues(valuesNode, buckets, stateCount);
 
     return new TransitionData(dtype, encoding, values);
@@ -127,7 +121,7 @@ interface MarkovModelParsingSupport {
       throw new FactoryException("Missing field 'gmms'");
     }
     JsonNode bucketsNode = gmmsNode.get("buckets");
-    if (!bucketsNode.isArray()) {
+    if (bucketsNode == null || !bucketsNode.isArray()) {
       throw new FactoryException("data.gmms.buckets must be an array");
     }
     List<GmmBuckets.GmmBucket> buckets = new ArrayList<>();
@@ -136,23 +130,23 @@ interface MarkovModelParsingSupport {
       if (statesNode == null || !statesNode.isArray()) {
         throw new FactoryException("Each GMM bucket must contain an array 'states'");
       }
-      List<Optional<GmmBuckets.GmmState>> states = new ArrayList<>();
+      List<GmmBuckets.GmmState> states = new ArrayList<>();
       for (JsonNode stateNode : statesNode) {
         if (stateNode == null || stateNode.isNull()) {
-          states.add(Optional.empty());
+          states.add(null);
           continue;
         }
         List<Double> weights = readDoubleArray(stateNode, "weights");
         List<Double> means = readDoubleArray(stateNode, "means");
         List<Double> variances = readDoubleArray(stateNode, "variances");
-        states.add(Optional.of(new GmmBuckets.GmmState(weights, means, variances)));
+        states.add(new GmmBuckets.GmmState(weights, means, variances));
       }
-      buckets.add(new GmmBuckets.GmmBucket(List.copyOf(states)));
+      buckets.add(new GmmBuckets.GmmBucket(Collections.unmodifiableList(states)));
     }
     return new GmmBuckets(List.copyOf(buckets));
   }
 
-  default JsonNode requireNode(JsonNode node, String field) {
+  default JsonNode extractNode(JsonNode node, String field) {
     JsonNode value = node.get(field);
     if (value == null || value.isMissingNode()) {
       throw new FactoryException("Missing field '" + field + "'");
@@ -160,7 +154,7 @@ interface MarkovModelParsingSupport {
     return value;
   }
 
-  default String requireText(JsonNode node, String field) {
+  default String extractText(JsonNode node, String field) {
     JsonNode value = node.get(field);
     if (value == null || value.isMissingNode() || value.isNull()) {
       throw new FactoryException("Missing field '" + field + "'");
@@ -171,18 +165,18 @@ interface MarkovModelParsingSupport {
     return value.asString();
   }
 
-  default double requireDouble(JsonNode node, String field) {
+  default double extractDouble(JsonNode node, String field) {
     JsonNode value = node.get(field);
     if (value == null || value.isMissingNode() || value.isNull()) {
       throw new FactoryException("Missing field '" + field + "'");
     }
     if (!value.isNumber()) {
-      throw new FactoryException("Field '" + field + "' must be numeric");
+      throw new FactoryException("Field '" + field + "' must be a double");
     }
     return value.asDouble();
   }
 
-  default int requireInt(JsonNode node, String field) {
+  default int extractInt(JsonNode node, String field) {
     JsonNode value = node.get(field);
     if (value == null || value.isMissingNode() || value.isNull()) {
       throw new FactoryException("Missing field '" + field + "'");
@@ -208,7 +202,7 @@ interface MarkovModelParsingSupport {
   }
 
   default int[] parseTransitionShape(JsonNode transitionsNode) {
-    JsonNode shapeNode = requireNode(transitionsNode, "shape");
+    JsonNode shapeNode = extractNode(transitionsNode, "shape");
     if (!shapeNode.isArray() || shapeNode.size() != 3) {
       throw new FactoryException("Transition shape must contain three dimensions");
     }
@@ -239,24 +233,21 @@ interface MarkovModelParsingSupport {
     if (!valuesNode.isArray()) {
       throw new FactoryException("Transition values must be a three dimensional array");
     }
+    if (valuesNode.size() != buckets) {
+      throw new FactoryException(
+          "Transition values provided " + valuesNode.size() + " buckets. Expected " + buckets);
+    }
     double[][][] values = new double[buckets][stateCount][stateCount];
     int bucketIndex = 0;
     for (JsonNode bucketNode : valuesNode) {
       fillBucket(values, bucketNode, bucketIndex, stateCount);
       bucketIndex++;
     }
-    if (bucketIndex != buckets) {
-      throw new FactoryException(
-          "Transition values provided only " + bucketIndex + " buckets. Expected " + buckets);
-    }
     return values;
   }
 
   default void fillBucket(
       double[][][] values, JsonNode bucketNode, int bucketIndex, int stateCount) {
-    if (bucketIndex >= values.length) {
-      throw new FactoryException("More transition buckets present than specified in shape");
-    }
     int rowIndex = 0;
     for (JsonNode rowNode : bucketNode) {
       fillRow(values, rowNode, bucketIndex, rowIndex, stateCount);
@@ -317,8 +308,8 @@ interface MarkovModelParsingSupport {
     if (!referenceNode.isObject()) {
       throw new FactoryException("Field '" + field + "' must be an object");
     }
-    double value = requireDouble(referenceNode, "value");
-    String unit = requireText(referenceNode, "unit");
+    double value = extractDouble(referenceNode, "value");
+    String unit = extractText(referenceNode, "unit");
     return Optional.of(new ValueModel.Normalization.PowerReference(value, unit));
   }
 }

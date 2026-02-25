@@ -29,7 +29,7 @@ class MarkovLoadModelFactoryTest extends Specification {
     model.transitionData().stateCount() == 2
     model.transitionData().values()[0][0][1] == 0.9d
     model.gmmBuckets().isPresent()
-    def gmmState = model.gmmBuckets().get().buckets().first().states().first().get()
+    def gmmState = model.gmmBuckets().get().buckets().first().states().first()
     gmmState.weights() == [0.6d]
     gmmState.means() == [1.0d]
     gmmState.variances() == [0.2d]

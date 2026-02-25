@@ -44,6 +44,40 @@ class JsonDataSourceTest extends Specification {
     content == """{"key":42}"""
   }
 
+  def "readTree parses JSON file into a JsonNode tree"() {
+    given:
+    def file = tempDir.resolve("data.json")
+    Files.writeString(file, """{"answer":42}""")
+
+    when:
+    def node = dataSource.readTree(Path.of("data"))
+
+    then:
+    node.get("answer").asInt() == 42
+  }
+
+  def "readTree throws SourceException when file does not exist"() {
+    when:
+    dataSource.readTree(Path.of("nonexistent"))
+
+    then:
+    thrown(SourceException)
+  }
+
+  def "getSourceFields returns field names from JSON file"() {
+    given:
+    def file = tempDir.resolve("fields.json")
+    Files.writeString(file, """{"foo":"bar","nested":{"a":1}}""")
+
+    when:
+    def fields = dataSource.getSourceFields(Path.of("fields"))
+
+    then:
+    fields.isPresent()
+    fields.get().contains("foo")
+    fields.get().contains("nested.a")
+  }
+
   def "tabular access methods are unsupported"() {
     when:
     dataSource.getSourceFields(Entity)

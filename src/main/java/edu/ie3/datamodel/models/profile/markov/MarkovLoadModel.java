@@ -135,17 +135,23 @@ public class MarkovLoadModel {
   }
 
   /**
-   * Returns a supplier for a single Markov step. The supplier computes the {@link
-   * PowerValueSource.MarkovOutputValue} once (value + next state) and caches the result for
-   * subsequent {@link Supplier#get()} calls.
+   * Returns a supplier for a single Markov step.
    *
    * <p>Callers are expected to create a new supplier for each time step.
    */
   public Supplier<PowerValueSource.MarkovOutputValue> getValueSupplier(
       PowerValueSource.MarkovIdentifier data) {
     Objects.requireNonNull(data, "data");
-    MarkovSupplier supplier = new MarkovSupplier(data);
-    return () -> new PowerValueSource.MarkovOutputValue(supplier.get(), supplier.getNextState());
+    return () -> computeStep(data);
+  }
+
+  private PowerValueSource.MarkovOutputValue computeStep(PowerValueSource.MarkovIdentifier data) {
+    int bucket = bucketId(data.time());
+    int currentState = resolveState(data);
+    SplittableRandom rng = new SplittableRandom(deriveSeed(data, bucket, currentState));
+    StepResult step = simulateStep(bucket, currentState, rng);
+    ComparableQuantity<Power> power = scale(step.normalizedValue());
+    return new PowerValueSource.MarkovOutputValue(Optional.of(new PValue(power)), step.nextState());
   }
 
   /** Convenience helper to compute a single step immediately. */
@@ -176,13 +182,14 @@ public class MarkovLoadModel {
     }
     GmmStateData[][] lookup = new GmmStateData[bucketCount][stateCount];
     for (int bucket = 0; bucket < bucketCount; bucket++) {
-      List<Optional<GmmBuckets.GmmState>> states = bucketList.get(bucket).states();
+      List<GmmBuckets.GmmState> states = bucketList.get(bucket).states();
       if (states.size() != stateCount) {
         throw new IllegalArgumentException(
             "State count mismatch in bucket " + bucket + ". Expected " + stateCount);
       }
       for (int state = 0; state < stateCount; state++) {
-        lookup[bucket][state] = states.get(state).map(GmmStateData::from).orElse(null);
+        GmmBuckets.GmmState s = states.get(state);
+        lookup[bucket][state] = s != null ? GmmStateData.from(s) : null;
       }
     }
     return lookup;
@@ -197,11 +204,7 @@ public class MarkovLoadModel {
     return Quantities.getQuantity(reference.value(), StandardUnits.ACTIVE_POWER_IN);
   }
 
-  private record StepResult(int nextState, double normalizedValue, Optional<PValue> value) {
-    private StepResult(int nextState, double normalizedValue) {
-      this(nextState, normalizedValue, Optional.empty());
-    }
-  }
+  private record StepResult(int nextState, double normalizedValue) {}
 
   private static final class GmmStateData {
     private final double[] weights;
@@ -255,162 +258,121 @@ public class MarkovLoadModel {
     }
   }
 
-  private final class MarkovSupplier {
-    private final PowerValueSource.MarkovIdentifier input;
-    private Optional<PValue> cached = Optional.empty();
-    private Integer nextState;
-    private boolean evaluated;
+  private int bucketId(ZonedDateTime time) {
+    ZonedDateTime zoned = time.withZoneSameInstant(zoneId);
+    int month = zoned.getMonthValue() - 1;
+    int weekendFlag = isWeekend(zoned) ? 1 : 0;
+    int quarterHour = zoned.getHour() * 4 + zoned.getMinute() / 15;
+    return Math.floorMod(
+        month * MONTH_FACTOR + weekendFlag * WEEKEND_FACTOR + quarterHour, bucketCount);
+  }
 
-    private MarkovSupplier(PowerValueSource.MarkovIdentifier input) {
-      this.input = input;
-    }
+  private boolean isWeekend(ZonedDateTime time) {
+    DayOfWeek day = time.getDayOfWeek();
+    return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
+  }
 
-    public Optional<PValue> get() {
-      evaluate();
-      return cached;
-    }
-
-    public int getNextState() {
-      evaluate();
-      return nextState;
-    }
-
-    private void evaluate() {
-      if (evaluated) {
-        return;
+  private int resolveState(PowerValueSource.MarkovIdentifier input) {
+    if (input.previousState().isPresent()) {
+      int state = input.previousState().getAsInt();
+      if (state < 0 || state >= stateCount) {
+        throw new IllegalArgumentException("Previous state out of bounds: " + state);
       }
-      evaluated = true;
-      StepResult result = calculate();
-      this.cached = result.value();
-      this.nextState = result.nextState();
+      return state;
     }
+    double normalized = input.initialNormalizedValue().orElseThrow();
+    return discretize(normalized);
+  }
 
-    private StepResult calculate() {
-      int bucket = bucketId(input.time());
-      int currentState = resolveState(input);
-      SplittableRandom rng = new SplittableRandom(deriveSeed(input, bucket, currentState));
-      StepResult step = simulateStep(bucket, currentState, rng);
-      ComparableQuantity<Power> power = scale(step.normalizedValue());
-      return new StepResult(
-          step.nextState(), step.normalizedValue(), Optional.of(new PValue(power)));
-    }
-
-    private int bucketId(ZonedDateTime time) {
-      ZonedDateTime zoned = time.withZoneSameInstant(zoneId);
-      int month = zoned.getMonthValue() - 1;
-      int weekendFlag = isWeekend(zoned) ? 1 : 0;
-      int quarterHour = zoned.getHour() * 4 + zoned.getMinute() / 15;
-      return Math.floorMod(
-          month * MONTH_FACTOR + weekendFlag * WEEKEND_FACTOR + quarterHour, bucketCount);
-    }
-
-    private boolean isWeekend(ZonedDateTime time) {
-      DayOfWeek day = time.getDayOfWeek();
-      return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
-    }
-
-    private int resolveState(PowerValueSource.MarkovIdentifier input) {
-      if (input.previousState().isPresent()) {
-        int state = input.previousState().getAsInt();
-        if (state < 0 || state >= stateCount) {
-          throw new IllegalArgumentException("Previous state out of bounds: " + state);
-        }
-        return state;
+  private int discretize(double normalized) {
+    double value = clamp01(normalized);
+    for (int i = 0; i < discretizationThresholds.length; i++) {
+      if (value <= discretizationThresholds[i]) {
+        return i;
       }
-      double normalized = input.initialNormalizedValue().orElseThrow();
-      return discretize(normalized);
     }
+    return discretizationThresholds.length;
+  }
 
-    private int discretize(double normalized) {
-      double value = clamp01(normalized);
-      for (int i = 0; i < discretizationThresholds.length; i++) {
-        if (value <= discretizationThresholds[i]) {
-          return i;
+  private StepResult simulateStep(int bucket, int currentState, SplittableRandom rng) {
+    double[] row = transitions[bucket][currentState];
+    double[] distribution = sanitizeDistribution(bucket, row);
+    if (distribution.length == 0) {
+      return new StepResult(currentState, 0d);
+    }
+    int nextStateIndex = drawState(distribution, rng);
+    double normalized = sampleNormalizedValue(bucket, nextStateIndex, rng);
+    return new StepResult(nextStateIndex, normalized);
+  }
+
+  private double[] sanitizeDistribution(int bucket, double[] row) {
+    // Ignore invalid probabilities and states without GMM data, then renormalize.
+    double[] sanitized = new double[stateCount];
+    double sum = 0d;
+    for (int state = 0; state < stateCount; state++) {
+      double sanitizedValue = 0d;
+      if (state < row.length) {
+        double value = row[state];
+        if (value > 0d && !Double.isNaN(value) && gmmStates[bucket][state] != null) {
+          sanitizedValue = value;
+          sum += value;
         }
       }
-      return discretizationThresholds.length;
+      sanitized[state] = sanitizedValue;
     }
+    if (sum <= 0d) {
+      return new double[0];
+    }
+    for (int i = 0; i < sanitized.length; i++) {
+      sanitized[i] /= sum;
+    }
+    return sanitized;
+  }
 
-    private StepResult simulateStep(int bucket, int currentState, SplittableRandom rng) {
-      double[] row = transitions[bucket][currentState];
-      double[] distribution = sanitizeDistribution(bucket, row);
-      if (distribution.length == 0) {
-        return new StepResult(currentState, 0d);
+  private int drawState(double[] distribution, SplittableRandom rng) {
+    double sample = rng.nextDouble();
+    double cumulative = 0d;
+    for (int i = 0; i < distribution.length; i++) {
+      cumulative += distribution[i];
+      if (sample <= cumulative) {
+        return i;
       }
-      int nextStateIndex = drawState(distribution, rng);
-      double normalized = sampleNormalizedValue(bucket, nextStateIndex, rng);
-      return new StepResult(nextStateIndex, normalized);
     }
+    return distribution.length - 1;
+  }
 
-    private double[] sanitizeDistribution(int bucket, double[] row) {
-      // Ignore invalid probabilities and states without GMM data, then renormalize.
-      double[] sanitized = new double[stateCount];
-      double sum = 0d;
-      for (int state = 0; state < stateCount; state++) {
-        double sanitizedValue = 0d;
-        if (state < row.length) {
-          double value = row[state];
-          if (value > 0d && !Double.isNaN(value) && gmmStates[bucket][state] != null) {
-            sanitizedValue = value;
-            sum += value;
-          }
-        }
-        sanitized[state] = sanitizedValue;
-      }
-      if (sum <= 0d) {
-        return new double[0];
-      }
-      for (int i = 0; i < sanitized.length; i++) {
-        sanitized[i] /= sum;
-      }
-      return sanitized;
+  private double sampleNormalizedValue(int bucket, int state, SplittableRandom rng) {
+    GmmStateData gmm = gmmStates[bucket][state];
+    if (gmm == null) {
+      return 0d;
     }
+    return clamp01(gmm.sample(rng));
+  }
 
-    private int drawState(double[] distribution, SplittableRandom rng) {
-      double sample = rng.nextDouble();
-      double cumulative = 0d;
-      for (int i = 0; i < distribution.length; i++) {
-        cumulative += distribution[i];
-        if (sample <= cumulative) {
-          return i;
-        }
-      }
-      return distribution.length - 1;
-    }
+  private long deriveSeed(PowerValueSource.MarkovIdentifier input, int bucket, int state) {
+    long seed = input.randomSeed();
+    seed = 31 * seed + bucket;
+    seed = 31 * seed + state;
+    long slot =
+        input.time().withZoneSameInstant(zoneId).toInstant().toEpochMilli()
+            / (samplingIntervalMinutes * 60_000L);
+    return 31 * seed + slot;
+  }
 
-    private double sampleNormalizedValue(int bucket, int state, SplittableRandom rng) {
-      GmmStateData gmm = gmmStates[bucket][state];
-      if (gmm == null) {
-        return 0d;
-      }
-      return clamp01(gmm.sample(rng));
+  private ComparableQuantity<Power> scale(double normalizedValue) {
+    if (!maxPowerFromModel.isGreaterThan(minPowerFromModel)) {
+      throw new IllegalStateException(
+          "Markov model normalization has non-positive range (max <= min).");
     }
+    double clamped = clamp01(normalizedValue);
+    ComparableQuantity<Power> range = maxPowerFromModel.subtract(minPowerFromModel);
+    return minPowerFromModel.add(range.multiply(clamped)).asType(Power.class);
+  }
 
-    private long deriveSeed(PowerValueSource.MarkovIdentifier input, int bucket, int state) {
-      long seed = input.randomSeed();
-      seed = 31 * seed + bucket;
-      seed = 31 * seed + state;
-      long slot =
-          input.time().withZoneSameInstant(zoneId).toInstant().toEpochMilli()
-              / (samplingIntervalMinutes * 60_000L);
-      return 31 * seed + slot;
-    }
-
-    private ComparableQuantity<Power> scale(double normalizedValue) {
-      if (!maxPowerFromModel.isGreaterThan(minPowerFromModel)) {
-        throw new IllegalStateException(
-            "Markov model normalization has non-positive range (max <= min).");
-      }
-      double clamped = clamp01(normalizedValue);
-      ComparableQuantity<Power> range = maxPowerFromModel.subtract(minPowerFromModel);
-      return minPowerFromModel.add(range.multiply(clamped)).asType(Power.class);
-    }
-
-    private double clamp01(double value) {
-      if (value < 0d) return 0d;
-      if (value > 1d) return 1d;
-      return value;
-    }
+  private double clamp01(double value) {
+    if (value < 0d) return 0d;
+    if (value > 1d) return 1d;
+    return value;
   }
 
   public record Generator(String name, String version, Map<String, String> config) {}
@@ -480,7 +442,7 @@ public class MarkovLoadModel {
   }
 
   public record GmmBuckets(List<GmmBucket> buckets) {
-    public record GmmBucket(List<Optional<GmmState>> states) {}
+    public record GmmBucket(List<GmmState> states) {}
 
     public record GmmState(List<Double> weights, List<Double> means, List<Double> variances) {}
   }

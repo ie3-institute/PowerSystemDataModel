@@ -17,21 +17,15 @@ import edu.ie3.datamodel.io.source.EntitySource;
 import edu.ie3.datamodel.io.source.PowerValueSource;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
-import edu.ie3.datamodel.models.profile.markov.MarkovPowerProfile;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 
 /**
  * Source that reads Markov-based load models from JSON files.
@@ -44,8 +38,6 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
   private final JsonDataSource dataSource;
   private final FileLoadProfileMetaInformation metaInformation;
   private final MarkovLoadModelFactory factory;
-  private final ObjectMapper objectMapper = new ObjectMapper();
-  private final MarkovPowerProfile profile;
   private MarkovLoadModel cachedModel;
 
   public JsonMarkovProfileSource(
@@ -60,7 +52,6 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
     this.dataSource = Objects.requireNonNull(dataSource, "dataSource");
     this.metaInformation = Objects.requireNonNull(metaInformation, "metaInformation");
     this.factory = Objects.requireNonNull(factory, "factory");
-    this.profile = new MarkovPowerProfile(metaInformation.getProfileKey());
     if (metaInformation.getFileType() != FileType.JSON) {
       throw new IllegalArgumentException("Markov profile source requires JSON meta information.");
     }
@@ -73,7 +64,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
    */
   public synchronized MarkovLoadModel getModel() throws SourceException {
     if (cachedModel == null) {
-      JsonNode root = readModelTree();
+      JsonNode root = dataSource.readTree(metaInformation.getFullFilePath());
       try {
         cachedModel = factory.get(new MarkovModelData(root)).getOrThrow();
       } catch (FactoryException e) {
@@ -89,9 +80,10 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
 
   @Override
   public void validate() throws ValidationException {
-    JsonNode root;
     try {
-      root = readModelTree();
+      Set<String> fields =
+          dataSource.getSourceFields(metaInformation.getFullFilePath()).orElse(Set.of());
+      factory.validate(fields, MarkovLoadModel.class).getOrThrow();
     } catch (SourceException e) {
       throw new FailedValidationException(
           "Unable to read Markov model '"
@@ -99,17 +91,11 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
               + "' for validation.",
           e);
     }
-    Set<String> fields = collectFieldNames(root);
-    factory.validate(fields, MarkovLoadModel.class).getOrThrow();
   }
 
   @Override
   public PowerProfileKey getProfileKey() {
-    return profile.key();
-  }
-
-  public MarkovPowerProfile getProfile() {
-    return profile;
+    return metaInformation.getProfileKey();
   }
 
   /** Delegates to the cached {@link MarkovLoadModel} for a single simulation step. */
@@ -131,40 +117,6 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
   @Override
   public Optional<ComparableQuantity<Energy>> getProfileEnergyScaling() {
     return getModelUnchecked().getProfileEnergyScaling();
-  }
-
-  private JsonNode readModelTree() throws SourceException {
-    Path filePath = metaInformation.getFullFilePath();
-    try (InputStream inputStream = dataSource.initInputStream(filePath)) {
-      return objectMapper.readTree(inputStream);
-    } catch (IOException e) {
-      throw new SourceException("Unable to read Markov model JSON from '" + filePath + "'.", e);
-    }
-  }
-
-  private static Set<String> collectFieldNames(JsonNode node) {
-    Set<String> fields = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    collectFields("", node, fields);
-    return fields;
-  }
-
-  private static void collectFields(String prefix, JsonNode node, Set<String> collector) {
-    if (node.isArray()) {
-      if (!prefix.isEmpty()) {
-        collector.add(prefix);
-      }
-      return;
-    }
-    if (node.isObject()) {
-      node.propertyNames()
-          .forEach(name -> collectFields(join(prefix, name), node.get(name), collector));
-    } else if (!prefix.isEmpty()) {
-      collector.add(prefix);
-    }
-  }
-
-  private static String join(String prefix, String name) {
-    return prefix.isEmpty() ? name : prefix + "." + name;
   }
 
   private MarkovLoadModel getModelUnchecked() {
