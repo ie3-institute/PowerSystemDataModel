@@ -84,10 +84,8 @@ public interface FieldNames {
 
   // efficiency
   String ETA = "eta";
-  String ETH_CAPA = "ethCapa";
   String ETA_CONV = "etaConv";
   String ETA_EL = "etaEl";
-  String ETH_LOSSES = "ethLosses";
   String ETA_THERMAL = "etaThermal";
 
   // participant
@@ -124,7 +122,10 @@ public interface FieldNames {
 
   // thermal
   String C = "c";
+  String ETH_CAPA = "ethCapa";
+  String ETH_LOSSES = "ethLosses";
   String HOUSING_TYPE = "housingType";
+  String HEAT_DEMAND = "heatDemand";
   String INDOOR_TEMPERATURE = "indoorTemperature";
   String INLET_TEMP = "inletTemp";
   String LOWER_TEMPERATURE_LIMIT = "lowerTemperatureLimit";
@@ -176,7 +177,6 @@ public interface FieldNames {
   String LAT = "latitude";
   String COORDINATE_TYPE = "coordinateType";
   String PRICE = "price";
-  String HEAT_DEMAND = "heatDemand";
 
   // voltage
   String VOLT_LVL = "voltLvl";

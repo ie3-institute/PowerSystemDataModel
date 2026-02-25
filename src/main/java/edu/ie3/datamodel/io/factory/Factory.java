@@ -15,11 +15,10 @@ import edu.ie3.datamodel.utils.CollectionUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.*;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract factory class, that is able to transfer specific "flat" information in to actual model
