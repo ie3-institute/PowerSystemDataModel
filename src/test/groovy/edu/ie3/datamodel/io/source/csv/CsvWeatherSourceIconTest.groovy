@@ -310,17 +310,43 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     ex.message.contains(unknownCoordinate.toString())
   }
 
-  def "A CsvWeatherSource throws NoDataException when no weather data is found for coordinate at specific time"() {
+  def "A CsvWeatherSource falls back to the last known value when no exact weather data is found for a coordinate at a specific time"() {
     given:
-    def futureTime = IconWeatherTestData.TIME_17H.plusHours(10)
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(2)
+    def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
 
     when:
-    source.getWeather(futureTime, IconWeatherTestData.COORDINATE_67775)
+    def result = source.getWeather(futureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    result != null
+    equalsIgnoreUUID(result, expectedFallback)
+  }
+
+  def "A CsvWeatherSource throws NoDataException when no weather data is found for a coordinate at a specific time and no earlier data is available"() {
+    given:
+    def timeBeforeAllData = IconWeatherTestData.TIME_15H.minusHours(1)
+
+    when:
+    source.getWeather(timeBeforeAllData, IconWeatherTestData.COORDINATE_67775)
 
     then:
     def ex = thrown(NoDataException)
-    ex.message.contains("No weather data found for the given coordinate")
-    ex.message.contains(IconWeatherTestData.COORDINATE_67775.toString())
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("no earlier data available")
+  }
+
+  def "A CsvWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
+    given:
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(10)
+
+    when:
+    source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("exceeds the maximum fallback")
   }
 
   def "A CsvWeatherSource throws NoDataException for mixed valid and invalid coordinates"() {

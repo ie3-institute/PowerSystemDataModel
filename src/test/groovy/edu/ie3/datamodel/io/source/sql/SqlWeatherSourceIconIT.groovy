@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -107,6 +108,45 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
     coordinateToTimeSeries.keySet().size() == 2
     equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeSeries67775.entries)
     equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeSeries67776.entries)
+  }
+
+  def "A NativeSqlWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
+    given:
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(2)
+    def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
+
+    when:
+    def result = source.getWeather(futureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    result != null
+    equalsIgnoreUUID(result, expectedFallback)
+  }
+
+  def "A NativeSqlWeatherSource throws NoDataException when no weather data is found at a specific time and no earlier data is available"() {
+    given:
+    def timeBeforeAllData = IconWeatherTestData.TIME_15H.minusHours(1)
+
+    when:
+    source.getWeather(timeBeforeAllData, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("no earlier data available")
+  }
+
+  def "A NativeSqlWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
+    given:
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(10)
+
+    when:
+    source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("exceeds the maximum fallback")
   }
 
   def "A NativeSqlWeatherSource returns all time keys after a given time key correctly"() {

@@ -125,12 +125,6 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     def invalidCoordinate = GeoUtils.buildPoint(7d, 48d)
     def time = IconWeatherTestData.TIME_15H
     def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H , IconWeatherTestData.TIME_17H)
-    def timeseries67775 = new IndividualTimeSeries(null,
-        [
-          new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H),
-          new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
-          new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
-        ] as Set<TimeBasedValue>)
 
     when: "requesting weather for an invalid coordinate at a specific date"
     source.getWeather(time, invalidCoordinate)
@@ -158,6 +152,45 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     def ex3 = thrown(NoDataException)
     ex3.message.contains("No data for given coordinates")
     ex3.message.contains(invalidCoordinate.toString())
+  }
+
+  def "An InfluxDbWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
+    given:
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(2)
+    def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
+
+    when:
+    def result = source.getWeather(futureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    result != null
+    equalsIgnoreUUID(result, expectedFallback)
+  }
+
+  def "An InfluxDbWeatherSource throws NoDataException when no weather data is found at a specific time and no earlier data is available"() {
+    given:
+    def timeBeforeAllData = IconWeatherTestData.TIME_15H.minusHours(1)
+
+    when:
+    source.getWeather(timeBeforeAllData, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("no earlier data available")
+  }
+
+  def "An InfluxDbWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
+    given:
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(10)
+
+    when:
+    source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("exceeds the maximum fallback")
   }
 
   def "The InfluxDbWeatherSource returns all time keys after a given time key correctly"() {

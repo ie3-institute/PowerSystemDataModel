@@ -118,6 +118,9 @@ public class CouchbaseWeatherSource extends WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
       throws NoDataException {
 
+    if (coordinates.isEmpty())
+      throw new NoDataException("No coordinates provided for weather data query.");
+
     List<Point> invalidCoordinates =
         coordinates.stream()
             .filter(coordinate -> idCoordinateSource.getId(coordinate).isEmpty())
@@ -153,6 +156,11 @@ public class CouchbaseWeatherSource extends WeatherSource {
         }
       }
     }
+    if (coordinateToTimeSeries.isEmpty()) {
+      throw new NoDataException(
+          "No weather data found for any of the requested coordinates in the given time interval: "
+              + timeInterval);
+    }
     return coordinateToTimeSeries;
   }
 
@@ -161,7 +169,6 @@ public class CouchbaseWeatherSource extends WeatherSource {
       throws NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
-      logger.error("Unable to match coordinate {} to a coordinate ID", coordinate);
       throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
     }
     try {
@@ -178,26 +185,103 @@ public class CouchbaseWeatherSource extends WeatherSource {
       throw new NoDataException(
           "Failed to decode weather data for coordinate " + coordinate + " and date " + date, ex);
     } catch (DocumentNotFoundException ex) {
-      throw new NoDataException(
-          "Weather document not found for coordinate " + coordinate + " and date " + date, ex);
+      return getLastKnownWeather(date, coordinate, coordinateId.get());
     } catch (CompletionException ex) {
-      Throwable cause = ex.getCause();
-      if (cause instanceof DocumentNotFoundException) {
-        throw new NoDataException(
-            "Weather document not found in completion stage for coordinate "
-                + coordinate
-                + " and date "
-                + date,
-            cause);
-      } else {
-        throw new NoDataException(
-            "Unexpected completion exception while retrieving weather data for coordinate "
-                + coordinate
-                + " and date "
-                + date,
-            ex);
+      if (ex.getCause() instanceof DocumentNotFoundException) {
+        return getLastKnownWeather(date, coordinate, coordinateId.get());
       }
+      throw new NoDataException(
+          "Unexpected completion exception while retrieving weather data for coordinate "
+              + coordinate
+              + " and date "
+              + date,
+          ex);
     }
+  }
+
+  /**
+   * Tries to find the last known weather value before the given date as a fallback when no exact
+   * match exists. Accepts the fallback only if it is within {@link
+   * WeatherSource#MAX_FALLBACK_STEPS} time steps of the requested date.
+   *
+   * @param date the requested date
+   * @param coordinate the coordinate point
+   * @param coordinateId the coordinate ID
+   * @return the last known weather value before date
+   * @throws NoDataException if no earlier data is available or the gap exceeds the allowed steps
+   */
+  private TimeBasedValue<WeatherValue> getLastKnownWeather(
+      ZonedDateTime date, Point coordinate, Integer coordinateId) throws NoDataException {
+    List<TimeBasedValue<WeatherValue>> fallbacks = queryLastWeatherBefore(date, coordinateId);
+    if (!fallbacks.isEmpty()) {
+      ZonedDateTime fallbackTime = fallbacks.get(0).getTime();
+      ZonedDateTime stepRef = fallbacks.size() > 1 ? fallbacks.get(1).getTime() : null;
+      if (isFallbackAcceptable(date, fallbackTime, stepRef)) {
+        logger.warn(
+            "No weather data for coordinate {} at {}. Using last known value from {}.",
+            coordinate,
+            date,
+            fallbackTime);
+        return fallbacks.get(0);
+      }
+      throw new NoDataException(
+          "No weather data found for coordinate "
+              + coordinate
+              + " at "
+              + date
+              + ": last known value from "
+              + fallbackTime
+              + " exceeds the maximum fallback of "
+              + MAX_FALLBACK_STEPS
+              + " steps.");
+    }
+    throw new NoDataException(
+        "No weather data found for coordinate "
+            + coordinate
+            + " at "
+            + date
+            + " and no earlier data available.");
+  }
+
+  /**
+   * Queries for the two most recent weather documents stored before the given date for a
+   * coordinate. The second entry is used to infer the time step size for the fallback check.
+   *
+   * @param date the upper bound (exclusive) for the document timestamp
+   * @param coordinateId the coordinate ID
+   * @return a list of up to two weather values ordered by time descending, or empty if none exist
+   */
+  private List<TimeBasedValue<WeatherValue>> queryLastWeatherBefore(
+      ZonedDateTime date, Integer coordinateId) {
+    String upperKey = generateWeatherKey(date, coordinateId);
+    String lowerKey = keyPrefix + "::" + coordinateId + "::";
+    String query =
+        "SELECT "
+            + connector.getBucketName()
+            + ".* FROM "
+            + connector.getBucketName()
+            + " WHERE META().id >= '"
+            + lowerKey
+            + "' AND META().id < '"
+            + upperKey
+            + "' ORDER BY META().id DESC LIMIT 2";
+    CompletableFuture<QueryResult> futureResult = connector.query(query);
+    QueryResult queryResult = futureResult.join();
+    try {
+      List<JsonObject> results = queryResult.rowsAsObject();
+      if (results != null && !results.isEmpty()) {
+        return results.stream()
+            .map(this::toTimeBasedWeatherValue)
+            .flatMap(Optional::stream)
+            .toList();
+      }
+    } catch (DecodingFailureException ex) {
+      logger.warn(
+          "Failed to decode fallback weather data for coordinate ID {} before {}",
+          coordinateId,
+          date);
+    }
+    return Collections.emptyList();
   }
 
   @Override

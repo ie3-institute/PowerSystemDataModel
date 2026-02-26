@@ -109,6 +109,9 @@ public class CsvWeatherSource extends WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
       throws NoDataException {
 
+    if (coordinates.isEmpty())
+      throw new NoDataException("No coordinates provided for weather data query.");
+
     List<Point> invalidCoordinates =
         coordinates.stream()
             .filter(coordinate -> !coordinateToTimeSeries.containsKey(coordinate))
@@ -142,12 +145,43 @@ public class CsvWeatherSource extends WeatherSource {
       throw new NoDataException("No weather data found for the given coordinate: " + coordinate);
     }
 
-    return timeSeries
-        .getTimeBasedValue(date)
-        .orElseThrow(
-            () ->
-                new NoDataException(
-                    "No weather data found for the given coordinate: " + coordinate));
+    Optional<TimeBasedValue<WeatherValue>> exact = timeSeries.getTimeBasedValue(date);
+    if (exact.isPresent()) {
+      return exact.get();
+    }
+
+    // Fallback: try the last known value before the requested date (within MAX_FALLBACK_STEPS)
+    Optional<ZonedDateTime> previousTime = timeSeries.getPreviousDateTime(date);
+    if (previousTime.isPresent()) {
+      ZonedDateTime t1 = previousTime.get();
+      ZonedDateTime stepRef = timeSeries.getPreviousDateTime(t1).orElse(null);
+      if (isFallbackAcceptable(date, t1, stepRef)) {
+        TimeBasedValue<WeatherValue> fallback = timeSeries.getTimeBasedValue(t1).get();
+        log.warn(
+            "No weather data for coordinate {} at {}. Using last known value from {}.",
+            coordinate,
+            date,
+            fallback.getTime());
+        return fallback;
+      }
+      throw new NoDataException(
+          "No weather data found for coordinate "
+              + coordinate
+              + " at "
+              + date
+              + ": last known value from "
+              + t1
+              + " exceeds the maximum fallback of "
+              + MAX_FALLBACK_STEPS
+              + " steps.");
+    }
+
+    throw new NoDataException(
+        "No weather data found for coordinate "
+            + coordinate
+            + " at "
+            + date
+            + " and no earlier data available.");
   }
 
   @Override
@@ -170,11 +204,16 @@ public class CsvWeatherSource extends WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval) {
     // decided against parallel mode here as it likely wouldn't pay off as the expected coordinate
     // count is too low
-    return map.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> TimeSeriesUtils.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
+    Map<Point, IndividualTimeSeries<WeatherValue>> trimmed = new HashMap<>();
+    map.forEach(
+        (point, timeSeries) -> {
+          IndividualTimeSeries<WeatherValue> trimmedSeries =
+              TimeSeriesUtils.trimTimeSeriesToInterval(timeSeries, timeInterval);
+          if (!trimmedSeries.getEntries().isEmpty()) {
+            trimmed.put(point, trimmedSeries);
+          }
+        });
+    return trimmed;
   }
 
   /**

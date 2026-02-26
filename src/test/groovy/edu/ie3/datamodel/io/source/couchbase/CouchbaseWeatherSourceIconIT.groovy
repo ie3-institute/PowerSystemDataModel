@@ -177,6 +177,45 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
     ex.message.contains(invalidCoordinate.toString())
   }
 
+  def "A CouchbaseWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
+    given:
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(2)
+    def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
+
+    when:
+    def result = source.getWeather(futureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    result != null
+    equalsIgnoreUUID(result, expectedFallback)
+  }
+
+  def "A CouchbaseWeatherSource throws NoDataException when no weather data is found at a specific time and no earlier data is available"() {
+    given:
+    def timeBeforeAllData = IconWeatherTestData.TIME_15H.minusHours(1)
+
+    when:
+    source.getWeather(timeBeforeAllData, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("no earlier data available")
+  }
+
+  def "A CouchbaseWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
+    given:
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(10)
+
+    when:
+    source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("exceeds the maximum fallback")
+  }
+
   def "A CouchbaseWeatherSource throws NoDataException for mixed valid and invalid coordinates"() {
     given:
     def validCoordinate = IconWeatherTestData.COORDINATE_67775

@@ -15,6 +15,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,6 +35,43 @@ public abstract class WeatherSource extends EntitySource {
   protected IdCoordinateSource idCoordinateSource;
 
   protected static final String COORDINATE_ID = "coordinateid";
+
+  /**
+   * Maximum number of time steps to look back when falling back to the last known weather value. If
+   * the most recent known data is more than this many steps before the requested time, no fallback
+   * is used and a {@link edu.ie3.datamodel.exceptions.NoDataException} is thrown.
+   */
+  public static final int MAX_FALLBACK_STEPS = 3;
+
+  /**
+   * Checks whether a fallback timestamp is acceptable based on the maximum number of allowed steps.
+   * The step size is inferred from two consecutive known timestamps. If the step size cannot be
+   * determined (only one data point available before the requested time), the fallback is accepted.
+   *
+   * @param requested the originally requested time
+   * @param fallback the most recent known timestamp before the requested time
+   * @param stepReference the timestamp just before the fallback (used to infer step size), or
+   *     {@code null} if unavailable
+   * @return {@code true} if the fallback is within {@link #MAX_FALLBACK_STEPS} of the requested
+   *     time
+   */
+  protected static boolean isFallbackAcceptable(
+      ZonedDateTime requested, ZonedDateTime fallback, ZonedDateTime stepReference) {
+    if (stepReference == null) {
+      log.warn(
+          "Cannot determine time step size for fallback (only one data point available before {}). "
+              + "Accepting fallback from {} unconditionally.",
+          requested,
+          fallback);
+      return true;
+    }
+    Duration step = Duration.between(stepReference, fallback);
+    if (step.isNegative() || step.isZero()) {
+      return true;
+    }
+    Duration gap = Duration.between(fallback, requested);
+    return gap.compareTo(step.multipliedBy(MAX_FALLBACK_STEPS)) <= 0;
+  }
 
   protected WeatherSource(
       IdCoordinateSource idCoordinateSource, TimeBasedWeatherValueFactory weatherFactory) {

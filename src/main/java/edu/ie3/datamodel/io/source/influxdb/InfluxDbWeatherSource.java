@@ -88,7 +88,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
       throws NoDataException {
-    if (coordinates == null) return getWeather(timeInterval);
+    if (coordinates.isEmpty())
+      throw new NoDataException("No coordinates provided for weather data query.");
     Map<Point, Optional<Integer>> coordinatesToId =
         coordinates.stream().collect(Collectors.toMap(point -> point, idCoordinateSource::getId));
 
@@ -122,6 +123,11 @@ public class InfluxDbWeatherSource extends WeatherSource {
         }
       }
     }
+    if (coordinateToTimeSeries.isEmpty()) {
+      throw new NoDataException(
+          "No weather data found for any of the requested coordinates in the given time interval: "
+              + timeInterval);
+    }
     return coordinateToTimeSeries;
   }
 
@@ -136,15 +142,47 @@ public class InfluxDbWeatherSource extends WeatherSource {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForCoordinateAndTime(date, coordinateId.get());
       QueryResult queryResult = session.query(new Query(query));
-      return filterEmptyOptionals(optTimeBasedValueStream(queryResult))
-          .findFirst()
-          .orElseThrow(
-              () ->
-                  new NoDataException(
-                      "No weather data available for the given date "
-                          + date
-                          + " and coordinate "
-                          + coordinate));
+      Optional<TimeBasedValue<WeatherValue>> result =
+          filterEmptyOptionals(optTimeBasedValueStream(queryResult)).findFirst();
+      if (result.isPresent()) {
+        return result.get();
+      }
+
+      // Fallback: try the last known value before the requested date (within MAX_FALLBACK_STEPS)
+      String fallbackQuery = createQueryStringForLastBefore(date, coordinateId.get());
+      QueryResult fallbackResult = session.query(new Query(fallbackQuery));
+      List<TimeBasedValue<WeatherValue>> fallbackValues =
+          filterEmptyOptionals(optTimeBasedValueStream(fallbackResult))
+              .sorted((a, b) -> b.getTime().compareTo(a.getTime()))
+              .toList();
+      if (!fallbackValues.isEmpty()) {
+        ZonedDateTime fallbackTime = fallbackValues.get(0).getTime();
+        ZonedDateTime stepRef = fallbackValues.size() > 1 ? fallbackValues.get(1).getTime() : null;
+        if (isFallbackAcceptable(date, fallbackTime, stepRef)) {
+          log.warn(
+              "No weather data for coordinate {} at {}. Using last known value from {}.",
+              coordinate,
+              date,
+              fallbackTime);
+          return fallbackValues.get(0);
+        }
+        throw new NoDataException(
+            "No weather data found for coordinate "
+                + coordinate
+                + " at "
+                + date
+                + ": last known value from "
+                + fallbackTime
+                + " exceeds the maximum fallback of "
+                + MAX_FALLBACK_STEPS
+                + " steps.");
+      }
+      throw new NoDataException(
+          "No weather data found for coordinate "
+              + coordinate
+              + " at "
+              + date
+              + " and no earlier data available.");
     }
   }
 
@@ -294,9 +332,24 @@ public class InfluxDbWeatherSource extends WeatherSource {
         + timeInterval.getUpper().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
 
+  private String createQueryStringForLastBefore(ZonedDateTime date, int coordinateId) {
+    return BASIC_QUERY_STRING
+        + WHERE
+        + createCoordinateConstraintString(coordinateId)
+        + AND
+        + createTimeConstraintBefore(date)
+        + " ORDER BY time DESC LIMIT 2";
+  }
+
   private String createTimeConstraint(ZonedDateTime date) {
     return weatherFactory.getTimeFieldString()
         + "="
+        + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
+  }
+
+  private String createTimeConstraintBefore(ZonedDateTime date) {
+    return weatherFactory.getTimeFieldString()
+        + " < "
         + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
 
