@@ -262,7 +262,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
     Map<String, Set<Map<String, String>>> measurementsMap =
         InfluxDbConnector.parseQueryResult(queryResult, MEASUREMENT_NAME_WEATHER);
     final String coordinateIdFieldName = weatherFactory.getCoordinateIdFieldString();
-    return measurementsMap.get(MEASUREMENT_NAME_WEATHER).stream()
+    return measurementsMap.getOrDefault(MEASUREMENT_NAME_WEATHER, Collections.emptySet()).stream()
         .map(
             fieldToValue -> {
               /* The factory expects flat case id's for fields -> Convert the keys */
