@@ -31,6 +31,7 @@ public class SqlWeatherSource extends WeatherSource {
   private final SqlDataSource dataSource;
 
   private static final String WHERE = " WHERE ";
+  private static final String COORDINATE_AND = "=? AND ";
   private final String tableName;
 
   /**
@@ -318,7 +319,7 @@ public class SqlWeatherSource extends WeatherSource {
         + weatherTableName
         + WHERE
         + coordinateColumnName
-        + "=? AND "
+        + COORDINATE_AND
         + timeColumnName
         + " > ?;";
   }
@@ -342,7 +343,7 @@ public class SqlWeatherSource extends WeatherSource {
     return createBaseQueryString(schemaName, weatherTableName)
         + WHERE
         + coordinateColumnName
-        + "=? AND "
+        + COORDINATE_AND
         + timeColumnName
         + "=?;";
   }
@@ -367,7 +368,7 @@ public class SqlWeatherSource extends WeatherSource {
     return createBaseQueryString(schemaName, weatherTableName)
         + WHERE
         + coordinateColumnName
-        + "=? AND "
+        + COORDINATE_AND
         + timeColumnName
         + " < ? ORDER BY "
         + timeColumnName

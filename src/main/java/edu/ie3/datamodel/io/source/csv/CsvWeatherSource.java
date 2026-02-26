@@ -96,7 +96,7 @@ public class CsvWeatherSource extends WeatherSource {
     Map<Point, IndividualTimeSeries<WeatherValue>> result =
         trimMapToInterval(coordinateToTimeSeries, timeInterval);
 
-    if (result == null || result.isEmpty()) {
+    if (result.isEmpty()) {
       throw new NoDataException(
           "No weather data found for the given time interval: " + timeInterval);
     }
@@ -129,7 +129,7 @@ public class CsvWeatherSource extends WeatherSource {
     Map<Point, IndividualTimeSeries<WeatherValue>> result =
         trimMapToInterval(filteredMap, timeInterval);
 
-    if (result == null || result.isEmpty()) {
+    if (result.isEmpty()) {
       throw new NoDataException(
           "No weather data found for the given time interval: " + timeInterval);
     }
@@ -156,7 +156,16 @@ public class CsvWeatherSource extends WeatherSource {
       ZonedDateTime t1 = previousTime.get();
       ZonedDateTime stepRef = timeSeries.getPreviousDateTime(t1).orElse(null);
       if (isFallbackAcceptable(date, t1, stepRef)) {
-        TimeBasedValue<WeatherValue> fallback = timeSeries.getTimeBasedValue(t1).get();
+        TimeBasedValue<WeatherValue> fallback =
+            timeSeries
+                .getTimeBasedValue(t1)
+                .orElseThrow(
+                    () ->
+                        new NoDataException(
+                            "No weather data found for coordinate "
+                                + coordinate
+                                + " at fallback time "
+                                + t1));
         log.warn(
             "No weather data for coordinate {} at {}. Using last known value from {}.",
             coordinate,

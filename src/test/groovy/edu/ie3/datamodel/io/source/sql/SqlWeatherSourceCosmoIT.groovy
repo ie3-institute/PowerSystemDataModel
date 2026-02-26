@@ -147,6 +147,45 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
   }
 
+  def "A SqlWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
+    given:
+    def futureTime = CosmoWeatherTestData.TIME_17H.plusHours(2)
+    def expectedFallback = new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)
+
+    when:
+    def result = source.getWeather(futureTime, CosmoWeatherTestData.COORDINATE_193186)
+
+    then:
+    result != null
+    equalsIgnoreUUID(result, expectedFallback)
+  }
+
+  def "A SqlWeatherSource throws NoDataException when no weather data is found at a specific time and no earlier data is available"() {
+    given:
+    def timeBeforeAllData = CosmoWeatherTestData.TIME_15H.minusHours(1)
+
+    when:
+    source.getWeather(timeBeforeAllData, CosmoWeatherTestData.COORDINATE_193186)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("no earlier data available")
+  }
+
+  def "A SqlWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
+    given:
+    def farFutureTime = CosmoWeatherTestData.TIME_17H.plusHours(10)
+
+    when:
+    source.getWeather(farFutureTime, CosmoWeatherTestData.COORDINATE_193186)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("exceeds the maximum fallback")
+  }
+
   def "A SqlWeatherSource returns all time keys after a given time key correctly"() {
     given:
     def time = CosmoWeatherTestData.TIME_15H
