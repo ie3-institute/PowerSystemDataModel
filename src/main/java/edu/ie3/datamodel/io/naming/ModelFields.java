@@ -149,15 +149,13 @@ public final class ModelFields extends FieldNamingStrategy {
   /**
    * Method to register unsupported fields for a given entity class.
    *
-   * <p>NOTE: This method will only add fields, if no fields are registered yet and !
+   * <p>NOTE: This method will only add fields, if no fields are registered yet!
    *
    * @param entityClass for which fields should be registered
    * @param unsupportedFields the unsupported fields to register
    */
   public static void registerUnsupported(Class<?> entityClass, Set<String> unsupportedFields) {
-    if (!mandatoryFields.containsKey(entityClass)) {
-      ModelFields.unsupportedFields.putIfAbsent(entityClass, unsupportedFields);
-    }
+    ModelFields.unsupportedFields.putIfAbsent(entityClass, unsupportedFields);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
