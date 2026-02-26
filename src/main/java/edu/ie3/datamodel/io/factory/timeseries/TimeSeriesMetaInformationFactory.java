@@ -7,10 +7,10 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

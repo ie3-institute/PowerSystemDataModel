@@ -218,6 +218,9 @@ public class InfluxDbConnector implements DataConnector {
    */
   public static Map<String, Set<Map<String, String>>> parseResult(
       QueryResult.Result result, String... measurementNames) {
+    if (result.getSeries() == null) {
+      return Collections.emptyMap();
+    }
     Stream<QueryResult.Series> seriesStream = result.getSeries().stream();
     if (measurementNames.length > 0) {
       seriesStream =

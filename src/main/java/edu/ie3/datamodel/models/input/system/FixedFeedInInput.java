@@ -125,7 +125,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
         + getControllingEm()
         + ", sRated="
         + sRated
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + cosPhiRated
         + '}';
   }

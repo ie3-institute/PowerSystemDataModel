@@ -190,7 +190,7 @@ public class SqlSink {
       void persistList(List<C> entities, Class<C> cls, DbGridMetadata identifier)
           throws SQLException {
     // Check if there are only elements of the same class
-    Class<?> firstClass = entities.get(0).getClass();
+    Class<?> firstClass = entities.getFirst().getClass();
     boolean allSameClass = entities.stream().allMatch(e -> e.getClass() == firstClass);
 
     if (allSameClass) {
@@ -251,8 +251,8 @@ public class SqlSink {
       TriFunction<String, String, String[], String> queryBuilder;
       String timeSeriesIdentifier;
 
-      if (timeSeries instanceof LoadProfileTimeSeries<?, ?> lpts) {
-        timeSeriesIdentifier = lpts.getLoadProfile().getKey();
+      if (timeSeries instanceof LoadProfileTimeSeries<?> lpts) {
+        timeSeriesIdentifier = lpts.getPowerProfileKey().getValue();
         queryBuilder = this::basicInsertQueryValuesLPTS;
       } else {
         timeSeriesIdentifier = timeSeries.getUuid().toString();

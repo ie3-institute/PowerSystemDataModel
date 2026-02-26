@@ -33,9 +33,6 @@ public class ChpInput extends SystemParticipantInput
   /** Thermal storage model */
   private final ThermalStorageInput thermalStorage;
 
-  /** Is this asset market oriented? */
-  private final boolean marketReaction;
-
   /**
    * Constructor for an operated combined heat and power plant
    *
@@ -50,7 +47,6 @@ public class ChpInput extends SystemParticipantInput
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of CHP
    * @param thermalStorage Thermal storage model
-   * @param marketReaction Is this asset market oriented?
    */
   public ChpInput(
       UUID uuid,
@@ -62,13 +58,11 @@ public class ChpInput extends SystemParticipantInput
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
       ChpTypeInput type,
-      ThermalStorageInput thermalStorage,
-      boolean marketReaction) {
+      ThermalStorageInput thermalStorage) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.thermalBus = thermalBus;
     this.type = type;
     this.thermalStorage = thermalStorage;
-    this.marketReaction = marketReaction;
   }
 
   /**
@@ -83,7 +77,6 @@ public class ChpInput extends SystemParticipantInput
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of CHP
    * @param thermalStorage Thermal storage model
-   * @param marketReaction Is this asset market oriented?
    */
   public ChpInput(
       UUID uuid,
@@ -93,13 +86,11 @@ public class ChpInput extends SystemParticipantInput
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
       ChpTypeInput type,
-      ThermalStorageInput thermalStorage,
-      boolean marketReaction) {
+      ThermalStorageInput thermalStorage) {
     super(uuid, id, node, qCharacteristics, em);
     this.thermalBus = thermalBus;
     this.type = type;
     this.thermalStorage = thermalStorage;
-    this.marketReaction = marketReaction;
   }
 
   @Override
@@ -117,10 +108,6 @@ public class ChpInput extends SystemParticipantInput
     return thermalStorage;
   }
 
-  public boolean isMarketReaction() {
-    return marketReaction;
-  }
-
   @Override
   public ComparableQuantity<Power> sRated() {
     return this.type.getsRated();
@@ -135,14 +122,12 @@ public class ChpInput extends SystemParticipantInput
     if (this == o) return true;
     if (!(o instanceof ChpInput chpInput)) return false;
     if (!super.equals(o)) return false;
-    return marketReaction == chpInput.marketReaction
-        && thermalBus.equals(chpInput.thermalBus)
-        && type.equals(chpInput.type);
+    return thermalBus.equals(chpInput.thermalBus) && type.equals(chpInput.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), thermalBus, type, marketReaction);
+    return Objects.hash(super.hashCode(), thermalBus, type);
   }
 
   @Override
@@ -168,8 +153,6 @@ public class ChpInput extends SystemParticipantInput
         + type.getUuid()
         + ", thermalStorage="
         + thermalStorage.getUuid()
-        + ", marketReaction="
-        + marketReaction
         + '}';
   }
 
@@ -186,13 +169,11 @@ public class ChpInput extends SystemParticipantInput
     private ChpTypeInput type;
     private ThermalBusInput thermalBus;
     private ThermalStorageInput thermalStorage;
-    private boolean marketReaction;
 
     private ChpInputCopyBuilder(ChpInput entity) {
       super(entity);
       this.type = entity.getType();
       this.thermalBus = entity.getThermalBus();
-      this.marketReaction = entity.isMarketReaction();
       this.thermalStorage = entity.getThermalStorage();
     }
 
@@ -208,8 +189,7 @@ public class ChpInput extends SystemParticipantInput
           getqCharacteristics(),
           getEm(),
           type,
-          thermalStorage,
-          marketReaction);
+          thermalStorage);
     }
 
     public ChpInputCopyBuilder type(ChpTypeInput type) {
@@ -224,11 +204,6 @@ public class ChpInput extends SystemParticipantInput
 
     public ChpInputCopyBuilder thermalStorage(ThermalStorageInput thermalStorage) {
       this.thermalStorage = thermalStorage;
-      return thisInstance();
-    }
-
-    public ChpInputCopyBuilder marketReaction(boolean marketReaction) {
-      this.marketReaction = marketReaction;
       return thisInstance();
     }
 

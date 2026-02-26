@@ -47,7 +47,7 @@ Please hand in a _draft_ pull request as early as possible to allow other to kee
 Before opening it for review, please [finalise your pull request](#finalising-your-pull-request).
 
 ### General (software) design guidelines
-In order to maintain a consistent project, we thought of some general design guidlines, we kindly ask you to take care of:
+In order to maintain a consistent project, we thought of some general design guidelines, we kindly ask you to take care of:
 
 * We :heart: **immutability**. Therefore, please don't provide setters and use proper instantiation instead.
 * `double a = b * pow(x, j)`? :hand: Please **be expressive** in what you code!

@@ -17,7 +17,7 @@ import tech.units.indriya.ComparableQuantity;
 /** Thermal storage with cylindrical shape */
 public class CylindricalStorageInput extends AbstractStorageInput {
   /**
-   * @param uuid Unique identifier of a cylindrical storage
+   * @param uuid Unique identifier of a certain cylindrical storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
    * @param operationTime operation time of the asset

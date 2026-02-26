@@ -42,7 +42,7 @@ public class TimeSeriesProcessorKey {
 
     this.valueClass = value.getClass();
 
-    if (value instanceof LoadValues<?> loadValues) {
+    if (value instanceof LoadValues loadValues) {
       this.scheme = loadValues.getScheme();
     } else {
       this.scheme = Optional.empty();

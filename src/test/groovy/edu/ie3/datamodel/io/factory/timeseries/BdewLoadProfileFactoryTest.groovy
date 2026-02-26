@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation
+
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
 import edu.ie3.datamodel.models.value.load.BdewLoadValues
@@ -13,8 +13,6 @@ import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import java.time.Month
 
 class BdewLoadProfileFactoryTest extends Specification {
   @Shared
@@ -126,22 +124,17 @@ class BdewLoadProfileFactoryTest extends Specification {
   }
 
   def "A BDEWLoadProfileFactory builds time series from entries"() {
-    given:
-    UUID uuid = UUID.fromString("fa3894c1-25af-479c-8a40-1323bb9150a9")
-    LoadProfileMetaInformation metaInformation = new LoadProfileMetaInformation(uuid, "g0")
-
-
     when:
-    def lpts = factory.build(metaInformation, allEntries)
+    def lpts = factory.build(BdewStandardLoadProfile.G0.key, allEntries)
 
     then:
-    lpts.loadProfile == BdewStandardLoadProfile.G0
+    lpts.powerProfileKey == BdewStandardLoadProfile.G0.key
     lpts.entries.size() == 3
   }
 
   def "A BDEWLoadProfileFactory does return the max power correctly"() {
     when:
-    def maxPower = factory.calculateMaxPower(BdewStandardLoadProfile.G0, allEntries)
+    def maxPower = factory.calculateMaxPower(BdewStandardLoadProfile.G0.key, allEntries)
 
     then:
     maxPower == Quantities.getQuantity(77.7, PowerSystemUnits.WATT)
@@ -149,7 +142,7 @@ class BdewLoadProfileFactoryTest extends Specification {
 
   def "A BDEWLoadProfileFactory does return an energy scaling correctly"() {
     when:
-    def energyScaling = factory.getLoadProfileEnergyScaling(BdewStandardLoadProfile.G0)
+    def energyScaling = factory.getLoadProfileEnergyScaling(BdewStandardLoadProfile.G0.key)
 
     then:
     energyScaling == Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR)

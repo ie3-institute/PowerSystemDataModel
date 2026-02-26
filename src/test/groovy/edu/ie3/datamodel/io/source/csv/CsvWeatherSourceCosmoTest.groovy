@@ -12,6 +12,7 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.value.GroundTemperatureValue
 import edu.ie3.datamodel.models.value.SolarIrradianceValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -117,14 +118,16 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
-      "time"             : "2020-10-16T12:40:42Z",
-      "coordinateId"     : "5",
-      "directIrradiance" : "1.234",
-      "diffuseIrradiance": "5.678",
-      "temperature"      : "9.1011",
-      "windVelocity"     : "12.1314",
-      "windDirection"    : "15.1617"
+      "uuid"                   : "71a79f59-eebf-40c1-8358-ba7414077d57",
+      "time"                   : "2020-10-16T12:40:42Z",
+      "coordinateId"           : "5",
+      "directIrradiance"       : "1.234",
+      "diffuseIrradiance"      : "5.678",
+      "temperature"            : "9.1011",
+      "windVelocity"           : "12.1314",
+      "windDirection"          : "15.1617",
+      "groundTemperatureLevel1": "8.0",
+      "groundTemperatureLevel2": "9.5"
     ]
     def expectedValue = new TimeBasedValue(
         TimeUtil.withDefaults.toZonedDateTime("2020-10-16T12:40:42Z"),
@@ -139,9 +142,13 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
         ),
         new WindValue(
         Quantities.getQuantity(12.1314, WIND_DIRECTION),
-        Quantities.getQuantity(15.1617, WIND_VELOCITY)
-        )
-        )
+        Quantities.getQuantity(15.1617, WIND_VELOCITY)),
+        Optional.of(new GroundTemperatureValue(
+        Quantities.getQuantity(8.0, TEMPERATURE)
+        )),
+        Optional.of(new GroundTemperatureValue(
+        Quantities.getQuantity(9.5, TEMPERATURE)
+        )))
         )
 
     when:
@@ -185,13 +192,13 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
-      "time"             : "2020-10-16T12:40:42Z",
-      "directirradiance" : "1.234",
-      "diffuseirradiance": "5.678",
-      "temperature"      : "9.1011",
-      "windvelocity"     : "12.1314",
-      "winddirection"    : "15.1617"
+      "uuid"                   : "71a79f59-eebf-40c1-8358-ba7414077d57",
+      "time"                   : "2020-10-16T12:40:42Z",
+      "directirradiance"       : "1.234",
+      "diffuseirradiance"      : "5.678",
+      "temperature"            : "9.1011",
+      "windvelocity"           : "12.1314",
+      "winddirection"          : "15.1617",
     ]
 
     when:

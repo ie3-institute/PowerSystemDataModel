@@ -8,9 +8,9 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
@@ -44,7 +44,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       String csvSep,
       Path folderPath,
       FileNamingStrategy fileNamingStrategy,
-      CsvIndividualTimeSeriesMetaInformation metaInformation)
+      FileIndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
     if (!TimeSeriesUtils.isSchemeAccepted(metaInformation.getColumnScheme()))
       throw new SourceException(
@@ -59,7 +59,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       String csvSep,
       Path folderPath,
       FileNamingStrategy fileNamingStrategy,
-      CsvIndividualTimeSeriesMetaInformation metaInformation,
+      FileIndividualTimeSeriesMetaInformation metaInformation,
       Class<T> valClass) {
     TimeBasedSimpleValueFactory<T> valueFactory = new TimeBasedSimpleValueFactory<>(valClass);
     return new CsvTimeSeriesSource<>(

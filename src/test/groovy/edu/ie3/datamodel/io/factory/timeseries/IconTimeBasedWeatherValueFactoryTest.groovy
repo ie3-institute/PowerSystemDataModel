@@ -5,7 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
+import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.PowerSystemUnits
@@ -83,7 +86,8 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       "aswdifuS"    : "0.5713421484374998",
       "aswdirS"     : "2.317613203124999",
       "t2m"         : "289.1179319051744",
-      "tg"          : "288.4101691197649",
+      "tg1"         : "288.4101691197649",
+      "tg2"         : "288.4101691197649",
       "u10m"        : "0.3021732864307963",
       "u131m"       : "2.6058700426057797",
       "u20m"        : "0.32384365019387784",
@@ -125,6 +129,95 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       assert QuantityUtil.isEquivalentAbs(it.value.wind.direction.get(), Quantities.getQuantity(214.16711674907722, PowerSystemUnits.DEGREE_GEOM))
       assert it.value.wind.velocity.present
       assert QuantityUtil.isEquivalentAbs(it.value.wind.velocity.get(), Quantities.getQuantity(4.640010877529081, PowerSystemUnits.METRE_PER_SECOND))
+      assert it.value.groundTemperatureLevel1.present
+      assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureLevel1.get().temperature.get(), Quantities.getQuantity(15.2601691197649, Units.CELSIUS))
+      assert it.value.groundTemperatureLevel2.present
+      assert QuantityUtil.isEquivalentAbs(it.value.groundTemperatureLevel2.get().temperature.get(), Quantities.getQuantity(15.2601691197649, Units.CELSIUS))
     }
+  }
+
+  def "A IconTimeBasedWeatherValueFactory should throw FactoryException if required field is missing"() {
+    given:
+    def factory = new IconTimeBasedWeatherValueFactory()
+    def coordinate = CosmoWeatherTestData.COORDINATE_67775
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
+
+    // Missing 'aswdirS' (Direct Irradiance)
+    Map<String, String> parameter = [
+      "time"        : TimeUtil.withDefaults.toString(time),
+      "aswdifdS"    : "1.0",
+      "t2m"         : "2.0",
+      "u131m"       : "3.0",
+      "v131m"       : "4.0",
+      "coordinateId": "67775"
+    ]
+
+    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+    when:
+    factory.buildModel(data)
+
+    then:
+    thrown(FactoryException)
+  }
+
+  def "Smoke Test: This IconTimeBasedWeatherValueFactory should fail since expected results doesn't match input"() {
+    given:
+    def factory = new IconTimeBasedWeatherValueFactory()
+    def coordinate = CosmoWeatherTestData.COORDINATE_67775
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
+
+    Map<String, String> parameter = [
+      "time"        : TimeUtil.withDefaults.toString(time),
+      "aswdifdS"    : "1.0",
+      "aswdirS"     : "2.0",
+      "t2m"         : "3.0",
+      "u131m"       : "4.0",
+      "v131m"       : "5.0",
+      "coordinateId": "50000"
+    ]
+
+    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+    def expectedResults = new TimeBasedValue(
+        time, new WeatherValue(coordinate,
+        Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE),
+        Quantities.getQuantity(4d, StandardUnits.SOLAR_IRRADIANCE),
+        Quantities.getQuantity(3d, StandardUnits.TEMPERATURE),
+        Quantities.getQuantity(2d, StandardUnits.WIND_DIRECTION),
+        Quantities.getQuantity(1d, StandardUnits.WIND_VELOCITY),
+        Optional.empty(),
+        Optional.empty()))
+
+    when:
+    def model = factory.buildModel(data)
+
+    then:
+    !model.equals(expectedResults)
+  }
+
+  def "A IconTimeBasedWeatherValueFactory should throw an Exception if the required field 't2m' is empty"() {
+    given:
+    def factory = new IconTimeBasedWeatherValueFactory()
+    def coordinate = CosmoWeatherTestData.COORDINATE_67775
+
+    Map<String, String> parameter = [
+      "time"        : "2019-01-01T00:00:00Z",
+      "aswdifdS"    : "1.0",
+      "aswdirS"     : "2.0",
+      "t2m"         : "",
+      "u131m"       : "4.0",
+      "v131m"       : "5.0",
+      "coordinateId": "67775"
+    ]
+
+    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+    when:
+    factory.buildModel(data)
+
+    then:
+    def exception = thrown(FactoryException)
+    exception.message == 'The field "t2m" is missing or empty.'
   }
 }

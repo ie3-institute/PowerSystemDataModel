@@ -5,12 +5,10 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import static edu.ie3.datamodel.models.profile.BdewStandardLoadProfile.*;
 import static tech.units.indriya.unit.Units.WATT;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
@@ -28,8 +26,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
-public class BdewLoadProfileFactory
-    extends LoadProfileFactory<BdewStandardLoadProfile, BdewLoadValues> {
+public class BdewLoadProfileFactory extends LoadProfileFactory<BdewLoadValues> {
   // 1999 profile scheme
   public static final BdewLoadValues.BdewMap<String> BDEW1999_FIELDS =
       BdewKey.toMap(BdewScheme.BDEW1999);
@@ -70,35 +67,25 @@ public class BdewLoadProfileFactory
 
   @Override
   public BdewLoadProfileTimeSeries build(
-      LoadProfileMetaInformation metaInformation, Set<LoadProfileEntry<BdewLoadValues>> entries) {
+      PowerProfileKey powerProfileKey, Set<LoadProfileEntry<BdewLoadValues>> entries) {
+    ComparableQuantity<Power> maxPower = calculateMaxPower(powerProfileKey, entries);
+    ComparableQuantity<Energy> profileEnergyScaling = getLoadProfileEnergyScaling(powerProfileKey);
 
-    BdewStandardLoadProfile profile = parseProfile(metaInformation.getProfile());
-    ComparableQuantity<Power> maxPower = calculateMaxPower(profile, entries);
-    ComparableQuantity<Energy> profileEnergyScaling = getLoadProfileEnergyScaling(profile);
-
-    return new BdewLoadProfileTimeSeries(profile, entries, maxPower, profileEnergyScaling);
-  }
-
-  @Override
-  public BdewStandardLoadProfile parseProfile(String profile) {
-    try {
-      return BdewStandardLoadProfile.get(profile);
-    } catch (ParsingException e) {
-      throw new FactoryException("An error occurred while parsing the profile: " + profile, e);
-    }
+    return new BdewLoadProfileTimeSeries(powerProfileKey, entries, maxPower, profileEnergyScaling);
   }
 
   @Override
   public ComparableQuantity<Power> calculateMaxPower(
-      BdewStandardLoadProfile loadProfile, Set<LoadProfileEntry<BdewLoadValues>> entries) {
-    Function<BdewLoadValues, Double> valueExtractor =
-        switch (loadProfile) {
-          case H0, H25, P25, S25 ->
-              // maximum dynamization factor is on day 366 (leap year) or day 365 (regular year).
-              // The difference between day 365 and day 366 is negligible, thus pick 366
-              v -> BdewLoadValues.dynamization(v.getMaxValue(true), 366);
-          default -> v -> v.getMaxValue(false);
-        };
+      PowerProfileKey powerProfileKey, Set<LoadProfileEntry<BdewLoadValues>> entries) {
+    Function<BdewLoadValues, Double> valueExtractor;
+
+    if (powerProfileKey.equalsAny(H0, H25, P25, S25)) {
+      // maximum dynamization factor is on day 366 (leap year) or day 365 (regular year).
+      // The difference between day 365 and day 366 is negligible, thus pick 366
+      valueExtractor = v -> BdewLoadValues.dynamization(v.getMaxValue(true), 366);
+    } else {
+      valueExtractor = v -> v.getMaxValue(false);
+    }
 
     double maxPower =
         entries.stream()
@@ -112,14 +99,13 @@ public class BdewLoadProfileFactory
 
   /** Returns the load profile energy scaling. The default value is 1000 kWh */
   @Override
-  public ComparableQuantity<Energy> getLoadProfileEnergyScaling(
-      BdewStandardLoadProfile loadProfile) {
-
+  public ComparableQuantity<Energy> getLoadProfileEnergyScaling(PowerProfileKey powerProfileKey) {
     // the updated profiled are scaled to 1 million kWh -> 1000 MWh
     // old profiles are scaled to 1000 kWh
-    return switch (loadProfile) {
-      case H25, G25, L25, P25, S25 -> Quantities.getQuantity(1000d, PowerSystemUnits.MEGAWATTHOUR);
-      default -> Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR);
-    };
+    if (powerProfileKey.equalsAny(H25, G25, L25, P25, S25)) {
+      return Quantities.getQuantity(1000d, PowerSystemUnits.MEGAWATTHOUR);
+    } else {
+      return Quantities.getQuantity(1000d, PowerSystemUnits.KILOWATTHOUR);
+    }
   }
 }

@@ -42,6 +42,17 @@ public abstract class FactoryData {
   }
 
   /**
+   * Checks if the field is empty.
+   *
+   * @param field to check
+   * @return {@code true} if either the key is not present or the field is empty
+   */
+  public boolean isFieldEmpty(String field) {
+    String value = fieldsToAttributes.getOrDefault(field, null);
+    return value == null || value.isEmpty();
+  }
+
+  /**
    * Returns field value for given field name. Throws {@link FactoryException} if field does not
    * exist.
    *

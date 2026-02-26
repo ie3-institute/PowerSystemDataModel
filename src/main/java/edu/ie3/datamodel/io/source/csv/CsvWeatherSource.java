@@ -12,11 +12,11 @@ import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.Entity;
@@ -235,7 +235,7 @@ public class CsvWeatherSource extends WeatherSource {
   private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries()
       throws SourceException {
     /* Get only weather time series meta information */
-    Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
+    Collection<FileIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
         dataSource.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
     return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), dataSource.connector);
   }
@@ -247,14 +247,14 @@ public class CsvWeatherSource extends WeatherSource {
    * @return time series mapped to the represented coordinate
    */
   private Map<Point, IndividualTimeSeries<WeatherValue>> readWeatherTimeSeries(
-      Set<CsvIndividualTimeSeriesMetaInformation> weatherMetaInformation,
+      Set<FileIndividualTimeSeriesMetaInformation> weatherMetaInformation,
       CsvFileConnector connector)
       throws SourceException {
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
     Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
         this::buildWeatherValue;
     /* Reading in weather time series */
-    for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
+    for (FileIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       Path path = data.getFullFilePath();
 
       // we need a reader for each file
