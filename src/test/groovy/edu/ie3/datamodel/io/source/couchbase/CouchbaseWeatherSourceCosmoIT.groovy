@@ -206,6 +206,20 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
   }
 
+  def "The CouchbaseWeatherSource returns all time keys after a given time for a specific coordinate"() {
+    given:
+    def time = CosmoWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time, CosmoWeatherTestData.COORDINATE_193186)
+
+    then:
+    actual == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+  }
+
   def "A CouchbaseWeatherSource throws NoDataException for invalid coordinate"() {
     given:
     def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)

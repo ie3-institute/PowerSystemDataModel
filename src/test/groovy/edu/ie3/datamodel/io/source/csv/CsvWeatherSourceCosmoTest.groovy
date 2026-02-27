@@ -19,6 +19,7 @@ import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
 import edu.ie3.test.common.CosmoWeatherTestData
+import edu.ie3.test.common.WeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.geo.GeoUtils
@@ -272,6 +273,44 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     ex.message.contains("exceeds the maximum fallback")
   }
 
+  def "A CsvWeatherSource returns partial results when one coordinate has a valid ID but no data in the CSV files"() {
+    given:
+    def phantomPoint = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(99d, 99d))
+    def extendedSource = new WeatherTestData.DummyIdCoordinateSource() {
+          Optional<Integer> getId(Point point) {
+            if (point == phantomPoint) return Optional.of(99999)
+            return super.getId(point)
+          }
+        }
+    def partialSource = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), extendedSource, new CosmoTimeBasedWeatherValueFactory())
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
+
+    when:
+    def result = partialSource.getWeather(timeInterval, [
+      CosmoWeatherTestData.COORDINATE_193186,
+      phantomPoint
+    ])
+
+    then: "only the coordinate with actual CSV data is returned, no exception is thrown"
+    result.keySet().size() == 1
+    result.containsKey(CosmoWeatherTestData.COORDINATE_193186)
+    !result.containsKey(phantomPoint)
+  }
+
+  def "The CsvWeatherSource returns all time keys after a given time for a specific coordinate"() {
+    given:
+    def time = CosmoWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time, CosmoWeatherTestData.COORDINATE_193186)
+
+    then:
+    actual == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+  }
+
   def "The CsvWeatherSource returns all time keys after a given time key correctly"() {
     given:
     def time = CosmoWeatherTestData.TIME_15H
@@ -280,13 +319,13 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def actual = source.getTimeKeysAfter(time)
 
     then:
-    actual.size() == 3
+    actual.size() == 2
 
     actual.get(CosmoWeatherTestData.COORDINATE_193186) == [
       CosmoWeatherTestData.TIME_16H,
       CosmoWeatherTestData.TIME_17H
     ]
     actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
-    actual.get(CosmoWeatherTestData.COORDINATE_193188) == []
+    !actual.containsKey(CosmoWeatherTestData.COORDINATE_193188)
   }
 }

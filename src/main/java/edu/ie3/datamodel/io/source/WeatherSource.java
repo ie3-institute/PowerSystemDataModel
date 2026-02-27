@@ -13,7 +13,6 @@ import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -100,6 +99,23 @@ public abstract class WeatherSource extends EntitySource {
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
       throws SourceException, NoDataException;
 
+  /**
+   * Returns the weather value for the given date and coordinate.
+   *
+   * <p>If no exact match exists at {@code date}, a fallback to the last known value is attempted.
+   * The fallback is accepted if the gap between the most recent known timestamp and {@code date} is
+   * at most {@link #MAX_FALLBACK_STEPS} time steps. When a fallback is used, a warning is logged
+   * and the returned {@link TimeBasedValue} carries the <em>fallback's own timestamp</em>, not
+   * {@code date}.
+   *
+   * @param date the requested date and time
+   * @param coordinate the requested coordinate
+   * @return the weather value at {@code date}, or the nearest preceding value within the fallback
+   *     window
+   * @throws NoDataException if no data exists for the coordinate, if the nearest preceding value
+   *     exceeds the fallback window, or if no prior data is available at all
+   * @throws SourceException if a technical failure prevents reading from the source
+   */
   public abstract TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
       throws SourceException, NoDataException;
 
@@ -198,20 +214,27 @@ public abstract class WeatherSource extends EntitySource {
    * @return a list of that TimeBasedValues
    */
   protected List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
-      TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream)
-      throws SourceException {
-    return Try.scanStream(
-            inputStream.map(
-                fieldsToAttributes -> {
-                  fieldsToAttributes.remove("tid");
-                  Optional<TimeBasedWeatherValueData> data =
-                      toTimeBasedWeatherValueData(fieldsToAttributes);
-                  return factory.get(
-                      Try.from(data, () -> new SourceException("Missing data in: " + data)));
-                }),
-            "TimeBasedValue<WeatherValue>",
-            SourceException::new)
-        .transformS(Stream::toList)
-        .getOrThrow();
+      TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream) {
+    return inputStream
+        .map(
+            fieldsToAttributes -> {
+              fieldsToAttributes.remove("tid");
+              return toTimeBasedWeatherValueData(fieldsToAttributes);
+            })
+        .flatMap(Optional::stream)
+        .map(factory::get)
+        .map(
+            tryResult -> {
+              if (tryResult.isFailure()) {
+                tryResult
+                    .getException()
+                    .ifPresent(
+                        e -> log.warn("Skipping malformed weather value: {}", e.getMessage()));
+                return Optional.<TimeBasedValue<WeatherValue>>empty();
+              }
+              return tryResult.getData();
+            })
+        .flatMap(Optional::stream)
+        .toList();
   }
 }

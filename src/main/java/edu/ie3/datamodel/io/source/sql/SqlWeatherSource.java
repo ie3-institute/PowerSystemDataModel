@@ -157,7 +157,13 @@ public class SqlWeatherSource extends WeatherSource {
           "No weather data found for any of the requested coordinates in the given time interval: "
               + timeInterval);
     }
-    return mapWeatherValuesToPoints(timeBasedValues);
+    Map<Point, IndividualTimeSeries<WeatherValue>> result =
+        mapWeatherValuesToPoints(timeBasedValues);
+    Set<Point> missing =
+        coordinates.stream().filter(c -> !result.containsKey(c)).collect(Collectors.toSet());
+    if (!missing.isEmpty())
+      log.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
+    return result;
   }
 
   @Override

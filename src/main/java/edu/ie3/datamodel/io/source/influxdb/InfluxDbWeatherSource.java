@@ -128,6 +128,12 @@ public class InfluxDbWeatherSource extends WeatherSource {
           "No weather data found for any of the requested coordinates in the given time interval: "
               + timeInterval);
     }
+    Set<Point> missing =
+        coordinates.stream()
+            .filter(c -> !coordinateToTimeSeries.containsKey(c))
+            .collect(Collectors.toSet());
+    if (!missing.isEmpty())
+      log.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
     return coordinateToTimeSeries;
   }
 

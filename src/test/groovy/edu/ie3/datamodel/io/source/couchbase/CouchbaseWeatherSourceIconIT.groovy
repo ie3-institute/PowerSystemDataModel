@@ -162,6 +162,20 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
     actual.get(IconWeatherTestData.COORDINATE_67776) == [IconWeatherTestData.TIME_16H]
   }
 
+  def "The CouchbaseWeatherSource returns all time keys after a given time for a specific coordinate"() {
+    given:
+    def time = IconWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    actual == [
+      IconWeatherTestData.TIME_16H,
+      IconWeatherTestData.TIME_17H
+    ]
+  }
+
   def "A CouchbaseWeatherSource throws NoDataException for invalid coordinate"() {
     given:
     def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)

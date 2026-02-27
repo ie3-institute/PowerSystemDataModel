@@ -310,7 +310,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 
     then:
     def ex = thrown(NoDataException)
-    ex.message.contains("No weather data found for the given coordinate")
+    ex.message.contains("No coordinate ID found for the given point")
     ex.message.contains(unknownCoordinate.toString())
   }
 
@@ -351,6 +351,44 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     def ex = thrown(NoDataException)
     ex.message.contains("No weather data found for coordinate")
     ex.message.contains("exceeds the maximum fallback")
+  }
+
+  def "A CsvWeatherSource returns partial results when one coordinate has a valid ID but no data in the CSV files"() {
+    given:
+    def phantomPoint = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(99d, 99d))
+    def extendedSource = new WeatherTestData.DummyIdCoordinateSource() {
+          Optional<Integer> getId(Point point) {
+            if (point == phantomPoint) return Optional.of(99999)
+            return super.getId(point)
+          }
+        }
+    def partialSource = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), extendedSource, new IconTimeBasedWeatherValueFactory())
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
+
+    when:
+    def result = partialSource.getWeather(timeInterval, [
+      IconWeatherTestData.COORDINATE_67775,
+      phantomPoint
+    ])
+
+    then: "only the coordinate with actual CSV data is returned, no exception is thrown"
+    result.keySet().size() == 1
+    result.containsKey(IconWeatherTestData.COORDINATE_67775)
+    !result.containsKey(phantomPoint)
+  }
+
+  def "The CsvWeatherSource returns all time keys after a given time for a specific coordinate"() {
+    given:
+    def time = IconWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    actual == [
+      IconWeatherTestData.TIME_16H,
+      IconWeatherTestData.TIME_17H
+    ]
   }
 
   def "A CsvWeatherSource throws NoDataException for mixed valid and invalid coordinates"() {

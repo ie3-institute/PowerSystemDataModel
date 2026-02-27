@@ -11,6 +11,7 @@ import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
 import edu.ie3.datamodel.exceptions.NoDataException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -106,7 +107,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException {
+      ClosedInterval<ZonedDateTime> timeInterval) throws SourceException, NoDataException {
     logger.warn(
         "By not providing coordinates you are forcing couchbase to check all possible coordinates one by one."
             + " This is not very performant. Please consider providing specific coordinates instead.");
@@ -116,7 +117,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
-      throws NoDataException {
+      throws SourceException, NoDataException {
 
     if (coordinates.isEmpty())
       throw new NoDataException("No coordinates provided for weather data query.");
@@ -141,8 +142,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
         try {
           jsonWeatherInputs = queryResult.rowsAsObject();
         } catch (DecodingFailureException ex) {
-          throw new NoDataException(
-              "Failed to decode weather data for coordinate " + coordinate, ex);
+          logger.warn("Failed to decode weather data for coordinate {}, skipping.", coordinate, ex);
+          continue;
         }
         if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
           Set<TimeBasedValue<WeatherValue>> weatherInputs =
@@ -161,12 +162,18 @@ public class CouchbaseWeatherSource extends WeatherSource {
           "No weather data found for any of the requested coordinates in the given time interval: "
               + timeInterval);
     }
+    Set<Point> missing =
+        coordinates.stream()
+            .filter(c -> !coordinateToTimeSeries.containsKey(c))
+            .collect(Collectors.toSet());
+    if (!missing.isEmpty())
+      logger.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
     return coordinateToTimeSeries;
   }
 
   @Override
   public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
-      throws NoDataException {
+      throws SourceException, NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
@@ -182,7 +189,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
                   new NoDataException(
                       "No valid weather data found for the given date and coordinate."));
     } catch (DecodingFailureException ex) {
-      throw new NoDataException(
+      throw new SourceException(
           "Failed to decode weather data for coordinate " + coordinate + " and date " + date, ex);
     } catch (DocumentNotFoundException ex) {
       return getLastKnownWeather(date, coordinate, coordinateId.get());
@@ -190,7 +197,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
       if (ex.getCause() instanceof DocumentNotFoundException) {
         return getLastKnownWeather(date, coordinate, coordinateId.get());
       }
-      throw new NoDataException(
+      throw new SourceException(
           "Unexpected completion exception while retrieving weather data for coordinate "
               + coordinate
               + " and date "
@@ -347,6 +354,58 @@ public class CouchbaseWeatherSource extends WeatherSource {
     whereClause +=
         "' AND META().id <= '" + generateWeatherKey(timeInterval.getUpper(), coordinateId) + "'";
     return basicQuery + whereClause;
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate) {
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
+    if (coordinateId.isEmpty()) {
+      return Collections.emptyList();
+    }
+    String query = createQueryStringForFollowingTimeKeysAndCoordinate(time, coordinateId.get());
+    CompletableFuture<QueryResult> futureResult = connector.query(query);
+    QueryResult queryResult = futureResult.join();
+    List<JsonObject> jsonInputs = Collections.emptyList();
+    try {
+      jsonInputs = queryResult.rowsAsObject();
+    } catch (DecodingFailureException ex) {
+      logger.warn("Failed to decode time keys for coordinate {}", coordinate);
+      return Collections.emptyList();
+    }
+    if (jsonInputs == null || jsonInputs.isEmpty()) {
+      return Collections.emptyList();
+    }
+    return jsonInputs.stream()
+        .map(
+            json ->
+                weatherFactory.toZonedDateTime(json.getString(weatherFactory.getTimeFieldString())))
+        .filter(Objects::nonNull)
+        .filter(t -> t.isAfter(time))
+        .sorted()
+        .toList();
+  }
+
+  /**
+   * Create a query string to search for all time keys after the given time for a specific
+   * coordinate.
+   *
+   * @param time given timestamp (exclusive lower bound)
+   * @param coordinateId the coordinate ID to filter on
+   * @return the query string
+   */
+  private String createQueryStringForFollowingTimeKeysAndCoordinate(
+      ZonedDateTime time, int coordinateId) {
+    return "SELECT a."
+        + weatherFactory.getTimeFieldString()
+        + " FROM "
+        + connector.getBucketName()
+        + " AS a WHERE a."
+        + coordinateIdColumnName
+        + " = "
+        + coordinateId
+        + " AND META().id > '"
+        + generateWeatherKey(time, coordinateId)
+        + "'";
   }
 
   /**

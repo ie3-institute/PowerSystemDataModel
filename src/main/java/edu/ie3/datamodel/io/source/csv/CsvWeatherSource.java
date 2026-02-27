@@ -114,7 +114,7 @@ public class CsvWeatherSource extends WeatherSource {
 
     List<Point> invalidCoordinates =
         coordinates.stream()
-            .filter(coordinate -> !coordinateToTimeSeries.containsKey(coordinate))
+            .filter(coordinate -> idCoordinateSource.getId(coordinate).isEmpty())
             .toList();
 
     if (!invalidCoordinates.isEmpty()) {
@@ -131,8 +131,13 @@ public class CsvWeatherSource extends WeatherSource {
 
     if (result.isEmpty()) {
       throw new NoDataException(
-          "No weather data found for the given time interval: " + timeInterval);
+          "No weather data found for any of the requested coordinates in the given time interval: "
+              + timeInterval);
     }
+    Set<Point> missing =
+        coordinates.stream().filter(c -> !result.containsKey(c)).collect(Collectors.toSet());
+    if (!missing.isEmpty())
+      log.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
     return result;
   }
 
@@ -142,6 +147,8 @@ public class CsvWeatherSource extends WeatherSource {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
 
     if (timeSeries == null) {
+      if (idCoordinateSource.getId(coordinate).isEmpty())
+        throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
       throw new NoDataException("No weather data found for the given coordinate: " + coordinate);
     }
 
@@ -196,7 +203,18 @@ public class CsvWeatherSource extends WeatherSource {
   @Override
   public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time) {
     return coordinateToTimeSeries.entrySet().stream()
-        .collect(Collectors.toMap(Map.Entry::getKey, t -> t.getValue().getTimeKeysAfter(time)));
+        .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getTimeKeysAfter(time)))
+        .entrySet()
+        .stream()
+        .filter(e -> !e.getValue().isEmpty())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate) {
+    IndividualTimeSeries<WeatherValue> series = coordinateToTimeSeries.get(coordinate);
+    if (series == null) return Collections.emptyList();
+    return series.getTimeKeysAfter(time);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
