@@ -127,9 +127,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
             .filter(coordinate -> idCoordinateSource.getId(coordinate).isEmpty())
             .toList();
 
-    if (!invalidCoordinates.isEmpty()) {
+    if (!invalidCoordinates.isEmpty())
       throw new NoDataException("No data for given coordinates: " + invalidCoordinates);
-    }
 
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     for (Point coordinate : coordinates) {
