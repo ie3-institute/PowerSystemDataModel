@@ -38,7 +38,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
   private final JsonDataSource dataSource;
   private final FileLoadProfileMetaInformation metaInformation;
   private final MarkovLoadModelFactory factory;
-  private volatile MarkovLoadModel cachedModel;
+  private MarkovLoadModel cachedModel;
 
   public JsonMarkovProfileSource(
       JsonDataSource dataSource, FileLoadProfileMetaInformation metaInformation) {
