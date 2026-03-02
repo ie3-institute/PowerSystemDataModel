@@ -65,7 +65,22 @@ public abstract class WeatherSource extends EntitySource {
       return true;
     }
     Duration step = Duration.between(stepReference, fallback);
-    if (step.isNegative() || step.isZero()) {
+    if (step.isNegative()) {
+      // stepReference is after fallback — data inconsistency, accept as a safe default
+      log.warn(
+          "Unexpected step reference {} after fallback {} when checking fallback for {}. Accepting fallback unconditionally.",
+          stepReference,
+          fallback,
+          requested);
+      return true;
+    }
+    if (step.isZero()) {
+      // Two consecutive known timestamps are identical — step size cannot be determined
+      log.warn(
+          "Cannot determine time step size for fallback (duplicate timestamps at {}). "
+              + "Accepting fallback from {} unconditionally.",
+          fallback,
+          fallback);
       return true;
     }
     Duration gap = Duration.between(fallback, requested);

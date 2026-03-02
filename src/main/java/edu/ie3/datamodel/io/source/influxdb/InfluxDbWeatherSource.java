@@ -93,14 +93,14 @@ public class InfluxDbWeatherSource extends WeatherSource {
     Map<Point, Optional<Integer>> coordinatesToId =
         coordinates.stream().collect(Collectors.toMap(point -> point, idCoordinateSource::getId));
 
-    List<Point> invalidCoordinates =
+    List<Point> unknownCoordinates =
         coordinatesToId.entrySet().stream()
             .filter(entry -> entry.getValue().isEmpty())
             .map(Map.Entry::getKey)
             .toList();
 
-    if (!invalidCoordinates.isEmpty())
-      throw new NoDataException("No data for given coordinates: " + invalidCoordinates);
+    if (!unknownCoordinates.isEmpty())
+      log.warn("Unable to find coordinate IDs for the following coordinates, skipping: {}", unknownCoordinates);
 
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     try (InfluxDB session = connector.getSession()) {
@@ -242,7 +242,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval, Point coordinate) throws NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
-      throw new NoDataException("No data for given coordinates: " + coordinate);
+      throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
     }
     try (InfluxDB session = connector.getSession()) {
       String query =

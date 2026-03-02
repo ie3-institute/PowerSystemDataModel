@@ -123,15 +123,13 @@ public class SqlWeatherSource extends WeatherSource {
     if (coordinates.isEmpty())
       throw new NoDataException("No coordinates provided for weather data query.");
 
-    List<Point> invalidCoordinates =
+    List<Point> unknownCoordinates =
         coordinates.stream()
             .filter(coordinate -> idCoordinateSource.getId(coordinate).isEmpty())
             .toList();
 
-    if (!invalidCoordinates.isEmpty()) {
-      log.warn("Unable to match coordinates {} to coordinate IDs", invalidCoordinates);
-      throw new NoDataException("No data for given coordinates: " + invalidCoordinates);
-    }
+    if (!unknownCoordinates.isEmpty())
+      log.warn("Unable to find coordinate IDs for the following coordinates, skipping: {}", unknownCoordinates);
 
     Set<Integer> coordinateIds =
         coordinates.stream()

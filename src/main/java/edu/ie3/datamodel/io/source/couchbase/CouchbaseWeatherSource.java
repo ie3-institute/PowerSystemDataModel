@@ -29,12 +29,9 @@ import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Couchbase Source for weather data */
 public class CouchbaseWeatherSource extends WeatherSource {
-  private static final Logger logger = LoggerFactory.getLogger(CouchbaseWeatherSource.class);
   private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
 
   /** The start of the document key, comparable to a table name in relational databases */
@@ -108,7 +105,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) throws SourceException, NoDataException {
-    logger.warn(
+    log.warn(
         "By not providing coordinates you are forcing couchbase to check all possible coordinates one by one."
             + " This is not very performant. Please consider providing specific coordinates instead.");
     return getWeather(timeInterval, idCoordinateSource.getAllCoordinates());
@@ -122,13 +119,13 @@ public class CouchbaseWeatherSource extends WeatherSource {
     if (coordinates.isEmpty())
       throw new NoDataException("No coordinates provided for weather data query.");
 
-    List<Point> invalidCoordinates =
+    List<Point> unknownCoordinates =
         coordinates.stream()
             .filter(coordinate -> idCoordinateSource.getId(coordinate).isEmpty())
             .toList();
 
-    if (!invalidCoordinates.isEmpty())
-      throw new NoDataException("No data for given coordinates: " + invalidCoordinates);
+    if (!unknownCoordinates.isEmpty())
+      log.warn("Unable to find coordinate IDs for the following coordinates, skipping: {}", unknownCoordinates);
 
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     for (Point coordinate : coordinates) {
@@ -141,7 +138,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
         try {
           jsonWeatherInputs = queryResult.rowsAsObject();
         } catch (DecodingFailureException ex) {
-          logger.warn("Failed to decode weather data for coordinate {}, skipping.", coordinate, ex);
+          log.warn("Failed to decode weather data for coordinate {}, skipping.", coordinate, ex);
           continue;
         }
         if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
@@ -166,7 +163,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
             .filter(c -> !coordinateToTimeSeries.containsKey(c))
             .collect(Collectors.toSet());
     if (!missing.isEmpty())
-      logger.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
+      log.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
     return coordinateToTimeSeries;
   }
 
@@ -223,7 +220,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
       ZonedDateTime fallbackTime = fallbacks.get(0).getTime();
       ZonedDateTime stepRef = fallbacks.size() > 1 ? fallbacks.get(1).getTime() : null;
       if (isFallbackAcceptable(date, fallbackTime, stepRef)) {
-        logger.warn(
+        log.warn(
             "No weather data for coordinate {} at {}. Using last known value from {}.",
             coordinate,
             date,
@@ -282,7 +279,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
             .toList();
       }
     } catch (DecodingFailureException ex) {
-      logger.warn(
+      log.warn(
           "Failed to decode fallback weather data for coordinate ID {} before {}",
           coordinateId,
           date);
@@ -299,7 +296,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
     try {
       jsonWeatherInputs = queryResult.rowsAsObject();
     } catch (DecodingFailureException ex) {
-      logger.error("Querying weather inputs failed!", ex);
+      log.error("Querying weather inputs failed!", ex);
     }
     if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
       return groupTime(
@@ -368,7 +365,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
     try {
       jsonInputs = queryResult.rowsAsObject();
     } catch (DecodingFailureException ex) {
-      logger.warn("Failed to decode time keys for coordinate {}", coordinate);
+      log.warn("Failed to decode time keys for coordinate {}", coordinate);
       return Collections.emptyList();
     }
     if (jsonInputs == null || jsonInputs.isEmpty()) {
@@ -431,7 +428,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
     jsonObj.removeKey(coordinateIdColumnName);
     Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
     if (coordinate.isEmpty()) {
-      logger.warn("Unable to match coordinate ID {} to a coordinate", coordinateId);
+      log.warn("Unable to match coordinate ID {} to a coordinate", coordinateId);
       return Optional.empty();
     }
     Map<String, String> fieldToValueMap =
@@ -453,8 +450,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
   private Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(JsonObject jsonObj) {
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(jsonObj);
     if (data.isEmpty()) {
-      logger.warn("Unable to parse json object");
-      logger.debug("The following json could not be parsed:\n{}", jsonObj);
+      log.warn("Unable to parse json object");
+      log.debug("The following json could not be parsed:\n{}", jsonObj);
       return Optional.empty();
     }
     return weatherFactory.get(data.get()).getData();

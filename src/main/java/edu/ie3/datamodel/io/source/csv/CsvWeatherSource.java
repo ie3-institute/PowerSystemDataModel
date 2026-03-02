@@ -112,14 +112,6 @@ public class CsvWeatherSource extends WeatherSource {
     if (coordinates.isEmpty())
       throw new NoDataException("No coordinates provided for weather data query.");
 
-    List<Point> invalidCoordinates =
-        coordinates.stream()
-            .filter(coordinate -> idCoordinateSource.getId(coordinate).isEmpty())
-            .toList();
-
-    if (!invalidCoordinates.isEmpty())
-      throw new NoDataException("No data for given coordinates: " + invalidCoordinates);
-
     Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
         coordinateToTimeSeries.entrySet().stream()
             .filter(entry -> coordinates.contains(entry.getKey()))

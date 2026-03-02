@@ -114,8 +114,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     def ex = thrown(NoDataException)
-    ex.message.contains("No data for given coordinates")
-    ex.message.contains(coordinates.toString())
+    ex.message.contains("No weather data found for any of the requested coordinates in the given time interval")
   }
 
   def "A SqlWeatherSource can read all weather data in a given time interval"() {
@@ -203,21 +202,21 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
   }
 
-  def "A SqlWeatherSource throws NoDataException for mixed valid and invalid coordinates"() {
+  def "A SqlWeatherSource returns partial results for mixed valid and invalid coordinates"() {
     given:
     def validCoordinate = CosmoWeatherTestData.COORDINATE_193186
     def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
     def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
 
     when:
-    source.getWeather(timeInterval, [
+    def result = source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
     then:
-    def ex = thrown(NoDataException)
-    ex.message.contains("No data for given coordinates")
-    ex.message.contains(invalidCoordinate.toString())
+    result.size() == 1
+    result.containsKey(validCoordinate)
+    !result.containsKey(invalidCoordinate)
   }
 }
