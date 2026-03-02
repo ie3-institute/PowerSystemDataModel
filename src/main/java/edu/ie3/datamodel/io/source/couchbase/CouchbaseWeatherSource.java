@@ -125,7 +125,9 @@ public class CouchbaseWeatherSource extends WeatherSource {
             .toList();
 
     if (!unknownCoordinates.isEmpty())
-      log.warn("Unable to find coordinate IDs for the following coordinates, skipping: {}", unknownCoordinates);
+      log.warn(
+          "Unable to find coordinate IDs for the following coordinates, skipping: {}",
+          unknownCoordinates);
 
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     for (Point coordinate : coordinates) {
