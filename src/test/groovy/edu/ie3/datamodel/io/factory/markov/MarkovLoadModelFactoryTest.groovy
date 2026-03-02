@@ -56,6 +56,66 @@ class MarkovLoadModelFactoryTest extends Specification {
     thrown(FactoryException)
   }
 
+  def "buildModel throws FactoryException when threshold count does not match state count"() {
+    given: "states=2 requires exactly 1 threshold, but 2 are provided"
+    def invalidJson = objectMapper.readTree(validModelJson()
+        .replace('"thresholds_right": [0.5]', '"thresholds_right": [0.3, 0.7]'))
+
+    when:
+    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+
+    then:
+    thrown(FactoryException)
+  }
+
+  def "buildModel throws FactoryException when schema field is missing"() {
+    given:
+    def invalidJson = objectMapper.readTree(validModelJson()
+        .replace('"schema": "markov.load.v1",', ''))
+
+    when:
+    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+
+    then:
+    thrown(FactoryException)
+  }
+
+  def "buildModel throws FactoryException when generated_at timestamp is invalid"() {
+    given:
+    def invalidJson = objectMapper.readTree(validModelJson()
+        .replace('"generated_at": "2025-01-01T00:00:00Z"', '"generated_at": "not-a-timestamp"'))
+
+    when:
+    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+
+    then:
+    thrown(FactoryException)
+  }
+
+  def "buildModel throws FactoryException when bucket_encoding formula is missing"() {
+    given:
+    def invalidJson = objectMapper.readTree(validModelJson()
+        .replace('"bucket_encoding": { "formula": "hour_of_day" }', '"bucket_encoding": {}'))
+
+    when:
+    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+
+    then:
+    thrown(FactoryException)
+  }
+
+  def "buildModel throws FactoryException when gmms buckets array is missing"() {
+    given:
+    def invalidJson = objectMapper.readTree(validModelJson()
+        .replace('"buckets":', '"not_buckets":'))
+
+    when:
+    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+
+    then:
+    thrown(FactoryException)
+  }
+
   private static String validModelJson() {
     return """
       {

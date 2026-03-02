@@ -313,7 +313,7 @@ public class MarkovLoadModel {
       double sanitizedValue = 0d;
       if (state < row.length) {
         double value = row[state];
-        if (value > 0d && !Double.isNaN(value) && gmmStates[bucket][state] != null) {
+        if (value > 0d && gmmStates[bucket][state] != null) {
           sanitizedValue = value;
           sum += value;
         }
