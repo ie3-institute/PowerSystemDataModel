@@ -58,7 +58,7 @@ The following keys are supported until now:
      - ``time,p,h``
    * - pqh
      - Active, reactive and heat power.
-     -``time,p,q,h``
+     - ``time,p,q,h``
    * - v
      - Voltage mangnitude in pu and angle in °.
      - ``time,vMag,vAng``
