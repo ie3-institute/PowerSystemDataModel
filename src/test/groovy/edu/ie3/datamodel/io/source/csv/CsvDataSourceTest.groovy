@@ -154,13 +154,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid",
       "active_power_gradient",
       "capex",
-      "cosphi_rated",
+      "cos_phi_rated",
       "eta_conv",
       "id",
       "opex",
       "s_rated",
-      "olmcharacteristic",
-      "cosPhiFixed"
+      "olm_characteristic",
+      "cos_phi_fixed"
     ] as String[]
     def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\",\"cosPhiFixed:{(0.0,1.0)}\""
 
@@ -168,13 +168,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
       activePowerGradient: "25.0",
       capex              : "100.0",
-      cosphiRated        : "0.95",
+      cosPhiRated        : "0.95",
       etaConv            : "98.0",
       id                 : "test_bmTypeInput",
       opex               : "50.0",
       sRated             : "25.0",
       uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-      olmcharacteristic  : "olm:{(0.0,1.0)}",
+      olmCharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : "cosPhiFixed:{(0.0,1.0)}"
     ]
   }
@@ -292,13 +292,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid",
       "active_power_gradient",
       "capex",
-      "cosphi_rated",
+      "cos_phi_rated",
       "eta_conv",
       "id",
       "opex",
       "s_rated",
-      "olmcharacteristic",
-      "cosPhiFixed"
+      "olm_characteristic",
+      "cos_phi_fixed"
     ] as String[]
     def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\","
 
@@ -306,13 +306,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
       activePowerGradient: "25.0",
       capex              : "100.0",
-      cosphiRated        : "0.95",
+      cosPhiRated        : "0.95",
       etaConv            : "98.0",
       id                 : "test_bmTypeInput",
       opex               : "50.0",
       sRated             : "25.0",
       uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-      olmcharacteristic  : "olm:{(0.0,1.0)}",
+      olmCharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : ""
     ]
   }
@@ -323,7 +323,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid",
       "active_power_gradient",
       "capex",
-      "cosphi_rated",
+      "cos_phi_rated",
       "eta_conv",
       "id",
       "opex",
@@ -349,9 +349,9 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     def invalidHeadline = [
       "uuid",
       "active_power_gradient",
-      "Active_Power_Gradient",
+      "active_power_gradient",
       "capex",
-      "cosphi_rated",
+      "cos_phi_rated",
       "eta_conv",
       "id",
       "opex",
