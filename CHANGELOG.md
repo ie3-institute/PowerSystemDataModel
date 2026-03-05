@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added abstraction for power value sources [#1438](https://github.com/ie3-institute/PowerSystemDataModel/issues/1438)
 - Add ground temperatures level 1 and 2 as option to weather data. [#1343](https://github.com/ie3-institute/PowerSystemDataModel/issues/1343)
 - Add validation for required fields in ICON and COSMO `TimebasedWeatherValueFactories` [#1537](https://github.com/ie3-institute/PowerSystemDataModel/issues/1537)
+- Create data model for air condition [#1396](https://github.com/ie3-institute/PowerSystemDataModel/issues/1396)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
@@ -45,6 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove snapshot repository [#1538](https://github.com/ie3-institute/PowerSystemDataModel/issues/1538)
 - Refactored the handling of power profiles [#1514](https://github.com/ie3-institute/PowerSystemDataModel/issues/1514)
 - Updated `gradle` dependency shadowJar to work with Gradle 9 [#1545](https://github.com/ie3-institute/PowerSystemDataModel/issues/1545)
+- Removed `ThermalUnits` (duplication to `ThermalGrids`) [#874](https://github.com/ie3-institute/PowerSystemDataModel/issues/874)
+- Removed market reaction field from `PvInput`, `WecInput`, `BmInput`, `ChpInput` [#1554](https://github.com/ie3-institute/PowerSystemDataModel/issues/1554)
+- Changed `Intermediate` to `Transition` for BdewSeason [#1419](https://github.com/ie3-institute/PowerSystemDataModel/issues/1419)
 
 ## [8.1.0] - 2025-07-25
 
@@ -133,6 +137,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced `LoadProfileInput` with `LoadProfileTimeSeries` [#1228](https://github.com/ie3-institute/PowerSystemDataModel/issues/1228)
 - Enhance `CsvDataSource` [#1246](https://github.com/ie3-institute/PowerSystemDataModel/issues/1246)
 - Updated `_joint_grid` csv files from simona [#750](https://github.com/ie3-institute/PowerSystemDataModel/issues/750)
+- Small harmonisation in `ThermalGrid` validation [#1549](https://github.com/ie3-institute/PowerSystemDataModel/issues/1549)
 
 ### Updates
 - Updated gradle to v8.13 [#1264](https://github.com/ie3-institute/PowerSystemDataModel/issues/1264)

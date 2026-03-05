@@ -40,6 +40,7 @@ package models.input.container {
     RawGridElements ..|> InputContainer
 
     class SystemParticipants {
+        - airConditions: Set<AcInput>
         - bmPlants: Set<BmInput>
         - chpPlants: Set<ChpInput>
         - evcs: Set<EvcsInput>

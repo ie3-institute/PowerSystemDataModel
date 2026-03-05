@@ -18,7 +18,6 @@ public class WecInputFactory
     extends SystemParticipantInputEntityFactory<
         WecInput, SystemParticipantTypedEntityData<WecTypeInput>> {
   private static final String TYPE = "type";
-  private static final String MARKET_REACTION = "marketReaction";
 
   public WecInputFactory() {
     super(WecInput.class);
@@ -26,7 +25,7 @@ public class WecInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {TYPE, MARKET_REACTION};
+    return new String[] {TYPE};
   }
 
   @Override
@@ -40,9 +39,7 @@ public class WecInputFactory
       OperationTime operationTime) {
     WecTypeInput typeInput = data.getTypeInput();
     EmInput em = data.getControllingEm().orElse(null);
-    final boolean marketReaction = data.getBoolean(MARKET_REACTION);
 
-    return new WecInput(
-        uuid, id, operator, operationTime, node, qCharacteristics, em, typeInput, marketReaction);
+    return new WecInput(uuid, id, operator, operationTime, node, qCharacteristics, em, typeInput);
   }
 }
