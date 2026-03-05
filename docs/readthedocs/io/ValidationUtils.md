@@ -57,6 +57,7 @@ The ValidationUtils include validation checks for...
     - MeasurementUnitInput
 - SystemParticipantValidationUtils
     - SystemParticipantInput
+        - AcInput
         - BmInput
         - ChpInput
         - EvInput
@@ -67,7 +68,8 @@ The ValidationUtils include validation checks for...
         - StorageInput
         - WecInput
         - EvcsInput (also checks ChargingPointType)
-    - SystemParticipantTypeInput
+  - SystemParticipantTypeInput
+        - AcTypeInput
         - BmTypeInput
         - ChpTypeInput
         - EvTypeInput

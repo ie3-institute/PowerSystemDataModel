@@ -62,11 +62,6 @@ Detailed model of a photovoltaic power plant.
      -
      - Temperature correction factor merging thermal influences
 
-   * - marketReaction
-     -
-     - Whether to adapt output based on (volatile)
-       market price or not
-
    * - sRated
      - kVA
      - Rated apparent power
