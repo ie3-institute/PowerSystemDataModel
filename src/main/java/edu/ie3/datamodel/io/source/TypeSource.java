@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
@@ -18,12 +17,8 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
-import edu.ie3.datamodel.utils.Try;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link
@@ -55,26 +50,19 @@ public class TypeSource extends EntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    List<Try<Void, ValidationException>> participantResults =
-        new ArrayList<>(
-            Stream.of(
-                    EvTypeInput.class,
-                    HpTypeInput.class,
-                    BmTypeInput.class,
-                    WecTypeInput.class,
-                    ChpTypeInput.class,
-                    StorageTypeInput.class)
-                .map(c -> validate(c, dataSource, systemParticipantTypeInputFactory))
-                .toList());
-
-    participantResults.addAll(
-        List.of(
-            validate(OperatorInput.class, dataSource, operatorInputFactory),
-            validate(LineTypeInput.class, dataSource, lineTypeInputFactory),
-            validate(Transformer2WTypeInput.class, dataSource, transformer2WTypeInputFactory),
-            validate(Transformer3WTypeInput.class, dataSource, transformer3WTypeInputFactory)));
-
-    Try.scanCollection(participantResults, Void.class, FailedValidationException::new).getOrThrow();
+    validate(
+        dataSource,
+        EvTypeInput.class,
+        HpTypeInput.class,
+        AcTypeInput.class,
+        BmTypeInput.class,
+        WecTypeInput.class,
+        ChpTypeInput.class,
+        StorageTypeInput.class,
+        OperatorInput.class,
+        LineTypeInput.class,
+        Transformer2WTypeInput.class,
+        Transformer3WTypeInput.class);
   }
 
   /**
@@ -168,6 +156,19 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, HpTypeInput> getHpTypes() throws SourceException {
     return getEntities(HpTypeInput.class, dataSource, systemParticipantTypeInputFactory);
+  }
+
+  /**
+   * Returns a set of {@link AcTypeInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link AcTypeInput} which has to be checked manually, as
+   * {@link AcTypeInput#equals(Object)} is NOT restricted on the uuid of {@link AcTypeInput}.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link AcTypeInput} entities
+   */
+  public Map<UUID, AcTypeInput> getAcTypes() throws SourceException {
+    return getEntities(AcTypeInput.class, dataSource, systemParticipantTypeInputFactory);
   }
 
   /**

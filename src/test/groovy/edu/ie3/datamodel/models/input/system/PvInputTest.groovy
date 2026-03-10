@@ -22,7 +22,7 @@ class PvInputTest extends Specification {
 
     when:
     def alteredUnit = pvInput.copy().albedo(10).azimuth(Quantities.getQuantity(10, DEGREE_GEOM)).elevationAngle(Quantities.getQuantity(50, DEGREE_GEOM))
-        .etaConv(Quantities.getQuantity(50d, PERCENT)).kG(10).kT(5).marketReaction(true).sRated(Quantities.getQuantity(0d, KILOVOLTAMPERE))
+        .etaConv(Quantities.getQuantity(50d, PERCENT)).kG(10).kT(5).sRated(Quantities.getQuantity(0d, KILOVOLTAMPERE))
         .cosPhiRated(0.7d).build()
 
     then:
@@ -34,7 +34,6 @@ class PvInputTest extends Specification {
       qCharacteristics == pvInput.qCharacteristics
       sRated == Quantities.getQuantity(0d, KILOVOLTAMPERE)
       cosPhiRated == 0.7d
-      marketReaction
       albedo == 10
       azimuth == Quantities.getQuantity(10, DEGREE_GEOM)
       etaConv == Quantities.getQuantity(50, PERCENT)
@@ -61,7 +60,6 @@ class PvInputTest extends Specification {
       qCharacteristics == pvInput.qCharacteristics
       sRated == pvInput.sRated * 2d
       cosPhiRated == pvInput.cosPhiRated
-      marketReaction == pvInput.marketReaction
       albedo == pvInput.albedo
       azimuth == pvInput.azimuth
       etaConv == pvInput.etaConv

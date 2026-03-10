@@ -244,6 +244,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     PvResult                 || "prefix_pv_res_suffix"
     ChpResult                || "prefix_chp_res_suffix"
     HpResult                 || "prefix_hp_res_suffix"
+    AcResult                 || "prefix_ac_res_suffix"
     WecResult                || "prefix_wec_res_suffix"
     StorageResult            || "prefix_storage_res_suffix"
     EvcsResult               || "prefix_evcs_res_suffix"
@@ -281,6 +282,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     LoadInput               || "load_input"
     StorageInput            || "storage_input"
     HpInput                 || "hp_input"
+    AcInput                 || "ac_input"
     LineInput               || "line_input"
     SwitchInput             || "switch_input"
     NodeInput               || "node_input"
@@ -414,7 +416,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     given:
     EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
     BdewLoadProfileTimeSeries timeSeries = Mock(BdewLoadProfileTimeSeries)
-    timeSeries.loadProfile >> type
+    timeSeries.powerProfileKey >> type
 
     when:
     Optional<String> actual = strategy.getEntityName(timeSeries)
@@ -424,8 +426,8 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz                     | type                       || expectedFileName
-    BdewLoadProfileTimeSeries | BdewStandardLoadProfile.G3 || "lpts_g3"
+    clazz                     | type                           || expectedFileName
+    BdewLoadProfileTimeSeries | BdewStandardLoadProfile.G3.key || "lpts_g3"
   }
 
   def "A EntityPersistenceNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {

@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
-import edu.ie3.datamodel.io.factory.input.NodeInputFactory;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -15,6 +15,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.Try;
@@ -62,14 +63,14 @@ public abstract class Processor<T> {
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
 
   private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
-  private static final String OPERATES_FROM = "operatesFrom";
-  private static final String OPERATES_UNTIL = "operatesUntil";
+  private static final String OPERATES_FROM = FieldNamingStrategy.OPERATES_FROM;
+  private static final String OPERATES_UNTIL = FieldNamingStrategy.OPERATES_UNTIL;
 
-  private static final String VOLT_LVL_FIELD_NAME = "voltLvl";
-  private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
-  private static final String V_RATED = NodeInputFactory.V_RATED;
+  private static final String VOLT_LVL_FIELD_NAME = FieldNamingStrategy.VOLT_LVL;
+  private static final String VOLT_LVL = FieldNamingStrategy.VOLT_LVL;
+  private static final String V_RATED = FieldNamingStrategy.V_RATED;
 
-  private static final String PARALLEL_DEVICES = "parallelDevices";
+  private static final String PARALLEL_DEVICES = FieldNamingStrategy.PARALLEL_DEVICES;
 
   /**
    * Instantiates a Processor for a foreseen class
@@ -271,6 +272,7 @@ public abstract class Processor<T> {
       case "LoadProfile", "BdewStandardLoadProfile", "RandomLoadProfile" ->
           resultStringBuilder.append(((LoadProfile) methodReturnObject).getKey());
       case "AssetTypeInput",
+          "AcTypeInput",
           "BmTypeInput",
           "ChpTypeInput",
           "EvTypeInput",
@@ -304,6 +306,8 @@ public abstract class Processor<T> {
           resultStringBuilder.append(((CharacteristicInput<?, ?>) methodReturnObject).serialize());
       case "InputModelType" ->
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
+      case "PowerProfileKey" ->
+          resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
       default ->
           throw new EntityProcessorException(
               "Unable to process value for attribute/field '"

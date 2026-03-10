@@ -47,9 +47,8 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
       "elevationangle"  : "6",
       "kg"              : "7",
       "kt"              : "8",
-      "marketreaction"  : "true",
       "srated"          : "9",
-      "cosphirated"          : "10",
+      "cosphirated"     : "10",
     ]
     def inputClass = PvInput
     def nodeInput = Mock(NodeInput)
@@ -85,7 +84,6 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
       elevationAngle == getQuant(parameter["elevationangle"], StandardUnits.SOLAR_ELEVATION_ANGLE)
       kG == Double.parseDouble(parameter["kg"])
       kT == Double.parseDouble(parameter["kt"])
-      marketReaction
       sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
       cosPhiRated == Double.parseDouble(parameter["cosphirated"])
     }

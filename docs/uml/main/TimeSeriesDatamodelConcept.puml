@@ -22,90 +22,36 @@ package models {
     childNote .. input
     childNote .. voltagelevels
 
+    interface PowerProfileKey {
+        - value: String
+        - noKeyAssigned: boolean
+    }
+
+    interface PowerProfile {
+        + getKey(): PowerProfileKey
+    }
+    PowerProfile *-- PowerProfileKey
+
     interface LoadProfile {
-        + getKey: String
-        + {static} parse(String): LoadProfile
-        + {static} getAllProfiles: LoadProfile[]
-        + {static} getProfile(T[], String): T
-        + enum DefaultLoadProfiles
         + enum RandomLoadProfile
     }
+    LoadProfile ..|> PowerProfile
 
-    DefaultLoadProfiles --|> LoadProfile
-    RandomLoadProfile --|> LoadProfile
-
-    interface StandardLoadProfile {
-        + {static} parse(String): StandardLoadProfile
-    }
+    interface StandardLoadProfile {}
     StandardLoadProfile ..|> LoadProfile
 
+    interface TemperatureDependantLoadProfile {}
+    TemperatureDependantLoadProfile ..|> LoadProfile
+
     enum BdewLoadProfile {
-        - key: String
-        + {static} get(String): BdewLoadProfile
+        - key: PowerProfileKey
     }
     BdewLoadProfile ..|> StandardLoadProfile
 
-    package value {
-        interface Value
-
-        class EnergyPriceValue {
-            - price: ComparableQuantity<SpecificCurrency> [€/MWh]
-        }
-        EnergyPriceValue ..|> Value
-
-        class HeatDemandValue {
-            - heatDemand : ComparableQuantity<Power> [kW]
-        }
-        HeatDemandValue ..|> Value
-
-        class PValue {
-            - p: ComparableQuantity<Power> [kW]
-        }
-        PValue ..|> Value
-
-        class HeatAndPValue {
-            - heatDemand: ComparableQuantity<Power> [kW]
-        }
-        HeatAndPValue --|> PValue
-
-        class SValue {
-            - q: ComparableQuantity<Power> [kVAr]
-        }
-        SValue --|> PValue
-
-        class HeatAndSValue {
-            - heatDemand: ComparableQuantity<Power> [kW]
-        }
-        HeatAndSValue --|> SValue
-
-        class SolarIrradianceValue {
-            - directIrradiance: ComparableQuantity<Irradiance> [W/m²]
-            - diffuseIrradiance: ComparableQuantity<Irradiance> [W/m²]
-        }
-        SolarIrradianceValue ..|> Value
-
-        class TemperatureValue {
-          - temperature: ComparableQuantity<Temperature> [°C]
-        }
-        TemperatureValue ..|> Value
-
-        class WindValue {
-          - direction: ComparableQuantity<Angle> [°]
-          - velocity: ComparableQuantity<Speed> [m/s]
-        }
-        WindValue ..|> Value
-
-        class WeatherValue {
-          - coordinate: Point
-          - solarIrradiance: SolarIrradianceValue
-          - temperature: TemperatureValue
-          - wind: WindValue
-        }
-        WeatherValue ..|> Value
-        WeatherValue *-- SolarIrradianceValue
-        WeatherValue *-- TemperatureValue
-        WeatherValue *-- WindValue
+    enum NbwTemperatureDependantLoadProfile {
+        - key: PowerProfileKey
     }
+    NbwTemperatureDependantLoadProfile ..|> TemperatureDependantLoadProfile
 
     package timeseries {
         abstract class TimeSeries<E extends Entry<V>, V extends Value> {
@@ -131,22 +77,21 @@ package models {
         }
         RepetitiveTimeSeries --|> TimeSeries
 
-        abstract class LoadProfileTimeSeries<E extends LoadProfileEntry> {
-            - loadProfile: StandardLoadProfile
-            - valueMapping: Map<Key, Map<Integer, E>>
-            + getLoadProfile(): LoadProfile
-            # fromTime(ZonedDateTime): Key
+        abstract class LoadProfileTimeSeries<V extends LoadValues> {
+            - powerProfileKey: PowerProfileKey
+            - valueMapping: Map<Integer, V>
+            + maxPower(): Optional<ComparableQuantity<Power>>
+            + loadProfileScaling(): Optional<ComparableQuantity<Energy>>
+            + supplyValue(ZonedDateTime): Supplier<Optional<PValue>>
         }
         LoadProfileTimeSeries --|> RepetitiveTimeSeries
-        LoadProfileTimeSeries *-- LoadProfile
+        LoadProfileTimeSeries *-- PowerProfileKey
 
         class BDEWLoadProfileTimeSeries {}
         BDEWLoadProfileTimeSeries --|> LoadProfileTimeSeries
-        BDEWLoadProfileTimeSeries *-- BdewLoadProfileEntry
 
         class RandomLoadProfileTimeSeries {}
         RandomLoadProfileTimeSeries --|> LoadProfileTimeSeries
-        RandomLoadProfileTimeSeries *-- RandomLoadProfileEntry
 
         abstract class TimeSeriesEntry <V extends Value> {
             # value: V
@@ -160,25 +105,108 @@ package models {
         TimeBasedValue --|> TimeSeriesEntry
         TimeBasedValue ..|> Comparable: <<bind>>:<TimeBasedValue>
 
-        class LoadProfileEntry {
-            - dayOfWeek: DayOfWeek
-            - quarterHourOfDay: int
-            + getDayOfWeek(): DayOfWeek
-            + getQuarterHourOfDay(): Integer
+        class LoadProfileEntry<L extends LoadValues> {
+            - quarterHour: int
         }
         LoadProfileEntry --|> TimeSeriesEntry: <<bind>>:PValue
-
-        class BdewLoadProfileEntry {
-            - season: Season
-            + getSeason(): Season
-        }
-        BdewLoadProfileEntry --|> LoadProfileEntry
-
-        class RandomLoadProfileEntry {
-            - gev: GeneralizedExtremeValueDistribution
-        }
-        RandomLoadProfileEntry --|> LoadProfileEntry
     }
+    
+    package value {
+            interface Value
+    
+            class EnergyPriceValue {
+                - price: ComparableQuantity<SpecificCurrency> [€/MWh]
+            }
+            EnergyPriceValue ..|> Value
+    
+            class HeatDemandValue {
+                - heatDemand : ComparableQuantity<Power> [kW]
+            }
+            HeatDemandValue ..|> Value
+    
+            class PValue {
+                - p: ComparableQuantity<Power> [kW]
+            }
+            PValue ..|> Value
+    
+            class HeatAndPValue {
+                - heatDemand: ComparableQuantity<Power> [kW]
+            }
+            HeatAndPValue --|> PValue
+    
+            class SValue {
+                - q: ComparableQuantity<Power> [kVAr]
+            }
+            SValue --|> PValue
+    
+            class HeatAndSValue {
+                - heatDemand: ComparableQuantity<Power> [kW]
+            }
+            HeatAndSValue --|> SValue
+    
+            class SolarIrradianceValue {
+                - directIrradiance: ComparableQuantity<Irradiance> [W/m²]
+                - diffuseIrradiance: ComparableQuantity<Irradiance> [W/m²]
+            }
+            SolarIrradianceValue ..|> Value
+    
+            class TemperatureValue {
+              - temperature: ComparableQuantity<Temperature> [°C]
+            }
+            TemperatureValue ..|> Value
+    
+            class WindValue {
+              - direction: ComparableQuantity<Angle> [°]
+              - velocity: ComparableQuantity<Speed> [m/s]
+            }
+            WindValue ..|> Value
+    
+            class WeatherValue {
+              - coordinate: Point
+              - solarIrradiance: SolarIrradianceValue
+              - temperature: TemperatureValue
+              - wind: WindValue
+            }
+            WeatherValue ..|> Value
+            WeatherValue *-- SolarIrradianceValue
+            WeatherValue *-- TemperatureValue
+            WeatherValue *-- WindValue
+            
+            interface LoadValues {
+                + getValue(ZonedDateTime, PowerProfileKey): PValue
+                + getScheme(): Optional<Scheme>
+                
+                + interface Scheme {}
+            }
+            LoadValues ..|> Value
+            
+            class BdewLoadValues {
+                - scheme: BdewScheme
+                - values: Map<BdewKey, Double>
+                + getPower(ZonedDateTime): double
+                + get(BdewKey): double
+                + getMaxValue(boolean): double
+                + {static} dynamization(double, int): double
+                + interface BdewKey
+                + enum BdewSeason
+                + enum BdewScheme
+                + class BdewMap
+            }
+            BdewLoadValues --|> LoadValues
+
+            class RandomLoadValues {
+                - kSa: double
+                - kSu: double
+                - kWd: double
+                - mySa: double
+                - mySu: double
+                - myWd: double
+                - sigmaSa: double
+                - sigmaSu: double
+                - sigmaWd: double
+            }
+            RandomLoadValues --|> LoadValues
+        }
 }
 
 @enduml

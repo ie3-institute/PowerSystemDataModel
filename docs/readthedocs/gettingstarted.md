@@ -20,22 +20,14 @@ On [Maven central](https://search.maven.org/artifact/com.github.ie3-institute/Po
 <dependency>
   <groupId>com.github.ie3-institute</groupId>
   <artifactId>PowerSystemDataModel</artifactId>
-  <version>5.0.1</version>
+  <version>8.1.0</version>
 </dependency>
 ```
 
-### Snapshot releases
+### Releases
 
 Available on [OSS Sonatype](https://s01.oss.sonatype.org/).
-Add the correct repository:
-
-```xml
-<repositories>
-  <repository>https://s01.oss.sonatype.org/content/repositories/snapshots</repository>
-</repositories>
-```
-
-and add the dependency:
+Add the dependency:
 
 ```xml
 <dependency>

@@ -16,7 +16,7 @@ class ChpInputTest extends Specification {
 
     when:
     def alteredUnit = chpInput.copy().thermalBus(SystemParticipantTestData.thermalBus)
-        .type(SystemParticipantTestData.chpTypeInput).thermalStorage(SystemParticipantTestData.thermalStorage).marketReaction(true).build()
+        .type(SystemParticipantTestData.chpTypeInput).thermalStorage(SystemParticipantTestData.thermalStorage).build()
 
     then:
     alteredUnit.with {
@@ -27,7 +27,6 @@ class ChpInputTest extends Specification {
       qCharacteristics == chpInput.qCharacteristics
       thermalBus == SystemParticipantTestData.thermalBus
       thermalStorage == SystemParticipantTestData.thermalStorage
-      marketReaction
       type == SystemParticipantTestData.chpTypeInput
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
@@ -49,7 +48,6 @@ class ChpInputTest extends Specification {
       qCharacteristics == chpInput.qCharacteristics
       thermalBus == chpInput.thermalBus
       thermalStorage == chpInput.thermalStorage
-      marketReaction == chpInput.marketReaction
       type.sRated == chpInput.type.sRated * 2d
       sRated() == chpInput.type.sRated * 2d
       type.pThermal == chpInput.type.pThermal * 2d

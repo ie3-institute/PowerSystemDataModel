@@ -19,7 +19,6 @@ class BmInputTest extends Specification {
 
     when:
     def alteredUnit = bmInput.copy().type(SystemParticipantTestData.bmTypeInput)
-        .marketReaction(true)
         .costControlled(true).feedInTariff(Quantities.getQuantity(15, EURO_PER_MEGAWATTHOUR)).build()
 
     then:
@@ -28,7 +27,6 @@ class BmInputTest extends Specification {
       operationTime == bmInput.operationTime
       operator == bmInput.operator
       id == bmInput.id
-      marketReaction
       costControlled
       qCharacteristics == bmInput.qCharacteristics
       feedInTariff == Quantities.getQuantity(15, EURO_PER_MEGAWATTHOUR)
@@ -50,7 +48,6 @@ class BmInputTest extends Specification {
       operationTime == bmInput.operationTime
       operator == bmInput.operator
       id == bmInput.id
-      marketReaction == bmInput.marketReaction
       costControlled == bmInput.costControlled
       qCharacteristics == bmInput.qCharacteristics
       feedInTariff == bmInput.feedInTariff

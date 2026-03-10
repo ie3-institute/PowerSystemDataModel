@@ -21,6 +21,7 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
+import edu.ie3.datamodel.models.input.system.AcInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.ChpInput
 import edu.ie3.datamodel.models.input.system.EvInput
@@ -45,6 +46,7 @@ import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
+import edu.ie3.datamodel.models.result.system.AcResult
 import edu.ie3.datamodel.models.result.system.BmResult
 import edu.ie3.datamodel.models.result.system.ChpResult
 import edu.ie3.datamodel.models.result.system.EmResult
@@ -108,6 +110,8 @@ class FileNamingStrategyTest extends Specification {
     PvResult                 || Path.of("test_grid", "results", "participants")
     HpResult                 || Path.of("test_grid", "results", "participants")
     ChpResult                || Path.of("test_grid", "results", "participants")
+    HpResult                 || Path.of("test_grid", "results", "participants")
+    AcResult                 || Path.of("test_grid", "results", "participants")
     WecResult                || Path.of("test_grid", "results", "participants")
     StorageResult            || Path.of("test_grid", "results", "participants")
     EvcsResult               || Path.of("test_grid", "results", "participants")
@@ -146,6 +150,7 @@ class FileNamingStrategyTest extends Specification {
     LoadInput               || Path.of("test_grid", "input", "participants")
     StorageInput            || Path.of("test_grid", "input", "participants")
     HpInput                 || Path.of("test_grid", "input", "participants")
+    AcInput                 || Path.of("test_grid", "input", "participants")
     LineInput               || Path.of("test_grid", "input", "grid")
     SwitchInput             || Path.of("test_grid", "input", "grid")
     NodeInput               || Path.of("test_grid", "input", "grid")
@@ -250,6 +255,7 @@ class FileNamingStrategyTest extends Specification {
     PvResult                 || Path.of("test_grid", "results", "participants", "pv_res")
     ChpResult                || Path.of("test_grid", "results", "participants", "chp_res")
     HpResult                 || Path.of("test_grid", "results", "participants", "hp_res")
+    AcResult                 || Path.of("test_grid", "results", "participants", "ac_res")
     WecResult                || Path.of("test_grid", "results", "participants", "wec_res")
     StorageResult            || Path.of("test_grid", "results", "participants", "storage_res")
     EvcsResult               || Path.of("test_grid", "results", "participants", "evcs_res")
@@ -310,6 +316,7 @@ class FileNamingStrategyTest extends Specification {
     LoadInput               || Path.of("test_grid", "input", "participants", "load_input")
     StorageInput            || Path.of("test_grid", "input", "participants", "storage_input")
     HpInput                 || Path.of("test_grid", "input", "participants", "hp_input")
+    AcInput                 || Path.of("test_grid", "input", "participants", "ac_input")
     EvcsInput               || Path.of("test_grid", "input", "participants", "evcs_input")
   }
 
@@ -402,7 +409,7 @@ class FileNamingStrategyTest extends Specification {
     given:
     def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
     def timeSeries = Mock(LoadProfileTimeSeries)
-    timeSeries.loadProfile >> type
+    timeSeries.powerProfileKey >> type
 
     when:
     def actual = strategy.getFilePath(timeSeries)
@@ -412,8 +419,8 @@ class FileNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz                 | type                       || expectedFileName
-    LoadProfileTimeSeries | BdewStandardLoadProfile.G3 || Path.of("test_grid", "input", "participants", "time_series", "lpts_g3")
+    clazz                 | type                           || expectedFileName
+    LoadProfileTimeSeries | BdewStandardLoadProfile.G3.key || Path.of("test_grid", "input", "participants", "time_series", "lpts_g3")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory path for time series mapping"() {
@@ -510,6 +517,7 @@ class FileNamingStrategyTest extends Specification {
     LoadInput                || Optional.empty()
     StorageInput             || Optional.empty()
     HpInput                  || Optional.empty()
+    AcInput                  || Optional.empty()
     LineInput                || Optional.empty()
     SwitchInput              || Optional.empty()
     NodeInput                || Optional.empty()
@@ -617,6 +625,7 @@ class FileNamingStrategyTest extends Specification {
     PvResult                 || Path.of("pv_res")
     ChpResult                || Path.of("chp_res")
     HpResult                 || Path.of("hp_res")
+    AcResult                 || Path.of("ac_res")
     WecResult                || Path.of("wec_res")
     StorageResult            || Path.of("storage_res")
     EvcsResult               || Path.of("evcs_res")
@@ -655,6 +664,7 @@ class FileNamingStrategyTest extends Specification {
     LoadInput                || Path.of("load_input")
     StorageInput             || Path.of("storage_input")
     HpInput                  || Path.of("hp_input")
+    AcInput                  || Path.of("ac_input")
     LineInput                || Path.of("line_input")
     SwitchInput              || Path.of("switch_input")
     NodeInput                || Path.of("node_input")
@@ -710,7 +720,7 @@ class FileNamingStrategyTest extends Specification {
     given: "a naming strategy without pre- or suffixes"
     def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
     def timeSeries = Mock(LoadProfileTimeSeries)
-    timeSeries.loadProfile >> type
+    timeSeries.powerProfileKey >> type
 
     when:
     def actual = strategy.getFilePath(timeSeries)
@@ -720,8 +730,8 @@ class FileNamingStrategyTest extends Specification {
     actual.get() == expectedFilePath
 
     where:
-    clazz                 | type               || expectedFilePath
-    LoadProfileTimeSeries | BdewStandardLoadProfile.G3 || Path.of("lpts_g3")
+    clazz                 | type                           || expectedFilePath
+    LoadProfileTimeSeries | BdewStandardLoadProfile.G3.key || Path.of("lpts_g3")
   }
 
   def "A FileNamingStrategy with FlatHierarchy does return valid file path for individual time series"() {
@@ -919,7 +929,7 @@ class FileNamingStrategyTest extends Specification {
     then:
     LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as LoadProfileMetaInformation).with {
-      profile == "g3"
+      profileKey.value == "g3"
     }
   }
 
@@ -934,7 +944,7 @@ class FileNamingStrategyTest extends Specification {
     then:
     LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as LoadProfileMetaInformation).with {
-      profile == "g3"
+      profileKey.value == "g3"
     }
   }
 }

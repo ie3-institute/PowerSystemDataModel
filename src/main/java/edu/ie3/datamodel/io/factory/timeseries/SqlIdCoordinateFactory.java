@@ -18,8 +18,6 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKBReader;
 
 public class SqlIdCoordinateFactory extends IdCoordinateFactory {
-  private static final String COORDINATE_ID = "id";
-  private static final String COORDINATE = "coordinate";
 
   @Override
   protected IdCoordinateInput buildModel(SimpleFactoryData data) {

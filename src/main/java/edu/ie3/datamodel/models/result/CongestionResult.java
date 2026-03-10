@@ -110,7 +110,7 @@ public class CongestionResult extends ResultEntity {
     NODE("node"),
     LINE("line"),
     TRANSFORMER_2W("transformer_2w"),
-    TRANSFORMER_3W("transforerm_3w");
+    TRANSFORMER_3W("transformer_3w");
 
     public final String type;
 

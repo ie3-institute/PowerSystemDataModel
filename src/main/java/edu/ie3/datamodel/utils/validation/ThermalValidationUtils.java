@@ -14,6 +14,8 @@ import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import javax.measure.Quantity;
 
 public class ThermalValidationUtils extends ValidationUtils {
@@ -21,6 +23,36 @@ public class ThermalValidationUtils extends ValidationUtils {
   /** Private Constructor as this class is not meant to be instantiated */
   private ThermalValidationUtils() {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
+  }
+
+  /**
+   * Validates a thermal grid if:
+   *
+   * <ul>
+   *   <li>it is not null
+   * </ul>
+   *
+   * A "distribution" method, that forwards the check request to specific implementations to fulfill
+   * the checking task, based on the class of the given object.
+   *
+   * @param thermalGrid ThermalGrid to validate
+   * @return a list of try objects either containing an {@link ValidationException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, ? extends ValidationException>> check(ThermalGrid thermalGrid) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(thermalGrid, "a thermal grid");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    return Stream.of(
+            thermalGrid.houses().stream().map(ThermalValidationUtils::check),
+            thermalGrid.heatStorages().stream().map(ThermalValidationUtils::check),
+            thermalGrid.domesticHotWaterStorages().stream().map(ThermalValidationUtils::check))
+        .flatMap(Function.identity())
+        .flatMap(List::stream)
+        .toList();
   }
 
   /**
@@ -54,47 +86,6 @@ public class ThermalValidationUtils extends ValidationUtils {
       exceptions.addAll(checkThermalStorage((ThermalStorageInput) thermalUnitInput));
     } else {
       logNotImplemented(thermalUnitInput);
-    }
-
-    return exceptions;
-  }
-
-  /**
-   * Validates a thermal grid if:
-   *
-   * <ul>
-   *   <li>it is not null
-   * </ul>
-   *
-   * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object.
-   *
-   * @param thermalGrid ThermalGrid to validate
-   * @return a list of try objects either containing an {@link ValidationException} or an empty
-   *     Success
-   */
-  protected static List<Try<Void, ? extends ValidationException>> check(ThermalGrid thermalGrid) {
-    Try<Void, InvalidEntityException> isNull = checkNonNull(thermalGrid, "a thermal grid");
-
-    if (isNull.isFailure()) {
-      return List.of(isNull);
-    }
-
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-
-    // Validate houses
-    for (ThermalHouseInput house : thermalGrid.houses()) {
-      exceptions.addAll(checkThermalHouse(house));
-    }
-
-    // Validate heat storages
-    for (ThermalStorageInput storage : thermalGrid.heatStorages()) {
-      exceptions.addAll(check(storage));
-    }
-
-    // Validate domestic hot water storages
-    for (ThermalStorageInput storage : thermalGrid.domesticHotWaterStorages()) {
-      exceptions.addAll(check(storage));
     }
 
     return exceptions;

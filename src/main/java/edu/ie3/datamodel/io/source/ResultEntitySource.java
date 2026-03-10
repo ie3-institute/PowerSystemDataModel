@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.result.*;
@@ -20,13 +19,9 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
-import edu.ie3.datamodel.utils.Try;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link ResultEntity} container
@@ -75,37 +70,30 @@ public class ResultEntitySource extends EntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    List<Try<Void, ValidationException>> participantResults =
-        new ArrayList<>(
-            Stream.of(
-                    LoadResult.class,
-                    FixedFeedInResult.class,
-                    BmResult.class,
-                    PvResult.class,
-                    ChpResult.class,
-                    WecResult.class,
-                    StorageResult.class,
-                    EvcsResult.class,
-                    EvResult.class,
-                    HpResult.class,
-                    EmResult.class)
-                .map(c -> validate(c, dataSource, systemParticipantResultFactory))
-                .toList());
-
-    participantResults.addAll(
-        List.of(
-            validate(ThermalHouseResult.class, dataSource, thermalResultFactory),
-            validate(CylindricalStorageResult.class, dataSource, thermalResultFactory),
-            validate(DomesticHotWaterStorageResult.class, dataSource, thermalResultFactory),
-            validate(SwitchResult.class, dataSource, switchResultFactory),
-            validate(NodeResult.class, dataSource, nodeResultFactory),
-            validate(LineResult.class, dataSource, connectorResultFactory),
-            validate(Transformer2WResult.class, dataSource, connectorResultFactory),
-            validate(Transformer3WResult.class, dataSource, connectorResultFactory),
-            validate(FlexOptionsResult.class, dataSource, flexOptionsResultFactory),
-            validate(CongestionResult.class, dataSource, congestionResultFactory)));
-
-    Try.scanCollection(participantResults, Void.class, FailedValidationException::new).getOrThrow();
+    validate(
+        dataSource,
+        LoadResult.class,
+        FixedFeedInResult.class,
+        AcResult.class,
+        BmResult.class,
+        PvResult.class,
+        ChpResult.class,
+        WecResult.class,
+        StorageResult.class,
+        EvcsResult.class,
+        EvResult.class,
+        HpResult.class,
+        EmResult.class,
+        ThermalHouseResult.class,
+        CylindricalStorageResult.class,
+        DomesticHotWaterStorageResult.class,
+        SwitchResult.class,
+        NodeResult.class,
+        LineResult.class,
+        Transformer2WResult.class,
+        Transformer3WResult.class,
+        FlexOptionsResult.class,
+        CongestionResult.class);
   }
 
   /**
@@ -307,6 +295,19 @@ public class ResultEntitySource extends EntitySource {
    */
   public Set<EvResult> getEvResults() throws SourceException {
     return getResultEntities(EvResult.class, systemParticipantResultFactory);
+  }
+
+  /**
+   * Returns a unique set of {@link AcResult} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link AcResult} which has to be checked manually,
+   * as {@link AcResult#equals(Object)} is NOT restricted by the uuid of {@link AcResult}.
+   *
+   * @return a set of object and uuid unique {@link AcResult} entities
+   */
+  public Set<AcResult> getAcResults() throws SourceException {
+    return getResultEntities(AcResult.class, systemParticipantResultFactory);
   }
 
   /**

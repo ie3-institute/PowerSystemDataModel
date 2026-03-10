@@ -108,15 +108,14 @@ public abstract class FileDataSource implements DataSource {
                   fileNamingStrategy.loadProfileTimeSeriesMetaInformation(
                       fileMeta.filePath().toString());
               return new FileLoadProfileMetaInformation(
-                  metaInformation.getProfile(), fileMeta.pathWithoutEnding(), fileMeta.fileType());
+                  metaInformation, fileMeta.pathWithoutEnding(), fileMeta.fileType());
             })
         .filter(
             metaInformation ->
                 profiles == null
                     || profiles.length == 0
                     || Stream.of(profiles)
-                        .anyMatch(
-                            profile -> profile.getKey().equals(metaInformation.getProfile())));
+                        .anyMatch(profile -> metaInformation.getProfileKey().equals(profile)));
   }
 
   private Optional<FileMetaDetails> resolveFileInformation(Path filePath, String metaType) {

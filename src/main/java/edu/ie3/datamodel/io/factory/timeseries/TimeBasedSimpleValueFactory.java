@@ -17,16 +17,6 @@ import java.util.*;
 
 public class TimeBasedSimpleValueFactory<V extends Value>
     extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {
-  /* Energy price */
-  private static final String PRICE = "price";
-  /* Energy / Power */
-  private static final String ACTIVE_POWER = "p";
-  private static final String REACTIVE_POWER = "q";
-  private static final String HEAT_DEMAND = "heatDemand";
-
-  /* voltage */
-  private static final String VMAG = "vMag";
-  private static final String VANG = "VAng";
 
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
     super(valueClasses);
@@ -72,8 +62,8 @@ public class TimeBasedSimpleValueFactory<V extends Value>
       value =
           (V)
               new VoltageValue(
-                  data.getQuantity(VMAG, VOLTAGE_MAGNITUDE),
-                  data.getQuantityOptional(VANG, VOLTAGE_ANGLE));
+                  data.getQuantity(V_MAG, VOLTAGE_MAGNITUDE),
+                  data.getQuantityOptional(V_ANG, VOLTAGE_ANGLE));
     } else {
       throw new FactoryException(
           "The given factory cannot handle target class '" + data.getTargetClass() + "'.");
@@ -99,7 +89,7 @@ public class TimeBasedSimpleValueFactory<V extends Value>
     } else if (PValue.class.isAssignableFrom(entityClass)) {
       minConstructorParams.add(ACTIVE_POWER);
     } else if (VoltageValue.class.isAssignableFrom(entityClass)) {
-      minConstructorParams.addAll(List.of(VMAG, VANG));
+      minConstructorParams.addAll(List.of(V_MAG, V_ANG));
     } else {
       throw new FactoryException(
           "The given factory cannot handle target class '" + entityClass + "'.");

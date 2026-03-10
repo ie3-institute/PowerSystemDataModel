@@ -3,7 +3,7 @@ This page lists all converters from and to the PSDM format that are known to us.
 
 ## Converters to PSDM
 
-- [simBench2psdm](https://github.com/ie3-institute/simBench2psdm): SimBench has been research project of Kassel university, Fraunhofer IEE, RWTH Aachen university and TU Dortmund university, aiming at provision of realistic models of electrical distribution grids including time series. The data is availabe [here](https://simbench.de).
+- [simBench2psdm](https://github.com/ie3-institute/simBench2psdm): SimBench has been research project of Kassel university, Fraunhofer IEE, RWTH Aachen university and TU Dortmund university, aiming at provision of realistic models of electrical distribution grids including time series. The data is available [here](https://simbench.de).
 - [powerFactory2psdm](https://github.com/ie3-institute/powerFactory2psdm): This tool is used to convert PowerFactory projects into the PSDM format.
 - [pp2psdm](https://github.com/ie3-institute/pp2psdm): Converter for grid models from pandapower into PowerSystemDataModel format.
 

@@ -59,7 +59,8 @@ public class FileTimeSeriesMetaInformationSource extends TimeSeriesMetaInformati
     this.loadProfileMetaInformation =
         dataSource
             .getLoadProfileMetaInformation()
-            .collect(Collectors.toMap(LoadProfileMetaInformation::getProfile, Function.identity()));
+            .collect(
+                Collectors.toMap(LoadProfileMetaInformation::getProfileKey, Function.identity()));
   }
 
   @Override
