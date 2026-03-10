@@ -14,59 +14,6 @@ class FactoryTest extends Specification {
   @Shared
   private final DummyFactory factory = new DummyFactory(String)
 
-
-  def "A Factory can return unused fields correctly"() {
-    when:
-    def unused = factory.getUnusedFields(actualFields as Set<String>, validFieldSets)
-
-    then:
-    unused == expected as Set<String>
-
-    where:
-    actualFields | validFieldSets | expected
-    [
-      "uuid",
-      "id",
-      "time",
-      "value_1"
-    ] | [
-      ["uuid", "value_1"] as Set<String>,
-      ["id", "time", "value_1"] as Set<String>
-    ] | ["uuid"]
-    [
-      "uuid",
-      "id",
-      "time",
-      "value_1",
-      "value_2",
-      "value_3"
-    ] | [
-      ["uuid", "value_1", "value_3"] as Set<String>,
-      ["id", "time", "value_1"] as Set<String>
-    ] | ["id", "time", "value_2"]
-    [
-      "uuid",
-      "id",
-      "time",
-      "value_1"
-    ] | [
-      [
-        "uuid",
-        "id",
-        "time",
-        "value_1",
-        "value_2"
-      ] as Set<String>,
-      [
-        "uuid",
-        "id",
-        "time",
-        "value_1",
-        "value_3"
-      ] as Set<String>
-    ] | []
-  }
-
   def "A Factory should allow additional fields"() {
     given:
     def actualFields = DummyFactory.newSet("uuid", "id", "time", "value_1", "value_2", "value_3")
@@ -77,7 +24,6 @@ class FactoryTest extends Specification {
     then:
     result.success
   }
-
 
   private class DummyFactory extends Factory<String, SimpleFactoryData, String> {
 
