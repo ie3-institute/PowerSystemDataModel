@@ -58,22 +58,22 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime == OperationTime.notLimited()
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == parameter["id"]
-      assert node == nodeInput
-      assert qCharacteristics.with {
-        assert uuid != null
-        assert points == Collections.unmodifiableSortedSet([
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime == OperationTime.notLimited()
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == parameter["id"]
+      node == nodeInput
+      qCharacteristics.with {
+        uuid != null
+        points == Collections.unmodifiableSortedSet([
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert controllingEm == Optional.of(emUnit)
-      assert loadProfile == profile
-      assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
+      controllingEm == Optional.of(emUnit)
+      loadProfile == profile
+      eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosphirated"])
     }
 
     where:

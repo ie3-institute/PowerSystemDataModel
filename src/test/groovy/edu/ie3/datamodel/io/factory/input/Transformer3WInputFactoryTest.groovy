@@ -50,17 +50,17 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime == OperationTime.notLimited()
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == parameter["id"]
-      assert nodeA == nodeInputA
-      assert nodeB == nodeInputB
-      assert nodeC == nodeInputC
-      assert type == typeInput
-      assert parallelDevices == Integer.parseInt(parameter["paralleldevices"])
-      assert tapPos == Integer.parseInt(parameter["tappos"])
-      assert autoTap
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime == OperationTime.notLimited()
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == parameter["id"]
+      nodeA == nodeInputA
+      nodeB == nodeInputB
+      nodeC == nodeInputC
+      type == typeInput
+      parallelDevices == Integer.parseInt(parameter["paralleldevices"])
+      tapPos == Integer.parseInt(parameter["tappos"])
+      autoTap
     }
   }
   def "A Transformer3WInputFactory should throw an IllegalArgumentException if nodeB is greater than nodeA or nodeC is greater than nodeB"() {

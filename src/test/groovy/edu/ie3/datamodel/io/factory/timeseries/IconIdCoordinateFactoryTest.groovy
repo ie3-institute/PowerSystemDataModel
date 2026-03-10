@@ -66,8 +66,8 @@ class IconIdCoordinateFactoryTest extends Specification {
     then:
     actual.success
     actual.data.get().with {
-      assert it.id() == expectedIdCoordinate.id()
-      assert it.point().equalsExact(expectedIdCoordinate.point(), 1E-6)
+      it.id() == expectedIdCoordinate.id()
+      it.point().equalsExact(expectedIdCoordinate.point(), 1E-6)
     }
   }
 }

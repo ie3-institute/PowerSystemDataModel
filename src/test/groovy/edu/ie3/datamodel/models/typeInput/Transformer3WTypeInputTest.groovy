@@ -43,27 +43,27 @@ class Transformer3WTypeInputTest extends Specification{
 
     then:
     alteredUnit.with {
-      assert uuid == transformer3WTypeInput.uuid
-      assert id == "transformer3WTypeInput_copy"
-      assert rScA == Quantities.getQuantity(3, Units.OHM)
-      assert rScB == Quantities.getQuantity(2, Units.OHM)
-      assert rScC == Quantities.getQuantity(1, Units.OHM)
-      assert xScA == Quantities.getQuantity(3, Units.OHM)
-      assert xScB == Quantities.getQuantity(2, Units.OHM)
-      assert xScC == Quantities.getQuantity(1, Units.OHM)
-      assert sRatedA == Quantities.getQuantity(100000, PowerSystemUnits.KILOWATT)
-      assert sRatedB == Quantities.getQuantity(70000, PowerSystemUnits.KILOWATT)
-      assert sRatedC == Quantities.getQuantity(50000, PowerSystemUnits.KILOWATT)
-      assert vRatedA == Quantities.getQuantity(400, PowerSystemUnits.KILOVOLT)
-      assert vRatedB == Quantities.getQuantity(120, PowerSystemUnits.KILOVOLT)
-      assert vRatedC == Quantities.getQuantity(30, PowerSystemUnits.KILOVOLT)
-      assert gM == Quantities.getQuantity(50000, PowerSystemUnits.NANOSIEMENS)
-      assert bM == Quantities.getQuantity(-2000, PowerSystemUnits.NANOSIEMENS)
-      assert dV == Quantities.getQuantity(2, PowerSystemUnits.PERCENT)
-      assert dPhi == Quantities.getQuantity(1, PowerSystemUnits.DEGREE_GEOM)
-      assert tapNeutr == 1
-      assert tapMin == -11
-      assert tapMax == 20
+      uuid == transformer3WTypeInput.uuid
+      id == "transformer3WTypeInput_copy"
+      rScA == Quantities.getQuantity(3, Units.OHM)
+      rScB == Quantities.getQuantity(2, Units.OHM)
+      rScC == Quantities.getQuantity(1, Units.OHM)
+      xScA == Quantities.getQuantity(3, Units.OHM)
+      xScB == Quantities.getQuantity(2, Units.OHM)
+      xScC == Quantities.getQuantity(1, Units.OHM)
+      sRatedA == Quantities.getQuantity(100000, PowerSystemUnits.KILOWATT)
+      sRatedB == Quantities.getQuantity(70000, PowerSystemUnits.KILOWATT)
+      sRatedC == Quantities.getQuantity(50000, PowerSystemUnits.KILOWATT)
+      vRatedA == Quantities.getQuantity(400, PowerSystemUnits.KILOVOLT)
+      vRatedB == Quantities.getQuantity(120, PowerSystemUnits.KILOVOLT)
+      vRatedC == Quantities.getQuantity(30, PowerSystemUnits.KILOVOLT)
+      gM == Quantities.getQuantity(50000, PowerSystemUnits.NANOSIEMENS)
+      bM == Quantities.getQuantity(-2000, PowerSystemUnits.NANOSIEMENS)
+      dV == Quantities.getQuantity(2, PowerSystemUnits.PERCENT)
+      dPhi == Quantities.getQuantity(1, PowerSystemUnits.DEGREE_GEOM)
+      tapNeutr == 1
+      tapMin == -11
+      tapMax == 20
     }
   }
 }

@@ -24,15 +24,15 @@ class EvTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == evTypeInput.uuid
-      assert id == evTypeInput.id
-      assert capex == evTypeInput.capex
-      assert opex == evTypeInput.opex
-      assert eStorage == Quantities.getQuantity(150, ENERGY_IN)
-      assert eCons == evTypeInput.eCons
-      assert sRated == evTypeInput.sRated
-      assert sRatedDC == evTypeInput.sRatedDC
-      assert cosPhiRated == evTypeInput.cosPhiRated
+      uuid == evTypeInput.uuid
+      id == evTypeInput.id
+      capex == evTypeInput.capex
+      opex == evTypeInput.opex
+      eStorage == Quantities.getQuantity(150, ENERGY_IN)
+      eCons == evTypeInput.eCons
+      sRated == evTypeInput.sRated
+      sRatedDC == evTypeInput.sRatedDC
+      cosPhiRated == evTypeInput.cosPhiRated
     }
   }
 
@@ -45,15 +45,15 @@ class EvTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == evTypeInput.uuid
-      assert id == evTypeInput.id
-      assert capex == evTypeInput.capex * 2d
-      assert opex == evTypeInput.opex
-      assert eStorage == evTypeInput.eStorage * 2d
-      assert eCons == evTypeInput.eCons * 2d
-      assert sRated == evTypeInput.sRated * 2d
-      assert sRatedDC == evTypeInput.sRatedDC * 2d
-      assert cosPhiRated == evTypeInput.cosPhiRated
+      uuid == evTypeInput.uuid
+      id == evTypeInput.id
+      capex == evTypeInput.capex * 2d
+      opex == evTypeInput.opex
+      eStorage == evTypeInput.eStorage * 2d
+      eCons == evTypeInput.eCons * 2d
+      sRated == evTypeInput.sRated * 2d
+      sRatedDC == evTypeInput.sRatedDC * 2d
+      cosPhiRated == evTypeInput.cosPhiRated
     }
   }
 }

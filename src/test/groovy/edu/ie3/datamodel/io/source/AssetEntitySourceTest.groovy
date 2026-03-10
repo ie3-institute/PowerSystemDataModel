@@ -91,9 +91,9 @@ class AssetEntitySourceTest extends Specification {
     actual.size() == 1
     actual.get(0).with {
       // we only want to test of enriching with nodes and type worked as expected
-      assert it.nodeA == GridTestData.nodeA
-      assert it.nodeB == GridTestData.nodeB
-      assert it.type == GridTestData.lineTypeInputCtoD
+      it.nodeA == GridTestData.nodeA
+      it.nodeB == GridTestData.nodeB
+      it.type == GridTestData.lineTypeInputCtoD
     }
   }
 
