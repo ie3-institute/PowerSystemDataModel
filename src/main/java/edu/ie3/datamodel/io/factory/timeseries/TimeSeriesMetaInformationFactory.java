@@ -24,9 +24,6 @@ import java.util.stream.Stream;
  */
 public class TimeSeriesMetaInformationFactory
     extends EntityFactory<TimeSeriesMetaInformation, EntityData> {
-  private static final String TIME_SERIES = "timeSeries";
-  private static final String COLUMN_SCHEME = "columnScheme";
-  private static final String LOAD_PROFILE = "loadProfile";
 
   public TimeSeriesMetaInformationFactory() {
     super(IndividualTimeSeriesMetaInformation.class, LoadProfileMetaInformation.class);

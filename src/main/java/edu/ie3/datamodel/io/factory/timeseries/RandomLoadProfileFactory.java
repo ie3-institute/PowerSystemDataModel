@@ -20,15 +20,6 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 public class RandomLoadProfileFactory extends LoadProfileFactory<RandomLoadValues> {
-  public static final String K_WEEKDAY = "kWd";
-  public static final String K_SATURDAY = "kSa";
-  public static final String K_SUNDAY = "kSu";
-  public static final String MY_WEEKDAY = "myWd";
-  public static final String MY_SATURDAY = "mySa";
-  public static final String MY_SUNDAY = "mySu";
-  public static final String SIGMA_WEEKDAY = "sigmaWd";
-  public static final String SIGMA_SATURDAY = "sigmaSa";
-  public static final String SIGMA_SUNDAY = "sigmaSu";
 
   public RandomLoadProfileFactory() {
     super(RandomLoadValues.class);
