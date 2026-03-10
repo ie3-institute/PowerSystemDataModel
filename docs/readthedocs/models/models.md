@@ -88,6 +88,13 @@ models can handle nulls and empty Strings (as well as any combination of those) 
 `operationTime` where `operationStartTime` and `operationEndTime` are both `null` or `""`, the
 factory will build an always-on line model.
 
+**Additional Information** <br>
+The input models, excluding time series and values, support additional information. These parameters are read from the data
+source and stored as a map inside the models. To retrieve them one can use the method `getAdditionalInformation()`. One
+important thing is that these key value pairs are stored as strings. It is the job of the user to handle/convert the data.
+
+> **NOTE:** Additional information/parameters are not covered by the validation.
+
 **Validation** <br>
 Information regarding validation of models can be found [here](/io/ValidationUtils).
 
