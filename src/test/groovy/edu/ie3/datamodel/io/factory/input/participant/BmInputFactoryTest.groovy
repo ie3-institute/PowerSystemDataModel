@@ -42,7 +42,6 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
       "operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
       "id"              : "TestID",
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
-      "marketreaction"  : "false",
       "costControlled"  : "true",
       "feedintariff"    : "3"
     ]
@@ -76,7 +75,6 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
       }
       assert controllingEm == Optional.of(emUnit)
       assert type == typeInput
-      assert !marketReaction
       assert costControlled
       assert feedInTariff == getQuant(parameter["feedintariff"], StandardUnits.ENERGY_PRICE)
     }

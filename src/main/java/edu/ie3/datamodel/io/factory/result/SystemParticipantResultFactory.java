@@ -34,6 +34,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
     super(
         LoadResult.class,
         FixedFeedInResult.class,
+        AcResult.class,
         BmResult.class,
         PvResult.class,
         ChpResult.class,
@@ -56,6 +57,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
         dateTimeFormatter,
         LoadResult.class,
         FixedFeedInResult.class,
+        AcResult.class,
         BmResult.class,
         PvResult.class,
         ChpResult.class,
@@ -113,6 +115,8 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
         return new ChpResult(zdtTime, inputModelUuid, p, q, qDot);
       } else if (entityClass.equals(HpResult.class)) {
         return new HpResult(zdtTime, inputModelUuid, p, q, qDot);
+      } else if (entityClass.equals(AcResult.class)) {
+        return new AcResult(zdtTime, inputModelUuid, p, q, qDot);
       } else {
         throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
       }

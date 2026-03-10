@@ -93,6 +93,9 @@ package models {
             class HpResult
             SystemParticipantWithHeatResult <|-- HpResult
 
+            class AcResult
+            SystemParticipantWithHeatResult <|-- AcResult
+
             class WecResult
             SystemParticipantResult <|-- WecResult
 

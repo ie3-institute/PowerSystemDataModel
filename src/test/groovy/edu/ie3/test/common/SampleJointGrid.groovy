@@ -79,7 +79,6 @@ class SampleJointGrid extends SystemParticipantTestData {
         elevationAngle,
         kG,
         kT,
-        false,
         sRated,
         cosPhiRated)
 
@@ -125,6 +124,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         storageTypeInput)
 
     return new SystemParticipants(
+        Collections.emptySet(),
         Collections.emptySet(),
         Collections.emptySet(),
         Collections.emptySet(),

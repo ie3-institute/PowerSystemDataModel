@@ -262,7 +262,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         Quantities.getQuantity(41.01871871948242, DEGREE_GEOM),
         0.8999999761581421,
         1,
-        false,
         Quantities.getQuantity(25d, KILOVOLTAMPERE),
         0.95
         )
@@ -297,7 +296,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         Quantities.getQuantity(41.01871871948242, DEGREE_GEOM),
         0.8999999761581421,
         1,
-        false,
         Quantities.getQuantity(25d, KILOVOLTAMPERE),
         0.95
         )

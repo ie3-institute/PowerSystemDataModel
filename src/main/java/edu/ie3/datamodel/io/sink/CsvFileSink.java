@@ -171,6 +171,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
     // get system participants with types or operators
     SystemParticipants systemParticipants = jointGridContainer.getSystemParticipants();
+    Set<AcInput> airConditions = systemParticipants.getAirConditions();
     Set<BmInput> bmPlants = systemParticipants.getBmPlants();
     Set<ChpInput> chpPlants = systemParticipants.getChpPlants();
     Set<EvcsInput> evcs = systemParticipants.getEvcs();
@@ -196,6 +197,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 chpPlants,
                 evs,
                 heatPumps,
+                airConditions,
                 storages,
                 wecPlants)
             .flatMap(Collection::stream)
@@ -217,6 +219,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 evs,
                 fixedFeedIns,
                 heatPumps,
+                airConditions,
                 loads,
                 pvPlants,
                 storages,
