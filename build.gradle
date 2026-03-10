@@ -17,7 +17,7 @@ plugins {
 ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_21
-  groovyBinaryVersion = "5.0.3"
+  groovyBinaryVersion = "5.0.4"
 
   junitVersion = '6.0.3'
   testcontainersVersion = '2.0.3'
