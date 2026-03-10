@@ -61,6 +61,7 @@ public class PvInputFactory
         kG,
         kT,
         sRated,
-        cosPhi);
+        cosPhi,
+        data.determineAdditionalInformation());
   }
 }

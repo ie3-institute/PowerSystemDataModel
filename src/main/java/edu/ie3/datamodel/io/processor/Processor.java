@@ -60,6 +60,8 @@ public abstract class Processor<T> {
           "pRef",
           "pMin");
 
+  protected static final String ADDITIONAL_INFORMATION = "additionalInformation";
+
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
 
   private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
@@ -113,7 +115,7 @@ public abstract class Processor<T> {
    */
   protected SortedMap<String, GetterMethod> mapFieldNameToGetter(Class<?> cls)
       throws EntityProcessorException {
-    return mapFieldNameToGetter(cls, Collections.emptyList());
+    return mapFieldNameToGetter(cls, Collections.singleton(ADDITIONAL_INFORMATION));
   }
 
   /**

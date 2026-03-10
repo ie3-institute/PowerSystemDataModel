@@ -40,7 +40,21 @@ public class Transformer2WTypeInputFactory
     int tapMax = data.getInt(TAP_MAX);
 
     return new Transformer2WTypeInput(
-        uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin,
-        tapMax);
+        uuid,
+        id,
+        rSc,
+        xSc,
+        sRated,
+        vRatedA,
+        vRatedB,
+        gM,
+        bM,
+        dV,
+        dPhi,
+        tapSide,
+        tapNeutr,
+        tapMin,
+        tapMax,
+        data.determineAdditionalInformation());
   }
 }

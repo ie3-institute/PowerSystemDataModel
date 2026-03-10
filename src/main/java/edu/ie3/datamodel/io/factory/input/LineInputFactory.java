@@ -66,6 +66,7 @@ public class LineInputFactory
         type,
         length,
         geoPosition,
-        olmCharacteristic);
+        olmCharacteristic,
+        data.determineAdditionalInformation());
   }
 }

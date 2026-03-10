@@ -26,6 +26,11 @@ import java.time.ZonedDateTime
  */
 class AssetInputEntityFactoryTest extends Specification implements FactoryTestHelper {
 
+  def setupSpec() {
+    // registering fields for the asset
+    ModelFields.register(TestAssetInput, newSet(FieldNamingStrategy.UUID, ID), newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL))
+  }
+
   def "An AssetInputFactory should contain exactly the expected class for parsing"() {
     given:
     def inputFactory = new TestAssetInputFactory()
@@ -56,6 +61,32 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
       operationTime == OperationTime.notLimited()
       operator == operatorInput
       id == parameter["id"]
+    }
+  }
+
+  def "An AssetInputFactory should parse a additional information correctly"() {
+    given:
+    def inputFactory = new TestAssetInputFactory()
+    Map<String, String> parameter = [
+      "uuid"       : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id"         : "TestID",
+      "additional" : "information"
+    ]
+    def inputClass = TestAssetInput
+    def operatorInput = Mock(OperatorInput)
+
+    when:
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+
+    then:
+    input.success
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime == OperationTime.notLimited()
+      operator == operatorInput
+      id == parameter["id"]
+      additionalInformation == ["additional": "information"]
     }
   }
 
@@ -284,9 +315,6 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputFactory = new TestAssetInputFactory()
     def actualFields = newSet("uuid", "operates_from", "operates_until")
 
-    // registering fields for the asset
-    ModelFields.register(TestAssetInput, newSet(FieldNamingStrategy.UUID, ID), newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL))
-
     when:
     Try<Void, FactoryException> input = inputFactory.validate(actualFields, TestAssetInput)
 
@@ -305,8 +333,9 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
   }
 
   private static class TestAssetInput extends AssetInput {
-    TestAssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    TestAssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime, Map<String, String> additionalInformation) {
       super(uuid, id, operator, operationTime)
+      setAdditionalInformation(additionalInformation)
     }
 
     @Override
@@ -323,7 +352,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     @Override
     protected TestAssetInput buildModel(AssetInputEntityData data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
-      return new TestAssetInput(uuid, id, operator, operationTime)
+      return new TestAssetInput(uuid, id, operator, operationTime, data.determineAdditionalInformation())
     }
   }
 }

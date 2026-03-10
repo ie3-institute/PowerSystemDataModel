@@ -82,6 +82,7 @@ public class EvcsInputFactory
         chargingPoints,
         cosPhi,
         locationType,
-        v2gSupport);
+        v2gSupport,
+        data.determineAdditionalInformation());
   }
 }

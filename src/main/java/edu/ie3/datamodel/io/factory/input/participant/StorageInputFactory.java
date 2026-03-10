@@ -34,6 +34,14 @@ public class StorageInputFactory
     final EmInput em = data.getControllingEm().orElse(null);
     final StorageTypeInput typeInput = data.getTypeInput();
     return new StorageInput(
-        uuid, id, operator, operationTime, node, qCharacteristics, em, typeInput);
+        uuid,
+        id,
+        operator,
+        operationTime,
+        node,
+        qCharacteristics,
+        em,
+        typeInput,
+        data.determineAdditionalInformation());
   }
 }

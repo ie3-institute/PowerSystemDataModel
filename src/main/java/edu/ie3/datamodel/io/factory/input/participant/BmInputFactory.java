@@ -50,6 +50,7 @@ public class BmInputFactory
         em,
         typeInput,
         costControlled,
-        feedInTariff);
+        feedInTariff,
+        data.determineAdditionalInformation());
   }
 }

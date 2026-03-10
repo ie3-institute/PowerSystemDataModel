@@ -12,8 +12,8 @@ import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
 import edu.ie3.util.exceptions.QuantityException;
-import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.SortedMap;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
@@ -45,7 +45,7 @@ public abstract class EntityProcessor<T extends Entity> extends Processor<T> {
   protected EntityProcessor(Class<? extends T> registeredClass) throws EntityProcessorException {
     super(registeredClass);
     this.fieldNameToMethod =
-        mapFieldNameToGetter(registeredClass, Collections.singleton(NODE_INTERNAL));
+        mapFieldNameToGetter(registeredClass, List.of(NODE_INTERNAL, ADDITIONAL_INFORMATION));
     this.headerElements = fieldNameToMethod.keySet().toArray(new String[0]);
   }
 

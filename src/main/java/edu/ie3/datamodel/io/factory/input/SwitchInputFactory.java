@@ -40,6 +40,14 @@ public class SwitchInputFactory
           parallelDevices);
     }
 
-    return new SwitchInput(uuid, id, operator, operationTime, nodeA, nodeB, closed);
+    return new SwitchInput(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        nodeA,
+        nodeB,
+        closed,
+        data.determineAdditionalInformation());
   }
 }

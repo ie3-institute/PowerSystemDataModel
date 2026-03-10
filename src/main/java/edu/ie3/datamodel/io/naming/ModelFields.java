@@ -92,6 +92,19 @@ public final class ModelFields extends FieldNamingStrategy {
   }
 
   /**
+   * Method to return all fields as a set.
+   *
+   * @param entityClass to use
+   * @return a flattened set of all fields
+   */
+  public static Set<String> getAllFields(Class<?> entityClass) {
+    Set<String> allFields = new HashSet<>();
+    allFields.addAll(mandatoryFields.getOrDefault(entityClass, Collections.emptySet()));
+    allFields.addAll(optionalFields.getOrDefault(entityClass, Collections.emptySet()));
+    return allFields;
+  }
+
+  /**
    * Method to register mandatory and optional fields for a given entity class.
    *
    * <p>NOTE: This method will only add fields, if no fields are registered yet!

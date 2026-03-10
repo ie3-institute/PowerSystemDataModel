@@ -6,7 +6,11 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.io.naming.ModelFields;
+import edu.ie3.datamodel.utils.CollectionUtils;
+import edu.ie3.util.StringUtils;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import tech.units.indriya.ComparableQuantity;
@@ -29,6 +33,15 @@ public abstract class FactoryData {
 
   public Class<?> getTargetClass() {
     return targetClass;
+  }
+
+  public Map<String, String> determineAdditionalInformation() {
+    Set<String> normalAdditionalFields =
+        CollectionUtils.toCamelCase(ModelFields.getAllFields(targetClass));
+
+    return fieldsToAttributes.keySet().stream()
+        .filter(field -> !normalAdditionalFields.contains(StringUtils.snakeCaseToCamelCase(field)))
+        .collect(Collectors.toMap(f -> f, fieldsToAttributes::get));
   }
 
   /**

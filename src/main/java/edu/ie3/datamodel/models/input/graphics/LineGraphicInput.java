@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.graphics;
 
 import edu.ie3.datamodel.io.extractor.HasLine;
 import edu.ie3.datamodel.models.input.connector.LineInput;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import org.locationtech.jts.geom.LineString;
@@ -28,6 +29,24 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
   public LineGraphicInput(UUID uuid, String graphicLayer, LineString path, LineInput line) {
     super(uuid, graphicLayer, path);
     this.line = line;
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param graphicLayer Description of the graphic layer, this graphic is located on
+   * @param path A graphic representation as path
+   * @param line The LineInput to this graphic data
+   * @param additionalInformation That were provided by the source
+   */
+  public LineGraphicInput(
+      UUID uuid,
+      String graphicLayer,
+      LineString path,
+      LineInput line,
+      Map<String, String> additionalInformation) {
+    super(uuid, graphicLayer, path);
+    this.line = line;
+    setAdditionalInformation(additionalInformation);
   }
 
   @Override
@@ -54,7 +73,14 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
 
   @Override
   public String toString() {
-    return "LineGraphicInput{" + "uuid=" + getUuid() + ", line=" + line.getUuid() + '}';
+    return "LineGraphicInput{"
+        + "uuid="
+        + getUuid()
+        + ", line="
+        + line.getUuid()
+        + ", additionalInformation="
+        + getAdditionalInformation()
+        + '}';
   }
 
   /**

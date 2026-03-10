@@ -28,6 +28,7 @@ public final class NodeGraphicInputFactory
   protected NodeGraphicInput buildModel(
       NodeGraphicInputEntityData data, UUID uuid, String graphicLayer, LineString path) {
     final Point point = data.getPoint(POINT).orElse(NodeInput.DEFAULT_GEO_POSITION);
-    return new NodeGraphicInput(uuid, graphicLayer, path, data.getNode(), point);
+    return new NodeGraphicInput(
+        uuid, graphicLayer, path, data.getNode(), point, data.determineAdditionalInformation());
   }
 }

@@ -37,6 +37,7 @@ public class CylindricalStorageInputFactory
         getInletTemp(data),
         getReturnTemp(data),
         getSpecificHeatCapacity(data),
-        getMaxThermalPower(data));
+        getMaxThermalPower(data),
+        data.determineAdditionalInformation());
   }
 }

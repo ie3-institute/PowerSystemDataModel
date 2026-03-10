@@ -62,6 +62,7 @@ class EmInputTest extends Specification {
         SystemParticipantTestData.emInput.controlStrategy +
         ", controllingEm=" +
         SystemParticipantTestData.parentEm.uuid +
+        ", additionalInformation={}" +
         "}"
   }
 

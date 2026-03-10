@@ -50,7 +50,27 @@ public class Transformer3WTypeInputFactory
     int tapMax = data.getInt(TAP_MAX);
 
     return new Transformer3WTypeInput(
-        uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA,
-        xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax);
+        uuid,
+        id,
+        sRatedA,
+        sRatedB,
+        sRatedC,
+        vRatedA,
+        vRatedB,
+        vRatedC,
+        rScA,
+        rScB,
+        rScC,
+        xScA,
+        xScB,
+        xScC,
+        gM,
+        bM,
+        dV,
+        dPhi,
+        tapNeutr,
+        tapMin,
+        tapMax,
+        data.determineAdditionalInformation());
   }
 }
