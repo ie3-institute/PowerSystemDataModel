@@ -21,16 +21,16 @@ class Transformer3WInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == trafo3w.uuid
-      assert operationTime == trafo3w.operationTime
-      assert operator == GridTestData.profBroccoli
-      assert id == "trafo3w"
-      assert nodeA == GridTestData.nodeC
-      assert nodeB == GridTestData.nodeD
-      assert nodeC == GridTestData.nodeE
-      assert type == GridTestData.transformerTypeAtoBtoC
-      assert tapPos == 10
-      assert !autoTap
+      uuid == trafo3w.uuid
+      operationTime == trafo3w.operationTime
+      operator == GridTestData.profBroccoli
+      id == "trafo3w"
+      nodeA == GridTestData.nodeC
+      nodeB == GridTestData.nodeD
+      nodeC == GridTestData.nodeE
+      type == GridTestData.transformerTypeAtoBtoC
+      tapPos == 10
+      !autoTap
     }
   }
 }

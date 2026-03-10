@@ -17,11 +17,6 @@ public class ThermalBusInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[0];
-  }
-
-  @Override
   protected ThermalBusInput buildModel(
       AssetInputEntityData data,
       UUID uuid,

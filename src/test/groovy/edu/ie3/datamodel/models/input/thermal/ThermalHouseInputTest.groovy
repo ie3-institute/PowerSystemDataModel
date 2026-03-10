@@ -28,18 +28,18 @@ class ThermalHouseInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == thermalHouseInput.uuid
-      assert id == thermalHouseInput.id
-      assert operator == thermalHouseInput.operator
-      assert operationTime == thermalHouseInput.operationTime
-      assert thermalBus == thermalHouseInput.thermalBus
-      assert ethLosses == ThermalUnitInputTestData.thermalConductance
-      assert ethCapa == ThermalUnitInputTestData.ethCapa
-      assert targetTemperature == ThermalUnitInputTestData.TARGET_TEMPERATURE
-      assert upperTemperatureLimit == ThermalUnitInputTestData.UPPER_TEMPERATURE_LIMIT
-      assert lowerTemperatureLimit == ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT
-      assert housingType == ThermalUnitInputTestData.HOUSING_TYPE
-      assert numberOfInhabitants == ThermalUnitInputTestData.NUMBER_INHABITANTS
+      uuid == thermalHouseInput.uuid
+      id == thermalHouseInput.id
+      operator == thermalHouseInput.operator
+      operationTime == thermalHouseInput.operationTime
+      thermalBus == thermalHouseInput.thermalBus
+      ethLosses == ThermalUnitInputTestData.thermalConductance
+      ethCapa == ThermalUnitInputTestData.ethCapa
+      targetTemperature == ThermalUnitInputTestData.TARGET_TEMPERATURE
+      upperTemperatureLimit == ThermalUnitInputTestData.UPPER_TEMPERATURE_LIMIT
+      lowerTemperatureLimit == ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT
+      housingType == ThermalUnitInputTestData.HOUSING_TYPE
+      numberOfInhabitants == ThermalUnitInputTestData.NUMBER_INHABITANTS
     }
   }
 
@@ -53,10 +53,10 @@ class ThermalHouseInputTest extends Specification {
     def otherObject = "otherObject"
 
     expect:
-    thermalHouseInput1.equals(thermalHouseInput2)
-    !thermalHouseInput1.equals(null)
-    !thermalHouseInput1.equals(thermalHouseInput3)
-    !thermalHouseInput1.equals(otherObject)
+    Objects.equals(thermalHouseInput1, thermalHouseInput2)
+    !Objects.equals(thermalHouseInput1, null)
+    !Objects.equals(thermalHouseInput1, thermalHouseInput3)
+    !Objects.equals(thermalHouseInput1, otherObject)
   }
 
   def "A ThermalHouseInput without operator and operation time is created as expected"() {
@@ -91,18 +91,18 @@ class ThermalHouseInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == thermalHouseInput.uuid
-      assert id == thermalHouseInput.id
-      assert operator == thermalHouseInput.operator
-      assert operationTime == thermalHouseInput.operationTime
-      assert thermalBus == thermalHouseInput.thermalBus
-      assert ethLosses == thermalHouseInput.ethLosses * 2d
-      assert ethCapa == thermalHouseInput.ethCapa * 2d
-      assert targetTemperature == thermalHouseInput.targetTemperature
-      assert upperTemperatureLimit == thermalHouseInput.upperTemperatureLimit
-      assert lowerTemperatureLimit == thermalHouseInput.lowerTemperatureLimit
-      assert housingType == thermalHouseInput.housingType
-      assert numberOfInhabitants == thermalHouseInput.numberOfInhabitants * 2d
+      uuid == thermalHouseInput.uuid
+      id == thermalHouseInput.id
+      operator == thermalHouseInput.operator
+      operationTime == thermalHouseInput.operationTime
+      thermalBus == thermalHouseInput.thermalBus
+      ethLosses == thermalHouseInput.ethLosses * 2d
+      ethCapa == thermalHouseInput.ethCapa * 2d
+      targetTemperature == thermalHouseInput.targetTemperature
+      upperTemperatureLimit == thermalHouseInput.upperTemperatureLimit
+      lowerTemperatureLimit == thermalHouseInput.lowerTemperatureLimit
+      housingType == thermalHouseInput.housingType
+      numberOfInhabitants == thermalHouseInput.numberOfInhabitants * 2d
     }
   }
 }

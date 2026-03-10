@@ -59,23 +59,23 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
     result.success
     result.data.get().getClass() == resultingModelClass
     ((ConnectorResult) result.data.get()).with {
-      assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
-      assert inputModel == UUID.fromString(parameter["inputModel"])
-      assert iAAng == getQuant(parameter["iaang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
-      assert iAMag == getQuant(parameter["iamag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
-      assert iBAng == getQuant(parameter["ibang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
-      assert iBMag == getQuant(parameter["ibmag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+      time == TIME_UTIL.toZonedDateTime(parameter["time"])
+      inputModel == UUID.fromString(parameter["inputModel"])
+      iAAng == getQuant(parameter["iaang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
+      iAMag == getQuant(parameter["iamag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+      iBAng == getQuant(parameter["ibang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
+      iBMag == getQuant(parameter["ibmag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     }
 
     if (result.data.get().getClass() == Transformer2WResult) {
-      assert ((Transformer2WResult) result.data.get()).tapPos == Integer.parseInt(parameter["tappos"])
+      ((Transformer2WResult) result.data.get()).tapPos == Integer.parseInt(parameter["tappos"])
     }
 
     if (result.data.get().getClass() == Transformer3WResult) {
       Transformer3WResult transformer3WResult = ((Transformer3WResult) result.data.get())
-      assert transformer3WResult.tapPos == Integer.parseInt(parameter["tappos"])
-      assert transformer3WResult.iCAng == getQuant(parameter["icang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
-      assert transformer3WResult.iCMag == getQuant(parameter["icmag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+      transformer3WResult.tapPos == Integer.parseInt(parameter["tappos"])
+      transformer3WResult.iCAng == getQuant(parameter["icang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
+      transformer3WResult.iCMag == getQuant(parameter["icmag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     }
 
 

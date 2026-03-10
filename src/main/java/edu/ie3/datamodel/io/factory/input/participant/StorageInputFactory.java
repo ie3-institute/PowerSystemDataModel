@@ -17,15 +17,9 @@ import java.util.UUID;
 public class StorageInputFactory
     extends SystemParticipantInputEntityFactory<
         StorageInput, SystemParticipantTypedEntityData<StorageTypeInput>> {
-  private static final String TYPE = "type";
 
   public StorageInputFactory() {
     super(StorageInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE};
   }
 
   @Override

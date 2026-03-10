@@ -15,7 +15,7 @@ import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -23,11 +23,6 @@ import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
 public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
-  private static final String Q_DOT = "qDot";
-  private static final String INDOOR_TEMPERATURE = "indoorTemperature";
-  private static final String ENERGY = "energy";
-  private static final String FILL_LEVEL = "fillLevel";
-
   public ThermalResultFactory() {
     super(
         ThermalHouseResult.class,
@@ -47,21 +42,6 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
         ThermalHouseResult.class,
         CylindricalStorageResult.class,
         DomesticHotWaterStorageResult.class);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT);
-
-    if (entityClass.equals(ThermalHouseResult.class)) {
-      minConstructorParams = expandSet(minConstructorParams, INDOOR_TEMPERATURE);
-    } else if (entityClass.equals(CylindricalStorageResult.class)) {
-      minConstructorParams = expandSet(minConstructorParams, ENERGY, FILL_LEVEL);
-    } else if (entityClass.equals(DomesticHotWaterStorageResult.class)) {
-      minConstructorParams = expandSet(minConstructorParams, ENERGY, FILL_LEVEL);
-    }
-
-    return List.of(minConstructorParams);
   }
 
   @Override

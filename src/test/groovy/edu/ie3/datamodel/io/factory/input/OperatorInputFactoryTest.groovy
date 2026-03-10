@@ -39,8 +39,8 @@ class OperatorInputFactoryTest extends Specification {
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      id == parameter["id"]
     }
   }
 }

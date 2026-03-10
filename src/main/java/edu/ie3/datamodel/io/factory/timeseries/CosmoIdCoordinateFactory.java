@@ -16,12 +16,6 @@ import java.util.Set;
  * Service's COSMO model
  */
 public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
-  private static final String TID = "tid";
-  private static final String COORDINATE_ID = "id";
-  private static final String LONG_GEO = "longGeo";
-  private static final String LAT_GEO = "latGeo";
-  private static final String LONG_ROT = "longRot";
-  private static final String LAT_ROT = "latRot";
 
   @Override
   protected IdCoordinateInput buildModel(SimpleFactoryData data) {

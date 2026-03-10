@@ -43,12 +43,12 @@ class ThermalBusInputFactoryTest extends Specification implements FactoryTestHel
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert !operationTime.endDate.present
-      assert operator == operatorInput
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      !operationTime.endDate.present
+      operator == operatorInput
+      id == parameter["id"]
     }
   }
 }

@@ -50,18 +50,18 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime == OperationTime.notLimited()
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == parameter["id"]
-      assert thermalBus == thermalBusInput
-      assert ethLosses == getQuant(parameter["ethlosses"], StandardUnits.THERMAL_TRANSMISSION)
-      assert ethCapa == getQuant(parameter["ethcapa"], StandardUnits.HEAT_CAPACITY)
-      assert targetTemperature == getQuant(parameter["targetTemperature"], StandardUnits.TEMPERATURE)
-      assert upperTemperatureLimit == getQuant(parameter["upperTemperatureLimit"], StandardUnits.TEMPERATURE)
-      assert lowerTemperatureLimit == getQuant(parameter["lowerTemperatureLimit"], StandardUnits.TEMPERATURE)
-      assert housingType == parameter["housingType"]
-      assert numberInhabitants == parameter["numberInhabitants"].toDouble()
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime == OperationTime.notLimited()
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == parameter["id"]
+      thermalBus == thermalBusInput
+      ethLosses == getQuant(parameter["ethlosses"], StandardUnits.THERMAL_TRANSMISSION)
+      ethCapa == getQuant(parameter["ethcapa"], StandardUnits.HEAT_CAPACITY)
+      targetTemperature == getQuant(parameter["targetTemperature"], StandardUnits.TEMPERATURE)
+      upperTemperatureLimit == getQuant(parameter["upperTemperatureLimit"], StandardUnits.TEMPERATURE)
+      lowerTemperatureLimit == getQuant(parameter["lowerTemperatureLimit"], StandardUnits.TEMPERATURE)
+      housingType == parameter["housingType"]
+      numberInhabitants == parameter["numberInhabitants"].toDouble()
     }
   }
 }

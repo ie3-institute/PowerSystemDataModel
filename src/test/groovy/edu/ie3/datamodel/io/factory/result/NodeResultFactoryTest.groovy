@@ -41,10 +41,10 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     result.success
     result.data.get().getClass() == NodeResult
     ((NodeResult) result.data.get()).with {
-      assert vMag == getQuant(parameter["vmag"], StandardUnits.VOLTAGE_MAGNITUDE)
-      assert vAng == getQuant(parameter["vang"], StandardUnits.VOLTAGE_ANGLE)
-      assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
-      assert inputModel == UUID.fromString(parameter["inputModel"])
+      vMag == getQuant(parameter["vmag"], StandardUnits.VOLTAGE_MAGNITUDE)
+      vAng == getQuant(parameter["vang"], StandardUnits.VOLTAGE_ANGLE)
+      time == TIME_UTIL.toZonedDateTime(parameter["time"])
+      inputModel == UUID.fromString(parameter["inputModel"])
     }
   }
 

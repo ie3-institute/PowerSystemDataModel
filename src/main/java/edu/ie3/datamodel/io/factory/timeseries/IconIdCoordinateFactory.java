@@ -16,10 +16,6 @@ import java.util.Set;
  * Service's ICON model
  */
 public class IconIdCoordinateFactory extends IdCoordinateFactory {
-  private static final String COORDINATE_ID = "id";
-  private static final String LONG = "longitude";
-  private static final String LAT = "latitude";
-  private static final String TYPE = "coordinateType";
 
   @Override
   protected IdCoordinateInput buildModel(SimpleFactoryData data) {
@@ -31,7 +27,7 @@ public class IconIdCoordinateFactory extends IdCoordinateFactory {
 
   @Override
   protected List<Set<String>> getFields(Class<?> entityClass) {
-    return Collections.singletonList(newSet(COORDINATE_ID, LAT, LONG, TYPE));
+    return Collections.singletonList(newSet(COORDINATE_ID, LAT, LONG, COORDINATE_TYPE));
   }
 
   @Override
