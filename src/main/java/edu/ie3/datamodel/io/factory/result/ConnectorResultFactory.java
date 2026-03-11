@@ -15,20 +15,12 @@ import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 import tech.units.indriya.ComparableQuantity;
 
 public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
-
-  private static final String IAMAG = "iAMag";
-  private static final String IAANG = "iAAng";
-  private static final String IBMAG = "iBMag";
-  private static final String IBANG = "iBAng";
-  private static final String ICMAG = "iCMag";
-  private static final String ICANG = "iCAng";
-  private static final String TAPPOS = "tapPos";
 
   public ConnectorResultFactory() {
     super(LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
@@ -43,21 +35,6 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   public ConnectorResultFactory(DateTimeFormatter dateTimeFormatter) {
     super(
         dateTimeFormatter, LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    /// all result models have the same constructor except StorageResult
-    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG);
-
-    if (entityClass.equals(Transformer2WResult.class)) {
-      minConstructorParams = expandSet(minConstructorParams, TAPPOS);
-
-    } else if (entityClass.equals(Transformer3WResult.class)) {
-      minConstructorParams = expandSet(minConstructorParams, ICMAG, ICANG, TAPPOS);
-    }
-
-    return List.of(minConstructorParams);
   }
 
   @Override

@@ -3,7 +3,11 @@
 note "Assuming all classes to implement \nthe abstract methods of their interfaces\n\n" as generalNotes
 
 interface DataSource {
+    {abstract} Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass)
     {abstract} Stream<Map<String, String>> getSourceData(Class<? extends UniqueEntity> entityClass)
+    Try<Void, ValidationException> validate(Class<? extends Entity> entityClass)
+    {static} <C> Try<Void, ValidationException> validate(Set<String> actualFields, Class<C> entityClass)
+    {static} Try<Void, ValidationException> validate(Set<String> actualFields, Class<?> entityClass, List<Set<String>> mandatoryFields, Set<String> optionalFields, Set<String> unsupportedFields)
 }
 
 DataSource <|-- CsvDataSource

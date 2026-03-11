@@ -14,8 +14,6 @@ import java.util.UUID;
 
 public class TimeSeriesMappingFactory
     extends EntityFactory<TimeSeriesMappingSource.MappingEntry, EntityData> {
-  private static final String ASSET = "asset";
-  private static final String TIME_SERIES = "timeSeries";
 
   public TimeSeriesMappingFactory() {
     super(TimeSeriesMappingSource.MappingEntry.class);

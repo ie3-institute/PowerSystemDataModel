@@ -28,13 +28,13 @@ class BmTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == bmTypeInput.uuid
-      assert id == bmTypeInput.id
-      assert capex == Quantities.getQuantity(110d, CAPEX)
-      assert opex == Quantities.getQuantity(20d, ENERGY_PRICE)
-      assert sRated == Quantities.getQuantity(50d, ACTIVE_POWER_IN)
-      assert cosPhiRated == bmTypeInput.cosPhiRated
-      assert etaConv == bmTypeInput.etaConv
+      uuid == bmTypeInput.uuid
+      id == bmTypeInput.id
+      capex == Quantities.getQuantity(110d, CAPEX)
+      opex == Quantities.getQuantity(20d, ENERGY_PRICE)
+      sRated == Quantities.getQuantity(50d, ACTIVE_POWER_IN)
+      cosPhiRated == bmTypeInput.cosPhiRated
+      etaConv == bmTypeInput.etaConv
     }
   }
 
@@ -47,13 +47,13 @@ class BmTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == bmTypeInput.uuid
-      assert id == bmTypeInput.id
-      assert capex == bmTypeInput.capex * 2d
-      assert opex == bmTypeInput.opex
-      assert sRated == bmTypeInput.sRated * 2d
-      assert cosPhiRated == bmTypeInput.cosPhiRated
-      assert etaConv == bmTypeInput.etaConv
+      uuid == bmTypeInput.uuid
+      id == bmTypeInput.id
+      capex == bmTypeInput.capex * 2d
+      opex == bmTypeInput.opex
+      sRated == bmTypeInput.sRated * 2d
+      cosPhiRated == bmTypeInput.cosPhiRated
+      etaConv == bmTypeInput.etaConv
     }
   }
 }

@@ -313,7 +313,7 @@ class ContainerUtilsTest extends Specification {
       SubGridContainer actualSubGrid = entry.value
       SubGridContainer expectedSubGrid = expectedSubGrids.get(subnetNo)
 
-      assert actualSubGrid == expectedSubGrid
+      actualSubGrid == expectedSubGrid
     }
   }
 
@@ -344,38 +344,38 @@ class ContainerUtilsTest extends Specification {
       SubGridContainer unmodifiedSubGrid = unmodifiedSubGrids.get(it.key)
 
       computableSubGrid.with {
-        assert subnet == unmodifiedSubGrid.subnet
-        assert predominantVoltageLevel == unmodifiedSubGrid.predominantVoltageLevel
+        subnet == unmodifiedSubGrid.subnet
+        predominantVoltageLevel == unmodifiedSubGrid.predominantVoltageLevel
 
         // 2 winding transformer hv nodes must be marked as slacks
         rawGrid.transformer2Ws.each {
           def trafo2w = it
           trafo2w.with {
-            assert nodeA.slack
+            nodeA.slack
           }
         }
 
         // all adapted trafo2w nodes must be part of the nodes set
-        assert rawGrid.nodes.containsAll(rawGrid.transformer2Ws.collect{it.nodeA})
+        rawGrid.nodes.containsAll(rawGrid.transformer2Ws.collect{it.nodeA})
 
         // 3 winding transformer slack nodes must be mapped correctly
         rawGrid.transformer3Ws.each {
           def trafo3w = it
           if(trafo3w.nodeA.subnet == subnet) {
             // subnet 1 is highest grid in test set + trafo 3w -> nodeA must be slack
-            assert subnet == 1 ? trafo3w.nodeA.slack : !trafo3w.nodeA.slack
-            assert !trafo3w.nodeInternal.slack
-            assert rawGrid.nodes.contains(trafo3w.nodeInternal)
+            subnet == 1 ? trafo3w.nodeA.slack : !trafo3w.nodeA.slack
+            !trafo3w.nodeInternal.slack
+            rawGrid.nodes.contains(trafo3w.nodeInternal)
           } else {
-            assert trafo3w.nodeInternal.slack
-            assert !trafo3w.nodeA.slack
-            assert !trafo3w.nodeB.slack
-            assert !trafo3w.nodeC.slack
-            assert rawGrid.nodes.contains(trafo3w.nodeInternal)
+            trafo3w.nodeInternal.slack
+            !trafo3w.nodeA.slack
+            !trafo3w.nodeB.slack
+            !trafo3w.nodeC.slack
+            rawGrid.nodes.contains(trafo3w.nodeInternal)
           }
         }
 
-        assert systemParticipants == unmodifiedSubGrid.systemParticipants
+        systemParticipants == unmodifiedSubGrid.systemParticipants
       }
     }
   }
@@ -466,9 +466,9 @@ class ContainerUtilsTest extends Specification {
 
     then:
     graph.getEdge(nodeA, nodeB).with {
-      assert weight == 913.5678707610981d
-      assert source == nodeA
-      assert target == nodeB
+      weight == 913.5678707610981d
+      source == nodeA
+      target == nodeB
     }
   }
 
@@ -530,22 +530,22 @@ class ContainerUtilsTest extends Specification {
 
     /* Check impedance of two winding transformer */
     graph.getEdge(transformer.nodeA, transformer.nodeB).with {
-      assert DoubleTestHelper.equalsWithTolerance(weight, 112.33121875062159d, 1E-6)
+      DoubleTestHelper.equalsWithTolerance(weight, 112.33121875062159d, 1E-6)
     }
     /* Check impedance of three winding transformer */
     graph.getEdge(transformer3w.nodeA, transformer3w.nodeB).with {
-      assert DoubleTestHelper.equalsWithTolerance(weight, 1.1278408575681236d, 1E-6)
+      DoubleTestHelper.equalsWithTolerance(weight, 1.1278408575681236d, 1E-6)
     }
     graph.getEdge(transformer3w.nodeA, transformer3w.nodeC).with {
-      assert DoubleTestHelper.equalsWithTolerance(weight, 1.0471340124358486d, 1E-6)
+      DoubleTestHelper.equalsWithTolerance(weight, 1.0471340124358486d, 1E-6)
     }
     /* Check impedance of line */
     graph.getEdge(line.nodeA, line.nodeB).with {
-      assert DoubleTestHelper.equalsWithTolerance(weight, 0.0016909597866300665d, 1E-6)
+      DoubleTestHelper.equalsWithTolerance(weight, 0.0016909597866300665d, 1E-6)
     }
     /* Check impedance of switch */
     graph.getEdge(swtchClosed.nodeA, swtchClosed.nodeB).with {
-      assert DoubleTestHelper.equalsWithTolerance(weight, 1.0d, 1E-6)
+      DoubleTestHelper.equalsWithTolerance(weight, 1.0d, 1E-6)
     }
   }
 

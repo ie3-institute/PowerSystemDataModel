@@ -27,16 +27,16 @@ class ChpTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == chpTypeInput.uuid
-      assert id == chpTypeInput.id
-      assert capex == chpTypeInput.capex
-      assert opex == chpTypeInput.opex
-      assert etaEl == Quantities.getQuantity(20, EFFICIENCY)
-      assert etaThermal == chpTypeInput.etaThermal
-      assert sRated == Quantities.getQuantity(50d, ACTIVE_POWER_IN)
-      assert cosPhiRated == chpTypeInput.cosPhiRated
-      assert pThermal == Quantities.getQuantity(15, ACTIVE_POWER_IN)
-      assert pOwn == chpTypeInput.pOwn
+      uuid == chpTypeInput.uuid
+      id == chpTypeInput.id
+      capex == chpTypeInput.capex
+      opex == chpTypeInput.opex
+      etaEl == Quantities.getQuantity(20, EFFICIENCY)
+      etaThermal == chpTypeInput.etaThermal
+      sRated == Quantities.getQuantity(50d, ACTIVE_POWER_IN)
+      cosPhiRated == chpTypeInput.cosPhiRated
+      pThermal == Quantities.getQuantity(15, ACTIVE_POWER_IN)
+      pOwn == chpTypeInput.pOwn
     }
   }
 
@@ -49,16 +49,16 @@ class ChpTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == chpTypeInput.uuid
-      assert id == chpTypeInput.id
-      assert capex == chpTypeInput.capex * 2d
-      assert opex == chpTypeInput.opex
-      assert etaEl == chpTypeInput.etaEl
-      assert etaThermal == chpTypeInput.etaThermal
-      assert sRated == chpTypeInput.sRated * 2d
-      assert cosPhiRated == chpTypeInput.cosPhiRated
-      assert pThermal == chpTypeInput.pThermal * 2d
-      assert pOwn == chpTypeInput.pOwn * 2d
+      uuid == chpTypeInput.uuid
+      id == chpTypeInput.id
+      capex == chpTypeInput.capex * 2d
+      opex == chpTypeInput.opex
+      etaEl == chpTypeInput.etaEl
+      etaThermal == chpTypeInput.etaThermal
+      sRated == chpTypeInput.sRated * 2d
+      cosPhiRated == chpTypeInput.cosPhiRated
+      pThermal == chpTypeInput.pThermal * 2d
+      pOwn == chpTypeInput.pOwn * 2d
     }
   }
 }

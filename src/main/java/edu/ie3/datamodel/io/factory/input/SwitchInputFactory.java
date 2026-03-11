@@ -13,15 +13,9 @@ import java.util.UUID;
 
 public class SwitchInputFactory
     extends ConnectorInputEntityFactory<SwitchInput, ConnectorInputEntityData> {
-  private static final String CLOSED = "closed";
 
   public SwitchInputFactory() {
     super(SwitchInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {NODE_A, NODE_B, CLOSED};
   }
 
   @Override

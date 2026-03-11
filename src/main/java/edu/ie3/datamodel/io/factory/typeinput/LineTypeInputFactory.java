@@ -10,31 +10,15 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
 import tech.units.indriya.ComparableQuantity;
 
 public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeInput> {
-  private static final String B = "b";
-  private static final String G = "g";
-  private static final String R = "r";
-  private static final String X = "x";
-  private static final String I_MAX = "iMax";
-  private static final String V_RATED = "vRated";
 
   public LineTypeInputFactory() {
     super(LineTypeInput.class);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> constructorParams = newSet(UUID, ID, B, G, R, X, I_MAX, V_RATED);
-
-    return Collections.singletonList(constructorParams);
   }
 
   @Override

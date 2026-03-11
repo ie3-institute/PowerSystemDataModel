@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add validation for required fields in ICON and COSMO `TimebasedWeatherValueFactories` [#1537](https://github.com/ie3-institute/PowerSystemDataModel/issues/1537)
 - Create data model for air condition [#1396](https://github.com/ie3-institute/PowerSystemDataModel/issues/1396)
 - provided field information in validation messages [#1397](https://github.com/ie3-institute/PowerSystemDataModel/issues/1397)
+- Add validation methods to `DataSource` [#1559](https://github.com/ie3-institute/PowerSystemDataModel/issues/1559)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
@@ -49,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `ThermalUnits` (duplication to `ThermalGrids`) [#874](https://github.com/ie3-institute/PowerSystemDataModel/issues/874)
 - Removed market reaction field from `PvInput`, `WecInput`, `BmInput`, `ChpInput` [#1554](https://github.com/ie3-institute/PowerSystemDataModel/issues/1554)
 - Changed `Intermediate` to `Transition` for BdewSeason [#1419](https://github.com/ie3-institute/PowerSystemDataModel/issues/1419)
+- Refactored validation of entity classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
 
 ## [8.1.0] - 2025-07-25
 

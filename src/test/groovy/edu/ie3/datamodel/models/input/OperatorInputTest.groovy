@@ -21,8 +21,8 @@ class OperatorInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == alteredUuid
-      assert id == "Univ.-Prof. Dr.-Ing. Christian Rehtanz"
+      uuid == alteredUuid
+      id == "Univ.-Prof. Dr.-Ing. Christian Rehtanz"
     }
   }
 }

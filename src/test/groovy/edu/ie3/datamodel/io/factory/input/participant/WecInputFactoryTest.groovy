@@ -56,21 +56,21 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert !operationTime.startDate.present
-      assert operationTime.endDate.present
-      assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-      assert operator == operatorInput
-      assert id == parameter["id"]
-      assert node == nodeInput
-      assert qCharacteristics.with {
-        assert uuid != null
-        assert points == Collections.unmodifiableSortedSet([
+      uuid == UUID.fromString(parameter["uuid"])
+      !operationTime.startDate.present
+      operationTime.endDate.present
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operator == operatorInput
+      id == parameter["id"]
+      node == nodeInput
+      qCharacteristics.with {
+        uuid != null
+        points == Collections.unmodifiableSortedSet([
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert controllingEm == Optional.of(emUnit)
-      assert type == typeInput
+      controllingEm == Optional.of(emUnit)
+      type == typeInput
     }
   }
 }

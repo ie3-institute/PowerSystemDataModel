@@ -25,13 +25,13 @@ class HpTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == hpTypeInput.uuid
-      assert id == hpTypeInput.id
-      assert capex == hpTypeInput.capex
-      assert opex == hpTypeInput.opex
-      assert sRated == hpTypeInput.sRated
-      assert cosPhiRated == 0.97d
-      assert pThermal == Quantities.getQuantity(10, ACTIVE_POWER_IN)
+      uuid == hpTypeInput.uuid
+      id == hpTypeInput.id
+      capex == hpTypeInput.capex
+      opex == hpTypeInput.opex
+      sRated == hpTypeInput.sRated
+      cosPhiRated == 0.97d
+      pThermal == Quantities.getQuantity(10, ACTIVE_POWER_IN)
     }
   }
 
@@ -44,13 +44,13 @@ class HpTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == hpTypeInput.uuid
-      assert id == hpTypeInput.id
-      assert capex == hpTypeInput.capex * 2d
-      assert opex == hpTypeInput.opex
-      assert sRated == hpTypeInput.sRated * 2d
-      assert cosPhiRated == hpTypeInput.cosPhiRated
-      assert pThermal == hpTypeInput.pThermal * 2d
+      uuid == hpTypeInput.uuid
+      id == hpTypeInput.id
+      capex == hpTypeInput.capex * 2d
+      opex == hpTypeInput.opex
+      sRated == hpTypeInput.sRated * 2d
+      cosPhiRated == hpTypeInput.cosPhiRated
+      pThermal == hpTypeInput.pThermal * 2d
     }
   }
 }

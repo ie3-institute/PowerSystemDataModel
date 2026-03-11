@@ -17,15 +17,9 @@ import java.util.UUID;
 public class EvInputFactory
     extends SystemParticipantInputEntityFactory<
         EvInput, SystemParticipantTypedEntityData<EvTypeInput>> {
-  private static final String TYPE = "type";
 
   public EvInputFactory() {
     super(EvInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE};
   }
 
   @Override

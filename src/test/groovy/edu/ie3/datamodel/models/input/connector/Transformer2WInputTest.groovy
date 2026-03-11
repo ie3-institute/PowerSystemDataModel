@@ -22,15 +22,15 @@ class Transformer2WInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == trafo2w.uuid
-      assert operationTime == trafo2w.operationTime
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == "trafo2w"
-      assert nodeA == GridTestData.nodeA
-      assert nodeB == GridTestData.nodeB
-      assert type == GridTestData.transformerTypeBtoD
-      assert tapPos == 10
-      assert !autoTap
+      uuid == trafo2w.uuid
+      operationTime == trafo2w.operationTime
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == "trafo2w"
+      nodeA == GridTestData.nodeA
+      nodeB == GridTestData.nodeB
+      type == GridTestData.transformerTypeBtoD
+      tapPos == 10
+      !autoTap
     }
   }
 }
