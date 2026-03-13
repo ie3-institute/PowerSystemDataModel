@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed market reaction field from `PvInput`, `WecInput`, `BmInput`, `ChpInput` [#1554](https://github.com/ie3-institute/PowerSystemDataModel/issues/1554)
 - Changed `Intermediate` to `Transition` for BdewSeason [#1419](https://github.com/ie3-institute/PowerSystemDataModel/issues/1419)
 - Refactored validation of entity classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
+- Changed `operationTime` to `operationFrom` and `operationUntil` in read the docs [1507](https://github.com/ie3-institute/PowerSystemDataModel/issues/1507)
 
 ## [8.1.0] - 2025-07-25
 
