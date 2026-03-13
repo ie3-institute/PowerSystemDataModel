@@ -24,11 +24,11 @@ Detailed model of a photovoltaic power plant.
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - node
      -

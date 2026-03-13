@@ -75,11 +75,11 @@ Model of a biomass power plant.
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - node
      -
