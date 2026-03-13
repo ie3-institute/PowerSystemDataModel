@@ -413,7 +413,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                 quantities(
                     FIELD_S_RATED,
                     acTypeInput.getsRated(),
-                    FIELD_E_CONS_ANNUAL,
+                    FIELD_P_THERMAL,
                     acTypeInput.getpThermal()),
                 acTypeInput),
         InvalidEntityException.class);
