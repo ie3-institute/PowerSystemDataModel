@@ -79,11 +79,11 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - operator
      -
-     - 
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - node
      -

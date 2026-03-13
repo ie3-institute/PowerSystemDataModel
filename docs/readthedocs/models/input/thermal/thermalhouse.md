@@ -31,11 +31,11 @@ This reflects a simple shoe box with transmission losses
 
    * - operator
      -
-     - 
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - ethLosses
      - kW / K
