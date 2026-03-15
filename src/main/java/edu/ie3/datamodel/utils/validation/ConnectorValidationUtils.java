@@ -8,6 +8,7 @@ package edu.ie3.datamodel.utils.validation;
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
@@ -109,7 +110,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
             InvalidEntityException.class,
             () -> connectsNodesInDifferentSubnets(line, false),
             () -> connectsNodesWithDifferentVoltageLevels(line, false),
-            () -> detectZeroOrNegativeQuantities(quantities("length", line.getLength()), line)));
+            () ->
+                detectZeroOrNegativeQuantities(
+                    quantities(FieldNamingStrategy.LENGTH, line.getLength()), line)));
 
     /* these two won't throw exceptions and will only log */
     coordinatesOfLineEqualCoordinatesOfNodes(line);
@@ -146,13 +149,15 @@ public class ConnectorValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                quantities("b", lineType.getB(), "g", lineType.getG()), lineType),
+                quantities(
+                    FieldNamingStrategy.B, lineType.getB(), FieldNamingStrategy.G, lineType.getG()),
+                lineType),
         () ->
             detectZeroOrNegativeQuantities(
                 quantities(
-                    "vRated", lineType.getvRated(),
-                    "iMax", lineType.getiMax(),
-                    "r", lineType.getR()),
+                    FieldNamingStrategy.V_RATED, lineType.getvRated(),
+                    FieldNamingStrategy.I_MAX, lineType.getiMax(),
+                    FieldNamingStrategy.R, lineType.getR()),
                 lineType));
   }
 
@@ -225,21 +230,21 @@ public class ConnectorValidationUtils extends ValidationUtils {
         () ->
             detectNegativeQuantities(
                 quantities(
-                    "gM", transformer2WType.getgM(),
-                    "dPhi", transformer2WType.getdPhi(),
-                    "rSc", transformer2WType.getrSc()),
+                    FieldNamingStrategy.G_M, transformer2WType.getgM(),
+                    FieldNamingStrategy.D_PHI, transformer2WType.getdPhi(),
+                    FieldNamingStrategy.R_SC, transformer2WType.getrSc()),
                 transformer2WType),
         () ->
             detectZeroOrNegativeQuantities(
                 quantities(
-                    "sRated", transformer2WType.getsRated(),
-                    "vRatedA", transformer2WType.getvRatedA(),
-                    "vRatedB", transformer2WType.getvRatedB(),
-                    "xSc", transformer2WType.getxSc()),
+                    FieldNamingStrategy.S_RATED, transformer2WType.getsRated(),
+                    FieldNamingStrategy.V_RATED_A, transformer2WType.getvRatedA(),
+                    FieldNamingStrategy.V_RATED_B, transformer2WType.getvRatedB(),
+                    FieldNamingStrategy.X_SC, transformer2WType.getxSc()),
                 transformer2WType),
         () ->
             detectPositiveQuantities(
-                quantities("bM", transformer2WType.getbM()), transformer2WType),
+                quantities(FieldNamingStrategy.B_M, transformer2WType.getbM()), transformer2WType),
         () -> checkVoltageMagnitudeChangePerTapPosition(transformer2WType),
         () -> checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer2WType),
         () -> checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer2WType));
@@ -333,27 +338,43 @@ public class ConnectorValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                quantities("gM", transformer3WType.getgM(), "dPhi", transformer3WType.getdPhi()),
+                quantities(
+                    FieldNamingStrategy.G_M,
+                    transformer3WType.getgM(),
+                    FieldNamingStrategy.G_M,
+                    transformer3WType.getdPhi()),
                 transformer3WType),
         () ->
             detectZeroOrNegativeQuantities(
                 quantities(
-                    "sRatedA", transformer3WType.getsRatedA(),
-                    "sRatedB", transformer3WType.getsRatedB(),
-                    "sRatedC", transformer3WType.getsRatedC(),
-                    "vRatedA", transformer3WType.getvRatedA(),
-                    "vRatedB", transformer3WType.getvRatedB(),
-                    "vRatedC", transformer3WType.getvRatedC(),
-                    "rScA", transformer3WType.getrScA(),
-                    "rScB", transformer3WType.getrScB(),
-                    "rScC", transformer3WType.getrScC(),
-                    "xScA", transformer3WType.getxScA(),
-                    "xScB", transformer3WType.getxScB(),
-                    "xScC", transformer3WType.getxScC()),
+                    FieldNamingStrategy.S_RATED_A,
+                    transformer3WType.getsRatedA(),
+                    FieldNamingStrategy.S_RATED_B,
+                    transformer3WType.getsRatedB(),
+                    FieldNamingStrategy.S_RATED_C,
+                    transformer3WType.getsRatedC(),
+                    FieldNamingStrategy.V_RATED_A,
+                    transformer3WType.getvRatedA(),
+                    FieldNamingStrategy.V_RATED_B,
+                    transformer3WType.getvRatedB(),
+                    FieldNamingStrategy.V_RATED_C,
+                    transformer3WType.getvRatedC(),
+                    FieldNamingStrategy.R_SC_A,
+                    transformer3WType.getrScA(),
+                    FieldNamingStrategy.R_SC_B,
+                    transformer3WType.getrScB(),
+                    FieldNamingStrategy.R_SC_C,
+                    transformer3WType.getrScC(),
+                    FieldNamingStrategy.X_SC_A,
+                    transformer3WType.getxScA(),
+                    FieldNamingStrategy.X_SC_B,
+                    transformer3WType.getxScB(),
+                    FieldNamingStrategy.X_SC_C,
+                    transformer3WType.getxScC()),
                 transformer3WType),
         () ->
             detectPositiveQuantities(
-                quantities("bM", transformer3WType.getbM()), transformer3WType),
+                quantities(FieldNamingStrategy.B_M, transformer3WType.getbM()), transformer3WType),
         () -> checkVoltageMagnitudeChangePerTapPosition(transformer3WType),
         () -> checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer3WType),
         () -> checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer3WType));

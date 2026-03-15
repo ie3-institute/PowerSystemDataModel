@@ -10,6 +10,7 @@ import static edu.ie3.datamodel.models.StandardUnits.SOLAR_ELEVATION_ANGLE;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.TryException;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
@@ -28,21 +29,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   private SystemParticipantValidationUtils() {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
-
-  /** field constants* */
-  private static final String FIELD_CAPEX = "capex";
-
-  private static final String FIELD_OPEX = "opex";
-  private static final String FIELD_S_RATED = "sRated";
-  private static final String FIELD_ACTIVE_POWER_GRADIENT = "activePowerGradient";
-  private static final String FIELD_P_OWN = "pOwn";
-  private static final String FIELD_P_THERMAL = "pThermal";
-  private static final String FIELD_E_STORAGE = "eStorage";
-  private static final String FIELD_E_CONS = "eCons";
-  private static final String FIELD_E_CONS_ANNUAL = "eConsAnnual";
-  private static final String FIELD_P_MAX = "pMax";
-  private static final String FIELD_ROTOR_AREA = "rotorArea";
-  private static final String FIELD_HUB_HEIGHT = "hubHeight";
 
   /**
    * Validates a system participant if:
@@ -152,9 +138,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
               () ->
                   detectNegativeQuantities(
                       quantities(
-                          FIELD_CAPEX, systemParticipantTypeInput.getCapex(),
-                          FIELD_OPEX, systemParticipantTypeInput.getOpex(),
-                          FIELD_S_RATED, systemParticipantTypeInput.getsRated()),
+                          FieldNamingStrategy.CAP_EX, systemParticipantTypeInput.getCapex(),
+                          FieldNamingStrategy.OP_EX, systemParticipantTypeInput.getOpex(),
+                          FieldNamingStrategy.S_RATED, systemParticipantTypeInput.getsRated()),
                       systemParticipantTypeInput),
               InvalidEntityException.class));
     } catch (TryException e) {
@@ -224,7 +210,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                quantities(FIELD_ACTIVE_POWER_GRADIENT, bmTypeInput.getActivePowerGradient()),
+                quantities(
+                    FieldNamingStrategy.ACTIVE_POWER_GRADIENT,
+                    bmTypeInput.getActivePowerGradient()),
                 bmTypeInput),
         () ->
             isBetweenZeroAndHundredPercent(
@@ -265,10 +253,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     return Try.ofVoid(
         InvalidEntityException.class,
         () ->
-            detectNegativeQuantities(quantities(FIELD_P_OWN, chpTypeInput.getpOwn()), chpTypeInput),
+            detectNegativeQuantities(
+                quantities(FieldNamingStrategy.P_OWN, chpTypeInput.getpOwn()), chpTypeInput),
         () ->
             detectZeroOrNegativeQuantities(
-                quantities(FIELD_P_THERMAL, chpTypeInput.getpThermal()), chpTypeInput),
+                quantities(FieldNamingStrategy.P_THERMAL, chpTypeInput.getpThermal()),
+                chpTypeInput),
         () ->
             isBetweenZeroAndHundredPercent(
                 chpTypeInput, chpTypeInput.getEtaEl(), "Electrical efficiency"),
@@ -309,9 +299,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         () ->
             detectZeroOrNegativeQuantities(
                 quantities(
-                    FIELD_E_STORAGE,
+                    FieldNamingStrategy.E_STORAGE,
                     evTypeInput.geteStorage(),
-                    FIELD_E_CONS,
+                    FieldNamingStrategy.E_CONS,
                     evTypeInput.geteCons()),
                 evTypeInput),
         InvalidEntityException.class);
@@ -335,7 +325,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                quantities(FIELD_S_RATED, fixedFeedInInput.getsRated()), fixedFeedInInput),
+                quantities(FieldNamingStrategy.S_RATED, fixedFeedInInput.getsRated()),
+                fixedFeedInInput),
         () -> checkRatedPowerFactor(fixedFeedInInput, fixedFeedInInput.getCosPhiRated()));
   }
 
@@ -371,9 +362,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         () ->
             detectZeroOrNegativeQuantities(
                 quantities(
-                    FIELD_S_RATED,
+                    FieldNamingStrategy.S_RATED,
                     hpTypeInput.getsRated(),
-                    FIELD_P_THERMAL,
+                    FieldNamingStrategy.P_THERMAL,
                     hpTypeInput.getpThermal()),
                 hpTypeInput),
         InvalidEntityException.class);
@@ -411,9 +402,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         () ->
             detectZeroOrNegativeQuantities(
                 quantities(
-                    FIELD_S_RATED,
+                    FieldNamingStrategy.S_RATED,
                     acTypeInput.getsRated(),
-                    FIELD_P_THERMAL,
+                    FieldNamingStrategy.P_THERMAL,
                     acTypeInput.getpThermal()),
                 acTypeInput),
         InvalidEntityException.class);
@@ -449,9 +440,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
             () ->
                 detectNegativeQuantities(
                     quantities(
-                        FIELD_S_RATED,
+                        FieldNamingStrategy.S_RATED,
                         loadInput.getsRated(),
-                        FIELD_E_CONS_ANNUAL,
+                        FieldNamingStrategy.E_CONS_ANNUAL,
                         loadInput.geteConsAnnual()),
                     loadInput),
             () -> checkRatedPowerFactor(loadInput, loadInput.getCosPhiRated())));
@@ -478,7 +469,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   private static List<Try<Void, InvalidEntityException>> checkPv(PvInput pvInput) {
     return Try.ofVoid(
         InvalidEntityException.class,
-        () -> detectNegativeQuantities(quantities(FIELD_S_RATED, pvInput.getsRated()), pvInput),
+        () ->
+            detectNegativeQuantities(
+                quantities(FieldNamingStrategy.S_RATED, pvInput.getsRated()), pvInput),
         () -> checkAlbedo(pvInput),
         () -> checkAzimuth(pvInput),
         () ->
@@ -576,14 +569,15 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         () ->
             detectNegativeQuantities(
                 quantities(
-                    FIELD_P_MAX,
+                    FieldNamingStrategy.P_MAX,
                     storageTypeInput.getpMax(),
-                    FIELD_ACTIVE_POWER_GRADIENT,
+                    FieldNamingStrategy.ACTIVE_POWER_GRADIENT,
                     storageTypeInput.getActivePowerGradient()),
                 storageTypeInput),
         () ->
             detectZeroOrNegativeQuantities(
-                quantities(FIELD_E_STORAGE, storageTypeInput.geteStorage()), storageTypeInput));
+                quantities(FieldNamingStrategy.E_STORAGE, storageTypeInput.geteStorage()),
+                storageTypeInput));
   }
 
   /**
@@ -624,9 +618,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         () ->
             detectNegativeQuantities(
                 quantities(
-                    FIELD_ROTOR_AREA,
+                    FieldNamingStrategy.ROTOR_AREA,
                     wecTypeInput.getRotorArea(),
-                    FIELD_HUB_HEIGHT,
+                    FieldNamingStrategy.HUB_HEIGHT,
                     wecTypeInput.getHubHeight()),
                 wecTypeInput));
   }
@@ -661,7 +655,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         () -> checkRatedPowerFactor(evcsInput, evcsInput.getCosPhiRated()),
         () ->
             detectNegativeQuantities(
-                quantities(FIELD_S_RATED, evcsInput.getType().getsRated()), evcsInput));
+                quantities(FieldNamingStrategy.S_RATED, evcsInput.getType().getsRated()),
+                evcsInput));
   }
 
   /**
