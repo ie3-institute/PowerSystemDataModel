@@ -20,13 +20,13 @@ class WecInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == wec.uuid
-      assert operationTime == wec.operationTime
-      assert operator == wec.operator
-      assert id == wec.id
-      assert qCharacteristics == wec.qCharacteristics
-      assert type == SystemParticipantTestData.wecType
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == wec.uuid
+      operationTime == wec.operationTime
+      operator == wec.operator
+      id == wec.id
+      qCharacteristics == wec.qCharacteristics
+      type == SystemParticipantTestData.wecType
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -39,16 +39,16 @@ class WecInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == wec.uuid
-      assert operationTime == wec.operationTime
-      assert operator == wec.operator
-      assert id == wec.id
-      assert qCharacteristics == wec.qCharacteristics
-      assert type.sRated == wec.type.sRated * 2d
-      assert sRated() == wec.type.sRated * 2d
-      assert type.rotorArea == wec.type.rotorArea * 2d
-      assert type.hubHeight == wec.type.hubHeight
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == wec.uuid
+      operationTime == wec.operationTime
+      operator == wec.operator
+      id == wec.id
+      qCharacteristics == wec.qCharacteristics
+      type.sRated == wec.type.sRated * 2d
+      sRated() == wec.type.sRated * 2d
+      type.rotorArea == wec.type.rotorArea * 2d
+      type.hubHeight == wec.type.hubHeight
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

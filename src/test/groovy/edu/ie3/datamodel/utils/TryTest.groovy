@@ -545,18 +545,18 @@ class TryTest extends Specification {
     exceptions.size() == 3
 
     exceptions.get(0).with {
-      assert it.class == SourceException
-      assert it.message == "source exception"
+      it.class == SourceException
+      it.message == "source exception"
     }
 
     exceptions.get(1).with {
-      assert it.class == UnsupportedOperationException
-      assert it.message == "unsupported operation exception"
+      it.class == UnsupportedOperationException
+      it.message == "unsupported operation exception"
     }
 
     exceptions.get(2).with {
-      assert it.class == SourceException
-      assert it.message == "source exception 2"
+      it.class == SourceException
+      it.message == "source exception 2"
     }
   }
 }

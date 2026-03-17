@@ -47,15 +47,15 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert !operationTime.endDate.present
-      assert operator == operatorInput
-      assert id == parameter["id"]
-      assert nodeA == nodeInputA
-      assert nodeB == nodeInputB
-      assert closed
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      !operationTime.endDate.present
+      operator == operatorInput
+      id == parameter["id"]
+      nodeA == nodeInputA
+      nodeB == nodeInputB
+      closed
     }
   }
 
@@ -80,16 +80,16 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert !operationTime.endDate.present
-      assert operator == operatorInput
-      assert id == parameter["id"]
-      assert nodeA == nodeInputA
-      assert nodeB == nodeInputB
-      assert closed
-      assert parallelDevices == 1
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      !operationTime.endDate.present
+      operator == operatorInput
+      id == parameter["id"]
+      nodeA == nodeInputA
+      nodeB == nodeInputB
+      closed
+      parallelDevices == 1
     }
   }
 }

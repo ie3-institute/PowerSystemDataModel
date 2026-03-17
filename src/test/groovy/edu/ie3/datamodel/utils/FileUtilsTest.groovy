@@ -41,8 +41,8 @@ class FileUtilsTest extends Specification {
 
     then:
     file.with {
-      assert it.fileName == Path.of(this.fileName)
-      assert it == this.directory.resolve(this.fileName)
+      it.fileName == Path.of(this.fileName)
+      it == this.directory.resolve(this.fileName)
     }
 
     where:
@@ -57,9 +57,9 @@ class FileUtilsTest extends Specification {
 
     then:
     file.with {
-      assert it.fileName == Path.of(this.fileName)
-      assert it.relativize(it.fileName) == Path.of("")
-      assert it.parent == null
+      it.fileName == Path.of(this.fileName)
+      it.relativize(it.fileName) == Path.of("")
+      it.parent == null
     }
   }
 }

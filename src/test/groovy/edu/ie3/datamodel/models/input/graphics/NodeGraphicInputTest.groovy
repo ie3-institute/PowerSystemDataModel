@@ -20,10 +20,10 @@ class NodeGraphicInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == nodeGraphic.uuid
-      assert graphicLayer == "second"
-      assert path == null
-      assert node == GridTestData.nodeG
+      uuid == nodeGraphic.uuid
+      graphicLayer == "second"
+      path == null
+      node == GridTestData.nodeG
     }
   }
 }

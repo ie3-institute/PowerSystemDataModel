@@ -65,16 +65,16 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     typeInput.data.get().getClass() == typeInputClass
 
     ((EvTypeInput) typeInput.data.get()).with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert id == parameter["id"]
-      assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
-      assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
+      uuid == UUID.fromString(parameter["uuid"])
+      id == parameter["id"]
+      capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
+      opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
-      assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
-      assert eCons == getQuant(parameter["econs"], StandardUnits.ENERGY_PER_DISTANCE)
-      assert sRatedDC == getQuant(parameter["srateddc"], StandardUnits.ACTIVE_POWER_IN)
+      eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
+      eCons == getQuant(parameter["econs"], StandardUnits.ENERGY_PER_DISTANCE)
+      sRatedDC == getQuant(parameter["srateddc"], StandardUnits.ACTIVE_POWER_IN)
     }
   }
 
@@ -101,14 +101,14 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     typeInput.data.get().getClass() == typeInputClass
 
     ((HpTypeInput) typeInput.data.get()).with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert id == parameter["id"]
-      assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
-      assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
+      uuid == UUID.fromString(parameter["uuid"])
+      id == parameter["id"]
+      capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
+      opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
-      assert pThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
+      pThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
     }
   }
 
@@ -135,15 +135,15 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     typeInput.data.get().getClass() == typeInputClass
 
     ((BmTypeInput) typeInput.data.get()).with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert id == parameter["id"]
-      assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
-      assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
+      uuid == UUID.fromString(parameter["uuid"])
+      id == parameter["id"]
+      capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
+      opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
-      assert activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
-      assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
+      activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
+      etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
     }
   }
 
@@ -173,24 +173,24 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     typeInput.data.get().getClass() == typeInputClass
 
     ((WecTypeInput) typeInput.data.get()).with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert id == parameter["id"]
-      assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
-      assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
+      uuid == UUID.fromString(parameter["uuid"])
+      id == parameter["id"]
+      capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
+      opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
       cpCharacteristic.with {
-        assert uuid != null
-        assert points == Collections.unmodifiableSortedSet([
+        uuid != null
+        points == Collections.unmodifiableSortedSet([
           new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(10d, METRE_PER_SECOND), Quantities.getQuantity(0.05, PU)),
           new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(15d, METRE_PER_SECOND), Quantities.getQuantity(0.1, PU)),
           new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(20d, METRE_PER_SECOND), Quantities.getQuantity(0.2, PU))
         ] as TreeSet)
       }
-      assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
-      assert rotorArea == getQuant(parameter["rotorarea"], StandardUnits.ROTOR_AREA)
-      assert hubHeight == getQuant(parameter["hubheight"], StandardUnits.HUB_HEIGHT)
+      etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
+      rotorArea == getQuant(parameter["rotorarea"], StandardUnits.ROTOR_AREA)
+      hubHeight == getQuant(parameter["hubheight"], StandardUnits.HUB_HEIGHT)
     }
   }
 
@@ -220,17 +220,17 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     typeInput.data.get().getClass() == typeInputClass
 
     ((ChpTypeInput) typeInput.data.get()).with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert id == parameter["id"]
-      assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
-      assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
+      uuid == UUID.fromString(parameter["uuid"])
+      id == parameter["id"]
+      capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
+      opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
-      assert etaEl == getQuant(parameter["etael"], StandardUnits.EFFICIENCY)
-      assert etaThermal == getQuant(parameter["etathermal"], StandardUnits.EFFICIENCY)
-      assert pThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
-      assert pOwn == getQuant(parameter["pown"], StandardUnits.ACTIVE_POWER_IN)
+      etaEl == getQuant(parameter["etael"], StandardUnits.EFFICIENCY)
+      etaThermal == getQuant(parameter["etathermal"], StandardUnits.EFFICIENCY)
+      pThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
+      pOwn == getQuant(parameter["pown"], StandardUnits.ACTIVE_POWER_IN)
     }
   }
 
@@ -260,17 +260,17 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     typeInput.data.get().getClass() == typeInputClass
 
     ((StorageTypeInput) typeInput.data.get()).with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert id == parameter["id"]
-      assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
-      assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
+      uuid == UUID.fromString(parameter["uuid"])
+      id == parameter["id"]
+      capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
+      opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
-      assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
-      assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
-      assert activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
-      assert eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
+      eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
+      pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
+      activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
+      eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
     }
   }
 

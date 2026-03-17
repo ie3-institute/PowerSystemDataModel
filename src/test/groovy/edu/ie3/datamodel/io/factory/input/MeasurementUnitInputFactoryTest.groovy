@@ -45,15 +45,15 @@ class MeasurementUnitInputFactoryTest extends Specification implements FactoryTe
     input.success
     input.data.get().getClass() == inputClass
     ((MeasurementUnitInput) input.data.get()).with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime == OperationTime.notLimited()
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == parameter["id"]
-      assert node == nodeInput
-      assert VMag
-      assert !VAng
-      assert p
-      assert q
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime == OperationTime.notLimited()
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == parameter["id"]
+      node == nodeInput
+      VMag
+      !VAng
+      p
+      q
     }
   }
 }

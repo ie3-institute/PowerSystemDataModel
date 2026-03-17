@@ -27,11 +27,11 @@ A coupling point to thermal system - equivalent to [electrical node](../grid/nod
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
 ```
 

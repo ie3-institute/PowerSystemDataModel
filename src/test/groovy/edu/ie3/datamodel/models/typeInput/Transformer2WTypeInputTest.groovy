@@ -37,21 +37,21 @@ class Transformer2WTypeInputTest extends Specification{
 
     then:
     alteredUnit.with {
-      assert uuid == transformer2WTypeInput.uuid
-      assert id == "transformer2WTypeInput_copy"
-      assert rSc == Quantities.getQuantity(1, Units.OHM)
-      assert xSc == Quantities.getQuantity(52, Units.OHM)
-      assert sRated == Quantities.getQuantity(50000, PowerSystemUnits.KILOWATT)
-      assert vRatedA == Quantities.getQuantity(111, PowerSystemUnits.KILOVOLT)
-      assert vRatedB == Quantities.getQuantity(11, PowerSystemUnits.KILOVOLT)
-      assert gM == Quantities.getQuantity(1, PowerSystemUnits.NANOSIEMENS)
-      assert bM == Quantities.getQuantity(1, PowerSystemUnits.NANOSIEMENS)
-      assert dV == Quantities.getQuantity(2, PowerSystemUnits.PERCENT)
-      assert dPhi == Quantities.getQuantity(1, PowerSystemUnits.DEGREE_GEOM)
-      assert tapSide
-      assert tapNeutr == 11
-      assert tapMin == 2
-      assert tapMax == 20
+      uuid == transformer2WTypeInput.uuid
+      id == "transformer2WTypeInput_copy"
+      rSc == Quantities.getQuantity(1, Units.OHM)
+      xSc == Quantities.getQuantity(52, Units.OHM)
+      sRated == Quantities.getQuantity(50000, PowerSystemUnits.KILOWATT)
+      vRatedA == Quantities.getQuantity(111, PowerSystemUnits.KILOVOLT)
+      vRatedB == Quantities.getQuantity(11, PowerSystemUnits.KILOVOLT)
+      gM == Quantities.getQuantity(1, PowerSystemUnits.NANOSIEMENS)
+      bM == Quantities.getQuantity(1, PowerSystemUnits.NANOSIEMENS)
+      dV == Quantities.getQuantity(2, PowerSystemUnits.PERCENT)
+      dPhi == Quantities.getQuantity(1, PowerSystemUnits.DEGREE_GEOM)
+      tapSide
+      tapNeutr == 11
+      tapMin == 2
+      tapMax == 20
     }
   }
 }

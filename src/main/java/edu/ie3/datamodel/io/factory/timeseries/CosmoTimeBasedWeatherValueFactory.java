@@ -30,13 +30,6 @@ import tech.units.indriya.unit.Units;
  * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
  */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
-  private static final String DIFFUSE_IRRADIANCE = "diffuseIrradiance";
-  private static final String DIRECT_IRRADIANCE = "directIrradiance";
-  private static final String TEMPERATURE = "temperature";
-  private static final String WIND_DIRECTION = "windDirection";
-  private static final String WIND_VELOCITY = "windVelocity";
-  private static final String GROUND_TEMPERATURE_LEVEL_1 = "groundTemperatureLevel1";
-  private static final String GROUND_TEMPERATURE_LEVEL_2 = "groundTemperatureLevel2";
 
   public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
@@ -54,15 +47,18 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   protected List<Set<String>> getFields(Class<?> entityClass) {
     Set<String> minConstructorParams =
         newSet(
-            COORDINATE_ID,
-            DIFFUSE_IRRADIANCE,
-            DIRECT_IRRADIANCE,
-            TEMPERATURE,
-            WIND_DIRECTION,
-            WIND_VELOCITY);
+            WEATHER_COORDINATE_ID,
+            COSMO_DIFFUSE_IRRADIANCE,
+            COSMO_DIRECT_IRRADIANCE,
+            COSMO_TEMPERATURE,
+            COSMO_WIND_DIRECTION,
+            COSMO_WIND_VELOCITY);
 
     Set<String> withGroundTemp =
-        expandSet(minConstructorParams, GROUND_TEMPERATURE_LEVEL_1, GROUND_TEMPERATURE_LEVEL_2);
+        expandSet(
+            minConstructorParams,
+            COSMO_GROUND_TEMPERATURE_LEVEL_1,
+            COSMO_GROUND_TEMPERATURE_LEVEL_2);
 
     return Arrays.asList(minConstructorParams, withGroundTemp);
   }
@@ -72,29 +68,29 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
     Set<String> requiredFields =
         newSet(
             TIME,
-            DIFFUSE_IRRADIANCE,
-            DIRECT_IRRADIANCE,
-            TEMPERATURE,
-            WIND_DIRECTION,
-            WIND_VELOCITY);
+            COSMO_DIFFUSE_IRRADIANCE,
+            COSMO_DIRECT_IRRADIANCE,
+            COSMO_TEMPERATURE,
+            COSMO_WIND_DIRECTION,
+            COSMO_WIND_VELOCITY);
     validatedRequiredFields(data, requiredFields);
     Point coordinate = data.getCoordinate();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
-        data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
+        data.getQuantity(COSMO_DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Irradiance> diffuseIrradiance =
-        data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
+        data.getQuantity(COSMO_DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Temperature> temperature =
-        data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
+        data.getQuantity(COSMO_TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection =
-        data.getQuantity(WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
+        data.getQuantity(COSMO_WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
     ComparableQuantity<Speed> windVelocity =
-        data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
+        data.getQuantity(COSMO_WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
-        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN)
+        data.getQuantityOptional(COSMO_GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN)
             .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
-        data.getQuantityOptional(GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN)
+        data.getQuantityOptional(COSMO_GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN)
             .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
     WeatherValue weatherValue =
         new WeatherValue(

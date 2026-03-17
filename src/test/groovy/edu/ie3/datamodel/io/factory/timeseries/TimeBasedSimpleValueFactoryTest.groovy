@@ -27,13 +27,11 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
   }
 
   def "The simple time based value factory provides correct fields"() {
-    given:
+    when:
     def factory = new TimeBasedSimpleValueFactory(valueClass)
-    def data = Mock(SimpleTimeBasedValueData)
-    data.targetClass >> valueClass
 
-    expect:
-    factory.getFields(data.targetClass) == expectedFields
+    then:
+    factory.getFields(valueClass) == expectedFields
 
     where:
     valueClass       || expectedFields
