@@ -5,9 +5,10 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*;
+
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.input.container.ThermalGrid;
 import edu.ie3.datamodel.models.input.thermal.*;
 import edu.ie3.datamodel.utils.Try;
@@ -194,13 +195,11 @@ public class ThermalValidationUtils extends ValidationUtils {
                 InvalidEntityException.class,
                 () ->
                     detectNegativeQuantities(
-                        quantities(
-                            FieldNamingStrategy.ETH_LOSSES, thermalHouseInput.getEthLosses()),
+                        quantities(ETH_LOSSES, thermalHouseInput.getEthLosses()),
                         thermalHouseInput),
                 () ->
                     detectZeroOrNegativeQuantities(
-                        quantities(FieldNamingStrategy.ETH_CAPA, thermalHouseInput.getEthCapa()),
-                        thermalHouseInput)));
+                        quantities(ETH_CAPA, thermalHouseInput.getEthCapa()), thermalHouseInput)));
 
     if (thermalHouseInput
             .getLowerTemperatureLimit()
@@ -283,11 +282,11 @@ public class ThermalValidationUtils extends ValidationUtils {
             () ->
                 detectZeroOrNegativeQuantities(
                     quantities(
-                        FieldNamingStrategy.STORAGE_VOLUME_LVL,
+                        STORAGE_VOLUME_LVL,
                         cylindricalStorageInput.getStorageVolumeLvl(),
-                        FieldNamingStrategy.C,
+                        C,
                         cylindricalStorageInput.getC(),
-                        FieldNamingStrategy.P_THERMAL_MAX,
+                        P_THERMAL_MAX,
                         cylindricalStorageInput.getpThermalMax()),
                     cylindricalStorageInput),
             InvalidEntityException.class));
@@ -336,11 +335,11 @@ public class ThermalValidationUtils extends ValidationUtils {
             () ->
                 detectZeroOrNegativeQuantities(
                     quantities(
-                        FieldNamingStrategy.STORAGE_VOLUME_LVL,
+                        STORAGE_VOLUME_LVL,
                         domesticHotWaterStorageInput.getStorageVolumeLvl(),
-                        FieldNamingStrategy.C,
+                        C,
                         domesticHotWaterStorageInput.getC(),
-                        FieldNamingStrategy.P_THERMAL_MAX,
+                        P_THERMAL_MAX,
                         domesticHotWaterStorageInput.getpThermalMax()),
                     domesticHotWaterStorageInput),
             InvalidEntityException.class));
