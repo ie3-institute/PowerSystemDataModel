@@ -12,6 +12,7 @@ import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.exceptions.NotImplementedException
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy
 import edu.ie3.datamodel.io.naming.ModelFields
+import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -281,14 +282,13 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def "An AssetInputFactory should throw an exception on invalid or incomplete fields"() {
     given:
-    def inputFactory = new TestAssetInputFactory()
     def actualFields = newSet("uuid", "operates_from", "operates_until")
 
     // registering fields for the asset
     ModelFields.register(TestAssetInput, newSet(FieldNamingStrategy.UUID, ID), newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL))
 
     when:
-    Try<Void, FactoryException> input = inputFactory.validate(actualFields, TestAssetInput)
+    Try<Void, FactoryException> input = DataSource.validate(actualFields, TestAssetInput)
 
     then:
     input.failure

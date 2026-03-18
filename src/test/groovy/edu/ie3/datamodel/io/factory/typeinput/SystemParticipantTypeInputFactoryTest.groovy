@@ -10,9 +10,11 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.*
+import edu.ie3.datamodel.utils.CollectionUtils
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
@@ -276,11 +278,10 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
   def "A SystemParticipantTypeInputFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
-    def typeInputFactory = new SystemParticipantTypeInputFactory()
-    def actualFields = SystemParticipantTypeInputFactory.newSet("uuid", "id", "capex", "opex", "srated", "cosPhiRated", "estorage", "pmin", "pmax", "eta",)
+    def actualFields = CollectionUtils.newSet("uuid", "id", "capex", "opex", "srated", "cosPhiRated", "estorage", "pmin", "pmax", "eta",)
 
     when:
-    def input = typeInputFactory.validate(actualFields, StorageTypeInput)
+    def input = DataSource.validate(actualFields, StorageTypeInput)
 
     then:
     input.failure
