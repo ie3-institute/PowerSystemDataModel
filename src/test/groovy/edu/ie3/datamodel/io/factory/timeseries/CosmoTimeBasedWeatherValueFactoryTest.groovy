@@ -17,6 +17,33 @@ import tech.units.indriya.unit.Units
 
 class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
+  def "A PsdmTimeBasedWeatherValueFactory should throw an Exception if a required field is empty"() {
+    given:
+    def factory = new CosmoTimeBasedWeatherValueFactory()
+    def coordinate = CosmoWeatherTestData.COORDINATE_193186
+
+    Map<String, String> parameter = [
+      "time"                    : "2019-01-01T00:00:00Z",
+      "diffuseIrradiance"       : "282.671997070312",
+      "directIrradiance"        : "286.872985839844",
+      "temperature"             : "",
+      "windDirection"           : "0",
+      "windVelocity"            : "1.66103506088257",
+      "groundTemperatureLevel1" : "",
+      "groundTemperatureLevel2" : ""
+    ]
+
+    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+    when:
+    factory.buildModel(data)
+
+    then:
+    def exception = thrown(FactoryException)
+    exception.message == 'Exception while trying to parse field "temperature" with supposed double value ""'
+  }
+
+
   def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
     given:
     def factory = new CosmoTimeBasedWeatherValueFactory()

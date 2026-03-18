@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.timeseries
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -195,5 +194,30 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
     then:
     !Objects.equals(model, expectedResults)
+  }
+
+  def "A IconTimeBasedWeatherValueFactory should throw an Exception if the required field 't2m' is empty"() {
+    given:
+    def factory = new IconTimeBasedWeatherValueFactory()
+    def coordinate = CosmoWeatherTestData.COORDINATE_67775
+
+    Map<String, String> parameter = [
+      "time"        : "2019-01-01T00:00:00Z",
+      "aswdifdS"    : "1.0",
+      "aswdirS"     : "2.0",
+      "t2m"         : "",
+      "u131m"       : "4.0",
+      "v131m"       : "5.0",
+      "coordinateId": "67775"
+    ]
+
+    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+
+    when:
+    factory.buildModel(data)
+
+    then:
+    def exception = thrown(FactoryException)
+    exception.message == 'Exception while trying to parse field "t2m" with supposed double value ""'
   }
 }
