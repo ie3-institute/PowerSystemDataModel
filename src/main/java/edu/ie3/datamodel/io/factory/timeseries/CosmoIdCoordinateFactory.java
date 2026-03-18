@@ -7,9 +7,6 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Factory, that is able to build coordinate id to coordinate mapping from German Federal Weather
@@ -17,18 +14,16 @@ import java.util.Set;
  */
 public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
 
+  public CosmoIdCoordinateFactory() {
+    super(IdCoordinateInput.CosmoIdCoordinateInput.class);
+  }
+
   @Override
   protected IdCoordinateInput buildModel(SimpleFactoryData data) {
     int coordinateId = data.getInt(COORDINATE_ID);
     double lat = data.getDouble(LAT_GEO);
     double lon = data.getDouble(LONG_GEO);
     return new IdCoordinateInput(coordinateId, lat, lon);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    return Collections.singletonList(
-        newSet(TID, COORDINATE_ID, LONG_GEO, LAT_GEO, LONG_ROT, LAT_ROT));
   }
 
   @Override

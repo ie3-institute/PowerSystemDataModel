@@ -17,8 +17,6 @@ import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewKey;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewScheme;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import javax.measure.quantity.Energy;
@@ -56,13 +54,6 @@ public class BdewLoadProfileFactory extends LoadProfileFactory<BdewLoadValues> {
     }
 
     return new LoadProfileEntry<>(values, quarterHour);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    return List.of(
-        expandSet(new HashSet<>(BDEW1999_FIELDS.values()), QUARTER_HOUR),
-        expandSet(new HashSet<>(BDEW2025_FIELDS.values()), QUARTER_HOUR));
   }
 
   @Override

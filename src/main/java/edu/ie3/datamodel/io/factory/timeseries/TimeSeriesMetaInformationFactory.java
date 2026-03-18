@@ -11,12 +11,7 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Factory that creates {@link IndividualTimeSeriesMetaInformation} entities from source field
@@ -27,12 +22,6 @@ public class TimeSeriesMetaInformationFactory
 
   public TimeSeriesMetaInformationFactory() {
     super(IndividualTimeSeriesMetaInformation.class, LoadProfileMetaInformation.class);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    return Collections.singletonList(
-        Stream.of(TIME_SERIES, COLUMN_SCHEME).collect(Collectors.toSet()));
   }
 
   @Override

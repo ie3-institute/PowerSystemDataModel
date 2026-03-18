@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -13,10 +12,7 @@ import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
@@ -41,55 +37,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   }
 
   @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> minParameters =
-        newSet(
-            ICON_DIFFUSE_IRRADIANCE,
-            ICON_DIRECT_IRRADIANCE,
-            ICON_TEMPERATURE,
-            ICON_WIND_VELOCITY_U,
-            ICON_WIND_VELOCITY_V);
-    Set<String> allParameters =
-        expandSet(
-            minParameters,
-            "albrad",
-            "asobs",
-            "aswdifuS",
-            "tg1",
-            "tg2",
-            "u10m",
-            "u20m",
-            "u216m",
-            "u65m",
-            "v10m",
-            "v20m",
-            "v216m",
-            "v65m",
-            "w131m",
-            "w20m",
-            "w216m",
-            "w65m",
-            "z0",
-            "p131m",
-            "p20m",
-            "p65m",
-            "sobsrad",
-            "t131m");
-
-    return Arrays.asList(minParameters, allParameters);
-  }
-
-  @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
-    Set<String> requiredFields =
-        newSet(
-            TIME,
-            ICON_DIFFUSE_IRRADIANCE,
-            ICON_DIRECT_IRRADIANCE,
-            ICON_TEMPERATURE,
-            ICON_WIND_VELOCITY_U,
-            ICON_WIND_VELOCITY_V);
-    validatedRequiredFields(data, requiredFields);
     Point coordinate = data.getCoordinate();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
@@ -164,22 +112,5 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
 
     double velocity = Math.sqrt(Math.pow(u, 2) + Math.pow(v, 2));
     return Quantities.getQuantity(velocity, Units.METRE_PER_SECOND).to(StandardUnits.WIND_VELOCITY);
-  }
-
-  /**
-   * * Validates that all required fields are present and not empty in the provided data
-   *
-   * @param data the data to validate
-   * @param requiredFields the fields that must be present and non-empty
-   * @throws FactoryException if any required field is missing or empty
-   */
-  protected void validatedRequiredFields(
-      TimeBasedWeatherValueData data, Set<String> requiredFields) {
-    for (String field : requiredFields) {
-      String value = data.getField(field);
-      if (value == null || value.isEmpty()) {
-        throw new FactoryException("The field \"" + field + "\" is missing or empty.");
-      }
-    }
   }
 }

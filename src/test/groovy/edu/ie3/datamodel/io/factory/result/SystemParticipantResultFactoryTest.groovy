@@ -7,8 +7,10 @@ package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.*
+import edu.ie3.datamodel.utils.CollectionUtils
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
@@ -132,11 +134,10 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 
   def "A SystemParticipantResultFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
-    def resultFactory = new SystemParticipantResultFactory()
-    def actualFields = SystemParticipantResultFactory.newSet("time", "input_model", "q")
+    def actualFields = CollectionUtils.newSet("time", "input_model", "q")
 
     when:
-    Try<SystemParticipantResult, FactoryException> result = resultFactory.validate(actualFields, WecResult)
+    Try<SystemParticipantResult, FactoryException> result = DataSource.validate(actualFields, WecResult)
 
     then:
     result.failure

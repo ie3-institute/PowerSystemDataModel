@@ -9,15 +9,16 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.util.geo.GeoUtils;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKBReader;
 
 public class SqlIdCoordinateFactory extends IdCoordinateFactory {
+
+  public SqlIdCoordinateFactory() {
+    super(IdCoordinateInput.SqlIdCoordinateInput.class);
+  }
 
   @Override
   protected IdCoordinateInput buildModel(SimpleFactoryData data) {
@@ -34,11 +35,6 @@ public class SqlIdCoordinateFactory extends IdCoordinateFactory {
     } catch (ParseException e) {
       throw new FactoryException(e);
     }
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    return Collections.singletonList(newSet(COORDINATE_ID, COORDINATE));
   }
 
   @Override
