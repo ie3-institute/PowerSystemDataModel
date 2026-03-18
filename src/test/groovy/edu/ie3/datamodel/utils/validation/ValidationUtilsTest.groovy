@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*
 import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 
@@ -77,13 +78,13 @@ class ValidationUtilsTest extends Specification {
         )
 
     when:
-    ValidationUtils.detectNegativeQuantities(ValidationUtils.quantities(FieldNamingStrategy.B, asset.getB()), asset)
+    ValidationUtils.detectNegativeQuantities(ValidationUtils.quantities(B, asset.getB()), asset)
 
     then:
     noExceptionThrown()
 
     when:
-    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities(FieldNamingStrategy.B, invalidAsset.getB()), invalidAsset)
+    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities(B, invalidAsset.getB()), invalidAsset)
 
     then:
     InvalidEntityException ex = thrown()
@@ -114,13 +115,13 @@ class ValidationUtilsTest extends Specification {
         )
 
     when:
-    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities(FieldNamingStrategy.B, asset.getB()), asset)
+    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities(B, asset.getB()), asset)
 
     then:
     noExceptionThrown()
 
     when:
-    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities(FieldNamingStrategy.B, invalidAsset.getB()), invalidAsset)
+    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities(B, invalidAsset.getB()), invalidAsset)
 
     then:
     InvalidEntityException ex = thrown()

@@ -335,7 +335,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                quantities(G_M, transformer3WType.getgM(), G_M, transformer3WType.getdPhi()),
+                quantities(G_M, transformer3WType.getgM(), D_PHI, transformer3WType.getdPhi()),
                 transformer3WType),
         () ->
             detectZeroOrNegativeQuantities(
