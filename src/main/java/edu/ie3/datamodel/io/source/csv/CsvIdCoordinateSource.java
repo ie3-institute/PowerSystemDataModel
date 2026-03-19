@@ -9,11 +9,13 @@ import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
+import edu.ie3.datamodel.io.factory.timeseries.CosmoIdCoordinateFactory;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
+import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.validation.UniquenessValidationUtils;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
@@ -60,7 +62,15 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
 
   @Override
   public void validate() throws ValidationException {
-    validate(IdCoordinateInput.class, this::getSourceFields, factory);
+    validate(getInputClass(), this::getSourceFields);
+  }
+
+  private Class<? extends IdCoordinateInput> getInputClass() {
+    if (factory instanceof CosmoIdCoordinateFactory) {
+      return IdCoordinateInput.CosmoIdCoordinateInput.class;
+    } else {
+      return IdCoordinateInput.IconIdCoordinateInput.class;
+    }
   }
 
   /**
@@ -73,9 +83,7 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
         buildStreamWithFieldsToAttributesMap()
             .map(
                 data ->
-                    data.map(
-                            fieldToValues ->
-                                new SimpleFactoryData(fieldToValues, IdCoordinateInput.class))
+                    data.map(fieldToValues -> new SimpleFactoryData(fieldToValues, getInputClass()))
                         .map(factory::get))
             .flatMap(s -> Try.scanStream(s, "Pair<Integer, Point>", SourceException::new))
             .getOrThrow()
@@ -202,7 +210,7 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
       final String[] headline = dataSource.parseCsvRow(reader.readLine(), dataSource.csvSep);
 
       // validating read file
-      factory.validate(Set.of(headline), IdCoordinateInput.class).getOrThrow();
+      DataSource.validate(Set.of(headline), getInputClass()).getOrThrow();
 
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.

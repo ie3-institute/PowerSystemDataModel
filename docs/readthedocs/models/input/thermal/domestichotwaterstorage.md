@@ -26,11 +26,11 @@ Model of a domestic hot water storage using a fluid to store thermal energy.
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - thermalBus
      -

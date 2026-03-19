@@ -7,8 +7,10 @@ package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.NodeResult
+import edu.ie3.datamodel.utils.CollectionUtils
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
@@ -41,20 +43,19 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     result.success
     result.data.get().getClass() == NodeResult
     ((NodeResult) result.data.get()).with {
-      assert vMag == getQuant(parameter["vmag"], StandardUnits.VOLTAGE_MAGNITUDE)
-      assert vAng == getQuant(parameter["vang"], StandardUnits.VOLTAGE_ANGLE)
-      assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
-      assert inputModel == UUID.fromString(parameter["inputModel"])
+      vMag == getQuant(parameter["vmag"], StandardUnits.VOLTAGE_MAGNITUDE)
+      vAng == getQuant(parameter["vang"], StandardUnits.VOLTAGE_ANGLE)
+      time == TIME_UTIL.toZonedDateTime(parameter["time"])
+      inputModel == UUID.fromString(parameter["inputModel"])
     }
   }
 
   def "A NodeResultFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
-    def resultFactory = new NodeResultFactory()
-    def actualFields = NodeResultFactory.newSet("time", "input_model", "v_mag")
+    def actualFields = CollectionUtils.newSet("time", "input_model", "v_mag")
 
     when:
-    Try<Void, FactoryException> input = resultFactory.validate(actualFields, NodeResult)
+    Try<Void, FactoryException> input = DataSource.validate(actualFields, NodeResult)
 
     then:
     input.failure

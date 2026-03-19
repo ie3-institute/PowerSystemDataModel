@@ -4,21 +4,20 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '8.3.0' //code format
+  id 'com.diffplug.spotless' version '8.4.0' //code format
   id 'com.github.spotbugs' version '6.4.8' // code check, working on byte code
   id 'de.undercouch.download' version '5.7.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
   id "org.sonarqube" version "7.2.3.7755" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
-  id 'com.gradleup.shadow' version '9.3.2' // fat jar
+  id 'com.gradleup.shadow' version '9.4.0' // fat jar
 }
 
 ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_21
-  groovyVersion = "4.0"
-  groovyBinaryVersion = "4.0.28"
+  groovyBinaryVersion = "5.0.4"
 
   junitVersion = '6.0.3'
   testcontainersVersion = '2.0.3'
@@ -77,7 +76,7 @@ dependencies {
 
   testImplementation "org.junit.platform:junit-platform-launcher:$junitVersion"
   testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
-  testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
+  testImplementation "org.spockframework:spock-core:2.4-groovy-5.0"
   testImplementation 'org.objenesis:objenesis:3.5' // Mock creation with constructor parameters
   testImplementation 'net.bytebuddy:byte-buddy:1.18.7' // Mocks of classes
 

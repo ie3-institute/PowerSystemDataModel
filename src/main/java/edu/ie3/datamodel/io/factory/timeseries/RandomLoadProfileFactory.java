@@ -12,7 +12,6 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import edu.ie3.util.quantities.PowerSystemUnits;
-import java.util.List;
 import java.util.Set;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -20,15 +19,6 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 public class RandomLoadProfileFactory extends LoadProfileFactory<RandomLoadValues> {
-  public static final String K_WEEKDAY = "kWd";
-  public static final String K_SATURDAY = "kSa";
-  public static final String K_SUNDAY = "kSu";
-  public static final String MY_WEEKDAY = "myWd";
-  public static final String MY_SATURDAY = "mySa";
-  public static final String MY_SUNDAY = "mySu";
-  public static final String SIGMA_WEEKDAY = "sigmaWd";
-  public static final String SIGMA_SATURDAY = "sigmaSa";
-  public static final String SIGMA_SUNDAY = "sigmaSu";
 
   public RandomLoadProfileFactory() {
     super(RandomLoadValues.class);
@@ -50,22 +40,6 @@ public class RandomLoadProfileFactory extends LoadProfileFactory<RandomLoadValue
             data.getDouble(SIGMA_SUNDAY),
             data.getDouble(SIGMA_WEEKDAY)),
         quarterHour);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    return List.of(
-        newSet(
-            QUARTER_HOUR,
-            K_WEEKDAY,
-            K_SATURDAY,
-            K_SUNDAY,
-            MY_WEEKDAY,
-            MY_SATURDAY,
-            MY_SUNDAY,
-            SIGMA_WEEKDAY,
-            SIGMA_SATURDAY,
-            SIGMA_SUNDAY));
   }
 
   @Override

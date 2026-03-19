@@ -9,12 +9,14 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
+import edu.ie3.datamodel.utils.CollectionUtils
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
@@ -57,32 +59,31 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert !operationTime.endDate.present
-      assert operator == operatorInput
-      assert id == parameter["id"]
-      assert node == nodeInput
-      assert qCharacteristics.with {
-        assert uuid != null
-        assert points == Collections.unmodifiableSortedSet([
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      !operationTime.endDate.present
+      operator == operatorInput
+      id == parameter["id"]
+      node == nodeInput
+      qCharacteristics.with {
+        uuid != null
+        points == Collections.unmodifiableSortedSet([
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
-      assert controllingEm == Optional.of(emUnit)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
+      controllingEm == Optional.of(emUnit)
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosphirated"])
     }
   }
 
   def "A FixedFeedInInputFactory should throw an exception on invalid or incomplete data fields"() {
     given:
-    def inputFactory = new FixedFeedInInputFactory()
-    def actualFields = FixedFeedInInputFactory.newSet("uuid", "id", "s_rated", "cosphi_rated")
+    def actualFields = CollectionUtils.newSet("uuid", "id", "s_rated", "cosphi_rated")
 
     when:
-    Try<Void, ValidationException> input = inputFactory.validate(actualFields, FixedFeedInInput)
+    Try<Void, ValidationException> input = DataSource.validate(actualFields, FixedFeedInInput)
 
     then:
     input.failure

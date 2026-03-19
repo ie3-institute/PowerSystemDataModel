@@ -101,11 +101,11 @@ A list with some standard transformer types can be found here: [Standard Two Win
 
    * - operator
      - –
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      - –
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - nodeA
      - –

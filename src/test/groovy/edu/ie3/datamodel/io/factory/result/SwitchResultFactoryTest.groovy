@@ -41,9 +41,9 @@ class SwitchResultFactoryTest extends Specification implements FactoryTestHelper
     result.success
     result.data.get().getClass() == SwitchResult
     ((SwitchResult) result.data.get()).with {
-      assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
-      assert inputModel == UUID.fromString(parameter["inputModel"])
-      assert closed == Boolean.parseBoolean(parameter["closed"])
+      time == TIME_UTIL.toZonedDateTime(parameter["time"])
+      inputModel == UUID.fromString(parameter["inputModel"])
+      closed == Boolean.parseBoolean(parameter["closed"])
     }
   }
 }

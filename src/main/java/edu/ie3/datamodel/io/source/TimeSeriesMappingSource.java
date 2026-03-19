@@ -29,7 +29,7 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    validate(MappingEntry.class, this::getSourceFields, mappingFactory);
+    validate(MappingEntry.class, this::getSourceFields);
   }
 
   /**

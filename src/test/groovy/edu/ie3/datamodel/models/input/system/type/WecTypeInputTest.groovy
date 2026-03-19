@@ -26,16 +26,16 @@ class WecTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == wecType.uuid
-      assert id == wecType.id
-      assert capex == wecType.capex
-      assert opex == wecType.opex
-      assert sRated == wecType.sRated
-      assert cosPhiRated == wecType.cosPhiRated
-      assert cpCharacteristic == wecType.cpCharacteristic
-      assert etaConv == wecType.etaConv
-      assert rotorArea == Quantities.getQuantity(25, ROTOR_AREA)
-      assert hubHeight == Quantities.getQuantity(180, HUB_HEIGHT)
+      uuid == wecType.uuid
+      id == wecType.id
+      capex == wecType.capex
+      opex == wecType.opex
+      sRated == wecType.sRated
+      cosPhiRated == wecType.cosPhiRated
+      cpCharacteristic == wecType.cpCharacteristic
+      etaConv == wecType.etaConv
+      rotorArea == Quantities.getQuantity(25, ROTOR_AREA)
+      hubHeight == Quantities.getQuantity(180, HUB_HEIGHT)
     }
   }
 
@@ -48,16 +48,16 @@ class WecTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == wecType.uuid
-      assert id == wecType.id
-      assert capex == wecType.capex * 2d
-      assert opex == wecType.opex
-      assert sRated == wecType.sRated * 2d
-      assert cosPhiRated == wecType.cosPhiRated
-      assert cpCharacteristic == wecType.cpCharacteristic
-      assert etaConv == wecType.etaConv
-      assert rotorArea == wecType.rotorArea * 2d
-      assert hubHeight == wecType.hubHeight
+      uuid == wecType.uuid
+      id == wecType.id
+      capex == wecType.capex * 2d
+      opex == wecType.opex
+      sRated == wecType.sRated * 2d
+      cosPhiRated == wecType.cosPhiRated
+      cpCharacteristic == wecType.cpCharacteristic
+      etaConv == wecType.etaConv
+      rotorArea == wecType.rotorArea * 2d
+      hubHeight == wecType.hubHeight
     }
   }
 }

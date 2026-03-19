@@ -51,18 +51,18 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert !operationTime.endDate.present
-      assert operator == operatorInput
-      assert id == parameter["id"]
-      assert nodeA == nodeInputA
-      assert nodeB == nodeInputB
-      assert type == typeInput
-      assert parallelDevices == Integer.parseInt(parameter["paralleldevices"])
-      assert tapPos == Integer.parseInt(parameter["tappos"])
-      assert autoTap
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      !operationTime.endDate.present
+      operator == operatorInput
+      id == parameter["id"]
+      nodeA == nodeInputA
+      nodeB == nodeInputB
+      type == typeInput
+      parallelDevices == Integer.parseInt(parameter["paralleldevices"])
+      tapPos == Integer.parseInt(parameter["tappos"])
+      autoTap
     }
   }
   def "A Transformer2WInputFactory should throw an IllegalArgumentException if nodeA is on the lower voltage side"() {

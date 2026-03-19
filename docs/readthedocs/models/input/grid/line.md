@@ -73,11 +73,11 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
    * - operator
      - –
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      - –
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - nodeA
      - –

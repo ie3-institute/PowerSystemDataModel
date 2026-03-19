@@ -31,14 +31,14 @@ class LineTypeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == lineTypeInput.uuid
-      assert id == "lineTypeInput_copy"
-      assert b == Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE)
-      assert g == Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE)
-      assert r == Quantities.getQuantity(0.5d, PowerSystemUnits.OHM_PER_KILOMETRE)
-      assert x == Quantities.getQuantity(0.4d, PowerSystemUnits.OHM_PER_KILOMETRE)
-      assert iMax == Quantities.getQuantity(310d, Units.AMPERE)
-      assert vRated == Quantities.getQuantity(30d, Units.VOLT)
+      uuid == lineTypeInput.uuid
+      id == "lineTypeInput_copy"
+      b == Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE)
+      g == Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE)
+      r == Quantities.getQuantity(0.5d, PowerSystemUnits.OHM_PER_KILOMETRE)
+      x == Quantities.getQuantity(0.4d, PowerSystemUnits.OHM_PER_KILOMETRE)
+      iMax == Quantities.getQuantity(310d, Units.AMPERE)
+      vRated == Quantities.getQuantity(30d, Units.VOLT)
     }
   }
 }

@@ -102,7 +102,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   @Override
   public void validate() throws ValidationException {
-    validate(valueClass, () -> dataSource.getSourceFields(tableName), valueFactory);
+    validate(valueClass, () -> dataSource.getSourceFields(tableName));
   }
 
   /**
@@ -178,7 +178,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
-    return Optional.of(timeBasedValues.stream().toList().get(0).getValue());
+    return Optional.of(timeBasedValues.stream().toList().getFirst().getValue());
   }
 
   @Override

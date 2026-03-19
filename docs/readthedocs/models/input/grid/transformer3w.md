@@ -140,11 +140,11 @@ All impedances and admittances are given with respect to the higher voltage side
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - nodeA
      -

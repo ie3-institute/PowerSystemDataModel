@@ -24,10 +24,10 @@ class ChargingPointTypeTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert id == cpt.id
-      assert sRated == Quantities.getQuantity(2.4, StandardUnits.S_RATED)
-      assert electricCurrentType == ElectricCurrentType.DC
-      assert synonymousIds == cpt.synonymousIds
+      id == cpt.id
+      sRated == Quantities.getQuantity(2.4, StandardUnits.S_RATED)
+      electricCurrentType == ElectricCurrentType.DC
+      synonymousIds == cpt.synonymousIds
     }
   }
 
@@ -40,10 +40,10 @@ class ChargingPointTypeTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert id == cpt.id
-      assert sRated == cpt.sRated * 2d
-      assert electricCurrentType == cpt.electricCurrentType
-      assert synonymousIds == cpt.synonymousIds
+      id == cpt.id
+      sRated == cpt.sRated * 2d
+      electricCurrentType == cpt.electricCurrentType
+      synonymousIds == cpt.synonymousIds
     }
   }
 }

@@ -22,11 +22,11 @@ class SwitchInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == switchInput.uuid
-      assert operationTime == switchInput.operationTime
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == "switch_A_C"
-      assert !closed
+      uuid == switchInput.uuid
+      operationTime == switchInput.operationTime
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == "switch_A_C"
+      !closed
     }
   }
 }

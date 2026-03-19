@@ -39,9 +39,9 @@ class SqlConnectorIT extends Specification implements TestContainerHelper {
   def "A SQL connector is instantiated correctly"() {
     expect:
     connector.with {
-      assert it.jdbcUrl == postgreSQLContainer.jdbcUrl
-      assert it.connectionProps.getProperty("user") == postgreSQLContainer.username
-      assert it.connectionProps.getProperty("password") == postgreSQLContainer.password
+      it.jdbcUrl == postgreSQLContainer.jdbcUrl
+      it.connectionProps.getProperty("user") == postgreSQLContainer.username
+      it.connectionProps.getProperty("password") == postgreSQLContainer.password
       /* SQL connection should be null, but we cannot test it here, as it would fire the default getter, which
        * initializes a connection, if it is not yet initialized. */
     }

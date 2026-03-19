@@ -6,7 +6,9 @@
 package edu.ie3.datamodel.io.factory.timeseries
 
 import edu.ie3.datamodel.io.factory.SimpleFactoryData
+import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.input.IdCoordinateInput
+import edu.ie3.datamodel.utils.CollectionUtils
 import edu.ie3.util.geo.GeoUtils
 import spock.lang.Shared
 import spock.lang.Specification
@@ -29,7 +31,7 @@ class IconIdCoordinateFactoryTest extends Specification {
     ] as Set
 
     when:
-    def actual = factory.getFields(IdCoordinateInput)
+    def actual = factory.getFields(IdCoordinateInput.IconIdCoordinateInput)
 
     then:
     actual.size() == 1
@@ -38,15 +40,15 @@ class IconIdCoordinateFactoryTest extends Specification {
 
   def "A COSMO id to coordinate factory refuses to build from invalid data"() {
     given:
-    def actualFields = IconIdCoordinateFactory.newSet("id", "latitude", "coordinatetype")
+    def actualFields = CollectionUtils.newSet("id", "latitude", "coordinatetype")
 
     when:
-    def actual = factory.validate(actualFields, IdCoordinateInput)
+    def actual = DataSource.validate(actualFields, IdCoordinateInput.IconIdCoordinateInput)
 
     then:
     actual.failure
-    actual.exception.get().message == "The provided fields [coordinatetype, id, latitude] are invalid for instance of 'IdCoordinateInput'. \n" +
-        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'IdCoordinateInput' are possible (NOT case-sensitive!):\n" +
+    actual.exception.get().message == "The provided fields [coordinatetype, id, latitude] are invalid for instance of 'IconIdCoordinateInput'. \n" +
+        "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'IconIdCoordinateInput' are possible (NOT case-sensitive!):\n" +
         "0: [coordinateType, id, latitude, longitude] or [coordinate_type, id, latitude, longitude]\n"
   }
 
@@ -66,8 +68,8 @@ class IconIdCoordinateFactoryTest extends Specification {
     then:
     actual.success
     actual.data.get().with {
-      assert it.id() == expectedIdCoordinate.id()
-      assert it.point().equalsExact(expectedIdCoordinate.point(), 1E-6)
+      it.id() == expectedIdCoordinate.id()
+      it.point().equalsExact(expectedIdCoordinate.point(), 1E-6)
     }
   }
 }

@@ -40,7 +40,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     then:
     def exception = thrown(FactoryException)
-    exception.message == 'The field "temperature" is missing or empty.'
+    exception.message == 'Exception while trying to parse field "temperature" with supposed double value ""'
   }
 
 
