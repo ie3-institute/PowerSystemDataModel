@@ -41,59 +41,59 @@ All impedances and admittances are given with respect to the higher voltage side
      - Human readable identifier
 
    * - rScA
-     - Ω
+     - [Ω]
      - Short circuit resistance in branch A
 
    * - rScB
-     - Ω
+     - [Ω]
      - Short circuit resistance in branch B
 
    * - rScC
-     - Ω
+     - [Ω]
      - Short circuit resistance in branch C
 
    * - xScA
-     - Ω
+     - [Ω]
      - Short circuit reactance in branch A
 
    * - xScB
-     - Ω
+     - [Ω]
      - Short circuit reactance in branch B
 
    * - xScC
-     - Ω
+     - [Ω]
      - Short circuit reactance in branch C
 
    * - gM
-     - nS
+     - [nS]
      - No load conductance
 
    * - bM
-     - nS
+     - [nS]
      - No load susceptance
 
    * - sRatedA
-     - kVA
+     - [kVA]
      - Rated apparent power of branch A
 
    * - sRatedB
-     - kVA
+     - [kVA]
      - Rated apparent power of branch B
 
    * - sRatedC
-     - kVA
+     - [kVA]
      - Rated apparent power of branch C
 
    * - vRatedA
-     - kV
+     - [kV]
      - Rated voltage at higher node A
 
    * - vRatedB
-     - kV
+     - [kV]
      - Rated voltage at higher node B
 
    * - vRatedC
-     - kV
+     - [kV]
      - Rated voltage at higher node C
 
    * - dV
@@ -101,7 +101,7 @@ All impedances and admittances are given with respect to the higher voltage side
      - Voltage magnitude increase per tap position
 
    * - dPhi
-     - °
+     - [°]
      - Voltage angle increase per tap position
 
    * - tapNeutr

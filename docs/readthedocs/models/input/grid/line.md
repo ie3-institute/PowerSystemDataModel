@@ -24,27 +24,27 @@ Representation of an AC line.
      - Human readable identifier
 
    * - r
-     -  Ω / km
+     -  [Ω / km]
      - Phase resistance per length  
 
    * - x
-     - Ω / km
+     - [Ω / km]
      - Phase reactance per length
 
    * - g
-     - µS / km
+     - [µS / km]
      - Phase-to-ground conductance per length
 
    * - b
-     - µS / km
+     - [µS / km]
      - Phase-to-ground susceptance per length
 
    * - iMax
-     - A
+     - [A]
      - Maximum permissible current
      
    * - vRated
-     - kV
+     - [kV]
      - Rated voltage
 
 ```
@@ -133,13 +133,13 @@ Some standard overhead lines.
    
    
    * - uuid
-     - b (µS / km)
-     - g (µS / km)
-     - iMax (A)
+     - b [µS / km]
+     - g [µS / km]
+     - iMax [A]
      - id
-     - r (Ω / km)
-     - vRated (kV)
-     - x (Ω / km)
+     - r [Ω / km]
+     - vRated [kV]
+     - x [Ω / km]
      - source
      
    * - 91617ab8-3de2-4fba-be45-a54473ba09a9
@@ -316,13 +316,13 @@ Some standard cables.
    
    
    * - uuid
-     - b (µS / km)
-     - g (µS / km)
-     - iMax (A)
+     - b [µS / km]
+     - g [S / km]
+     - iMax [A]
      - id
-     - r (Ω / km)
-     - vRated (kV)
-     - x (Ω / km)
+     - r [Ω / km]
+     - vRated [kV]
+     - x [Ω / km]
      - source
 
    * - cc59abd4-770b-45d2-98c8-919c91f1ca4b

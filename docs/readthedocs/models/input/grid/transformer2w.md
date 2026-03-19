@@ -24,31 +24,31 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
      - Human readable identifier
 
    * - rSc
-     - Ω
+     - [Ω]
      - Short circuit resistance
 
    * - xSc
-     - Ω
+     - [Ω]
      - Short circuit reactance
 
    * - gM
-     - nS
+     - [nS]
      - No load conductance
 
    * - bM
-     - nS
+     - [nS]
      - No load susceptance
 
    * - sRated
-     - kVA
+     - [kVA]
      - Rated apparent power
 
    * - vRatedA
-     - kV
+     - [kV]
      - Rated voltage at higher voltage terminal
 
    * - vRatedB
-     - kV
+     - pkV]
      - Rated voltage at lower voltage terminal
 
    * - dV
@@ -56,7 +56,7 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
      - Voltage magnitude increase per tap position
 
    * - dPhi
-     - °
+     - [°]
      - Voltage angle increase per tap position
 
    * - tapSide
