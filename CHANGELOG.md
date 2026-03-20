@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Create data model for air condition [#1396](https://github.com/ie3-institute/PowerSystemDataModel/issues/1396)
 - Add validation methods to `DataSource` [#1559](https://github.com/ie3-institute/PowerSystemDataModel/issues/1559)
 - Provided field information in validation messages [#1397](https://github.com/ie3-institute/PowerSystemDataModel/issues/1397)
-- Added standard line and transformer types to resources [#1597](https://github.com/ie3-institute/PowerSystemDataModel/issues/1579)
+- Added standard line and transformer types to resources [#1579](https://github.com/ie3-institute/PowerSystemDataModel/issues/1579)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
