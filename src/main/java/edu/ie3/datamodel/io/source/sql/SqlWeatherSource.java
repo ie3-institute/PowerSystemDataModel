@@ -9,6 +9,7 @@ import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryStrin
 
 import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
@@ -92,8 +93,8 @@ public class SqlWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields() {
-    return dataSource.getSourceFields(tableName);
+  public void validate() throws ValidationException {
+    validate(getInputClass(), () -> dataSource.getSourceFields(tableName));
   }
 
   @Override

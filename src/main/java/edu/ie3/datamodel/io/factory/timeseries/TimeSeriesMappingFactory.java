@@ -8,8 +8,6 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class TimeSeriesMappingFactory
@@ -17,11 +15,6 @@ public class TimeSeriesMappingFactory
 
   public TimeSeriesMappingFactory() {
     super(TimeSeriesMappingSource.MappingEntry.class);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    return List.of(newSet(ASSET, TIME_SERIES));
   }
 
   @Override

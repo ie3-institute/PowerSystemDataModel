@@ -5,17 +5,18 @@
 */
 package edu.ie3.datamodel.io.factory;
 
+import static edu.ie3.datamodel.utils.CollectionUtils.expandSet;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.naming.ModelFields;
-import edu.ie3.datamodel.io.source.DataSource;
-import edu.ie3.datamodel.io.source.SourceValidator;
-import edu.ie3.datamodel.utils.CollectionUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +30,7 @@ import org.slf4j.LoggerFactory;
  * @param <R> Type of the intended return type (might differ slightly from target class (cf. {@link
  *     edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueFactory})).
  */
-public abstract class Factory<C, D extends FactoryData, R> extends FieldNamingStrategy
-    implements SourceValidator<C> {
+public abstract class Factory<C, D extends FactoryData, R> extends FieldNamingStrategy {
   public static final Logger log = LoggerFactory.getLogger(Factory.class);
 
   private final List<Class<? extends C>> supportedClasses;
@@ -113,7 +113,7 @@ public abstract class Factory<C, D extends FactoryData, R> extends FieldNamingSt
    * @param clazz class that can be used to specify the fields that are returned
    * @return list of possible attribute sets
    */
-  protected List<Set<String>> getFields(Class<?> clazz) {
+  protected List<Set<String>> getFields(Class<? extends C> clazz) {
     if (!supportedClasses.contains(clazz)) {
       throw new FactoryException("The given factory cannot handle target class '" + clazz + "'.");
     }
@@ -131,51 +131,5 @@ public abstract class Factory<C, D extends FactoryData, R> extends FieldNamingSt
     }
 
     return fieldSets;
-  }
-
-  /**
-   * Method for validating the actual fields. The actual fields need to fully contain at least one
-   * of the sets returned by {@link #getFields(Class)}. If the actual fields don't contain all
-   * necessary fields, an {@link FactoryException} with a detail message is thrown. If the actual
-   * fields contain more fields than necessary, these fields are ignored.
-   *
-   * @param actualFields that were found
-   * @param entityClass of the build data
-   * @return either an exception wrapped by a {@link Failure} or an empty success
-   * @deprecated Use {@link DataSource#validate(Set, Class)} instead.
-   */
-  @Deprecated
-  public Try<Void, ValidationException> validate(
-      Set<String> actualFields, Class<? extends C> entityClass) {
-    return DataSource.validate(
-        actualFields,
-        entityClass,
-        getFields(entityClass),
-        Collections.emptySet(),
-        Collections.emptySet());
-  }
-
-  /**
-   * Creates a new set of attribute names from given list of attributes. This method should always
-   * be used when returning attribute sets, i.e. through {@link #getFields(Class)}.
-   *
-   * @param attributes attribute names
-   * @return new set exactly containing attribute names
-   */
-  protected static SortedSet<String> newSet(String... attributes) {
-    return CollectionUtils.newSet(attributes);
-  }
-
-  /**
-   * Expands a set of attributes with further attributes. This method should always be used when
-   * returning attribute sets, i.e. through getting the needed fields. The set maintains a
-   * lexicographic order, that is case-insensitive.
-   *
-   * @param attributeSet set of attributes to expand
-   * @param more attribute names to expand given set with
-   * @return new set exactly containing given attribute set plus additional attributes
-   */
-  protected static SortedSet<String> expandSet(Set<String> attributeSet, String... more) {
-    return CollectionUtils.expandSet(attributeSet, more);
   }
 }

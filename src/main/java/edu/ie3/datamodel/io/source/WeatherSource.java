@@ -5,9 +5,11 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.WEATHER_COORDINATE_ID;
+
 import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -32,8 +34,6 @@ public abstract class WeatherSource extends EntitySource {
   protected TimeBasedWeatherValueFactory weatherFactory;
 
   protected IdCoordinateSource idCoordinateSource;
-
-  protected static final String COORDINATE_ID = "coordinateid";
 
   /**
    * Maximum number of time steps to look back when falling back to the last known weather value. If
@@ -95,16 +95,13 @@ public abstract class WeatherSource extends EntitySource {
     this.weatherFactory = weatherFactory;
   }
 
-  /**
-   * Method to retrieve the fields found in the source.
-   *
-   * @return an option for fields found in the source
-   */
-  public abstract Optional<Set<String>> getSourceFields() throws SourceException;
-
-  @Override
-  public void validate() throws ValidationException {
-    validate(WeatherValue.class, this::getSourceFields, weatherFactory);
+  /** Returns the class of the value returned by this source. */
+  protected Class<? extends WeatherValue> getInputClass() {
+    if (weatherFactory instanceof CosmoTimeBasedWeatherValueFactory) {
+      return WeatherValue.CosmoWeatherValue.class;
+    } else {
+      return WeatherValue.IconWeatherValue.class;
+    }
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -155,7 +152,7 @@ public abstract class WeatherSource extends EntitySource {
    */
   protected Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(
       Map<String, String> fieldMap) {
-    String coordinateValue = fieldMap.remove(COORDINATE_ID);
+    String coordinateValue = fieldMap.remove(WEATHER_COORDINATE_ID);
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     int coordinateId = Integer.parseInt(coordinateValue);
     Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
@@ -195,7 +192,7 @@ public abstract class WeatherSource extends EntitySource {
     return groupTime(
         fieldMaps.map(
             fieldMap -> {
-              String coordinateValue = fieldMap.get(COORDINATE_ID);
+              String coordinateValue = fieldMap.get(WEATHER_COORDINATE_ID);
               int coordinateId = Integer.parseInt(coordinateValue);
               Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
               ZonedDateTime time = factory.extractTime(fieldMap);

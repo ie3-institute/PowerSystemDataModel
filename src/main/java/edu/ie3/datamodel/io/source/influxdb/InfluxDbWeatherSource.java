@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.influxdb;
 
 import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -55,8 +56,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields() {
-    return connector.getSourceFields();
+  public void validate() throws ValidationException {
+    validate(getInputClass(), connector::getSourceFields);
   }
 
   @Override

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Create data model for air condition [#1396](https://github.com/ie3-institute/PowerSystemDataModel/issues/1396)
 - Add validation methods to `DataSource` [#1559](https://github.com/ie3-institute/PowerSystemDataModel/issues/1559)
 - Added explicit handling for cases where no weather data is received from any source [#554](https://github.com/ie3-institute/PowerSystemDataModel/issues/554)
+- Provided field information in validation messages [#1397](https://github.com/ie3-institute/PowerSystemDataModel/issues/1397)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
@@ -52,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed `Intermediate` to `Transition` for BdewSeason [#1419](https://github.com/ie3-institute/PowerSystemDataModel/issues/1419)
 - Refactored validation of entity classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
 - Changed `operationTime` to `operationFrom` and `operationUntil` in read the docs [1507](https://github.com/ie3-institute/PowerSystemDataModel/issues/1507)
+- Refactored validation of value classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
 
 ## [8.1.0] - 2025-07-25
 
