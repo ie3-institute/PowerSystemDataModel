@@ -24,31 +24,31 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
      - Human readable identifier
 
    * - rSc
-     - [Ω]
+     - Ω
      - Short circuit resistance
 
    * - xSc
-     - [Ω]
+     - Ω
      - Short circuit reactance
 
    * - gM
-     - [nS]
+     - nS
      - No load conductance
 
    * - bM
-     - [nS]
+     - nS
      - No load susceptance
 
    * - sRated
-     - [kVA]
+     - kVA
      - Rated apparent power
 
    * - vRatedA
-     - [kV]
+     - kV
      - Rated voltage at higher voltage terminal
 
    * - vRatedB
-     - pkV]
+     - pkV
      - Rated voltage at lower voltage terminal
 
    * - dV
@@ -56,7 +56,7 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
      - Voltage magnitude increase per tap position
 
    * - dPhi
-     - [°]
+     - °
      - Voltage angle increase per tap position
 
    * - tapSide
@@ -147,20 +147,20 @@ The source for transformers from ``simBench`` can be found [here](https://simben
    :header-rows: 1
    
    * - uuid
-     - bM
-     - dPhi
-     - dV
-     - gM
+     - bM [nS]
+     - dPhi [°]
+     - dV 
+     - gM [nS]
      - id
-     - rSc
-     - sRated
-     - tapMax
+     - rSc [Ω]
+     - sRated [kVA]
+     - tapMax 
      - tapMin
      - tapNeutr
      - tapSide
-     - vRatedA
-     - vRatedB
-     - xSc
+     - vRatedA [kV]
+     - vRatedB [kV]
+     - xSc [Ω]
      - source
      
    * - 5a890aae-b9c9-4ebf-8a49-8850ae9df402

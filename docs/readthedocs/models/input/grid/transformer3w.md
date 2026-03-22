@@ -41,59 +41,59 @@ All impedances and admittances are given with respect to the higher voltage side
      - Human readable identifier
 
    * - rScA
-     - [Ω]
+     - Ω
      - Short circuit resistance in branch A
 
    * - rScB
-     - [Ω]
+     - Ω
      - Short circuit resistance in branch B
 
    * - rScC
-     - [Ω]
+     - Ω
      - Short circuit resistance in branch C
 
    * - xScA
-     - [Ω]
+     - Ω
      - Short circuit reactance in branch A
 
    * - xScB
-     - [Ω]
+     - Ω
      - Short circuit reactance in branch B
 
    * - xScC
-     - [Ω]
+     - Ω
      - Short circuit reactance in branch C
 
    * - gM
-     - [nS]
+     - nS
      - No load conductance
 
    * - bM
-     - [nS]
+     - nS
      - No load susceptance
 
    * - sRatedA
-     - [kVA]
+     - kVA
      - Rated apparent power of branch A
 
    * - sRatedB
-     - [kVA]
+     - kVA
      - Rated apparent power of branch B
 
    * - sRatedC
-     - [kVA]
+     - kVA
      - Rated apparent power of branch C
 
    * - vRatedA
-     - [kV]
+     - kV
      - Rated voltage at higher node A
 
    * - vRatedB
-     - [kV]
+     - kV
      - Rated voltage at higher node B
 
    * - vRatedC
-     - [kV]
+     - kV
      - Rated voltage at higher node C
 
    * - dV
@@ -101,7 +101,7 @@ All impedances and admittances are given with respect to the higher voltage side
      - Voltage magnitude increase per tap position
 
    * - dPhi
-     - [°]
+     - °
      - Voltage angle increase per tap position
 
    * - tapNeutr
@@ -189,26 +189,26 @@ file can be used directly for any simulation with [SIMONA](https://github.com/ie
    :header-rows: 1
    
    * - uuid
-     - bM
-     - dPhi
+     - bM [nS]
+     - dPhi [°]
      - dV
-     - gM
+     - gM [nS]
      - id
-     - rScA
-     - rScB
-     - rScC
-     - sRatedA
-     - sRatedB
-     - sRatedC
+     - rScA [Ω]
+     - rScB [Ω]
+     - rScC [Ω]
+     - sRatedA [kVA]
+     - sRatedB [kVA]
+     - sRatedC [kVA]
      - tapMax
      - tapMin
      - tapNeutr
-     - vRatedA
-     - vRatedB
-     - vRatedC
-     - xScA
-     - xScB
-     - xScC
+     - vRatedA [kV]
+     - vRatedB [kV]
+     - vRatedC [kV]
+     - xScA [Ω]
+     - xScB [Ω]
+     - xScC [Ω]
      - source
      
    * - 62aef8ec-7e68-43e5-9678-8cde101f0116

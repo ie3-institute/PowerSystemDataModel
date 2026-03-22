@@ -24,27 +24,27 @@ Representation of an AC line.
      - Human readable identifier
 
    * - r
-     -  [Ω / km]
+     -  Ω / km
      - Phase resistance per length  
 
    * - x
-     - [Ω / km]
+     - Ω / km
      - Phase reactance per length
 
    * - g
-     - [µS / km]
+     - µS / km
      - Phase-to-ground conductance per length
 
    * - b
-     - [µS / km]
+     - µS / km
      - Phase-to-ground susceptance per length
 
    * - iMax
-     - [A]
+     - A
      - Maximum permissible current
      
    * - vRated
-     - [kV]
+     - kV
      - Rated voltage
 
 ```
