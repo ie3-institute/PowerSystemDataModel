@@ -236,7 +236,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 
   def "A CsvWeatherSource falls back to the last known value when no exact weather data is found for a coordinate at a specific time"() {
     given:
-    def futureTime = CosmoWeatherTestData.TIME_17H.plusHours(2)
+    def futureTime = CosmoWeatherTestData.TIME_17H.plusHours(3)
     def expectedFallback = new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)
 
     when:
@@ -262,7 +262,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 
   def "A CsvWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
     given:
-    def farFutureTime = CosmoWeatherTestData.TIME_17H.plusHours(10)
+    def farFutureTime = CosmoWeatherTestData.TIME_17H.plusHours(4)
 
     when:
     source.getWeather(farFutureTime, CosmoWeatherTestData.COORDINATE_193186)

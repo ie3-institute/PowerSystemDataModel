@@ -55,7 +55,8 @@ public abstract class WeatherSource extends EntitySource {
    *     time
    */
   protected static boolean isFallbackAcceptable(
-      ZonedDateTime requested, ZonedDateTime fallback, ZonedDateTime stepReference) {
+      ZonedDateTime requested, ZonedDateTime fallback, ZonedDateTime stepReference)
+      throws SourceException {
     if (stepReference == null) {
       log.warn(
           "Cannot determine time step size for fallback (only one data point available before {}). "
@@ -66,16 +67,17 @@ public abstract class WeatherSource extends EntitySource {
     }
     Duration step = Duration.between(stepReference, fallback);
     if (step.isNegative()) {
-      // stepReference is after fallback — data inconsistency, accept as a safe default
-      log.warn(
-          "Unexpected step reference {} after fallback {} when checking fallback for {}. Accepting fallback unconditionally.",
-          stepReference,
-          fallback,
-          requested);
-      return true;
+      throw new SourceException(
+          "Data inconsistency detected: step reference "
+              + stepReference
+              + " is after fallback timestamp "
+              + fallback
+              + " when checking fallback for "
+              + requested
+              + ". Cannot determine a valid time step.");
     }
     if (step.isZero()) {
-      // Two consecutive known timestamps are identical — step size cannot be determined
+      // Two consecutive known timestamps are identical, step size cannot be determined
       log.warn(
           "Cannot determine time step size for fallback (duplicate timestamps at {}). "
               + "Accepting fallback from {} unconditionally.",

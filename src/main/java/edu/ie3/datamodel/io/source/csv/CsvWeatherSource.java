@@ -134,7 +134,7 @@ public class CsvWeatherSource extends WeatherSource {
 
   @Override
   public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
-      throws NoDataException {
+      throws SourceException, NoDataException {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
 
     if (timeSeries == null) {

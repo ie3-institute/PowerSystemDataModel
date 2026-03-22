@@ -316,7 +316,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 
   def "A CsvWeatherSource falls back to the last known value when no exact weather data is found for a coordinate at a specific time"() {
     given:
-    def futureTime = IconWeatherTestData.TIME_17H.plusHours(2)
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(3)
     def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
 
     when:
@@ -342,7 +342,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 
   def "A CsvWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
     given:
-    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(10)
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(4)
 
     when:
     source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)

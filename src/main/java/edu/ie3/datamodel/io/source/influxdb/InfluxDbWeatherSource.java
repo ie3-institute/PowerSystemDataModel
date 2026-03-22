@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.influxdb;
 
 import edu.ie3.datamodel.exceptions.NoDataException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -64,10 +65,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForTimeInterval(timeInterval);
       QueryResult queryResult = session.query(new Query(query));
-      Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
-          optTimeBasedValueStream(queryResult);
       Set<TimeBasedValue<WeatherValue>> timeBasedValues =
-          filterEmptyOptionals(optValues).collect(Collectors.toSet());
+          toWeatherValues(queryResult).collect(Collectors.toSet());
       if (timeBasedValues.isEmpty()) {
         throw new NoDataException(
             "No weather data found for the given time interval: " + timeInterval);
@@ -112,10 +111,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
           String query =
               createQueryStringForCoordinateAndTimeInterval(timeInterval, coordinateId.get());
           QueryResult queryResult = session.query(new Query(query));
-          Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
-              optTimeBasedValueStream(queryResult);
           Set<TimeBasedValue<WeatherValue>> timeBasedValues =
-              filterEmptyOptionals(optValues).collect(Collectors.toSet());
+              toWeatherValues(queryResult).collect(Collectors.toSet());
           if (!timeBasedValues.isEmpty()) {
             IndividualTimeSeries<WeatherValue> timeSeries =
                 new IndividualTimeSeries<>(timeBasedValues);
@@ -140,7 +137,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
 
   @Override
   public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
-      throws NoDataException {
+      throws SourceException, NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
@@ -149,8 +146,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForCoordinateAndTime(date, coordinateId.get());
       QueryResult queryResult = session.query(new Query(query));
-      Optional<TimeBasedValue<WeatherValue>> result =
-          filterEmptyOptionals(optTimeBasedValueStream(queryResult)).findFirst();
+      Optional<TimeBasedValue<WeatherValue>> result = toWeatherValues(queryResult).findFirst();
       if (result.isPresent()) {
         return result.get();
       }
@@ -159,7 +155,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
       String fallbackQuery = createQueryStringForLastBefore(date, coordinateId.get());
       QueryResult fallbackResult = session.query(new Query(fallbackQuery));
       List<TimeBasedValue<WeatherValue>> fallbackValues =
-          filterEmptyOptionals(optTimeBasedValueStream(fallbackResult))
+          toWeatherValues(fallbackResult)
               .sorted((a, b) -> b.getTime().compareTo(a.getTime()))
               .toList();
       if (!fallbackValues.isEmpty()) {
@@ -198,10 +194,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForTimeKeysAfter(time);
       QueryResult queryResult = session.query(new Query(query));
-      Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
-          optTimeBasedValueStream(queryResult);
       Set<TimeBasedValue<WeatherValue>> timeBasedValues =
-          filterEmptyOptionals(optValues).collect(Collectors.toSet());
+          toWeatherValues(queryResult).collect(Collectors.toSet());
       Map<Point, Set<TimeBasedValue<WeatherValue>>> coordinateToValues =
           timeBasedValues.stream()
               .collect(
@@ -227,9 +221,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
       String query = createQueryStringForTimeKeysAfterWithCoordinate(time, coordinateId.get());
       QueryResult queryResult = session.query(new Query(query));
 
-      return filterEmptyOptionals(optTimeBasedValueStream(queryResult))
-          .map(TimeBasedValue::getTime)
-          .toList();
+      return toWeatherValues(queryResult).map(TimeBasedValue::getTime).toList();
     }
   }
 
@@ -250,10 +242,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
       String query =
           createQueryStringForCoordinateAndTimeInterval(timeInterval, coordinateId.get());
       QueryResult queryResult = session.query(new Query(query));
-      Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
-          optTimeBasedValueStream(queryResult);
-      return new IndividualTimeSeries<>(
-          filterEmptyOptionals(optValues).collect(Collectors.toSet()));
+      return new IndividualTimeSeries<>(toWeatherValues(queryResult).collect(Collectors.toSet()));
     }
   }
 
@@ -368,6 +357,10 @@ public class InfluxDbWeatherSource extends WeatherSource {
 
   private String createCoordinateConstraintString(int coordinateId) {
     return COORDINATE_ID_COLUMN_NAME + "='" + coordinateId + "'";
+  }
+
+  private Stream<TimeBasedValue<WeatherValue>> toWeatherValues(QueryResult queryResult) {
+    return filterEmptyOptionals(optTimeBasedValueStream(queryResult));
   }
 
   /**

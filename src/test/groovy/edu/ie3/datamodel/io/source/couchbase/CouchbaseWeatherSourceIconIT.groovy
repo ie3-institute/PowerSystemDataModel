@@ -191,7 +191,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
 
   def "A CouchbaseWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
     given:
-    def futureTime = IconWeatherTestData.TIME_17H.plusHours(2)
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(3)
     def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
 
     when:
@@ -217,7 +217,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
 
   def "A CouchbaseWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
     given:
-    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(10)
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(4)
 
     when:
     source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)

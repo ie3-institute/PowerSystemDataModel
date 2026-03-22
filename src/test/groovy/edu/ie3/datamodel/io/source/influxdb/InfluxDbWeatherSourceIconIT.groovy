@@ -156,7 +156,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
   def "An InfluxDbWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
     given:
-    def futureTime = IconWeatherTestData.TIME_17H.plusHours(2)
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(3)
     def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
 
     when:
@@ -182,7 +182,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
   def "An InfluxDbWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
     given:
-    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(10)
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(4)
 
     when:
     source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)
@@ -208,5 +208,23 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
       IconWeatherTestData.TIME_17H
     ]
     actual.get(IconWeatherTestData.COORDINATE_67776) == [IconWeatherTestData.TIME_16H]
+  }
+
+  def "A InfluxDbWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+    given:
+    def validCoordinate = IconWeatherTestData.COORDINATE_67775
+    def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
+
+    when:
+    def result = source.getWeather(timeInterval, [
+      validCoordinate,
+      invalidCoordinate
+    ])
+
+    then:
+    result.size() == 1
+    result.containsKey(validCoordinate)
+    !result.containsKey(invalidCoordinate)
   }
 }

@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.IconWeatherTestData
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
+import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.Container
@@ -112,7 +113,7 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
 
   def "A NativeSqlWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
     given:
-    def futureTime = IconWeatherTestData.TIME_17H.plusHours(2)
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(3)
     def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
 
     when:
@@ -138,7 +139,7 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
 
   def "A NativeSqlWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
     given:
-    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(10)
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(4)
 
     when:
     source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)
@@ -147,6 +148,24 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
     def ex = thrown(NoDataException)
     ex.message.contains("No weather data found for coordinate")
     ex.message.contains("exceeds the maximum fallback")
+  }
+
+  def "A NativeSqlWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+    given:
+    def validCoordinate = IconWeatherTestData.COORDINATE_67775
+    def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
+
+    when:
+    def result = source.getWeather(timeInterval, [
+      validCoordinate,
+      invalidCoordinate
+    ])
+
+    then:
+    result.size() == 1
+    result.containsKey(validCoordinate)
+    !result.containsKey(invalidCoordinate)
   }
 
   def "A NativeSqlWeatherSource returns all time keys after a given time key correctly"() {

@@ -32,8 +32,6 @@ import org.locationtech.jts.geom.Point;
 
 /** Couchbase Source for weather data */
 public class CouchbaseWeatherSource extends WeatherSource {
-  private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
-
   /** The start of the document key, comparable to a table name in relational databases */
   private static final String DEFAULT_KEY_PREFIX = "weather";
 
@@ -214,9 +212,11 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @param coordinateId the coordinate ID
    * @return the last known weather value before date
    * @throws NoDataException if no earlier data is available or the gap exceeds the allowed steps
+   * @throws SourceException if the stored data points are inconsistently ordered
    */
   private TimeBasedValue<WeatherValue> getLastKnownWeather(
-      ZonedDateTime date, Point coordinate, Integer coordinateId) throws NoDataException {
+      ZonedDateTime date, Point coordinate, Integer coordinateId)
+      throws SourceException, NoDataException {
     List<TimeBasedValue<WeatherValue>> fallbacks = queryLastWeatherBefore(date, coordinateId);
     if (!fallbacks.isEmpty()) {
       ZonedDateTime fallbackTime = fallbacks.get(0).getTime();

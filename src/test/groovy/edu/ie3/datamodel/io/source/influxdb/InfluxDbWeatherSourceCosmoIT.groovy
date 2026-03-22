@@ -132,13 +132,6 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     def invalidCoordinate = GeoUtils.buildPoint(7d, 48d)
     def time = CosmoWeatherTestData.TIME_15H
     def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
-    def timeseries_193186 = new IndividualTimeSeries(null,
-        [
-          new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193186_15H),
-          new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193186_16H),
-          new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)
-        ] as Set<TimeBasedValue>)
-
     when: "requesting weather for an invalid coordinate at a specific date"
     source.getWeather(time, invalidCoordinate)
 
@@ -169,7 +162,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
   def "A InfluxDbWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
     given:
-    def futureTime = CosmoWeatherTestData.TIME_17H.plusHours(2)
+    def futureTime = CosmoWeatherTestData.TIME_17H.plusHours(3)
     def expectedFallback = new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)
 
     when:
@@ -195,7 +188,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
   def "A InfluxDbWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
     given:
-    def farFutureTime = CosmoWeatherTestData.TIME_17H.plusHours(10)
+    def farFutureTime = CosmoWeatherTestData.TIME_17H.plusHours(4)
 
     when:
     source.getWeather(farFutureTime, CosmoWeatherTestData.COORDINATE_193186)
@@ -221,5 +214,23 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
       CosmoWeatherTestData.TIME_17H
     ]
     actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
+  }
+
+  def "A InfluxDbWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+    given:
+    def validCoordinate = CosmoWeatherTestData.COORDINATE_193186
+    def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
+
+    when:
+    def result = source.getWeather(timeInterval, [
+      validCoordinate,
+      invalidCoordinate
+    ])
+
+    then:
+    result.size() == 1
+    result.containsKey(validCoordinate)
+    !result.containsKey(invalidCoordinate)
   }
 }
