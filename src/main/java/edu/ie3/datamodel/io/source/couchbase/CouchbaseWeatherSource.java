@@ -133,7 +133,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     for (Point coordinate :
         coordinates.stream().filter(c -> !unknownCoordinates.contains(c)).toList()) {
-      int coordinateId = idCoordinateSource.getId(coordinate).get();
+      int coordinateId = idCoordinateSource.getId(coordinate).orElseThrow();
       String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinateId);
       CompletableFuture<QueryResult> futureResult = connector.query(query);
       QueryResult queryResult = futureResult.join();

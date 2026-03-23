@@ -108,7 +108,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
     try (InfluxDB session = connector.getSession()) {
       for (Map.Entry<Point, Optional<Integer>> entry :
           coordinatesToId.entrySet().stream().filter(e -> e.getValue().isPresent()).toList()) {
-        int coordinateId = entry.getValue().get();
+        int coordinateId = entry.getValue().orElseThrow();
         String query = createQueryStringForCoordinateAndTimeInterval(timeInterval, coordinateId);
         QueryResult queryResult = session.query(new Query(query));
         Set<TimeBasedValue<WeatherValue>> timeBasedValues =
