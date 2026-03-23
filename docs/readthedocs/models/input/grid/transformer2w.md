@@ -148,20 +148,20 @@ The source for transformers from ``simBench`` can be found [here](https://simben
    :header-rows: 1
    
    * - uuid
-     - bM
-     - dPhi
-     - dV
-     - gM
+     - bM [nS]
+     - dPhi [°]
+     - dV 
+     - gM [nS]
      - id
-     - rSc
-     - sRated
-     - tapMax
+     - rSc [Ω]
+     - sRated [kVA]
+     - tapMax 
      - tapMin
      - tapNeutr
      - tapSide
-     - vRatedA
-     - vRatedB
-     - xSc
+     - vRatedA [kV]
+     - vRatedB [kV]
+     - xSc [Ω]
      - source
      
    * - 5a890aae-b9c9-4ebf-8a49-8850ae9df402

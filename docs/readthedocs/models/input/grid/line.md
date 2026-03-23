@@ -133,13 +133,13 @@ Some standard overhead lines.
    
    
    * - uuid
-     - b
-     - g
-     - iMax
+     - b [µS / km]
+     - g [µS / km]
+     - iMax [A]
      - id
-     - r
-     - vRated
-     - x
+     - r [Ω / km]
+     - vRated [kV]
+     - x [Ω / km]
      - source
      
    * - 91617ab8-3de2-4fba-be45-a54473ba09a9
@@ -316,13 +316,13 @@ Some standard cables.
    
    
    * - uuid
-     - b
-     - g
-     - iMax
+     - b [µS / km]
+     - g [µS / km]
+     - iMax [A]
      - id
-     - r
-     - vRated
-     - x
+     - r [Ω / km]
+     - vRated [kV]
+     - x [Ω / km]
      - source
 
    * - cc59abd4-770b-45d2-98c8-919c91f1ca4b
