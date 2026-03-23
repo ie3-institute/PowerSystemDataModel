@@ -242,6 +242,11 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                         em, Objects::nonNull, current -> current.getControllingEm().orElse(null)))
             .collect(Collectors.toSet());
 
+    Set<EmInput> containerEmInputs = new HashSet<>(jointGridContainer.getEmUnits().getEmUnits());
+
+    Set<EmInput> allEmInputs = new HashSet<>(containerEmInputs);
+    allEmInputs.addAll(emInputs);
+
     // persist all entities
     Stream.of(
             rawGridElements.allEntitiesAsList(),
@@ -249,7 +254,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
             graphicElements.allEntitiesAsList(),
             types,
             operators,
-            emInputs)
+            allEmInputs)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet())
         .forEach(this::persistIgnoreNested);
