@@ -317,7 +317,7 @@ Some standard cables.
    
    * - uuid
      - b [µS / km]
-     - g [S / km]
+     - g [µS / km]
      - iMax [A]
      - id
      - r [Ω / km]

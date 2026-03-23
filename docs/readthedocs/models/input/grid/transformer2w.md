@@ -48,7 +48,7 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
      - Rated voltage at higher voltage terminal
 
    * - vRatedB
-     - pkV
+     - kV
      - Rated voltage at lower voltage terminal
 
    * - dV
