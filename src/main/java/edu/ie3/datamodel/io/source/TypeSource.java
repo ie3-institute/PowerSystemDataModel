@@ -29,6 +29,8 @@ import java.util.UUID;
  * @since 08.04.20
  */
 public class TypeSource extends EntitySource {
+  private static final String SUB_DIRECTORY = "/type";
+
   // factories
   private final OperatorInputFactory operatorInputFactory;
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
@@ -86,7 +88,7 @@ public class TypeSource extends EntitySource {
    */
   public static Map<UUID, Transformer2WTypeInput> getStandardTransformer2WTypes()
       throws SourceException {
-    return new TypeSource(getBuildInSource(Transformer2WTypeInput.class, "/type"))
+    return new TypeSource(getBuildInSource(Transformer2WTypeInput.class, SUB_DIRECTORY))
         .getTransformer2WTypes(false);
   }
 
@@ -98,8 +100,8 @@ public class TypeSource extends EntitySource {
    * manually, as {@link Transformer2WTypeInput#equals(Object)} is NOT restricted on the uuid of
    * {@link Transformer2WTypeInput}.
    *
-   * @param withBuildIn if true the standard transformer types will be included if they're uuid is
-   *     not overwritten by the source
+   * @param withBuildIn if true the standard transformer types will be included if their uuid is not
+   *     overwritten by the source
    * @return a map of UUID to object- and uuid-unique {@link Transformer2WTypeInput} entities
    */
   private Map<UUID, Transformer2WTypeInput> getTransformer2WTypes(boolean withBuildIn)
@@ -148,7 +150,7 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
    */
   public static Map<UUID, LineTypeInput> getStandardLineTypes() throws SourceException {
-    return new TypeSource(getBuildInSource(LineTypeInput.class, "/type")).getLineTypes(false);
+    return new TypeSource(getBuildInSource(LineTypeInput.class, SUB_DIRECTORY)).getLineTypes(false);
   }
 
   /**
@@ -158,7 +160,7 @@ public class TypeSource extends EntitySource {
    * UUID} uniqueness of the provided {@link LineTypeInput} which has to be checked manually, as
    * {@link LineTypeInput#equals(Object)} is NOT restricted on the uuid of {@link LineTypeInput}.
    *
-   * @param withBuildIn if true the standard line types will be included if they're uuid is not
+   * @param withBuildIn if true the standard line types will be included if their uuid is not
    *     overwritten by the source
    * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
    */
@@ -196,7 +198,7 @@ public class TypeSource extends EntitySource {
    */
   public static Map<UUID, Transformer3WTypeInput> getStandardTransformer3WTypes()
       throws SourceException {
-    return new TypeSource(getBuildInSource(Transformer3WTypeInput.class, "/type"))
+    return new TypeSource(getBuildInSource(Transformer3WTypeInput.class, SUB_DIRECTORY))
         .getTransformer3WTypes(false);
   }
 
@@ -208,8 +210,8 @@ public class TypeSource extends EntitySource {
    * manually, as {@link Transformer3WTypeInput#equals(Object)} is NOT restricted on the uuid of
    * {@link Transformer3WTypeInput}.
    *
-   * @param withBuildIn if true the standard transformer types will be included if they're uuid is
-   *     not overwritten by the source
+   * @param withBuildIn if true the standard transformer types will be included if their uuid is not
+   *     overwritten by the source
    * @return a map of UUID to object- and uuid-unique {@link Transformer3WTypeInput} entities
    */
   private Map<UUID, Transformer3WTypeInput> getTransformer3WTypes(boolean withBuildIn)
