@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added attribute units for standard lines types [#1483](https://github.com/ie3-institute/PowerSystemDataModel/issues/1483)
 - Add validation methods to `DataSource` [#1559](https://github.com/ie3-institute/PowerSystemDataModel/issues/1559)
 - Provided field information in validation messages [#1397](https://github.com/ie3-institute/PowerSystemDataModel/issues/1397)
+- Added standard line and transformer types to resources [#1579](https://github.com/ie3-institute/PowerSystemDataModel/issues/1579)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)

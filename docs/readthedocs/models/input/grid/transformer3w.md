@@ -180,8 +180,9 @@ All impedances and admittances are given with respect to the higher voltage side
 
 ## Standard Three Winding Transformer Types
 
-Following there are some standard three winding transformer types with their source. The types are listed below in a ``csv file`` [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes). This
-file can be used directly for any simulation with [SIMONA](https://github.com/ie3-institute/simona).
+Following there are some standard three winding transformer types with their source. To retrieve the data call the method `TypeSource.getStandardTransformer3WTypes()`.
+The types are listed below in a ``csv file`` [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes).
+This file can be used directly for any simulation with [SIMONA](https://github.com/ie3-institute/simona).
 
 ```{list-table}
    :widths: auto
