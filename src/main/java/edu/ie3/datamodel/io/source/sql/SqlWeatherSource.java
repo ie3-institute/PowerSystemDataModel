@@ -124,21 +124,20 @@ public class SqlWeatherSource extends WeatherSource {
     if (coordinates.isEmpty())
       throw new NoDataException("No coordinates provided for weather data query.");
 
-    List<Point> unknownCoordinates =
+    Map<Point, Integer> knownCoordinates =
         coordinates.stream()
-            .filter(coordinate -> idCoordinateSource.getId(coordinate).isEmpty())
-            .toList();
+            .flatMap(c -> idCoordinateSource.getId(c).map(id -> Map.entry(c, id)).stream())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    List<Point> unknownCoordinates =
+        coordinates.stream().filter(c -> !knownCoordinates.containsKey(c)).toList();
 
     if (!unknownCoordinates.isEmpty())
       log.warn(
           "Unable to find coordinate IDs for the following coordinates, skipping: {}",
           unknownCoordinates);
 
-    Set<Integer> coordinateIds =
-        coordinates.stream()
-            .map(idCoordinateSource::getId)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
+    Set<Integer> coordinateIds = new HashSet<>(knownCoordinates.values());
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         buildTimeBasedValues(
@@ -153,18 +152,8 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
 
-    if (timeBasedValues.isEmpty()) {
-      throw new NoDataException(
-          "No weather data found for any of the requested coordinates in the given time interval: "
-              + timeInterval);
-    }
-    Map<Point, IndividualTimeSeries<WeatherValue>> result =
-        mapWeatherValuesToPoints(timeBasedValues);
-    Set<Point> missing =
-        coordinates.stream().filter(c -> !result.containsKey(c)).collect(Collectors.toSet());
-    if (!missing.isEmpty())
-      log.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
-    return result;
+    return validateAndWarnMissing(
+        mapWeatherValuesToPoints(timeBasedValues), coordinates, timeInterval);
   }
 
   @Override

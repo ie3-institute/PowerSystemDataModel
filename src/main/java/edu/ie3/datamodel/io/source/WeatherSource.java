@@ -218,6 +218,32 @@ public abstract class WeatherSource extends EntitySource {
                 e -> e.getValue().stream().map(Pair::getValue).sorted().toList()));
   }
 
+  /**
+   * Validates that the result map is not empty and warns about coordinates with no data.
+   *
+   * @param result the result map to validate
+   * @param coordinates the requested coordinates
+   * @param timeInterval the requested time interval
+   * @return the result map if valid
+   * @throws NoDataException if the result map is empty
+   */
+  protected Map<Point, IndividualTimeSeries<WeatherValue>> validateAndWarnMissing(
+      Map<Point, IndividualTimeSeries<WeatherValue>> result,
+      Collection<Point> coordinates,
+      ClosedInterval<ZonedDateTime> timeInterval)
+      throws NoDataException {
+    if (result.isEmpty()) {
+      throw new NoDataException(
+          "No weather data found for any of the requested coordinates in the given time interval: "
+              + timeInterval);
+    }
+    Set<Point> missing =
+        coordinates.stream().filter(c -> !result.containsKey(c)).collect(Collectors.toSet());
+    if (!missing.isEmpty())
+      log.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
+    return result;
+  }
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**

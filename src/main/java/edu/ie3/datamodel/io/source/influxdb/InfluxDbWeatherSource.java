@@ -106,34 +106,21 @@ public class InfluxDbWeatherSource extends WeatherSource {
 
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     try (InfluxDB session = connector.getSession()) {
-      for (Map.Entry<Point, Optional<Integer>> entry : coordinatesToId.entrySet()) {
-        Optional<Integer> coordinateId = entry.getValue();
-        if (coordinateId.isPresent()) {
-          String query =
-              createQueryStringForCoordinateAndTimeInterval(timeInterval, coordinateId.get());
-          QueryResult queryResult = session.query(new Query(query));
-          Set<TimeBasedValue<WeatherValue>> timeBasedValues =
-              toWeatherValues(queryResult).collect(Collectors.toSet());
-          if (!timeBasedValues.isEmpty()) {
-            IndividualTimeSeries<WeatherValue> timeSeries =
-                new IndividualTimeSeries<>(timeBasedValues);
-            coordinateToTimeSeries.put(entry.getKey(), timeSeries);
-          }
+      for (Map.Entry<Point, Optional<Integer>> entry :
+          coordinatesToId.entrySet().stream().filter(e -> e.getValue().isPresent()).toList()) {
+        int coordinateId = entry.getValue().get();
+        String query = createQueryStringForCoordinateAndTimeInterval(timeInterval, coordinateId);
+        QueryResult queryResult = session.query(new Query(query));
+        Set<TimeBasedValue<WeatherValue>> timeBasedValues =
+            toWeatherValues(queryResult).collect(Collectors.toSet());
+        if (!timeBasedValues.isEmpty()) {
+          IndividualTimeSeries<WeatherValue> timeSeries =
+              new IndividualTimeSeries<>(timeBasedValues);
+          coordinateToTimeSeries.put(entry.getKey(), timeSeries);
         }
       }
     }
-    if (coordinateToTimeSeries.isEmpty()) {
-      throw new NoDataException(
-          "No weather data found for any of the requested coordinates in the given time interval: "
-              + timeInterval);
-    }
-    Set<Point> missing =
-        coordinates.stream()
-            .filter(c -> !coordinateToTimeSeries.containsKey(c))
-            .collect(Collectors.toSet());
-    if (!missing.isEmpty())
-      log.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
-    return coordinateToTimeSeries;
+    return validateAndWarnMissing(coordinateToTimeSeries, coordinates, timeInterval);
   }
 
   @Override

@@ -109,16 +109,7 @@ public class CsvWeatherSource extends WeatherSource {
     Map<Point, IndividualTimeSeries<WeatherValue>> result =
         trimMapToInterval(filteredMap, timeInterval);
 
-    if (result.isEmpty()) {
-      throw new NoDataException(
-          "No weather data found for any of the requested coordinates in the given time interval: "
-              + timeInterval);
-    }
-    Set<Point> missing =
-        coordinates.stream().filter(c -> !result.containsKey(c)).collect(Collectors.toSet());
-    if (!missing.isEmpty())
-      log.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
-    return result;
+    return validateAndWarnMissing(result, coordinates, timeInterval);
   }
 
   @Override

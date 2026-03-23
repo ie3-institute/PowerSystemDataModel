@@ -131,43 +131,31 @@ public class CouchbaseWeatherSource extends WeatherSource {
           unknownCoordinates);
 
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
-    for (Point coordinate : coordinates) {
-      Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-      if (coordinateId.isPresent()) {
-        String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinateId.get());
-        CompletableFuture<QueryResult> futureResult = connector.query(query);
-        QueryResult queryResult = futureResult.join();
-        List<JsonObject> jsonWeatherInputs = Collections.emptyList();
-        try {
-          jsonWeatherInputs = queryResult.rowsAsObject();
-        } catch (DecodingFailureException ex) {
-          log.warn("Failed to decode weather data for coordinate {}, skipping.", coordinate, ex);
-          continue;
-        }
-        if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
-          Set<TimeBasedValue<WeatherValue>> weatherInputs =
-              jsonWeatherInputs.stream()
-                  .map(this::toTimeBasedWeatherValue)
-                  .flatMap(Optional::stream)
-                  .collect(Collectors.toSet());
-          IndividualTimeSeries<WeatherValue> weatherTimeSeries =
-              new IndividualTimeSeries<>(weatherInputs);
-          coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
-        }
+    for (Point coordinate :
+        coordinates.stream().filter(c -> !unknownCoordinates.contains(c)).toList()) {
+      int coordinateId = idCoordinateSource.getId(coordinate).get();
+      String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinateId);
+      CompletableFuture<QueryResult> futureResult = connector.query(query);
+      QueryResult queryResult = futureResult.join();
+      List<JsonObject> jsonWeatherInputs = Collections.emptyList();
+      try {
+        jsonWeatherInputs = queryResult.rowsAsObject();
+      } catch (DecodingFailureException ex) {
+        log.warn("Failed to decode weather data for coordinate {}, skipping.", coordinate, ex);
+        continue;
+      }
+      if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
+        Set<TimeBasedValue<WeatherValue>> weatherInputs =
+            jsonWeatherInputs.stream()
+                .map(this::toTimeBasedWeatherValue)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toSet());
+        IndividualTimeSeries<WeatherValue> weatherTimeSeries =
+            new IndividualTimeSeries<>(weatherInputs);
+        coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
       }
     }
-    if (coordinateToTimeSeries.isEmpty()) {
-      throw new NoDataException(
-          "No weather data found for any of the requested coordinates in the given time interval: "
-              + timeInterval);
-    }
-    Set<Point> missing =
-        coordinates.stream()
-            .filter(c -> !coordinateToTimeSeries.containsKey(c))
-            .collect(Collectors.toSet());
-    if (!missing.isEmpty())
-      log.warn("No weather data in interval {} for coordinates: {}", timeInterval, missing);
-    return coordinateToTimeSeries;
+    return validateAndWarnMissing(coordinateToTimeSeries, coordinates, timeInterval);
   }
 
   @Override
