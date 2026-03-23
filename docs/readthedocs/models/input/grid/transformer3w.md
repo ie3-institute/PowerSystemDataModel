@@ -189,26 +189,26 @@ file can be used directly for any simulation with [SIMONA](https://github.com/ie
    :header-rows: 1
    
    * - uuid
-     - bM
-     - dPhi
+     - bM [nS]
+     - dPhi [°]
      - dV
-     - gM
+     - gM [nS]
      - id
-     - rScA
-     - rScB
-     - rScC
-     - sRatedA
-     - sRatedB
-     - sRatedC
+     - rScA [Ω]
+     - rScB [Ω]
+     - rScC [Ω]
+     - sRatedA [kVA]
+     - sRatedB [kVA]
+     - sRatedC [kVA]
      - tapMax
      - tapMin
      - tapNeutr
-     - vRatedA
-     - vRatedB
-     - vRatedC
-     - xScA
-     - xScB
-     - xScC
+     - vRatedA [kV]
+     - vRatedB [kV]
+     - vRatedC [kV]
+     - xScA [Ω]
+     - xScB [Ω]
+     - xScC [Ω]
      - source
      
    * - 62aef8ec-7e68-43e5-9678-8cde101f0116
