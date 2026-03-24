@@ -91,35 +91,32 @@ public abstract class EntitySource {
    */
   protected static <C extends Entity> Try<Void, ValidationException> validate(
       Class<? extends C> entityClass, DataSource dataSource) {
-    return validate(
-        entityClass, () -> dataSource.getSourceFields(entityClass), DataSource::validate);
+    return validate(entityClass, () -> dataSource.getSourceFields(entityClass));
   }
 
   /**
    * Method for validating a single source.
    *
-   * @param entityClass class to be validated
+   * @param clazz class to be validated
    * @param sourceFields supplier for source fields
-   * @param validator used to validate
    * @param <C> type of the class
    */
   protected static <C> Try<Void, ValidationException> validate(
-      Class<? extends C> entityClass,
-      Try.TrySupplier<Optional<Set<String>>, SourceException> sourceFields,
-      SourceValidator<C> validator) {
+      Class<? extends C> clazz,
+      Try.TrySupplier<Optional<Set<String>>, SourceException> sourceFields) {
     return Try.of(sourceFields, SourceException.class)
         .transformF(
             se ->
                 (ValidationException)
                     new FailedValidationException(
-                        "Validation for entity "
-                            + entityClass
+                        "Validation for class "
+                            + clazz
                             + " failed because of an error related to its source.",
                         se))
         .flatMap(
             fieldsOpt ->
                 fieldsOpt
-                    .map(fields -> validator.validate(fields, entityClass))
+                    .map(fields -> DataSource.validate(fields, clazz))
                     .orElse(Try.Success.empty()));
   }
 

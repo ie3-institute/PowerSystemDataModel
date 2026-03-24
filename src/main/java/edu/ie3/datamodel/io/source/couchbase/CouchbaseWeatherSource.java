@@ -5,11 +5,14 @@
 */
 package edu.ie3.datamodel.io.source.couchbase;
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.WEATHER_COORDINATE_ID;
+
 import com.couchbase.client.core.error.DecodingFailureException;
 import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -33,7 +36,6 @@ import org.slf4j.LoggerFactory;
 /** Couchbase Source for weather data */
 public class CouchbaseWeatherSource extends WeatherSource {
   private static final Logger logger = LoggerFactory.getLogger(CouchbaseWeatherSource.class);
-  private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
 
   /** The start of the document key, comparable to a table name in relational databases */
   private static final String DEFAULT_KEY_PREFIX = "weather";
@@ -99,8 +101,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields() {
-    return connector.getSourceFields();
+  public void validate() throws ValidationException {
+    validate(getInputClass(), connector::getSourceFields);
   }
 
   @Override
@@ -183,7 +185,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
           jsonWeatherInputs.stream()
               .map(
                   json -> {
-                    int coordinateId = json.getInt(COORDINATE_ID);
+                    int coordinateId = json.getInt(WEATHER_COORDINATE_ID.toLowerCase());
                     Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
                     ZonedDateTime timestamp =
                         weatherFactory.toZonedDateTime(

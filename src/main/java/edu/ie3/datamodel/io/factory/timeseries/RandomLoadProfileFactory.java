@@ -12,7 +12,6 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import edu.ie3.util.quantities.PowerSystemUnits;
-import java.util.List;
 import java.util.Set;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -41,22 +40,6 @@ public class RandomLoadProfileFactory extends LoadProfileFactory<RandomLoadValue
             data.getDouble(SIGMA_SUNDAY),
             data.getDouble(SIGMA_WEEKDAY)),
         quarterHour);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    return List.of(
-        newSet(
-            QUARTER_HOUR,
-            K_WEEKDAY,
-            K_SATURDAY,
-            K_SUNDAY,
-            MY_WEEKDAY,
-            MY_SATURDAY,
-            MY_SUNDAY,
-            SIGMA_WEEKDAY,
-            SIGMA_SATURDAY,
-            SIGMA_SUNDAY));
   }
 
   @Override

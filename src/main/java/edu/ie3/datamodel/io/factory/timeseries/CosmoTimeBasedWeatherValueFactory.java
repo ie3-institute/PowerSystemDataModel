@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -14,10 +13,7 @@ import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
@@ -44,36 +40,7 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   }
 
   @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> minConstructorParams =
-        newSet(
-            WEATHER_COORDINATE_ID,
-            COSMO_DIFFUSE_IRRADIANCE,
-            COSMO_DIRECT_IRRADIANCE,
-            COSMO_TEMPERATURE,
-            COSMO_WIND_DIRECTION,
-            COSMO_WIND_VELOCITY);
-
-    Set<String> withGroundTemp =
-        expandSet(
-            minConstructorParams,
-            COSMO_GROUND_TEMPERATURE_LEVEL_1,
-            COSMO_GROUND_TEMPERATURE_LEVEL_2);
-
-    return Arrays.asList(minConstructorParams, withGroundTemp);
-  }
-
-  @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
-    Set<String> requiredFields =
-        newSet(
-            TIME,
-            COSMO_DIFFUSE_IRRADIANCE,
-            COSMO_DIRECT_IRRADIANCE,
-            COSMO_TEMPERATURE,
-            COSMO_WIND_DIRECTION,
-            COSMO_WIND_VELOCITY);
-    validatedRequiredFields(data, requiredFields);
     Point coordinate = data.getCoordinate();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
@@ -104,22 +71,5 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             groundTemperatureLevel2);
 
     return new TimeBasedValue<>(time, weatherValue);
-  }
-
-  /**
-   * * Validates that all required fields are present and not empty in the provided data
-   *
-   * @param data the data to validate
-   * @param requiredFields the fields that must be present and non-empty
-   * @throws FactoryException if any required field is missing or empty
-   */
-  protected void validatedRequiredFields(
-      TimeBasedWeatherValueData data, Set<String> requiredFields) {
-    for (String field : requiredFields) {
-      String value = data.getField(field);
-      if (value == null || value.isEmpty()) {
-        throw new FactoryException("The field \"" + field + "\" is missing or empty.");
-      }
-    }
   }
 }

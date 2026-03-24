@@ -88,7 +88,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
 
   @Override
   public void validate() throws ValidationException {
-    validate(IdCoordinateInput.class, this::getSourceFields, factory);
+    validate(IdCoordinateInput.SqlIdCoordinateInput.class, this::getSourceFields);
   }
 
   @Override
@@ -104,7 +104,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
     if (values.isEmpty()) {
       return Optional.empty();
     } else {
-      return Optional.of(values.get(0).coordinate);
+      return Optional.of(values.getFirst().coordinate);
     }
   }
 
@@ -139,7 +139,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
     if (values.isEmpty()) {
       return Optional.empty();
     } else {
-      return Optional.of(values.get(0).id);
+      return Optional.of(values.getFirst().id);
     }
   }
 
