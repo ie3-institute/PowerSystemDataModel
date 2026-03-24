@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored validation of entity classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
 - Changed `operationTime` to `operationFrom` and `operationUntil` in read the docs [1507](https://github.com/ie3-institute/PowerSystemDataModel/issues/1507)
 - Refactored validation of value classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
+- Use the default time pattern for persisting time series keys [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766) 
 
 ## [8.1.0] - 2025-07-25
 
