@@ -28,7 +28,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements TestContaine
   BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
 
   @Shared
-  CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.6.0")
+  CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:8.0.0")
   .withBucket(bucketDefinition)
   .withExposedPorts(8091, 8092, 8093, 8094, 11210)
   .withStartupAttempts(3) // 3 attempts because startup (node renaming) sometimes fails when executed too early
