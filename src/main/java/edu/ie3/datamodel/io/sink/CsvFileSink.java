@@ -187,7 +187,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     GraphicElements graphicElements = jointGridContainer.getGraphics();
 
     // extract types
-    Set<AssetTypeInput> types =
+    Stream<AssetTypeInput> types =
         Stream.of(
                 lines,
                 transformer2Ws,
@@ -200,11 +200,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 storages,
                 wecPlants)
             .flatMap(Collection::stream)
-            .map(Extractor::extractType)
-            .collect(Collectors.toSet());
+            .map(Extractor::extractType);
 
     // extract operators
-    Set<OperatorInput> operators =
+    Stream<OperatorInput> operators =
         Stream.of(
                 nodes,
                 lines,
@@ -225,21 +224,17 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 wecPlants)
             .flatMap(Collection::stream)
             .map(Extractor::extractOperator)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
-
-    // extract all EmInput entities
-    Set<EmInput> emInputs = new HashSet<>(jointGridContainer.getEmUnits().getEmUnits());
+            .flatMap(Optional::stream);
 
     // persist all entities
     Stream.of(
-            rawGridElements.allEntitiesAsList(),
-            systemParticipants.allEntitiesAsList(),
-            graphicElements.allEntitiesAsList(),
+            rawGridElements.allEntitiesAsList().stream(),
+            systemParticipants.allEntitiesAsList().stream(),
+            graphicElements.allEntitiesAsList().stream(),
+            jointGridContainer.getEmUnits().getEmUnits().stream(),
             types,
-            operators,
-            emInputs)
-        .flatMap(Collection::stream)
+            operators)
+        .flatMap(s -> s)
         .collect(Collectors.toSet())
         .forEach(this::persistIgnoreNested);
   }
