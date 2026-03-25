@@ -42,6 +42,7 @@ import tech.units.indriya.quantity.Quantities
 
 import java.sql.SQLException
 import javax.measure.Quantity
+import javax.measure.quantity.Energy
 import javax.measure.quantity.Power
 
 @Testcontainers
@@ -121,7 +122,10 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
-    PowerLimitFlexOptionsResult flexOptionsResult = new PowerLimitFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
+    Quantity<Energy> eMin = Quantities.getQuantity(-0.05, StandardUnits.ENERGY_RESULT)
+    Quantity<Energy> eMax = Quantities.getQuantity(0.06, StandardUnits.ENERGY_RESULT)
+    PowerLimitFlexOptionsResult powerLimitFlexOptionsResult = new PowerLimitFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
+    EnergyBoundariesFlexOptionsResult energyBoundariesFlexOptionsResult = new EnergyBoundariesFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, eMin, eMax, pMin, pMax)
 
     when:
     sink.persistAll([
@@ -129,7 +133,8 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
       wecResult,
       evcsResult,
       emResult,
-      flexOptionsResult,
+      powerLimitFlexOptionsResult,
+      energyBoundariesFlexOptionsResult,
       GridTestData.transformerCtoG,
       GridTestData.lineGraphicCtoD,
       GridTestData.nodeGraphicC,
@@ -145,7 +150,8 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "wec_res", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "evcs_res", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "em_res", ps -> {}).count() == 1
-    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "flex_options_res", ps -> {}).count() == 1
+    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "power_limit_flex_options_res", ps -> {}).count() == 1
+    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "energy_boundaries_flex_options_res", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "transformer_2_w_type_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "node_input", ps -> {}).count() == 4
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "transformer_2_w_input", ps -> {}).count() == 1
