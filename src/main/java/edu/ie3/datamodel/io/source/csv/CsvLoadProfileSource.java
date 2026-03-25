@@ -57,7 +57,7 @@ public class CsvLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
 
   @Override
   public void validate() throws ValidationException {
-    validate(entryClass, () -> dataSource.getSourceFields(filePath), entryFactory);
+    validate(entryClass, () -> dataSource.getSourceFields(filePath));
   }
 
   public LoadProfileTimeSeries<V> getTimeSeries() {

@@ -8,7 +8,28 @@ package edu.ie3.datamodel.models.input;
 import edu.ie3.util.geo.GeoUtils;
 import org.locationtech.jts.geom.Point;
 
-public record IdCoordinateInput(Integer id, Point point) implements InputEntity {
+public sealed class IdCoordinateInput implements InputEntity
+    permits IdCoordinateInput.CosmoIdCoordinateInput,
+        IdCoordinateInput.IconIdCoordinateInput,
+        IdCoordinateInput.SqlIdCoordinateInput {
+
+  private final int id;
+
+  private final Point point;
+
+  public IdCoordinateInput(int id, Point point) {
+    this.id = id;
+    this.point = point;
+  }
+
+  public int id() {
+    return id;
+  }
+
+  public Point point() {
+    return point;
+  }
+
   /**
    * Constructor for an {@link IdCoordinateInput}.
    *
@@ -16,7 +37,18 @@ public record IdCoordinateInput(Integer id, Point point) implements InputEntity 
    * @param lat of the pair
    * @param lon of the pair
    */
-  public IdCoordinateInput(Integer id, double lat, double lon) {
+  public IdCoordinateInput(int id, double lat, double lon) {
     this(id, GeoUtils.buildPoint(lat, lon));
   }
+
+  // for differencing between different sources
+  private IdCoordinateInput() {
+    this(-1, NodeInput.DEFAULT_GEO_POSITION);
+  }
+
+  public static final class CosmoIdCoordinateInput extends IdCoordinateInput {}
+
+  public static final class IconIdCoordinateInput extends IdCoordinateInput {}
+
+  public static final class SqlIdCoordinateInput extends IdCoordinateInput {}
 }

@@ -27,20 +27,20 @@ class PvInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == pvInput.uuid
-      assert operationTime == pvInput.operationTime
-      assert operator == pvInput.operator
-      assert id == pvInput.id
-      assert qCharacteristics == pvInput.qCharacteristics
-      assert sRated == Quantities.getQuantity(0d, KILOVOLTAMPERE)
-      assert cosPhiRated == 0.7d
-      assert albedo == 10
-      assert azimuth == Quantities.getQuantity(10, DEGREE_GEOM)
-      assert etaConv == Quantities.getQuantity(50, PERCENT)
-      assert elevationAngle == Quantities.getQuantity(50, DEGREE_GEOM)
-      assert kG == 10
-      assert kT == 5
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == pvInput.uuid
+      operationTime == pvInput.operationTime
+      operator == pvInput.operator
+      id == pvInput.id
+      qCharacteristics == pvInput.qCharacteristics
+      sRated == Quantities.getQuantity(0d, KILOVOLTAMPERE)
+      cosPhiRated == 0.7d
+      albedo == 10
+      azimuth == Quantities.getQuantity(10, DEGREE_GEOM)
+      etaConv == Quantities.getQuantity(50, PERCENT)
+      elevationAngle == Quantities.getQuantity(50, DEGREE_GEOM)
+      kG == 10
+      kT == 5
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -53,20 +53,20 @@ class PvInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == pvInput.uuid
-      assert operationTime == pvInput.operationTime
-      assert operator == pvInput.operator
-      assert id == pvInput.id
-      assert qCharacteristics == pvInput.qCharacteristics
-      assert sRated == pvInput.sRated * 2d
-      assert cosPhiRated == pvInput.cosPhiRated
-      assert albedo == pvInput.albedo
-      assert azimuth == pvInput.azimuth
-      assert etaConv == pvInput.etaConv
-      assert elevationAngle == pvInput.elevationAngle
-      assert kG == pvInput.kG
-      assert kT == pvInput.kT
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == pvInput.uuid
+      operationTime == pvInput.operationTime
+      operator == pvInput.operator
+      id == pvInput.id
+      qCharacteristics == pvInput.qCharacteristics
+      sRated == pvInput.sRated * 2d
+      cosPhiRated == pvInput.cosPhiRated
+      albedo == pvInput.albedo
+      azimuth == pvInput.azimuth
+      etaConv == pvInput.etaConv
+      elevationAngle == pvInput.elevationAngle
+      kG == pvInput.kG
+      kT == pvInput.kT
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

@@ -20,15 +20,15 @@ class MeasurementUnitInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == unit.uuid
-      assert operationTime == unit.operationTime
-      assert operator == unit.operator
-      assert id == unit.id
-      assert node == GridTestData.nodeB
-      assert !getVMag()
-      assert !getVAng()
-      assert !getP()
-      assert !getQ()
+      uuid == unit.uuid
+      operationTime == unit.operationTime
+      operator == unit.operator
+      id == unit.id
+      node == GridTestData.nodeB
+      !getVMag()
+      !getVAng()
+      !getP()
+      !getQ()
     }
   }
 }

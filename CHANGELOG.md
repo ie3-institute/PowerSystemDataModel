@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ground temperatures level 1 and 2 as option to weather data. [#1343](https://github.com/ie3-institute/PowerSystemDataModel/issues/1343)
 - Add validation for required fields in ICON and COSMO `TimebasedWeatherValueFactories` [#1537](https://github.com/ie3-institute/PowerSystemDataModel/issues/1537)
 - Create data model for air condition [#1396](https://github.com/ie3-institute/PowerSystemDataModel/issues/1396)
+- Added attribute units for standard lines types [#1483](https://github.com/ie3-institute/PowerSystemDataModel/issues/1483)
+- Add validation methods to `DataSource` [#1559](https://github.com/ie3-institute/PowerSystemDataModel/issues/1559)
+- Provided field information in validation messages [#1397](https://github.com/ie3-institute/PowerSystemDataModel/issues/1397)
+- Added standard line and transformer types to resources [#1579](https://github.com/ie3-institute/PowerSystemDataModel/issues/1579)
+- Added SQL to CSV export to documentation [#1581](https://github.com/ie3-institute/PowerSystemDataModel/issues/1581)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
@@ -48,6 +53,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `ThermalUnits` (duplication to `ThermalGrids`) [#874](https://github.com/ie3-institute/PowerSystemDataModel/issues/874)
 - Removed market reaction field from `PvInput`, `WecInput`, `BmInput`, `ChpInput` [#1554](https://github.com/ie3-institute/PowerSystemDataModel/issues/1554)
 - Changed `Intermediate` to `Transition` for BdewSeason [#1419](https://github.com/ie3-institute/PowerSystemDataModel/issues/1419)
+- Refactored validation of entity classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
+- Changed `operationTime` to `operationFrom` and `operationUntil` in read the docs [1507](https://github.com/ie3-institute/PowerSystemDataModel/issues/1507)
+- Refactored validation of value classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
 
 ## [8.1.0] - 2025-07-25
 

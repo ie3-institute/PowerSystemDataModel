@@ -46,14 +46,14 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
     typeInput.success
     typeInput.data.get().getClass() == typeInputClass
     typeInput.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert id == parameter["id"]
-      assert b == getQuant(parameter["b"], StandardUnits.SUSCEPTANCE_PER_LENGTH)
-      assert g == getQuant(parameter["g"], StandardUnits.CONDUCTANCE_PER_LENGTH)
-      assert r == getQuant(parameter["r"], StandardUnits.RESISTANCE_PER_LENGTH)
-      assert x == getQuant(parameter["x"], StandardUnits.REACTANCE_PER_LENGTH)
-      assert iMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
-      assert vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      uuid == UUID.fromString(parameter["uuid"])
+      id == parameter["id"]
+      b == getQuant(parameter["b"], StandardUnits.SUSCEPTANCE_PER_LENGTH)
+      g == getQuant(parameter["g"], StandardUnits.CONDUCTANCE_PER_LENGTH)
+      r == getQuant(parameter["r"], StandardUnits.RESISTANCE_PER_LENGTH)
+      x == getQuant(parameter["x"], StandardUnits.REACTANCE_PER_LENGTH)
+      iMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+      vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
     }
   }
 }

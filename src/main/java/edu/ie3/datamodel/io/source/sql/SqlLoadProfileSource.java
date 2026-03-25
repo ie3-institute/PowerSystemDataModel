@@ -85,7 +85,7 @@ public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
 
   @Override
   public void validate() throws ValidationException {
-    validate(entryClass, () -> dataSource.getSourceFields(tableName), entryFactory);
+    validate(entryClass, () -> dataSource.getSourceFields(tableName));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

@@ -40,14 +40,14 @@ class ContainerNodeUpdateUtilTest extends Specification {
 
     then:
     trafoNodeUpdateResult.with {
-      assert updatedOldToNewNodes.size() == 3
+      updatedOldToNewNodes.size() == 3
       // all nodes should have the expected geoPosition
-      assert updatedOldToNewNodes.values().stream().map({ node -> node.geoPosition }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
+      updatedOldToNewNodes.values().stream().map({ node -> node.geoPosition }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
 
 
-      assert updatedTransformer2WInputs.size() == 2
+      updatedTransformer2WInputs.size() == 2
       // transformers nodes should end up to be the updated nodes
-      assert updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) })
+      updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) })
       .collect(Collectors.toSet()) == updatedOldToNewNodes.values() as Set
     }
 
@@ -90,15 +90,15 @@ class ContainerNodeUpdateUtilTest extends Specification {
 
     then:
     trafoNodeUpdateResult.with {
-      assert updatedOldToNewNodes.size() == 3
+      updatedOldToNewNodes.size() == 3
       // nodeA and nodeD are set to geoPosition of high voltage node of leading transformer (= nodeG geoPosition)
-      assert updatedOldToNewNodes.get(oldNodeA) == newNodeA.copy().geoPosition(oldNodeG.geoPosition).build()
-      assert updatedOldToNewNodes.get(oldNodeD) == newNodeD.copy().geoPosition(oldNodeG.geoPosition).build()
-      assert updatedOldToNewNodes.get(oldNodeG) == oldNodeG
+      updatedOldToNewNodes.get(oldNodeA) == newNodeA.copy().geoPosition(oldNodeG.geoPosition).build()
+      updatedOldToNewNodes.get(oldNodeD) == newNodeD.copy().geoPosition(oldNodeG.geoPosition).build()
+      updatedOldToNewNodes.get(oldNodeG) == oldNodeG
 
-      assert updatedTransformer2WInputs.size() == 2
+      updatedTransformer2WInputs.size() == 2
       // transformer nodes should end up to be the updated nodes
-      assert updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) })
+      updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) })
       .collect(Collectors.toSet()) == updatedOldToNewNodes.values() as Set
     }
   }
@@ -121,14 +121,14 @@ class ContainerNodeUpdateUtilTest extends Specification {
 
     then:
     trafoNodeUpdateResult.with {
-      assert updatedOldToNewNodes.size() == 7
+      updatedOldToNewNodes.size() == 7
       // all nodes should have the expected geoPosition
-      assert updatedOldToNewNodes.values().stream().map({ node -> node.geoPosition }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
+      updatedOldToNewNodes.values().stream().map({ node -> node.geoPosition }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
 
 
-      assert updatedTransformer2WInputs.size() == 5
+      updatedTransformer2WInputs.size() == 5
       // transformer nodes should end up to be the updated nodes
-      assert Stream.of(updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) }),
+      Stream.of(updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) }),
       updatedTransformer3WInputs.stream().flatMap({ trafo3w -> Stream.of(trafo3w.getNodeA(), trafo3w.getNodeB(), trafo3w.getNodeC()) })).flatMap(Function.identity())
       .collect(Collectors.toSet()) == updatedOldToNewNodes.values() as Set
     }
@@ -162,13 +162,13 @@ class ContainerNodeUpdateUtilTest extends Specification {
 
     then:
     trafoNodeUpdateResult.with {
-      assert updatedOldToNewNodes.size() == 7
+      updatedOldToNewNodes.size() == 7
       // all nodes should have the expected geoPosition
-      assert updatedOldToNewNodes.values().stream().map({ node -> node.geoPosition }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
+      updatedOldToNewNodes.values().stream().map({ node -> node.geoPosition }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
 
-      assert updatedTransformer2WInputs.size() == 5
+      updatedTransformer2WInputs.size() == 5
       // transformer nodes should end up to be the updated nodes
-      assert Stream.of(updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) }),
+      Stream.of(updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) }),
       updatedTransformer3WInputs.stream().flatMap({ trafo3w -> Stream.of(trafo3w.getNodeA(), trafo3w.getNodeB(), trafo3w.getNodeC()) })).flatMap(Function.identity())
       .collect(Collectors.toSet()) == updatedOldToNewNodes.values() as Set
     }

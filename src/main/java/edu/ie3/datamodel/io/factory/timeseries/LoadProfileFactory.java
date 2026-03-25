@@ -22,7 +22,6 @@ import tech.units.indriya.ComparableQuantity;
  */
 public abstract class LoadProfileFactory<V extends LoadValues>
     extends Factory<V, LoadProfileData<V>, LoadProfileEntry<V>> {
-  protected static final String QUARTER_HOUR = "quarterHour";
 
   protected LoadProfileFactory(Class<? extends V> valueClass) {
     super(valueClass);

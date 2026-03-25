@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
  */
 public abstract class TimeBasedWeatherValueFactory
     extends TimeBasedValueFactory<TimeBasedWeatherValueData, WeatherValue> {
-  protected static final String COORDINATE_ID = "coordinateId";
 
   protected TimeBasedWeatherValueFactory() {
     super(WeatherValue.class);
@@ -35,6 +34,6 @@ public abstract class TimeBasedWeatherValueFactory
    * @return the field name for the coordinate id
    */
   public String getCoordinateIdFieldString() {
-    return COORDINATE_ID;
+    return WEATHER_COORDINATE_ID;
   }
 }

@@ -22,7 +22,7 @@ There is a default mapping from model class to naming of entities in the case yo
 (de-)serialization of models.
 You may extend / alter the naming with pre- or suffix by calling `new EntityPersistenceNamingStrategy("prefix","suffix")`.
 
-### Input
+### Inputs
 
 ```{list-table}
    :header-rows: 1
@@ -78,12 +78,6 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 * - schematic line graphic
   - *prefix_* line_graphic_input *_suffix*
 ```
-
-### Id Coordinate
-Csv id coordinate sources can have two different ways to represent their coordinate:
-1. ICON: Takes a `latitude` and a `longitude` column
-2. COSMO: Takes a `lat_rot`, a `long_rot`, a `lat_geo` and a `long_geo` column
-
 
 ### Time Series
 

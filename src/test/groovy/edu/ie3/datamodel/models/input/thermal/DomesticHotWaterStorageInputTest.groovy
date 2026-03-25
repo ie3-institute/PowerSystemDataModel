@@ -24,15 +24,15 @@ class DomesticHotWaterStorageInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == domesticHotWaterStorageInput.uuid
-      assert id == domesticHotWaterStorageInput.id
-      assert operator == domesticHotWaterStorageInput.operator
-      assert operationTime == domesticHotWaterStorageInput.operationTime
-      assert thermalBus == domesticHotWaterStorageInput.thermalBus
-      assert storageVolumeLvl == ThermalUnitInputTestData.storageVolumeLvl
-      assert inletTemp == ThermalUnitInputTestData.inletTemp
-      assert returnTemp == ThermalUnitInputTestData.returnTemp
-      assert c == ThermalUnitInputTestData.c
+      uuid == domesticHotWaterStorageInput.uuid
+      id == domesticHotWaterStorageInput.id
+      operator == domesticHotWaterStorageInput.operator
+      operationTime == domesticHotWaterStorageInput.operationTime
+      thermalBus == domesticHotWaterStorageInput.thermalBus
+      storageVolumeLvl == ThermalUnitInputTestData.storageVolumeLvl
+      inletTemp == ThermalUnitInputTestData.inletTemp
+      returnTemp == ThermalUnitInputTestData.returnTemp
+      c == ThermalUnitInputTestData.c
     }
   }
 
@@ -45,16 +45,16 @@ class DomesticHotWaterStorageInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == domesticHotWaterStorageInput.uuid
-      assert id == domesticHotWaterStorageInput.id
-      assert operator == domesticHotWaterStorageInput.operator
-      assert operationTime == domesticHotWaterStorageInput.operationTime
-      assert thermalBus == domesticHotWaterStorageInput.thermalBus
-      assert storageVolumeLvl == domesticHotWaterStorageInput.storageVolumeLvl * 2d
-      assert inletTemp == domesticHotWaterStorageInput.inletTemp
-      assert returnTemp == domesticHotWaterStorageInput.returnTemp
-      assert c == domesticHotWaterStorageInput.c
-      assert pThermalMax == domesticHotWaterStorageInput.pThermalMax * 2d
+      uuid == domesticHotWaterStorageInput.uuid
+      id == domesticHotWaterStorageInput.id
+      operator == domesticHotWaterStorageInput.operator
+      operationTime == domesticHotWaterStorageInput.operationTime
+      thermalBus == domesticHotWaterStorageInput.thermalBus
+      storageVolumeLvl == domesticHotWaterStorageInput.storageVolumeLvl * 2d
+      inletTemp == domesticHotWaterStorageInput.inletTemp
+      returnTemp == domesticHotWaterStorageInput.returnTemp
+      c == domesticHotWaterStorageInput.c
+      pThermalMax == domesticHotWaterStorageInput.pThermalMax * 2d
     }
   }
 }

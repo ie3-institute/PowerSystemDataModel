@@ -21,10 +21,10 @@ class ThermalBusInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == thermalBusInput.uuid
-      assert id == thermalBusInput.id
-      assert operator == thermalBusInput.operator
-      assert operationTime == thermalBusInput.operationTime
+      uuid == thermalBusInput.uuid
+      id == thermalBusInput.id
+      operator == thermalBusInput.operator
+      operationTime == thermalBusInput.operationTime
     }
   }
 }

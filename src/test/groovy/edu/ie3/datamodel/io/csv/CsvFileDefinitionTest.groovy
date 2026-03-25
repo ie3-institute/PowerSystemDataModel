@@ -65,10 +65,10 @@ class CsvFileDefinitionTest extends Specification {
 
     then:
     actual.with {
-      assert it.filePath.fileName == Path.of(this.fileName)
-      assert it.directoryPath == this.directory
-      assert it.headLineElements() == this.headLineElements
-      assert it.csvSep() == this.csvSep
+      it.filePath.fileName == Path.of(this.fileName)
+      it.directoryPath == this.directory
+      it.headLineElements() == this.headLineElements
+      it.csvSep() == this.csvSep
     }
   }
 
@@ -81,10 +81,10 @@ class CsvFileDefinitionTest extends Specification {
 
     then:
     actual.with {
-      assert it.filePath.fileName == Path.of(this.fileName)
-      assert it.directoryPath == this.directory
-      assert it.headLineElements() == this.headLineElements
-      assert it.csvSep() == this.csvSep
+      it.filePath.fileName == Path.of(this.fileName)
+      it.directoryPath == this.directory
+      it.headLineElements() == this.headLineElements
+      it.csvSep() == this.csvSep
     }
   }
 
@@ -98,9 +98,9 @@ class CsvFileDefinitionTest extends Specification {
 
     then:
     actual.with {
-      assert it.filePath == expected.filePath
-      assert it.headLineElements() == expected.headLineElements()
-      assert it.csvSep() == expected.csvSep()
+      it.filePath == expected.filePath
+      it.headLineElements() == expected.headLineElements()
+      it.csvSep() == expected.csvSep()
     }
   }
 
@@ -115,9 +115,9 @@ class CsvFileDefinitionTest extends Specification {
 
     then:
     actual.with {
-      assert it.filePath == expected.filePath
-      assert it.headLineElements() == expected.headLineElements()
-      assert it.csvSep() == expected.csvSep()
+      it.filePath == expected.filePath
+      it.headLineElements() == expected.headLineElements()
+      it.csvSep() == expected.csvSep()
     }
   }
 
@@ -154,9 +154,9 @@ class CsvFileDefinitionTest extends Specification {
 
     then:
     actual.with {
-      assert it.filePath == expected.filePath
-      assert it.headLineElements() == expected.headLineElements()
-      assert it.csvSep() == expected.csvSep()
+      it.filePath == expected.filePath
+      it.headLineElements() == expected.headLineElements()
+      it.csvSep() == expected.csvSep()
     }
   }
 
@@ -179,9 +179,9 @@ class CsvFileDefinitionTest extends Specification {
 
     then:
     actual.with {
-      assert it.filePath == expected.filePath
-      assert it.headLineElements() == expected.headLineElements()
-      assert it.csvSep() == expected.csvSep()
+      it.filePath == expected.filePath
+      it.headLineElements() == expected.headLineElements()
+      it.csvSep() == expected.csvSep()
     }
   }
 }

@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
@@ -18,12 +17,8 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
-import edu.ie3.datamodel.utils.Try;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link
@@ -34,6 +29,8 @@ import java.util.stream.Stream;
  * @since 08.04.20
  */
 public class TypeSource extends EntitySource {
+  private static final String SUB_DIRECTORY = "/type";
+
   // factories
   private final OperatorInputFactory operatorInputFactory;
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
@@ -55,27 +52,19 @@ public class TypeSource extends EntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    List<Try<Void, ValidationException>> participantResults =
-        new ArrayList<>(
-            Stream.of(
-                    EvTypeInput.class,
-                    HpTypeInput.class,
-                    AcTypeInput.class,
-                    BmTypeInput.class,
-                    WecTypeInput.class,
-                    ChpTypeInput.class,
-                    StorageTypeInput.class)
-                .map(c -> validate(c, dataSource, systemParticipantTypeInputFactory))
-                .toList());
-
-    participantResults.addAll(
-        List.of(
-            validate(OperatorInput.class, dataSource, operatorInputFactory),
-            validate(LineTypeInput.class, dataSource, lineTypeInputFactory),
-            validate(Transformer2WTypeInput.class, dataSource, transformer2WTypeInputFactory),
-            validate(Transformer3WTypeInput.class, dataSource, transformer3WTypeInputFactory)));
-
-    Try.scanCollection(participantResults, Void.class, FailedValidationException::new).getOrThrow();
+    validate(
+        dataSource,
+        EvTypeInput.class,
+        HpTypeInput.class,
+        AcTypeInput.class,
+        BmTypeInput.class,
+        WecTypeInput.class,
+        ChpTypeInput.class,
+        StorageTypeInput.class,
+        OperatorInput.class,
+        LineTypeInput.class,
+        Transformer2WTypeInput.class,
+        Transformer3WTypeInput.class);
   }
 
   /**
@@ -89,7 +78,44 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link Transformer2WTypeInput} entities
    */
   public Map<UUID, Transformer2WTypeInput> getTransformer2WTypes() throws SourceException {
-    return getEntities(Transformer2WTypeInput.class, dataSource, transformer2WTypeInputFactory);
+    return getTransformer2WTypes(true);
+  }
+
+  /**
+   * Returns a set of build in {@link Transformer2WTypeInput} instances within a map by UUID.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link Transformer2WTypeInput} entities
+   */
+  public static Map<UUID, Transformer2WTypeInput> getStandardTransformer2WTypes()
+      throws SourceException {
+    return new TypeSource(getBuildInSource(Transformer2WTypeInput.class, SUB_DIRECTORY))
+        .getTransformer2WTypes(false);
+  }
+
+  /**
+   * Returns a set of {@link Transformer2WTypeInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link Transformer2WTypeInput} which has to be checked
+   * manually, as {@link Transformer2WTypeInput#equals(Object)} is NOT restricted on the uuid of
+   * {@link Transformer2WTypeInput}.
+   *
+   * @param withBuildIn if true the standard transformer types will be included if their uuid is not
+   *     overwritten by the source
+   * @return a map of UUID to object- and uuid-unique {@link Transformer2WTypeInput} entities
+   */
+  private Map<UUID, Transformer2WTypeInput> getTransformer2WTypes(boolean withBuildIn)
+      throws SourceException {
+    Map<UUID, Transformer2WTypeInput> types =
+        getEntities(Transformer2WTypeInput.class, dataSource, transformer2WTypeInputFactory);
+
+    if (withBuildIn) {
+      Map<UUID, Transformer2WTypeInput> allTypes = getStandardTransformer2WTypes();
+      allTypes.putAll(types);
+      return allTypes;
+    }
+
+    return types;
   }
 
   /**
@@ -115,7 +141,40 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
    */
   public Map<UUID, LineTypeInput> getLineTypes() throws SourceException {
-    return getEntities(LineTypeInput.class, dataSource, lineTypeInputFactory);
+    return getLineTypes(true);
+  }
+
+  /**
+   * Returns a set of build in {@link LineTypeInput} instances within a map by UUID.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
+   */
+  public static Map<UUID, LineTypeInput> getStandardLineTypes() throws SourceException {
+    return new TypeSource(getBuildInSource(LineTypeInput.class, SUB_DIRECTORY)).getLineTypes(false);
+  }
+
+  /**
+   * Returns a set of {@link LineTypeInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link LineTypeInput} which has to be checked manually, as
+   * {@link LineTypeInput#equals(Object)} is NOT restricted on the uuid of {@link LineTypeInput}.
+   *
+   * @param withBuildIn if true the standard line types will be included if their uuid is not
+   *     overwritten by the source
+   * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
+   */
+  private Map<UUID, LineTypeInput> getLineTypes(boolean withBuildIn) throws SourceException {
+    Map<UUID, LineTypeInput> types =
+        getEntities(LineTypeInput.class, dataSource, lineTypeInputFactory);
+
+    if (withBuildIn) {
+      Map<UUID, LineTypeInput> allTypes = getStandardLineTypes();
+      allTypes.putAll(types);
+      return allTypes;
+    }
+
+    return types;
   }
 
   /**
@@ -129,7 +188,44 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link Transformer3WTypeInput} entities
    */
   public Map<UUID, Transformer3WTypeInput> getTransformer3WTypes() throws SourceException {
-    return getEntities(Transformer3WTypeInput.class, dataSource, transformer3WTypeInputFactory);
+    return getTransformer3WTypes(true);
+  }
+
+  /**
+   * Returns a set of build in {@link Transformer3WTypeInput} instances within a map by UUID.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link Transformer3WTypeInput} entities
+   */
+  public static Map<UUID, Transformer3WTypeInput> getStandardTransformer3WTypes()
+      throws SourceException {
+    return new TypeSource(getBuildInSource(Transformer3WTypeInput.class, SUB_DIRECTORY))
+        .getTransformer3WTypes(false);
+  }
+
+  /**
+   * Returns a set of {@link Transformer3WTypeInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link Transformer3WTypeInput} which has to be checked
+   * manually, as {@link Transformer3WTypeInput#equals(Object)} is NOT restricted on the uuid of
+   * {@link Transformer3WTypeInput}.
+   *
+   * @param withBuildIn if true the standard transformer types will be included if their uuid is not
+   *     overwritten by the source
+   * @return a map of UUID to object- and uuid-unique {@link Transformer3WTypeInput} entities
+   */
+  private Map<UUID, Transformer3WTypeInput> getTransformer3WTypes(boolean withBuildIn)
+      throws SourceException {
+    Map<UUID, Transformer3WTypeInput> types =
+        getEntities(Transformer3WTypeInput.class, dataSource, transformer3WTypeInputFactory);
+
+    if (withBuildIn) {
+      Map<UUID, Transformer3WTypeInput> allTypes = getStandardTransformer3WTypes();
+      allTypes.putAll(types);
+      return allTypes;
+    }
+
+    return types;
   }
 
   /**

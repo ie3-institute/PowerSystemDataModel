@@ -7,8 +7,10 @@ package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.FlexOptionsResult
+import edu.ie3.datamodel.utils.CollectionUtils
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
@@ -42,21 +44,20 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     result.success
     result.data.get().getClass() == FlexOptionsResult
     ((FlexOptionsResult) result.data.get()).with {
-      assert pRef == getQuant(parameter["pref"], StandardUnits.ACTIVE_POWER_RESULT)
-      assert pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_RESULT)
-      assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_RESULT)
-      assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
-      assert inputModel == UUID.fromString(parameter["inputModel"])
+      pRef == getQuant(parameter["pref"], StandardUnits.ACTIVE_POWER_RESULT)
+      pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_RESULT)
+      pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_RESULT)
+      time == TIME_UTIL.toZonedDateTime(parameter["time"])
+      inputModel == UUID.fromString(parameter["inputModel"])
     }
   }
 
   def "A FlexOptionsResultFactory should throw an exception on invalid or incomplete data"() {
     given: "a system participant factory and model data"
-    def resultFactory = new FlexOptionsResultFactory()
-    def actualFields = FlexOptionsResultFactory.newSet("time", "input_model", "p_ref", "p_min")
+    def actualFields = CollectionUtils.newSet("time", "input_model", "p_ref", "p_min")
 
     when:
-    Try<Void, FactoryException> input = resultFactory.validate(actualFields, FlexOptionsResult)
+    Try<Void, FactoryException> input = DataSource.validate(actualFields, FlexOptionsResult)
 
     then:
     input.failure

@@ -5,11 +5,13 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*
 import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.utils.Try
@@ -76,17 +78,17 @@ class ValidationUtilsTest extends Specification {
         )
 
     when:
-    ValidationUtils.detectNegativeQuantities([asset.getB()] as Quantity<SpecificConductance>[], asset)
+    ValidationUtils.detectNegativeQuantities(ValidationUtils.quantities(B, asset.getB()), asset)
 
     then:
     noExceptionThrown()
 
     when:
-    ValidationUtils.detectNegativeQuantities([invalidAsset.getB()] as Quantity<SpecificConductance>[], invalidAsset)
+    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities(B, invalidAsset.getB()), invalidAsset)
 
     then:
     InvalidEntityException ex = thrown()
-    ex.message == "Entity is invalid because of: The following quantities have to be zero or positive: -1 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=-1 µS/km, g=0.0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
+    ex.message == "Entity is invalid because of: The following quantities have to be positive: b=-1 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=-1 µS/km, g=0.0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
   }
 
   def "The check for zero or negative entities should work as expected"() {
@@ -113,17 +115,17 @@ class ValidationUtilsTest extends Specification {
         )
 
     when:
-    ValidationUtils.detectZeroOrNegativeQuantities([asset.getB()] as Quantity<SpecificConductance>[], asset)
+    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities(B, asset.getB()), asset)
 
     then:
     noExceptionThrown()
 
     when:
-    ValidationUtils.detectZeroOrNegativeQuantities([invalidAsset.getB()] as Quantity<SpecificConductance>[], invalidAsset)
+    ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities(B, invalidAsset.getB()), invalidAsset)
 
     then:
     InvalidEntityException ex = thrown()
-    ex.message == "Entity is invalid because of: The following quantities have to be positive: 0.0 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0.0 µS/km, g=0.0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
+    ex.message == "Entity is invalid because of: The following quantities have to be positive: b=0.0 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0.0 µS/km, g=0.0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
   }
 
   def "Checking an asset type input without an id leads to an exception"() {

@@ -21,10 +21,10 @@ class LineGraphicInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == lineGraphic.uuid
-      assert graphicLayer == "second"
-      assert path == lineGraphic.path
-      assert line == GridTestData.lineAtoB
+      uuid == lineGraphic.uuid
+      graphicLayer == "second"
+      path == lineGraphic.path
+      line == GridTestData.lineAtoB
     }
   }
 }

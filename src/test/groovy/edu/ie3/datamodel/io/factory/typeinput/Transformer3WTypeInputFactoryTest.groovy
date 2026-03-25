@@ -60,27 +60,27 @@ class Transformer3WTypeInputFactoryTest extends Specification implements Factory
     typeInput.data.get().getClass() == typeInputClass
 
     typeInput.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert id == parameter["id"]
-      assert sRatedA == getQuant(parameter["srateda"], StandardUnits.S_RATED)
-      assert sRatedB == getQuant(parameter["sratedb"], StandardUnits.S_RATED)
-      assert sRatedC == getQuant(parameter["sratedc"], StandardUnits.S_RATED)
-      assert vRatedA == getQuant(parameter["vrateda"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
-      assert vRatedB == getQuant(parameter["vratedb"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
-      assert vRatedC == getQuant(parameter["vratedc"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
-      assert rScA == getQuant(parameter["rsca"], StandardUnits.RESISTANCE)
-      assert rScB == getQuant(parameter["rscb"], StandardUnits.RESISTANCE)
-      assert rScC == getQuant(parameter["rscc"], StandardUnits.RESISTANCE)
-      assert xScA == getQuant(parameter["xsca"], StandardUnits.REACTANCE)
-      assert xScB == getQuant(parameter["xscb"], StandardUnits.REACTANCE)
-      assert xScC == getQuant(parameter["xscc"], StandardUnits.REACTANCE)
-      assert gM == getQuant(parameter["gm"], StandardUnits.CONDUCTANCE)
-      assert bM == getQuant(parameter["bm"], StandardUnits.SUSCEPTANCE)
-      assert dV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
-      assert dPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
-      assert tapNeutr == Integer.parseInt(parameter["tapneutr"])
-      assert tapMin == Integer.parseInt(parameter["tapmin"])
-      assert tapMax == Integer.parseInt(parameter["tapmax"])
+      uuid == UUID.fromString(parameter["uuid"])
+      id == parameter["id"]
+      sRatedA == getQuant(parameter["srateda"], StandardUnits.S_RATED)
+      sRatedB == getQuant(parameter["sratedb"], StandardUnits.S_RATED)
+      sRatedC == getQuant(parameter["sratedc"], StandardUnits.S_RATED)
+      vRatedA == getQuant(parameter["vrateda"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      vRatedB == getQuant(parameter["vratedb"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      vRatedC == getQuant(parameter["vratedc"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      rScA == getQuant(parameter["rsca"], StandardUnits.RESISTANCE)
+      rScB == getQuant(parameter["rscb"], StandardUnits.RESISTANCE)
+      rScC == getQuant(parameter["rscc"], StandardUnits.RESISTANCE)
+      xScA == getQuant(parameter["xsca"], StandardUnits.REACTANCE)
+      xScB == getQuant(parameter["xscb"], StandardUnits.REACTANCE)
+      xScC == getQuant(parameter["xscc"], StandardUnits.REACTANCE)
+      gM == getQuant(parameter["gm"], StandardUnits.CONDUCTANCE)
+      bM == getQuant(parameter["bm"], StandardUnits.SUSCEPTANCE)
+      dV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
+      dPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
+      tapNeutr == Integer.parseInt(parameter["tapneutr"])
+      tapMin == Integer.parseInt(parameter["tapmin"])
+      tapMax == Integer.parseInt(parameter["tapmax"])
     }
   }
 }
