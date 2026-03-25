@@ -183,6 +183,22 @@ public class ResultEntitySource extends EntitySource {
   }
 
   /**
+   * Returns a unique set of {@link EnergyBoundariesFlexOptionsResult} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link EnergyBoundariesFlexOptionsResult} which has
+   * to be checked manually, as {@link EnergyBoundariesFlexOptionsResult#equals(Object)} is NOT
+   * restricted by the uuid of {@link EnergyBoundariesFlexOptionsResult}.
+   *
+   * @return a set of object and uuid unique {@link EnergyBoundariesFlexOptionsResult} entities.
+   */
+  public Set<EnergyBoundariesFlexOptionsResult> getEnergyBoundariesFlexOptionsResults()
+      throws SourceException {
+    return getResultEntities(
+        EnergyBoundariesFlexOptionsResult.class, energyBoundariesFlexOptionsResultFactory);
+  }
+
+  /**
    * Returns a unique set of {@link LoadResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link

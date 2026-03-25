@@ -31,7 +31,8 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
     def loadResults = csvResultEntitySource.loadResults
     def storageResults = csvResultEntitySource.storageResults
     def thermalHouseResults = csvResultEntitySource.thermalHouseResults
-    def flexOptionsResults = csvResultEntitySource.powerLimitFlexOptionsResults
+    def powerLimitFlexOptionsResults = csvResultEntitySource.powerLimitFlexOptionsResults
+    def energyBoundariesFlexOptionsResults = csvResultEntitySource.energyBoundariesFlexOptionsResults
 
     then:
     wecResults.size() == retd.WEC_RESULT_SIZE
@@ -40,7 +41,8 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
     fixedFeedInResults.size() == retd.FIXED_FEED_IN_RESULT_SIZE
     emResults.size() == retd.EM_RESULT_SIZE
     chpResults.empty && hpResults.empty && acResults.empty && evResults.empty && evcsResults.empty &&
-        loadResults.empty && storageResults.empty && thermalHouseResults.empty && flexOptionsResults.empty
+        loadResults.empty && storageResults.empty && thermalHouseResults.empty && powerLimitFlexOptionsResults.empty &&
+        energyBoundariesFlexOptionsResults.empty
 
     bmResults.first().inputModel == retd.BM_INPUT_MODEL
     bmResults.first().p == retd.BM_ACTIVE_POWER
