@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.factory.markov.MarkovLoadModelFactory;
 import edu.ie3.datamodel.io.factory.markov.MarkovModelData;
 import edu.ie3.datamodel.io.file.FileType;
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
+import edu.ie3.datamodel.io.source.DataSource;
 import edu.ie3.datamodel.io.source.EntitySource;
 import edu.ie3.datamodel.io.source.PowerValueSource;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
@@ -83,7 +84,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
     try {
       Set<String> fields =
           dataSource.getSourceFields(metaInformation.getFullFilePath()).orElse(Set.of());
-      factory.validate(fields, MarkovLoadModel.class).getOrThrow();
+      DataSource.validate(fields, MarkovLoadModel.class).getOrThrow();
     } catch (SourceException e) {
       throw new FailedValidationException(
           "Unable to read Markov model '"

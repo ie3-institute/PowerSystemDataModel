@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.markov;
 
+import static edu.ie3.datamodel.utils.CollectionUtils.newSet;
+
 import edu.ie3.datamodel.io.factory.Factory;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.*;
@@ -60,7 +62,7 @@ public class MarkovLoadModelFactory
   }
 
   @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
+  protected List<Set<String>> getFields(Class<? extends MarkovLoadModel> entityClass) {
     Set<String> requiredFields =
         newSet(
             "schema",
