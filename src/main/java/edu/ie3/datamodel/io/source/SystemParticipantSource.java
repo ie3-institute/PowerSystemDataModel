@@ -11,6 +11,7 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -34,6 +35,7 @@ public class SystemParticipantSource extends AssetEntitySource {
 
   private static final String THERMAL_STORAGE = "thermalstorage";
   private static final String THERMAL_BUS = "thermalbus";
+  public static final String CONTROLLING_EM = FieldNamingStrategy.CONTROLLING_EM;
 
   // general fields
   private final TypeSource typeSource;
@@ -63,10 +65,7 @@ public class SystemParticipantSource extends AssetEntitySource {
                   .andThen(enrich(NODE, nodes, NodeAssetInputEntityData::new))
                   .andThen(
                       enrichWithDefault(
-                          SystemParticipantInputEntityFactory.CONTROLLING_EM,
-                          emUnits,
-                          null,
-                          SystemParticipantEntityData::new))
+                          CONTROLLING_EM, emUnits, null, SystemParticipantEntityData::new))
                   .apply(data, operators);
 
   public SystemParticipantSource(
