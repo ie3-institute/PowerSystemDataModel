@@ -15,7 +15,6 @@ import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
-import edu.ie3.datamodel.io.source.csv.CsvJointGridContainerSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.EmInput

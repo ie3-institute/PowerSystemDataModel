@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
 import edu.ie3.datamodel.io.csv.CsvFileDefinition;
 import edu.ie3.datamodel.io.extractor.Extractor;
-import edu.ie3.datamodel.io.extractor.HasEm;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
@@ -230,22 +229,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
             .collect(Collectors.toSet());
 
     // extract all EmInput entities
-    Set<EmInput> emInputs =
-        systemParticipants.allEntitiesAsList().stream()
-            .filter(HasEm.class::isInstance)
-            .map(HasEm.class::cast)
-            .map(HasEm::getControllingEm)
-            .flatMap(Optional::stream)
-            .flatMap(
-                em ->
-                    Stream.iterate(
-                        em, Objects::nonNull, current -> current.getControllingEm().orElse(null)))
-            .collect(Collectors.toSet());
-
-    Set<EmInput> containerEmInputs = new HashSet<>(jointGridContainer.getEmUnits().getEmUnits());
-
-    Set<EmInput> allEmInputs = new HashSet<>(containerEmInputs);
-    allEmInputs.addAll(emInputs);
+    Set<EmInput> emInputs = new HashSet<>(jointGridContainer.getEmUnits().getEmUnits());
 
     // persist all entities
     Stream.of(
@@ -254,7 +238,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
             graphicElements.allEntitiesAsList(),
             types,
             operators,
-            allEmInputs)
+            emInputs)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet())
         .forEach(this::persistIgnoreNested);

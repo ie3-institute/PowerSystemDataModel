@@ -48,7 +48,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         "sampleGrid",
         rawGridElements,
         systemParticipants(rawGridElements),
-        new EnergyManagementUnits(Collections.emptySet()),
+        new EnergyManagementUnits(Collections.singleton(emInput)),
         new GraphicElements(Collections.emptySet()))
   }
 
