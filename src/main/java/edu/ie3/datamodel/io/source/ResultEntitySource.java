@@ -19,7 +19,6 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,19 +46,6 @@ public class ResultEntitySource extends EntitySource {
 
     // init factories
     this.systemParticipantResultFactory = new SystemParticipantResultFactory();
-    this.thermalResultFactory = new ThermalResultFactory();
-    this.switchResultFactory = new SwitchResultFactory();
-    this.nodeResultFactory = new NodeResultFactory();
-    this.connectorResultFactory = new ConnectorResultFactory();
-    this.congestionResultFactory = new CongestionResultFactory();
-    this.flexOptionsResultFactory = new FlexOptionsResultFactory();
-  }
-
-  public ResultEntitySource(DataSource dataSource, DateTimeFormatter dateTimeFormatter) {
-    this.dataSource = dataSource;
-
-    // init factories
-    this.systemParticipantResultFactory = new SystemParticipantResultFactory(dateTimeFormatter);
     this.thermalResultFactory = new ThermalResultFactory();
     this.switchResultFactory = new SwitchResultFactory();
     this.nodeResultFactory = new NodeResultFactory();
