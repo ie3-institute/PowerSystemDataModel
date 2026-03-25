@@ -30,7 +30,7 @@ import tech.units.indriya.quantity.Quantities
 class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper {
 
   @Shared
-  PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:18.3");
+  PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:18.3")
 
   @Shared
   SqlConnector connector
