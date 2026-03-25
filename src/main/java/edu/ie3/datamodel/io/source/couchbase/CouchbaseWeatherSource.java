@@ -191,7 +191,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
                         weatherFactory.toZonedDateTime(
                             json.getString(weatherFactory.getTimeFieldString()));
                     if (coordinate.isEmpty()) {
-                      log.warn("Unable to match coordinate ID {} to a point", coordinateId);
+                      logger.warn("Unable to match coordinate ID {} to a point", coordinateId);
                     }
                     return Pair.of(coordinate, timestamp);
                   })
