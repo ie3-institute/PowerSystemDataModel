@@ -35,6 +35,7 @@ import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.system.EmResult
+import edu.ie3.datamodel.models.result.system.EnergyBoundariesFlexOptionsResult
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.EvcsResult
 import edu.ie3.datamodel.models.result.system.PowerLimitFlexOptionsResult
@@ -59,6 +60,7 @@ import tech.units.indriya.quantity.Quantities
 
 import java.nio.file.Path
 import javax.measure.Quantity
+import javax.measure.quantity.Energy
 import javax.measure.quantity.Power
 
 class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
@@ -125,6 +127,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new ResultEntityProcessor(EvcsResult),
           new ResultEntityProcessor(EmResult),
           new ResultEntityProcessor(PowerLimitFlexOptionsResult),
+          new ResultEntityProcessor(EnergyBoundariesFlexOptionsResult),
           new InputEntityProcessor(Transformer2WInput),
           new InputEntityProcessor(NodeInput),
           new InputEntityProcessor(EvcsInput),
@@ -155,7 +158,10 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
-    PowerLimitFlexOptionsResult flexOptionsResult = new PowerLimitFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
+    Quantity<Energy> eMin = Quantities.getQuantity(-0.05, StandardUnits.ENERGY_RESULT)
+    Quantity<Energy> eMax = Quantities.getQuantity(0.06, StandardUnits.ENERGY_RESULT)
+    PowerLimitFlexOptionsResult powerLimitFlexOptionsResult = new PowerLimitFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
+    EnergyBoundariesFlexOptionsResult energyBoundariesFlexOptionsResult = new EnergyBoundariesFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, eMin, eMax, pMin, pMax)
 
     when:
     csvFileSink.persistAll([
@@ -163,7 +169,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
       wecResult,
       evcsResult,
       emResult,
-      flexOptionsResult,
+      powerLimitFlexOptionsResult,
+      energyBoundariesFlexOptionsResult,
       GridTestData.transformerCtoG,
       GridTestData.lineGraphicCtoD,
       GridTestData.nodeGraphicC,
@@ -183,6 +190,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("evcs_res.csv").toFile().exists()
     testBaseFolderPath.resolve("em_res.csv").toFile().exists()
     testBaseFolderPath.resolve("power_limit_flex_options_res.csv").toFile().exists()
+    testBaseFolderPath.resolve("energy_boundaries_flex_options_res.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_type_input.csv").toFile().exists()
     testBaseFolderPath.resolve("node_input.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_input.csv").toFile().exists()
