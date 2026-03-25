@@ -14,7 +14,8 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-public class PowerLimitFlexOptionsResultFactory extends ResultEntityFactory<PowerLimitFlexOptionsResult> {
+public class PowerLimitFlexOptionsResultFactory
+    extends ResultEntityFactory<PowerLimitFlexOptionsResult> {
 
   public PowerLimitFlexOptionsResultFactory() {
     super(PowerLimitFlexOptionsResult.class);

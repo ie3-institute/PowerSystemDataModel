@@ -8,23 +8,23 @@ package edu.ie3.datamodel.io.factory.result;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.system.EnergyBoundariesFlexOptionsResult;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Power;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+import javax.measure.quantity.Energy;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
-public class EnergyBoundariesFlexOptionsResultFactory extends ResultEntityFactory<EnergyBoundariesFlexOptionsResult> {
+public class EnergyBoundariesFlexOptionsResultFactory
+    extends ResultEntityFactory<EnergyBoundariesFlexOptionsResult> {
 
   public EnergyBoundariesFlexOptionsResultFactory() {
     super(EnergyBoundariesFlexOptionsResult.class);
   }
 
   /**
-   * Create a new factory to build {@link EnergyBoundariesFlexOptionsResult}s and utilize the given date
-   * time formatter pattern to parse date time strings
+   * Create a new factory to build {@link EnergyBoundariesFlexOptionsResult}s and utilize the given
+   * date time formatter pattern to parse date time strings
    *
    * @param dateTimeFormatter to parse date time strings
    */

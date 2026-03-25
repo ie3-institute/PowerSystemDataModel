@@ -20,7 +20,9 @@ class EnergyBoundariesFlexOptionsResultFactoryTest extends Specification impleme
   def "A EnergyBoundariesFlexOptionsResultFactory should contain all expected classes for parsing"() {
     given:
     def resultFactory = new EnergyBoundariesFlexOptionsResultFactory()
-    def expectedClasses = [EnergyBoundariesFlexOptionsResult]
+    def expectedClasses = [
+      EnergyBoundariesFlexOptionsResult
+    ]
 
     expect:
     resultFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
