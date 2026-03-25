@@ -73,6 +73,7 @@ dependencies {
 
   // testing
   testImplementation "org.apache.groovy:groovy:$groovyBinaryVersion"
+  testImplementation 'org.apache.groovy:groovy-json:5.0.4'
 
   testImplementation "org.junit.platform:junit-platform-launcher:$junitVersion"
   testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"

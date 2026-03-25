@@ -31,7 +31,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
   BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
 
   @Shared
-  CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.6.0")
+  CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:8.0.0")
   .withBucket(bucketDefinition)
   .withExposedPorts(8091, 8092, 8093, 8094, 11210)
   .withStartupAttempts(3) // 3 attempts because startup (node renaming) sometimes fails when executed too early
@@ -42,10 +42,6 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
   static String coordinateIdColumnName = "coordinateid"
 
   def setupSpec() {
-    // Copy import file with json array of documents into docker
-    MountableFile couchbaseWeatherJsonsFile = getMountableFile("_weather/cosmo/weather.json")
-    couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather_cosmo.json")
-
     // create an index for the document keys
     couchbaseContainer.execInContainer("cbq",
         "-e", "http://localhost:8093",
@@ -53,15 +49,58 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         "-p", couchbaseContainer.password,
         "-s", "CREATE index id_idx ON `" + bucketDefinition.name + "` (META().id);")
 
-    //import the json documents from the copied file
-    couchbaseContainer.execInContainer("cbimport", "json",
-        "-cluster", "http://localhost:8091",
-        "--bucket", "ie3_in",
-        "--username", couchbaseContainer.username,
-        "--password", couchbaseContainer.password,
-        "--format", "list",
-        "--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
-        "--dataset", "file:///home/weather_cosmo.json")
+    // Create connector to import the data from json document
+    def importConnector = new CouchbaseConnector(
+        couchbaseContainer.connectionString,
+        bucketDefinition.name,
+        couchbaseContainer.username,
+        couchbaseContainer.password,
+        Duration.ofSeconds(30))
+
+    // Wait for bucket to be ready
+    println "Waiting for Couchbase bucket to be ready..."
+    int maxTries = 10
+    boolean ready = false
+    for (int i = 0; i < maxTries; i++) {
+      try {
+        importConnector.getSourceFields()
+        ready = true
+        println "Couchbase bucket ready"
+        break
+      } catch (Exception ex) {
+        if (i % 10 == 0) {
+          println "Waiting for bucket... (try ${i+1})"
+        }
+        sleep(1000)
+      }
+    }
+
+    if (!ready) {
+      println "Couchbase bucket did not become ready in time!"
+      System.out.flush()
+      throw new RuntimeException("Couchbase bucket did not become ready in time!")
+    }
+
+    // Insert test data from JSON file
+    println "Inserting test data from JSON file..."
+    def jsonFile = new File("src/test/resources/edu/ie3/datamodel/io/source/couchbase/_weather/cosmo/weather.json")
+    def jsonSlurper = new groovy.json.JsonSlurper()
+    def weatherDocs = jsonSlurper.parse(jsonFile) as List
+    def insertCount = 0
+    weatherDocs.each { doc ->
+      try {
+        def coordinateId = doc["coordinateid"]
+        def time = doc["time"]
+        def key = "weather::${coordinateId}::${time}"
+        importConnector.persist(key, doc).join()
+        insertCount++
+      } catch (Exception ex) {
+        println "WARNING: Failed to insert document for coordinateid ${doc["coordinateid"]} and time ${doc["time"]}: ${ex.message}"
+      }
+    }
+    println "Inserted ${insertCount}/${weatherDocs.size()} test documents from JSON file"
+    importConnector.shutdown()
+    System.out.flush()
 
     // increased timeout to deal with CI under high load
     def connector = new CouchbaseConnector(
@@ -73,11 +112,14 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
+    println "setupSpec completed"
+    System.out.flush()
   }
 
   def "The test container can establish a valid connection"() {
     when:
     def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
+
     then:
     connector.connectionValid
   }
@@ -118,8 +160,6 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
-
-
 
   def "A CouchbaseWeatherSource can read all weather data in a given time interval"() {
     given:
