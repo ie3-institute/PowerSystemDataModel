@@ -62,13 +62,15 @@ public class ResultEntitySource extends EntitySource {
 
     // init factories
     this.systemParticipantResultFactory = new SystemParticipantResultFactory(dateTimeFormatter);
-    this.thermalResultFactory = new ThermalResultFactory();
-    this.switchResultFactory = new SwitchResultFactory();
-    this.nodeResultFactory = new NodeResultFactory();
-    this.connectorResultFactory = new ConnectorResultFactory();
-    this.congestionResultFactory = new CongestionResultFactory();
-    this.powerLimitFlexOptionsResultFactory = new PowerLimitFlexOptionsResultFactory();
-    this.energyBoundariesFlexOptionsResultFactory = new EnergyBoundariesFlexOptionsResultFactory();
+    this.thermalResultFactory = new ThermalResultFactory(dateTimeFormatter);
+    this.switchResultFactory = new SwitchResultFactory(dateTimeFormatter);
+    this.nodeResultFactory = new NodeResultFactory(dateTimeFormatter);
+    this.connectorResultFactory = new ConnectorResultFactory(dateTimeFormatter);
+    this.congestionResultFactory = new CongestionResultFactory(dateTimeFormatter);
+    this.powerLimitFlexOptionsResultFactory =
+        new PowerLimitFlexOptionsResultFactory(dateTimeFormatter);
+    this.energyBoundariesFlexOptionsResultFactory =
+        new EnergyBoundariesFlexOptionsResultFactory(dateTimeFormatter);
   }
 
   @Override
