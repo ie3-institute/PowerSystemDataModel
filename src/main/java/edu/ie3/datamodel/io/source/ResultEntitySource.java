@@ -38,7 +38,8 @@ public class ResultEntitySource extends EntitySource {
   private final NodeResultFactory nodeResultFactory;
   private final ConnectorResultFactory connectorResultFactory;
   private final CongestionResultFactory congestionResultFactory;
-  private final FlexOptionsResultFactory flexOptionsResultFactory;
+  private final PowerLimitFlexOptionsResultFactory powerLimitFlexOptionsResultFactory;
+  private final EnergyBoundariesFlexOptionsResultFactory energyBoundariesFlexOptionsResultFactory;
 
   private final DataSource dataSource;
 
@@ -52,7 +53,8 @@ public class ResultEntitySource extends EntitySource {
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
     this.congestionResultFactory = new CongestionResultFactory();
-    this.flexOptionsResultFactory = new FlexOptionsResultFactory();
+    this.powerLimitFlexOptionsResultFactory = new PowerLimitFlexOptionsResultFactory();
+    this.energyBoundariesFlexOptionsResultFactory = new EnergyBoundariesFlexOptionsResultFactory();
   }
 
   public ResultEntitySource(DataSource dataSource, DateTimeFormatter dateTimeFormatter) {
@@ -65,7 +67,8 @@ public class ResultEntitySource extends EntitySource {
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
     this.congestionResultFactory = new CongestionResultFactory();
-    this.flexOptionsResultFactory = new FlexOptionsResultFactory();
+    this.powerLimitFlexOptionsResultFactory = new PowerLimitFlexOptionsResultFactory();
+    this.energyBoundariesFlexOptionsResultFactory = new EnergyBoundariesFlexOptionsResultFactory();
   }
 
   @Override
@@ -92,7 +95,8 @@ public class ResultEntitySource extends EntitySource {
         LineResult.class,
         Transformer2WResult.class,
         Transformer3WResult.class,
-        FlexOptionsResult.class,
+        PowerLimitFlexOptionsResult.class,
+        EnergyBoundariesFlexOptionsResult.class,
         CongestionResult.class);
   }
 
@@ -165,17 +169,17 @@ public class ResultEntitySource extends EntitySource {
   }
 
   /**
-   * Returns a unique set of {@link FlexOptionsResult} instances.
+   * Returns a unique set of {@link PowerLimitFlexOptionsResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link FlexOptionsResult} which has to be checked
-   * manually, as {@link FlexOptionsResult#equals(Object)} is NOT restricted by the uuid of {@link
-   * FlexOptionsResult}.
+   * java.util.UUID} uniqueness of the provided {@link PowerLimitFlexOptionsResult} which has to be
+   * checked manually, as {@link PowerLimitFlexOptionsResult#equals(Object)} is NOT restricted by
+   * the uuid of {@link PowerLimitFlexOptionsResult}.
    *
-   * @return a set of object and uuid unique {@link FlexOptionsResult} entities
+   * @return a set of object and uuid unique {@link PowerLimitFlexOptionsResult} entities
    */
-  public Set<FlexOptionsResult> getFlexOptionsResults() throws SourceException {
-    return getResultEntities(FlexOptionsResult.class, flexOptionsResultFactory);
+  public Set<PowerLimitFlexOptionsResult> getPowerLimitFlexOptionsResults() throws SourceException {
+    return getResultEntities(PowerLimitFlexOptionsResult.class, powerLimitFlexOptionsResultFactory);
   }
 
   /**

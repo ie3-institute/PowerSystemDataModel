@@ -31,7 +31,7 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
     def loadResults = csvResultEntitySource.loadResults
     def storageResults = csvResultEntitySource.storageResults
     def thermalHouseResults = csvResultEntitySource.thermalHouseResults
-    def flexOptionsResults = csvResultEntitySource.flexOptionsResults
+    def flexOptionsResults = csvResultEntitySource.powerLimitFlexOptionsResults
 
     then:
     wecResults.size() == retd.WEC_RESULT_SIZE

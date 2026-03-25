@@ -37,7 +37,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.system.EmResult
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.EvcsResult
-import edu.ie3.datamodel.models.result.system.FlexOptionsResult
+import edu.ie3.datamodel.models.result.system.PowerLimitFlexOptionsResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.WecResult
 import edu.ie3.datamodel.models.timeseries.TimeSeries
@@ -124,7 +124,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new ResultEntityProcessor(EvResult),
           new ResultEntityProcessor(EvcsResult),
           new ResultEntityProcessor(EmResult),
-          new ResultEntityProcessor(FlexOptionsResult),
+          new ResultEntityProcessor(PowerLimitFlexOptionsResult),
           new InputEntityProcessor(Transformer2WInput),
           new InputEntityProcessor(NodeInput),
           new InputEntityProcessor(EvcsInput),
@@ -155,7 +155,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
-    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
+    PowerLimitFlexOptionsResult flexOptionsResult = new PowerLimitFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
 
     when:
     csvFileSink.persistAll([
@@ -182,7 +182,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("pv_res.csv").toFile().exists()
     testBaseFolderPath.resolve("evcs_res.csv").toFile().exists()
     testBaseFolderPath.resolve("em_res.csv").toFile().exists()
-    testBaseFolderPath.resolve("flex_options_res.csv").toFile().exists()
+    testBaseFolderPath.resolve("power_limit_flex_options_res.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_type_input.csv").toFile().exists()
     testBaseFolderPath.resolve("node_input.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_input.csv").toFile().exists()

@@ -7,37 +7,37 @@ package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.result.system.FlexOptionsResult;
+import edu.ie3.datamodel.models.result.system.PowerLimitFlexOptionsResult;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsResult> {
+public class PowerLimitFlexOptionsResultFactory extends ResultEntityFactory<PowerLimitFlexOptionsResult> {
 
-  public FlexOptionsResultFactory() {
-    super(FlexOptionsResult.class);
+  public PowerLimitFlexOptionsResultFactory() {
+    super(PowerLimitFlexOptionsResult.class);
   }
 
   /**
-   * Create a new factory to build {@link FlexOptionsResult}s and utilize the given date time
-   * formatter pattern to parse date time strings
+   * Create a new factory to build {@link PowerLimitFlexOptionsResult}s and utilize the given date
+   * time formatter pattern to parse date time strings
    *
    * @param dateTimeFormatter to parse date time strings
    */
-  public FlexOptionsResultFactory(DateTimeFormatter dateTimeFormatter) {
-    super(dateTimeFormatter, FlexOptionsResult.class);
+  public PowerLimitFlexOptionsResultFactory(DateTimeFormatter dateTimeFormatter) {
+    super(dateTimeFormatter, PowerLimitFlexOptionsResult.class);
   }
 
   @Override
-  protected FlexOptionsResult buildModel(EntityData data) {
+  protected PowerLimitFlexOptionsResult buildModel(EntityData data) {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> pRef = data.getQuantity(P_REF, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> pMin = data.getQuantity(P_MIN, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_RESULT);
 
-    return new FlexOptionsResult(zdtTime, inputModelUuid, pRef, pMin, pMax);
+    return new PowerLimitFlexOptionsResult(zdtTime, inputModelUuid, pRef, pMin, pMax);
   }
 }
