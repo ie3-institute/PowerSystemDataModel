@@ -9,7 +9,7 @@ import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.container.EnergyManagementUnits
 
 class EnergyManagementTestData {
-  public static final String emControlStrategy = "self_optimization"
+  public static final String emControlStrategy = "PRIORITIZED"
 
   public static final emInput = new EmInput(
   UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
