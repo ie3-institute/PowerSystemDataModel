@@ -58,7 +58,9 @@ public abstract class Processor<T> {
           "pOwn",
           "pThermal",
           "pRef",
-          "pMin");
+          "pMin",
+          "eMin",
+          "eMax");
 
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
 
