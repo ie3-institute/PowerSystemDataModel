@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /** Represents the accumulation of energy management units */
 public class EnergyManagementUnits implements InputContainer<EmInput> {
 
-  protected final Map<UUID, EmInput> emUnits;
+  private final Map<UUID, EmInput> emUnits;
 
   public EnergyManagementUnits(Set<EmInput> emUnits) {
     this.emUnits =

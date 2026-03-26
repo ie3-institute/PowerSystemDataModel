@@ -10,13 +10,7 @@ import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.sink.CsvFileSink
-import edu.ie3.datamodel.models.OperationTime
-import edu.ie3.datamodel.models.input.EmInput
-import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.container.JointGridContainer
-import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.util.io.FileIOUtils
-import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Files
