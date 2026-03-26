@@ -386,7 +386,9 @@ public final class ModelFields extends FieldNamingStrategy {
 
     registerMandatory(Transformer3WResult.class, connectorResultBase, ICMAG, ICANG, TAPPOS);
 
-    registerMandatory(FlexOptionsResult.class, result, P_REF, P_MIN, P_MAX);
+    registerMandatory(PowerLimitFlexOptionsResult.class, result, P_REF, P_MIN, P_MAX);
+
+    registerMandatory(EnergyBoundariesFlexOptionsResult.class, result, E_MIN, E_MAX, P_MIN, P_MAX);
 
     registerMandatory(NodeResult.class, result, V_MAG, V_ANG);
 
