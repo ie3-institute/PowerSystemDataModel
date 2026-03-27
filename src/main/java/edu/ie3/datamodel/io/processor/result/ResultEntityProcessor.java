@@ -62,7 +62,8 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
           CylindricalStorageResult.class,
           DomesticHotWaterStorageResult.class,
           EmResult.class,
-          FlexOptionsResult.class,
+          PowerLimitFlexOptionsResult.class,
+          EnergyBoundariesFlexOptionsResult.class,
           CongestionResult.class);
 
   public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass)
@@ -74,7 +75,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
   protected Try<String, QuantityException> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
     return switch (fieldName) {
-      case "energy", "eConsAnnual", "eStorage":
+      case "energy", "eConsAnnual", "eStorage", "eMin", "eMax":
         yield Success.of(
             quantityValToOptionalString(
                 quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT)));
