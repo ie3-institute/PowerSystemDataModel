@@ -15,8 +15,7 @@ import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes weather as a combination of solar irradiance, temperature and wind values */
-public sealed class WeatherValue implements Value
-    permits WeatherValue.CosmoWeatherValue, WeatherValue.IconWeatherValue {
+public sealed class WeatherValue implements Value {
   /** The coordinate of this weather value set */
   private final Point coordinate;
 
