@@ -35,7 +35,6 @@ public class SystemParticipantSource extends AssetEntitySource {
 
   private static final String THERMAL_STORAGE = "thermalstorage";
   private static final String THERMAL_BUS = "thermalbus";
-  public static final String CONTROLLING_EM = FieldNamingStrategy.CONTROLLING_EM;
 
   // general fields
   private final TypeSource typeSource;
@@ -65,7 +64,10 @@ public class SystemParticipantSource extends AssetEntitySource {
                   .andThen(enrich(NODE, nodes, NodeAssetInputEntityData::new))
                   .andThen(
                       enrichWithDefault(
-                          CONTROLLING_EM, emUnits, null, SystemParticipantEntityData::new))
+                          FieldNamingStrategy.CONTROLLING_EM,
+                          emUnits,
+                          null,
+                          SystemParticipantEntityData::new))
                   .apply(data, operators);
 
   public SystemParticipantSource(
