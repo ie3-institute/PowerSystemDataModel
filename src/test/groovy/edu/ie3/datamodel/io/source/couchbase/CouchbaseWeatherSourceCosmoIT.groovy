@@ -50,7 +50,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         "-s", "CREATE index id_idx ON `" + bucketDefinition.name + "` (META().id);")
 
     // Create connector to import the data from json document
-    def importConnector = new CouchbaseConnector(
+    def connector = new CouchbaseConnector(
         couchbaseContainer.connectionString,
         bucketDefinition.name,
         couchbaseContainer.username,
@@ -63,7 +63,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
     boolean ready = false
     for (int i = 0; i < maxTries; i++) {
       try {
-        importConnector.getSourceFields()
+        connector.getSourceFields()
         ready = true
         println "Couchbase bucket ready"
         break
@@ -92,23 +92,14 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements TestContain
         def coordinateId = doc["coordinateid"]
         def time = doc["time"]
         def key = "weather::${coordinateId}::${time}"
-        importConnector.persist(key, doc).join()
+        connector.persist(key, doc).join()
         insertCount++
       } catch (Exception ex) {
         println "WARNING: Failed to insert document for coordinateid ${doc["coordinateid"]} and time ${doc["time"]}: ${ex.message}"
       }
     }
     println "Inserted ${insertCount}/${weatherDocs.size()} test documents from JSON file"
-    importConnector.shutdown()
-    System.out.flush()
 
-    // increased timeout to deal with CI under high load
-    def connector = new CouchbaseConnector(
-        couchbaseContainer.connectionString,
-        bucketDefinition.name,
-        couchbaseContainer.username,
-        couchbaseContainer.password,
-        Duration.ofSeconds(20))
     def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
