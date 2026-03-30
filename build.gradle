@@ -11,13 +11,13 @@ plugins {
   id 'jacoco' // java code coverage plugin
   id "org.sonarqube" version "7.2.3.7755" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
-  id 'com.gradleup.shadow' version '9.4.0' // fat jar
+  id 'com.gradleup.shadow' version '9.4.1' // fat jar
 }
 
 ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_21
-  groovyBinaryVersion = "5.0.4"
+  groovyBinaryVersion = "5.0.5"
 
   junitVersion = '6.0.3'
   testcontainersVersion = '2.0.4'
@@ -88,7 +88,7 @@ dependencies {
   testImplementation "org.testcontainers:testcontainers-couchbase:$testcontainersVersion"
 
   // logging
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.3')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.4')
   implementation 'org.apache.logging.log4j:log4j-api' // log4j
   implementation 'org.apache.logging.log4j:log4j-core' // log4j
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j

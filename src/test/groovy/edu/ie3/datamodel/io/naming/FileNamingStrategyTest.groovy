@@ -50,12 +50,13 @@ import edu.ie3.datamodel.models.result.system.AcResult
 import edu.ie3.datamodel.models.result.system.BmResult
 import edu.ie3.datamodel.models.result.system.ChpResult
 import edu.ie3.datamodel.models.result.system.EmResult
+import edu.ie3.datamodel.models.result.system.EnergyBoundariesFlexOptionsResult
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.EvcsResult
 import edu.ie3.datamodel.models.result.system.FixedFeedInResult
-import edu.ie3.datamodel.models.result.system.FlexOptionsResult
 import edu.ie3.datamodel.models.result.system.HpResult
 import edu.ie3.datamodel.models.result.system.LoadResult
+import edu.ie3.datamodel.models.result.system.PowerLimitFlexOptionsResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.StorageResult
 import edu.ie3.datamodel.models.result.system.WecResult
@@ -103,28 +104,28 @@ class FileNamingStrategyTest extends Specification {
     res.get() == expectedPath
 
     where:
-    modelClass               || expectedPath
-    LoadResult               || Path.of("test_grid", "results", "participants")
-    FixedFeedInResult        || Path.of("test_grid", "results", "participants")
-    BmResult                 || Path.of("test_grid", "results", "participants")
-    PvResult                 || Path.of("test_grid", "results", "participants")
-    HpResult                 || Path.of("test_grid", "results", "participants")
-    ChpResult                || Path.of("test_grid", "results", "participants")
-    HpResult                 || Path.of("test_grid", "results", "participants")
-    AcResult                 || Path.of("test_grid", "results", "participants")
-    WecResult                || Path.of("test_grid", "results", "participants")
-    StorageResult            || Path.of("test_grid", "results", "participants")
-    EvcsResult               || Path.of("test_grid", "results", "participants")
-    EvResult                 || Path.of("test_grid", "results", "participants")
-    EmResult                 || Path.of("test_grid", "results", "participants")
-    FlexOptionsResult        || Path.of("test_grid", "results", "participants")
-    Transformer2WResult      || Path.of("test_grid", "results", "grid")
-    Transformer3WResult      || Path.of("test_grid", "results", "grid")
-    LineResult               || Path.of("test_grid", "results", "grid")
-    SwitchResult             || Path.of("test_grid", "results", "grid")
-    NodeResult               || Path.of("test_grid", "results", "grid")
-    CylindricalStorageResult || Path.of("test_grid", "results", "thermal")
-    ThermalHouseResult       || Path.of("test_grid", "results", "thermal")
+    modelClass                  || expectedPath
+    LoadResult                  || Path.of("test_grid", "results", "participants")
+    FixedFeedInResult           || Path.of("test_grid", "results", "participants")
+    BmResult                    || Path.of("test_grid", "results", "participants")
+    PvResult                    || Path.of("test_grid", "results", "participants")
+    HpResult                    || Path.of("test_grid", "results", "participants")
+    ChpResult                   || Path.of("test_grid", "results", "participants")
+    HpResult                    || Path.of("test_grid", "results", "participants")
+    AcResult                    || Path.of("test_grid", "results", "participants")
+    WecResult                   || Path.of("test_grid", "results", "participants")
+    StorageResult               || Path.of("test_grid", "results", "participants")
+    EvcsResult                  || Path.of("test_grid", "results", "participants")
+    EvResult                    || Path.of("test_grid", "results", "participants")
+    EmResult                    || Path.of("test_grid", "results", "participants")
+    PowerLimitFlexOptionsResult || Path.of("test_grid", "results", "participants")
+    Transformer2WResult         || Path.of("test_grid", "results", "grid")
+    Transformer3WResult         || Path.of("test_grid", "results", "grid")
+    LineResult                  || Path.of("test_grid", "results", "grid")
+    SwitchResult                || Path.of("test_grid", "results", "grid")
+    NodeResult                  || Path.of("test_grid", "results", "grid")
+    CylindricalStorageResult    || Path.of("test_grid", "results", "thermal")
+    ThermalHouseResult          || Path.of("test_grid", "results", "thermal")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory paths for all input assets models"() {
@@ -248,27 +249,28 @@ class FileNamingStrategyTest extends Specification {
     res.get() == expectedPath
 
     where:
-    modelClass               || expectedPath
-    LoadResult               || Path.of("test_grid", "results", "participants", "load_res")
-    FixedFeedInResult        || Path.of("test_grid", "results", "participants", "fixed_feed_in_res")
-    BmResult                 || Path.of("test_grid", "results", "participants", "bm_res")
-    PvResult                 || Path.of("test_grid", "results", "participants", "pv_res")
-    ChpResult                || Path.of("test_grid", "results", "participants", "chp_res")
-    HpResult                 || Path.of("test_grid", "results", "participants", "hp_res")
-    AcResult                 || Path.of("test_grid", "results", "participants", "ac_res")
-    WecResult                || Path.of("test_grid", "results", "participants", "wec_res")
-    StorageResult            || Path.of("test_grid", "results", "participants", "storage_res")
-    EvcsResult               || Path.of("test_grid", "results", "participants", "evcs_res")
-    EvResult                 || Path.of("test_grid", "results", "participants", "ev_res")
-    EmResult                 || Path.of("test_grid", "results", "participants", "em_res")
-    FlexOptionsResult        || Path.of("test_grid", "results", "participants", "flex_options_res")
-    Transformer2WResult      || Path.of("test_grid", "results", "grid", "transformer_2_w_res")
-    Transformer3WResult      || Path.of("test_grid", "results", "grid", "transformer_3_w_res")
-    LineResult               || Path.of("test_grid", "results", "grid", "line_res")
-    SwitchResult             || Path.of("test_grid", "results", "grid", "switch_res")
-    NodeResult               || Path.of("test_grid", "results", "grid", "node_res")
-    CylindricalStorageResult || Path.of("test_grid", "results", "thermal", "cylindrical_storage_res")
-    ThermalHouseResult       || Path.of("test_grid", "results", "thermal", "thermal_house_res")
+    modelClass                        || expectedPath
+    LoadResult                        || Path.of("test_grid", "results", "participants", "load_res")
+    FixedFeedInResult                 || Path.of("test_grid", "results", "participants", "fixed_feed_in_res")
+    BmResult                          || Path.of("test_grid", "results", "participants", "bm_res")
+    PvResult                          || Path.of("test_grid", "results", "participants", "pv_res")
+    ChpResult                         || Path.of("test_grid", "results", "participants", "chp_res")
+    HpResult                          || Path.of("test_grid", "results", "participants", "hp_res")
+    AcResult                          || Path.of("test_grid", "results", "participants", "ac_res")
+    WecResult                         || Path.of("test_grid", "results", "participants", "wec_res")
+    StorageResult                     || Path.of("test_grid", "results", "participants", "storage_res")
+    EvcsResult                        || Path.of("test_grid", "results", "participants", "evcs_res")
+    EvResult                          || Path.of("test_grid", "results", "participants", "ev_res")
+    EmResult                          || Path.of("test_grid", "results", "participants", "em_res")
+    PowerLimitFlexOptionsResult       || Path.of("test_grid", "results", "participants", "power_limit_flex_options_res")
+    EnergyBoundariesFlexOptionsResult || Path.of("test_grid", "results", "participants", "energy_boundaries_flex_options_res")
+    Transformer2WResult               || Path.of("test_grid", "results", "grid", "transformer_2_w_res")
+    Transformer3WResult               || Path.of("test_grid", "results", "grid", "transformer_3_w_res")
+    LineResult                        || Path.of("test_grid", "results", "grid", "line_res")
+    SwitchResult                      || Path.of("test_grid", "results", "grid", "switch_res")
+    NodeResult                        || Path.of("test_grid", "results", "grid", "node_res")
+    CylindricalStorageResult          || Path.of("test_grid", "results", "thermal", "cylindrical_storage_res")
+    ThermalHouseResult                || Path.of("test_grid", "results", "thermal", "thermal_house_res")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file paths for all other input assets models"() {
@@ -473,26 +475,27 @@ class FileNamingStrategyTest extends Specification {
     actual == expected
 
     where:
-    modelClass               || expected
-    LoadResult               || Optional.empty()
-    FixedFeedInResult        || Optional.empty()
-    BmResult                 || Optional.empty()
-    PvResult                 || Optional.empty()
-    ChpResult                || Optional.empty()
-    HpResult                 || Optional.empty()
-    WecResult                || Optional.empty()
-    StorageResult            || Optional.empty()
-    EvcsResult               || Optional.empty()
-    EvResult                 || Optional.empty()
-    EmResult                 || Optional.empty()
-    FlexOptionsResult        || Optional.empty()
-    Transformer2WResult      || Optional.empty()
-    Transformer3WResult      || Optional.empty()
-    LineResult               || Optional.empty()
-    SwitchResult             || Optional.empty()
-    NodeResult               || Optional.empty()
-    CylindricalStorageResult || Optional.empty()
-    ThermalHouseResult       || Optional.empty()
+    modelClass                        || expected
+    LoadResult                        || Optional.empty()
+    FixedFeedInResult                 || Optional.empty()
+    BmResult                          || Optional.empty()
+    PvResult                          || Optional.empty()
+    ChpResult                         || Optional.empty()
+    HpResult                          || Optional.empty()
+    WecResult                         || Optional.empty()
+    StorageResult                     || Optional.empty()
+    EvcsResult                        || Optional.empty()
+    EvResult                          || Optional.empty()
+    EmResult                          || Optional.empty()
+    PowerLimitFlexOptionsResult       || Optional.empty()
+    EnergyBoundariesFlexOptionsResult || Optional.empty()
+    Transformer2WResult               || Optional.empty()
+    Transformer3WResult               || Optional.empty()
+    LineResult                        || Optional.empty()
+    SwitchResult                      || Optional.empty()
+    NodeResult                        || Optional.empty()
+    CylindricalStorageResult          || Optional.empty()
+    ThermalHouseResult                || Optional.empty()
   }
 
   def "A FileNamingStrategy with FlatHierarchy does return empty sub directory path for all input asset models"() {
@@ -618,27 +621,28 @@ class FileNamingStrategyTest extends Specification {
     res.get() == expectedPath
 
     where:
-    modelClass               || expectedPath
-    LoadResult               || Path.of("load_res")
-    FixedFeedInResult        || Path.of("fixed_feed_in_res")
-    BmResult                 || Path.of("bm_res")
-    PvResult                 || Path.of("pv_res")
-    ChpResult                || Path.of("chp_res")
-    HpResult                 || Path.of("hp_res")
-    AcResult                 || Path.of("ac_res")
-    WecResult                || Path.of("wec_res")
-    StorageResult            || Path.of("storage_res")
-    EvcsResult               || Path.of("evcs_res")
-    EvResult                 || Path.of("ev_res")
-    EmResult                 || Path.of("em_res")
-    FlexOptionsResult        || Path.of("flex_options_res")
-    Transformer2WResult      || Path.of("transformer_2_w_res")
-    Transformer3WResult      || Path.of("transformer_3_w_res")
-    LineResult               || Path.of("line_res")
-    SwitchResult             || Path.of("switch_res")
-    NodeResult               || Path.of("node_res")
-    CylindricalStorageResult || Path.of("cylindrical_storage_res")
-    ThermalHouseResult       || Path.of("thermal_house_res")
+    modelClass                        || expectedPath
+    LoadResult                        || Path.of("load_res")
+    FixedFeedInResult                 || Path.of("fixed_feed_in_res")
+    BmResult                          || Path.of("bm_res")
+    PvResult                          || Path.of("pv_res")
+    ChpResult                         || Path.of("chp_res")
+    HpResult                          || Path.of("hp_res")
+    AcResult                          || Path.of("ac_res")
+    WecResult                         || Path.of("wec_res")
+    StorageResult                     || Path.of("storage_res")
+    EvcsResult                        || Path.of("evcs_res")
+    EvResult                          || Path.of("ev_res")
+    EmResult                          || Path.of("em_res")
+    PowerLimitFlexOptionsResult       || Path.of("power_limit_flex_options_res")
+    EnergyBoundariesFlexOptionsResult || Path.of("energy_boundaries_flex_options_res")
+    Transformer2WResult               || Path.of("transformer_2_w_res")
+    Transformer3WResult               || Path.of("transformer_3_w_res")
+    LineResult                        || Path.of("line_res")
+    SwitchResult                      || Path.of("switch_res")
+    NodeResult                        || Path.of("node_res")
+    CylindricalStorageResult          || Path.of("cylindrical_storage_res")
+    ThermalHouseResult                || Path.of("thermal_house_res")
   }
 
   def "A FileNamingStrategy with FlatHierarchy and without pre- or suffixes should return valid file paths for all other system input classes"() {

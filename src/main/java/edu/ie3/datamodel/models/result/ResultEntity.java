@@ -20,10 +20,10 @@ public abstract class ResultEntity implements Entity {
   private UUID inputModel;
 
   /**
-   * Standard constructor which includes auto generation of the resulting output models uuid.
+   * Standard constructor for a result entity.
    *
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
+   * @param time Date and time when the result is produced.
+   * @param inputModel The UUID of the input model that produces the result.
    */
   protected ResultEntity(ZonedDateTime time, UUID inputModel) {
     this.time = time;
