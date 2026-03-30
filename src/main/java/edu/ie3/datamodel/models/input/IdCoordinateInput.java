@@ -28,7 +28,6 @@ public sealed class IdCoordinateInput implements InputEntity {
     return point;
   }
 
-
   @Override
   public Map<String, String> getAdditionalInformation() {
     return Map.of();
