@@ -15,7 +15,7 @@ import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes weather as a combination of solar irradiance, temperature and wind values */
-public class WeatherValue implements Value {
+public sealed class WeatherValue implements Value {
   /** The coordinate of this weather value set */
   private final Point coordinate;
 
@@ -154,5 +154,17 @@ public class WeatherValue implements Value {
         + ", groundTemperatureLevel2="
         + groundTemperatureLevel2
         + '}';
+  }
+
+  public static final class CosmoWeatherValue extends WeatherValue {
+    private CosmoWeatherValue() {
+      super(null, null, null, null, Optional.empty(), Optional.empty());
+    }
+  }
+
+  public static final class IconWeatherValue extends WeatherValue {
+    private IconWeatherValue() {
+      super(null, null, null, null, Optional.empty(), Optional.empty());
+    }
   }
 }

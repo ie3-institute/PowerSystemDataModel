@@ -110,7 +110,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   @Override
   public void validate() throws ValidationException {
-    validate(valueClass, () -> dataSource.getSourceFields(filePath), valueFactory);
+    validate(valueClass, () -> dataSource.getSourceFields(filePath));
   }
 
   @Override

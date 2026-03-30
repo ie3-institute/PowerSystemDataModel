@@ -58,7 +58,9 @@ public abstract class Processor<T> {
           "pOwn",
           "pThermal",
           "pRef",
-          "pMin");
+          "pMin",
+          "eMin",
+          "eMax");
 
   protected static final String ADDITIONAL_INFORMATION = "additionalInformation";
 

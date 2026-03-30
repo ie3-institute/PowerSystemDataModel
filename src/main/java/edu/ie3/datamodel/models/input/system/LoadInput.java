@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.*;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -206,8 +205,7 @@ public class LoadInput extends SystemParticipantInput {
       String powerProfileKey,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosPhiRated)
-      throws ParsingException {
+      double cosPhiRated) {
     this(
         uuid,
         id,
@@ -301,10 +299,7 @@ public class LoadInput extends SystemParticipantInput {
 
   /**
    * A builder pattern based approach to create copies of {@link LoadInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link LoadInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
+   * field values. For detailed field descriptions refer to Javadocs of {@link LoadInput}
    */
   public static class LoadInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<LoadInputCopyBuilder> {

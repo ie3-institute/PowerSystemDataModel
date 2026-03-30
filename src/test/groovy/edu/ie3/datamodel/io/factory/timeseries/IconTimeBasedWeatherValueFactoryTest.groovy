@@ -193,7 +193,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
     def model = factory.buildModel(data)
 
     then:
-    !model.equals(expectedResults)
+    !Objects.equals(model, expectedResults)
   }
 
   def "A IconTimeBasedWeatherValueFactory should throw an Exception if the required field 't2m' is empty"() {
@@ -218,6 +218,6 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
     then:
     def exception = thrown(FactoryException)
-    exception.message == 'The field "t2m" is missing or empty.'
+    exception.message == 'Exception while trying to parse field "t2m" with supposed double value ""'
   }
 }

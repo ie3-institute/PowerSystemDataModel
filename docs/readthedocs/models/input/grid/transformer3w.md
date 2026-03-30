@@ -180,8 +180,9 @@ All impedances and admittances are given with respect to the higher voltage side
 
 ## Standard Three Winding Transformer Types
 
-Following there are some standard three winding transformer types with their source. The types are listed below in a ``csv file`` [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes). This
-file can be used directly for any simulation with [SIMONA](https://github.com/ie3-institute/simona).
+Following there are some standard three winding transformer types with their source. To retrieve the data call the method `TypeSource.getStandardTransformer3WTypes()`.
+The types are listed below in a ``csv file`` [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes).
+This file can be used directly for any simulation with [SIMONA](https://github.com/ie3-institute/simona).
 
 ```{list-table}
    :widths: auto
@@ -189,26 +190,26 @@ file can be used directly for any simulation with [SIMONA](https://github.com/ie
    :header-rows: 1
    
    * - uuid
-     - bM
-     - dPhi
+     - bM [nS]
+     - dPhi [°]
      - dV
-     - gM
+     - gM [nS]
      - id
-     - rScA
-     - rScB
-     - rScC
-     - sRatedA
-     - sRatedB
-     - sRatedC
+     - rScA [Ω]
+     - rScB [Ω]
+     - rScC [Ω]
+     - sRatedA [kVA]
+     - sRatedB [kVA]
+     - sRatedC [kVA]
      - tapMax
      - tapMin
      - tapNeutr
-     - vRatedA
-     - vRatedB
-     - vRatedC
-     - xScA
-     - xScB
-     - xScC
+     - vRatedA [kV]
+     - vRatedB [kV]
+     - vRatedC [kV]
+     - xScA [Ω]
+     - xScB [Ω]
+     - xScC [Ω]
      - source
      
    * - 62aef8ec-7e68-43e5-9678-8cde101f0116
