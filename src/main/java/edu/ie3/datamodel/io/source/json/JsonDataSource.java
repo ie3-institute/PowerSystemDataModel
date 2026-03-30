@@ -111,6 +111,9 @@ public class JsonDataSource extends FileDataSource {
       return;
     }
     if (node.isObject()) {
+      if (!prefix.isEmpty()) {
+        collector.add(prefix);
+      }
       node.propertyNames()
           .forEach(name -> collectFields(join(prefix, name), node.get(name), collector));
     } else if (!prefix.isEmpty()) {

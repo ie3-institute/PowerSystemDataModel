@@ -216,4 +216,29 @@ public class FieldNamingStrategy {
   public static final String LINE = "line";
   public static final String PATH_LINE_STRING = "path";
   public static final String POINT = "point";
+
+  // markov - top-level
+  public static final String MARKOV_SCHEMA = "schema";
+  public static final String MARKOV_GENERATED_AT = "generatedAt";
+  public static final String MARKOV_GENERATOR = "generator";
+  public static final String MARKOV_TIME_MODEL = "timeModel";
+  public static final String MARKOV_VALUE_MODEL = "valueModel";
+  public static final String MARKOV_PARAMETERS = "parameters";
+  public static final String MARKOV_DATA = "data";
+
+  // markov - nested fields required for simulation
+  public static final String MARKOV_GENERATOR_NAME = "generator.name";
+  public static final String MARKOV_GENERATOR_VERSION = "generator.version";
+  public static final String MARKOV_BUCKET_COUNT = "timeModel.bucketCount";
+  public static final String MARKOV_SAMPLING_INTERVAL = "timeModel.samplingIntervalMinutes";
+  public static final String MARKOV_TIMEZONE = "timeModel.timezone";
+  public static final String MARKOV_DISCRETIZATION_STATES = "valueModel.discretization.states";
+  public static final String MARKOV_DISCRETIZATION_THRESHOLDS =
+      "valueModel.discretization.thresholdsRight";
+  public static final String MARKOV_MAX_POWER_VALUE = "valueModel.normalization.maxPower.value";
+  public static final String MARKOV_MAX_POWER_UNIT = "valueModel.normalization.maxPower.unit";
+  public static final String MARKOV_MIN_POWER_VALUE = "valueModel.normalization.minPower.value";
+  public static final String MARKOV_MIN_POWER_UNIT = "valueModel.normalization.minPower.unit";
+  public static final String MARKOV_TRANSITION_VALUES = "data.transitions.values";
+  public static final String MARKOV_GMM_BUCKETS = "data.gmms.buckets";
 }
