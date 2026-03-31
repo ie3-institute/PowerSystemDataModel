@@ -38,7 +38,6 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
     ComparableQuantity<ElectricPotential> vRated =
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
-    return new LineTypeInput(
-        uuid, id, b, g, r, x, iMax, vRated, data.determineAdditionalInformation());
+    return new LineTypeInput(uuid, id, b, g, r, x, iMax, vRated, data.getFieldsToValues());
   }
 }

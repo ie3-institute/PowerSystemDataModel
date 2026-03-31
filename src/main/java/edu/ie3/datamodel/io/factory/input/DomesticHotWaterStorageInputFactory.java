@@ -38,6 +38,6 @@ public class DomesticHotWaterStorageInputFactory
         getReturnTemp(data),
         getSpecificHeatCapacity(data),
         getMaxThermalPower(data),
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }

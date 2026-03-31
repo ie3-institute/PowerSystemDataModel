@@ -55,6 +55,6 @@ public class LoadInputFactory
         eConsAnnual,
         sRated,
         cosPhi,
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }

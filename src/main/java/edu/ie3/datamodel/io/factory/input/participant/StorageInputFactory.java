@@ -42,6 +42,6 @@ public class StorageInputFactory
         qCharacteristics,
         em,
         typeInput,
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }

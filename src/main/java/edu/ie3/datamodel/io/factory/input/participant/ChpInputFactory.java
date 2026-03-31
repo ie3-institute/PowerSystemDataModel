@@ -42,6 +42,6 @@ public class ChpInputFactory
         em,
         data.getTypeInput(),
         data.getThermalStorageInput(),
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }

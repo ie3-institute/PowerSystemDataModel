@@ -55,7 +55,7 @@ public abstract class ThermalSystemParticipantInputFactory<
         qCharacteristics,
         em,
         data.getTypeInput(),
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 
   /**

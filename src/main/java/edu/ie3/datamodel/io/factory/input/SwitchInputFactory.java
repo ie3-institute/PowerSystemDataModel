@@ -41,13 +41,6 @@ public class SwitchInputFactory
     }
 
     return new SwitchInput(
-        uuid,
-        id,
-        operator,
-        operationTime,
-        nodeA,
-        nodeB,
-        closed,
-        data.determineAdditionalInformation());
+        uuid, id, operator, operationTime, nodeA, nodeB, closed, data.getFieldsToValues());
   }
 }

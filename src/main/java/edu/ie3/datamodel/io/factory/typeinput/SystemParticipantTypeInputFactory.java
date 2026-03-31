@@ -79,16 +79,7 @@ public class SystemParticipantTypeInputFactory
         data.getQuantity(S_RATED_DC, StandardUnits.ACTIVE_POWER_IN);
 
     return new EvTypeInput(
-        uuid,
-        id,
-        capEx,
-        opEx,
-        eStorage,
-        eCons,
-        sRated,
-        cosPhi,
-        sRatedDC,
-        data.determineAdditionalInformation());
+        uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC, data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildHpTypeInput(
@@ -102,7 +93,7 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
     return new HpTypeInput(
-        uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data.determineAdditionalInformation());
+        uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildAcTypeInput(
@@ -116,7 +107,7 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
     return new AcTypeInput(
-        uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data.determineAdditionalInformation());
+        uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildBmTypeInput(
@@ -133,15 +124,7 @@ public class SystemParticipantTypeInputFactory
         data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
 
     return new BmTypeInput(
-        uuid,
-        id,
-        capEx,
-        opEx,
-        loadGradient,
-        sRated,
-        cosPhi,
-        etaConv,
-        data.determineAdditionalInformation());
+        uuid, id, capEx, opEx, loadGradient, sRated, cosPhi, etaConv, data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildWecTypeInput(
@@ -181,7 +164,7 @@ public class SystemParticipantTypeInputFactory
         etaConv,
         rotorArea,
         hubHeight,
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildChpTypeInput(
@@ -212,7 +195,7 @@ public class SystemParticipantTypeInputFactory
         cosPhi,
         pThermal,
         pOwn,
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildStorageTypeInput(
@@ -240,6 +223,6 @@ public class SystemParticipantTypeInputFactory
         pMax,
         activePowerGradient,
         eta,
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }

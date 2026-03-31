@@ -42,6 +42,6 @@ public class EvInputFactory
         qCharacteristics,
         em,
         data.getTypeInput(),
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }

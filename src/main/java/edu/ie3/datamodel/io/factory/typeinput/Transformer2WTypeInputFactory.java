@@ -55,6 +55,6 @@ public class Transformer2WTypeInputFactory
         tapNeutr,
         tapMin,
         tapMax,
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }

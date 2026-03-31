@@ -46,6 +46,6 @@ public class Transformer3WInputFactory
         type,
         tapPos,
         autoTap,
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }

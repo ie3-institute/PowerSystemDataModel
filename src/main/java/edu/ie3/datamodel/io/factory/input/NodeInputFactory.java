@@ -44,6 +44,6 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
         geoPosition,
         voltLvl,
         subnet,
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }

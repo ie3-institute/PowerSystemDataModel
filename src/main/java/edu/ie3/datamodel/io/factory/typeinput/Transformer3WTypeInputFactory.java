@@ -71,6 +71,6 @@ public class Transformer3WTypeInputFactory
         tapNeutr,
         tapMin,
         tapMax,
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }

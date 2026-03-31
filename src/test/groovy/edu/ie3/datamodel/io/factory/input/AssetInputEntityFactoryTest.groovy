@@ -352,7 +352,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
     @Override
     protected TestAssetInput buildModel(AssetInputEntityData data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
-      return new TestAssetInput(uuid, id, operator, operationTime, data.determineAdditionalInformation())
+      return new TestAssetInput(uuid, id, operator, operationTime, data.getFieldsToValues())
     }
   }
 }

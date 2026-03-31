@@ -28,12 +28,6 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInpu
     EmInput parentEm = data.getControllingEm();
 
     return new EmInput(
-        uuid,
-        id,
-        operator,
-        operationTime,
-        controlStrategy,
-        parentEm,
-        data.determineAdditionalInformation());
+        uuid, id, operator, operationTime, controlStrategy, parentEm, data.getFieldsToValues());
   }
 }

@@ -46,6 +46,6 @@ public class FixedFeedInInputFactory
         em,
         sRated,
         cosPhiRated,
-        data.determineAdditionalInformation());
+        data.getFieldsToValues());
   }
 }
