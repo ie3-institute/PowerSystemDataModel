@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 public class TimeBasedSimpleValueFactory<V extends Value>
     extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {

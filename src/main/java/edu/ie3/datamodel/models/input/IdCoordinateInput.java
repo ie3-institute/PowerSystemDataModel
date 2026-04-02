@@ -8,10 +8,7 @@ package edu.ie3.datamodel.models.input;
 import edu.ie3.util.geo.GeoUtils;
 import org.locationtech.jts.geom.Point;
 
-public sealed class IdCoordinateInput implements InputEntity
-    permits IdCoordinateInput.CosmoIdCoordinateInput,
-        IdCoordinateInput.IconIdCoordinateInput,
-        IdCoordinateInput.SqlIdCoordinateInput {
+public sealed class IdCoordinateInput implements InputEntity {
 
   private final int id;
 
