@@ -22,14 +22,14 @@ class FixedFeedInInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == ffIn.uuid
-      assert operationTime == ffIn.operationTime
-      assert operator == ffIn.operator
-      assert id == ffIn.id
-      assert qCharacteristics == ffIn.qCharacteristics
-      assert sRated == Quantities.getQuantity(10d, PowerSystemUnits.VOLTAMPERE)
-      assert cosPhiRated == 0.8d
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == ffIn.uuid
+      operationTime == ffIn.operationTime
+      operator == ffIn.operator
+      id == ffIn.id
+      qCharacteristics == ffIn.qCharacteristics
+      sRated == Quantities.getQuantity(10d, PowerSystemUnits.VOLTAMPERE)
+      cosPhiRated == 0.8d
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -42,14 +42,14 @@ class FixedFeedInInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == ffIn.uuid
-      assert operationTime == ffIn.operationTime
-      assert operator == ffIn.operator
-      assert id == ffIn.id
-      assert qCharacteristics == ffIn.qCharacteristics
-      assert sRated == ffIn.sRated * 2d
-      assert cosPhiRated == ffIn.cosPhiRated
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == ffIn.uuid
+      operationTime == ffIn.operationTime
+      operator == ffIn.operator
+      id == ffIn.id
+      qCharacteristics == ffIn.qCharacteristics
+      sRated == ffIn.sRated * 2d
+      cosPhiRated == ffIn.cosPhiRated
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

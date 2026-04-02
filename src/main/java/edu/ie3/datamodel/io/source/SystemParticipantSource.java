@@ -11,6 +11,7 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -63,7 +64,7 @@ public class SystemParticipantSource extends AssetEntitySource {
                   .andThen(enrich(NODE, nodes, NodeAssetInputEntityData::new))
                   .andThen(
                       enrichWithDefault(
-                          SystemParticipantInputEntityFactory.CONTROLLING_EM,
+                          FieldNamingStrategy.CONTROLLING_EM,
                           emUnits,
                           null,
                           SystemParticipantEntityData::new))

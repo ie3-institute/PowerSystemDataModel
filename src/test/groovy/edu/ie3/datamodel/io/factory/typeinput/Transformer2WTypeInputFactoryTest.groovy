@@ -54,21 +54,21 @@ class Transformer2WTypeInputFactoryTest extends Specification implements Factory
     typeInput.data.get().getClass() == typeInputClass
 
     typeInput.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert id == parameter["id"]
-      assert rSc == getQuant(parameter["rsc"], StandardUnits.RESISTANCE)
-      assert xSc == getQuant(parameter["xsc"], StandardUnits.REACTANCE)
-      assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      assert vRatedA == getQuant(parameter["vrateda"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
-      assert vRatedB == getQuant(parameter["vratedb"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
-      assert gM == getQuant(parameter["gm"], StandardUnits.CONDUCTANCE)
-      assert bM == getQuant(parameter["bm"], StandardUnits.SUSCEPTANCE)
-      assert dV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
-      assert dPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
-      assert tapSide == (parameter["tapside"].trim() == "1") || parameter["tapside"].trim() == "true"
-      assert tapNeutr == Integer.parseInt(parameter["tapneutr"])
-      assert tapMin == Integer.parseInt(parameter["tapmin"])
-      assert tapMax == Integer.parseInt(parameter["tapmax"])
+      uuid == UUID.fromString(parameter["uuid"])
+      id == parameter["id"]
+      rSc == getQuant(parameter["rsc"], StandardUnits.RESISTANCE)
+      xSc == getQuant(parameter["xsc"], StandardUnits.REACTANCE)
+      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      vRatedA == getQuant(parameter["vrateda"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      vRatedB == getQuant(parameter["vratedb"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      gM == getQuant(parameter["gm"], StandardUnits.CONDUCTANCE)
+      bM == getQuant(parameter["bm"], StandardUnits.SUSCEPTANCE)
+      dV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
+      dPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
+      tapSide == (parameter["tapside"].trim() == "1") || parameter["tapside"].trim() == "true"
+      tapNeutr == Integer.parseInt(parameter["tapneutr"])
+      tapMin == Integer.parseInt(parameter["tapmin"])
+      tapMax == Integer.parseInt(parameter["tapmax"])
     }
   }
 }

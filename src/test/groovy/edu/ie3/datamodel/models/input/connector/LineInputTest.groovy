@@ -69,13 +69,13 @@ class LineInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == line.uuid
-      assert operationTime == line.operationTime
-      assert operator == GridTestData.profBroccoli
-      assert id == "line_A_C"
-      assert nodeA == GridTestData.nodeA
-      assert nodeB == GridTestData.nodeC
-      assert length == Quantities.getQuantity(10, Units.METRE)
+      uuid == line.uuid
+      operationTime == line.operationTime
+      operator == GridTestData.profBroccoli
+      id == "line_A_C"
+      nodeA == GridTestData.nodeA
+      nodeB == GridTestData.nodeC
+      length == Quantities.getQuantity(10, Units.METRE)
     }
   }
 

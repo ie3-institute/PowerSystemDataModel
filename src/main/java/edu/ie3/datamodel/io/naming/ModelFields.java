@@ -5,14 +5,15 @@
 */
 package edu.ie3.datamodel.io.naming;
 
+import static edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory.BDEW1999_FIELDS;
+import static edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory.BDEW2025_FIELDS;
 import static edu.ie3.datamodel.utils.CollectionUtils.expandSet;
 import static edu.ie3.datamodel.utils.CollectionUtils.newSet;
 
+import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
-import edu.ie3.datamodel.models.input.EmInput;
-import edu.ie3.datamodel.models.input.MeasurementUnitInput;
-import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
@@ -38,6 +39,9 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
+import edu.ie3.datamodel.models.value.*;
+import edu.ie3.datamodel.models.value.load.BdewLoadValues;
+import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -56,16 +60,20 @@ public final class ModelFields extends FieldNamingStrategy {
   private static final Map<Class<? extends Entity>, Set<String>> mandatoryFields = new HashMap<>();
   private static final Map<Class<?>, Set<String>> optionalFields = new HashMap<>();
   private static final Map<Class<?>, Set<String>> unsupportedFields = new HashMap<>();
+  private static final Map<Class<? extends Value>, List<Set<String>>> valueMandatoryFields =
+      new HashMap<>();
 
   /**
    * Retrieves a list that contains combinations of mandatory fields for the provided class.
    *
-   * @param entityClass to used
+   * @param clazz to used
    * @return either a set of fields or an empty set
    */
-  public static List<Set<String>> getMandatoryFields(Class<?> entityClass) {
-    if (Entity.class.isAssignableFrom(entityClass)) {
-      return List.of(mandatoryFields.getOrDefault(entityClass, Collections.emptySet()));
+  public static List<Set<String>> getMandatoryFields(Class<?> clazz) {
+    if (Entity.class.isAssignableFrom(clazz)) {
+      return List.of(mandatoryFields.getOrDefault(clazz, Collections.emptySet()));
+    } else if (Value.class.isAssignableFrom(clazz)) {
+      return valueMandatoryFields.getOrDefault(clazz, Collections.emptyList());
     } else {
       return Collections.emptyList();
     }
@@ -118,6 +126,12 @@ public final class ModelFields extends FieldNamingStrategy {
    */
   public static void register(Class<? extends Entity> entityClass, Set<String> mandatoryFields) {
     ModelFields.mandatoryFields.putIfAbsent(entityClass, mandatoryFields);
+  }
+
+  @SafeVarargs
+  public static void registerValue(
+      Class<? extends Value> entityClass, Set<String>... mandatoryFields) {
+    ModelFields.valueMandatoryFields.putIfAbsent(entityClass, List.of(mandatoryFields));
   }
 
   /**
@@ -174,6 +188,9 @@ public final class ModelFields extends FieldNamingStrategy {
     registerThermalFields();
     registerGraphicFields();
     registerResultFields();
+    registerTimeSeriesRelatedFields();
+    registerValueFields();
+    registerWeatherValueFields();
 
     // registering em fields
     registerMandatory(EmInput.class, assetFields, CONTROLLING_EM, CONTROL_STRATEGY);
@@ -369,7 +386,9 @@ public final class ModelFields extends FieldNamingStrategy {
 
     registerMandatory(Transformer3WResult.class, connectorResultBase, ICMAG, ICANG, TAPPOS);
 
-    registerMandatory(FlexOptionsResult.class, result, P_REF, P_MIN, P_MAX);
+    registerMandatory(PowerLimitFlexOptionsResult.class, result, P_REF, P_MIN, P_MAX);
+
+    registerMandatory(EnergyBoundariesFlexOptionsResult.class, result, E_MIN, E_MAX, P_MIN, P_MAX);
 
     registerMandatory(NodeResult.class, result, V_MAG, V_ANG);
 
@@ -401,5 +420,113 @@ public final class ModelFields extends FieldNamingStrategy {
 
     Stream.of(CylindricalStorageResult.class, DomesticHotWaterStorageResult.class)
         .forEach(r -> registerMandatory(r, thermal, ENERGY, FILL_LEVEL));
+  }
+
+  /** Method for registering some time series related fields. */
+  private static void registerTimeSeriesRelatedFields() {
+    register(TimeSeriesMetaInformation.class, newSet(COLUMN_SCHEME, TIME_SERIES));
+    register(TimeSeriesMappingSource.MappingEntry.class, newSet(ASSET, TIME_SERIES));
+
+    register(
+        IdCoordinateInput.CosmoIdCoordinateInput.class,
+        newSet(TID, COORDINATE_ID, LONG_GEO, LAT_GEO, LONG_ROT, LAT_ROT));
+    register(
+        IdCoordinateInput.IconIdCoordinateInput.class,
+        newSet(COORDINATE_ID, LAT, LONG, COORDINATE_TYPE));
+    register(IdCoordinateInput.SqlIdCoordinateInput.class, newSet(COORDINATE_ID, COORDINATE));
+  }
+
+  /** Method for registering most of the value fields. */
+  private static void registerValueFields() {
+    // load values
+    registerValue(
+        BdewLoadValues.class,
+        expandSet(BDEW1999_FIELDS.values(), QUARTER_HOUR),
+        expandSet(BDEW2025_FIELDS.values(), QUARTER_HOUR));
+    registerValue(
+        RandomLoadValues.class,
+        newSet(
+            K_WEEKDAY,
+            K_SATURDAY,
+            K_SUNDAY,
+            MY_WEEKDAY,
+            MY_SATURDAY,
+            MY_SUNDAY,
+            SIGMA_WEEKDAY,
+            SIGMA_SATURDAY,
+            SIGMA_SUNDAY,
+            QUARTER_HOUR));
+
+    // time base value
+    Set<String> timeBase = newSet(TIME);
+
+    registerValue(EnergyPriceValue.class, expandSet(timeBase, PRICE));
+    registerValue(
+        HeatAndSValue.class, expandSet(timeBase, ACTIVE_POWER, REACTIVE_POWER, HEAT_DEMAND));
+    registerValue(HeatAndPValue.class, expandSet(timeBase, ACTIVE_POWER, HEAT_DEMAND));
+    registerValue(HeatDemandValue.class, expandSet(timeBase, HEAT_DEMAND));
+    registerValue(SValue.class, expandSet(timeBase, ACTIVE_POWER, REACTIVE_POWER));
+    registerValue(PValue.class, expandSet(timeBase, ACTIVE_POWER));
+    registerValue(VoltageValue.class, expandSet(timeBase, V_ANG, V_MAG));
+  }
+
+  /** Method for registering all weather fields. */
+  private static void registerWeatherValueFields() {
+    // cosmo weather values
+    Set<String> cosmoMinConstructorParams =
+        newSet(
+            WEATHER_COORDINATE_ID,
+            COSMO_DIFFUSE_IRRADIANCE,
+            COSMO_DIRECT_IRRADIANCE,
+            COSMO_TEMPERATURE,
+            COSMO_WIND_DIRECTION,
+            COSMO_WIND_VELOCITY);
+
+    registerValue(
+        WeatherValue.CosmoWeatherValue.class,
+        cosmoMinConstructorParams,
+        expandSet(
+            cosmoMinConstructorParams,
+            COSMO_GROUND_TEMPERATURE_LEVEL_1,
+            COSMO_GROUND_TEMPERATURE_LEVEL_2));
+
+    // icon weather value
+
+    Set<String> iconMinParameters =
+        newSet(
+            ICON_DIFFUSE_IRRADIANCE,
+            ICON_DIRECT_IRRADIANCE,
+            ICON_TEMPERATURE,
+            ICON_WIND_VELOCITY_U,
+            ICON_WIND_VELOCITY_V);
+
+    registerValue(
+        WeatherValue.CosmoWeatherValue.class,
+        iconMinParameters,
+        expandSet(
+            iconMinParameters,
+            "albrad",
+            "asobs",
+            "aswdifuS",
+            "tg1",
+            "tg2",
+            "u10m",
+            "u20m",
+            "u216m",
+            "u65m",
+            "v10m",
+            "v20m",
+            "v216m",
+            "v65m",
+            "w131m",
+            "w20m",
+            "w216m",
+            "w65m",
+            "z0",
+            "p131m",
+            "p20m",
+            "p65m",
+            "sobsrad",
+            "t131m"));
   }
 }

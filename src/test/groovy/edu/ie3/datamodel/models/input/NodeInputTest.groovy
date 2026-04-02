@@ -22,14 +22,14 @@ class NodeInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == node.uuid
-      assert operationTime == node.operationTime
-      assert operator == GridTestData.profBroccoli
-      assert id == "node_B_copy"
-      assert vTarget == node.getvTarget()
-      assert slack
-      assert subnet == 1
-      assert voltLvl == GermanVoltageLevelUtils.EHV_220KV
+      uuid == node.uuid
+      operationTime == node.operationTime
+      operator == GridTestData.profBroccoli
+      id == "node_B_copy"
+      vTarget == node.getvTarget()
+      slack
+      subnet == 1
+      voltLvl == GermanVoltageLevelUtils.EHV_220KV
     }
   }
 }

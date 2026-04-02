@@ -1,5 +1,5 @@
 /*
- * © 2022. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -12,52 +12,39 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Represents results of flexibility request */
-public class FlexOptionsResult extends ResultEntity {
+/** A result depicting flexibility options of a model (system participant or EM agent). */
+public abstract class FlexOptionsResult extends ResultEntity {
 
   /**
-   * Active power (might be negative, thus feed-in) that was suggested for regular usage by the
-   * system participant connected to the EmAgent
+   * Minimum active power to which the operating point of the model can be reduced (might be
+   * negative, thus feed-in) at the given point in simulation time. This equates to the lower bound
+   * of possible power flexibility provision.
    */
-  private final ComparableQuantity<Power> pRef;
+  protected final ComparableQuantity<Power> pMin;
 
   /**
-   * Minimal active power to which the system participant can be reduced (might be negative, thus
-   * feed-in) that was determined by the system. Therefore equates to lower bound of possible
-   * flexibility provision. participant connected to the EmAgent
+   * Maximum active power to which the operating point of the model can be increased (might be
+   * negative, thus feed-in) at the given point in simulation time. This equates to upper bound of
+   * possible power flexibility provision.
    */
-  private final ComparableQuantity<Power> pMin;
+  protected final ComparableQuantity<Power> pMax;
 
   /**
-   * Maximum active power to which the system participant can be increased (might be negative, thus
-   * feed-in) that was determined by the system. Therefore equates to upper bound of possible
-   * flexibility provision. participant connected to the EmAgent
-   */
-  private final ComparableQuantity<Power> pMax;
-
-  /**
-   * Standard constructor with automatic uuid generation.
+   * Standard constructor for a flex options result entity.
    *
-   * @param time date and time when the result is produced
-   * @param inputModel uuid of the input model that produces the result
-   * @param pRef active power that was suggested for regular usage by the system participant
-   * @param pMin active minimal power that was determined by the system participant
-   * @param pMax active maximum power that was determined by the system participant
+   * @param time Date and time when the result is produced.
+   * @param inputModel The UUID of the input model that produces the result.
+   * @param pMin The minimum active power of the model at the given point in simulation time.
+   * @param pMax The maximum active power of the model at the given point in simulation time.
    */
-  public FlexOptionsResult(
+  protected FlexOptionsResult(
       ZonedDateTime time,
       UUID inputModel,
-      ComparableQuantity<Power> pRef,
       ComparableQuantity<Power> pMin,
       ComparableQuantity<Power> pMax) {
     super(time, inputModel);
-    this.pRef = pRef;
     this.pMin = pMin;
     this.pMax = pMax;
-  }
-
-  public ComparableQuantity<Power> getpRef() {
-    return pRef;
   }
 
   public ComparableQuantity<Power> getpMin() {
@@ -69,36 +56,15 @@ public class FlexOptionsResult extends ResultEntity {
   }
 
   @Override
-  public String toString() {
-    return "FlexOptionsResult{"
-        + "time="
-        + getTime()
-        + ", inputModel="
-        + getInputModel()
-        + ", pRef="
-        + getpRef()
-        + ", pMin="
-        + getpMin()
-        + ", pMax="
-        + getpMax()
-        + '}';
-  }
-
-  @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-
     FlexOptionsResult that = (FlexOptionsResult) o;
-
-    if (!pRef.equals(that.pRef)) return false;
-    if (!pMin.equals(that.pMin)) return false;
-    return pMax.equals(that.pMax);
+    return Objects.equals(pMin, that.pMin) && Objects.equals(pMax, that.pMax);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), pRef, pMin, pMax);
+    return Objects.hash(super.hashCode(), pMin, pMax);
   }
 }

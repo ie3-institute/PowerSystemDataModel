@@ -26,11 +26,11 @@ Representation of an electrical node, with no further distinction into bus bar, 
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - vTarget
      - p.u.

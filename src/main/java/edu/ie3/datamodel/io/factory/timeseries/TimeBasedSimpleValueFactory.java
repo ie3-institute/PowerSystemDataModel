@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 public class TimeBasedSimpleValueFactory<V extends Value>
     extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {
@@ -70,31 +69,5 @@ public class TimeBasedSimpleValueFactory<V extends Value>
     }
 
     return new TimeBasedValue<>(time, value);
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<?> entityClass) {
-    Set<String> minConstructorParams = newSet(TIME);
-
-    if (EnergyPriceValue.class.isAssignableFrom(entityClass)) {
-      minConstructorParams.add(PRICE);
-    } else if (HeatAndSValue.class.isAssignableFrom(entityClass)) {
-      minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, REACTIVE_POWER, HEAT_DEMAND));
-    } else if (HeatAndPValue.class.isAssignableFrom(entityClass)) {
-      minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, HEAT_DEMAND));
-    } else if (HeatDemandValue.class.isAssignableFrom(entityClass)) {
-      minConstructorParams.add(HEAT_DEMAND);
-    } else if (SValue.class.isAssignableFrom(entityClass)) {
-      minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, REACTIVE_POWER));
-    } else if (PValue.class.isAssignableFrom(entityClass)) {
-      minConstructorParams.add(ACTIVE_POWER);
-    } else if (VoltageValue.class.isAssignableFrom(entityClass)) {
-      minConstructorParams.addAll(List.of(V_MAG, V_ANG));
-    } else {
-      throw new FactoryException(
-          "The given factory cannot handle target class '" + entityClass + "'.");
-    }
-
-    return Collections.singletonList(minConstructorParams);
   }
 }

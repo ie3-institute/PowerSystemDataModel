@@ -30,17 +30,17 @@ class LoadInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == loadInput.uuid
-      assert operationTime == loadInput.operationTime
-      assert operator == loadInput.operator
-      assert id == loadInput.id
-      assert loadProfile == BdewStandardLoadProfile.G0.key
-      assert node == GridTestData.nodeG
-      assert qCharacteristics == CosPhiFixed.CONSTANT_CHARACTERISTIC
-      assert eConsAnnual == Quantities.getQuantity(6000, KILOWATTHOUR)
-      assert sRated == Quantities.getQuantity(0d, KILOVOLTAMPERE)
-      assert cosPhiRated == 0.8d
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == loadInput.uuid
+      operationTime == loadInput.operationTime
+      operator == loadInput.operator
+      id == loadInput.id
+      loadProfile == BdewStandardLoadProfile.G0.key
+      node == GridTestData.nodeG
+      qCharacteristics == CosPhiFixed.CONSTANT_CHARACTERISTIC
+      eConsAnnual == Quantities.getQuantity(6000, KILOWATTHOUR)
+      sRated == Quantities.getQuantity(0d, KILOVOLTAMPERE)
+      cosPhiRated == 0.8d
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -53,17 +53,17 @@ class LoadInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == loadInput.uuid
-      assert operationTime == loadInput.operationTime
-      assert operator == loadInput.operator
-      assert id == loadInput.id
-      assert loadProfile == loadInput.loadProfile
-      assert node == loadInput.node
-      assert qCharacteristics == loadInput.qCharacteristics
-      assert eConsAnnual == loadInput.eConsAnnual * 2d
-      assert sRated == loadInput.sRated * 2d
-      assert cosPhiRated == loadInput.cosPhiRated
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == loadInput.uuid
+      operationTime == loadInput.operationTime
+      operator == loadInput.operator
+      id == loadInput.id
+      loadProfile == loadInput.loadProfile
+      node == loadInput.node
+      qCharacteristics == loadInput.qCharacteristics
+      eConsAnnual == loadInput.eConsAnnual * 2d
+      sRated == loadInput.sRated * 2d
+      cosPhiRated == loadInput.cosPhiRated
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

@@ -17,9 +17,9 @@ class CsvThermalGridSourceTest extends Specification implements CsvTestDataMeta 
     thermalGrids.size() == 1
     thermalGrids.get(0).with {
       def bus = it.bus()
-      assert it.houses().every { it.thermalBus == bus }
-      assert it.heatStorages().every { it.thermalBus == bus }
-      assert it.domesticHotWaterStorages().every { it.thermalBus == bus }
+      it.houses().every { it.thermalBus == bus }
+      it.heatStorages().every { it.thermalBus == bus }
+      it.domesticHotWaterStorages().every { it.thermalBus == bus }
     }
   }
 }

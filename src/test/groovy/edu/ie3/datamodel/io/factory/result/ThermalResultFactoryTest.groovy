@@ -49,11 +49,11 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
     result.success
     result.data.get().getClass() == CylindricalStorageResult
     ((CylindricalStorageResult) result.data.get()).with {
-      assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
-      assert inputModel == UUID.fromString(parameter.get("inputModel"))
-      assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
-      assert energy == Quantities.getQuantity(Double.parseDouble(parameter.get("energy")), StandardUnits.ENERGY_RESULT)
-      assert fillLevel == Quantities.getQuantity(Double.parseDouble(parameter.get("fillLevel")), StandardUnits.FILL_LEVEL)
+      time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
+      inputModel == UUID.fromString(parameter.get("inputModel"))
+      qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
+      energy == Quantities.getQuantity(Double.parseDouble(parameter.get("energy")), StandardUnits.ENERGY_RESULT)
+      fillLevel == Quantities.getQuantity(Double.parseDouble(parameter.get("fillLevel")), StandardUnits.FILL_LEVEL)
     }
   }
 
@@ -74,11 +74,11 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
     result.success
     result.data.get().getClass() == DomesticHotWaterStorageResult
     ((DomesticHotWaterStorageResult) result.data.get()).with {
-      assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
-      assert inputModel == UUID.fromString(parameter.get("inputModel"))
-      assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
-      assert energy == Quantities.getQuantity(Double.parseDouble(parameter.get("energy")), StandardUnits.ENERGY_RESULT)
-      assert fillLevel == Quantities.getQuantity(Double.parseDouble(parameter.get("fillLevel")), StandardUnits.FILL_LEVEL)
+      time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
+      inputModel == UUID.fromString(parameter.get("inputModel"))
+      qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
+      energy == Quantities.getQuantity(Double.parseDouble(parameter.get("energy")), StandardUnits.ENERGY_RESULT)
+      fillLevel == Quantities.getQuantity(Double.parseDouble(parameter.get("fillLevel")), StandardUnits.FILL_LEVEL)
     }
   }
 
@@ -98,10 +98,10 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
     result.success
     result.data.get().getClass() == ThermalHouseResult
     ((ThermalHouseResult) result.data.get()).with {
-      assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
-      assert inputModel == UUID.fromString(parameter.get("inputModel"))
-      assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
-      assert indoorTemperature == Quantities.getQuantity(Double.parseDouble(parameter.get("indoorTemperature")), StandardUnits.TEMPERATURE)
+      time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
+      inputModel == UUID.fromString(parameter.get("inputModel"))
+      qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
+      indoorTemperature == Quantities.getQuantity(Double.parseDouble(parameter.get("indoorTemperature")), StandardUnits.TEMPERATURE)
     }
   }
 }

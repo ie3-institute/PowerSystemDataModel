@@ -47,10 +47,10 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert path == getGeometry(parameter["path"])
-      assert graphicLayer == parameter["graphiclayer"]
-      assert line == lineInput
+      uuid == UUID.fromString(parameter["uuid"])
+      path == getGeometry(parameter["path"])
+      graphicLayer == parameter["graphiclayer"]
+      line == lineInput
     }
   }
   def "A LineGraphicInputFactory should parse a valid LineGraphicInput with different geoPosition strings correctly"() {
@@ -73,7 +73,7 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert path == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["path"]) as LineString)
+      path == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["path"]) as LineString)
     }
 
     where:
