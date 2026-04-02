@@ -11,6 +11,7 @@ import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.sink.CsvFileSink
 import edu.ie3.util.io.FileIOUtils
+import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Files
@@ -22,11 +23,16 @@ import java.nio.file.Path
  */
 class GridIoIT extends Specification implements CsvTestDataMeta {
 
+  @Shared
   Path tempDirectory
+
+  @Shared
   CsvFileSink sinkFlat
+
+  @Shared
   CsvFileSink sinkHierarchic
 
-  def setup() {
+  def setupSpec() {
     FileNamingStrategy hierarchicNamingStrategy = new FileNamingStrategy(
         new EntityPersistenceNamingStrategy(),
         new DefaultDirectoryHierarchy(Path.of("output"), "vn_simona"))
@@ -35,7 +41,7 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     sinkHierarchic = new CsvFileSink(tempDirectory.toAbsolutePath(), hierarchicNamingStrategy, ",")
   }
 
-  def cleanup() {
+  def cleanupSpec() {
     sinkFlat.shutdown()
     sinkHierarchic.shutdown()
     FileIOUtils.deleteRecursively(tempDirectory)
