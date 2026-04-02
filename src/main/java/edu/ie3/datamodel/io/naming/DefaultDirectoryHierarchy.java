@@ -271,7 +271,8 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 StorageResult.class,
                 WecResult.class,
                 EmResult.class,
-                FlexOptionsResult.class)
+                PowerLimitFlexOptionsResult.class,
+                EnergyBoundariesFlexOptionsResult.class)
             .collect(Collectors.toSet())),
     TIME_SERIES(
         PARTICIPANTS_INPUT.relPath.resolve("time_series"),
