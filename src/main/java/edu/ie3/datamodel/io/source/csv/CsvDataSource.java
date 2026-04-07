@@ -142,7 +142,7 @@ public class CsvDataSource extends FileDataSource {
    *     occurred
    */
   protected Map<String, String> buildFieldsToAttributes(
-          final String csvRow, final String[] headline) throws SourceException {
+      final String csvRow, final String[] headline) throws SourceException {
     // parse row
     String[] fieldVals = parseCsvRow(csvRow, csvSep);
 
@@ -152,40 +152,41 @@ public class CsvDataSource extends FileDataSource {
       String parsedRow = "['" + String.join("', '", fieldVals) + "']";
 
       throw new SourceException(
-              "The size of the headline ("
-                      + headline.length
-                      + ") does not fit to the size of the attribute fields ("
-                      + fieldVals.length
-                      + ").\n     Headline fields: "
-                      + headlineElements
-                      + "\n     Row values: "
-                      + parsedRow
-                      + ".\n     Please check:"
-                      + "\n      - is the csv separator in the row matching the provided separator '"
-                      + csvSep
-                      + "'"
-                      + "\n      - does the number of columns match the number of headline fields "
-                      + "\n      - are you using a valid RFC 4180 formatted csv row?");
+          "The size of the headline ("
+              + headline.length
+              + ") does not fit to the size of the attribute fields ("
+              + fieldVals.length
+              + ").\n     Headline fields: "
+              + headlineElements
+              + "\n     Row values: "
+              + parsedRow
+              + ".\n     Please check:"
+              + "\n      - is the csv separator in the row matching the provided separator '"
+              + csvSep
+              + "'"
+              + "\n      - does the number of columns match the number of headline fields "
+              + "\n      - are you using a valid RFC 4180 formatted csv row?");
     }
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
-            new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     insensitiveFieldsToAttributes.putAll(
-            IntStream.range(0, headline.length)
-                    .boxed()
-                    .collect(
-                            Collectors.toMap(
-                                    k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+        IntStream.range(0, headline.length)
+            .boxed()
+            .collect(
+                Collectors.toMap(
+                    k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
 
     if (insensitiveFieldsToAttributes.size() != fieldVals.length) {
       throw new SourceException(
-              "There might be duplicate headline elements.\nHeadline fields: ['"
-                      + String.join("', '", headline)
-                      + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
+          "There might be duplicate headline elements.\nHeadline fields: ['"
+              + String.join("', '", headline)
+              + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
     }
 
     return insensitiveFieldsToAttributes;
   }
+
   /**
    * Parse a given row of a valid RFC 4180 formatted csv row
    *
