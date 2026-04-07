@@ -218,7 +218,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def fieldToValues = [
       "uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
       "time"             : "2020-10-16T12:40:42Z",
-      "coordinate:id"     : "6",
+      "coordinate_id"     : "6",
       "direct_irradiance" : "1.234",
       "diffuse_irradiance": "5.678",
       "temperature"      : "9.1011",
