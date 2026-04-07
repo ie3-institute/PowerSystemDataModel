@@ -175,7 +175,9 @@ public class CsvDataSource extends FileDataSource {
             .boxed()
             .collect(
                 Collectors.toMap(
-                    k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+                    k -> StringUtils.snakeCaseToCamelCase(headline[k]),
+                    v -> fieldVals[v],
+                    (existing, replacement) -> existing)));
 
     if (insensitiveFieldsToAttributes.size() != fieldVals.length) {
       throw new SourceException(
