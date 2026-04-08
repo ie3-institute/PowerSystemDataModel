@@ -233,6 +233,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
             rawGridElements.allEntitiesAsList(),
             systemParticipants.allEntitiesAsList(),
             graphicElements.allEntitiesAsList(),
+            jointGridContainer.getEmUnits().getEmUnits().stream().toList(),
             types,
             operators)
         .flatMap(Collection::stream)
