@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed handling of erroneous field values in `EntitySource.enrichWithDefault()` [#1511](https://github.com/ie3-institute/PowerSystemDataModel/issues/1511)
 - Fixed some minor typos and inconsistencies in variable naming [#1542](https://github.com/ie3-institute/PowerSystemDataModel/issues/1542)
 - Aligned temperature processing in `COSMO` and `ICON` factories to Kelvin [#1521](https://github.com/ie3-institute/PowerSystemDataModel/issues/1521)
+- Correctly persist EmInput entities in CsvFileSink [#1337](https://github.com/ie3-institute/PowerSystemDataModel/issues/1337)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
@@ -56,6 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored validation of entity classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
 - Changed `operationTime` to `operationFrom` and `operationUntil` in read the docs [1507](https://github.com/ie3-institute/PowerSystemDataModel/issues/1507)
 - Refactored validation of value classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
+- Handled SonarQube Issues [#1588](https://github.com/ie3-institute/PowerSystemDataModel/issues/1588)
+- Updated `Couchbase` version within the tests [#1586](https://github.com/ie3-institute/PowerSystemDataModel/issues/1586)
 - Use the default time pattern for persisting time series keys [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766) 
 
 ## [8.1.0] - 2025-07-25

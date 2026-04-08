@@ -128,16 +128,16 @@ class ResultEntityProcessorTest extends Specification {
     validProcessedElement == expectedResults
   }
 
-  def "A ResultEntityProcessor should serialize a FlexOptionsResult correctly"() {
+  def "A ResultEntityProcessor should serialize a PowerLimitFlexOptionsResult correctly"() {
     given:
-    def sysPartResProcessor = new ResultEntityProcessor(FlexOptionsResult)
+    def sysPartResProcessor = new ResultEntityProcessor(PowerLimitFlexOptionsResult)
 
     // take wrong unit for pRef on purpose, should get converted
     Quantity<Power> pRef = Quantities.getQuantity(5100, PowerSystemUnits.KILOWATT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
 
-    def validResult = new FlexOptionsResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
+    def validResult = new PowerLimitFlexOptionsResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
 
     def expectedResults = [
       inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
@@ -145,6 +145,34 @@ class ResultEntityProcessorTest extends Specification {
       pMax      : '6.0',
       pMin      : '-6.0',
       pRef      : '5.1',
+    ]
+
+    when:
+    def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
+
+    then:
+    validProcessedElement == expectedResults
+  }
+
+  def "A ResultEntityProcessor should serialize a EnergyBoundariesFlexOptionsResult correctly"() {
+    given:
+    def sysPartResProcessor = new ResultEntityProcessor(EnergyBoundariesFlexOptionsResult)
+
+    // take wrong unit for eMin on purpose, should get converted
+    Quantity<Energy> eMin = Quantities.getQuantity(-50, PowerSystemUnits.KILOWATTHOUR)
+    Quantity<Energy> eMax = Quantities.getQuantity(0.05, StandardUnits.ENERGY_RESULT)
+    Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
+    Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
+
+    def validResult = new EnergyBoundariesFlexOptionsResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, eMin, eMax, pMin, pMax)
+
+    def expectedResults = [
+      inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+      time      : '2020-01-30T17:26:44Z',
+      pMax      : '6.0',
+      pMin      : '-6.0',
+      eMax      : '0.05',
+      eMin      : '-0.05',
     ]
 
     when:
@@ -328,7 +356,7 @@ class ResultEntityProcessorTest extends Specification {
 
   def "The list of eligible entity classes for a ResultEntityProcessor should be valid"() {
     given:
-    int noOfElements = 22 // number of all currently implemented entity results
+    int noOfElements = 23 // number of all currently implemented entity results
 
     expect:
     ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements
