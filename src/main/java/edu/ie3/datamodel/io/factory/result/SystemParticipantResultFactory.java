@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.system.*;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
@@ -27,29 +26,6 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
 
   public SystemParticipantResultFactory() {
     super(
-        LoadResult.class,
-        FixedFeedInResult.class,
-        AcResult.class,
-        BmResult.class,
-        PvResult.class,
-        ChpResult.class,
-        WecResult.class,
-        StorageResult.class,
-        EvcsResult.class,
-        EvResult.class,
-        HpResult.class,
-        EmResult.class);
-  }
-
-  /**
-   * Create a new factory to build {@link SystemParticipantResult}s and utilize the given date time
-   * formatter pattern to parse date time strings
-   *
-   * @param dateTimeFormatter to parse date time strings
-   */
-  public SystemParticipantResultFactory(DateTimeFormatter dateTimeFormatter) {
-    super(
-        dateTimeFormatter,
         LoadResult.class,
         FixedFeedInResult.class,
         AcResult.class,

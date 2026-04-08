@@ -37,9 +37,7 @@ abstract class AbstractCouchbaseWeatherSourceIT extends Specification implements
   abstract String getJsonResourcePath()
   abstract Object getWeatherFactory()
   abstract Object getCoordinateSource()
-  String getDtfPattern() {
-    return "yyyy-MM-dd'T'HH:mm:ssxxx"
-  }
+
 
   def setupSpec() {
     // create an index for the document keys

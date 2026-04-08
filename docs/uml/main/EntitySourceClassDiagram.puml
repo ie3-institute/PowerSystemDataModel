@@ -112,7 +112,6 @@ class ResultEntitySource {
     - CongestionResultFactory congestionResultFactory
     - FlexOptionsResultFactory flexOptionsResultFactory
     + ResultEntitySource(DataSource)
-    + ResultEntitySource(DataSource, DateTimeFormatter)
     + Set<NodeResult> getNodeResults() throws SourceException
     + Set<SwitchResult> getSwitchResults() throws SourceException
     + Set<LineResult> getLineResults() throws SourceException
@@ -240,7 +239,7 @@ class SqlTimeSeriesSource {
     - UUID timeSeriesUuid
     + SqlTimeSeriesSource(SqlDataSource, UUID, Class<V>, TimeBasedSimpleValueFactory<V>)
     + SqlTimeSeriesSource(SqlConnector, String, DatabaseNamingStrategy, UUID, Class<V>, TimeBasedSimpleValueFactory<V>)
-    + SqlTimeSeriesSource<? extends Value> createSource(SqlConnector, String, DatabaseNamingStrategy, IndividualTimeSeriesMetaInformation, DateTimeFormatter) throws SourceException
+    + SqlTimeSeriesSource<? extends Value> createSource(SqlConnector, String, DatabaseNamingStrategy, IndividualTimeSeriesMetaInformation) throws SourceException
 }
 
 class TypeSource {
