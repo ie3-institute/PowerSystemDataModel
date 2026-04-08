@@ -170,20 +170,29 @@ public class CsvDataSource extends FileDataSource {
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    insensitiveFieldsToAttributes.putAll(
-        IntStream.range(0, headline.length)
-            .boxed()
-            .collect(
-                Collectors.toMap(
-                    k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+    try {
+      insensitiveFieldsToAttributes.putAll(
+          IntStream.range(0, headline.length)
+              .boxed()
+              .collect(
+                  Collectors.toMap(
+                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+    } catch (IllegalStateException e) {
+      throw new SourceException(
+          "There might be duplicate headline elements.\nHeadline fields: ['"
+              + String.join("', '", headline)
+              + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.",
+          e);
+    }
 
+    // In case there are similar headlines in different cases or with different usage of underscores
+    // this is not handled above
     if (insensitiveFieldsToAttributes.size() != fieldVals.length) {
       throw new SourceException(
           "There might be duplicate headline elements.\nHeadline fields: ['"
               + String.join("', '", headline)
               + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
     }
-
     return insensitiveFieldsToAttributes;
   }
 

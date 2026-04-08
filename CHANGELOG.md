@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed some minor typos and inconsistencies in variable naming [#1542](https://github.com/ie3-institute/PowerSystemDataModel/issues/1542)
 - Aligned temperature processing in `COSMO` and `ICON` factories to Kelvin [#1521](https://github.com/ie3-institute/PowerSystemDataModel/issues/1521)
 - Correctly persist EmInput entities in CsvFileSink [#1337](https://github.com/ie3-institute/PowerSystemDataModel/issues/1337)
+- Proper handle duplicated headline exceptions in CsvDataSource [#1595](https://github.com/ie3-institute/PowerSystemDataModel/issues/1595)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
