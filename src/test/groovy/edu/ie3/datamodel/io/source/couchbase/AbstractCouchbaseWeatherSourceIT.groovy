@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io.source.couchbase
 
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory
+import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import groovy.json.JsonSlurper
@@ -35,9 +37,8 @@ abstract class AbstractCouchbaseWeatherSourceIT extends Specification implements
   static String coordinateIdColumnName = "coordinateid"
 
   abstract String getJsonResourcePath()
-  abstract Object getWeatherFactory()
-  abstract Object getCoordinateSource()
-
+  abstract TimeBasedWeatherValueFactory getWeatherFactory()
+  abstract IdCoordinateSource getCoordinateSource()
 
   def setupSpec() {
     // create an index for the document keys
@@ -98,7 +99,7 @@ abstract class AbstractCouchbaseWeatherSourceIT extends Specification implements
     }
     println "Inserted ${insertCount}/${weatherDocs.size()} test documents from JSON file"
 
-    source = new CouchbaseWeatherSource(connector, getCoordinateSource(), coordinateIdColumnName, getWeatherFactory(), getDtfPattern())
+    source = new CouchbaseWeatherSource(connector, getCoordinateSource(), coordinateIdColumnName, getWeatherFactory())
     println "setupSpec completed"
     System.out.flush()
   }
