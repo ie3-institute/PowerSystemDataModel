@@ -59,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed `operationTime` to `operationFrom` and `operationUntil` in read the docs [1507](https://github.com/ie3-institute/PowerSystemDataModel/issues/1507)
 - Refactored validation of value classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
 - Handled SonarQube Issues [#1588](https://github.com/ie3-institute/PowerSystemDataModel/issues/1588)
+- Updated `Couchbase` version within the tests [#1586](https://github.com/ie3-institute/PowerSystemDataModel/issues/1586)
 
 ## [8.1.0] - 2025-07-25
 
