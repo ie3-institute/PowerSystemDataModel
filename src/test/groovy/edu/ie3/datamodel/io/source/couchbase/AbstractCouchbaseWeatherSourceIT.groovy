@@ -27,7 +27,7 @@ abstract class AbstractCouchbaseWeatherSourceIT extends Specification implements
   CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:8.0.0")
   .withBucket(bucketDefinition)
   .withExposedPorts(8091, 8092, 8093, 8094, 11210)
-  .withStartupAttempts(3)
+  .withStartupAttempts(3) // 3 attempts because startup (node renaming) sometimes fails when executed too early
 
   @Shared
   CouchbaseWeatherSource source
