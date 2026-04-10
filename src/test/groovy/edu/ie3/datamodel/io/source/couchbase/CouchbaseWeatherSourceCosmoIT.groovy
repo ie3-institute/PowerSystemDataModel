@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io.source.couchbase
 
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory
+import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -22,12 +24,12 @@ class CouchbaseWeatherSourceCosmoIT extends AbstractCouchbaseWeatherSourceIT {
   }
 
   @Override
-  Object getWeatherFactory() {
+  TimeBasedWeatherValueFactory getWeatherFactory() {
     return new CosmoTimeBasedWeatherValueFactory()
   }
 
   @Override
-  Object getCoordinateSource() {
+  IdCoordinateSource getCoordinateSource() {
     return CosmoWeatherTestData.coordinateSource
   }
 
