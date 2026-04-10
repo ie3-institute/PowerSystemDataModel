@@ -11,7 +11,6 @@ import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
@@ -30,10 +29,6 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
 
   public IconTimeBasedWeatherValueFactory() {
     super();
-  }
-
-  public IconTimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
-    super(dateTimeFormatter);
   }
 
   @Override

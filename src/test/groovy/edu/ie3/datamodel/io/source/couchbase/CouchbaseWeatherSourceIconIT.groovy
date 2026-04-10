@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io.source.couchbase
 
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory
+import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.test.common.IconWeatherTestData
@@ -20,12 +22,12 @@ class CouchbaseWeatherSourceIconIT extends AbstractCouchbaseWeatherSourceIT {
   }
 
   @Override
-  Object getWeatherFactory() {
+  TimeBasedWeatherValueFactory getWeatherFactory() {
     return new IconTimeBasedWeatherValueFactory()
   }
 
   @Override
-  Object getCoordinateSource() {
+  IdCoordinateSource getCoordinateSource() {
     return IconWeatherTestData.coordinateSource
   }
 
