@@ -20,7 +20,7 @@ import tech.units.indriya.quantity.Quantities;
 /**
  * Data model to describe the parameters of a probability density function to draw random power
  * consumptions. This model represents a generalized extreme value distribution (GEV), that has been
- * sampled for each quarter hour of a day, subdivided into workdays, Saturdays and Sundays. In
+ * sampled for each quarter-hour of a day, subdivided into workdays, Saturdays and Sundays. In
  * general the GEV is described by the three parameters "location", "scale" and "shape"
  */
 public class RandomLoadValues implements LoadValues {
