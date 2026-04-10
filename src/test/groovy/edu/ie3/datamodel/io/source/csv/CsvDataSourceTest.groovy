@@ -349,7 +349,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     def invalidHeadline = [
       "uuid",
       "active_power_gradient",
-      "Active_Power_Gradient",
+      "active_power_gradient",
       "capex",
       "cosphi_rated",
       "eta_conv",
