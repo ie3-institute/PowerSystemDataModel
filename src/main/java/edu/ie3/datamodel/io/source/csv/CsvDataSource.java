@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -168,32 +167,22 @@ public class CsvDataSource extends FileDataSource {
               + "\n      - are you using a valid RFC 4180 formatted csv row?");
     }
 
-    TreeMap<String, String> insensitiveFieldsToAttributes =
-        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    try {
-      insensitiveFieldsToAttributes.putAll(
-          IntStream.range(0, headline.length)
-              .boxed()
-              .collect(
-                  Collectors.toMap(
-                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
-    } catch (IllegalStateException e) {
-      throw new SourceException(
-          "There might be duplicate headline elements.\nHeadline fields: ['"
-              + String.join("', '", headline)
-              + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.",
-          e);
+    Map<String, String> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+    for (int i = 0; i < headline.length; i++) {
+      String key = StringUtils.snakeCaseToCamelCase(headline[i]);
+
+      if (result.containsKey(key)) {
+        throw new SourceException(
+            "There might be duplicate headline elements.\nHeadline fields: ['"
+                + String.join("', '", headline)
+                + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
+      }
+
+      result.put(key, fieldVals[i]);
     }
 
-    // In case there are similar headlines in different cases or with different usage of underscores
-    // this is not handled above
-    if (insensitiveFieldsToAttributes.size() != fieldVals.length) {
-      throw new SourceException(
-          "There might be duplicate headline elements.\nHeadline fields: ['"
-              + String.join("', '", headline)
-              + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
-    }
-    return insensitiveFieldsToAttributes;
+    return result;
   }
 
   /**
