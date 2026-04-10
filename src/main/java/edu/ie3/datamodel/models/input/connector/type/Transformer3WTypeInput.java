@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.*;
@@ -136,6 +137,76 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     this.tapNeutr = tapNeutr;
     this.tapMin = tapMin;
     this.tapMax = tapMax;
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param id of this type
+   * @param sRatedA Rated apparent power of the high voltage winding
+   * @param sRatedB Rated apparent power of the medium voltage winding
+   * @param sRatedC Rated apparent power of the low voltage winding
+   * @param vRatedA Rated voltage magnitude of the high voltage winding
+   * @param vRatedB Rated voltage magnitude of the medium voltage winding
+   * @param vRatedC Rated voltage magnitude of the low voltage winding
+   * @param rScA Short-circuit resistance of the high voltage winding
+   * @param rScB Short-circuit resistance of the medium voltage winding
+   * @param rScC Short-circuit resistance of the low voltage winding
+   * @param xScA Short-circuit reactance of the high voltage winding
+   * @param xScB Short-circuit reactance of the medium voltage winding
+   * @param xScC Short-circuit reactance of the low voltage winding
+   * @param gM Phase-to-ground conductance
+   * @param bM Phase-to-ground susceptance
+   * @param dV Voltage magnitude deviation per tap position
+   * @param dPhi Voltage angle deviation per tap position
+   * @param tapNeutr Neutral tap position
+   * @param tapMin Minimum available tap position
+   * @param tapMax Maximum available tap position
+   * @param additionalInformation Of the input
+   */
+  public Transformer3WTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<Power> sRatedA,
+      ComparableQuantity<Power> sRatedB,
+      ComparableQuantity<Power> sRatedC,
+      ComparableQuantity<ElectricPotential> vRatedA,
+      ComparableQuantity<ElectricPotential> vRatedB,
+      ComparableQuantity<ElectricPotential> vRatedC,
+      ComparableQuantity<ElectricResistance> rScA,
+      ComparableQuantity<ElectricResistance> rScB,
+      ComparableQuantity<ElectricResistance> rScC,
+      ComparableQuantity<ElectricResistance> xScA,
+      ComparableQuantity<ElectricResistance> xScB,
+      ComparableQuantity<ElectricResistance> xScC,
+      ComparableQuantity<ElectricConductance> gM,
+      ComparableQuantity<ElectricConductance> bM,
+      ComparableQuantity<Dimensionless> dV,
+      ComparableQuantity<Angle> dPhi,
+      int tapNeutr,
+      int tapMin,
+      int tapMax,
+      Map<String, String> additionalInformation) {
+    super(uuid, id);
+    this.sRatedA = sRatedA.to(StandardUnits.S_RATED);
+    this.sRatedB = sRatedB.to(StandardUnits.S_RATED);
+    this.sRatedC = sRatedC.to(StandardUnits.S_RATED);
+    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.vRatedC = vRatedC.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.rScA = rScA.to(StandardUnits.RESISTANCE);
+    this.rScB = rScB.to(StandardUnits.RESISTANCE);
+    this.rScC = rScC.to(StandardUnits.RESISTANCE);
+    this.xScA = xScA.to(StandardUnits.REACTANCE);
+    this.xScB = xScB.to(StandardUnits.REACTANCE);
+    this.xScC = xScC.to(StandardUnits.REACTANCE);
+    this.gM = gM.to(StandardUnits.CONDUCTANCE);
+    this.bM = bM.to(StandardUnits.SUSCEPTANCE);
+    this.dV = dV.to(StandardUnits.DV_TAP);
+    this.dPhi = dPhi.to(StandardUnits.DPHI_TAP);
+    this.tapNeutr = tapNeutr;
+    this.tapMin = tapMin;
+    this.tapMax = tapMax;
+    setAdditionalInformation(additionalInformation);
   }
 
   public ComparableQuantity<Power> getsRatedA() {
@@ -315,6 +386,8 @@ public class Transformer3WTypeInput extends AssetTypeInput {
         + tapMin
         + ", tapMax="
         + tapMax
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

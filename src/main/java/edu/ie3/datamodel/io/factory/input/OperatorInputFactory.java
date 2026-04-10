@@ -17,6 +17,6 @@ public class OperatorInputFactory extends UniqueEntityFactory<OperatorInput, Ent
 
   @Override
   protected OperatorInput buildModel(EntityData data) {
-    return new OperatorInput(data.getUUID(UUID), data.getField(ID));
+    return new OperatorInput(data.getUUID(UUID), data.getField(ID), data.getFieldsToValues());
   }
 }

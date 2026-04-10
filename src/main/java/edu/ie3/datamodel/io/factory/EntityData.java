@@ -68,7 +68,7 @@ public class EntityData extends FactoryData {
    * @return true if value is "1" or "true", false otherwise
    */
   public boolean getBoolean(String field) {
-    final String value = getField(field);
+    String value = getField(field);
 
     if (value == null || value.trim().isEmpty())
       throw new FactoryException(String.format("Field \"%s\" is null or empty", field));
@@ -85,6 +85,7 @@ public class EntityData extends FactoryData {
    */
   private Optional<Geometry> getGeometry(String field) {
     String value = getField(field);
+
     try {
       if (value.trim().isEmpty()) return Optional.empty();
       else return Optional.of(geoJsonReader.read(value));

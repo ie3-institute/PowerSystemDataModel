@@ -246,7 +246,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     def source = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
       "datum"       : "2019-08-01 01:00:00",
-      "albrad"      : "13.015240669",
+      "albRad"      : "13.015240669",
       "asobS"       : "3.555093673828124",
       "aswdifdS"    : "1.8088226191406245",
       "aswdifuS"    : "0.5713421484374998",

@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Provided field information in validation messages [#1397](https://github.com/ie3-institute/PowerSystemDataModel/issues/1397)
 - Added standard line and transformer types to resources [#1579](https://github.com/ie3-institute/PowerSystemDataModel/issues/1579)
 - Added SQL to CSV export to documentation [#1581](https://github.com/ie3-institute/PowerSystemDataModel/issues/1581)
+- Parsing of additional model information from sources [#1570](https://github.com/ie3-institute/PowerSystemDataModel/issues/1570)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
@@ -36,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed some minor typos and inconsistencies in variable naming [#1542](https://github.com/ie3-institute/PowerSystemDataModel/issues/1542)
 - Aligned temperature processing in `COSMO` and `ICON` factories to Kelvin [#1521](https://github.com/ie3-institute/PowerSystemDataModel/issues/1521)
 - Correctly persist EmInput entities in CsvFileSink [#1337](https://github.com/ie3-institute/PowerSystemDataModel/issues/1337)
+- Proper handle duplicated headline exceptions in CsvDataSource [#1595](https://github.com/ie3-institute/PowerSystemDataModel/issues/1595)
+- Align CSV header formatting to RFC 4180 standards in tests [1544](https://github.com/ie3-institute/PowerSystemDataModel/issues/1544)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)

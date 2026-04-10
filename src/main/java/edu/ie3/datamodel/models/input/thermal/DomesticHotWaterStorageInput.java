@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.thermal;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
+import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
@@ -52,6 +53,47 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
         returnTemp,
         c,
         pThermalMax);
+  }
+
+  /**
+   * Constructor for DomesticHotWaterStorageInput
+   *
+   * @param uuid Unique identifier of a certain domestic hot water storage
+   * @param id Identifier of the thermal unit
+   * @param operator operator of the asset
+   * @param operationTime operation time of the asset
+   * @param bus Thermal bus, a thermal unit is connected to
+   * @param storageVolumeLvl Available storage volume
+   * @param inletTemp Temperature of the inlet
+   * @param returnTemp Temperature of the outlet
+   * @param c Specific heat capacity of the storage medium
+   * @param pThermalMax Maximum thermal power of the storage
+   * @param additionalInformation That were provided by the source
+   */
+  public DomesticHotWaterStorageInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      ThermalBusInput bus,
+      ComparableQuantity<Volume> storageVolumeLvl,
+      ComparableQuantity<Temperature> inletTemp,
+      ComparableQuantity<Temperature> returnTemp,
+      ComparableQuantity<SpecificHeatCapacity> c,
+      ComparableQuantity<Power> pThermalMax,
+      Map<String, String> additionalInformation) {
+    super(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        bus,
+        storageVolumeLvl,
+        inletTemp,
+        returnTemp,
+        c,
+        pThermalMax);
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -106,6 +148,8 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
         + getC()
         + ", pThermalMax="
         + getpThermalMax()
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

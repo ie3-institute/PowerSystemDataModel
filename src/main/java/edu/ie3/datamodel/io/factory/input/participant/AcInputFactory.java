@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.input.system.AcInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.AcTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import java.util.Map;
 import java.util.UUID;
 
 public class AcInputFactory
@@ -32,9 +33,19 @@ public class AcInputFactory
       ThermalBusInput thermalBusInput,
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
-      AcTypeInput typeInput) {
+      AcTypeInput typeInput,
+      Map<String, String> additionalInformation) {
 
     return new AcInput(
-        uuid, id, operator, operationTime, node, thermalBusInput, qCharacteristics, em, typeInput);
+        uuid,
+        id,
+        operator,
+        operationTime,
+        node,
+        thermalBusInput,
+        qCharacteristics,
+        em,
+        typeInput,
+        additionalInformation);
   }
 }
