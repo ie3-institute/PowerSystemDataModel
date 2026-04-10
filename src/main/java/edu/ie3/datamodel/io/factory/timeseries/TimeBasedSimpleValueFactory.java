@@ -12,18 +12,12 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class TimeBasedSimpleValueFactory<V extends Value>
     extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {
 
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
     super(valueClasses);
-  }
-
-  public TimeBasedSimpleValueFactory(
-      Class<? extends V> valueClasses, DateTimeFormatter dateTimeFormatter) {
-    super(valueClasses, dateTimeFormatter);
   }
 
   @Override
