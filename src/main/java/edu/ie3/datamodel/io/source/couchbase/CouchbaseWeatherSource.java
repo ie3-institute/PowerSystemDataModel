@@ -23,9 +23,9 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.util.TimeUtil;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -41,7 +41,6 @@ public class CouchbaseWeatherSource extends WeatherSource {
   private final String keyPrefix;
   private final CouchbaseConnector connector;
   private final String coordinateIdColumnName;
-  private final String timeStampPattern;
 
   /**
    * Instantiate a weather source utilising a connection to a couchbase instance obtained via the
@@ -54,21 +53,13 @@ public class CouchbaseWeatherSource extends WeatherSource {
    *     coordinate identifier
    * @param weatherFactory Factory to transfer field to value mapping into actual java object
    *     instances
-   * @param timeStampPattern Pattern of time stamps to parse
    */
   public CouchbaseWeatherSource(
       CouchbaseConnector connector,
       IdCoordinateSource coordinateSource,
       String coordinateIdColumnName,
-      TimeBasedWeatherValueFactory weatherFactory,
-      String timeStampPattern) {
-    this(
-        connector,
-        coordinateSource,
-        coordinateIdColumnName,
-        DEFAULT_KEY_PREFIX,
-        weatherFactory,
-        timeStampPattern);
+      TimeBasedWeatherValueFactory weatherFactory) {
+    this(connector, coordinateSource, coordinateIdColumnName, DEFAULT_KEY_PREFIX, weatherFactory);
   }
 
   /**
@@ -82,20 +73,17 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @param keyPrefix Prefix of entries, that belong to weather
    * @param weatherFactory Factory to transfer field to value mapping into actual java object
    *     instances
-   * @param timeStampPattern Pattern of time stamps to parse
    */
   public CouchbaseWeatherSource(
       CouchbaseConnector connector,
       IdCoordinateSource idCoordinateSource,
       String coordinateIdColumnName,
       String keyPrefix,
-      TimeBasedWeatherValueFactory weatherFactory,
-      String timeStampPattern) {
+      TimeBasedWeatherValueFactory weatherFactory) {
     super(idCoordinateSource, weatherFactory);
     this.connector = connector;
     this.coordinateIdColumnName = coordinateIdColumnName;
     this.keyPrefix = keyPrefix;
-    this.timeStampPattern = timeStampPattern;
   }
 
   @Override
@@ -302,7 +290,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
                         weatherFactory.toZonedDateTime(
                             json.getString(weatherFactory.getTimeFieldString()));
                     if (coordinate.isEmpty()) {
-                      log.warn("Unable to match coordinate ID {} to a point", coordinateId);
+                      logger.warn("Unable to match coordinate ID {} to a point", coordinateId);
                     }
                     return Pair.of(coordinate, timestamp);
                   })
@@ -322,7 +310,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
   private String generateWeatherKey(ZonedDateTime time, Integer coordinateId) {
     String key = keyPrefix + "::";
     key += coordinateId + "::";
-    key += time.format(DateTimeFormatter.ofPattern(timeStampPattern));
+    key += time.format(TimeUtil.withDefaults.getDateTimeFormatter());
     return key;
   }
 

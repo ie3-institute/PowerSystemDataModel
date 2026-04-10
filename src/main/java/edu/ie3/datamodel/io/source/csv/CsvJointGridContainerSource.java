@@ -82,6 +82,10 @@ public class CsvJointGridContainerSource {
         Try.of(
             () -> systemParticipantSource.getSystemParticipants(operators, nodes),
             SourceException.class);
+    Try<EnergyManagementUnits, SourceException> emUnits =
+        Try.of(
+            () -> new EnergyManagementUnits(new HashSet<>(emSource.getEmUnits(operators).values())),
+            SourceException.class);
     Try<GraphicElements, SourceException> graphicElements =
         Try.of(() -> graphicSource.getGraphicElements(nodes, lines), SourceException.class);
 
@@ -97,6 +101,7 @@ public class CsvJointGridContainerSource {
           gridName,
           rawGridElements.getOrThrow(),
           systemParticipants.getOrThrow(),
+          emUnits.getOrThrow(),
           graphicElements.getOrThrow());
     }
   }
