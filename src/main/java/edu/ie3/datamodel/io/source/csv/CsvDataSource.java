@@ -167,7 +167,8 @@ public class CsvDataSource extends FileDataSource {
               + "\n      - are you using a valid RFC 4180 formatted csv row?");
     }
 
-    Map<String, String> insensitiveFieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    TreeMap<String, String> insensitiveFieldsToAttributes =
+        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     for (int i = 0; i < headline.length; i++) {
       String key = StringUtils.snakeCaseToCamelCase(headline[i]);
@@ -179,7 +180,7 @@ public class CsvDataSource extends FileDataSource {
                 + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
       }
 
-        insensitiveFieldsToAttributes.put(key, fieldVals[i]);
+      insensitiveFieldsToAttributes.put(key, fieldVals[i]);
     }
 
     return insensitiveFieldsToAttributes;
