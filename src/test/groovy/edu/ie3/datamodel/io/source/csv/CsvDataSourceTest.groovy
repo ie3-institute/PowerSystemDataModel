@@ -364,7 +364,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     def exception = thrown(SourceException)
-    exception.getMessage().startsWith("There might be duplicate headline elements.")
+    exception.getMessage().startsWith("Headline element 'active_power_gradient' is duplicated.")
   }
 
   def "The CsvDataSource is able to provide correct paths to time series files"() {

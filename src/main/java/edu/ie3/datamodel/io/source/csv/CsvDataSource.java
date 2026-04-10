@@ -175,7 +175,9 @@ public class CsvDataSource extends FileDataSource {
 
       if (insensitiveFieldsToAttributes.containsKey(key)) {
         throw new SourceException(
-            "There might be duplicate headline elements.\nHeadline fields: ['"
+            "Headline element '"
+                + headline[i]
+                + "' is duplicated.\nHeadline fields: ['"
                 + String.join("', '", headline)
                 + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
       }
