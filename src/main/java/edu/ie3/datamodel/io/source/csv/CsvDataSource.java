@@ -167,22 +167,22 @@ public class CsvDataSource extends FileDataSource {
               + "\n      - are you using a valid RFC 4180 formatted csv row?");
     }
 
-    Map<String, String> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    Map<String, String> insensitiveFieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     for (int i = 0; i < headline.length; i++) {
       String key = StringUtils.snakeCaseToCamelCase(headline[i]);
 
-      if (result.containsKey(key)) {
+      if (insensitiveFieldsToAttributes.containsKey(key)) {
         throw new SourceException(
             "There might be duplicate headline elements.\nHeadline fields: ['"
                 + String.join("', '", headline)
                 + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
       }
 
-      result.put(key, fieldVals[i]);
+        insensitiveFieldsToAttributes.put(key, fieldVals[i]);
     }
 
-    return result;
+    return insensitiveFieldsToAttributes;
   }
 
   /**
