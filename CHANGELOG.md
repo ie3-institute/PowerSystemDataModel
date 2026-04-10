@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Handled SonarQube Issues [#1588](https://github.com/ie3-institute/PowerSystemDataModel/issues/1588)
 - Updated `Couchbase` version within the tests [#1586](https://github.com/ie3-institute/PowerSystemDataModel/issues/1586)
 - Use the default time pattern for persisting time series keys [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766) 
+- Handled some more SonarQube Issues [#1598](https://github.com/ie3-institute/PowerSystemDataModel/issues/1598)
 
 ## [8.1.0] - 2025-07-25
 
