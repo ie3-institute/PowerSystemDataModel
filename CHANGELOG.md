@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Provided field information in validation messages [#1397](https://github.com/ie3-institute/PowerSystemDataModel/issues/1397)
 - Added standard line and transformer types to resources [#1579](https://github.com/ie3-institute/PowerSystemDataModel/issues/1579)
 - Added SQL to CSV export to documentation [#1581](https://github.com/ie3-institute/PowerSystemDataModel/issues/1581)
+- Parsing of additional model information from sources [#1570](https://github.com/ie3-institute/PowerSystemDataModel/issues/1570)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)

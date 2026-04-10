@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models;
 
 import java.util.UUID;
 
+/** Interface that indicates that the given object contains an uuid and is unique. */
 public interface Uniqueness {
 
   UUID getUuid();

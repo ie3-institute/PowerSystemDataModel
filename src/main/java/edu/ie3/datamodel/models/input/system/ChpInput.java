@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
@@ -63,6 +64,41 @@ public class ChpInput extends SystemParticipantInput
     this.thermalBus = thermalBus;
     this.type = type;
     this.thermalStorage = thermalStorage;
+  }
+
+  /**
+   * Constructor for an operated combined heat and power plant
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node the asset is connected to
+   * @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal
+   *     bus of the provided thermal storage!)
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param type of CHP
+   * @param thermalStorage Thermal storage model
+   * @param additionalInformation That were provided by the source
+   */
+  public ChpInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      ThermalBusInput thermalBus,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      ChpTypeInput type,
+      ThermalStorageInput thermalStorage,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    this.thermalBus = thermalBus;
+    this.type = type;
+    this.thermalStorage = thermalStorage;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -153,6 +189,8 @@ public class ChpInput extends SystemParticipantInput
         + type.getUuid()
         + ", thermalStorage="
         + thermalStorage.getUuid()
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

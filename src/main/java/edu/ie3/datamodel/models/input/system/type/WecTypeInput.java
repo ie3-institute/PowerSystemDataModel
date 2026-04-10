@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Area;
@@ -59,6 +60,39 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
     this.rotorArea = rotorArea.to(StandardUnits.ROTOR_AREA);
     this.hubHeight = hubHeight.to(StandardUnits.HUB_HEIGHT);
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param id of this type of WEC
+   * @param capex Captial expense for this type of WEC (typically in €)
+   * @param opex Operating expense for this type of WEC (typically in €)
+   * @param cosPhiRated Power factor for this type of WEC
+   * @param cpCharacteristic Betz curve of this type
+   * @param etaConv Efficiency of converter for this type of WEC (typically in %)
+   * @param sRated Rated apparent power for this type of WEC (typically in kVA)
+   * @param rotorArea Swept Area of blades for this type of WEC (typically in m²)
+   * @param hubHeight Height from ground to center of rotor for this type of WEC (typically in m)
+   * @param additionalInformation Of the input
+   */
+  public WecTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated,
+      WecCharacteristicInput cpCharacteristic,
+      ComparableQuantity<Dimensionless> etaConv,
+      ComparableQuantity<Area> rotorArea,
+      ComparableQuantity<Length> hubHeight,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
+    this.cpCharacteristic = cpCharacteristic;
+    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
+    this.rotorArea = rotorArea.to(StandardUnits.ROTOR_AREA);
+    this.hubHeight = hubHeight.to(StandardUnits.HUB_HEIGHT);
+    setAdditionalInformation(additionalInformation);
   }
 
   public WecCharacteristicInput getCpCharacteristic() {
@@ -121,6 +155,8 @@ public class WecTypeInput extends SystemParticipantTypeInput {
         + rotorArea
         + ", hubHeight="
         + hubHeight
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 
