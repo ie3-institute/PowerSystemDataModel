@@ -349,7 +349,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     def invalidHeadline = [
       "uuid",
       "active_power_gradient",
-      "Active_Power_Gradient",
+      "active_power_gradient",
       "capex",
       "cosphi_rated",
       "eta_conv",
@@ -364,7 +364,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     def exception = thrown(SourceException)
-    exception.getMessage().startsWith("There might be duplicate headline elements.")
+    exception.getMessage().startsWith("Headline element 'active_power_gradient' is duplicated.")
   }
 
   def "The CsvDataSource is able to provide correct paths to time series files"() {
