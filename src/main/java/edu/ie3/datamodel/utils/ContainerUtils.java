@@ -558,7 +558,7 @@ public class ContainerUtils {
     for (Transformer2WInput transformer : rawGridElements.getTransformer2Ws()) {
       try {
         TransformerSubGridContainers subGridContainers =
-            getSubGridContainers(transformer, rawGridElements, subGrids);
+            getSubGridContainers(transformer, subGrids);
         mutableGraph.addEdge(
             subGridContainers.containerA,
             subGridContainers.containerB,
@@ -577,7 +577,7 @@ public class ContainerUtils {
     for (Transformer3WInput transformer : rawGridElements.getTransformer3Ws()) {
       try {
         TransformerSubGridContainers subGridContainers =
-            getSubGridContainers(transformer, rawGridElements, subGrids);
+            getSubGridContainers(transformer, subGrids);
         mutableGraph.addEdge(
             subGridContainers.containerA,
             subGridContainers.containerB,
@@ -646,16 +646,13 @@ public class ContainerUtils {
    * switch gears are reflected as well.
    *
    * @param transformer Specific transformer to determine sub grid containers for
-   * @param rawGridElements Collection of all grid elements
    * @param subGrids Mapping from sub grid number to sub grid container
    * @return All surrounding sub grid containers
    * @throws TopologyException If the most upstream node (considering switchgear) cannot be
    *     determined
    */
   private static TransformerSubGridContainers getSubGridContainers(
-      TransformerInput transformer,
-      RawGridElements rawGridElements,
-      Map<Integer, SubGridContainer> subGrids)
+      TransformerInput transformer, Map<Integer, SubGridContainer> subGrids)
       throws TopologyException {
     /* Get the sub grid container at port A */
     SubGridContainer containerA = subGrids.get(transformer.getNodeA().getSubnet());
