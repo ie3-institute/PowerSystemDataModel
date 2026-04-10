@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -53,7 +54,8 @@ public abstract class ThermalSystemParticipantInputFactory<
         data.getThermalBusInput(),
         qCharacteristics,
         em,
-        data.getTypeInput());
+        data.getTypeInput(),
+        data.getFieldsToValues());
   }
 
   /**
@@ -68,6 +70,7 @@ public abstract class ThermalSystemParticipantInputFactory<
    * @param qCharacteristics The reactive power characteristics
    * @param em The energy management input (can be null)
    * @param typeInput The type input for the specific system participant
+   * @param additionalInformation That were provided by the source
    * @return The created thermal system model
    */
   protected abstract M createThermalSystemModel(
@@ -79,5 +82,6 @@ public abstract class ThermalSystemParticipantInputFactory<
       ThermalBusInput thermalBusInput,
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
-      T typeInput);
+      T typeInput,
+      Map<String, String> additionalInformation);
 }

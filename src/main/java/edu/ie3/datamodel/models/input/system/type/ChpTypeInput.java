@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.system.type;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
@@ -56,6 +57,39 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
     this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param id of this type of CHP
+   * @param capex Capital expense for this type of CHP (typically in €)
+   * @param opex Operating expense for this type of CHP (typically in €)
+   * @param etaEl Electrical efficiency
+   * @param etaThermal Thermal efficiency
+   * @param sRated Rated electrical apparent power
+   * @param cosPhiRated Power factor for this type of CHP
+   * @param pThermal Rated thermal power
+   * @param pOwn Internal consumption
+   * @param additionalInformation Of the input
+   */
+  public ChpTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Dimensionless> etaEl,
+      ComparableQuantity<Dimensionless> etaThermal,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated,
+      ComparableQuantity<Power> pThermal,
+      ComparableQuantity<Power> pOwn,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
+    this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
+    this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
+    this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
+    this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
+    setAdditionalInformation(additionalInformation);
   }
 
   public ComparableQuantity<Dimensionless> getEtaEl() {
@@ -118,6 +152,8 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
         + pThermal
         + ", pOwn="
         + pOwn
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

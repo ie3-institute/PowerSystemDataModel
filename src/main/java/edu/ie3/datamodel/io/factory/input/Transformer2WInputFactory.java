@@ -36,6 +36,16 @@ public class Transformer2WInputFactory
     final boolean autoTap = data.getBoolean(AUTO_TAP);
 
     return new Transformer2WInput(
-        uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, tapPos, autoTap);
+        uuid,
+        id,
+        operator,
+        operationTime,
+        nodeA,
+        nodeB,
+        parallelDevices,
+        type,
+        tapPos,
+        autoTap,
+        data.getFieldsToValues());
   }
 }

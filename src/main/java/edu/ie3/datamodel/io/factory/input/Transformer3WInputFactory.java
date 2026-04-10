@@ -45,6 +45,7 @@ public class Transformer3WInputFactory
         parallelDevices,
         type,
         tapPos,
-        autoTap);
+        autoTap,
+        data.getFieldsToValues());
   }
 }
