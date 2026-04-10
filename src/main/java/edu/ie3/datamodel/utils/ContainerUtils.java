@@ -648,8 +648,7 @@ public class ContainerUtils {
    * @param transformer Specific transformer to determine sub grid containers for
    * @param subGrids Mapping from sub grid number to sub grid container
    * @return All surrounding sub grid containers
-   * @throws TopologyException If the most upstream node (considering switchgear) cannot be
-   *     determined
+   * @throws TopologyException if one of the required sub grid containers cannot be determined
    */
   private static TransformerSubGridContainers getSubGridContainers(
       TransformerInput transformer, Map<Integer, SubGridContainer> subGrids)
@@ -660,11 +659,34 @@ public class ContainerUtils {
     /* Get the sub grid container at port B */
     SubGridContainer containerB = subGrids.get(transformer.getNodeB().getSubnet());
 
+    // validate found containers for 2-winding transformer
+    if (containerA == null || containerB == null) {
+      throw new TopologyException(
+          "Cannot determine sub grid container(s) for transformer '"
+              + transformer.getId()
+              + "' ("
+              + transformer.getUuid()
+              + "). Found containerA="
+              + containerA
+              + ", containerB="
+              + containerB);
+    }
+
     /* Get the sub grid container at port C, if this is a three winding transformer */
     if (transformer instanceof Transformer3WInput transformer3WInput) {
       SubGridContainer containerC = subGrids.get(transformer3WInput.getNodeC().getSubnet());
+      if (containerC == null) {
+        throw new TopologyException(
+            "Cannot determine sub grid container at port C for transformer '"
+                + transformer.getId()
+                + "' ("
+                + transformer.getUuid()
+                + "). Found containerC=null");
+      }
       return new TransformerSubGridContainers(containerA, containerB, containerC);
-    } else return new TransformerSubGridContainers(containerA, containerB);
+    } else {
+      return new TransformerSubGridContainers(containerA, containerB);
+    }
   }
 
   /**
