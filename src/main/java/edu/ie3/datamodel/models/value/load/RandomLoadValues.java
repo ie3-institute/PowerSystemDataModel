@@ -14,7 +14,7 @@ import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import tech.units.indriya.quantity.Quantities;
 
 /**
@@ -86,7 +86,7 @@ public class RandomLoadValues implements LoadValues {
     this.sigmaSa = sigmaSa;
     this.sigmaSu = sigmaSu;
 
-    RandomFactory factory = RandomFactory.get(new Random().nextLong());
+    final RandomFactory factory = RandomFactory.get(ThreadLocalRandom.current().nextLong());
 
     this.gevWd = new GeneralizedExtremeValueDistribution(myWd, sigmaWd, kWd, factory.getRandom());
 
