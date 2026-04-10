@@ -9,7 +9,6 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.quantities.PowerSystemUnits;
-import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import javax.measure.quantity.Angle;
@@ -35,12 +34,14 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
     Point coordinate = data.getCoordinate();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
-    ComparableQuantity<Irradiance> directIrradiance =
-        data.getQuantity(ICON_DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
-    ComparableQuantity<Irradiance> diffuseIrradiance =
-        data.getQuantity(ICON_DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
-    ComparableQuantity<Temperature> temperature =
-        data.getQuantity(ICON_TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
+
+    SolarIrradianceValue solarIrradianceValue =
+        new SolarIrradianceValue(
+            data.getQuantity(ICON_DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE),
+            data.getQuantity(ICON_DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE));
+    TemperatureValue temperatureValue =
+        new TemperatureValue(
+            data.getQuantity(ICON_TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE));
     WindValue windValue = getWindValue(data);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
         data.getQuantityOptional(ICON_GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN)
@@ -51,8 +52,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
-            new SolarIrradianceValue(directIrradiance, diffuseIrradiance),
-            new TemperatureValue(temperature),
+            solarIrradianceValue,
+            temperatureValue,
             windValue,
             groundTemperatureLevel1.map(GroundTemperatureValue::new),
             groundTemperatureLevel2.map(GroundTemperatureValue::new));
@@ -60,7 +61,20 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   }
 
   /**
-   * Determines the wind value.
+   * Determines the wind direction and velocity. In ICON both values are given in three-dimensional
+   * Cartesian coordinates.
+   *
+   * <p><b>For the direction:</b><br>
+   * Here, the upward component is neglected. 0° or 0 rad are defined to point northwards. The angle
+   * increases clockwise. Please note, that the wind direction is the direction, the wind
+   * <b>comes</b> from and not goes to. We choose to use the wind velocity calculations at 131 m
+   * above ground, as this is a height that pretty good matches the common hub height of today's
+   * onshore wind generators, that are commonly connected to the voltage levels of interest.
+   *
+   * <p><b>For the velocity:</b><br>
+   * Here, the upward component is neglected. We choose to use the wind velocity calculations at 131
+   * m above ground, as this is a height that pretty good matches the common hub height of today's
+   * onshore wind generators, that are commonly connected to the voltage levels of interest.
    *
    * @param data Collective information to convert
    * @return The wind value.

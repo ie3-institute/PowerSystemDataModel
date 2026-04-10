@@ -51,6 +51,7 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
     super(uuid, graphicLayer, path);
     this.node = node;
     this.point = point;
+    setAdditionalInformation(additionalInformation);
   }
 
   public NodeInput getNode() {
