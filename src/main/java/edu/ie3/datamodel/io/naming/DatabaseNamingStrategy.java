@@ -88,8 +88,9 @@ public class DatabaseNamingStrategy {
           V extends Value,
           R extends Value>
       Optional<String> getEntityName(T timeSeries) {
-    if (timeSeries instanceof IndividualTimeSeries individualTimeSeries) {
-      Optional<E> maybeFirstElement = individualTimeSeries.getEntries().stream().findFirst();
+    if (timeSeries instanceof IndividualTimeSeries<?> individualTimeSeries) {
+      Optional<? extends TimeSeriesEntry<?>> maybeFirstElement =
+          individualTimeSeries.getEntries().stream().findFirst();
       if (maybeFirstElement.isPresent()) {
         Class<? extends Value> valueClass = maybeFirstElement.get().getValue().getClass();
         return Optional.of(getTimeSeriesEntityName(ColumnScheme.parse(valueClass).orElseThrow()));

@@ -45,7 +45,7 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
    * @param c Specific heat capacity of the storage medium
    * @param pThermalMax Maximum thermal power of the storage
    */
-  public AbstractStorageInput(
+  protected AbstractStorageInput(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -74,7 +74,7 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
    * @param c Specific heat capacity of the storage medium
    * @param pThermalMax Maximum thermal power of the storage
    */
-  public AbstractStorageInput(
+  protected AbstractStorageInput(
       UUID uuid,
       String id,
       ThermalBusInput bus,

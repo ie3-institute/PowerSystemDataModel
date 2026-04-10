@@ -47,7 +47,7 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     String trimmed = input.trim();
     if (!trimmed.startsWith("(") || !trimmed.endsWith(")"))
       throw new ParsingException(buildExceptionMessage(input));
-    String[] entries = trimmed.replaceAll("^\\(|\\)$", "").split(",");
+    String[] entries = trimmed.replaceAll("(^\\()|(\\)$)", "").split(",");
     if (entries.length != 2) throw new ParsingException(buildExceptionMessage(input));
 
     try {

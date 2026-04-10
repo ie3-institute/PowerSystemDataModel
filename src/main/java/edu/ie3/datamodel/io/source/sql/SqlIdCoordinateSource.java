@@ -249,7 +249,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   }
 
   /**
-   * Creates a basic query to retrieve all entries in a given box. The box is defines by a latitude
+   * Creates a basic query to retrieve all entries in a given box. The box is defined by a latitude
    * interval and a longitude interval. The intervals are provided via an envelope. The pattern
    * looks like this: <br>
    * {@code <base query> WHERE ST_Intersects(ST_MakeEnvelope(?, ?, ?, ?, 4326 ) , <point column> )

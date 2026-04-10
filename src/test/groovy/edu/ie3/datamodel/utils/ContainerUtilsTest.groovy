@@ -588,7 +588,7 @@ class ContainerUtilsTest extends Specification {
     def expected = new ContainerUtils.TransformerSubGridContainers(subGrid1, subGrid2)
 
     when:
-    def actual = ContainerUtils.getSubGridContainers(transformer, rawGridElements, subGridMapping)
+    def actual = ContainerUtils.getSubGridContainers(transformer, subGridMapping)
 
     then:
     actual == expected

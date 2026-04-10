@@ -14,13 +14,13 @@ import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import tech.units.indriya.quantity.Quantities;
 
 /**
  * Data model to describe the parameters of a probability density function to draw random power
  * consumptions. This model represents a generalized extreme value distribution (GEV), that has been
- * sampled for each quarter hour of a day, subdivided into workdays, Saturdays and Sundays. In
+ * sampled for each quarter-hour of a day, subdivided into workdays, Saturdays and Sundays. In
  * general the GEV is described by the three parameters "location", "scale" and "shape"
  */
 public class RandomLoadValues implements LoadValues {
@@ -86,7 +86,7 @@ public class RandomLoadValues implements LoadValues {
     this.sigmaSa = sigmaSa;
     this.sigmaSu = sigmaSu;
 
-    RandomFactory factory = RandomFactory.get(new Random().nextLong());
+    final RandomFactory factory = RandomFactory.get(ThreadLocalRandom.current().nextLong());
 
     this.gevWd = new GeneralizedExtremeValueDistribution(myWd, sigmaWd, kWd, factory.getRandom());
 
