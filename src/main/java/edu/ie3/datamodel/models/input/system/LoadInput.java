@@ -5,16 +5,15 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.*;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
-import edu.ie3.datamodel.models.profile.LoadProfile;
-import edu.ie3.datamodel.models.profile.StandardLoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
@@ -29,7 +28,7 @@ public class LoadInput extends SystemParticipantInput {
    * external mapping (e.g. by providing a global time series for a specific load profile) to this
    * model
    */
-  private final LoadProfile loadProfile;
+  private final PowerProfileKey loadProfile;
 
   /** Annually consumed energy (typically in kWh) */
   private final ComparableQuantity<Energy> eConsAnnual;
@@ -50,7 +49,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
-   * @param loadProfile Load profile to use for this model
+   * @param powerProfileKey Key of the load profile to use for this model
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
@@ -63,15 +62,52 @@ public class LoadInput extends SystemParticipantInput {
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
-      LoadProfile loadProfile,
+      PowerProfileKey powerProfileKey,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
-    this.loadProfile = loadProfile;
+    this.loadProfile = powerProfileKey;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
+  }
+
+  /**
+   * Constructor for an operated load
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param powerProfileKey Key of the load profile to use for this model
+   * @param eConsAnnual Annually consumed energy (typically in kWh)
+   * @param sRated Rated apparent power (in kVA)
+   * @param cosPhiRated Rated power factor
+   * @param additionalInformation That were provided by the source
+   */
+  public LoadInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      PowerProfileKey powerProfileKey,
+      ComparableQuantity<Energy> eConsAnnual,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    this.loadProfile = powerProfileKey;
+    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
+    this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.cosPhiRated = cosPhiRated;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -102,9 +138,7 @@ public class LoadInput extends SystemParticipantInput {
       String loadProfileKey,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosPhiRated)
-      throws ParsingException {
-
+      double cosPhiRated) {
     this(
         uuid,
         id,
@@ -113,7 +147,7 @@ public class LoadInput extends SystemParticipantInput {
         node,
         qCharacteristics,
         em,
-        LoadProfile.parse(loadProfileKey),
+        new PowerProfileKey(loadProfileKey),
         eConsAnnual,
         sRated,
         cosPhiRated);
@@ -127,7 +161,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
-   * @param loadProfile Standard load profile to use for this model
+   * @param powerProfileKey Key of a load profile to use for this model
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
@@ -138,12 +172,12 @@ public class LoadInput extends SystemParticipantInput {
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
-      LoadProfile loadProfile,
+      PowerProfileKey powerProfileKey,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
     super(uuid, id, node, qCharacteristics, em);
-    this.loadProfile = loadProfile;
+    this.loadProfile = powerProfileKey;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
@@ -157,9 +191,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
-   * @param loadProfileKey load profile key corresponding to {@link
-   *     edu.ie3.datamodel.models.profile.BdewStandardLoadProfile} or {@link
-   *     edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
+   * @param powerProfileKey load profile key corresponding to a load profile
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
    * @param cosPhiRated Rated power factor
@@ -170,24 +202,23 @@ public class LoadInput extends SystemParticipantInput {
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
-      String loadProfileKey,
+      String powerProfileKey,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosPhiRated)
-      throws ParsingException {
+      double cosPhiRated) {
     this(
         uuid,
         id,
         node,
         qCharacteristics,
         em,
-        LoadProfile.parse(loadProfileKey),
+        new PowerProfileKey(powerProfileKey),
         eConsAnnual,
         sRated,
         cosPhiRated);
   }
 
-  public LoadProfile getLoadProfile() {
+  public PowerProfileKey getLoadProfile() {
     return loadProfile;
   }
 
@@ -225,11 +256,19 @@ public class LoadInput extends SystemParticipantInput {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), eConsAnnual, sRated, cosPhiRated);
+    return Objects.hash(super.hashCode(), eConsAnnual, sRated, cosPhiRated, loadProfile);
   }
 
   @Override
   public String toString() {
+    String key;
+
+    if (loadProfile == null) {
+      key = null;
+    } else {
+      key = loadProfile.getValue();
+    }
+
     return "LoadInput{"
         + "uuid="
         + getUuid()
@@ -245,40 +284,41 @@ public class LoadInput extends SystemParticipantInput {
         + getqCharacteristics()
         + "', em="
         + getControllingEm()
+        + ", loadProfile='"
+        + key
         + ", eConsAnnual="
         + eConsAnnual
         + ", sRated="
         + sRated
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + cosPhiRated
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 
   /**
    * A builder pattern based approach to create copies of {@link LoadInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link LoadInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
+   * field values. For detailed field descriptions refer to Javadocs of {@link LoadInput}
    */
   public static class LoadInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<LoadInputCopyBuilder> {
 
-    private LoadProfile loadProfile;
+    private PowerProfileKey powerProfileKey;
     private ComparableQuantity<Energy> eConsAnnual;
     private ComparableQuantity<Power> sRated;
     private double cosPhiRated;
 
     private LoadInputCopyBuilder(LoadInput entity) {
       super(entity);
-      this.loadProfile = entity.getLoadProfile();
+      this.powerProfileKey = entity.getLoadProfile();
       this.eConsAnnual = entity.geteConsAnnual();
       this.sRated = entity.getsRated();
       this.cosPhiRated = entity.getCosPhiRated();
     }
 
-    public LoadInputCopyBuilder loadprofile(StandardLoadProfile standardLoadProfile) {
-      this.loadProfile = standardLoadProfile;
+    public LoadInputCopyBuilder loadProfile(PowerProfileKey powerProfileKey) {
+      this.powerProfileKey = powerProfileKey;
       return thisInstance();
     }
 
@@ -314,7 +354,7 @@ public class LoadInput extends SystemParticipantInput {
           getNode(),
           getqCharacteristics(),
           getEm(),
-          loadProfile,
+          powerProfileKey,
           eConsAnnual,
           sRated,
           cosPhiRated);

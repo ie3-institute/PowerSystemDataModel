@@ -20,22 +20,15 @@ import org.locationtech.jts.geom.Point;
 public final class NodeGraphicInputFactory
     extends GraphicInputFactory<NodeGraphicInput, NodeGraphicInputEntityData> {
 
-  private static final String POINT = "point";
-  private static final String NODE = "node";
-
   public NodeGraphicInputFactory() {
     super(NodeGraphicInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {POINT, NODE};
   }
 
   @Override
   protected NodeGraphicInput buildModel(
       NodeGraphicInputEntityData data, UUID uuid, String graphicLayer, LineString path) {
     final Point point = data.getPoint(POINT).orElse(NodeInput.DEFAULT_GEO_POSITION);
-    return new NodeGraphicInput(uuid, graphicLayer, path, data.getNode(), point);
+    return new NodeGraphicInput(
+        uuid, graphicLayer, path, data.getNode(), point, data.getFieldsToValues());
   }
 }

@@ -88,8 +88,9 @@ public class DatabaseNamingStrategy {
           V extends Value,
           R extends Value>
       Optional<String> getEntityName(T timeSeries) {
-    if (timeSeries instanceof IndividualTimeSeries individualTimeSeries) {
-      Optional<E> maybeFirstElement = individualTimeSeries.getEntries().stream().findFirst();
+    if (timeSeries instanceof IndividualTimeSeries<?> individualTimeSeries) {
+      Optional<? extends TimeSeriesEntry<?>> maybeFirstElement =
+          individualTimeSeries.getEntries().stream().findFirst();
       if (maybeFirstElement.isPresent()) {
         Class<? extends Value> valueClass = maybeFirstElement.get().getValue().getClass();
         return Optional.of(getTimeSeriesEntityName(ColumnScheme.parse(valueClass).orElseThrow()));
@@ -97,7 +98,7 @@ public class DatabaseNamingStrategy {
         logger.error("Unable to determine content of time series {}", timeSeries);
         return Optional.empty();
       }
-    } else if (timeSeries instanceof LoadProfileTimeSeries<?, ?>) {
+    } else if (timeSeries instanceof LoadProfileTimeSeries<?>) {
       return Optional.of(getLoadProfileEntityName());
     } else {
       logger.error("There is no naming strategy defined for {}", timeSeries);

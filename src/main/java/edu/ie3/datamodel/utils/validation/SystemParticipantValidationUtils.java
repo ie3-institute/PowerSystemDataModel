@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*;
 import static edu.ie3.datamodel.models.StandardUnits.AZIMUTH;
 import static edu.ie3.datamodel.models.StandardUnits.SOLAR_ELEVATION_ANGLE;
 
@@ -13,13 +14,10 @@ import edu.ie3.datamodel.exceptions.TryException;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
-import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -69,6 +67,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     // Further checks for subclasses
     if (BmInput.class.isAssignableFrom(systemParticipant.getClass())) {
       exceptions.addAll(checkBm((BmInput) systemParticipant));
+    } else if (AcInput.class.isAssignableFrom(systemParticipant.getClass())) {
+      exceptions.addAll(checkAc((AcInput) systemParticipant));
     } else if (ChpInput.class.isAssignableFrom(systemParticipant.getClass())) {
       exceptions.addAll(checkChp((ChpInput) systemParticipant));
     } else if (EvInput.class.isAssignableFrom(systemParticipant.getClass())) {
@@ -102,7 +102,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *   <li>capex is not null and not negative
    *   <li>opex is not null and not negative
    *   <li>sRated is not null and not negative
-   *   <li>cosphiRated is between zero and one
+   *   <li>cosPhiRated is between zero and one
    * </ul>
    *
    * <p>A "distribution" method, that forwards the check request to specific implementations to
@@ -137,11 +137,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
           Try.ofVoid(
               () ->
                   detectNegativeQuantities(
-                      new Quantity<?>[] {
-                        systemParticipantTypeInput.getCapex(),
-                        systemParticipantTypeInput.getOpex(),
-                        systemParticipantTypeInput.getsRated()
-                      },
+                      quantities(
+                          CAP_EX, systemParticipantTypeInput.getCapex(),
+                          OP_EX, systemParticipantTypeInput.getOpex(),
+                          S_RATED, systemParticipantTypeInput.getsRated()),
                       systemParticipantTypeInput),
               InvalidEntityException.class));
     } catch (TryException e) {
@@ -165,6 +164,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       exceptions.add(checkEvType((EvTypeInput) systemParticipantTypeInput));
     } else if (HpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
       exceptions.add(checkHpType((HpTypeInput) systemParticipantTypeInput));
+    } else if (AcTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
+      exceptions.add(checkAcType((AcTypeInput) systemParticipantTypeInput));
     } else if (StorageTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
       exceptions.addAll(checkStorageType((StorageTypeInput) systemParticipantTypeInput));
     } else if (WecTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
@@ -209,7 +210,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                new Quantity<?>[] {bmTypeInput.getActivePowerGradient()}, bmTypeInput),
+                quantities(ACTIVE_POWER_GRADIENT, bmTypeInput.getActivePowerGradient()),
+                bmTypeInput),
         () ->
             isBetweenZeroAndHundredPercent(
                 bmTypeInput, bmTypeInput.getEtaConv(), "Efficiency of inverter"));
@@ -248,10 +250,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   private static List<Try<Void, InvalidEntityException>> checkChpType(ChpTypeInput chpTypeInput) {
     return Try.ofVoid(
         InvalidEntityException.class,
-        () -> detectNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpOwn()}, chpTypeInput),
+        () -> detectNegativeQuantities(quantities(P_OWN, chpTypeInput.getpOwn()), chpTypeInput),
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {chpTypeInput.getpThermal()}, chpTypeInput),
+                quantities(P_THERMAL, chpTypeInput.getpThermal()), chpTypeInput),
         () ->
             isBetweenZeroAndHundredPercent(
                 chpTypeInput, chpTypeInput.getEtaEl(), "Electrical efficiency"),
@@ -291,9 +293,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     return Try.ofVoid(
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {
-                  evTypeInput.geteStorage(), evTypeInput.geteCons(),
-                },
+                quantities(E_STORAGE, evTypeInput.geteStorage(), E_CONS, evTypeInput.geteCons()),
                 evTypeInput),
         InvalidEntityException.class);
   }
@@ -316,7 +316,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () ->
             detectNegativeQuantities(
-                new Quantity<?>[] {fixedFeedInInput.getsRated()}, fixedFeedInInput),
+                quantities(S_RATED, fixedFeedInInput.getsRated()), fixedFeedInInput),
         () -> checkRatedPowerFactor(fixedFeedInInput, fixedFeedInInput.getCosPhiRated()));
   }
 
@@ -351,10 +351,44 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     return Try.ofVoid(
         () ->
             detectZeroOrNegativeQuantities(
-                new Quantity<?>[] {
-                  hpTypeInput.getsRated(), hpTypeInput.getpThermal(),
-                },
+                quantities(S_RATED, hpTypeInput.getsRated(), P_THERMAL, hpTypeInput.getpThermal()),
                 hpTypeInput),
+        InvalidEntityException.class);
+  }
+
+  /**
+   * Validates a AcInput if:
+   *
+   * <ul>
+   *   <li>{@link SystemParticipantValidationUtils#checkAcType(AcTypeInput)} confirms a valid type
+   *       properties
+   * </ul>
+   *
+   * @param acInput AcInput to validate
+   * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
+   *     Success
+   */
+  private static List<Try<Void, InvalidEntityException>> checkAc(AcInput acInput) {
+    return checkType(acInput.getType());
+  }
+
+  /**
+   * Validates a AcTypeInput if:
+   *
+   * <ul>
+   *   <li>its rated power is positive
+   *   <li>its rated thermal power is positive
+   * </ul>
+   *
+   * @param acTypeInput AcTypeInput to validate
+   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
+   */
+  private static Try<Void, InvalidEntityException> checkAcType(AcTypeInput acTypeInput) {
+    return Try.ofVoid(
+        () ->
+            detectZeroOrNegativeQuantities(
+                quantities(S_RATED, acTypeInput.getsRated(), P_THERMAL, acTypeInput.getpThermal()),
+                acTypeInput),
         InvalidEntityException.class);
   }
 
@@ -379,21 +413,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(
             loadInput.getLoadProfile() == null,
-            () -> new InvalidEntityException("No load profile defined for load", loadInput)));
-
-    if (loadInput.getLoadProfile() != null) {
-      LoadProfile profile = loadInput.getLoadProfile();
-
-      // Validate if the profile is one of the allowed profiles
-      exceptions.add(
-          Try.ofVoid(
-              !(profile.equals(LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE)
-                  || Arrays.asList(LoadProfile.getAllProfiles()).contains(profile)),
-              () ->
-                  new InvalidEntityException(
-                      "Load profile must contain at least one valid entry: h0, g[0-6], l[0-2], ep1, ez2, random, or LoadProfile#NO_LOAD_PROFILE.",
-                      loadInput)));
-    }
+            () -> new InvalidEntityException("No load profile key defined for load", loadInput)));
 
     // Check negative quantities and power factor
     exceptions.addAll(
@@ -401,7 +421,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
             InvalidEntityException.class,
             () ->
                 detectNegativeQuantities(
-                    new Quantity<?>[] {loadInput.getsRated(), loadInput.geteConsAnnual()},
+                    quantities(
+                        S_RATED, loadInput.getsRated(), E_CONS_ANNUAL, loadInput.geteConsAnnual()),
                     loadInput),
             () -> checkRatedPowerFactor(loadInput, loadInput.getCosPhiRated())));
 
@@ -427,7 +448,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   private static List<Try<Void, InvalidEntityException>> checkPv(PvInput pvInput) {
     return Try.ofVoid(
         InvalidEntityException.class,
-        () -> detectNegativeQuantities(new Quantity<?>[] {pvInput.getsRated()}, pvInput),
+        () -> detectNegativeQuantities(quantities(S_RATED, pvInput.getsRated()), pvInput),
         () -> checkAlbedo(pvInput),
         () -> checkAzimuth(pvInput),
         () ->
@@ -515,27 +536,24 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   private static List<Try<Void, InvalidEntityException>> checkStorageType(
       StorageTypeInput storageTypeInput) {
-    List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
-
-    exceptions.addAll(
-        Try.ofVoid(
-            InvalidEntityException.class,
-            () ->
-                isBetweenZeroAndHundredPercent(
-                    storageTypeInput,
-                    storageTypeInput.getEta(),
-                    "Efficiency of the electrical converter"),
-            () ->
-                detectNegativeQuantities(
-                    new Quantity<?>[] {
-                      storageTypeInput.getpMax(), storageTypeInput.getActivePowerGradient(),
-                    },
-                    storageTypeInput),
-            () ->
-                detectZeroOrNegativeQuantities(
-                    new Quantity<?>[] {storageTypeInput.geteStorage()}, storageTypeInput)));
-
-    return exceptions;
+    return Try.ofVoid(
+        InvalidEntityException.class,
+        () ->
+            isBetweenZeroAndHundredPercent(
+                storageTypeInput,
+                storageTypeInput.getEta(),
+                "Efficiency of the electrical converter"),
+        () ->
+            detectNegativeQuantities(
+                quantities(
+                    P_MAX,
+                    storageTypeInput.getpMax(),
+                    ACTIVE_POWER_GRADIENT,
+                    storageTypeInput.getActivePowerGradient()),
+                storageTypeInput),
+        () ->
+            detectZeroOrNegativeQuantities(
+                quantities(E_STORAGE, storageTypeInput.geteStorage()), storageTypeInput));
   }
 
   /**
@@ -575,7 +593,11 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                 wecTypeInput, wecTypeInput.getEtaConv(), "Efficiency of the converter"),
         () ->
             detectNegativeQuantities(
-                new Quantity<?>[] {wecTypeInput.getRotorArea(), wecTypeInput.getHubHeight()},
+                quantities(
+                    ROTOR_AREA,
+                    wecTypeInput.getRotorArea(),
+                    HUB_HEIGHT,
+                    wecTypeInput.getHubHeight()),
                 wecTypeInput));
   }
 
@@ -608,7 +630,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         chargingPointValidation,
         () -> checkRatedPowerFactor(evcsInput, evcsInput.getCosPhiRated()),
         () ->
-            detectNegativeQuantities(new Quantity[] {evcsInput.getType().getsRated()}, evcsInput));
+            detectNegativeQuantities(
+                quantities(S_RATED, evcsInput.getType().getsRated()), evcsInput));
   }
 
   /**

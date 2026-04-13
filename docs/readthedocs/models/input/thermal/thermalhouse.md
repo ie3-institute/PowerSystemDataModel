@@ -25,17 +25,17 @@ This reflects a simple shoe box with transmission losses
      -
      - Human readable identifier
      
-   * - bus
+   * - thermalBus
      -
-     - Thermal bus, the model is connected to
+     - UUID of the [thermal bus](#thermal-bus-model)
 
    * - operator
      -
-     - 
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - ethLosses
      - kW / K
@@ -58,11 +58,11 @@ This reflects a simple shoe box with transmission losses
      - Lower temperature boundary
      
    * - housingType
-     - –
+     -
      - Type of building can either be house or flat
      
    * - numberInhabitants
-     - –
+     -
      - Number of people living in the house. Double values to enable modeling based on statistical data sources.
 
 ```

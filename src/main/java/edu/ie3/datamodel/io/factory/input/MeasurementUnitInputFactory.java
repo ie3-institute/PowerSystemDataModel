@@ -13,19 +13,9 @@ import java.util.UUID;
 
 public class MeasurementUnitInputFactory
     extends AssetInputEntityFactory<MeasurementUnitInput, NodeAssetInputEntityData> {
-  private static final String NODE = "node";
-  private static final String V_MAG = "vMag";
-  private static final String V_ANG = "vAng";
-  private static final String P = "p";
-  private static final String Q = "q";
 
   public MeasurementUnitInputFactory() {
     super(MeasurementUnitInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {NODE, V_MAG, V_ANG, P, Q};
   }
 
   @Override
@@ -40,6 +30,7 @@ public class MeasurementUnitInputFactory
     final boolean vAng = data.getBoolean(V_ANG);
     final boolean p = data.getBoolean(P);
     final boolean q = data.getBoolean(Q);
-    return new MeasurementUnitInput(uuid, id, operator, operationTime, node, vMag, vAng, p, q);
+    return new MeasurementUnitInput(
+        uuid, id, operator, operationTime, node, vMag, vAng, p, q, data.getFieldsToValues());
   }
 }

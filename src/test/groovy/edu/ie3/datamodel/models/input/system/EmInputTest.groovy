@@ -22,9 +22,9 @@ class EmInputTest extends Specification {
 
     then:
     emInput.with {
-      assert uuid == UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792")
-      assert id == "test_emInput"
-      assert controlStrategy == SystemParticipantTestData.emControlStrategy
+      uuid == UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792")
+      id == "test_emInput"
+      controlStrategy == SystemParticipantTestData.emControlStrategy
     }
   }
 
@@ -62,6 +62,7 @@ class EmInputTest extends Specification {
         SystemParticipantTestData.emInput.controlStrategy +
         ", controllingEm=" +
         SystemParticipantTestData.parentEm.uuid +
+        ", additionalInformation={}" +
         "}"
   }
 
@@ -81,12 +82,12 @@ class EmInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == emInput.uuid
-      assert operationTime == emInput.operationTime
-      assert operator == emInput.operator
-      assert id == emInput.id
-      assert controlStrategy == newStrat
-      assert controllingEm == Optional.of(givenParentEm)
+      uuid == emInput.uuid
+      operationTime == emInput.operationTime
+      operator == emInput.operator
+      id == emInput.id
+      controlStrategy == newStrat
+      controllingEm == Optional.of(givenParentEm)
     }
   }
 }

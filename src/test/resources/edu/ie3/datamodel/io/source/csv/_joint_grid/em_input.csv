@@ -1,0 +1,6 @@
+uuid,id,operator,operates_from,operates_until,controlStrategy,controllingEm
+4e2f47a6-40f4-4952-9b2f-7b7d2558a143,em_system_1,,,,"SelfConsumptionOptimized",
+a3e8e4a3-7b1b-4b1e-9e7b-8d6e3f5a2b1d,em_system_2,,,,GridSupportive,4e2f47a6-40f4-4952-9b2f-7b7d2558a143
+b8d9c5b2-6c2c-4c2d-8f8c-9e7f4a6b3c2e,em_system_3,,,,PriceReactive,4e2f47a6-40f4-4952-9b2f-7b7d2558a143
+c7f0d6c1-5d3d-4d3e-7a9d-1f8a5b7c4d3f,em__system_4,,,,StoragePriority,4e2f47a6-40f4-4952-9b2f-7b7d2558a143
+d6a1e7d0-4e4e-4e4f-6b0e-2a9b6c8d5e4a,em_system_5,,,,FeedInLimitation,4e2f47a6-40f4-4952-9b2f-7b7d2558a143

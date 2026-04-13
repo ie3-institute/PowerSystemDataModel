@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
@@ -23,9 +24,6 @@ import tech.units.indriya.ComparableQuantity;
 public class BmInput extends SystemParticipantInput implements HasType {
   /** Type of this BM plant, containing default values for BM plants of this kind */
   private final BmTypeInput type;
-
-  /** Is this asset market oriented? */
-  private final boolean marketReaction;
 
   /**
    * Does this plant increase the output power if the revenues exceed the energy generation costs?
@@ -46,7 +44,6 @@ public class BmInput extends SystemParticipantInput implements HasType {
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of BM
-   * @param marketReaction Is this asset market oriented?
    * @param costControlled Does this plant increase the output power if the revenues exceed the
    *     energy generation costs?
    * @param feedInTariff Granted feed in tariff (typically in €/MWh)
@@ -60,14 +57,47 @@ public class BmInput extends SystemParticipantInput implements HasType {
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
       BmTypeInput type,
-      boolean marketReaction,
       boolean costControlled,
       ComparableQuantity<EnergyPrice> feedInTariff) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.type = type;
-    this.marketReaction = marketReaction;
     this.costControlled = costControlled;
     this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
+  }
+
+  /**
+   * Constructor for an operated biomass plant
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param type of BM
+   * @param costControlled Does this plant increase the output power if the revenues exceed the
+   *     energy generation costs?
+   * @param feedInTariff Granted feed in tariff (typically in €/MWh)
+   * @param additionalInformation That were provided by the source
+   */
+  public BmInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      BmTypeInput type,
+      boolean costControlled,
+      ComparableQuantity<EnergyPrice> feedInTariff,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    this.type = type;
+    this.costControlled = costControlled;
+    this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -79,7 +109,6 @@ public class BmInput extends SystemParticipantInput implements HasType {
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of BM
-   * @param marketReaction Is this asset market oriented?
    * @param costControlled Does this plant increase the output power if the revenues exceed the
    *     energy generation costs?
    * @param feedInTariff Granted feed in tariff (typically in €/MWh)
@@ -91,12 +120,10 @@ public class BmInput extends SystemParticipantInput implements HasType {
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
       BmTypeInput type,
-      boolean marketReaction,
       boolean costControlled,
       ComparableQuantity<EnergyPrice> feedInTariff) {
     super(uuid, id, node, qCharacteristics, em);
     this.type = type;
-    this.marketReaction = marketReaction;
     this.costControlled = costControlled;
     this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
   }
@@ -104,10 +131,6 @@ public class BmInput extends SystemParticipantInput implements HasType {
   @Override
   public BmTypeInput getType() {
     return type;
-  }
-
-  public boolean isMarketReaction() {
-    return marketReaction;
   }
 
   public boolean isCostControlled() {
@@ -132,15 +155,14 @@ public class BmInput extends SystemParticipantInput implements HasType {
     if (this == o) return true;
     if (!(o instanceof BmInput bmInput)) return false;
     if (!super.equals(o)) return false;
-    return marketReaction == bmInput.marketReaction
-        && costControlled == bmInput.costControlled
+    return costControlled == bmInput.costControlled
         && type.equals(bmInput.type)
         && feedInTariff.equals(bmInput.feedInTariff);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), type, marketReaction, costControlled, feedInTariff);
+    return Objects.hash(super.hashCode(), type, costControlled, feedInTariff);
   }
 
   @Override
@@ -162,12 +184,12 @@ public class BmInput extends SystemParticipantInput implements HasType {
         + getControllingEm()
         + ", type="
         + type.getUuid()
-        + ", marketReaction="
-        + marketReaction
         + ", costControlled="
         + costControlled
         + ", feedInTariff="
         + feedInTariff
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 
@@ -182,25 +204,18 @@ public class BmInput extends SystemParticipantInput implements HasType {
       extends SystemParticipantInputCopyBuilder<BmInputCopyBuilder> {
 
     private BmTypeInput type;
-    private boolean marketReaction;
     private boolean costControlled;
     private ComparableQuantity<EnergyPrice> feedInTariff;
 
     private BmInputCopyBuilder(BmInput entity) {
       super(entity);
       this.type = entity.getType();
-      this.marketReaction = entity.isMarketReaction();
       this.costControlled = entity.isCostControlled();
       this.feedInTariff = entity.getFeedInTariff();
     }
 
     public BmInputCopyBuilder type(BmTypeInput type) {
       this.type = type;
-      return thisInstance();
-    }
-
-    public BmInputCopyBuilder marketReaction(boolean marketReaction) {
-      this.marketReaction = marketReaction;
       return thisInstance();
     }
 
@@ -231,7 +246,6 @@ public class BmInput extends SystemParticipantInput implements HasType {
           getqCharacteristics(),
           getEm(),
           type,
-          marketReaction,
           costControlled,
           feedInTariff);
     }

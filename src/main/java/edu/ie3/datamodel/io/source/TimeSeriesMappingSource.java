@@ -29,7 +29,7 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
 
   @Override
   public void validate() throws ValidationException {
-    validate(MappingEntry.class, this::getSourceFields, mappingFactory);
+    validate(MappingEntry.class, this::getSourceFields);
   }
 
   /**
@@ -81,10 +81,16 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
   public static class MappingEntry implements InputEntity {
     private final UUID asset;
     private final UUID timeSeries;
+    private final Map<String, String> additionalInformation = new HashMap<>();
 
     public MappingEntry(UUID asset, UUID timeSeries) {
       this.asset = asset;
       this.timeSeries = timeSeries;
+    }
+
+    public MappingEntry(UUID asset, UUID timeSeries, Map<String, String> additionalInformation) {
+      this(asset, timeSeries);
+      this.additionalInformation.putAll(additionalInformation);
     }
 
     /** Returns the {@link UUID} of the {@link edu.ie3.datamodel.models.input.AssetInput}. */
@@ -95,6 +101,11 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
     /** Returns the {@link UUID} of the {@link TimeSeries}. */
     public UUID getTimeSeries() {
       return timeSeries;
+    }
+
+    @Override
+    public Map<String, String> getAdditionalInformation() {
+      return Collections.unmodifiableMap(additionalInformation);
     }
 
     @Override

@@ -16,20 +16,19 @@ class ChpInputTest extends Specification {
 
     when:
     def alteredUnit = chpInput.copy().thermalBus(SystemParticipantTestData.thermalBus)
-        .type(SystemParticipantTestData.chpTypeInput).thermalStorage(SystemParticipantTestData.thermalStorage).marketReaction(true).build()
+        .type(SystemParticipantTestData.chpTypeInput).thermalStorage(SystemParticipantTestData.thermalStorage).build()
 
     then:
     alteredUnit.with {
-      assert uuid == chpInput.uuid
-      assert operationTime == chpInput.operationTime
-      assert operator == chpInput.operator
-      assert id == chpInput.id
-      assert qCharacteristics == chpInput.qCharacteristics
-      assert thermalBus == SystemParticipantTestData.thermalBus
-      assert thermalStorage == SystemParticipantTestData.thermalStorage
-      assert marketReaction
-      assert type == SystemParticipantTestData.chpTypeInput
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == chpInput.uuid
+      operationTime == chpInput.operationTime
+      operator == chpInput.operator
+      id == chpInput.id
+      qCharacteristics == chpInput.qCharacteristics
+      thermalBus == SystemParticipantTestData.thermalBus
+      thermalStorage == SystemParticipantTestData.thermalStorage
+      type == SystemParticipantTestData.chpTypeInput
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -42,19 +41,18 @@ class ChpInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == chpInput.uuid
-      assert operationTime == chpInput.operationTime
-      assert operator == chpInput.operator
-      assert id == chpInput.id
-      assert qCharacteristics == chpInput.qCharacteristics
-      assert thermalBus == chpInput.thermalBus
-      assert thermalStorage == chpInput.thermalStorage
-      assert marketReaction == chpInput.marketReaction
-      assert type.sRated == chpInput.type.sRated * 2d
-      assert sRated() == chpInput.type.sRated * 2d
-      assert type.pThermal == chpInput.type.pThermal * 2d
-      assert type.pOwn == chpInput.type.pOwn * 2d
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == chpInput.uuid
+      operationTime == chpInput.operationTime
+      operator == chpInput.operator
+      id == chpInput.id
+      qCharacteristics == chpInput.qCharacteristics
+      thermalBus == chpInput.thermalBus
+      thermalStorage == chpInput.thermalStorage
+      type.sRated == chpInput.type.sRated * 2d
+      sRated() == chpInput.type.sRated * 2d
+      type.pThermal == chpInput.type.pThermal * 2d
+      type.pOwn == chpInput.type.pOwn * 2d
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

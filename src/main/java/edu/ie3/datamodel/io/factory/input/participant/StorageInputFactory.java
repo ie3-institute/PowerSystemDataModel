@@ -17,15 +17,9 @@ import java.util.UUID;
 public class StorageInputFactory
     extends SystemParticipantInputEntityFactory<
         StorageInput, SystemParticipantTypedEntityData<StorageTypeInput>> {
-  private static final String TYPE = "type";
 
   public StorageInputFactory() {
     super(StorageInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE};
   }
 
   @Override
@@ -40,6 +34,14 @@ public class StorageInputFactory
     final EmInput em = data.getControllingEm().orElse(null);
     final StorageTypeInput typeInput = data.getTypeInput();
     return new StorageInput(
-        uuid, id, operator, operationTime, node, qCharacteristics, em, typeInput);
+        uuid,
+        id,
+        operator,
+        operationTime,
+        node,
+        qCharacteristics,
+        em,
+        typeInput,
+        data.getFieldsToValues());
   }
 }

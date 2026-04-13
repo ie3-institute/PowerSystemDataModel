@@ -84,11 +84,11 @@ Model of an ideal electrical battery energy storage.
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - node
      -
@@ -102,11 +102,6 @@ Model of an ideal electrical battery energy storage.
      -
      -
 
-   * - behaviour
-     -
-     - Foreseen operation strategy of the storage.
-       Eligible input: *"market"*, *"grid"*, *"self"*
-       
    * - controllingEm
      -
      - UUID reference to an [Energy Management Unit](#em_model) that is controlling

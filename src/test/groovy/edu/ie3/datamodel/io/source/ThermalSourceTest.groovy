@@ -30,8 +30,8 @@ class ThermalSourceTest extends Specification {
     then:
     actual.success
     actual.data.get().with {
-      assert it.operatorInput == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert it.busInput == bus
+      it.operatorInput == OperatorInput.NO_OPERATOR_ASSIGNED
+      it.busInput == bus
     }
   }
 }

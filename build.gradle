@@ -4,24 +4,23 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '8.1.0' //code format
-  id 'com.github.spotbugs' version '6.4.8' // code check, working on byte code
-  id 'de.undercouch.download' version '5.6.0'
+  id 'com.diffplug.spotless' version '8.4.0' //code format
+  id 'com.github.spotbugs' version '6.5.0' // code check, working on byte code
+  id 'de.undercouch.download' version '5.7.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "7.2.1.6560" // sonarqube
+  id "org.sonarqube" version "7.2.3.7755" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
-  id "com.github.johnrengelman.shadow" version "8.1.1" // fat jar
+  id 'com.gradleup.shadow' version '9.4.1' // fat jar
 }
 
 ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_21
-  groovyVersion = "4.0"
-  groovyBinaryVersion = "4.0.28"
+  groovyBinaryVersion = "5.0.5"
 
-  junitVersion = '6.0.1'
-  testcontainersVersion = '2.0.3'
+  junitVersion = '6.0.3'
+  testcontainersVersion = '2.0.4'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -50,9 +49,6 @@ apply from: scriptsLocation + 'branchName.gradle' // checks naming scheme of bra
 
 repositories {
   mavenCentral() // searches in Sonatype's repository 'Maven Central'
-
-  // sonatype snapshot repo
-  maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
@@ -70,19 +66,20 @@ dependencies {
   implementation 'org.locationtech.jts.io:jts-io-common:1.20.0'
 
   // Graphs
-  implementation 'org.jgrapht:jgrapht-core:1.5.2'
+  implementation 'org.jgrapht:jgrapht-core:1.5.3'
 
   // Statistics (for random load model)
   implementation 'de.lmu.ifi.dbs.elki:elki:0.7.5'
 
   // testing
   testImplementation "org.apache.groovy:groovy:$groovyBinaryVersion"
+  testImplementation "org.apache.groovy:groovy-json:$groovyBinaryVersion"
 
   testImplementation "org.junit.platform:junit-platform-launcher:$junitVersion"
   testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
-  testImplementation "org.spockframework:spock-core:2.3-groovy-$groovyVersion"
-  testImplementation 'org.objenesis:objenesis:3.4' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.18.2' // Mocks of classes
+  testImplementation "org.spockframework:spock-core:2.4-groovy-5.0"
+  testImplementation 'org.objenesis:objenesis:3.5' // Mock creation with constructor parameters
+  testImplementation 'net.bytebuddy:byte-buddy:1.18.8' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
@@ -92,18 +89,18 @@ dependencies {
   testImplementation "org.testcontainers:testcontainers-couchbase:$testcontainersVersion"
 
   // logging
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.3')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.4')
   implementation 'org.apache.logging.log4j:log4j-api' // log4j
   implementation 'org.apache.logging.log4j:log4j-core' // log4j
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.25'
-  implementation 'com.couchbase.client:java-client:3.10.0'
-  runtimeOnly 'org.postgresql:postgresql:42.7.8' // postgresql jdbc driver required during runtime
+  implementation 'com.couchbase.client:java-client:3.11.1'
+  runtimeOnly 'org.postgresql:postgresql:42.7.10' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.21.0' // I/O functionalities
-  implementation 'commons-codec:commons-codec:1.20.0' // needed by commons-compress
+  implementation 'commons-codec:commons-codec:1.21.0' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
 }
 

@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
@@ -29,7 +30,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
    * @param id of this type of BM
    * @param capex Capital expense for this type of BM (typically in €)
    * @param opex Operating expense for this type of BM (typically in €)
-   * @param cosphiRated Power factor for this type of BM
+   * @param cosPhiRated Power factor for this type of BM
    * @param activePowerGradient Maximum permissible gradient of active power change
    * @param sRated Rated apparent power for this type of BM (typically in kVA)
    * @param etaConv Efficiency of converter for this type of BM (typically in %)
@@ -41,11 +42,38 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<EnergyPrice> opex,
       ComparableQuantity<DimensionlessRate> activePowerGradient,
       ComparableQuantity<Power> sRated,
-      double cosphiRated,
+      double cosPhiRated,
       ComparableQuantity<Dimensionless> etaConv) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param id of this type of BM
+   * @param capex Capital expense for this type of BM (typically in €)
+   * @param opex Operating expense for this type of BM (typically in €)
+   * @param cosPhiRated Power factor for this type of BM
+   * @param activePowerGradient Maximum permissible gradient of active power change
+   * @param sRated Rated apparent power for this type of BM (typically in kVA)
+   * @param etaConv Efficiency of converter for this type of BM (typically in %)
+   * @param additionalInformation Of the input
+   */
+  public BmTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<DimensionlessRate> activePowerGradient,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated,
+      ComparableQuantity<Dimensionless> etaConv,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
+    this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
+    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
+    setAdditionalInformation(additionalInformation);
   }
 
   public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
@@ -87,12 +115,14 @@ public class BmTypeInput extends SystemParticipantTypeInput {
         + getOpex()
         + ", sRated="
         + getsRated()
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + getCosPhiRated()
         + "loadGradient="
         + activePowerGradient
         + ", etaConv="
         + etaConv
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

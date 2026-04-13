@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import edu.ie3.util.quantities.interfaces.SpecificEnergy;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
@@ -34,7 +35,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
    * @param eStorage Energy capacity of the storage
    * @param eCons Consumed electric energy per driven distance
    * @param sRated Rated apparent power for this type of EV (typically in kVA)
-   * @param cosphiRated Power factor for this type of EV
+   * @param cosPhiRated Power factor for this type of EV
    * @param sRatedDC power for DC (typically in kW)
    */
   public EvTypeInput(
@@ -45,12 +46,42 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Energy> eStorage,
       ComparableQuantity<SpecificEnergy> eCons,
       ComparableQuantity<Power> sRated,
-      double cosphiRated,
+      double cosPhiRated,
       ComparableQuantity<Power> sRatedDC) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
     this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param id of this type of EV
+   * @param capex Capital expense for this type of EV (typically in €)
+   * @param opex Operating expense for this type of EV (typically in €)
+   * @param eStorage Energy capacity of the storage
+   * @param eCons Consumed electric energy per driven distance
+   * @param sRated Rated apparent power for this type of EV (typically in kVA)
+   * @param cosPhiRated Power factor for this type of EV
+   * @param sRatedDC power for DC (typically in kW)
+   * @param additionalInformation Of the input
+   */
+  public EvTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Energy> eStorage,
+      ComparableQuantity<SpecificEnergy> eCons,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated,
+      ComparableQuantity<Power> sRatedDC,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
+    this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
+    this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
+    this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
+    setAdditionalInformation(additionalInformation);
   }
 
   public ComparableQuantity<Energy> geteStorage() {
@@ -98,7 +129,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
         + getOpex()
         + ", sRated="
         + getsRated()
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + getCosPhiRated()
         + "eStorage="
         + eStorage
@@ -106,6 +137,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
         + eCons
         + ", sRatedDC="
         + sRatedDC
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

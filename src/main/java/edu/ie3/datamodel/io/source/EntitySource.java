@@ -67,43 +67,56 @@ public abstract class EntitySource {
   public abstract void validate() throws ValidationException;
 
   /**
-   * Method for validating a single source.
+   * Method to validate the given entity classes.
    *
-   * @param entityClass class to be validated
-   * @param dataSource source for the fields
-   * @param validator used to validate
-   * @param <C> type of the class
+   * @param dataSource data source to use for the validation
+   * @param classes to validate
    */
-  protected static <C extends Entity> Try<Void, ValidationException> validate(
-      Class<? extends C> entityClass, DataSource dataSource, SourceValidator<C> validator) {
-    return validate(entityClass, () -> dataSource.getSourceFields(entityClass), validator);
+  @SafeVarargs
+  protected static void validate(DataSource dataSource, Class<? extends Entity>... classes)
+      throws FailedValidationException {
+    Try.scanStream(
+            Arrays.stream(classes).map(c -> validate(c, dataSource)),
+            "Void",
+            FailedValidationException::new)
+        .getOrThrow();
   }
 
   /**
    * Method for validating a single source.
    *
    * @param entityClass class to be validated
+   * @param dataSource source for the fields
+   * @param <C> type of the class
+   */
+  protected static <C extends Entity> Try<Void, ValidationException> validate(
+      Class<? extends C> entityClass, DataSource dataSource) {
+    return validate(entityClass, () -> dataSource.getSourceFields(entityClass));
+  }
+
+  /**
+   * Method for validating a single source.
+   *
+   * @param clazz class to be validated
    * @param sourceFields supplier for source fields
-   * @param validator used to validate
    * @param <C> type of the class
    */
   protected static <C> Try<Void, ValidationException> validate(
-      Class<? extends C> entityClass,
-      Try.TrySupplier<Optional<Set<String>>, SourceException> sourceFields,
-      SourceValidator<C> validator) {
+      Class<? extends C> clazz,
+      Try.TrySupplier<Optional<Set<String>>, SourceException> sourceFields) {
     return Try.of(sourceFields, SourceException.class)
         .transformF(
             se ->
                 (ValidationException)
                     new FailedValidationException(
-                        "Validation for entity "
-                            + entityClass
+                        "Validation for class "
+                            + clazz
                             + " failed because of an error related to its source.",
                         se))
         .flatMap(
             fieldsOpt ->
                 fieldsOpt
-                    .map(fields -> validator.validate(fields, entityClass))
+                    .map(fields -> DataSource.validate(fields, clazz))
                     .orElse(Try.Success.empty()));
   }
 
@@ -252,9 +265,7 @@ public abstract class EntitySource {
           BiFunction<E, T, R> buildingFcn) {
     return entityData ->
         entityData
-            .zip(
-                extractFunction(entityData, fieldName, entities)
-                    .orElse(() -> Try.Success.of(defaultEntity)))
+            .zip(extractWithDefaultFunction(entityData, fieldName, entities, defaultEntity))
             .map(enrichFunction(List.of(fieldName), buildingFcn));
   }
 
@@ -381,6 +392,30 @@ public abstract class EntitySource {
                                 + fieldName
                                 + "' failed. Caused by: "
                                 + exception.getMessage())));
+  }
+
+  /**
+   * Method to extract an entity with default.
+   *
+   * @param entityData data containing complex entities
+   * @param fieldName name of the field
+   * @param entities map: uuid to {@link Entity}
+   * @param defaultEntity that is used if the field is empty
+   * @return an enrichment
+   * @param <E> type of entity data
+   * @param <R> type of entity
+   */
+  protected static <E extends EntityData, R> Try<R, SourceException> extractWithDefaultFunction(
+      Try<E, SourceException> entityData,
+      String fieldName,
+      Map<UUID, R> entities,
+      R defaultEntity) {
+    if (entityData.convert(data -> data.isFieldEmpty(fieldName), f -> false)) {
+      // return the default entity, if the field is empty
+      return new Try.Success<>(defaultEntity);
+    } else {
+      return extractFunction(entityData, fieldName, entities);
+    }
   }
 
   /**

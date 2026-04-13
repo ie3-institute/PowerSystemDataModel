@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.geo.GeoUtils;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
@@ -68,6 +69,41 @@ public class NodeInput extends AssetInput {
     this.geoPosition = geoPosition;
     this.voltLvl = voltLvl;
     this.subnet = subnet;
+  }
+
+  /**
+   * Constructor for an operated node
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
+   * @param slack Is this node a slack node?
+   * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
+   *     that are connected to this node
+   * @param voltLvl Voltage level of this node
+   * @param subnet of this node
+   * @param additionalInformation That were provided by the source
+   */
+  public NodeInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      ComparableQuantity<Dimensionless> vTarget,
+      boolean slack,
+      Point geoPosition,
+      VoltageLevel voltLvl,
+      int subnet,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime);
+    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
+    this.slack = slack;
+    this.geoPosition = geoPosition;
+    this.voltLvl = voltLvl;
+    this.subnet = subnet;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -162,6 +198,8 @@ public class NodeInput extends AssetInput {
         + voltLvl
         + ", subnet="
         + subnet
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

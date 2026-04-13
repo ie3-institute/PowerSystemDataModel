@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.models.profile;
 
-import edu.ie3.datamodel.exceptions.ParsingException;
-
 /** Temperature dependant determined by NBW (accessed 05/2022) */
 public enum NbwTemperatureDependantLoadProfile implements TemperatureDependantLoadProfile {
   // heat pumps
@@ -15,25 +13,14 @@ public enum NbwTemperatureDependantLoadProfile implements TemperatureDependantLo
   // night storage heating
   EZ2("ez2");
 
-  private final String key;
+  private final PowerProfileKey key;
 
   NbwTemperatureDependantLoadProfile(String key) {
-    this.key = key.toLowerCase();
-  }
-
-  /**
-   * Get the predefined nbw load profile based on the given key
-   *
-   * @param key key to check for
-   * @return The corresponding nbw load profile or throw {@link IllegalArgumentException}, if no
-   *     matching load profile can be found
-   */
-  public static NbwTemperatureDependantLoadProfile get(String key) throws ParsingException {
-    return LoadProfile.getProfile(NbwTemperatureDependantLoadProfile.values(), key);
+    this.key = new PowerProfileKey(key);
   }
 
   @Override
-  public String getKey() {
+  public PowerProfileKey getKey() {
     return this.key;
   }
 

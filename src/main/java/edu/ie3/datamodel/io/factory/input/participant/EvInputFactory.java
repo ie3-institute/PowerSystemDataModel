@@ -17,15 +17,9 @@ import java.util.UUID;
 public class EvInputFactory
     extends SystemParticipantInputEntityFactory<
         EvInput, SystemParticipantTypedEntityData<EvTypeInput>> {
-  private static final String TYPE = "type";
 
   public EvInputFactory() {
     super(EvInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE};
   }
 
   @Override
@@ -40,6 +34,14 @@ public class EvInputFactory
     final EmInput em = data.getControllingEm().orElse(null);
 
     return new EvInput(
-        uuid, id, operator, operationTime, node, qCharacteristics, em, data.getTypeInput());
+        uuid,
+        id,
+        operator,
+        operationTime,
+        node,
+        qCharacteristics,
+        em,
+        data.getTypeInput(),
+        data.getFieldsToValues());
   }
 }

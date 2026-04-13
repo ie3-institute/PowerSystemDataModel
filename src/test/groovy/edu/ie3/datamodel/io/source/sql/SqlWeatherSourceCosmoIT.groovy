@@ -17,7 +17,7 @@ import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.Container
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
@@ -27,7 +27,7 @@ import spock.lang.Specification
 class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
 
   @Shared
-  PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
+  PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:18.3")
 
   @Shared
   SqlWeatherSource source
@@ -57,7 +57,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
+    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
   }
 
   def "A SqlWeatherSource returns nothing for an invalid coordinate"() {

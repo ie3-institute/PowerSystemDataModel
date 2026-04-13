@@ -16,19 +16,8 @@ import tech.units.indriya.ComparableQuantity;
 public abstract class AbstractThermalStorageInputFactory<T extends AbstractStorageInput>
     extends AssetInputEntityFactory<T, ThermalUnitInputEntityData> {
 
-  private static final String STORAGE_VOLUME_LVL = "storageVolumeLvl";
-  private static final String INLET_TEMP = "inletTemp";
-  private static final String RETURN_TEMP = "returnTemp";
-  private static final String C = "c";
-  private static final String P_THERMAL_MAX = "pThermalMax";
-
-  public AbstractThermalStorageInputFactory(Class<T> clazz) {
+  protected AbstractThermalStorageInputFactory(Class<T> clazz) {
     super(clazz);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX};
   }
 
   protected ComparableQuantity<Volume> getStorageVolumeLvl(ThermalUnitInputEntityData data) {

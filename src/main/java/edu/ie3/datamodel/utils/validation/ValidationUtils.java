@@ -5,7 +5,10 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import edu.ie3.datamodel.exceptions.*;
+import edu.ie3.datamodel.exceptions.FailedValidationException;
+import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.UnsafeEntityException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
@@ -22,10 +25,14 @@ import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
-import java.util.*;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import javax.measure.Quantity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +40,34 @@ import org.slf4j.LoggerFactory;
 /** Basic Sanity validation tools for entities */
 public class ValidationUtils {
   protected static final Logger logger = LoggerFactory.getLogger(ValidationUtils.class);
+
+  record NamedQuantity(String name, Quantity<?> value) {}
+
+  /**
+   * Creates a Stream of NamedQuantity objects from alternating name/value pairs. Each pair consists
+   * of:
+   *
+   * <ul>
+   *   <li>a string representing the field name
+   *   <li>a quantity representing the corresponding value
+   * </ul>
+   *
+   * The number of arguments must be even; otherwise an IllegalArgumentException is thrown.
+   *
+   * @param nameValuePairs alternating sequence of field names and quantities
+   * @return a stream of NamedQuantity instances built from the provided pairs
+   * @throws IllegalArgumentException if an uneven number of arguments is supplied
+   */
+  protected static Stream<NamedQuantity> quantities(Object... nameValuePairs) {
+    if (nameValuePairs.length % 2 != 0)
+      throw new IllegalArgumentException("Uneven number of arguments – must be name/value pairs");
+
+    return IntStream.range(0, nameValuePairs.length / 2)
+        .mapToObj(
+            i ->
+                new NamedQuantity(
+                    (String) nameValuePairs[i * 2], (Quantity<?>) nameValuePairs[i * 2 + 1]));
+  }
 
   /** Private Constructor as this class is not meant to be instantiated */
   protected ValidationUtils() {
@@ -241,11 +276,11 @@ public class ValidationUtils {
    * Goes through the provided quantities and reports those, that have negative value via synoptic
    * {@link UnsafeEntityException}
    *
-   * @param quantities Array of quantities to check
+   * @param quantities Stream of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  protected static void detectNegativeQuantities(Quantity<?>[] quantities, UniqueEntity entity)
-      throws InvalidEntityException {
+  protected static void detectNegativeQuantities(
+      Stream<NamedQuantity> quantities, UniqueEntity entity) throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() < 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be zero or positive");
@@ -255,11 +290,11 @@ public class ValidationUtils {
    * Goes through the provided quantities and reports those, that are zero or have negative value
    * via synoptic {@link UnsafeEntityException}
    *
-   * @param quantities Array of quantities to check
+   * @param quantities Stream of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
   protected static void detectZeroOrNegativeQuantities(
-      Quantity<?>[] quantities, UniqueEntity entity) throws InvalidEntityException {
+      Stream<NamedQuantity> quantities, UniqueEntity entity) throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() <= 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be positive");
@@ -268,11 +303,11 @@ public class ValidationUtils {
   /**
    * Goes through the provided quantities and reports those, that have positive value via
    *
-   * @param quantities Array of quantities to check
+   * @param quantities Stream of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  protected static void detectPositiveQuantities(Quantity<?>[] quantities, UniqueEntity entity)
-      throws InvalidEntityException {
+  protected static void detectPositiveQuantities(
+      Stream<NamedQuantity> quantities, UniqueEntity entity) throws InvalidEntityException {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() > 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be negative");
@@ -282,18 +317,21 @@ public class ValidationUtils {
    * Goes through the provided quantities and reports those, that do fulfill the given predicate via
    * synoptic {@link UnsafeEntityException}
    *
-   * @param quantities Array of quantities to check
+   * @param quantities Stream of quantities to check
    * @param entity Unique entity holding the malformed quantities
    * @param predicate Predicate to detect the malformed quantities
    * @param msg Message prefix to use for the exception message: [msg]: [malformedQuantities]
    */
   protected static void detectMalformedQuantities(
-      Quantity<?>[] quantities, UniqueEntity entity, Predicate<Quantity<?>> predicate, String msg)
+      Stream<NamedQuantity> quantities,
+      UniqueEntity entity,
+      Predicate<Quantity<?>> predicate,
+      String msg)
       throws InvalidEntityException {
     String malformedQuantities =
-        Arrays.stream(quantities)
-            .filter(predicate)
-            .map(Quantity::toString)
+        quantities
+            .filter(q -> predicate.test(q.value()))
+            .map(q -> q.name + "=" + q.value())
             .collect(Collectors.joining(", "));
     if (!malformedQuantities.isEmpty()) {
       throw new InvalidEntityException(msg + ": " + malformedQuantities, entity);

@@ -20,18 +20,9 @@ import tech.units.indriya.ComparableQuantity;
 public class BmInputFactory
     extends SystemParticipantInputEntityFactory<
         BmInput, SystemParticipantTypedEntityData<BmTypeInput>> {
-  private static final String TYPE = "type";
-  private static final String MARKET_REACTION = "marketReaction";
-  private static final String COST_CONTROLLED = "costControlled";
-  private static final String FEED_IN_TARIFF = "feedInTariff";
 
   public BmInputFactory() {
     super(BmInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE, MARKET_REACTION, COST_CONTROLLED, FEED_IN_TARIFF};
   }
 
   @Override
@@ -45,7 +36,6 @@ public class BmInputFactory
       OperationTime operationTime) {
     final EmInput em = data.getControllingEm().orElse(null);
     final BmTypeInput typeInput = data.getTypeInput();
-    final boolean marketReaction = data.getBoolean(MARKET_REACTION);
     final boolean costControlled = data.getBoolean(COST_CONTROLLED);
     final ComparableQuantity<EnergyPrice> feedInTariff =
         data.getQuantity(FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
@@ -59,8 +49,8 @@ public class BmInputFactory
         qCharacteristics,
         em,
         typeInput,
-        marketReaction,
         costControlled,
-        feedInTariff);
+        feedInTariff,
+        data.getFieldsToValues());
   }
 }

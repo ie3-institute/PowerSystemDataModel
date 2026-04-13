@@ -200,7 +200,6 @@ CREATE TABLE public.pv_input
     id TEXT NOT NULL,
     k_g DOUBLE PRECISION NOT NULL,
     k_t DOUBLE PRECISION NOT NULL,
-    market_reaction BOOL NOT NULL,
     node UUID NOT NULL,
     operates_from TIMESTAMP WITH TIME ZONE,
     operates_until TIMESTAMP WITH TIME ZONE,

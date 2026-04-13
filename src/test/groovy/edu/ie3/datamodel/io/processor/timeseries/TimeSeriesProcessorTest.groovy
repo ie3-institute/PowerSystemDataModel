@@ -33,16 +33,16 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
     then:
     processor.with {
       /* Check for attributes in higher classes also they are ignored by the class itself. */
-      assert processor.registeredClass == IndividualTimeSeries
+      processor.registeredClass == IndividualTimeSeries
 
-      assert processor.registeredKey == new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
-      assert processor.fieldToSource.size() == expectedSourceMapping.size()
+      processor.registeredKey == new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+      processor.fieldToSource.size() == expectedSourceMapping.size()
       processor.fieldToSource.each { key, value ->
-        assert expectedSourceMapping.containsKey(key)
-        assert expectedSourceMapping.get(key) == value.source()
+        expectedSourceMapping.containsKey(key)
+        expectedSourceMapping.get(key) == value.source()
       }
       /* Also test the logic of TimeSeriesProcessor#buildFieldToSource, because it is invoked during instantiation */
-      assert processor.headerElements == [
+      processor.headerElements == [
         "price",
         "time"
       ] as String[]

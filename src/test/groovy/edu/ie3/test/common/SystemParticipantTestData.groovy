@@ -24,7 +24,7 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
-import edu.ie3.datamodel.models.profile.StandardLoadProfile
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.*
 import tech.units.indriya.ComparableQuantity
@@ -109,7 +109,6 @@ class SystemParticipantTestData {
   elevationAngle,
   kG,
   kT,
-  false,
   sRated,
   cosPhiRated
   )
@@ -140,8 +139,7 @@ class SystemParticipantTestData {
   participantNode,
   cosPhiP,
   emInput,
-  wecType,
-  false
+  wecType
   )
 
   // CHP
@@ -199,8 +197,7 @@ class SystemParticipantTestData {
   cosPhiFixed,
   emInput,
   chpTypeInput,
-  thermalStorage,
-  false
+  thermalStorage
   )
 
   // BM
@@ -226,7 +223,6 @@ class SystemParticipantTestData {
   qV,
   emInput,
   bmTypeInput,
-  false,
   false,
   feedInTarif
   )
@@ -258,7 +254,7 @@ class SystemParticipantTestData {
 
   // Load
   protected static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
-  protected static final StandardLoadProfile standardLoadProfile = BdewStandardLoadProfile.H0
+  protected static final PowerProfileKey powerProfileKey = BdewStandardLoadProfile.H0.key
   public static final LoadInput loadInput = new LoadInput(
   UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"),
   "test_loadInput",
@@ -267,7 +263,7 @@ class SystemParticipantTestData {
   participantNode,
   cosPhiFixed,
   emInput,
-  standardLoadProfile,
+  powerProfileKey,
   eConsAnnual,
   sRated,
   cosPhiRated
@@ -323,6 +319,28 @@ class SystemParticipantTestData {
   hpTypeInput
   )
 
+  public static final AcTypeInput acTypeInput = new AcTypeInput(
+  typeUuid,
+  "test_acTypeInput",
+  capex,
+  opex,
+  sRated,
+  cosPhiRated,
+  pThermal
+  )
+
+  public static final AcInput acInput = new AcInput(
+  UUID.fromString("42e538e7-f29d-48ad-b376-277f24200ae0"),
+  "test_acInput",
+  operator,
+  operationTime,
+  participantNode,
+  thermalBus,
+  cosPhiFixed,
+  emInput,
+  acTypeInput
+  )
+
   // charging station
   public static final boolean v2gSupport = false
   public static final evcsInput = new EvcsInput(
@@ -342,6 +360,7 @@ class SystemParticipantTestData {
 
   public static SystemParticipants emptySystemParticipants =
   new SystemParticipants(
+  [] as Set,
   [] as Set,
   [] as Set,
   [] as Set,

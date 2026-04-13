@@ -22,7 +22,6 @@ import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -102,7 +101,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   @Override
   public void validate() throws ValidationException {
-    validate(valueClass, () -> dataSource.getSourceFields(tableName), valueFactory);
+    validate(valueClass, () -> dataSource.getSourceFields(tableName));
   }
 
   /**
@@ -112,7 +111,6 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    * @param schemaName the database schema to use
    * @param namingStrategy the database entity naming strategy to use
    * @param metaInformation the time series meta information
-   * @param dateTimeFormatter the DateTimeFormatter of time values
    * @return a SqlTimeSeriesSource for given time series table
    * @throws SourceException if the column scheme is not supported
    */
@@ -120,8 +118,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       SqlConnector connector,
       String schemaName,
       DatabaseNamingStrategy namingStrategy,
-      IndividualTimeSeriesMetaInformation metaInformation,
-      DateTimeFormatter dateTimeFormatter)
+      IndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
     if (!TimeSeriesUtils.isSchemeAccepted(metaInformation.getColumnScheme()))
       throw new SourceException(
@@ -129,13 +126,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
     Class<? extends Value> valClass = metaInformation.getColumnScheme().getValueClass();
 
-    return create(
-        connector,
-        schemaName,
-        namingStrategy,
-        metaInformation.getUuid(),
-        valClass,
-        dateTimeFormatter);
+    return create(connector, schemaName, namingStrategy, metaInformation.getUuid(), valClass);
   }
 
   private static <T extends Value> SqlTimeSeriesSource<T> create(
@@ -143,10 +134,8 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
       String schemaName,
       DatabaseNamingStrategy namingStrategy,
       UUID timeSeriesUuid,
-      Class<T> valClass,
-      DateTimeFormatter dateTimeFormatter) {
-    TimeBasedSimpleValueFactory<T> valueFactory =
-        new TimeBasedSimpleValueFactory<>(valClass, dateTimeFormatter);
+      Class<T> valClass) {
+    TimeBasedSimpleValueFactory<T> valueFactory = new TimeBasedSimpleValueFactory<>(valClass);
     return new SqlTimeSeriesSource<>(
         connector, schemaName, namingStrategy, timeSeriesUuid, valClass, valueFactory);
   }
@@ -178,7 +167,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
-    return Optional.of(timeBasedValues.stream().toList().get(0).getValue());
+    return Optional.of(timeBasedValues.stream().toList().getFirst().getValue());
   }
 
   @Override
@@ -312,11 +301,13 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         + WHERE
         + TIME_SERIES
         + " = '"
-        + timeSeriesUuid.toString()
+        + timeSeriesUuid
         + "' AND "
         + timeColumnName
-        + " < ?"
-        + "ORDER BY time DESC LIMIT 1;";
+        + " < ? "
+        + "ORDER BY "
+        + timeColumnName
+        + " DESC LIMIT 1;";
   }
 
   /**
@@ -337,6 +328,6 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
         + timeSeriesUuid.toString()
         + "' AND "
         + timeColumnName
-        + "=?;";
+        + " = ?;";
   }
 }

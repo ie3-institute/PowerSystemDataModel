@@ -18,29 +18,9 @@ import tech.units.indriya.ComparableQuantity;
 
 public class ThermalHouseInputFactory
     extends AssetInputEntityFactory<ThermalHouseInput, ThermalUnitInputEntityData> {
-  private static final String ETH_LOSSES = "ethLosses";
-  private static final String ETH_CAPA = "ethCapa";
-  private static final String TARGET_TEMPERATURE = "targetTemperature";
-  private static final String UPPER_TEMPERATURE_LIMIT = "upperTemperatureLimit";
-  private static final String LOWER_TEMPERATURE_LIMIT = "lowerTemperatureLimit";
-  private static final String HOUSING_TYPE = "housingType";
-  private static final String NUMBER_INHABITANTS = "numberInhabitants";
 
   public ThermalHouseInputFactory() {
     super(ThermalHouseInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {
-      ETH_LOSSES,
-      ETH_CAPA,
-      TARGET_TEMPERATURE,
-      UPPER_TEMPERATURE_LIMIT,
-      LOWER_TEMPERATURE_LIMIT,
-      HOUSING_TYPE,
-      NUMBER_INHABITANTS
-    };
   }
 
   @Override
@@ -75,6 +55,7 @@ public class ThermalHouseInputFactory
         upperTemperatureLimit,
         lowerTemperatureLimit,
         housingType,
-        numberInhabitants);
+        numberInhabitants,
+        data.getFieldsToValues());
   }
 }

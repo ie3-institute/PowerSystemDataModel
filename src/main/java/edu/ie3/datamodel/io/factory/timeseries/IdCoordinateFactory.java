@@ -15,8 +15,8 @@ import edu.ie3.datamodel.models.input.IdCoordinateInput;
  */
 public abstract class IdCoordinateFactory
     extends Factory<IdCoordinateInput, SimpleFactoryData, IdCoordinateInput> {
-  protected IdCoordinateFactory() {
-    super(IdCoordinateInput.class);
+  protected IdCoordinateFactory(Class<? extends IdCoordinateInput> clazz) {
+    super(clazz, IdCoordinateInput.class);
   }
 
   /**

@@ -83,11 +83,11 @@ Combined heat and power plant.
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - node
      -
@@ -108,11 +108,6 @@ Combined heat and power plant.
    * - thermalStorage
      -
      - Reference to thermal storage
-
-   * - marketReaction
-     -
-     - Whether to adapt output based on (volatile)
-       market price or not
 
    * - controllingEm
      -

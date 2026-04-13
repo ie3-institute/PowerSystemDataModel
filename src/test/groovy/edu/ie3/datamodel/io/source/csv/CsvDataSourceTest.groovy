@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -153,13 +154,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid",
       "active_power_gradient",
       "capex",
-      "cosphi_rated",
+      "cos_phi_rated",
       "eta_conv",
       "id",
       "opex",
       "s_rated",
-      "olmcharacteristic",
-      "cosPhiFixed"
+      "olm_characteristic",
+      "cos_phi_fixed"
     ] as String[]
     def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\",\"cosPhiFixed:{(0.0,1.0)}\""
 
@@ -167,13 +168,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
       activePowerGradient: "25.0",
       capex              : "100.0",
-      cosphiRated        : "0.95",
+      cosPhiRated        : "0.95",
       etaConv            : "98.0",
       id                 : "test_bmTypeInput",
       opex               : "50.0",
       sRated             : "25.0",
       uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-      olmcharacteristic  : "olm:{(0.0,1.0)}",
+      olmCharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : "cosPhiFixed:{(0.0,1.0)}"
     ]
   }
@@ -291,13 +292,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid",
       "active_power_gradient",
       "capex",
-      "cosphi_rated",
+      "cos_phi_rated",
       "eta_conv",
       "id",
       "opex",
       "s_rated",
-      "olmcharacteristic",
-      "cosPhiFixed"
+      "olm_characteristic",
+      "cos_phi_fixed"
     ] as String[]
     def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\","
 
@@ -305,13 +306,13 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
       activePowerGradient: "25.0",
       capex              : "100.0",
-      cosphiRated        : "0.95",
+      cosPhiRated        : "0.95",
       etaConv            : "98.0",
       id                 : "test_bmTypeInput",
       opex               : "50.0",
       sRated             : "25.0",
       uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-      olmcharacteristic  : "olm:{(0.0,1.0)}",
+      olmCharacteristic  : "olm:{(0.0,1.0)}",
       cosPhiFixed        : ""
     ]
   }
@@ -322,7 +323,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "uuid",
       "active_power_gradient",
       "capex",
-      "cosphi_rated",
+      "cos_phi_rated",
       "eta_conv",
       "id",
       "opex",
@@ -338,9 +339,9 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     where:
     invalidCsvRow                                                                          || explaination         || expectedMessage
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"    || "The size of the headline (8) does not fit to the size of the attribute fields (1).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cosphi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0'].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too little columns" || "The size of the headline (8) does not fit to the size of the attribute fields (6).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cosphi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8', '25.0', '100.0', '0.95', '98.0', 'test_bmTypeInput'].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too many columns"   || "The size of the headline (8) does not fit to the size of the attribute fields (10).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cosphi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8', '25.0', '100.0', '0.95', '98.0', 'test_bmTypeInput', '', '', '', ''].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"    || "The size of the headline (8) does not fit to the size of the attribute fields (1).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cos_phi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0'].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too little columns" || "The size of the headline (8) does not fit to the size of the attribute fields (6).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cos_phi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8', '25.0', '100.0', '0.95', '98.0', 'test_bmTypeInput'].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too many columns"   || "The size of the headline (8) does not fit to the size of the attribute fields (10).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cos_phi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8', '25.0', '100.0', '0.95', '98.0', 'test_bmTypeInput', '', '', '', ''].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
   }
 
   def "A CsvDataSource should throw an exception if there are duplicate headlines"() {
@@ -348,9 +349,9 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     def invalidHeadline = [
       "uuid",
       "active_power_gradient",
-      "Active_Power_Gradient",
+      "active_power_gradient",
       "capex",
-      "cosphi_rated",
+      "cos_phi_rated",
       "eta_conv",
       "id",
       "opex",
@@ -363,7 +364,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     def exception = thrown(SourceException)
-    exception.getMessage().startsWith("There might be duplicate headline elements.")
+    exception.getMessage().startsWith("Headline element 'active_power_gradient' is duplicated.")
   }
 
   def "The CsvDataSource is able to provide correct paths to time series files"() {
@@ -422,9 +423,9 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     actual.size() == 3
-    actual.get("r1").fullFilePath == Path.of("lpts_r1")
-    actual.get("r2").fullFilePath == Path.of("lpts_r2")
-    actual.get("g0").fullFilePath == Path.of("lpts_g0")
+    actual.get(new PowerProfileKey("r1")).fullFilePath == Path.of("lpts_r1")
+    actual.get(new PowerProfileKey("r2")).fullFilePath == Path.of("lpts_r2")
+    actual.get(new PowerProfileKey("g0")).fullFilePath == Path.of("lpts_g0")
   }
 
   def "The CsvDataSource is able to build correct load profile meta information when restricting load profile"() {
@@ -433,6 +434,6 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     then:
     actual.size() == 1
-    actual.get("g0").fullFilePath == Path.of("lpts_g0")
+    actual.get(new PowerProfileKey("g0")).fullFilePath == Path.of("lpts_g0")
   }
 }

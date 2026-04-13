@@ -54,12 +54,25 @@ CREATE TABLE public.em_res
     WITHOUT OIDS
 	TABLESPACE pg_default;
 
-CREATE TABLE public.flex_options_res
+CREATE TABLE public.power_limit_flex_options_res
 (
     input_model UUID NOT NULL,
     p_max DOUBLE PRECISION NOT NULL,
     p_min DOUBLE PRECISION NOT NULL,
     p_ref DOUBLE PRECISION NOT NULL,
+    time TIMESTAMP WITH TIME ZONE NOT NULL,
+    grid_uuid UUID NOT NULL
+)
+    WITHOUT OIDS
+	TABLESPACE pg_default;
+
+CREATE TABLE public.energy_boundaries_flex_options_res
+(
+    input_model UUID NOT NULL,
+    p_max DOUBLE PRECISION NOT NULL,
+    p_min DOUBLE PRECISION NOT NULL,
+    e_max DOUBLE PRECISION NOT NULL,
+    e_min DOUBLE PRECISION NOT NULL,
     time TIMESTAMP WITH TIME ZONE NOT NULL,
     grid_uuid UUID NOT NULL
 )
