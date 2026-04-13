@@ -333,7 +333,8 @@ public final class ModelFields extends FieldNamingStrategy {
 
     addMandatory(ChpInput.class, TYPE, THERMAL_BUS, THERMAL_STORAGE);
 
-    addMandatory(EvcsInput.class, TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPE, V2G_SUPPORT);
+    addMandatory(
+        EvcsInput.class, TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPES, V2G_SUPPORT);
 
     addMandatory(EvInput.class, TYPE, Q_CHARACTERISTICS);
 

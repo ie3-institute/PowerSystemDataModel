@@ -100,7 +100,7 @@ public class FieldNamingStrategy {
   public static final String COS_PHI_RATED = "cosPhiRated";
   public static final String E_CONS_ANNUAL = "eConsAnnual";
   public static final String FEED_IN_TARIFF = "feedInTariff";
-  public static final String LOCATION_TYPE = "locationType";
+  public static final String LOCATION_TYPES = "locationTypes";
   public static final String LOAD_PROFILE = "loadProfile";
   public static final String OLM_CHARACTERISTIC = "olmCharacteristic";
   public static final String Q_CHARACTERISTICS = "qCharacteristics";

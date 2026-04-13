@@ -49,8 +49,8 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       "type"            : "Household",
       "chargingpoints"  : "4",
       "cosphirated"     : "0.95",
-      "locationtypes"    : "CHARGING_HUB_TOWN, STREET",
-      "v2gsupport"     : "false"
+      "locationtypes"   : "CHARGING_HUB_TOWN, STREET",
+      "v2gsupport"      : "false"
     ]
     def inputClass = EvcsInput
     def nodeInput = Mock(NodeInput)
@@ -132,8 +132,8 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       "type"            : "Household",
       "chargingpoints"  : "4",
       "cosphirated"     : "0.95",
-      "locationTypes"    : "-- invalid --",
-      "v2gsupport"     : "false"
+      "locationtypes"   : "-- invalid --",
+      "v2gsupport"      : "false"
     ]
     def inputClass = EvcsInput
     def nodeInput = Mock(NodeInput)

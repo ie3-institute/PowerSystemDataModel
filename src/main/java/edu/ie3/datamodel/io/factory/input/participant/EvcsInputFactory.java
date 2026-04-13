@@ -60,19 +60,15 @@ public class EvcsInputFactory
     final int chargingPoints = data.getInt(CHARGING_POINTS);
     final double cosPhi = data.getDouble(COS_PHI_RATED);
 
-    final EvcsLocationType locationTypes;
+    final List<EvcsLocationType> locationTypes;
     String locationFieldValue = data.getField(LOCATION_TYPES);
     try {
-      locationTypes = EvcsLocationTypeUtils.parse(locationFieldValue);
-        if (locationTypesField.contains(",")) {
-            locationTypes = EvcsLocationTypeUtils.parse(locationTypesField);
-        } else {
-            locationTypes = List.of(EvcsLocationTypeUtils.parseSingle(locationTypesField));
-        } catch (ParsingException e) {
-            Throwable cause =
-                    e instanceof RuntimeException && e.getCause() instanceof ParsingException
-                            ? e.getCause()
-                            : e;
+      if (locationFieldValue.contains(",")) {
+        locationTypes = EvcsLocationTypeUtils.parse(locationFieldValue);
+      } else {
+        locationTypes = List.of(EvcsLocationTypeUtils.parseSingle(locationFieldValue));
+      }
+    } catch (ParsingException e) {
       throw new FactoryException(
           String.format(
               "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",

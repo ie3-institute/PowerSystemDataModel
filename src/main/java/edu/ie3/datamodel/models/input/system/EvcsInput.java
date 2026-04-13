@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -84,7 +85,7 @@ public class EvcsInput extends SystemParticipantInput {
    * @param type type of the charging points available to this charging station
    * @param chargingPoints number of charging points available at this charging station
    * @param cosPhiRated rated cos phi
-   * @param locationType the location type
+   * @param locationTypes the location types (minimum one required)
    * @param v2gSupport whether charging station supports vehicle to grid
    * @param additionalInformation That were provided by the source
    */
@@ -99,14 +100,14 @@ public class EvcsInput extends SystemParticipantInput {
       ChargingPointType type,
       int chargingPoints,
       double cosPhiRated,
-      EvcsLocationType locationType,
+      List<EvcsLocationType> locationTypes,
       boolean v2gSupport,
       Map<String, String> additionalInformation) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.type = type;
     this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
-    this.locationType = locationType;
+    this.locationTypes = locationTypes;
     this.v2gSupport = v2gSupport;
     setAdditionalInformation(additionalInformation);
   }
