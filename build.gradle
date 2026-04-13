@@ -66,7 +66,7 @@ dependencies {
   implementation 'org.locationtech.jts.io:jts-io-common:1.20.0'
 
   // Graphs
-  implementation 'org.jgrapht:jgrapht-core:1.5.2'
+  implementation 'org.jgrapht:jgrapht-core:1.5.3'
 
   // Statistics (for random load model)
   implementation 'de.lmu.ifi.dbs.elki:elki:0.7.5'
